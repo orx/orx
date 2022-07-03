@@ -7,7 +7,7 @@ REBOL [
 
 ; Default settings
 tag:            <version>
-hosts:          [[{https://orx-project.org/extern/} tag {.zip}] [{https://codeload.github.com/orx/orx-extern/zip/} tag]]
+hosts:          [[{https://orx-project.org/extern/} tag {.zip}] [{https://codeload.github.com/orx/orx-extern/zip/} tag] [{https://orx-mirror.0ok.org/} tag {.zip}]]
 extern:         %extern/
 cache:          %cache/
 temp:           %.temp/
