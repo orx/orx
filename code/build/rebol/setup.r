@@ -21,9 +21,9 @@ build-file:     %code/include/base/orxBuild.h
 env-variable:   {ORX}
 env-path:       %code
 platform-data:  compose/deep [
-  windows     [premake {windows}                                              config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]                                               env-msg {Please restart your favorite IDE before using orx.}]
-  mac         [premake {mac}                                                  config [{gmake} {codelite} {codeblocks} {xcode4}                  ]                                               env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
-  linux       [premake (pick [{linux64} {linux32}] system/build/arch = 'x64)  config [{gmake} {codelite} {codeblocks}                           ]   deps [{libgl1-mesa-dev} {libxrandr-dev}]    env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
+  windows     [premake {windows}                                              config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]                                                                 env-msg {Please restart your favorite IDE before using orx.}]
+  mac         [premake {mac}                                                  config [{gmake} {codelite} {codeblocks} {xcode4}                  ]                                                                 env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
+  linux       [premake (pick [{linux64} {linux32}] system/build/arch = 'x64)  config [{gmake} {codelite} {codeblocks}                           ]   deps [{libgl1-mesa-dev} {libxrandr-dev} {libstdc++-static}]   env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
 ]
 
 ; Inits
