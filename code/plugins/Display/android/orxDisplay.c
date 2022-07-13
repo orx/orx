@@ -1670,13 +1670,13 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_CompileShader(orxDISPLAY_SHADER 
   static const orxSTRING szVertexShaderSource =
   "attribute vec2 _vPosition_;"
   "uniform mat4 _mProjection_;"
-  "attribute mediump vec2 _vTexCoord_;"
-  "varying mediump vec2 _gl_TexCoord0_;"
-  "attribute mediump vec4 _vColor_;"
-  "varying mediump vec4 _Color0_;"
+  "attribute highp vec2 _vTexCoord_;"
+  "varying highp vec2 _gl_TexCoord0_;"
+  "attribute highp vec4 _vColor_;"
+  "varying highp vec4 _Color0_;"
   "void main()"
   "{"
-  "  mediump float fCoef = 1.0 / 255.0;"
+  "  highp float fCoef = 1.0 / 255.0;"
   "  gl_Position      = _mProjection_ * vec4(_vPosition_.xy, 0.0, 1.0);"
   "  _gl_TexCoord0_   = _vTexCoord_;"
   "  _Color0_         = fCoef * _vColor_;"
@@ -4313,7 +4313,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       orxConfig_PopSection();
 
       static const orxSTRING szFragmentShaderSource =
-      "precision mediump float;"
+      "precision highp float;"
       "varying vec2 _gl_TexCoord0_;"
       "varying vec4 _Color0_;"
       "uniform sampler2D _Texture_;"
@@ -4322,7 +4322,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       "  gl_FragColor = _Color0_.rgba * texture2D(_Texture_, _gl_TexCoord0_).rgba;"
       "}";
       static const orxSTRING szNoTextureFragmentShaderSource =
-      "precision mediump float;"
+      "precision highp float;"
       "varying vec2 _gl_TexCoord0_;"
       "varying vec4 _Color0_;"
       "uniform sampler2D _Texture_;"
@@ -4505,7 +4505,7 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING *_azCodeLi
           orxSHADER_PARAM *pstParam;
 
           /* Adds wrapping code */
-          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
+          s32Offset = orxString_NPrint(pc, s32Free, "precision highp float;\nvarying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
           pc       += s32Offset;
           s32Free  -= s32Offset;
 

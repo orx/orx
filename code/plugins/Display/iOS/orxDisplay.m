@@ -2120,13 +2120,13 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
   static const orxSTRING szVertexShaderSource =
   "attribute vec2 __vPosition__;"
   "uniform mat4 __mProjection__;"
-  "attribute mediump vec2 __vTexCoord__;"
-  "varying mediump vec2 ___TexCoord___;"
-  "attribute mediump vec4 __vColor__;"
-  "varying mediump vec4 ___Color;"
+  "attribute highp vec2 __vTexCoord__;"
+  "varying highp vec2 ___TexCoord___;"
+  "attribute highp vec4 __vColor__;"
+  "varying highp vec4 ___Color;"
   "void main()"
   "{"
-  "  mediump float fCoef = 1.0 / 255.0;"
+  "  highp float fCoef = 1.0 / 255.0;"
   "  gl_Position      = __mProjection__ * vec4(__vPosition__.xy, 0.0, 1.0);"
   "  ___TexCoord___   = __vTexCoord__;"
   "  ___Color         = fCoef * __vColor__;"
@@ -4337,7 +4337,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         glASSERT();
 
         static const orxSTRING szFragmentShaderSource =
-        "precision mediump float;"
+        "precision highp float;"
         "varying vec2 ___TexCoord___;"
         "varying vec4 ___Color;"
         "uniform sampler2D __Texture__;"
@@ -4346,7 +4346,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         "  gl_FragColor = ___Color.rgba * texture2D(__Texture__, ___TexCoord___).rgba;"
         "}";
         static const orxSTRING szNoTextureFragmentShaderSource =
-        "precision mediump float;"
+        "precision highp float;"
         "varying vec2 ___TexCoord___;"
         "varying vec4 ___Color;"
         "uniform sampler2D __Texture__;"
@@ -4511,7 +4511,7 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING *_azCodeList, 
         orxSHADER_PARAM *pstParam;
 
         /* Adds wrapping code */
-        s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 ___TexCoord___;\nvarying vec4 ___Color;\n");
+        s32Offset = orxString_NPrint(pc, s32Free, "precision highp float;\nvarying vec2 ___TexCoord___;\nvarying vec4 ___Color;\n");
         pc       += s32Offset;
         s32Free  -= s32Offset;
 
