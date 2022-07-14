@@ -90,6 +90,10 @@ static  Light         astLightList[LIGHT_NUMBER];
 
 static orxVECTOR vFramebufferSize;
 
+#if defined(__orxMAC__)
+static orxFLOAT fRetinaFactor = 1.0;
+#endif
+
 /** Clears all lights
  */
 void ClearLights()
@@ -363,6 +367,13 @@ void orxFASTCALL Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
 {
   /* Stores mouse position as current light position */
   orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition));
+#if defined(__orxMAC__)
+  /* If Retina Display is active, the light position needs to be adjusted accordingly */
+  if (fRetinaFactor != 1.0)
+  {
+    orxVector_Mulf(&(astLightList[s32LightIndex].vPosition), &(astLightList[s32LightIndex].vPosition), fRetinaFactor);
+  }
+#endif
 
   /* Creates a new light? */
   if (orxInput_HasBeenActivated("CreateLight"))
@@ -453,6 +464,18 @@ orxSTATUS orxFASTCALL Init()
 
   /* Retrieve the initial framebuffer size */
   UpdateFrameBufferSize();
+
+#if defined(__orxMAC__)
+  /* On Mac systems with Retina Display the framebuffer width and height are a multiple of the screen size */
+  orxFLOAT fWidth, fHeight;
+  orxDisplay_GetScreenSize(&fWidth, &fHeight);
+
+  if (vFramebufferSize.fX > fWidth)
+  {
+    /* Retina Display detected, record the multiplication factor */
+    fRetinaFactor = vFramebufferSize.fX / fWidth;
+  }
+#endif
 
   /* Registers our update callback */
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
