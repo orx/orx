@@ -88,6 +88,7 @@ static  orxOBJECT    *pstScene        = orxNULL;
 static  orxS32        s32LightIndex   = 0;
 static  Light         astLightList[LIGHT_NUMBER];
 
+static orxVECTOR vFramebufferSize;
 
 /** Clears all lights
  */
@@ -109,6 +110,15 @@ void ClearLights()
   }
 
   /* Pops config section */
+  orxConfig_PopSection();
+}
+
+/** Update the framebuffer size vector passed to the shader
+ */
+void UpdateFrameBufferSize()
+{
+  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+  orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
   orxConfig_PopSection();
 }
 
@@ -325,6 +335,11 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
         /* Gets associated normal map */
         pstPayload->pstValue = (orxTEXTURE *)orxHashTable_Get(pstTextureTable, orxString_Hash(orxTexture_GetName(pstPayload->pstValue)));
       }
+      else if (!orxString_Compare(pstPayload->zParamName, "vScreenSize"))
+      {
+		  /* The framebuffer size */
+          orxVector_Copy(&(pstPayload->vValue), &vFramebufferSize);
+      }
     }
   }
   /* Texture loaded? */
@@ -332,6 +347,10 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   {
     /* Creates associated normal map */
     CreateNormalMap(orxTEXTURE(_pstEvent->hSender));
+  }
+  else if ((_pstEvent->eType == orxEVENT_TYPE_DISPLAY) && (_pstEvent->eID == orxDISPLAY_EVENT_SET_VIDEO_MODE))
+  {
+    UpdateFrameBufferSize();
   }
 
   /* Done! */
@@ -418,6 +437,7 @@ orxSTATUS orxFASTCALL Init()
   /* Adds event handler */
   orxEvent_AddHandler(orxEVENT_TYPE_SHADER, EventHandler);
   orxEvent_AddHandler(orxEVENT_TYPE_TEXTURE, EventHandler);
+  orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, EventHandler);
 
   /* Creates texture table */
   pstTextureTable = orxHashTable_Create(16, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -430,6 +450,9 @@ orxSTATUS orxFASTCALL Init()
 
   /* Clear all lights */
   ClearLights();
+
+  /* Retrieve the initial framebuffer size */
+  UpdateFrameBufferSize();
 
   /* Registers our update callback */
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
