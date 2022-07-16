@@ -88,12 +88,6 @@ static  orxOBJECT    *pstScene        = orxNULL;
 static  orxS32        s32LightIndex   = 0;
 static  Light         astLightList[LIGHT_NUMBER];
 
-static orxVECTOR vFramebufferSize;
-
-#if defined(__orxMAC__)
-static orxFLOAT fRetinaFactor = 1.0;
-#endif
-
 /** Clears all lights
  */
 void ClearLights()
@@ -114,15 +108,6 @@ void ClearLights()
   }
 
   /* Pops config section */
-  orxConfig_PopSection();
-}
-
-/** Update the framebuffer size vector passed to the shader
- */
-void UpdateFrameBufferSize()
-{
-  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
-  orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
   orxConfig_PopSection();
 }
 
@@ -339,10 +324,13 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
         /* Gets associated normal map */
         pstPayload->pstValue = (orxTEXTURE *)orxHashTable_Get(pstTextureTable, orxString_Hash(orxTexture_GetName(pstPayload->pstValue)));
       }
-      else if (!orxString_Compare(pstPayload->zParamName, "vScreenSize"))
+      /* Screen size? */
+      else if(!orxString_Compare(pstPayload->zParamName, "vScreenSize"))
       {
-		  /* The framebuffer size */
-          orxVector_Copy(&(pstPayload->vValue), &vFramebufferSize);
+        /* The framebuffer size */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+        orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &(pstPayload->vValue));
+        orxConfig_PopSection();
       }
     }
   }
@@ -351,10 +339,6 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
   {
     /* Creates associated normal map */
     CreateNormalMap(orxTEXTURE(_pstEvent->hSender));
-  }
-  else if ((_pstEvent->eType == orxEVENT_TYPE_DISPLAY) && (_pstEvent->eID == orxDISPLAY_EVENT_SET_VIDEO_MODE))
-  {
-    UpdateFrameBufferSize();
   }
 
   /* Done! */
@@ -365,24 +349,23 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
  */
 void orxFASTCALL Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
 {
-  /* Stores mouse position as current light position */
-  orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition));
-#if defined(__orxMAC__)
-  /* If Retina Display is active, the light position needs to be adjusted accordingly */
-  if (fRetinaFactor != 1.0)
-  {
-    orxVector_Mulf(&(astLightList[s32LightIndex].vPosition), &(astLightList[s32LightIndex].vPosition), fRetinaFactor);
-  }
-#endif
+  orxVECTOR vContentScale;
+
+  /* Stores relative mouse position as current light position (accounting for retina/high DPI monitors) */
+  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+  orxVector_Mul(&(astLightList[s32LightIndex].vPosition),
+                orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition)),
+                orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_CONTENT_SCALE, &vContentScale));
+  orxConfig_PopSection();
 
   /* Creates a new light? */
-  if (orxInput_HasBeenActivated("CreateLight"))
+  if(orxInput_HasBeenActivated("CreateLight"))
   {
     /* Updates light index */
     s32LightIndex = orxMIN(LIGHT_NUMBER - 1, s32LightIndex + 1);
   }
   /* Clears all lights? */
-  else if (orxInput_HasBeenActivated("ClearLights"))
+  else if(orxInput_HasBeenActivated("ClearLights"))
   {
     /* Clears all lights */
     ClearLights();
@@ -391,17 +374,17 @@ void orxFASTCALL Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
     s32LightIndex = 0;
   }
   /* Increases radius? */
-  else if (orxInput_HasBeenActivated("IncreaseRadius"))
+  else if(orxInput_HasBeenActivated("IncreaseRadius"))
   {
     astLightList[s32LightIndex].fRadius += orxInput_GetValue("IncreaseRadius") * orx2F(0.05f);
   }
   /* Decreases radius? */
-  else if (orxInput_HasBeenActivated("DecreaseRadius"))
+  else if(orxInput_HasBeenActivated("DecreaseRadius"))
   {
     astLightList[s32LightIndex].fRadius = orxMAX(orxFLOAT_0, astLightList[s32LightIndex].fRadius - orxInput_GetValue("DecreaseRadius") * orx2F(0.05f));
   }
   /* Toggle alpha? */
-  else if (orxInput_HasBeenActivated("ToggleAlpha"))
+  else if(orxInput_HasBeenActivated("ToggleAlpha"))
   {
     astLightList[s32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[s32LightIndex].stColor.fAlpha;
   }
@@ -448,7 +431,6 @@ orxSTATUS orxFASTCALL Init()
   /* Adds event handler */
   orxEvent_AddHandler(orxEVENT_TYPE_SHADER, EventHandler);
   orxEvent_AddHandler(orxEVENT_TYPE_TEXTURE, EventHandler);
-  orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, EventHandler);
 
   /* Creates texture table */
   pstTextureTable = orxHashTable_Create(16, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -461,21 +443,6 @@ orxSTATUS orxFASTCALL Init()
 
   /* Clear all lights */
   ClearLights();
-
-  /* Retrieve the initial framebuffer size */
-  UpdateFrameBufferSize();
-
-#if defined(__orxMAC__)
-  /* On Mac systems with Retina Display the framebuffer width and height are a multiple of the screen size */
-  orxFLOAT fWidth, fHeight;
-  orxDisplay_GetScreenSize(&fWidth, &fHeight);
-
-  if (vFramebufferSize.fX > fWidth)
-  {
-    /* Retina Display detected, record the multiplication factor */
-    fRetinaFactor = vFramebufferSize.fX / fWidth;
-  }
-#endif
 
   /* Registers our update callback */
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
