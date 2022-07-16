@@ -536,6 +536,8 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
 
     if(windowWidth > 0 && windowHeight > 0)
     {
+      orxVECTOR vContentScale;
+
       /* default to native window size */
       u32Width = windowWidth;
       u32Height = windowHeight;
@@ -594,8 +596,9 @@ static orxSTATUS orxAndroid_Display_CreateSurface()
       /* Save scaling */
       orxConfig_SetFloat(KZ_CONFIG_SURFACE_SCALE, fScale);
 
-      /* Save framebuffer size */
+      /* Save framebuffer size & content scale */
       orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, orxU2F(u32Width), orxU2F(u32Height), orxFLOAT_0));
+      orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_CONTENT_SCALE, orxVector_Set(&vContentScale, fScale, fScale, orxFLOAT_1));
 
       /* Pops config section */
       orxConfig_PopSection();

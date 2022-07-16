@@ -5879,6 +5879,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.pstScreen->u32Depth);
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE, sstDisplay.u32RefreshRate);
     orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
+    orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_CONTENT_SCALE, &(sstDisplay.vContentScale));
   }
 
   /* For all texture units */

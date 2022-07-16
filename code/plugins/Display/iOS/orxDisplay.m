@@ -4294,8 +4294,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
         glASSERT();
 
-        /* Stores framebuffer size */
+        /* Stores framebuffer size & content scale */
         orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, orxS2F(iWidth), orxS2F(iHeight), orxFLOAT_0));
+        orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_CONTENT_SCALE, &orxVECTOR_1);
 
         /* Inits default values */
         sstDisplay.bDefaultSmoothing          = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);

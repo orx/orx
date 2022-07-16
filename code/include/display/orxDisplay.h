@@ -227,6 +227,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_CONFIG_CURSOR                         "Cursor"
 #define orxDISPLAY_KZ_CONFIG_ICON_LIST                      "IconList"
 #define orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE               "FramebufferSize"
+#define orxDISPLAY_KZ_CONFIG_CONTENT_SCALE                  "ContentScale"
 #define orxDISPLAY_KZ_CONFIG_TEXTURE_UNIT_NUMBER            "TextureUnitNumber"
 #define orxDISPLAY_KZ_CONFIG_DRAW_BUFFER_NUMBER             "DrawBufferNumber"
 #define orxDISPLAY_KZ_CONFIG_MAX_TEXTURE_SIZE               "MaxTextureSize"
