@@ -393,8 +393,7 @@ project "orxLIB"
     configuration {"not *Core*"}
         defines
         {
-            "__orxEMBEDDED__",
-            "AL_LIBTYPE_STATIC"
+            "__orxEMBEDDED__"
         }
 
     -- Work around for codelite "default" configuration

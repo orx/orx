@@ -46,6 +46,12 @@ matrix:
 
     - os: osx
       compiler: clang
+      osx_image: xcode13.4
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 13
+
+    - os: osx
+      compiler: clang
       osx_image: xcode10.3
       script: ./code/build/travis/ios.sh
       name: iOS / XCode 10
@@ -67,6 +73,12 @@ matrix:
     #   osx_image: xcode13.1
     #   script: ./code/build/travis/ios.sh
     #   name: iOS / XCode 13
+
+    # - os: osx
+    #   compiler: clang
+    #   osx_image: xcode13.4
+    #   script: ./code/build/travis/ios.sh
+    #   name: OSX / XCode 14
 
     - language: android
       jdk: openjdk8

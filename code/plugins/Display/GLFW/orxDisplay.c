@@ -2343,7 +2343,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
 {
   static const orxSTRING szVertexShaderSource =
 #ifdef __orxDISPLAY_OPENGL_ES__
-  "precision mediump float;"
+  "precision highp float;"
 #endif /* __orxDISPLAY_OPENGL_ES__ */
   "attribute vec2 _vPosition_;"
   "uniform mat4 _mProjection_;"
@@ -5441,7 +5441,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           orxU32                  u32ShaderVersion = orxU32_UNDEFINED;
           static const orxSTRING  szFragmentShaderSource =
 #ifdef __orxDISPLAY_OPENGL_ES__
-          "precision mediump float;"
+          "precision highp float;"
 #endif /* __orxDISPLAY_OPENGL_ES__ */
           "varying vec2 _gl_TexCoord0_;"
           "varying vec4 _Color0_;"
@@ -5452,7 +5452,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           "}";
           static const orxSTRING szNoTextureFragmentShaderSource =
 #ifdef __orxDISPLAY_OPENGL_ES__
-          "precision mediump float;"
+          "precision highp float;"
 #endif /* __orxDISPLAY_OPENGL_ES__ */
           "varying vec2 _gl_TexCoord0_;"
           "varying vec4 _Color0_;"
@@ -5879,6 +5879,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_DEPTH, sstDisplay.pstScreen->u32Depth);
     orxConfig_SetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE, sstDisplay.u32RefreshRate);
     orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &vFramebufferSize);
+    orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_CONTENT_SCALE, &(sstDisplay.vContentScale));
   }
 
   /* For all texture units */
@@ -6440,7 +6441,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
 
           /* Adds wrapping code */
 #ifdef __orxDISPLAY_OPENGL_ES__
-          s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
+          s32Offset = orxString_NPrint(pc, s32Free, "precision highp float;\nvarying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
 #else /* __orxDISPLAY_OPENGL_ES__ */
           s32Offset = orxString_NPrint(pc, s32Free, "varying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
 #endif /* __orxDISPLAY_OPENGL_ES__ */

@@ -1453,38 +1453,10 @@ static orxINLINE orxS32 orxCDECL                          orxString_Scan(const o
   /* Checks */
   orxASSERT(_zString != orxNULL);
 
-#ifdef __orxMSVC__
-
-  /* Ugly workaround the missing vsscanf in MSVC up to version 2013 */
-  {
-    void   *p[16];
-    orxS32  i;
-
-    /* Starts variable list */
-    va_start(stArgs, _zFormat);
-
-    /* For all potential parameters */
-    for(i = 0; i < orxARRAY_GET_ITEM_COUNT(p); i++)
-    {
-      /* Gets its address */
-      p[i] = va_arg(stArgs, void *);
-    }
-
-    /* Scans the string */
-    s32Result = sscanf(_zString, _zFormat, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]);
-
-    /* Ends variable list */
-    va_end(stArgs);
-  }
-
-#else /* __orxMSVC__ */
-
   /* Gets variable arguments & scans the string */
   va_start(stArgs, _zFormat);
   s32Result = vsscanf(_zString, _zFormat, stArgs);
   va_end(stArgs);
-
-#endif /* __orxMSVC__ */
 
   /* Clamps result */
   s32Result = orxMAX(s32Result, 0);
