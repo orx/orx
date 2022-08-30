@@ -296,8 +296,8 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
             {
               orxTEXTURE *pstTexture;
 
-                /* Loads texture */
-                pstTexture = orxTexture_Load(orxLocale_GetString(zName + 1, orxTEXTURE_KZ_LOCALE_GROUP), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
+              /* Loads texture */
+              pstTexture = orxTexture_Load(orxLocale_GetString(zName + 1, orxTEXTURE_KZ_LOCALE_GROUP), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
 
               /* Updates data */
               orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
@@ -697,16 +697,13 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           zName = (*(zName + 1) == orxGRAPHIC_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1, orxTEXTURE_KZ_LOCALE_GROUP);
         }
 
-        /* Loads texture */
-        pstTexture = orxTexture_Load(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
-
         /* Valid? */
         if(zName != orxSTRING_EMPTY)
         {
           /* Stores its reference */
           pstResult->zDataReference = (orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_STASIS) != orxFALSE) ? orxString_Store(zName) : orxNULL;
 
-          /* Creates texture */
+          /* Loads texture */
           pstTexture = orxTexture_Load(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
 
           /* Valid? */
