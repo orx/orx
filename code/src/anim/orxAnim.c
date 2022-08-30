@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -922,7 +922,7 @@ orxSTATUS orxFASTCALL orxAnim_AddEvent(orxANIM *_pstAnim, const orxSTRING _zEven
   orxASSERT(_zEventName != orxNULL);
 
   /* Valid timestamp? */
-  if((orxAnim_GetEventCount(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astEventList[orxAnim_GetEventCount(_pstAnim) - 1].fTimeStamp))
+  if((orxAnim_GetEventCount(_pstAnim) == 0) || (_fTimeStamp >= _pstAnim->astEventList[orxAnim_GetEventCount(_pstAnim) - 1].fTimeStamp))
   {
     orxU32 u32Count, u32Size;
 
@@ -1036,12 +1036,56 @@ void orxFASTCALL orxAnim_RemoveAllEvents(orxANIM *_pstAnim)
   return;
 }
 
-/** Gets next event after given timestamp
+/** Gets next event
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _pstEvent       Event, orxNULL for first
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, const orxANIM_CUSTOM_EVENT *_pstEvent)
+{
+  orxU32                u32Count;
+  orxANIM_CUSTOM_EVENT *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnim);
+
+  /* Has events and request is in range? */
+  if((u32Count = orxAnim_GetEventCount(_pstAnim)) > 0)
+  {
+    /* Has valid event? */
+    if(_pstEvent != orxNULL)
+    {
+      orxU32 i = 0;
+
+      /* Finds event */
+      for(i = 0; (i < u32Count - 1) && (&(_pstAnim->astEventList[i]) != _pstEvent); i++)
+        ;
+
+      /* Valid? */
+      if(i < u32Count - 1)
+      {
+        /* Updates result */
+        pstResult = &(_pstAnim->astEventList[i + 1]);
+      }
+    }
+    else
+    {
+      /* Updates result */
+      pstResult = &(_pstAnim->astEventList[0]);
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets event strictly after given timestamp
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _fTimeStamp     Time stamp, excluded
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
+const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetEventAfter(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp)
 {
   orxU32                u32Count;
   orxANIM_CUSTOM_EVENT *pstResult = orxNULL;

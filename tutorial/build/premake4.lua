@@ -45,7 +45,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2019")
+defaultaction ("windows", "vs2022")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 

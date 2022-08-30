@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -3366,6 +3366,19 @@ static orxBOOL orxFASTCALL orxConfig_OriginSaveCallback(const orxSTRING _zSectio
   return bResult;
 }
 
+/** Origin clear callback
+ */
+static orxBOOL orxFASTCALL orxConfig_OriginClearCallback(const orxSTRING _zSectionName, const orxSTRING _zKeyName)
+{
+  orxBOOL bResult;
+
+  /* Updates result */
+  bResult = (orxConfig_GetOriginID(_zSectionName) != orxSTRINGID_UNDEFINED) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 /** Transforms a string to Pascal case
  */
 static void orxFASTCALL orxConfig_ToPascalCase(orxSTRING _zDst, const orxSTRING _zSrc)
@@ -3440,7 +3453,7 @@ static void orxFASTCALL orxConfig_SetDefaultColorList()
   orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
 
   /* Inits parent buffer */
-  s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "@%s.", orxCOLOR_KZ_CONFIG_SECTION);
+  s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "@.");
 
   /* For all colors */
   for(orxU32 i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astColorList); i < iCount; i++)
@@ -3563,6 +3576,20 @@ void orxFASTCALL orxConfig_CommandHasSection(orxU32 _u32ArgNumber, const orxCOMM
 {
   /* Updates result */
   _pstResult->bValue = (orxConfig_HasSection(_astArgList[0].zValue));
+
+  /* Done! */
+  return;
+}
+
+/** Command: RenameSection
+ */
+void orxFASTCALL orxConfig_CommandRenameSection(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Renames section */
+   orxConfig_RenameSection(_astArgList[0].zValue, _astArgList[1].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = _astArgList[1].zValue;
 
   /* Done! */
   return;
@@ -3925,6 +3952,8 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, CreateSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasSection */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasSection, "Section?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: RenameSection */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, RenameSection, "NewSection", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"NewSection", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: ClearSection */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, ClearSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetCurrentSection */
@@ -4001,6 +4030,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, CreateSection);
   /* Command: HasSection */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, HasSection);
+  /* Command: RenameSection */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, RenameSection);
   /* Command: ClearSection */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, ClearSection);
   /* Command: GetCurrentSection */
@@ -4518,7 +4549,7 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
             if(orxMemory_Compare(acBuffer + u32Offset, sastUnsupportedBOMList[i].zBOM, sastUnsupportedBOMList[i].u32Length) == 0)
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't load config file, invalid text encoding. Only ANSI & UTF-8 are supported.", _zFileName);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Can't load config file, invalid text encoding. Only ASCII & UTF-8 are supported.", _zFileName);
 
               /* Updates result */
               eResult = orxSTATUS_FAILURE;
@@ -4665,7 +4696,7 @@ orxSTATUS orxFASTCALL orxConfig_LoadFromMemory(orxCHAR *_acBuffer, orxU32 _u32Bu
         if(orxString_NCompare(_acBuffer + u32Offset, sastUnsupportedBOMList[i].zBOM, sastUnsupportedBOMList[i].u32Length) == 0)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't load memory buffer, invalid text encoding. Only ANSI & UTF-8 are supported.");
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't load memory buffer, invalid text encoding. Only ASCII & UTF-8 are supported.");
 
           /* Don't process */
           bProcess = orxFALSE;
@@ -4714,7 +4745,7 @@ orxSTATUS orxFASTCALL orxConfig_ReloadHistory()
     orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_HISTORY);
 
     /* Clears all data */
-    orxConfig_Clear(orxNULL);
+    orxConfig_Clear(orxConfig_OriginClearCallback);
 
     /* For all entries in history */
     for(pstHistoryEntry = (orxSTRINGID *)orxBank_GetNext(sstConfig.pstHistoryBank, orxNULL);
@@ -4788,7 +4819,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
     }
 
     /* Valid file to open? */
-    if(((zResourceLocation = orxResource_LocateInStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxNULL, zFileName)) != orxNULL)
+    if(((zResourceLocation = orxResource_LocateInStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxRESOURCE_KZ_DEFAULT_STORAGE, zFileName)) != orxNULL)
     && ((hResource = orxResource_Open(zResourceLocation, orxTRUE)) != orxHANDLE_UNDEFINED))
     {
       orxCONFIG_SECTION  *pstSection;
@@ -5782,7 +5813,8 @@ const orxSTRING orxFASTCALL orxConfig_GetSection(orxU32 _u32SectionIndex)
 orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCallback)
 {
   orxCONFIG_SECTION  *pstLastSection, *pstNewSection;
-  orxBOOL             bStop;
+  orxBOOL             bPending;
+  orxU32              u32ClearCount;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
@@ -5791,7 +5823,8 @@ orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCa
   do
   {
     /* Inits status */
-    bStop = orxTRUE;
+    bPending      = orxFALSE;
+    u32ClearCount = 0;
 
     /* For all sections */
     for(pstLastSection = orxNULL, pstNewSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
@@ -5809,10 +5842,15 @@ orxSTATUS orxFASTCALL orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCa
         pstLastSection = pstNewSection;
 
         /* Updates status */
-        bStop = orxFALSE;
+        bPending = orxTRUE;
+      }
+      else
+      {
+        /* Updates clear count */
+        u32ClearCount++;
       }
     }
-  } while(bStop == orxFALSE);
+  } while((bPending != orxFALSE) && (u32ClearCount != 0));
 
   /* Done! */
   return orxSTATUS_SUCCESS;

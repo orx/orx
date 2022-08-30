@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -91,7 +91,7 @@
 
 /** Misc
  */
-#define orxTHREAD_KU32_TASK_LIST_SIZE                 64
+#define orxTHREAD_KU32_TASK_LIST_SIZE                 256
 
 #define orxTHREAD_KZ_THREAD_NAME_MAIN                 "Main"
 #define orxTHREAD_KZ_THREAD_NAME_WORKER               "Task Runner"
@@ -359,7 +359,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
     /* Success? */
     if((sstThread.pstThreadSemaphore != orxNULL) && (sstThread.pstTaskSemaphore != orxNULL) && (sstThread.pstWorkerSemaphore != orxNULL))
     {
-#if defined(__orxWINDOWS__)
+#ifdef __orxWINDOWS__
 
       /* Inits main thread info */
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread      = GetCurrentThread();
@@ -380,7 +380,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].zName    = orxTHREAD_KZ_THREAD_NAME_MAIN;
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32Flags = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
 
-  #if defined(__orxLINUX__)
+  #ifdef __orxLINUX__
 
       {
         cpu_set_t stSet;

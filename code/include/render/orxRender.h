@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -73,6 +73,7 @@
 #define orxRENDER_KZ_CONFIG_CONSOLE_COMPLETION_ALPHA  "ConsoleCompletionAlpha"
 #define orxRENDER_KZ_CONFIG_CONSOLE_LOG_COLOR         "ConsoleLogColor"
 #define orxRENDER_KZ_CONFIG_CONSOLE_LOG_ALPHA         "ConsoleLogAlpha"
+#define orxRENDER_KZ_CONFIG_CONSOLE_FONT_SCALE        "ConsoleFontScale"
 
 
 /** Inputs

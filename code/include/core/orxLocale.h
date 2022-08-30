@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -64,9 +64,10 @@ typedef enum __orxLOCALE_EVENT_t
  */
 typedef struct __orxLOCALE_EVENT_PAYLOAD_t
 {
-  const orxSTRING zLanguage;                              /**< Current language : 4 */
-  const orxSTRING zStringKey;                             /**< String key : 8 */
-  const orxSTRING zStringValue;                           /**< String value : 12 */
+  const orxSTRING zLanguage;                              /**< Current language : 4/8*/
+  const orxSTRING zGroup;                                 /**< Current group : 8/16 */
+  const orxSTRING zStringKey;                             /**< String key : 12/24 */
+  const orxSTRING zStringValue;                           /**< String value : 16/32 */
 
 } orxLOCALE_EVENT_PAYLOAD;
 
@@ -87,13 +88,15 @@ extern orxDLLAPI void orxFASTCALL                         orxLocale_Exit();
 
 /** Selects current working language
  * @param[in] _zLanguage        Language to select
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_SelectLanguage(const orxSTRING _zLanguage);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_SelectLanguage(const orxSTRING _zLanguage, const orxSTRING _zGroup);
 
 /** Gets current language
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return Current selected language
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetCurrentLanguage();
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetCurrentLanguage(const orxSTRING _zGroup);
 
 /** Has given language? (if not correctly defined, false will be returned)
  * @param[in] _zLanguage        Concerned language
@@ -115,33 +118,38 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetLanguage(
 
 /** Has string for the given key?
  * @param[in] _zKey             Key name
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return orxTRUE / orxFALSE
  */
-extern orxDLLAPI orxBOOL orxFASTCALL                      orxLocale_HasString(const orxSTRING _zKey);
+extern orxDLLAPI orxBOOL orxFASTCALL                      orxLocale_HasString(const orxSTRING _zKey, const orxSTRING _zGroup);
 
 /** Reads a string in the current language for the given key
  * @param[in] _zKey             Key name
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return The value
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetString(const orxSTRING _zKey);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetString(const orxSTRING _zKey, const orxSTRING _zGroup);
 
 /** Writes a string in the current language for the given key
  * @param[in] _zKey             Key name
  * @param[in] _zValue           Value
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_SetString(const orxSTRING _zKey, const orxSTRING _zValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_SetString(const orxSTRING _zKey, const orxSTRING _zValue, const orxSTRING _zGroup);
 
 /** Gets key count for the current language
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return Key count the current language if valid, 0 otherwise
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetKeyCount();
+extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetKeyCount(const orxSTRING _zGroup);
 
 /** Gets key for the current language at the given index
  * @param[in] _u32KeyIndex      Index of the desired key
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return orxSTRING if exist, orxNULL otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetKey(orxU32 _u32KeyIndex);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetKey(orxU32 _u32KeyIndex, const orxSTRING _zGroup);
 
 #endif /*__orxLOCALE_H_*/
 

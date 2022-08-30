@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -55,6 +55,7 @@
 /** orxCAMERA flags / masks
  */
 #define orxCAMERA_KU32_FLAG_REFERENCED        0x10000000  /**< Referenced flag */
+#define orxCAMERA_KU32_FLAG_INTERNAL_CAMERA   0x20000000  /**< Internal camera flag */
 #define orxCAMERA_KU32_MASK_ALL               0xFFFFFFFF  /**< All mask */
 
 
@@ -892,6 +893,9 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
 
             /* Sets it as parent */
             orxCamera_SetParent(pstResult, pstCamera);
+
+            /* Updates status */
+            orxStructure_SetFlags(pstResult, orxCAMERA_KU32_FLAG_INTERNAL_CAMERA, orxCAMERA_KU32_FLAG_NONE);
           }
         }
 
@@ -966,6 +970,9 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
   /* Not referenced? */
   if(orxStructure_GetRefCount(_pstCamera) == 0)
   {
+    /* Removes parent */
+    orxCamera_SetParent(_pstCamera, orxNULL);
+
     /* Removes frame reference */
     orxStructure_DecreaseCount(_pstCamera->pstFrame);
 
@@ -1391,6 +1398,19 @@ orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, void *_pParent)
 
   /* Gets frame */
   pstFrame = _pstCamera->pstFrame;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
+  /* Has internal camera parent? */
+  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_INTERNAL_CAMERA))
+  {
+    /* Deletes it */
+    orxCamera_Delete(orxCAMERA(orxStructure_GetOwner(orxFrame_GetParent(pstFrame))));
+
+    /* Updates status */
+    orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_NONE, orxCAMERA_KU32_FLAG_INTERNAL_CAMERA);
+  }
 
   /* No parent? */
   if(_pParent == orxNULL)

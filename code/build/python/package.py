@@ -13,18 +13,18 @@ platformlist = [
     'tutovs2010',
     'vs2012',
     'tutovs2012',
-    'vs2015-32',
-    'tutovs2015-32',
-    'vs2015-64',
-    'tutovs2015-64',
     'vs2017-32',
     'tutovs2017-32',
     'vs2017-64',
+    'tutovs2017-64',
     'vs2019-32',
     'tutovs2019-32',
     'vs2019-64',
     'tutovs2019-64',
-    'tutovs2017-64',
+    'vs2022-32',
+    'tutovs2022-32',
+    'vs2022-64',
+    'tutovs2022-64',
     'mingw-32',
     'mingw-64',
     'tutomingw-32',
@@ -83,6 +83,7 @@ docfileinfolist = basefileinfolist
 srcfileinfolist = basefileinfolist + [
     {'src': 'bin/*.ini',                                                'dst': None},
     {'src': 'build/premake4.lua',                                       'dst': None},
+    {'src': 'build/orx.*',                                              'dst': None},
     {'src': '../.extern',                                               'dst': None},
     {'src': '../setup*',                                                'dst': None},
     {'src': '../init*',                                                 'dst': None}
@@ -195,17 +196,20 @@ tutorialfolderinfolist = [
 ]
 
 iosfolderinfolist = docfolderinfolist + [
+    {'src': 'build/ios/xcode/orx-ios.xcodeproj',                        'dst': None},
+    {'src': 'demo/iOS',                                                 'dst': None},
+    {'src': '../extern/libwebp/include',                                'dst': None},
+    {'src': '../extern/libwebp/lib/ios',                                'dst': None},
     {'src': '../extern/LiquidFun-1.1.0/src/liquidfun/Box2D/build/Xcode/Box2D-ios.xcodeproj','dst': None},
     {'src': '../extern/LiquidFun-1.1.0/include',                        'dst': None},
     {'src': '../extern/LiquidFun-1.1.0/lib/ios',                        'dst': None},
     {'src': '../extern/LiquidFun-1.1.0/src/liquidfun/Box2D/Box2D',      'dst': None},
-    {'src': '../extern/dlmalloc',                                       'dst': None},
-    {'src': '../extern/libwebp/include',                                'dst': None},
-    {'src': '../extern/libwebp/lib/ios',                                'dst': None},
+    {'src': '../extern/miniaudio',                                      'dst': None},
+    {'src': '../extern/qoi',                                            'dst': None},
+    {'src': '../extern/rpmalloc/rpmalloc',                              'dst': None},
     {'src': '../extern/stb_image',                                      'dst': None},
     {'src': '../extern/stb_vorbis',                                     'dst': None},
-    {'src': 'build/ios/xcode/orx-ios.xcodeproj',                        'dst': None},
-    {'src': 'demo/iOS',                                                 'dst': None},
+    {'src': '../extern/xxHash',                                         'dst': None},
     {'src': 'plugins/Display/iOS',                                      'dst': None},
     {'src': 'plugins/Joystick/iOS',                                     'dst': None},
     {'src': 'plugins/Keyboard/Dummy',                                   'dst': None},
@@ -223,9 +227,6 @@ androidfolderinfolist = devfolderinfolist + [
     {'src': '../extern/android',                                        'dst': None},
     {'src': '../extern/LiquidFun-1.1.0/lib/android',                    'dst': None},
     {'src': '../extern/libwebp/lib/android',                            'dst': None},
-    {'src': '../extern/dlmalloc',                                       'dst': None},
-    {'src': '../extern/openal-soft/lib/android',                        'dst': None},
-    {'src': '../extern/Tremolo/lib/android',                            'dst': None},
     {'src': 'demo/android',                                             'dst': None},
     {'src': 'plugins/Display/android',                                  'dst': None},
     {'src': 'plugins/Joystick/android',                                 'dst': None},
@@ -233,7 +234,7 @@ androidfolderinfolist = devfolderinfolist + [
     {'src': 'plugins/Mouse/android',                                    'dst': None},
     {'src': 'plugins/Physics/LiquidFun',                                'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
-    {'src': 'plugins/Sound/android',                                    'dst': None}
+    {'src': 'plugins/Sound/MiniAudio',                                  'dst': None}
 ]
 
 androidnativefolderinfolist = devfolderinfolist + [
@@ -241,9 +242,6 @@ androidnativefolderinfolist = devfolderinfolist + [
     {'src': 'lib/static/android-native',                                'dst': None},
     {'src': '../extern/LiquidFun-1.1.0/lib/android',                    'dst': None},
     {'src': '../extern/libwebp/lib/android',                            'dst': None},
-    {'src': '../extern/dlmalloc',                                       'dst': None},
-    {'src': '../extern/openal-soft/lib/android',                        'dst': None},
-    {'src': '../extern/Tremolo/lib/android',                            'dst': None},
     {'src': 'demo/android-native',                                      'dst': None},
     {'src': 'plugins/Display/android',                                  'dst': None},
     {'src': 'plugins/Joystick/android',                                 'dst': None},
@@ -251,24 +249,20 @@ androidnativefolderinfolist = devfolderinfolist + [
     {'src': 'plugins/Mouse/android',                                    'dst': None},
     {'src': 'plugins/Physics/LiquidFun',                                'dst': None},
     {'src': 'plugins/Render/Home',                                      'dst': None},
-    {'src': 'plugins/Sound/android',                                    'dst': None}
+    {'src': 'plugins/Sound/MiniAudio',                                  'dst': None}
 ]
 
 srcfolderinfolist = [
     {'src': '../tools',                                                 'dst': None},
     {'src': 'bin/data',                                                 'dst': None},
     {'src': 'bin/plugins',                                              'dst': None},
+    {'src': 'build/android',                                            'dst': None},
+    {'src': 'build/android-native',                                     'dst': None},
+    {'src': 'build/ios',                                                'dst': None},
     {'src': 'build/rebol',                                              'dst': None},
     {'src': 'build/template',                                           'dst': None},
     {'src': 'include',                                                  'dst': None},
-    {'src': 'plugins/Demo',                                             'dst': None},
-    {'src': 'plugins/Display/GLFW',                                     'dst': None},
-    {'src': 'plugins/Joystick/GLFW',                                    'dst': None},
-    {'src': 'plugins/Keyboard/GLFW',                                    'dst': None},
-    {'src': 'plugins/Mouse/GLFW',                                       'dst': None},
-    {'src': 'plugins/Physics/LiquidFun',                                'dst': None},
-    {'src': 'plugins/Render/Home',                                      'dst': None},
-    {'src': 'plugins/Sound/OpenAL',                                     'dst': None},
+    {'src': 'plugins',                                                  'dst': None},
     {'src': 'src',                                                      'dst': None}
 ]
 
@@ -320,38 +314,6 @@ platforminfolist = {
     'tutovs2012': {
         'foldername':       'tutorial-vs2012',
         'filename':         'tutorial-vs2012',
-        'format':           'zip',
-        'fileinfolist':     tutorialvsfileinfolist,
-        'folderinfolist':   tutorialfolderinfolist
-    },
-
-    'vs2015-32': {
-        'foldername':       'dev-vs2015-32',
-        'filename':         'dev-vs2015-32',
-        'format':           'zip',
-        'fileinfolist':     vsfileinfolist,
-        'folderinfolist':   devfolderinfolist
-    },
-
-    'vs2015-64': {
-        'foldername':       'dev-vs2015-64',
-        'filename':         'dev-vs2015-64',
-        'format':           'zip',
-        'fileinfolist':     vsfileinfolist,
-        'folderinfolist':   devfolderinfolist
-    },
-
-    'tutovs2015-32': {
-        'foldername':       'tutorial-vs2015-32',
-        'filename':         'tutorial-vs2015-32',
-        'format':           'zip',
-        'fileinfolist':     tutorialvsfileinfolist,
-        'folderinfolist':   tutorialfolderinfolist
-    },
-
-    'tutovs2015-64': {
-        'foldername':       'tutorial-vs2015-64',
-        'filename':         'tutorial-vs2015-64',
         'format':           'zip',
         'fileinfolist':     tutorialvsfileinfolist,
         'folderinfolist':   tutorialfolderinfolist
@@ -416,6 +378,38 @@ platforminfolist = {
     'tutovs2019-64': {
         'foldername':       'tutorial-vs2019-64',
         'filename':         'tutorial-vs2019-64',
+        'format':           'zip',
+        'fileinfolist':     tutorialvsfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'vs2022-32': {
+        'foldername':       'dev-vs2022-32',
+        'filename':         'dev-vs2022-32',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'vs2022-64': {
+        'foldername':       'dev-vs2022-64',
+        'filename':         'dev-vs2022-64',
+        'format':           'zip',
+        'fileinfolist':     vsfileinfolist,
+        'folderinfolist':   devfolderinfolist
+    },
+
+    'tutovs2022-32': {
+        'foldername':       'tutorial-vs2022-32',
+        'filename':         'tutorial-vs2022-32',
+        'format':           'zip',
+        'fileinfolist':     tutorialvsfileinfolist,
+        'folderinfolist':   tutorialfolderinfolist
+    },
+
+    'tutovs2022-64': {
+        'foldername':       'tutorial-vs2022-64',
+        'filename':         'tutorial-vs2022-64',
         'format':           'zip',
         'fileinfolist':     tutorialvsfileinfolist,
         'folderinfolist':   tutorialfolderinfolist

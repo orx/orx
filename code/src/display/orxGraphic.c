@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -296,8 +296,8 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
             {
               orxTEXTURE *pstTexture;
 
-              /* Creates texture */
-              pstTexture = orxTexture_CreateFromFile(orxLocale_GetString(zName + 1), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
+                /* Loads texture */
+                pstTexture = orxTexture_Load(orxLocale_GetString(zName + 1, orxTEXTURE_KZ_LOCALE_GROUP), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
 
               /* Updates data */
               orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
@@ -332,7 +332,7 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
         orxASSERT(pstGraphic->pstData == orxNULL);
 
         /* Updates data */
-        orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)orxTexture_CreateFromFile(pstGraphic->zDataReference, orxFALSE), orxTRUE);
+        orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)orxTexture_Load(pstGraphic->zDataReference, orxFALSE), orxTRUE);
       }
       /* Disable */
       else
@@ -694,8 +694,11 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         if(*zName == orxGRAPHIC_KC_LOCALE_MARKER)
         {
           /* Gets its locale value */
-          zName = (*(zName + 1) == orxGRAPHIC_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
+          zName = (*(zName + 1) == orxGRAPHIC_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1, orxTEXTURE_KZ_LOCALE_GROUP);
         }
+
+        /* Loads texture */
+        pstTexture = orxTexture_Load(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
 
         /* Valid? */
         if(zName != orxSTRING_EMPTY)
@@ -704,7 +707,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           pstResult->zDataReference = (orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_STASIS) != orxFALSE) ? orxString_Store(zName) : orxNULL;
 
           /* Creates texture */
-          pstTexture = orxTexture_CreateFromFile(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
+          pstTexture = orxTexture_Load(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
 
           /* Valid? */
           if(pstTexture != orxNULL)
@@ -1381,7 +1384,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetSize(orxGRAPHIC *_pstGraphic, const orxVECTO
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT(_pvSize);
-  orxASSERT((_pvSize->fX >= orxFLOAT_0) && (_pvSize->fY >= orxFLOAT_0));
+  orxASSERT((_pvSize->fX >= orxFLOAT_0) && ((_pvSize->fY >= orxFLOAT_0) || orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)));
 
   /* Has text? */
   if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE)

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -384,11 +384,12 @@
 
 
 /** Memory alignment macros */
-#define orxALIGN(ADDRESS, BLOCK_SIZE)   (((size_t)(ADDRESS) + ((size_t)(BLOCK_SIZE) - 1)) & (~((size_t)(BLOCK_SIZE) - 1)))
+#define orxALIGN(VALUE, BLOCK_SIZE)     (((orxUPTR)(VALUE) + ((orxUPTR)(BLOCK_SIZE) - 1)) & (~((orxUPTR)(BLOCK_SIZE) - 1)))
 
-#define orxALIGN16(ADDRESS)             orxALIGN(ADDRESS, 16)
-#define orxALIGN32(ADDRESS)             orxALIGN(ADDRESS, 32)
-#define orxALIGN64(ADDRESS)             orxALIGN(ADDRESS, 64)
+#define orxALIGN8(VALUE)                orxALIGN(VALUE, 8)
+#define orxALIGN16(VALUE)               orxALIGN(VALUE, 16)
+#define orxALIGN32(VALUE)               orxALIGN(VALUE, 32)
+#define orxALIGN64(VALUE)               orxALIGN(VALUE, 64)
 
 
 /** Structure macros */

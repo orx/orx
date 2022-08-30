@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,6 +34,7 @@
 
 #include "plugin/orxPluginCore.h"
 
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "utils/orxString.h"
@@ -101,6 +102,68 @@ static orxSTATUS orxFASTCALL orxPhysics_EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
+/** Command: EnableSimulation
+ */
+void orxFASTCALL orxPhysics_CommandEnableSimulation(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates simulation */
+  orxPhysics_EnableSimulation((_u32ArgNumber > 0) ? _astArgList[0].bValue : orxTRUE);
+
+  /* Updates result */
+  _pstResult->bValue = _astArgList[0].bValue;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetCollisionFlagName
+ */
+void orxFASTCALL orxPhysics_CommandGetCollisionFlagName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxPhysics_GetCollisionFlagName(_astArgList[0].u32Value);
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetCollisionFlagValue
+ */
+void orxFASTCALL orxPhysics_CommandGetCollisionFlagValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->u32Value = orxPhysics_GetCollisionFlagValue(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the physics commands
+ */
+static orxINLINE void orxPhysics_RegisterCommands()
+{
+  /* Command: EnableSimulation */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Physics, EnableSimulation, "Enabled", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
+
+  /* Command: GetCollisionFlagName */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Physics, GetCollisionFlagName, "FlagName", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"FlagValue", orxCOMMAND_VAR_TYPE_U32});
+  /* Command: GetCollisionFlagValue */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Physics, GetCollisionFlagValue, "FlagValue", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"FlagName", orxCOMMAND_VAR_TYPE_STRING});
+}
+
+/** Unregisters all the physics commands
+ */
+static orxINLINE void orxPhysics_UnregisterCommands()
+{
+  /* Command: EnableSimulation */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, EnableSimulation);
+
+  /* Command: GetCOllisionFlagName */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, GetCOllisionFlagName);
+  /* Command: GetCOllisionFlagValue */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, GetCOllisionFlagValue);
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -117,9 +180,11 @@ void orxFASTCALL orxPhysics_Setup()
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_CLOCK);
+  orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_PHYSICS, orxMODULE_ID_EVENT);
 
+  /* Done! */
   return;
 }
 
@@ -385,11 +450,17 @@ orxSTATUS orxFASTCALL orxPhysics_Init()
   orxEvent_AddHandler(orxEVENT_TYPE_CONFIG, orxPhysics_EventHandler);
   orxEvent_SetHandlerIDFlags(orxPhysics_EventHandler, orxEVENT_TYPE_CONFIG, orxNULL, orxEVENT_GET_FLAG(orxCONFIG_EVENT_RELOAD_START) | orxEVENT_GET_FLAG(orxCONFIG_EVENT_RELOAD_STOP), orxEVENT_KU32_MASK_ID_ALL);
 
+  /* Registers commands */
+  orxPhysics_RegisterCommands();
+
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Init)();
 }
 
 void orxFASTCALL orxPhysics_Exit()
 {
+  /* Unregisters commands */
+  orxPhysics_UnregisterCommands();
+
   /* Removes event handler */
   orxEvent_RemoveHandler(orxEVENT_TYPE_CONFIG, orxPhysics_EventHandler);
 

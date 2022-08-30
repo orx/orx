@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -91,9 +91,10 @@
 #define orxRENDER_KF_CONSOLE_MARGIN_WIDTH           orx2F(0.02f)
 #define orxRENDER_KF_CONSOLE_MARGIN_HEIGHT          orx2F(0.05f)
 #define orxRENDER_KF_CONSOLE_SPEED                  orx2F(3000.0f)
+#define orxRENDER_KF_CONSOLE_FONT_SCALE             orx2F(1.0f)
 
-#define orxRENDER_KE_KEY_PROFILER_TOGGLE_HISTORY    orxKEYBOARD_KEY_SCROLL_LOCK
-#define orxRENDER_KE_KEY_PROFILER_PAUSE             orxKEYBOARD_KEY_SPACE
+#define orxRENDER_KE_KEY_PROFILER_TOGGLE_HISTORY    orxKEYBOARD_KEY_F8
+#define orxRENDER_KE_KEY_PROFILER_PAUSE             orxKEYBOARD_KEY_F5
 #define orxRENDER_KE_KEY_PROFILER_PREVIOUS_FRAME    orxKEYBOARD_KEY_LEFT
 #define orxRENDER_KE_KEY_PROFILER_NEXT_FRAME        orxKEYBOARD_KEY_RIGHT
 #define orxRENDER_KE_KEY_PROFILER_PREVIOUS_DEPTH    orxKEYBOARD_KEY_UP
@@ -140,6 +141,7 @@ typedef struct __orxRENDER_STATIC_t
   orxLINKLIST   stRenderList;                       /**< Rendering list */
   orxFLOAT      fDefaultConsoleOffset;              /**< Default console offset */
   orxFLOAT      fConsoleOffset;                     /**< Console offset */
+  orxFLOAT      fConsoleFontScale;                  /**< Console font scale */
   orxU32        u32SelectedFrame;                   /**< Selected frame */
   orxU32        u32SelectedThread;                  /**< Selected thread */
   orxU32        u32SelectedMarkerDepth;             /**< Selected marker depth */
@@ -161,12 +163,37 @@ static orxRENDER_STATIC sstRender;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Inits console
+/** Updates console
  */
-static orxINLINE void orxRender_Home_InitConsole(orxFLOAT _fScreenWidth, orxFLOAT _fScreenHeight)
+static orxINLINE void orxRender_Home_UpdateConsole(orxFLOAT _fScreenWidth, orxFLOAT _fScreenHeight)
 {
   const orxFONT  *pstFont;
-  orxFLOAT        fConsoleWidth;
+  orxFLOAT        fConsoleWidth, fConsoleFontScale;
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
+
+  /* Gets font scale */
+  if((fConsoleFontScale = orxConfig_GetFloat(orxRENDER_KZ_CONFIG_CONSOLE_FONT_SCALE)) > orxFLOAT_0)
+  {
+    /* Gets it */
+    sstRender.fConsoleFontScale = fConsoleFontScale;
+  }
+  else
+  {
+    /* Stores it */
+    orxConfig_SetFloat(orxRENDER_KZ_CONFIG_CONSOLE_FONT_SCALE, sstRender.fConsoleFontScale);
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Use default screen size? */
+  if((_fScreenWidth <= orxFLOAT_0) || (_fScreenHeight <= orxFLOAT_0))
+  {
+    /* Gets screen size */
+    orxDisplay_GetScreenSize(&_fScreenWidth, &_fScreenHeight);
+  }
 
   /* Gets console width */
   fConsoleWidth = _fScreenWidth * (orxFLOAT_1 - orx2F(2.0f) * orxRENDER_KF_CONSOLE_MARGIN_WIDTH);
@@ -175,10 +202,27 @@ static orxINLINE void orxRender_Home_InitConsole(orxFLOAT _fScreenWidth, orxFLOA
   pstFont = orxConsole_GetFont();
 
   /* Updates console log line length */
-  orxConsole_SetLogLineLength(orxF2U(fConsoleWidth / orxFont_GetCharacterWidth(pstFont, (orxU32)' ')));
+  orxConsole_SetLogLineLength(orxF2U(fConsoleWidth / (orxFont_GetCharacterWidth(pstFont, (orxU32)' ') * sstRender.fConsoleFontScale)));
 
   /* Sets default console offset */
-  sstRender.fDefaultConsoleOffset = sstRender.fConsoleOffset = -_fScreenHeight;
+  sstRender.fDefaultConsoleOffset = -_fScreenHeight;
+
+  /* Done! */
+  return;
+}
+
+/** Inits console
+ */
+static orxINLINE void orxRender_Home_InitConsole()
+{
+  /* Inits console scale */
+  sstRender.fConsoleFontScale = orxRENDER_KF_CONSOLE_FONT_SCALE;
+
+  /* Updates console */
+  orxRender_Home_UpdateConsole(orxFLOAT_0, orxFLOAT_0);
+
+  /* Updates current console offset */
+  sstRender.fConsoleOffset = sstRender.fDefaultConsoleOffset;
 
   /* Done! */
   return;
@@ -1076,15 +1120,16 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Draws memory stats */
   {
-    static const orxFLOAT   sfSaturationThreshold = orxU2F(1.0f / (128.0f * 1024.0f * 1024.0f));
-    static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB"};
-    orxU32                  u32TotalCount = 0, u32TotalPeakCount = 0, u32TotalSize = 0, u32TotalPeakSize = 0, u32TotalOperationCount = 0, u32UnitIndex;
+    static const orxFLOAT   sfSaturationThreshold = orxU2F(1.0f / (1024.0f * 1024.0f * 1024.0f));
+    static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB", "TB"};
+    orxU64                  u64TotalCount = 0, u64TotalPeakCount = 0, u64TotalSize = 0, u64TotalPeakSize = 0, u64TotalOperationCount = 0;
+    orxU32                  u32UnitIndex;
 
     /* For all memory types, including total */
     for(i = 0; i <= orxMEMORY_TYPE_NUMBER; i++)
     {
       const orxSTRING zType;
-      orxU32          u32Count, u32PeakCount, u32Size, u32PeakSize, u32OperationCount;
+      orxU64          u64Count, u64PeakCount, u64Size, u64PeakSize, u64OperationCount;
       orxFLOAT        fSize, fPeakSize;
 
       /* Updates position */
@@ -1101,32 +1146,33 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       if(i == orxMEMORY_TYPE_NUMBER)
       {
         /* Gets values */
-        u32Count             = u32TotalCount;
-        u32PeakCount         = u32TotalPeakCount;
-        u32Size              = u32TotalSize;
-        u32PeakSize          = u32TotalPeakSize;
-        u32OperationCount    = u32TotalOperationCount;
+        u64Count             = u64TotalCount;
+        u64PeakCount         = u64TotalPeakCount;
+        u64Size              = u64TotalSize;
+        u64PeakSize          = u64TotalPeakSize;
+        u64OperationCount    = u64TotalOperationCount;
       }
       else
       {
         /* Gets its usage info */
-        orxMemory_GetUsage((orxMEMORY_TYPE)i, &u32Count, &u32PeakCount, &u32Size, &u32PeakSize, &u32OperationCount);
+        orxMemory_GetUsage((orxMEMORY_TYPE)i, &u64Count, &u64PeakCount, &u64Size, &u64PeakSize, &u64OperationCount);
 
         /* Updates totals */
-        u32TotalCount            += u32Count;
-        u32TotalPeakCount        += u32PeakCount;
-        u32TotalSize             += u32Size;
-        u32TotalPeakSize         += u32PeakSize;
-        u32TotalOperationCount   += u32OperationCount;
+        u64TotalCount            += u64Count;
+        u64TotalPeakCount        += u64PeakCount;
+        u64TotalSize             += u64Size;
+        u64TotalPeakSize         += u64PeakSize;
+        u64TotalOperationCount   += u64OperationCount;
       }
 
       /* Finds best unit */
-      for(u32UnitIndex = 0, fSize = orxU2F(u32Size), fPeakSize = orxU2F(u32PeakSize);
+      for(u32UnitIndex = 0, fSize = orxU2F(u64Size), fPeakSize = orxU2F(u64PeakSize);
           (u32UnitIndex < orxARRAY_GET_ITEM_COUNT(azUnitList) - 1) && (fPeakSize > orx2F(1024.0f));
-          u32UnitIndex++, fSize *= orx2F(1.0f/1024.0f), fPeakSize *= orx2F(1.0f/1024.0f));
+          u32UnitIndex++, fSize *= orx2F(1.0f/1024.0f), fPeakSize *= orx2F(1.0f/1024.0f))
+        ;
 
       /* Is used? */
-      if(u32Count > 0)
+      if(u64Count > 0)
       {
         /* Inits display color */
         orxColor_SetRGBA(&stColor, orx2RGBA(0xFF, 0xFF, 0xFF, 0xCC));
@@ -1139,7 +1185,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
       /* Updates color */
       orxColor_FromRGBToHSV(&stColor, &stColor);
-      stColor.vHSV.fH = orxLERP(0.33f, orxFLOAT_0, orxU2F(u32Size) * sfSaturationThreshold);
+      stColor.vHSV.fH = orxLERP(0.33f, orxFLOAT_0, orxU2F(u64Size) * sfSaturationThreshold);
       stColor.vHSV.fS = orx2F(0.8f);
       orxColor_FromHSVToRGB(&stColor, &stColor);
 
@@ -1156,7 +1202,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws it */
-      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u32Count, u32PeakCount, fSize, fPeakSize, azUnitList[u32UnitIndex], u32OperationCount);
+      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u64Count, u64PeakCount, fSize, fPeakSize, azUnitList[u32UnitIndex], u64OperationCount);
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxColor_ToRGBA(&stColor), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
     }
   }
@@ -1206,10 +1252,10 @@ static orxINLINE void orxRender_Home_RenderConsole()
   pstMap = orxFont_GetMap(pstFont);
 
   /* Gets character size */
-  fCharacterHeight  = orxFont_GetCharacterHeight(pstFont);
-  fCharacterWidth   = orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
+  fCharacterHeight  = sstRender.fConsoleFontScale * orxFont_GetCharacterHeight(pstFont);
+  fCharacterWidth   = sstRender.fConsoleFontScale * orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
 
-  /* Creates pixel texture */
+  /* Gets pixel texture */
   pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL);
 
   /* Gets its bitmap */
@@ -1294,10 +1340,13 @@ static orxINLINE void orxRender_Home_RenderConsole()
   stTransform.fDstX   = orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH));
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, stSeparatorColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
+  /* Clips screen bitmap */
+  orxDisplay_SetBitmapClipping(orxNULL, 0, 0, orxF2U(orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH) - orxFLOAT_1)), orxF2U(fScreenHeight));
+
   /* Displays input + cursor + autocompletion */
   stTransform.fDstX   = orxMath_Floor(orxRENDER_KF_CONSOLE_MARGIN_WIDTH * fScreenWidth);
   stTransform.fDstY   = sstRender.fConsoleOffset + orxMath_Floor((orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_HEIGHT) * fScreenHeight - fCharacterHeight);
-  stTransform.fScaleY = stTransform.fScaleX = orxFLOAT_1;
+  stTransform.fScaleY = stTransform.fScaleX = sstRender.fConsoleFontScale;
   zText               = orxConsole_GetInput(&u32CursorIndex);
   acBackup[0]         = zText[u32CursorIndex];
   acBackup[1]         = (u32CursorIndex < 255) ? zText[u32CursorIndex + 1] : orxCHAR_NULL;
@@ -1309,7 +1358,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
     if(orxConsole_IsInsertMode() != orxFALSE)
     {
       /* Displays full input, including auto-completion */
-      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Overrides characters at cursor position */
       ((orxCHAR*)zText)[u32CursorIndex] = orxRENDER_KC_CONSOLE_INSERT_MARKER;
@@ -1320,7 +1369,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
       ((orxCHAR*)zText)[u32CursorIndex] = orxRENDER_KC_CONSOLE_OVERTYPE_MARKER;
 
       /* Displays full input, including auto-completion */
-      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+      orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
     }
 
     /* Truncates to base input + cursor */
@@ -1329,14 +1378,14 @@ static orxINLINE void orxRender_Home_RenderConsole()
   else
   {
     /* Displays full input, including auto-completion */
-    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stCompletionColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
 
     /* Truncates to base input */
     ((orxCHAR*)zText)[u32CursorIndex] = orxCHAR_NULL;
   }
 
   /* Displays base input (ie. validated part) */
-  orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stInputColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+  orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stInputColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
   ((orxCHAR*)zText)[u32CursorIndex] = acBackup[0];
   if(u32CursorIndex < 255)
   {
@@ -1349,7 +1398,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
       i++, stTransform.fDstY -= fCharacterHeight)
   {
     /* Displays it */
-    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stLogColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, stLogColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
   }
 
   /* Gets log offset */
@@ -1366,7 +1415,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
     fBackupX          = stTransform.fDstX;
     stTransform.fDstX = orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH)) - (orxString_GetLength(acBuffer) * fCharacterWidth);
     stTransform.fDstY = fBackupY;
-    orxDisplay_TransformText(acBuffer, pstFontBitmap, pstMap, &stTransform, stInputColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(acBuffer, pstFontBitmap, pstMap, &stTransform, stInputColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
     stTransform.fDstX = fBackupX;
   }
 
@@ -1379,7 +1428,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   stTransform.fScaleX   = u32MaxLength * fCharacterWidth;
   stTransform.fScaleY   = u32Count * fCharacterHeight;
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, stBackgroundColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
-  stTransform.fScaleY   = stTransform.fScaleX = orxFLOAT_1;
+  stTransform.fScaleY   = stTransform.fScaleX = sstRender.fConsoleFontScale;
 
   /* For all current completions */
   for(i = 0;
@@ -1395,8 +1444,11 @@ static orxINLINE void orxRender_Home_RenderConsole()
     stTransform.fDstY = fBackupY - ((u32Count - i - 1) * fCharacterHeight);
 
     /* Displays it */
-    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, (bActive != orxFALSE) ? stInputColor : stCompletionColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
+    orxDisplay_TransformText(zText, pstFontBitmap, pstMap, &stTransform, (bActive != orxFALSE) ? stInputColor : stCompletionColor, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
   }
+
+  /* Restores screen bitmap clipping */
+  orxDisplay_SetBitmapClipping(orxDisplay_GetScreenBitmap(), 0, 0, orxF2U(fScreenWidth), orxF2U(fScreenHeight));
 
   /* Re-enables marker operations */
   orxProfiler_EnableMarkerOperations(orxTRUE);
@@ -2355,6 +2407,9 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
     /* Should render console? */
     if(orxEvent_SendShort(orxEVENT_TYPE_RENDER, orxRENDER_EVENT_CONSOLE_START) != orxSTATUS_FAILURE)
     {
+      /* Updates console */
+      orxRender_Home_UpdateConsole(orxFLOAT_0, orxFLOAT_0);
+
       /* Is console enabled? */
       if(orxConsole_IsEnabled() != orxFALSE)
       {
@@ -2462,8 +2517,8 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
         /* Gets payload */
         pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-        /* Inits console */
-        orxRender_Home_InitConsole(orxU2F(pstPayload->stVideoMode.u32Width), orxU2F(pstPayload->stVideoMode.u32Height));
+        /* Updates console */
+        orxRender_Home_UpdateConsole(orxU2F(pstPayload->stVideoMode.u32Width), orxU2F(pstPayload->stVideoMode.u32Height));
       }
 
       break;
@@ -2960,7 +3015,6 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
           {
-            orxFLOAT fScreenWidth, fScreenHeight;
             const orxSTRING zPreviousSet;
 
             /* Backups previous input set */
@@ -2998,11 +3052,8 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             orxEvent_SetHandlerIDFlags(orxRender_Home_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
             orxEvent_SetHandlerIDFlags(orxRender_Home_EventHandler, orxEVENT_TYPE_INPUT, orxNULL, orxEVENT_GET_FLAG(orxINPUT_EVENT_ON), orxEVENT_KU32_MASK_ID_ALL);
 
-            /* Gets screen size */
-            orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
-
             /* Inits console */
-            orxRender_Home_InitConsole(fScreenWidth, fScreenHeight);
+            orxRender_Home_InitConsole();
 
             /* Inits selected marker depth */
             sstRender.u32SelectedMarkerDepth = 1;

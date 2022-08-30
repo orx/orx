@@ -6,6 +6,7 @@ var orx_render_8h =
     [ "orxRENDER_KZ_CONFIG_CONSOLE_COLOR", "group__orx_render.html#ga701dd688299d04234d916a551f8e651e", null ],
     [ "orxRENDER_KZ_CONFIG_CONSOLE_COMPLETION_ALPHA", "group__orx_render.html#gaaf2fe8d78f5595ac7269de0a8e51b988", null ],
     [ "orxRENDER_KZ_CONFIG_CONSOLE_COMPLETION_COLOR", "group__orx_render.html#gad109466090d268b83a472b438ab34d86", null ],
+    [ "orxRENDER_KZ_CONFIG_CONSOLE_FONT_SCALE", "group__orx_render.html#gaa320459dbd6ef0dd8c41b19cdb74ab3f", null ],
     [ "orxRENDER_KZ_CONFIG_CONSOLE_INPUT_ALPHA", "group__orx_render.html#ga65251c31625a86f144141e3bcf4c2dea", null ],
     [ "orxRENDER_KZ_CONFIG_CONSOLE_INPUT_COLOR", "group__orx_render.html#gac095c299915938cb2a7e100a03c490b4", null ],
     [ "orxRENDER_KZ_CONFIG_CONSOLE_LOG_ALPHA", "group__orx_render.html#ga5e5adeb8e88df15eaae033b9a70a5e69", null ],

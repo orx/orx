@@ -1,75 +1,57 @@
 REBOL [
-  title: {Init}
-  author: {iarwain@orx-project.org}
-  date: 15-Aug-2017
-  file: %init.r
+  title:      {Init}
+  author:     {iarwain@orx-project.org}
+  date:       15-Aug-2017
+  file:       %init.r
 ]
 
 ; Variables
-params: [
-  name        {Project name (relative or full path)}                                  _       _
-  archive     {orxArchive support (resources can be stored inside ZIP files)}         -       []
-  c++         {Create a C++ project instead of C}                                     +       []
-  imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                 -       [+c++]
-  movie       {Movie (MPEG-1) decoding support}                                       -       []
-  nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}        -       []
-  remote      {orxRemote support (resources can be stored on a web server, HTTP-only)}-       []
-  scroll      {C++ convenience layer with config-object binding}                      -       [+c++]
+params: compose/deep [
+  name        {Project name (relative or full path)}                                          (none)    (none)
+  archive     {orxArchive support (resources can be stored inside ZIP files)}                 -         []
+  c++         {Create a C++ project instead of C}                                             +         []
+  imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                         -         [+c++]
+  mod         {MOD (ProTracker) decoding support}                                             -         []
+  movie       {Movie (MPEG-1) decoding support}                                               -         []
+  nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}                -         []
+  remote      {orxRemote support (resources can be stored on a web server, HTTP-only)}        -         []
+  scroll      {C++ convenience layer with config-object binding}                              -         [+c++]
 ]
 platforms:  [
-  {windows}   [config [{gmake} {codelite} {codeblocks} {vs2015} {vs2017} {vs2019}]    premake %premake4.exe   setup %setup.bat    script %init.bat    ]
-  {mac}       [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]    premake %premake4       setup %./setup.sh   script %./init.sh   ]
-  {linux}     [config [{gmake} {codelite} {codeblocks}                           ]    premake %premake4       setup %./setup.sh   script %./init.sh   ]
+  windows     [config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
+  mac         [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
+  linux       [config [{gmake} {codelite} {codeblocks}                           ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
 ]
 source-path: %../template/
 extern: %../../../extern/
 
 ; Helpers
-delete-dir: function [
-  {Deletes a directory including all files and subdirectories.}
-  dir [file! url!]
-] [
-  if all [
-    dir? dir
-    dir: dirize dir
-    attempt [files: load dir]
-  ] [
-    for-each file files [delete-dir dir/:file]
-  ]
-  attempt [delete dir]
-]
 log: func [
-  message [text! block!]
+  message [string! char! block!]
   /only
   /no-break
 ] [
-  if not only [
-    prin [{[} now/time {] }]
+  unless only [
+    prin [{== }]
   ]
-  either no-break [prin message] [print reeval message]
+  do either no-break [:prin] [:print] reform message
 ]
 extension?: function [
   {Is an extension?}
-  name [word! text!]
+  name [word! string!]
 ] [
-  attempt [
-    result: false
-    switch third find params to-word name [
-      '+ '- [result: true]
-    ]
-  ]
-  result
+  not none? attempt [find [+ -] third find params to-word name]
 ]
 apply-template: function [
   {Replaces all templates with their content}
-  content [text! binary!]
+  content [string! binary!]
 ] [
-  for-each [var condition] [
+  foreach [var condition] [
     template    [not extension? entry]
     +extension  [all [extension? entry get entry]]
     -extension  [all [extension? entry not get entry]]
   ] [
-    set var append copy [{-=dummy=-}] collect [for-each entry templates [if do bind condition binding-of 'entry [keep reduce ['| to-text entry]]]]
+    set var append copy [{-=dummy=-}] collect [foreach entry templates [if with context? 'entry condition [keep reduce ['| to-string entry]]]]
   ]
   clean-chars: charset [#"0" - #"9" #"a" - #"z" #"A" - #"Z" #"_"]
   template-rule: [(sanitize: no) begin-template: {[} opt [{!} (sanitize: yes)] copy value template {]} end-template: (
@@ -83,10 +65,10 @@ apply-template: function [
   extension-rule: [
     begin-extension:
     remove [
-      {[} (erase: no)
+      {[} (erase: yes)
       some [
-        [ [ {+} -extension | {-} +extension] (erase: yes)
-        | [ {+} +extension | {-} -extension]
+        [ [ {+} -extension | {-} +extension]
+        | [ {+} +extension | {-} -extension] (erase: no)
         ]
         [{ } | {^M^/} | {^/}]
       ]
@@ -97,7 +79,8 @@ apply-template: function [
     | remove {]} end-extension: break
     | skip
     ]
-    if (erase) opt [if (full-line) remove opt [{^M^/} | {^/}]] (remove/part begin-extension end-extension) :begin-extension
+    opt [if (erase) opt [if (full-line) remove opt [{^M^/} | {^/}]] (remove/part begin-extension end-extension)]
+    :begin-extension
   ]
   parse content [
     (full-line: yes)
@@ -114,30 +97,28 @@ apply-template: function [
 ; Inits
 change-dir root: system/options/path
 code-path: {..}
-date: to-text now/date
-switch platform: lowercase to-text system/platform/1 [
-  {macintosh} [platform: {mac} code-path: file-to-local root/code]
+date: to-string now/date
+switch platform: system/build/os [
+  macos [platform: 'mac code-path: to-local-file root/code]
 ]
 platform-info: platforms/:platform
 premake-source: rejoin [%../ platform-info/premake]
 templates: append collect [
-  for-each [param desc default deps] params [keep param]
+  foreach [param desc default deps] params [keep param]
 ] [date code-path]
 
 ; Usage
 usage: func [
-  /message [block! text!]
+  /message content [string!]
 ] [
-  if message [
-    prin {== }
-    print reeval message
-    print {}
+  if content [
+    log rejoin [content newline]
   ]
 
-  prin [{== Usage:} file-to-local clean-path rejoin [system/options/script/../../../.. "/" platform-info/script]]
+  log/no-break reform [{Usage:} to-local-file clean-path rejoin [system/options/script/../../../.. {/} platform-info/script]]
 
-  for-each [param desc default deps] params [
-    prin rejoin [
+  foreach [param desc default deps] params [
+    log/only/no-break rejoin [
       { }
       case [
         extension? param [
@@ -152,13 +133,13 @@ usage: func [
       ]
     ]
   ]
-  print [newline]
-  for-each [param desc default deps] params [
-    print rejoin [
+  log/only newline
+  foreach [param desc default deps] params [
+    log/only rejoin [
       {  - } param {: } desc
       case [
         extension? param [
-          rejoin [{=[} either default = '+ [{yes}] [{no}] {]} either empty? deps [{}] [rejoin [{, triggers [} deps {]}]] {, optional}]
+          rejoin [{=[} pick [{yes} {no}] default = '+ {]} either empty? deps [{}] [rejoin [{, triggers [} deps {]}]] {, optional}]
         ]
         default [
           rejoin [{=[} default {], optional}]
@@ -182,13 +163,13 @@ either all [
   use [interactive? args value +extensions -extensions] [
     +extensions: copy [] -extensions: copy []
     either interactive?: zero? length? args: copy system/options/args [
-      print {== No argument, switching to interactive mode}
-      for-each [param desc default deps] params [
+      log {No argument, switching to interactive mode}
+      foreach [param desc default deps] params [
         either extension? param [
           until [
             any [
-              empty? value: ask rejoin [{ * [Extension] } param {: } desc {? (} either default = '+ [{yes}] [{no}] {)}]
-              logic? value: get load trim value
+              empty? value: ask rejoin [{ * [Extension] } param {: } desc {? (} pick [{yes} {no}] default = '+ {)}]
+              logic? value: attempt [get load trim value]
             ]
           ]
           append either logic? value [
@@ -206,7 +187,7 @@ either all [
         ]
       ]
     ] [
-      for-each [param desc default deps] params [
+      foreach [param desc default deps] params [
         case [
           extension? param [
             use [extension] [
@@ -230,39 +211,38 @@ either all [
             args: next args
           ]
           true [
-            usage/message [{Not enough arguments:} mold system/options/args]
+            usage/message reform [{Not enough arguments:} mold system/options/args]
           ]
         ]
       ]
-      if not tail? args [
-        usage/message [{Too many arguments:} mold system/options/args]
+      unless tail? args [
+        usage/message reform [{Too many arguments:} mold system/options/args]
       ]
     ]
-
     ; Handles extensions dependencies
     use [test-extensions extension-group extension] [
       until [
         test-extensions: copy +extensions
-        for-each param test-extensions [
-          for-each dep fourth find params param [
-            extension-group: either #"+" = first to-text dep [+extensions] [-extensions]
-            extension: to-word next to-text dep
-            if not find extension-group extension [
+        foreach param test-extensions [
+          foreach dep fourth find params param [
+            extension-group: either #"+" = first to-string dep [+extensions] [-extensions]
+            extension: to-word next to-string dep
+            unless find extension-group extension [
               append extension-group extension
-              log [{== [} param {] triggers [} dep {]}]
+              log [{[} param {] triggers [} dep {]}]
             ]
           ]
         ]
         test-extensions = +extensions
       ]
       either empty? test-extensions: intersect +extensions -extensions [
-        for-each [param desc default deps] params [
+        foreach [param desc default deps] params [
           if extension? param [
-            set param either find +extensions param [true] [false]
+            set param not none? find +extensions param
           ]
         ]
       ] [
-        usage/message [{Aborting, the following extensions have been both required and prohibited: [} form test-extensions {]}]
+        usage/message reform [{Aborting, the following extensions have been both required and prohibited: [} form test-extensions {]}]
       ]
     ]
   ]
@@ -274,20 +254,20 @@ either all [
 source-path: clean-path rejoin [first split-path system/options/script source-path]
 
 ; Runs setup if premake isn't found
-if not exists? source-path/:premake-source [
-  log [{New orx installation found, running setup!}]
-  attempt [delete-dir source-path/:extern/]
+unless exists? source-path/:premake-source [
+  log {New orx installation found, running setup!}
+  delete-dir source-path/:extern
   in-dir source-path/../../.. [
-    call/shell platform-info/setup
+    call/wait/shell platform-info/setup
   ]
 ]
 
 ; Retrieves project name
-if dir? name: clean-path local-to-file name [clear back tail name]
+if dir? name: clean-path to-rebol-file name [clear back tail name]
 
 ; Inits project directory
 either exists? name [
-  log [{[} file-to-local name {] already exists, overwriting!}]
+  log [{[} to-local-file name {] already exists, overwriting!}]
 ] [
   until [
     attempt [make-dir/deep name]
@@ -299,27 +279,27 @@ set [path name] split-path name
 
 ; Logs info
 log [
-  {Initializing [} name {] in [} file-to-local path {] with extensions [}
+  {Initializing [} name {] in [} to-local-file path {] with extensions [}
   do [
     use [extensions] [
       remove-each template extensions: copy templates [any [not extension? template not get template]]
-      if not empty? extensions [form extensions]
+      unless empty? extensions [form extensions]
     ]
   ]
   {]}
 ]
 
 ; Copies all files
-log {== Creating files:}
-build: _
-reeval copy-files: function [
+log {Creating files:}
+build: none
+do copy-files: function [
   from [file!]
   to [file!]
 ] [
-  for-each file read from [
+  foreach file read from [
     src: from/:file
     if all [
-      not empty? dst: to-file apply-template to-text file
+      not empty? trim dst: to-file apply-template to-string file
       dst != %/
     ] [
       dst: to/:dst
@@ -330,7 +310,7 @@ reeval copy-files: function [
         make-dir/deep dst
         copy-files src dst
       ] [
-        log/only [{  +} file-to-local dst]
+        log/only reform [{  +} to-local-file dst]
         write dst apply-template read src
       ]
     ]
@@ -341,13 +321,13 @@ reeval copy-files: function [
 if build [
   in-dir build [
     write platform-info/premake read source-path/:premake-source
-    if not platform = {windows} [
-      call/shell form reduce [{chmod +x} platform-info/premake]
+    unless platform = 'windows [
+      call/wait/shell form reduce [{chmod +x} platform-info/premake]
     ]
     log [{Generating build files for [} platform {]:}]
-    for-each config platform-info/config [
-      log/only [{  *} config]
-      call/shell rejoin [{"} file-to-local clean-path platform-info/premake {" } config]
+    foreach config platform-info/config [
+      log/only reform [{  *} config]
+      call/wait/shell/output rejoin [{"} to-local-file clean-path platform-info/premake {" } config] none
     ]
   ]
 ]

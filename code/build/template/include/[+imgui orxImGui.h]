@@ -128,8 +128,7 @@ static orxSTATUS orxFASTCALL orxImGui_BeginFrame(const orxEVENT *_pstEvent)
   }
   if(rstIO.WantSetMousePos)
   {
-    orxVECTOR vMousePos = {{rstIO.MousePos.x}, {rstIO.MousePos.y}};
-    orxMouse_SetPosition(&vMousePos);
+    orxMouse_SetPosition(orxVector_Set(&vMousePos, rstIO.MousePos.x, rstIO.MousePos.y, orxFLOAT_0));
   }
   if(rstIO.WantCaptureMouse)
   {
@@ -191,6 +190,8 @@ static orxSTATUS orxFASTCALL orxImGui_EndFrame(const orxEVENT *_pstEvent)
         stMesh.au16IndexList += rstCommand.ElemCount;
       }
     }
+    orxInput_SetTypeFlags(orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_BUTTON) | orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_AXIS), orxINPUT_KU32_FLAG_TYPE_NONE);
+    orxInput_SetTypeFlags(orxINPUT_GET_FLAG(orxINPUT_TYPE_KEYBOARD_KEY), orxINPUT_KU32_FLAG_TYPE_NONE);
   }
 
   return orxSTATUS_SUCCESS;
@@ -261,8 +262,9 @@ orxSTATUS orxFASTCALL orxImGui_Init()
             if(orxResource_Read(hFont, s32Size, pBuffer, orxNULL, orxNULL) == s32Size)
             {
               orxFLOAT fFontSize = orxMAX(orxFLOAT_1, (orxConfig_GetListCount(zFont) > 1) ? orxConfig_GetListFloat(zFont, 1) : orxIMGUI_KU32_DEFAULT_FONT_SIZE);
-
-              sstImGui.apstFonts[sstImGui.s32FontCount] = rstIO.Fonts->AddFontFromMemoryTTF(pBuffer, s32Size, fFontSize, NULL, NULL);
+              ImFontConfig stFontConfig;
+              orxString_NPrint(stFontConfig.Name, sizeof(stFontConfig.Name) - 1, "%s", zFont);
+              sstImGui.apstFonts[sstImGui.s32FontCount] = rstIO.Fonts->AddFontFromMemoryTTF(pBuffer, s32Size, fFontSize, &stFontConfig, NULL);
             }
             else
             {
@@ -304,8 +306,15 @@ orxSTATUS orxFASTCALL orxImGui_Init()
 
 void orxFASTCALL orxImGui_Exit()
 {
+  orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, &orxImGui_BeginFrame);
+  orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, &orxImGui_EndFrame);
+  orxImGui_EndFrame(orxNULL);
   orxDisplay_DeleteBitmap((orxBITMAP *)ImGui::GetIO().Fonts->TexID);
   ImGui::DestroyContext();
+  if(sstImGui.apstFonts != orxNULL)
+  {
+    orxMemory_Free(sstImGui.apstFonts);
+  }
 }
 
 #endif // orxIMGUI_IMPL

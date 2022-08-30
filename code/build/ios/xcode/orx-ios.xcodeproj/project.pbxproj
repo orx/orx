@@ -13,11 +13,13 @@
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		E022D39314CC47BD00B81F6B /* orxFX.c in Sources */ = {isa = PBXBuildFile; fileRef = E022D39114CC47BD00B81F6B /* orxFX.c */; };
 		E022D39414CC47BD00B81F6B /* orxFXPointer.c in Sources */ = {isa = PBXBuildFile; fileRef = E022D39214CC47BD00B81F6B /* orxFXPointer.c */; };
+		E02F77C62737F44E00C2B002 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02F77C52737F44E00C2B002 /* CoreAudio.framework */; };
+		E02F77CA2737F4DE00C2B002 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02F77C92737F4DE00C2B002 /* CoreFoundation.framework */; };
 		E04694DF154E9BCF00719172 /* orxCommand.c in Sources */ = {isa = PBXBuildFile; fileRef = E04694DE154E9BCF00719172 /* orxCommand.c */; };
+		E04DA16E2737FADA0074735B /* orxSoundSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = E04DA16D2737FAD40074735B /* orxSoundSystem.m */; };
 		E054558015172B1900917458 /* orxDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = E054557F15172B1900917458 /* orxDisplay.m */; };
 		E054558315172B2500917458 /* orxJoystick.m in Sources */ = {isa = PBXBuildFile; fileRef = E054558215172B2500917458 /* orxJoystick.m */; };
 		E054558615172B3000917458 /* orxMouse.m in Sources */ = {isa = PBXBuildFile; fileRef = E054558515172B3000917458 /* orxMouse.m */; };
-		E054558915172B3D00917458 /* orxSoundSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = E054558815172B3D00917458 /* orxSoundSystem.m */; };
 		E054559E15172B9500917458 /* orxTest.ini in Resources */ = {isa = PBXBuildFile; fileRef = E054558C15172B9500917458 /* orxTest.ini */; };
 		E05455A015172B9500917458 /* orxTestd.ini in Resources */ = {isa = PBXBuildFile; fileRef = E054558E15172B9500917458 /* orxTestd.ini */; };
 		E05455A115172B9500917458 /* orxTestp.ini in Resources */ = {isa = PBXBuildFile; fileRef = E054558F15172B9500917458 /* orxTestp.ini */; };
@@ -27,8 +29,6 @@
 		E05455AB15172B9500917458 /* orxIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = E054559A15172B9500917458 /* orxIcon.png */; };
 		E05455AC15172B9500917458 /* wall.png in Resources */ = {isa = PBXBuildFile; fileRef = E054559B15172B9500917458 /* wall.png */; };
 		E05455AE15172B9500917458 /* orxTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = E054559D15172B9500917458 /* orxTest.mm */; };
-		E0562E5A11361B13003EEFAE /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0562E5911361B13003EEFAE /* AudioToolbox.framework */; };
-		E0562E5C11361B13003EEFAE /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0562E5B11361B13003EEFAE /* OpenAL.framework */; };
 		E059C6361116BC430086879B /* liborxd.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E059C62D1116BB240086879B /* liborxd.a */; };
 		E059C6381116BC610086879B /* orxAnim.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C4F31116B8E70086879B /* orxAnim.c */; };
 		E059C6391116BC610086879B /* orxAnimPointer.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C4F41116B8E70086879B /* orxAnimPointer.c */; };
@@ -110,13 +110,16 @@
 		E022D38E14CC47AE00B81F6B /* orxFXPointer.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxFXPointer.h; sourceTree = "<group>"; };
 		E022D39114CC47BD00B81F6B /* orxFX.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxFX.c; sourceTree = "<group>"; };
 		E022D39214CC47BD00B81F6B /* orxFXPointer.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxFXPointer.c; sourceTree = "<group>"; };
+		E02F77C52737F44E00C2B002 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		E02F77C92737F4DE00C2B002 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		E03AB12C12F11F9A0077528A /* orxDefaultFont.inc */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.pascal; path = orxDefaultFont.inc; sourceTree = "<group>"; };
 		E04694DD154E9BC000719172 /* orxCommand.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxCommand.h; sourceTree = "<group>"; };
 		E04694DE154E9BCF00719172 /* orxCommand.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxCommand.c; sourceTree = "<group>"; };
+		E04DA16D2737FAD40074735B /* orxSoundSystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = orxSoundSystem.m; sourceTree = "<group>"; };
+		E04DA1702737FAEA0074735B /* orxPhysics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = orxPhysics.cpp; sourceTree = "<group>"; };
 		E054557F15172B1900917458 /* orxDisplay.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxDisplay.m; sourceTree = "<group>"; };
 		E054558215172B2500917458 /* orxJoystick.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxJoystick.m; sourceTree = "<group>"; };
 		E054558515172B3000917458 /* orxMouse.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxMouse.m; sourceTree = "<group>"; };
-		E054558815172B3D00917458 /* orxSoundSystem.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxSoundSystem.m; sourceTree = "<group>"; };
 		E054558C15172B9500917458 /* orxTest.ini */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = text; path = orxTest.ini; sourceTree = "<group>"; };
 		E054558E15172B9500917458 /* orxTestd.ini */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = text; path = orxTestd.ini; sourceTree = "<group>"; };
 		E054558F15172B9500917458 /* orxTestp.ini */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = text; path = orxTestp.ini; sourceTree = "<group>"; };
@@ -126,8 +129,6 @@
 		E054559A15172B9500917458 /* orxIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = orxIcon.png; sourceTree = "<group>"; };
 		E054559B15172B9500917458 /* wall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wall.png; sourceTree = "<group>"; };
 		E054559D15172B9500917458 /* orxTest.mm */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.cpp.objcpp; path = orxTest.mm; sourceTree = "<group>"; };
-		E0562E5911361B13003EEFAE /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		E0562E5B11361B13003EEFAE /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		E059C4F31116B8E70086879B /* orxAnim.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxAnim.c; sourceTree = "<group>"; };
 		E059C4F41116B8E70086879B /* orxAnimPointer.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxAnimPointer.c; sourceTree = "<group>"; };
 		E059C4F51116B8E70086879B /* orxAnimSet.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxAnimSet.c; sourceTree = "<group>"; };
@@ -240,7 +241,6 @@
 		E059C5E01116BABE0086879B /* orxString.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxString.h; sourceTree = "<group>"; };
 		E059C5E11116BABE0086879B /* orxTree.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxTree.h; sourceTree = "<group>"; };
 		E059C5F61116BACF0086879B /* orxKeyboard.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxKeyboard.c; sourceTree = "<group>"; };
-		E059C6041116BACF0086879B /* orxPhysics.cpp */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.cpp.cpp; path = orxPhysics.cpp; sourceTree = "<group>"; };
 		E059C6071116BACF0086879B /* orxRender.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxRender.c; sourceTree = "<group>"; };
 		E059C62D1116BB240086879B /* liborxd.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liborxd.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0676108120B94F200976222 /* orxScreenshot.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxScreenshot.c; sourceTree = "<group>"; };
@@ -268,14 +268,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E02F77CA2737F4DE00C2B002 /* CoreFoundation.framework in Frameworks */,
 				E059C6361116BC430086879B /* liborxd.a in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
+				E02F77C62737F44E00C2B002 /* CoreAudio.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				E0ECC67D111FB3AB0057CD72 /* OpenGLES.framework in Frameworks */,
 				E0ECC6E511237E650057CD72 /* QuartzCore.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
-				E0562E5A11361B13003EEFAE /* AudioToolbox.framework in Frameworks */,
-				E0562E5C11361B13003EEFAE /* OpenAL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,15 +326,31 @@
 			children = (
 				E0FCA0781A77473D007BB701 /* libwebpdecoder.a */,
 				152BA7911C6D00650002F9F6 /* libliquidfun.a */,
-				E0562E5911361B13003EEFAE /* AudioToolbox.framework */,
+				E02F77C52737F44E00C2B002 /* CoreAudio.framework */,
+				E02F77C92737F4DE00C2B002 /* CoreFoundation.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				E0562E5B11361B13003EEFAE /* OpenAL.framework */,
 				E0ECC634111E575E0057CD72 /* OpenGLES.framework */,
 				E0ECC6E411237E650057CD72 /* QuartzCore.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E04DA16C2737FAD40074735B /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				E04DA16D2737FAD40074735B /* orxSoundSystem.m */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		E04DA16F2737FAEA0074735B /* LiquidFun */ = {
+			isa = PBXGroup;
+			children = (
+				E04DA1702737FAEA0074735B /* orxPhysics.cpp */,
+			);
+			path = LiquidFun;
 			sourceTree = "<group>";
 		};
 		E054557E15172B1900917458 /* iOS */ = {
@@ -357,14 +373,6 @@
 			isa = PBXGroup;
 			children = (
 				E054558515172B3000917458 /* orxMouse.m */,
-			);
-			path = iOS;
-			sourceTree = "<group>";
-		};
-		E054558715172B3D00917458 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				E054558815172B3D00917458 /* orxSoundSystem.m */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -876,17 +884,9 @@
 		E059C6021116BACF0086879B /* Physics */ = {
 			isa = PBXGroup;
 			children = (
-				E059C6031116BACF0086879B /* Box2D */,
+				E04DA16F2737FAEA0074735B /* LiquidFun */,
 			);
 			path = Physics;
-			sourceTree = "<group>";
-		};
-		E059C6031116BACF0086879B /* Box2D */ = {
-			isa = PBXGroup;
-			children = (
-				E059C6041116BACF0086879B /* orxPhysics.cpp */,
-			);
-			path = Box2D;
 			sourceTree = "<group>";
 		};
 		E059C6051116BACF0086879B /* Render */ = {
@@ -908,7 +908,7 @@
 		E059C6081116BACF0086879B /* Sound */ = {
 			isa = PBXGroup;
 			children = (
-				E054558715172B3D00917458 /* iOS */,
+				E04DA16C2737FAD40074735B /* iOS */,
 			);
 			path = Sound;
 			sourceTree = "<group>";
@@ -1012,7 +1012,6 @@
 				E054558015172B1900917458 /* orxDisplay.m in Sources */,
 				E054558315172B2500917458 /* orxJoystick.m in Sources */,
 				E054558615172B3000917458 /* orxMouse.m in Sources */,
-				E054558915172B3D00917458 /* orxSoundSystem.m in Sources */,
 				E059C6381116BC610086879B /* orxAnim.c in Sources */,
 				E059C6391116BC610086879B /* orxAnimPointer.c in Sources */,
 				E059C63A1116BC610086879B /* orxAnimSet.c in Sources */,
@@ -1052,6 +1051,7 @@
 				E059C65A1116BC610086879B /* orxPlugin.c in Sources */,
 				E059C65B1116BC610086879B /* orxPlugin_EmbeddedList.cpp in Sources */,
 				E059C65C1116BC610086879B /* orxCamera.c in Sources */,
+				E04DA16E2737FADA0074735B /* orxSoundSystem.m in Sources */,
 				E059C65F1116BC610086879B /* orxRender.c in Sources */,
 				E059C6601116BC610086879B /* orxShader.c in Sources */,
 				E059C6611116BC610086879B /* orxShaderPointer.c in Sources */,
@@ -1284,7 +1284,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../../lib/static/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_vorbis ../../../../extern/libwebp/include ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
+				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/include ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
 				WARNING_CFLAGS = "-Wno-unused-value";
 			};
 			name = Debug;
@@ -1337,7 +1337,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../../lib/static/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_vorbis ../../../../extern/libwebp/include ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
+				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/include ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
 				WARNING_CFLAGS = (
 					"-Qunused-arguments",
 					"-Wno-unused-value",
@@ -1468,7 +1468,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../../lib/static/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_vorbis ../../../../extern/libwebp/include ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
+				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/include ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
 				WARNING_CFLAGS = (
 					"-Qunused-arguments",
 					"-Wno-unused-value",

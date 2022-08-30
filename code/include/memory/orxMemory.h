@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -235,14 +235,14 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxMemory_GetCacheLine
 
 /** Gets memory usage for a given type
  * @param[in] _eMemType               Concerned memory type
- * @param[out] _pu32Count             Current memory allocation count
- * @param[out] _pu32PeakCount         Peak memory allocation count
- * @param[out] _pu32Size              Current memory allocation size
- * @param[out] _pu32PeakSize          Peak memory allocation size
- * @param[out] _pu32OperationCount    Total number of memory operations (malloc/free)
+ * @param[out] _pu64Count             Current memory allocation count
+ * @param[out] _pu64PeakCount         Peak memory allocation count
+ * @param[out] _pu64Size              Current memory allocation size
+ * @param[out] _pu64PeakSize          Peak memory allocation size
+ * @param[out] _pu64OperationCount    Total number of memory operations (malloc/free)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Count, orxU32 *_pu32PeakCount, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCount);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU64 *_pu64Count, orxU64 *_pu64PeakCount, orxU64 *_pu64Size, orxU64 *_pu64PeakSize, orxU64 *_pu64OperationCount);
 
 
 /** Tracks (external) memory allocation

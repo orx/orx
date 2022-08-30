@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -912,6 +912,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetVolume(orxOBJECT *_pstO
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch);
 
+/** Sets panning of all sounds of an object.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fPanning       Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in]   _bMix           Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPanning(orxOBJECT *_pstObject, orxFLOAT _fPanning, orxBOOL _bMix);
+
 /** Plays all the sounds of an object.
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -923,6 +931,25 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Play(orxOBJECT *_pstObject
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Stop(orxOBJECT *_pstObject);
+
+/** Adds a filter to the sounds of an object (cascading).
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zFilterConfigID  Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFilter(orxOBJECT *_pstObject, const orxSTRING _zFilterConfigID);
+
+/** Removes last added filter from the sounds of an object.
+ * @param[in]   _pstObject      Concerned object
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveLastFilter(orxOBJECT *_pstObject);
+
+/** Removes all filters from the sounds of an object.
+ * @param[in]   _pstObject      Concerned object
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFilters(orxOBJECT *_pstObject);
 
 /** @} */
 

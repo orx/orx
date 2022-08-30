@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -49,8 +49,6 @@
 
 /* Windows */
 #ifdef __orxWINDOWS__
-
-  typedef void *                  orxHANDLE;
 
   #ifdef __orxX86_64__
 
@@ -117,8 +115,6 @@
   /* Linux / Mac / iOS / Android */
   #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
 
-    typedef void *                orxHANDLE;
-
     #ifdef __orx64__
 
     typedef unsigned  long long   orxU64;
@@ -166,6 +162,20 @@
   #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
 
 #endif /* __orxWINDOWS__ */
+
+typedef     void *                orxHANDLE;
+
+#if defined(__orx64__)
+
+  typedef   orxS64                orxSPTR;
+  typedef   orxU64                orxUPTR;
+
+#elif defined(__orx32__)
+
+  typedef   orxS32                orxSPTR;
+  typedef   orxU32                orxUPTR;
+
+#endif
 
 /* *** Misc constants *** */
 

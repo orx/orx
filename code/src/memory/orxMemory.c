@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -81,9 +81,9 @@
 
 typedef struct __orxMEMORY_TRACKER_t
 {
-  orxU32 u32Count, u32PeakCount;
-  orxU32 u32Size, u32PeakSize;
-  orxU32 u32OperationCount;
+  orxU64 u64Count, u64PeakCount;
+  orxU64 u64Size, u64PeakSize;
+  orxU64 u64OperationCount;
 
 } orxMEMORY_TRACKER;
 
@@ -495,14 +495,14 @@ orxU32 orxFASTCALL orxMemory_GetCacheLineSize()
 
 /** Gets memory usage for a given type
  * @param[in] _eMemType         Concerned memory type
- * @param[out] _pu32Count       Current memory allocation count
- * @param[out] _pu32PeakCount   Peak memory allocation count
- * @param[out] _pu32Size        Current memory allocation size
- * @param[out] _pu32PeakSize    Peak memory allocation size
- * @param[out] _pu32OperationCount Total number of memory operations (malloc/free)
+ * @param[out] _pu64Count       Current memory allocation count
+ * @param[out] _pu64PeakCount   Peak memory allocation count
+ * @param[out] _pu64Size        Current memory allocation size
+ * @param[out] _pu64PeakSize    Peak memory allocation size
+ * @param[out] _pu64OperationCount Total number of memory operations (malloc/free)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Count, orxU32 *_pu32PeakCount, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCount)
+orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU64 *_pu64Count, orxU64 *_pu64PeakCount, orxU64 *_pu64Size, orxU64 *_pu64PeakSize, orxU64 *_pu64OperationCount)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -513,38 +513,38 @@ orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32
   if(_eMemType < orxMEMORY_TYPE_NUMBER)
   {
     /* Asked for current count? */
-    if(_pu32Count != orxNULL)
+    if(_pu64Count != orxNULL)
     {
       /* Updates it */
-      *_pu32Count = sstMemory.astMemoryTrackerList[_eMemType].u32Count;
+      *_pu64Count = sstMemory.astMemoryTrackerList[_eMemType].u64Count;
     }
 
     /* Asked for peak count? */
-    if(_pu32PeakCount != orxNULL)
+    if(_pu64PeakCount != orxNULL)
     {
       /* Updates it */
-      *_pu32PeakCount = sstMemory.astMemoryTrackerList[_eMemType].u32PeakCount;
+      *_pu64PeakCount = sstMemory.astMemoryTrackerList[_eMemType].u64PeakCount;
     }
 
     /* Asked for current size? */
-    if(_pu32Size != orxNULL)
+    if(_pu64Size != orxNULL)
     {
       /* Updates it */
-      *_pu32Size = sstMemory.astMemoryTrackerList[_eMemType].u32Size;
+      *_pu64Size = sstMemory.astMemoryTrackerList[_eMemType].u64Size;
     }
 
     /* Asked for peak size? */
-    if(_pu32PeakSize != orxNULL)
+    if(_pu64PeakSize != orxNULL)
     {
       /* Updates it */
-      *_pu32PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize;
+      *_pu64PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u64PeakSize;
     }
 
     /* Asked for total operation count? */
-    if(_pu32OperationCount != orxNULL)
+    if(_pu64OperationCount != orxNULL)
     {
       /* Updates it */
-      *_pu32OperationCount = sstMemory.astMemoryTrackerList[_eMemType].u32OperationCount;
+      *_pu64OperationCount = sstMemory.astMemoryTrackerList[_eMemType].u64OperationCount;
     }
   }
   else
@@ -577,26 +577,26 @@ orxSTATUS orxFASTCALL orxMemory_Track(orxMEMORY_TYPE _eMemType, orxU32 _u32Size,
     if(_bAllocate != orxFALSE)
     {
       /* Updates counts */
-      sstMemory.astMemoryTrackerList[_eMemType].u32Size += _u32Size;
-      sstMemory.astMemoryTrackerList[_eMemType].u32Count++;
-      if(sstMemory.astMemoryTrackerList[_eMemType].u32Count > sstMemory.astMemoryTrackerList[_eMemType].u32PeakCount)
+      sstMemory.astMemoryTrackerList[_eMemType].u64Size += (orxU64)_u32Size;
+      sstMemory.astMemoryTrackerList[_eMemType].u64Count++;
+      if(sstMemory.astMemoryTrackerList[_eMemType].u64Count > sstMemory.astMemoryTrackerList[_eMemType].u64PeakCount)
       {
-        sstMemory.astMemoryTrackerList[_eMemType].u32PeakCount = sstMemory.astMemoryTrackerList[_eMemType].u32Count;
+        sstMemory.astMemoryTrackerList[_eMemType].u64PeakCount = sstMemory.astMemoryTrackerList[_eMemType].u64Count;
       }
-      if(sstMemory.astMemoryTrackerList[_eMemType].u32Size > sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize)
+      if(sstMemory.astMemoryTrackerList[_eMemType].u64Size > sstMemory.astMemoryTrackerList[_eMemType].u64PeakSize)
       {
-        sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u32Size;
+        sstMemory.astMemoryTrackerList[_eMemType].u64PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u64Size;
       }
     }
     else
     {
       /* Updates counts */
-      sstMemory.astMemoryTrackerList[_eMemType].u32Size -= _u32Size;
-      sstMemory.astMemoryTrackerList[_eMemType].u32Count--;
+      sstMemory.astMemoryTrackerList[_eMemType].u64Size -= (orxU64)_u32Size;
+      sstMemory.astMemoryTrackerList[_eMemType].u64Count--;
     }
 
     /* Updates operation count */
-    sstMemory.astMemoryTrackerList[_eMemType].u32OperationCount++;
+    sstMemory.astMemoryTrackerList[_eMemType].u64OperationCount++;
   }
   else
   {

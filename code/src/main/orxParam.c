@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -556,6 +556,9 @@ orxSTATUS orxFASTCALL orxParam_Init()
 
           /* Pops config section */
           orxConfig_PopSection();
+
+          /* Sends event */
+          orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_PARAM_READY);
         }
         else
         {
@@ -574,6 +577,24 @@ orxSTATUS orxFASTCALL orxParam_Init()
     eResult = orxSTATUS_SUCCESS;
   }
 
+  /* Failed? */
+  if(eResult == orxSTATUS_FAILURE)
+  {
+    /* Deletes table */
+    if(sstParam.pstHashTable != orxNULL)
+    {
+      orxHashTable_Delete(sstParam.pstHashTable);
+      sstParam.pstHashTable = orxNULL;
+    }
+
+    /* Deletes bank */
+    if(sstParam.pstBank != orxNULL)
+    {
+      orxBank_Delete(sstParam.pstBank);
+      sstParam.pstBank = orxNULL;
+    }
+  }
+
   /* Done */
   return eResult;
 }
@@ -587,6 +608,12 @@ void orxFASTCALL orxParam_Exit()
   {
     /* Clears params */
     orxParam_SetArgs(0, orxNULL);
+
+    /* Deletes table */
+    orxHashTable_Delete(sstParam.pstHashTable);
+
+    /* Deletes bank */
+    orxBank_Delete(sstParam.pstBank);
 
     /* Module not ready now */
     sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
@@ -823,6 +850,9 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   /* Continue? */
   if(eResult != orxSTATUS_FAILURE)
   {
+    /* Sends event */
+    eResult = orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_PARAM_DISPLAY);
+
     /* Everything seems ok. Register the module help function */
     stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
     stParams.pfnParser  = orxParam_Help;
@@ -832,7 +862,11 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
     stParams.zLongDesc  = "If a parameter is specified, its full description will be printed. Otherwise the list of available parameters will be printed.";
 
     /* Register */
-    eResult = orxParam_Register(&stParams);
+    if(orxParam_Register(&stParams) == orxSTATUS_FAILURE)
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
 
   /* Restores display logs */

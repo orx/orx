@@ -5176,6 +5176,11 @@ orxS64 orxFASTCALL orxArchive_ZipSeek(orxHANDLE _hResource, orxS64 _s64Offset, o
     // Updates archive's cursor
     pstZipArchive->s64Cursor = s64Cursor;
   }
+  else
+  {
+    // Clears value
+    s64Cursor = -1;
+  }
 
   // Done!
   return s64Cursor;
@@ -5275,6 +5280,7 @@ orxSTATUS orxFASTCALL orxArchive_Init()
   stInfo.pfnTell    = &orxArchive_ZipTell;
   stInfo.pfnRead    = &orxArchive_ZipRead;
   stInfo.pfnWrite   = orxNULL;                // No write support
+  stInfo.pfnDelete  = orxNULL;                // No delete support
 
   // Registers it
   eResult = orxResource_RegisterType(&stInfo);

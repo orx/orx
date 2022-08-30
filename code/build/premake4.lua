@@ -48,7 +48,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2019")
+defaultaction ("windows", "vs2022")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -109,11 +109,11 @@ solution "orx"
         "../../extern/glfw-3/include",
         "../../extern/LiquidFun-1.1.0/include",
         "../../extern/stb_image",
-        "../../extern/openal-soft/include",
-        "../../extern/libsndfile-1.0.22/include",
+        "../../extern/miniaudio",
         "../../extern/stb_vorbis",
         "../../extern/libwebp/include",
         "../../extern/basisu/include",
+        "../../extern/qoi"
     }
 
     excludes
@@ -162,7 +162,6 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/linux",
-            "../../extern/libsndfile-1.0.22/lib/linux",
             "../../extern/LiquidFun-1.1.0/lib/linux",
             "../../extern/libwebp/lib/linux",
             "../../extern/basisu/lib/linux/32",
@@ -177,7 +176,6 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/linux64",
-            "../../extern/libsndfile-1.0.22/lib/linux64",
             "../../extern/LiquidFun-1.1.0/lib/linux64",
             "../../extern/libwebp/lib/linux64",
             "../../extern/basisu/lib/linux/64",
@@ -195,7 +193,6 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/mac",
-            "../../extern/libsndfile-1.0.22/lib/mac",
             "../../extern/LiquidFun-1.1.0/lib/mac",
             "../../extern/libwebp/lib/mac",
             "../../extern/basisu/lib/mac",
@@ -230,23 +227,19 @@ solution "orx"
             "/MP"
         }
 
-    configuration {"vs2015 or vs2017 or vs2019", "x32"}
+    configuration {"vs2017 or vs2019 or vs2022", "x32"}
         libdirs
         {
             "../../extern/glfw-3/lib/vc2015/32",
-            "../../extern/openal-soft/lib/vc2015/32",
-            "../../extern/libsndfile-1.0.22/lib/vc2015/32",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/32",
             "../../extern/libwebp/lib/vc2015/32",
             "../../extern/basisu/lib/vc2015/32",
         }
 
-    configuration {"vs2015 or vs2017 or vs2019", "x64"}
+    configuration {"vs2017 or vs2019 or vs2022", "x64"}
         libdirs
         {
             "../../extern/glfw-3/lib/vc2015/64",
-            "../../extern/openal-soft/lib/vc2015/64",
-            "../../extern/libsndfile-1.0.22/lib/vc2015/64",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/64",
             "../../extern/libwebp/lib/vc2015/64",
             "../../extern/basisu/lib/vc2015/64",
@@ -256,8 +249,6 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/mingw/32",
-            "../../extern/openal-soft/lib/mingw/32",
-            "../../extern/libsndfile-1.0.22/lib/mingw/32",
             "../../extern/LiquidFun-1.1.0/lib/mingw/32",
             "../../extern/libwebp/lib/mingw/32",
             "../../extern/basisu/lib/mingw/32",
@@ -267,8 +258,6 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/mingw/64",
-            "../../extern/openal-soft/lib/mingw/64",
-            "../../extern/libsndfile-1.0.22/lib/mingw/64",
             "../../extern/LiquidFun-1.1.0/lib/mingw/64",
             "../../extern/libwebp/lib/mingw/64",
             "../../extern/basisu/lib/mingw/64",
@@ -367,7 +356,7 @@ project "orx"
         linkoptions
         {
             "-framework Foundation",
-            "-framework IOKit",
+            "-framework IOKit"
         }
 
 
@@ -404,8 +393,7 @@ project "orxLIB"
     configuration {"not *Core*"}
         defines
         {
-            "__orxEMBEDDED__",
-            "AL_LIBTYPE_STATIC"
+            "__orxEMBEDDED__"
         }
 
     -- Work around for codelite "default" configuration
@@ -465,8 +453,6 @@ project "orxLIB"
         links
         {
             "glfw3",
-            "openal",
-            "sndfile",
             "X11",
             "Xrandr",
             "dl",
@@ -508,10 +494,12 @@ project "orxLIB"
         links
         {
             "Foundation.framework",
+            "CoreFoundation.framework",
+            "CoreAudio.framework",
+            "AudioUnit.framework",
             "IOKit.framework",
             "AppKit.framework",
             "CoreVideo.framework",
-            "OpenAL.framework",
             "OpenGL.framework"
         }
 
@@ -519,10 +507,12 @@ project "orxLIB"
         linkoptions
         {
             "-framework Foundation",
+            "-framework CoreFoundation",
+            "-framework CoreAudio",
+            "-framework AudioUnit",
             "-framework IOKit",
             "-framework AppKit",
             "-framework CoreVideo",
-            "-framework OpenAL",
             "-framework OpenGL"
         }
 
@@ -530,7 +520,7 @@ project "orxLIB"
         links
         {
             "glfw3",
-            "sndfile",
+            "m",
             "pthread"
         }
 
@@ -578,9 +568,7 @@ project "orxLIB"
         links
         {
             "glfw3",
-            "openal32",
-            "winmm",
-            "sndfile"
+            "winmm"
         }
 
     configuration {"windows", "not *Core*", "vs*"}

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -309,7 +309,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
           for(i = 0; i < pstPayload->stStream.stPacket.u32SampleNumber / 2; i++)
           {
             /* Shorten the packets by half */
-            pstPayload->stStream.stPacket.as16SampleList[i] = pstPayload->stStream.stPacket.as16SampleList[i * 2];
+            pstPayload->stStream.stPacket.afSampleList[i] = pstPayload->stStream.stPacket.afSampleList[i * 2];
           }
 
           /* Updates sample number */
@@ -432,7 +432,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   if((sbRecord == orxFALSE) && (orxInput_IsActive("Record") != orxFALSE))
   {
     /* Starts recording with default settings */
-    orxSound_StartRecording("orxSoundRecording.wav", orxFALSE, 0, 0);
+    orxSound_StartRecording("orxSoundRecording.wav", orxFALSE, 0, 1);
 
     /* Updates status */
     sbRecord = orxTRUE;
@@ -517,7 +517,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   if(orxInput_IsActive("Spawn"))
   {
     /* Spawns one ball */
-    orxSpawner_Spawn(spoBallSpawner, 1);
+    orxSpawner_Spawn(spoBallSpawner, orxU32_UNDEFINED);
   }
   /* Picking? */
   else if(orxInput_IsActive("Pick"))

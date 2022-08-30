@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['pcontext',['pContext',['../structorx_e_v_e_n_t.html#a4b5458f978a51d65fdb148db298ab2ce',1,'orxEVENT']]],
+  ['pcontext',['pContext',['../structorx_e_v_e_n_t.html#a4b5458f978a51d65fdb148db298ab2ce',1,'orxEVENT::pContext()'],['../structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#aa6ee009da93c0fa39f845b333df94118',1,'orxSOUND_FILTER_DATA::pContext()']]],
+  ['pfncallback',['pfnCallback',['../structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#ab2a515aed89c40e25fbc568f517570eb',1,'orxSOUND_FILTER_DATA']]],
   ['pfnclose',['pfnClose',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a05d5a7fb1e936d5b5409af368ae5a071',1,'orxRESOURCE_TYPE_INFO']]],
   ['pfndefaultfunction',['pfnDefaultFunction',['../structorx_p_l_u_g_i_n___c_o_r_e___f_u_n_c_t_i_o_n.html#a59c02b7101fa52392319ac8946079494',1,'orxPLUGIN_CORE_FUNCTION']]],
   ['pfndelete',['pfnDelete',['../structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a2798a46e56e58d95524af974a1ccae29',1,'orxRESOURCE_TYPE_INFO']]],

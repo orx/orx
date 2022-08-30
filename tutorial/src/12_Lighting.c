@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -87,7 +87,6 @@ static  orxVIEWPORT  *pstViewport     = orxNULL;
 static  orxOBJECT    *pstScene        = orxNULL;
 static  orxS32        s32LightIndex   = 0;
 static  Light         astLightList[LIGHT_NUMBER];
-
 
 /** Clears all lights
  */
@@ -258,7 +257,7 @@ void CreateNormalMap(const orxTEXTURE *_pstTexture)
       pstNMTexture = orxTexture_Create();
 
       /* Sets its bitmap */
-      orxTexture_LinkBitmap(pstNMTexture, pstNMBitmap, acNMName, orxFALSE);
+      orxTexture_LinkBitmap(pstNMTexture, pstNMBitmap, acNMName, orxTRUE);
 
       /* Add it to the table using the hash of the original as key */
       orxHashTable_Add(pstTextureTable, stHash, pstNMTexture);
@@ -325,6 +324,14 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
         /* Gets associated normal map */
         pstPayload->pstValue = (orxTEXTURE *)orxHashTable_Get(pstTextureTable, orxString_Hash(orxTexture_GetName(pstPayload->pstValue)));
       }
+      /* Screen size? */
+      else if(!orxString_Compare(pstPayload->zParamName, "vScreenSize"))
+      {
+        /* The framebuffer size */
+        orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+        orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, &(pstPayload->vValue));
+        orxConfig_PopSection();
+      }
     }
   }
   /* Texture loaded? */
@@ -342,17 +349,23 @@ orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
  */
 void orxFASTCALL Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
 {
-  /* Stores mouse position as current light position */
-  orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition));
+  orxVECTOR vContentScale;
+
+  /* Stores relative mouse position as current light position (accounting for retina/high DPI monitors) */
+  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+  orxVector_Mul(&(astLightList[s32LightIndex].vPosition),
+                orxMouse_GetPosition(&(astLightList[s32LightIndex].vPosition)),
+                orxConfig_GetVector(orxDISPLAY_KZ_CONFIG_CONTENT_SCALE, &vContentScale));
+  orxConfig_PopSection();
 
   /* Creates a new light? */
-  if (orxInput_HasBeenActivated("CreateLight"))
+  if(orxInput_HasBeenActivated("CreateLight"))
   {
     /* Updates light index */
     s32LightIndex = orxMIN(LIGHT_NUMBER - 1, s32LightIndex + 1);
   }
   /* Clears all lights? */
-  else if (orxInput_HasBeenActivated("ClearLights"))
+  else if(orxInput_HasBeenActivated("ClearLights"))
   {
     /* Clears all lights */
     ClearLights();
@@ -361,17 +374,17 @@ void orxFASTCALL Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
     s32LightIndex = 0;
   }
   /* Increases radius? */
-  else if (orxInput_HasBeenActivated("IncreaseRadius"))
+  else if(orxInput_HasBeenActivated("IncreaseRadius"))
   {
     astLightList[s32LightIndex].fRadius += orxInput_GetValue("IncreaseRadius") * orx2F(0.05f);
   }
   /* Decreases radius? */
-  else if (orxInput_HasBeenActivated("DecreaseRadius"))
+  else if(orxInput_HasBeenActivated("DecreaseRadius"))
   {
     astLightList[s32LightIndex].fRadius = orxMAX(orxFLOAT_0, astLightList[s32LightIndex].fRadius - orxInput_GetValue("DecreaseRadius") * orx2F(0.05f));
   }
   /* Toggle alpha? */
-  else if (orxInput_HasBeenActivated("ToggleAlpha"))
+  else if(orxInput_HasBeenActivated("ToggleAlpha"))
   {
     astLightList[s32LightIndex].stColor.fAlpha = orx2F(1.5f) - astLightList[s32LightIndex].stColor.fAlpha;
   }

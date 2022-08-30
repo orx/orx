@@ -1,6 +1,6 @@
 /* Scroll
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -133,7 +133,7 @@ private:
   virtual       orxBOOL                 OnRender(orxRENDER_EVENT_PAYLOAD &_rstPayload);
   virtual       orxBOOL                 OnShader(orxSHADER_EVENT_PAYLOAD &_rstPayload);
 
-  virtual       orxBOOL                 OnCollide(ScrollObject *_poCollider, const orxSTRING _zPartName, const orxSTRING _zColliderPartName, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal);
+  virtual       orxBOOL                 OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal);
   virtual       orxBOOL                 OnSeparate(ScrollObject *_poCollider);
 
   virtual       void                    OnNewAnim(const orxSTRING _zOldAnim, const orxSTRING _zNewAnim, orxBOOL _bCut);

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -237,7 +237,7 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_GetSize(or
  * @param[in] _hResource        Concerned resource
  * @param[in] _s64Offset        Number of bytes to offset from 'origin'
  * @param[in] _eWhence          Starting point for the offset computation (start, current position or end)
- * @return Absolute cursor position
+ * @return Absolute cursor position if successful, -1 otherwise
  */
 extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence);
 
@@ -292,12 +292,18 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTotalPe
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pstInfo);
 
+/** Unregisters a resource type
+ * @param[in] _zTypeTag         Tag of the resource type to unregister
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_UnregisterType(const orxSTRING _zTypeTag);
+
 /** Gets number of registered resource types
  * @return Number of registered resource types
  */
 extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCount();
 
-/** Gets registered type info at given index
+/** Gets registered type tag at given index
  * @param[in] _u32Index         Index of storage
  * @return Type tag string if index is valid, orxNULL otherwise
  */
@@ -315,6 +321,21 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_Sync(const
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ClearCache(const orxSTRING _zGroup);
+
+/** Gets the cached location count for a given group
+ * @param[in] _zGroup           Concerned resource group
+ * @return    Item number
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetCacheCount(const orxSTRING _zGroup);
+
+/** Gets the next cached location for the given group and returns an iterator for next search
+ * @param[in] _zGroup           Concerned resource group
+ * @param[in] _hIterator        Iterator from previous search or orxHANDLE_UNDEFINED/orxNULL for a new search
+ * @param[out] _pzLocation      Current resource's location
+ * @param[out] _pzName          Current resource's name
+ * @return Iterator for next element if an element has been found, orxHANDLE_UNDEFINED otherwise
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCachedLocation(const orxSTRING _zGroup, orxHANDLE _hIterator, const orxSTRING *_pzLocation, const orxSTRING *_pzName);
 
 
 #endif /* _orxRESOURCE_H_ */

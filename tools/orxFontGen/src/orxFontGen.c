@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -31,6 +31,12 @@
 
 
 #include "orx.h"
+
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4996)
+
+#endif /* __orxMSVC__ */
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define STBIW_MALLOC(sz)        orxMemory_Allocate(sz, orxMEMORY_TYPE_MAIN)
@@ -1137,3 +1143,9 @@ int main(int argc, char **argv)
   #pragma GCC diagnostic pop
 
 #endif /* __orxGCC__ */
+
+#ifdef __orxMSVC__
+
+  #pragma warning(default : 4996)
+
+#endif /* __orxMSVC__ */

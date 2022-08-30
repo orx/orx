@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2021 Orx-Project
+ * Copyright (c) 2008-2022 Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -750,6 +750,31 @@ void orxFASTCALL orxViewport_CommandIsShaderEnabled(orxU32 _u32ArgNumber, const 
   return;
 }
 
+/** Command: GetCorrectionRatio
+ */
+void orxFASTCALL orxViewport_CommandGetCorrectionRatio(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstViewport != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->fValue = orxViewport_GetCorrectionRatio(pstViewport);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = orxFLOAT_0;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the viewports commands
  */
 static orxINLINE void orxViewport_RegisterCommands()
@@ -803,6 +828,9 @@ static orxINLINE void orxViewport_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, EnableShader, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: IsShaderEnabled */
   orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, IsShaderEnabled, "IsEnabled?", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: GetCorrectionRatio */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, GetCorrectionRatio, "Ratio", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
 }
 
 /** Unregisters all the viewports commands
@@ -858,6 +886,9 @@ static orxINLINE void orxViewport_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, EnableShader);
   /* Command: IsShaderEnabled */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, IsShaderEnabled);
+
+  /* Command: GetCorrectionRatio */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, GetCorrectionRatio);
 }
 
 /** Event handler
@@ -1249,8 +1280,8 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
             /* Deactivates display debug level */
             orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
-            /* Creates texture from file */
-            pstTexture = orxTexture_CreateFromFile(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
+            /* Loads texture */
+            pstTexture = orxTexture_Load(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
 
             /* Restores display debug level state */
             orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
@@ -1377,8 +1408,8 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           /* Deactivates display debug level */
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
-          /* Creates texture from file */
-          pstTexture = orxTexture_CreateFromFile(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
+          /* Loads texture */
+          pstTexture = orxTexture_Load(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
 
           /* Restores display debug level state */
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
