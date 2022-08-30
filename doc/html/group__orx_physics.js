@@ -75,10 +75,10 @@ var group__orx_physics =
       [ "vScale", "structorx_b_o_d_y___p_a_r_t___d_e_f.html#a6e11cc03330aa431c9a05ba2195f7e5e", null ]
     ] ],
     [ "orxPHYSICS_EVENT_PAYLOAD", "structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html", [
+      [ "pstRecipientPart", "structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html#a72f88b7ed42fe45220e98f6899b096df", null ],
+      [ "pstSenderPart", "structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html#a3502782c3fff29b9a8c58669960c238f", null ],
       [ "vNormal", "structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html#a30b90f174addea50ca06098923194ea4", null ],
-      [ "vPosition", "structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html#a5a034f9d2b63543355d36d2231899e04", null ],
-      [ "zRecipientPartName", "structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html#ad90bd9468cc7dc88c02f6a92bb056bee", null ],
-      [ "zSenderPartName", "structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html#acd73be96db4bb82ff45c9e752372ef26", null ]
+      [ "vPosition", "structorx_p_h_y_s_i_c_s___e_v_e_n_t___p_a_y_l_o_a_d.html#a5a034f9d2b63543355d36d2231899e04", null ]
     ] ],
     [ "orxBODY_DEF_KU32_FLAG_2D", "group__orx_physics.html#gaf104e4a6f306d16cdddb76641f54d2dc", null ],
     [ "orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP", "group__orx_physics.html#gacdad775a326cabdc10b2981370c47ba7", null ],
