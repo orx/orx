@@ -432,7 +432,11 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zStorage, const or
   // Has data?
   if(spstDataTable != orxNULL)
   {
-    static const orxU32 su32StorageLength = orxString_GetLength(orxBUNDLE_KZ_RESOURCE_STORAGE);
+    static orxU32 su32StorageLength = 0;
+    if(su32StorageLength == 0)
+    {
+      su32StorageLength = orxString_GetLength(orxBUNDLE_KZ_RESOURCE_STORAGE);
+    }
 
     // Bundle storage?
     if(orxString_NCompare(_zStorage, orxBUNDLE_KZ_RESOURCE_STORAGE, su32StorageLength) == 0)
