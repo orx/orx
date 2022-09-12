@@ -69,7 +69,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxPlugin_Init();
 extern orxDLLAPI void orxFASTCALL               orxPlugin_Exit();
 
 
-/** Loads a plugin (using its exact complete)
+/** Loads a plugin (using its exact complete path+name)
  * @param[in] _zPluginFileName  The complete path of the plugin file, including its extension
  * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
  * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
