@@ -1060,13 +1060,13 @@ If you want to use the non-embedded versions (to use with your own plugins), you
 Everything compiles out-of-the-box for the hardware platforms cited above.</p>
 <p>The embedded versions currently use:</p>
 <ul>
-<li>GLFW-based (+SOIL) plugins for display, joystick, keyboard and mouse for all non-iOS/non-Android platforms</li>
-<li>OpenAL-based (+libsndfile/stb_vorbis/tremor) plugins for sound for all platforms</li>
-<li>Box2D-based plugin for physics</li>
-<li>homemade plugin for 2D rendering</li>
-<li>OpenGL ES plugins for display on iOS and Android</li>
-<li>Touch/MultiTouch-based plugin for mouse on iOS and Android</li>
-<li>Accelerometer-based plugin for joystick on iOS and Android</li>
+<li>GLFW-based (+stb_image/webp/qoi/BasisU) display, joystick, keyboard and mouse plugins for all non-iOS/non-Android platforms</li>
+<li>miniaudio (+stb_vorbis) sound plugin for all platforms</li>
+<li>LiquidFun-based physics plugin</li>
+<li>Homemade rendering plugin (2D)</li>
+<li>OpenGL ES display plugins for iOS and Android</li>
+<li>Touch/MultiTouch-based mouse plugin for iOS and Android</li>
+<li>Accelerometer-based joystick plugin for iOS and Android</li>
 </ul>
 <p>All the 11 basic and advanced official tutorials are shipped with the dev packages, including precompiled release binaries.</p>
 <p>Some tools (precompiled binaries only) are also shipped with the dev packages:</p>

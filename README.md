@@ -102,13 +102,13 @@ Everything compiles out-of-the-box for the hardware platforms cited above.
 
 The embedded versions currently use:
 
-- GLFW-based (+SOIL) plugins for display, joystick, keyboard and mouse for all non-iOS/non-Android platforms
-- miniaudio plugin for sound for all platforms
-- Box2D-based plugin for physics
-- homemade plugin for 2D rendering
-- OpenGL ES plugins for display on iOS and Android
-- Touch/MultiTouch-based plugin for mouse on iOS and Android
-- Accelerometer-based plugin for joystick on iOS and Android
+- GLFW-based (+stb_image/webp/qoi/BasisU) display, joystick, keyboard and mouse plugins for all non-iOS/non-Android platforms
+- miniaudio (+stb_vorbis) sound plugin for all platforms
+- LiquidFun-based physics plugin
+- Homemade rendering plugin (2D)
+- OpenGL ES display plugins for iOS and Android
+- Touch/MultiTouch-based mouse plugin for iOS and Android
+- Accelerometer-based joystick plugin for iOS and Android
 
 All the 11 basic and advanced official tutorials are shipped with the dev packages, including precompiled release binaries.
 
