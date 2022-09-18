@@ -1,6 +1,7 @@
 [![Join the chat on https://orx-project.org/discord](https://discordapp.com/api/guilds/522167736823185418/widget.png?style=shield)](https://orx-project.org/discord)
 [![Travis build](https://api.travis-ci.com/orx/orx.svg?branch=master)](https://app.travis-ci.com/github/orx/orx)
 [![Build status](https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true)](https://ci.appveyor.com/project/iarwain/orx)
+[![Git Repo Size](https://img.shields.io/github/repo-size/orx/orx.svg)](https://github.com/orx/orx)
 
 Orx - Portable Game Engine (Version 1.13)
 ========================================
@@ -101,13 +102,13 @@ Everything compiles out-of-the-box for the hardware platforms cited above.
 
 The embedded versions currently use:
 
-- GLFW-based (+SOIL) plugins for display, joystick, keyboard and mouse for all non-iOS/non-Android platforms
-- OpenAL-based (+libsndfile/stb_vorbis/tremor) plugins for sound for all platforms
-- Box2D-based plugin for physics
-- homemade plugin for 2D rendering
-- OpenGL ES plugins for display on iOS and Android
-- Touch/MultiTouch-based plugin for mouse on iOS and Android
-- Accelerometer-based plugin for joystick on iOS and Android
+- GLFW-based (+stb_image/webp/qoi/BasisU) display, joystick, keyboard and mouse plugins for all non-iOS/non-Android platforms
+- miniaudio (+stb_vorbis) sound plugin for all platforms
+- LiquidFun-based physics plugin
+- Homemade rendering plugin (2D)
+- OpenGL ES display plugins for iOS and Android
+- Touch/MultiTouch-based mouse plugin for iOS and Android
+- Accelerometer-based joystick plugin for iOS and Android
 
 All the 11 basic and advanced official tutorials are shipped with the dev packages, including precompiled release binaries.
 
