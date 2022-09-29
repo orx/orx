@@ -574,8 +574,11 @@ project "orxLIB"
     configuration {"windows", "not *Core*", "vs*"}
         links {"OpenGL32"}
 
+    configuration {"windows", "vs*"}
+        linkoptions {"/ignore:4099"}
+
     configuration {"windows", "vs*", "*Debug*"}
-        linkoptions {"/NODEFAULTLIB:LIBCMT", "/ignore:4099"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
     configuration {"windows", "vs*"}
         buildoptions {"/wd\"4577\""}
