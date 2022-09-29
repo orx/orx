@@ -103,12 +103,19 @@ either req-ver = cur-ver [
   delete-dir temp
   print [{== Decompressing [} local {] => [} extern {]}]
   wait 0.5
-  foreach [file data] load local [
-    either dir? file [
-      mkdir/deep temp/:file
-    ] [
-      write temp/:file data/2
+  if error? try [
+    foreach [file data] load local [
+      either dir? file [
+        mkdir/deep temp/:file
+      ] [
+        write temp/:file data/2
+      ]
     ]
+  ] [
+    print [{== Corrupt archive [} local {] detected, aborting!}]
+    print {== ! Please re-run the setup script !}
+    delete local
+    quit
   ]
   until [wait 0.5 attempt [rename rejoin [temp load temp] extern]]
   delete-dir temp
