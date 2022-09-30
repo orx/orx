@@ -1977,7 +1977,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LinkSampleTask(void *_pCon
   pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
 
   /* Inits sound config */
-  stSoundConfig             = ma_sound_config_init();
+  stSoundConfig             = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
   stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
   stSoundConfig.flags       = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
   stSoundConfig.pFilePath   = pstSound->stSample.pstSample->stResource.zLocation;
@@ -2052,7 +2052,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LoadStreamTask(void *_pCon
       ma_sound_config stSoundConfig;
 
       /* Inits sound config */
-      stSoundConfig             = ma_sound_config_init();
+      stSoundConfig             = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
       stSoundConfig.pDataSource = &(pstSound->stBase);
       stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
       stSoundConfig.flags       = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
@@ -2879,7 +2879,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         stEngineConfig.listenerCount        = sstSoundSystem.u32ListenerNumber;
         stEngineConfig.notificationCallback = &orxSoundSystem_MiniAudio_OnDeviceNotification;
         ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
-        hResult                         = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
+        hResult                             = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
 
         /* Success? */
         if(hResult == MA_SUCCESS)
@@ -3295,7 +3295,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
 
     /* Inits sound config */
-    stSoundConfig             = ma_sound_config_init();
+    stSoundConfig             = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
     stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
 
     /* Is buffer? */
@@ -3438,7 +3438,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
         ma_sound_config stSoundConfig;
 
         /* Inits sound config */
-        stSoundConfig               = ma_sound_config_init();
+        stSoundConfig               = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
         stSoundConfig.pDataSource   = &(pstResult->stBase);
         stSoundConfig.channelsOut   = ma_engine_get_channels(&(sstSoundSystem.stEngine));
         stSoundConfig.flags         = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
