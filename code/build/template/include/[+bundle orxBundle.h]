@@ -282,7 +282,10 @@ static orxINLINE orxSTATUS orxBundle_Process()
                 }
 
                 // Outputs structure footer
-                orxFile_Seek(pstIncludeFile, -1, orxSEEK_OFFSET_WHENCE_CURRENT);
+                if(s64Size > 0)
+                {
+                  orxFile_Seek(pstIncludeFile, -1, orxSEEK_OFFSET_WHENCE_CURRENT);
+                }
                 orxFile_Print(pstIncludeFile, "\r\n};\r\n\r\n");
 
                 // Closes it
