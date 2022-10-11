@@ -3777,11 +3777,11 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveAllFilters(orxSOUNDSYSTEM_S
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Ready? */
-  if(_pstSound->bReady != orxFALSE)
+  /* Has filter(s)? */
+  if((_pstSound->pstFilterNode != orxNULL) && (_pstSound->pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode)))
   {
-    /* Has filter(s)? */
-    if((_pstSound->pstFilterNode != orxNULL) && (_pstSound->pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode)))
+    /* Ready? */
+    if(_pstSound->bReady != orxFALSE)
     {
       ma_node_base *pstFilterNode;
 
@@ -3794,10 +3794,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveAllFilters(orxSOUNDSYSTEM_S
         orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, pstFilterNode)->bReady = orxFALSE;
       }
     }
-  }
 
-  /* Runs remove all filters task */
-  eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_RemoveAllFiltersTask, orxNULL, orxNULL, _pstSound);
+    /* Runs remove all filters task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_RemoveAllFiltersTask, orxNULL, orxNULL, _pstSound);
+  }
 
   /* Done! */
   return eResult;
