@@ -395,19 +395,20 @@ private:
                 orxLINKLIST     mstObjectList;
                 orxLINKLIST     mstObjectChronoList;
                 orxSTRING       mzMapName;
+                const orxSTRING mzCurrentCreateObject;
+                const orxSTRING mzCurrentDeleteObject;
+                orxVIEWPORT *   mpstMainViewport;
+                orxCAMERA *     mpstMainCamera;
+                orxCONFIG_SAVE_FUNCTION mpfnCustomMapSaveFilter;
+                orxU32          mu32NextObjectID;
+                orxU32          mu32RuntimeObjectID;
+                orxU32          mu32LayerNumber;
+                orxU32          mu32FrameCount;
                 orxBOOL         mbEditorMode;
                 orxBOOL         mbDifferentialMode;
                 orxBOOL         mbObjectListLocked;
                 orxBOOL         mbIsRunning;
                 orxBOOL         mbIsPaused;
-                const orxSTRING mzCurrentObject;
-                orxVIEWPORT *   mpstMainViewport;
-                orxCAMERA *     mpstMainCamera;
-                orxU32          mu32NextObjectID;
-                orxU32          mu32RuntimeObjectID;
-                orxU32          mu32LayerNumber;
-                orxU32          mu32FrameCount;
-                orxCONFIG_SAVE_FUNCTION mpfnCustomMapSaveFilter;
 };
 
 
