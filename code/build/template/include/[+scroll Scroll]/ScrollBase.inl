@@ -73,9 +73,9 @@ ScrollBase &ScrollBase::GetInstance()
   return *spoInstance;
 }
 
-ScrollBase::ScrollBase() : mzMapName(orxNULL), mpstMainViewport(orxNULL), mpstMainCamera(orxNULL),
+ScrollBase::ScrollBase() : mzMapName(orxNULL), mzCurrentCreateObject(orxNULL), mzCurrentDeleteObject(orxNULL),
+                           mpstMainViewport(orxNULL), mpstMainCamera(orxNULL), mpfnCustomMapSaveFilter(orxNULL),
                            mu32NextObjectID(0), mu32RuntimeObjectID(0), mu32LayerNumber(1), mu32FrameCount(0),
-                           mzCurrentObject(orxNULL), mpfnCustomMapSaveFilter(orxNULL),
                            mbEditorMode(orxFALSE), mbDifferentialMode(orxFALSE), mbObjectListLocked(orxFALSE), mbIsRunning(orxFALSE), mbIsPaused(orxFALSE)
 {
 }
@@ -114,16 +114,16 @@ ScrollObject *ScrollBase::CreateObject(const orxSTRING _zModelName, ScrollObject
     poBinder = ScrollObjectBinderBase::GetBinder(orxFLAG_TEST(_xFlags, ScrollObject::FlagSave | ScrollObject::FlagRunTime) ? _zModelName : orxSTRING_EMPTY);
 
     // Stores current object
-    zPreviousObject = mzCurrentObject;
+    zPreviousObject = mzCurrentCreateObject;
 
     // Flags current object creation
-    mzCurrentObject = _zModelName;
+    mzCurrentCreateObject = _zModelName;
 
     // Uses it
     poResult = poBinder->CreateObject(_zModelName, _zInstanceName ? _zInstanceName : GetNewObjectName(zInstanceName, (_xFlags & ScrollObject::FlagRunTime) ? orxTRUE : orxFALSE), _xFlags);
 
     // Restores previous object
-    mzCurrentObject = zPreviousObject;
+    mzCurrentCreateObject = zPreviousObject;
 
     // Valid?
     if(poResult)
@@ -231,16 +231,16 @@ void ScrollBase::DeleteObject(ScrollObject *_poObject)
       poBinder = ScrollObjectBinderBase::GetBinder(_poObject->TestFlags(ScrollObject::FlagSave | ScrollObject::FlagRunTime) ? _poObject->GetModelName() : orxSTRING_EMPTY);
 
       // Stores current object
-      zPreviousObject = mzCurrentObject;
+      zPreviousObject = mzCurrentDeleteObject;
 
       // Flags current object deletion
-      mzCurrentObject = _poObject->GetModelName();
+      mzCurrentDeleteObject = _poObject->GetModelName();
 
       // Deletes it
       poBinder->DeleteObject(_poObject);
 
       // Restores previous object
-      mzCurrentObject = zPreviousObject;
+      mzCurrentDeleteObject = zPreviousObject;
     }
     else
     {
@@ -1274,6 +1274,9 @@ void ScrollBase::BaseExit()
   // Clears map
   SetMapName(orxNULL);
 
+  // Disables object create handler
+  orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_KU32_FLAG_ID_NONE, orxEVENT_GET_FLAG(orxOBJECT_EVENT_CREATE));
+
   // For all objects
   for(ScrollObject *poObject = GetNextObject(orxNULL, orxTRUE);
       poObject;
@@ -1538,12 +1541,12 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
         pstObject = orxOBJECT(_pstEvent->hSender);
 
         // Not an internal creation?
-        if(!roGame.mzCurrentObject || orxString_Compare(roGame.mzCurrentObject, orxObject_GetName(pstObject)))
+        if(!roGame.mzCurrentCreateObject || orxString_Compare(roGame.mzCurrentCreateObject, orxObject_GetName(pstObject)))
         {
           ScrollObjectBinderBase *poBinder;
 
           // Gets binder
-          poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject), roGame.mzCurrentObject ? orxTRUE : orxFALSE);
+          poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject), roGame.mzCurrentCreateObject ? orxTRUE : orxFALSE);
 
           // Found?
           if(poBinder)
@@ -1565,7 +1568,7 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
         else
         {
           // Clears internal object
-          roGame.mzCurrentObject = orxNULL;
+          roGame.mzCurrentCreateObject = orxNULL;
         }
       }
       // Delete?
@@ -1580,7 +1583,7 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
         pstObject = orxOBJECT(_pstEvent->hSender);
 
         // Not an internal deletion?
-        if(!roGame.mzCurrentObject || orxString_Compare(roGame.mzCurrentObject, orxObject_GetName(pstObject)))
+        if(!roGame.mzCurrentDeleteObject || orxString_Compare(roGame.mzCurrentDeleteObject, orxObject_GetName(pstObject)))
         {
           ScrollObject *poObject;
 
@@ -1612,7 +1615,7 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
         else
         {
           // Clears internal object
-          roGame.mzCurrentObject = orxNULL;
+          roGame.mzCurrentDeleteObject = orxNULL;
         }
       }
 
