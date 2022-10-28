@@ -1538,7 +1538,7 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
         pstObject = orxOBJECT(_pstEvent->hSender);
 
         // Not an internal creation?
-        if(!roGame.mzCurrentObject || !orxString_SearchString(roGame.mzCurrentObject, orxObject_GetName(pstObject)))
+        if(!roGame.mzCurrentObject || orxString_Compare(roGame.mzCurrentObject, orxObject_GetName(pstObject)))
         {
           ScrollObjectBinderBase *poBinder;
 
@@ -1580,7 +1580,7 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
         pstObject = orxOBJECT(_pstEvent->hSender);
 
         // Not an internal deletion?
-        if(!roGame.mzCurrentObject || !orxString_SearchString(roGame.mzCurrentObject, orxObject_GetName(pstObject)))
+        if(!roGame.mzCurrentObject || orxString_Compare(roGame.mzCurrentObject, orxObject_GetName(pstObject)))
         {
           ScrollObject *poObject;
 
