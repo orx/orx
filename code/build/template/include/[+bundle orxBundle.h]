@@ -74,6 +74,9 @@ static orxSTATUS orxFASTCALL ProcessBundleParams(orxU32 _u32ParamCount, const or
     // Updates status
     sbProcess = orxTRUE;
 
+    // Logs message
+    orxLOG(orxBUNDLE_KZ_LOG_TAG "Processing " orxANSI_KZ_COLOR_FG_MAGENTA "[Please do any resource-related config generation in your init() function!]" orxANSI_KZ_COLOR_RESET);
+
     // Updates result
     eResult = orxSTATUS_SUCCESS;
   }
@@ -419,6 +422,7 @@ static orxSTATUS orxFASTCALL orxBundle_EventHandler(const orxEVENT *_pstEvent)
 
       // Removes resource event handler
       orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxBundle_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxBundle_EventHandler);
     }
   }
 
@@ -684,7 +688,7 @@ orxSTATUS orxFASTCALL orxBundle_Init()
 
     // Registers event handler
     orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxBundle_EventHandler);
-    orxEvent_SetHandlerIDFlags(orxBundle_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_PARAM_READY) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_PARAM_DISPLAY), orxEVENT_KU32_MASK_ID_ALL);
+    orxEvent_SetHandlerIDFlags(orxBundle_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_PARAM_READY) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_GAME_LOOP_START), orxEVENT_KU32_MASK_ID_ALL);
     orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxBundle_EventHandler);
     orxEvent_SetHandlerIDFlags(orxBundle_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_REMOVE), orxEVENT_KU32_MASK_ID_ALL);
   }
