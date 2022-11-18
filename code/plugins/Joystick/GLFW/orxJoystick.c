@@ -300,6 +300,9 @@ orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
 
         /* Pops config section */
         orxConfig_PopSection();
+
+        /* Triggers initial update */
+        orxJoystick_GLFW_Update(orxNULL, orxNULL);
       }
 
       /* Updates status */
