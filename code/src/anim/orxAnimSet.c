@@ -1951,7 +1951,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           const orxSTRING zNewFrameParent;
           orxFLOAT        fEventValue = orxFLOAT_0, fDuration;
           orxS32          s32EventValueCount;
-          orxBOOL         bDebugLevelBackup, bTempSize = orxFALSE, bTempOrigin = orxFALSE, bTempName = orxFALSE;
+          orxBOOL         bDebugLevelBackup, bTempSize = orxFALSE, bTempOrigin = orxFALSE;
           orxCHAR         acParentBuffer[128], acFrameBuffer[128];
 
           /* Has prefix? */
@@ -2225,9 +2225,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
               /* Sets it */
               orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acTextureBuffer);
-
-              /* Updates status */
-              bTempName = orxTRUE;
             }
           }
 
@@ -2282,13 +2279,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           {
             /* Clears it */
             orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN);
-          }
-
-          /* Use temp name? */
-          if(bTempName != orxFALSE)
-          {
-            /* Clears it */
-            orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
           }
 
           /* Has prefix? */
