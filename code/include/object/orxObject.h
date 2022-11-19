@@ -308,6 +308,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetFlip(const orxOBJECT *_
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR *_pvPivot);
 
+/** Sets object relative pivot.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _u32AlignFlags  Graphic alignment flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRelativePivot(orxOBJECT *_pstObject, orxU32 _u32AlignFlags);
+
 /** Sets object origin. This is a convenience wrapper around orxGraphic_SetOrigin(). The "origin" of a graphic is
  * essentially what is indicated by the "TextureOrigin" field of a config graphic section. The "origin" together with
  * "size" (see orxObject_SetSize()) defines the sprite of an object.

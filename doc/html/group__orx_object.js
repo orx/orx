@@ -146,6 +146,7 @@ var group__orx_object =
     [ "orxObject_SetPitch", "group__orx_object.html#gae9a59f0011aedb77199a58260dc332d3", null ],
     [ "orxObject_SetPivot", "group__orx_object.html#gab5eff9d2aa5ca146cc0e615a4179a6d3", null ],
     [ "orxObject_SetPosition", "group__orx_object.html#ga7f4cf74a30aa02d5d589f3bd238c7986", null ],
+    [ "orxObject_SetRelativePivot", "group__orx_object.html#ga5acd08fae3b370be5b40fac9631ee5a5", null ],
     [ "orxObject_SetRelativeSpeed", "group__orx_object.html#ga5efa72124855f5fa5f3266aa61fdb027", null ],
     [ "orxObject_SetRepeat", "group__orx_object.html#gad7e69150f8ba78a9e52309ca2f6d9a74", null ],
     [ "orxObject_SetRGB", "group__orx_object.html#ga82e7f354992cebb25440c966528bdd7d", null ],

@@ -319,62 +319,6 @@ static void orxFASTCALL orxObject_UpdateBodyScale(orxOBJECT *_pstObject)
   return;
 }
 
-/** Sets relative pivot
- */
-static orxINLINE orxSTATUS orxObject_SetRelativePivot(orxOBJECT *_pstObject, const orxSTRING _zPivot)
-{
-  const orxSTRING zPivot;
-  orxSTATUS       eResult = orxSTATUS_FAILURE;
-
-  /* Skips all white spaces */
-  zPivot = orxString_SkipWhiteSpaces(_zPivot);
-
-  /* Valid ? */
-  if(*zPivot != orxCHAR_NULL)
-  {
-    orxGRAPHIC *pstGraphic;
-    orxU32      u32AlignFlags;
-
-    /* Gets align flags */
-    u32AlignFlags = orxGraphic_GetAlignFlags(zPivot);
-
-    /* Gets graphic */
-    pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
-
-    /* Valid? */
-    if(pstGraphic != orxNULL)
-    {
-      /* Updates its relative pivot */
-      eResult = orxGraphic_SetRelativePivot(pstGraphic, u32AlignFlags);
-    }
-    else
-    {
-      orxAABOX stBox;
-
-      /* Valid size? */
-      if(orxObject_GetSize(_pstObject, &(stBox.vBR)) != orxNULL)
-      {
-        /* Inits box top left corner */
-        orxVector_SetAll(&(stBox.vTL), orxFLOAT_0);
-
-        /* Updates pivot */
-        orxGraphic_AlignVector(u32AlignFlags, &stBox, &(_pstObject->vPivot));
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid size retrieved from object.");
-      }
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 /** Sets owned clock for an object
  */
 static orxINLINE orxSTATUS orxObject_SetOwnedClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock)
@@ -3434,7 +3378,7 @@ void orxFASTCALL orxObject_CommandSetPivot(orxU32 _u32ArgNumber, const orxCOMMAN
   if(pstObject != orxNULL)
   {
     /* Sets relative pivot? */
-    if(orxObject_SetRelativePivot(pstObject, _astArgList[1].zValue) == orxSTATUS_FAILURE)
+    if(orxObject_SetRelativePivot(pstObject, orxGraphic_GetAlignFlags(_astArgList[1].zValue)) == orxSTATUS_FAILURE)
     {
       orxVECTOR vPivot;
 
@@ -5419,7 +5363,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         else
         {
           /* Sets relative pivot */
-          orxObject_SetRelativePivot(pstResult, zPivot);
+          orxObject_SetRelativePivot(pstResult, orxGraphic_GetAlignFlags(zPivot));
         }
 
         /* *** Scale *** */
@@ -7033,6 +6977,56 @@ orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR 
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets relative object pivot.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _u32AlignFlags  Graphic alignment flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetRelativePivot(orxOBJECT *_pstObject, orxU32 _u32AlignFlags)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Updates its relative pivot */
+    eResult = orxGraphic_SetRelativePivot(pstGraphic, _u32AlignFlags);
+  }
+  else
+  {
+    orxAABOX stBox;
+
+    /* Valid size? */
+    if(orxObject_GetSize(_pstObject, &(stBox.vBR)) != orxNULL)
+    {
+      /* Inits box top left corner */
+      orxVector_SetAll(&(stBox.vTL), orxFLOAT_0);
+
+      /* Updates pivot */
+      orxGraphic_AlignVector(_u32AlignFlags, &stBox, &(_pstObject->vPivot));
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid size retrieved from object.");
+    }
   }
 
   /* Done! */

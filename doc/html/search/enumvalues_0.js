@@ -796,6 +796,8 @@ var searchData=
   ['orxsystem_5fevent_5fmotion_5fshake',['orxSYSTEM_EVENT_MOTION_SHAKE',['../group__orx_system.html#gga064bb4565c24e8324d940ff70964afeeaca2200f4fcd8418629a015d5500887ba',1,'orxSystem.h']]],
   ['orxsystem_5fevent_5fnone',['orxSYSTEM_EVENT_NONE',['../group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea1275060ea784dbdba516171f9c02bb95',1,'orxSystem.h']]],
   ['orxsystem_5fevent_5fnumber',['orxSYSTEM_EVENT_NUMBER',['../group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea890ffd6d7f0092ac3e7934bed628ca11',1,'orxSystem.h']]],
+  ['orxsystem_5fevent_5fparam_5fdisplay',['orxSYSTEM_EVENT_PARAM_DISPLAY',['../group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea6549fe4ebc32d8a00fbb2107a101e9f7',1,'orxSystem.h']]],
+  ['orxsystem_5fevent_5fparam_5fready',['orxSYSTEM_EVENT_PARAM_READY',['../group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea5538e710d921a7adcef38bc2cbf6b714',1,'orxSystem.h']]],
   ['orxsystem_5fevent_5ftouch_5fbegin',['orxSYSTEM_EVENT_TOUCH_BEGIN',['../group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea924c790bc57b34bf4ca9473a26faf3e7',1,'orxSystem.h']]],
   ['orxsystem_5fevent_5ftouch_5fend',['orxSYSTEM_EVENT_TOUCH_END',['../group__orx_system.html#gga064bb4565c24e8324d940ff70964afeea63b0748d0779f06a1f1f6cbb773053ab',1,'orxSystem.h']]],
   ['orxsystem_5fevent_5ftouch_5fmove',['orxSYSTEM_EVENT_TOUCH_MOVE',['../group__orx_system.html#gga064bb4565c24e8324d940ff70964afeeac928c48753b795e4892dd9c1b5607ddb',1,'orxSystem.h']]],
