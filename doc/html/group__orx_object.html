@@ -224,6 +224,8 @@ Flip</h2></td></tr>
 Graphic</h2></td></tr>
 <tr class="memitem:gab5eff9d2aa5ca146cc0e615a4179a6d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab5eff9d2aa5ca146cc0e615a4179a6d3">orxObject_SetPivot</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvPivot)</td></tr>
 <tr class="separator:gab5eff9d2aa5ca146cc0e615a4179a6d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5acd08fae3b370be5b40fac9631ee5a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga5acd08fae3b370be5b40fac9631ee5a5">orxObject_SetRelativePivot</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxU32 _u32AlignFlags)</td></tr>
+<tr class="separator:ga5acd08fae3b370be5b40fac9631ee5a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaba6395e153b0e580949380fc06112acc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaba6395e153b0e580949380fc06112acc">orxObject_SetOrigin</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOrigin)</td></tr>
 <tr class="separator:gaba6395e153b0e580949380fc06112acc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad38576090bef5ed7eaede3b8b62fe209"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gad38576090bef5ed7eaede3b8b62fe209">orxObject_SetSize</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvSize)</td></tr>
@@ -4636,6 +4638,40 @@ Picking</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPosition</td><td>Object position </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga5acd08fae3b370be5b40fac9631ee5a5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_SetRelativePivot </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxU32&#160;</td>
+          <td class="paramname"><em>_u32AlignFlags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets object relative pivot. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32AlignFlags</td><td>Graphic alignment flags </td></tr>
   </table>
   </dd>
 </dl>

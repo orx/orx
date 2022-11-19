@@ -78,6 +78,7 @@ var group__orx_display =
     [ "orxDISPLAY_KC_SHADER_EXTENSION_ADD", "group__orx_display.html#ga34697a5e408ccb6977ea4b7e963cb3b1", null ],
     [ "orxDISPLAY_KC_SHADER_EXTENSION_REMOVE", "group__orx_display.html#ga71c5a6cd2d093bdc13776c21a474bcad", null ],
     [ "orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE", "group__orx_display.html#gabaaa6113ef0c67d277f9da4b0d7e3bd3", null ],
+    [ "orxDISPLAY_KZ_CONFIG_CONTENT_SCALE", "group__orx_display.html#ga9d65be5f1c206e8fa32154dca79ec47f", null ],
     [ "orxDISPLAY_KZ_CONFIG_CURSOR", "group__orx_display.html#ga723241e00679a903a70a4224ac1ba2f8", null ],
     [ "orxDISPLAY_KZ_CONFIG_DEBUG_OUTPUT", "group__orx_display.html#ga45e445b21068e8b6e4d31f55dded4e88", null ],
     [ "orxDISPLAY_KZ_CONFIG_DECORATION", "group__orx_display.html#ga331cf2e2393d0d6831efb6c24952b507", null ],
