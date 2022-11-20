@@ -5352,18 +5352,22 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Gets pivot */
-        zPivot = orxConfig_GetString(orxOBJECT_KZ_CONFIG_PIVOT);
+        zPivot = orxString_SkipWhiteSpaces(orxConfig_GetString(orxOBJECT_KZ_CONFIG_PIVOT));
 
-        /* Is vector? */
-        if(orxConfig_ToVector(zPivot, &vValue) != orxNULL)
+        /* Valid? */
+        if(*zPivot != orxCHAR_NULL)
         {
-          /* Updates object pivot */
-          orxObject_SetPivot(pstResult, &vValue);
-        }
-        else
-        {
-          /* Sets relative pivot */
-          orxObject_SetRelativePivot(pstResult, orxGraphic_GetAlignFlags(zPivot));
+          /* Is vector? */
+          if(orxConfig_ToVector(zPivot, &vValue) != orxNULL)
+          {
+            /* Updates object pivot */
+            orxObject_SetPivot(pstResult, &vValue);
+          }
+          else
+          {
+            /* Sets relative pivot */
+            orxObject_SetRelativePivot(pstResult, orxGraphic_GetAlignFlags(zPivot));
+          }
         }
 
         /* *** Scale *** */
