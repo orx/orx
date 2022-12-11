@@ -222,12 +222,12 @@ static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zSto
   if(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
   {
     /* Uses name as path */
-    orxString_NPrint(sstResource.acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s", _zName);
+    orxString_NPrint(sstResource.acFileLocationBuffer, sizeof(sstResource.acFileLocationBuffer), "%s", _zName);
   }
   else
   {
     /* Composes full name */
-    orxString_NPrint(sstResource.acFileLocationBuffer, orxRESOURCE_KU32_BUFFER_SIZE - 1, "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+    orxString_NPrint(sstResource.acFileLocationBuffer, sizeof(sstResource.acFileLocationBuffer), "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
   }
 
   /* Exists or doesn't require existence? */
@@ -1846,6 +1846,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
             if(zLocation != orxNULL)
             {
               orxRESOURCE_INFO *pstResourceInfo;
+              orxS32            s32Size;
 
               /* Allocates resource info */
               pstResourceInfo = (orxRESOURCE_INFO *)orxBank_Allocate(sstResource.pstResourceInfoBank);
@@ -1856,9 +1857,10 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
               /* Inits it */
               pstResourceInfo->pstTypeInfo  = &(pstType->stInfo);
               pstResourceInfo->s64Time      = orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED;
-              pstResourceInfo->zLocation    = (orxSTRING)orxMemory_Allocate(orxString_GetLength(pstType->stInfo.zTag) + orxString_GetLength(zLocation) + 2, orxMEMORY_TYPE_TEXT);
+              s32Size                       = orxString_GetLength(pstType->stInfo.zTag) + orxString_GetLength(zLocation) + 2;
+              pstResourceInfo->zLocation    = (orxSTRING)orxMemory_Allocate(s32Size, orxMEMORY_TYPE_TEXT);
               orxASSERT(pstResourceInfo->zLocation != orxNULL);
-              orxString_Print(pstResourceInfo->zLocation, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zLocation);
+              orxString_NPrint(pstResourceInfo->zLocation, s32Size, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zLocation);
               pstResourceInfo->stGroupID    = stGroupID;
               pstResourceInfo->stNameID     = stKey;
               orxMEMORY_BARRIER();
@@ -1952,6 +1954,8 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
             /* Success? */
             if(zLocation != orxNULL)
             {
+              orxS32 s32Size;
+
               /* Has previous uncached location? */
               if(sstResource.zLastUncachedLocation != orxNULL)
               {
@@ -1960,9 +1964,10 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
               }
 
               /* Creates new location */
-              sstResource.zLastUncachedLocation = (orxSTRING)orxMemory_Allocate(orxString_GetLength(pstType->stInfo.zTag) + orxString_GetLength(zLocation) + 2, orxMEMORY_TYPE_TEXT);
+              s32Size = orxString_GetLength(pstType->stInfo.zTag) + orxString_GetLength(zLocation) + 2;
+              sstResource.zLastUncachedLocation = (orxSTRING)orxMemory_Allocate(s32Size, orxMEMORY_TYPE_TEXT);
               orxASSERT(sstResource.zLastUncachedLocation != orxNULL);
-              orxString_Print(sstResource.zLastUncachedLocation, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zLocation);
+              orxString_NPrint(sstResource.zLastUncachedLocation, s32Size, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zLocation);
 
               /* Updates result */
               zResult = sstResource.zLastUncachedLocation;
@@ -2804,6 +2809,7 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
               || (orxString_ICompare(pstResourceInfo->zLocation + orxString_GetLength(pstType->stInfo.zTag) + 1, zNewLocation) != 0))
               {
                 orxRESOURCE_EVENT_PAYLOAD stPayload;
+                orxS32                    s32Size;
                 orxBOOL                   bAdd;
 
                 /* Updates status */
@@ -2815,9 +2821,10 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
                 /* Updates its resource info */
                 pstResourceInfo->pstTypeInfo  = &(pstType->stInfo);
                 pstResourceInfo->s64Time      = orxRESOURCE_KU32_WATCH_TIME_UNINITIALIZED;
-                pstResourceInfo->zLocation    = (orxSTRING)orxMemory_Allocate(orxString_GetLength(pstType->stInfo.zTag) + orxString_GetLength(zNewLocation) + 2, orxMEMORY_TYPE_TEXT);
+                s32Size                       = orxString_GetLength(pstType->stInfo.zTag) + orxString_GetLength(zNewLocation) + 2;
+                pstResourceInfo->zLocation    = (orxSTRING)orxMemory_Allocate(s32Size, orxMEMORY_TYPE_TEXT);
                 orxASSERT(pstResourceInfo->zLocation != orxNULL);
-                orxString_Print(pstResourceInfo->zLocation, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zNewLocation);
+                orxString_NPrint(pstResourceInfo->zLocation, s32Size, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zNewLocation);
                 orxMEMORY_BARRIER();
 
                 /* Clears payload */

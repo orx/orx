@@ -236,7 +236,7 @@ orxSTATUS orxFASTCALL Init()
   zInputApplyFX = orxInput_GetBindingName(eType, eID, eMode);
 
   /* Displays a small hint in console */
-  pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer) - 1), "\n- To select a FX:");
+  pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "\n- To select a FX:");
   orxConfig_PushSection("Main");
   for(i = 0, s32Count = orxConfig_GetListCount("FXList");
       i < s32Count;
@@ -245,10 +245,10 @@ orxSTATUS orxFASTCALL Init()
     const orxSTRING zInput;
     zInput = orxConfig_GetListString("FXList", i);
     orxInput_GetBinding(zInput, 0, &eType, &eID, &eMode);
-    pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer) - 1), "\n . %-8s => %s", orxInput_GetBindingName(eType, eID, eMode), zInput);
+    pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "\n . %-8s => %s", orxInput_GetBindingName(eType, eID, eMode), zInput);
   }
   orxConfig_PopSection();
-  pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer) - 1),
+  pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)),
     "\n- %s will apply the current selected FX on the soldier"
     "\n* In this tutorial, only a single concurrent FX will be applied on the soldier"
     "\n* However an object can support up to %u simultaneous FXs"

@@ -369,8 +369,7 @@ static orxINLINE void orxRender_Home_RenderFPS()
     }
 
     /* Writes string */
-    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
-    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+    orxString_NPrint(acBuffer, sizeof(acBuffer), orxRENDER_KZ_FPS_FORMAT, orxFPS_GetFPS());
 
     /* Displays it */
     orxDisplay_TransformText(acBuffer, pstBitmap, orxFont_GetMap(pstFont), &stTextTransform, orxRENDER_KST_DEFAULT_COLOR, orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
@@ -410,9 +409,6 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
   /* Resets frame selection */
   orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame, sstRender.u32SelectedThread);
-
-  /* Inits buffer */
-  acLabel[sizeof(acLabel) - 1] = orxCHAR_NULL;
 
   /* Gets default font */
   pstFont = orxFont_GetDefaultFont();
@@ -706,7 +702,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxDisplay_TransformBitmap(pstBitmap, &stTransform, orx2RGBA(0xCC, 0xCC, 0xCC, 0xCC), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
   /* Displays its label */
-  orxString_NPrint(acLabel, sizeof(acLabel) - 1, "-=%s Thread=-  Frame[%.2f|%.2fms]", orxThread_GetName(sstRender.u32SelectedThread), orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
+  orxString_NPrint(acLabel, sizeof(acLabel), "-=%s Thread=-  Frame[%.2f|%.2fms]", orxThread_GetName(sstRender.u32SelectedThread), orx2D(1000.0) * dTotalTime, orx2D(1000.0) * orxProfiler_GetMaxResetTime());
   stTransform.fScaleX = fHeight / pstMap->fCharacterHeight;
   stTransform.fScaleX = orxMIN(fTextScale, stTransform.fScaleX);
   stTransform.fScaleY = stTransform.fScaleX = orxCLAMP(stTransform.fScaleX, orxRENDER_KF_PROFILER_TEXT_MIN_HEIGHT, orxRENDER_KF_PROFILER_TEXT_MAX_HEIGHT);
@@ -915,7 +911,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -954,7 +950,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32Depth = 1;
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - 1 - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orx2RGBA(0x66, 0x66, 0x66, 0xCC), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -1079,7 +1075,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
+      orxString_NPrint(acLabel, sizeof(acLabel), "%s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, stColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -1202,7 +1198,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws it */
-      orxString_NPrint(acLabel, sizeof(acLabel) - 1, "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u64Count, u64PeakCount, fSize, fPeakSize, azUnitList[u32UnitIndex], u64OperationCount);
+      orxString_NPrint(acLabel, sizeof(acLabel), "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u64Count, u64PeakCount, fSize, fPeakSize, azUnitList[u32UnitIndex], u64OperationCount);
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxColor_ToRGBA(&stColor), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
     }
   }
@@ -1411,7 +1407,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
     orxFLOAT  fBackupX;
 
     /* Displays it */
-    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "+%u %s", u32Offset, (u32Offset == 1) ? "line" : "lines");
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "+%u %s", u32Offset, (u32Offset == 1) ? "line" : "lines");
     fBackupX          = stTransform.fDstX;
     stTransform.fDstX = orxMath_Floor(fScreenWidth * (orxFLOAT_1 - orxRENDER_KF_CONSOLE_MARGIN_WIDTH)) - (orxString_GetLength(acBuffer) * fCharacterWidth);
     stTransform.fDstY = fBackupY;

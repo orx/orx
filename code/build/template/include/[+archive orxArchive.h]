@@ -4974,7 +4974,7 @@ const orxSTRING orxFASTCALL orxArchive_ZipLocate(const orxSTRING _zStorage, cons
   // Extracts archive name
   if(zDirectory != orxNULL)
   {
-    acArchive[orxString_NPrint(acArchive, sizeof(acArchive) - 1, "%.*s", zDirectory - _zStorage, _zStorage)] = orxCHAR_NULL;
+    orxString_NPrint(acArchive, sizeof(acArchive), "%.*s", zDirectory - _zStorage, _zStorage);
     zArchive = acArchive;
   }
 
@@ -4999,11 +4999,11 @@ const orxSTRING orxFASTCALL orxArchive_ZipLocate(const orxSTRING _zStorage, cons
       {
         if(*(zDirectory + orxString_GetLength(zDirectory) - 1) != orxCHAR_DIRECTORY_SEPARATOR_LINUX)
         {
-          acPath[orxString_NPrint(acPath, sizeof(acPath) - 1, "%s%c%s", zDirectory, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zResource)] = orxCHAR_NULL;
+          orxString_NPrint(acPath, sizeof(acPath), "%s%c%s", zDirectory, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zResource);
         }
         else
         {
-          acPath[orxString_NPrint(acPath, sizeof(acPath) - 1, "%s%s", zDirectory, _zResource)] = orxCHAR_NULL;
+          orxString_NPrint(acPath, sizeof(acPath), "%s%s", zDirectory, _zResource);
         }
         zPath = acPath;
       }
@@ -5013,7 +5013,7 @@ const orxSTRING orxFASTCALL orxArchive_ZipLocate(const orxSTRING _zStorage, cons
     if((iIndex = mz_zip_reader_locate_file(&stZipArchive, zPath, NULL, 0)) >= 0)
     {
       // Creates location string: storage name + index of file
-      sacBuffer[orxString_NPrint(sacBuffer, sizeof(sacBuffer) - 1, "%s%c%d", zArchive, orxRESOURCE_KC_LOCATION_SEPARATOR, iIndex)] = orxCHAR_NULL;
+      orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%s%c%d", zArchive, orxRESOURCE_KC_LOCATION_SEPARATOR, iIndex);
 
       // Updates result
       zResult = sacBuffer;

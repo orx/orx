@@ -3453,7 +3453,7 @@ static void orxFASTCALL orxConfig_SetDefaultColorList()
   orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
 
   /* Inits parent buffer */
-  s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "@.");
+  s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer), "@.");
 
   /* For all colors */
   for(orxU32 i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astColorList); i < iCount; i++)
@@ -3744,7 +3744,7 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
         if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
         {
           /* Prints it */
-          orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+          orxString_NPrint(sstConfig.acCommandBuffer, sizeof(sstConfig.acCommandBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
 
           /* Updates result */
           _pstResult->zValue = sstConfig.acCommandBuffer;
@@ -3762,7 +3762,7 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
             if(orxConfig_GetFloatFromValue(pstValue, s32Index, &fValue) != orxSTATUS_FAILURE)
             {
               /* Prints it */
-              orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%g", fValue);
+              orxString_NPrint(sstConfig.acCommandBuffer, sizeof(sstConfig.acCommandBuffer), "%g", fValue);
 
               /* Updates result */
               _pstResult->zValue = sstConfig.acCommandBuffer;
@@ -3877,7 +3877,7 @@ void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOM
       orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
 
       /* Prints it */
-      orxString_NPrint(sstConfig.acCommandBuffer, orxCONFIG_KU32_COMMAND_BUFFER_SIZE - 1, "%s", pstEntry->stValue.zValue);
+      orxString_NPrint(sstConfig.acCommandBuffer, sizeof(sstConfig.acCommandBuffer), "%s", pstEntry->stValue.zValue);
 
       /* Updates result */
       _pstResult->zValue = sstConfig.acCommandBuffer;
@@ -4416,12 +4416,13 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
     }
 
     /* Gets config base file */
-    orxString_NPrint(sstConfig.zBaseFile, orxCONFIG_KU32_BASE_FILENAME_LENGTH - 1, "%s.ini", _zBaseName + s32Index + 1);
+    orxString_NPrint(sstConfig.zBaseFile, sizeof(sstConfig.zBaseFile), "%s.ini", _zBaseName + s32Index + 1);
   }
   else
   {
     /* Uses default name */
-    orxString_NCopy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE, orxCONFIG_KU32_BASE_FILENAME_LENGTH - 1);
+    orxString_NCopy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE, sizeof(sstConfig.zBaseFile) - 1);
+    sstConfig.zBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH] = orxCHAR_NULL;
   }
 
   /* Done! */
@@ -4826,9 +4827,6 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
       orxCHAR             acBuffer[orxCONFIG_KU32_BUFFER_SIZE], *pcPreviousEncryptionChar = orxNULL;
       orxU32              u32BufferSize;
 
-      /* Inits buffer */
-      acBuffer[orxCONFIG_KU32_BUFFER_SIZE - 1] = orxCHAR_NULL;
-
       /* Use encryption? */
       if(_bUseEncryption != orxFALSE)
       {
@@ -4856,18 +4854,18 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           if(pstSection->pstParent == orxHANDLE_UNDEFINED)
           {
             /* Writes section name */
-            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%c%s%c%c%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, orxCONFIG_KC_INHERITANCE_MARKER, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, sizeof(acBuffer), "%c%s%c%c%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, orxCONFIG_KC_INHERITANCE_MARKER, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
           }
           /* Has a valid parent section */
           else if(pstSection->pstParent != orxNULL)
           {
             /* Writes section name with inheritance */
-            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%c%s%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, pstSection->pstParent->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, sizeof(acBuffer), "%c%s%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_INHERITANCE_MARKER, pstSection->pstParent->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
           }
           else
           {
             /* Writes section name */
-            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
+            u32BufferSize = (orxU32)orxString_NPrint(acBuffer, sizeof(acBuffer), "%c%s%c%s", orxCONFIG_KC_SECTION_START, pstSection->zName, orxCONFIG_KC_SECTION_END, orxSTRING_EOL);
           }
 
           /* Encrypt? */
@@ -4897,7 +4895,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
               if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
               {
                 /* Writes it */
-                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%s %c %s%s", zKey, orxCONFIG_KC_ASSIGN, *(pstEntry->stValue.zValue) == orxCONFIG_KC_BLOCK ? orxCONFIG_KZ_BLOCK : orxSTRING_EMPTY, pstEntry->stValue.zValue);
+                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, sizeof(acBuffer), "%s %c %s%s", zKey, orxCONFIG_KC_ASSIGN, *(pstEntry->stValue.zValue) == orxCONFIG_KC_BLOCK ? orxCONFIG_KZ_BLOCK : orxSTRING_EMPTY, pstEntry->stValue.zValue);
 
                 /* Is a list? */
                 if(orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
@@ -4916,7 +4914,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
                     for(; *pcSrc == orxCHAR_NULL; pcSrc++);
 
                     /* Writes separator */
-                    u32BufferSize += (orxU32)orxString_NPrint(acBuffer + u32BufferSize, orxCONFIG_KU32_BUFFER_SIZE - 1 - u32BufferSize, " %c ", orxCONFIG_KC_LIST_SEPARATOR);
+                    u32BufferSize += (orxU32)orxString_NPrint(acBuffer + u32BufferSize, sizeof(acBuffer) - u32BufferSize, " %c ", orxCONFIG_KC_LIST_SEPARATOR);
 
                     /* For all characters */
                     for(pcDst = acBuffer + u32BufferSize; (*pcSrc != orxCHAR_NULL) && (pcDst < acBuffer + orxCONFIG_KU32_BUFFER_SIZE - 1); pcSrc++, pcDst++, u32BufferSize++)
@@ -4928,14 +4926,14 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
                 }
 
                 /* Writes EOL */
-                u32BufferSize += (orxU32)orxString_NPrint(acBuffer + u32BufferSize, orxCONFIG_KU32_BUFFER_SIZE - 1 - u32BufferSize, "%s", orxSTRING_EOL);
+                u32BufferSize += (orxU32)orxString_NPrint(acBuffer + u32BufferSize, sizeof(acBuffer) - u32BufferSize, "%s", orxSTRING_EOL);
               }
               else
               {
                 orxCHAR *pcSrc, *pcDst;
 
                 /* Writes lead in */
-                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, orxCONFIG_KU32_BUFFER_SIZE - 1, "%s %c %c", zKey, orxCONFIG_KC_ASSIGN, orxCONFIG_KC_BLOCK);
+                u32BufferSize = (orxU32)orxString_NPrint(acBuffer, sizeof(acBuffer), "%s %c %c", zKey, orxCONFIG_KC_ASSIGN, orxCONFIG_KC_BLOCK);
 
                 /* For all characters */
                 for(pcSrc = pstEntry->stValue.zValue, pcDst = acBuffer + u32BufferSize; (*pcSrc != orxCHAR_NULL) && (pcDst < acBuffer + orxCONFIG_KU32_BUFFER_SIZE - 1); pcSrc++, pcDst++, u32BufferSize++)
@@ -4953,7 +4951,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
                 }
 
                 /* Writes lead out */
-                u32BufferSize += (orxU32)orxString_NPrint(pcDst, orxCONFIG_KU32_BUFFER_SIZE - 1 - u32BufferSize, "%c%s", orxCONFIG_KC_BLOCK, orxSTRING_EOL);
+                u32BufferSize += (orxU32)orxString_NPrint(pcDst, sizeof(acBuffer) - u32BufferSize, "%c%s", orxCONFIG_KC_BLOCK, orxSTRING_EOL);
               }
 
               /* Encrypt? */
@@ -4969,7 +4967,7 @@ orxSTATUS orxFASTCALL orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEn
           }
 
           /* Adds a new line */
-          u32BufferSize = (orxU32)orxString_Print(acBuffer, "%s", orxSTRING_EOL);
+          u32BufferSize = (orxU32)orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxSTRING_EOL);
 
           /* Encrypt? */
           if(_bUseEncryption != orxFALSE)
@@ -6464,11 +6462,8 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(const orxSTRING _zKey, orxS32 _s32Value)
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
-  /* Clears buffer */
-  orxMemory_Zero(zValue, 16 * sizeof(orxCHAR));
-
   /* Gets literal value */
-  orxString_Print(zValue, "%d", _s32Value);
+  orxString_NPrint(zValue, sizeof(zValue), "%d", _s32Value);
 
   /* Adds/replaces new entry */
   eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
@@ -6492,11 +6487,8 @@ orxSTATUS orxFASTCALL orxConfig_SetU32(const orxSTRING _zKey, orxU32 _u32Value)
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
-  /* Clears buffer */
-  orxMemory_Zero(zValue, 16 * sizeof(orxCHAR));
-
   /* Gets literal value */
-  orxString_Print(zValue, "%u", _u32Value);
+  orxString_NPrint(zValue, sizeof(zValue), "%u", _u32Value);
 
   /* Adds/replaces new entry */
   eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
@@ -6520,11 +6512,8 @@ orxSTATUS orxFASTCALL orxConfig_SetS64(const orxSTRING _zKey, orxS64 _s64Value)
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
-  /* Clears buffer */
-  orxMemory_Zero(zValue, 32 * sizeof(orxCHAR));
-
   /* Gets literal value */
-  orxString_Print(zValue, "%lld", _s64Value);
+  orxString_NPrint(zValue, sizeof(zValue), "%lld", _s64Value);
 
   /* Adds/replaces new entry */
   eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
@@ -6548,11 +6537,8 @@ orxSTATUS orxFASTCALL orxConfig_SetU64(const orxSTRING _zKey, orxU64 _u64Value)
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
-  /* Clears buffer */
-  orxMemory_Zero(zValue, 32 * sizeof(orxCHAR));
-
   /* Gets literal value */
-  orxString_Print(zValue, "%llu", _u64Value);
+  orxString_NPrint(zValue, sizeof(zValue), "%llu", _u64Value);
 
   /* Adds/replaces new entry */
   eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
@@ -6576,11 +6562,8 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(const orxSTRING _zKey, orxFLOAT _fValue
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
-  /* Clears buffer */
-  orxMemory_Zero(zValue, 16 * sizeof(orxCHAR));
-
   /* Gets literal value */
-  orxString_Print(zValue, "%f", _fValue);
+  orxString_NPrint(zValue, sizeof(zValue), "%f", _fValue);
 
   /* Adds/replaces new entry */
   eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
@@ -6670,11 +6653,8 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(const orxSTRING _zKey, const orxVECTOR
   orxASSERT(_zKey != orxSTRING_EMPTY);
   orxASSERT(_pvValue != orxNULL);
 
-  /* Clears buffer */
-  orxMemory_Zero(zValue, 64 * sizeof(orxCHAR));
-
   /* Gets literal value */
-  orxString_Print(zValue, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pvValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fZ, orxSTRING_KC_VECTOR_END);
+  orxString_NPrint(zValue, sizeof(zValue), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pvValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fZ, orxSTRING_KC_VECTOR_END);
 
   /* Adds/replaces new entry */
   eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);

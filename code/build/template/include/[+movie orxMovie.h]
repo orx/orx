@@ -216,7 +216,7 @@ static orxSTATUS orxFASTCALL orxMovie_UpdateFrame(void *_pContext)
         orxCHAR     acBuffer[256];
 
         // Pushes shader's section
-        orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s:%016llX", orxObject_GetName(pstMovieData->pstObject), orxStructure_GetGUID(pstMovieData->pstObject));
+        orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX", orxObject_GetName(pstMovieData->pstObject), orxStructure_GetGUID(pstMovieData->pstObject));
         orxConfig_PushSection(acBuffer);
 
         // Updates all textures
@@ -407,13 +407,13 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
           orxEvent_SetHandlerIDFlags(orxMovie_EventHandler, orxEVENT_TYPE_SOUND, pstMovieData, orxEVENT_GET_FLAG(orxSOUND_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
 
           // Creates music stream
-          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "empty 2 %u", plm_get_samplerate(pstMovieData->pstAudio));
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "empty 2 %u", plm_get_samplerate(pstMovieData->pstAudio));
           orxConfig_SetString("LifeTime", "sound");
           orxConfig_SetString("SoundList", orxObject_GetName(pstObject));
           orxConfig_SetString("Music", acBuffer);
 
           // Creates graphic
-          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s:%016llX", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
           pstTexture = orxTexture_Create();
           orxASSERT(pstTexture);
           pstBitmap = orxDisplay_CreateBitmap((orxU32)plm_get_width(pstMovieData->pstVideo), (orxU32)plm_get_height(pstMovieData->pstVideo));
@@ -423,26 +423,26 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
           orxConfig_SetString("Graphic", orxObject_GetName(pstObject));
 
           // Pushes shader config section
-          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s:%016llX", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
           orxConfig_PushSection(acBuffer);
 
           // Creates decoding textures
           pstTexture = orxTexture_Create();
           orxASSERT(pstTexture);
           pstBitmap = orxDisplay_CreateBitmap((orxU32)pstMovieData->pstVideo->video_decoder->luma_width / 4, (orxU32)plm_get_height(pstMovieData->pstVideo));
-          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s:%016llX:y", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX:y", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
           orxTexture_LinkBitmap(pstTexture, pstBitmap, acBuffer, orxTRUE);
           orxConfig_SetString("y", acBuffer);
           pstTexture = orxTexture_Create();
           orxASSERT(pstTexture);
           pstBitmap = orxDisplay_CreateBitmap((orxU32)pstMovieData->pstVideo->video_decoder->chroma_width / 4, (orxU32)plm_get_height(pstMovieData->pstVideo) >> 1);
-          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s:%016llX:cb", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX:cb", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
           orxTexture_LinkBitmap(pstTexture, pstBitmap, acBuffer, orxTRUE);
           orxConfig_SetString("cb", acBuffer);
           pstTexture = orxTexture_Create();
           orxASSERT(pstTexture);
           pstBitmap = orxDisplay_CreateBitmap((orxU32)pstMovieData->pstVideo->video_decoder->chroma_width / 4, (orxU32)plm_get_height(pstMovieData->pstVideo) >> 1);
-          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s:%016llX:cr", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX:cr", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
           orxTexture_LinkBitmap(pstTexture, pstBitmap, acBuffer, orxTRUE);
           orxConfig_SetString("cr", acBuffer);
 
@@ -542,7 +542,7 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
         // Deletes all textures
         orxTEXTURE *pstTexture = orxObject_GetWorkingTexture(pstMovieData->pstObject);
         orxTexture_Delete(pstTexture);
-        orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s:%016llX", orxObject_GetName(pstMovieData->pstObject), orxStructure_GetGUID(pstMovieData->pstObject));
+        orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX", orxObject_GetName(pstMovieData->pstObject), orxStructure_GetGUID(pstMovieData->pstObject));
         orxConfig_PushSection(acBuffer);
         pstTexture = orxTexture_Get(orxConfig_GetString("y"));
         orxTexture_Delete(pstTexture);

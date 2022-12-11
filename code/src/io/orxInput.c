@@ -645,13 +645,13 @@ static orxINLINE void orxInput_LoadCurrentSet()
               if(orxInput_Bind(zInput, (orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode, -1) != orxSTATUS_FAILURE)
               {
                 /* Gets threshold name */
-                acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_THRESHOLD_FORMAT, zInput)] = orxCHAR_NULL;
+                orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_THRESHOLD_FORMAT, zInput);
 
                 /* Stores threshold */
                 orxInput_SetThreshold(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.pstCurrentSet->fDefaultThreshold);
 
                 /* Gets multiplier name */
-                acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_MULTIPLIER_FORMAT, zInput)] = orxCHAR_NULL;
+                orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_MULTIPLIER_FORMAT, zInput);
 
                 /* Stores multiplier */
                 orxInput_SetMultiplier(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.pstCurrentSet->fDefaultMultiplier);
@@ -1657,7 +1657,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
           if(pstEntry->fThreshold != pstSet->fDefaultThreshold)
           {
             /* Gets threshold name */
-            acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_THRESHOLD_FORMAT, pstEntry->zName)] = orxCHAR_NULL;
+            orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_THRESHOLD_FORMAT, pstEntry->zName);
 
             /* Saves it */
             orxConfig_SetFloat(acBuffer, pstEntry->fThreshold);
@@ -1667,7 +1667,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
           if(pstEntry->fMultiplier != pstSet->fDefaultMultiplier)
           {
             /* Gets multiplier name */
-            acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, orxINPUT_KZ_MULTIPLIER_FORMAT, pstEntry->zName)] = orxCHAR_NULL;
+            orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_MULTIPLIER_FORMAT, pstEntry->zName);
 
             /* Saves it */
             orxConfig_SetFloat(acBuffer, pstEntry->fMultiplier);
@@ -3205,7 +3205,7 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
       case orxINPUT_MODE_POSITIVE:
       {
         /* Updates result */
-        orxString_NPrint(sstInput.acResultBuffer, orxINPUT_KU32_RESULT_BUFFER_SIZE - 1, orxINPUT_KZ_MODE_FORMAT, orxINPUT_KC_MODE_PREFIX_POSITIVE, zResult);
+        orxString_NPrint(sstInput.acResultBuffer, sizeof(sstInput.acResultBuffer), orxINPUT_KZ_MODE_FORMAT, orxINPUT_KC_MODE_PREFIX_POSITIVE, zResult);
         zResult = sstInput.acResultBuffer;
 
         break;
@@ -3214,7 +3214,7 @@ const orxSTRING orxFASTCALL orxInput_GetBindingName(orxINPUT_TYPE _eType, orxENU
       case orxINPUT_MODE_NEGATIVE:
       {
         /* Updates result */
-        orxString_NPrint(sstInput.acResultBuffer, orxINPUT_KU32_RESULT_BUFFER_SIZE - 1, orxINPUT_KZ_MODE_FORMAT, orxINPUT_KC_MODE_PREFIX_NEGATIVE, zResult);
+        orxString_NPrint(sstInput.acResultBuffer, sizeof(sstInput.acResultBuffer), orxINPUT_KZ_MODE_FORMAT, orxINPUT_KC_MODE_PREFIX_NEGATIVE, zResult);
         zResult = sstInput.acResultBuffer;
 
         break;
