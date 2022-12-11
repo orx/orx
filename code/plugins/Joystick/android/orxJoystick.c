@@ -688,9 +688,6 @@ orxFLOAT orxFASTCALL orxJoystick_Android_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
       }
       else
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Requested joystick ID <%d> is not connected.", u32ID);
-
         /* Updates result */
         fResult = orxFLOAT_0;
       }
@@ -737,9 +734,6 @@ orxBOOL orxFASTCALL orxJoystick_Android_IsButtonPressed(orxJOYSTICK_BUTTON _eBut
     }
     else
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Requested joystick ID <%d> is not connected.", u32ID);
-
       /* Updates result */
       bResult = orxFALSE;
     }
