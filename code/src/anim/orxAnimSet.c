@@ -1480,7 +1480,7 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
     *pzTableBucket = _zAnim;
 
     /* Gets its link name */
-    acLinkName[orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX)] = orxCHAR_NULL;
+    orxString_NPrint(acLinkName, sizeof(acLinkName), "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX);
 
     /* For all linked animations */
     for(i = 0, u32Count = orxConfig_GetListCount(acLinkName);
@@ -1657,7 +1657,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         orxConfig_SetParent(zNewAnimParent, zAnimSet);
 
         /* Gets anim's section name */
-        acAnimBuffer[orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s%s", zPrefix, zNewAnimParent)] = orxCHAR_NULL;
+        orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer), "%s%s", zPrefix, zNewAnimParent);
       }
       else
       {
@@ -1665,7 +1665,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         zNewAnimParent = zAnimSet;
 
         /* Gets anim's section name */
-        acAnimBuffer[orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s", zAnim)] = orxCHAR_NULL;
+        orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer), "%s", zAnim);
       }
 
       /* Gets current parent */
@@ -1958,11 +1958,11 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           if(*zPrefix != orxCHAR_NULL)
           {
             /* Gets new parent */
-            acParentBuffer[orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
+            orxString_NPrint(acParentBuffer, sizeof(acParentBuffer), "%s%0*u%s%s", zAnim, u32Digits, i + 1, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt);
             zNewFrameParent = acParentBuffer;
 
             /* Gets frame name */
-            acFrameBuffer[orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%s", zPrefix, zNewFrameParent)] = orxCHAR_NULL;
+            orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer), "%s%s", zPrefix, zNewFrameParent);
           }
           else
           {
@@ -1970,7 +1970,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             zNewFrameParent = zCurrentSection;
 
             /* Gets frame name */
-            acFrameBuffer[orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
+            orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer), "%s%0*u%s%s", zAnim, u32Digits, i + 1, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt);
           }
 
           /* From config and should auto-stop? */
@@ -2221,7 +2221,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               }
 
               /* Gets texture name */
-              acTextureBuffer[orxString_NPrint(acTextureBuffer, sizeof(acTextureBuffer) - 1, "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, u32FrameID, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
+              orxString_NPrint(acTextureBuffer, sizeof(acTextureBuffer), "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, u32FrameID, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt);
 
               /* Sets it */
               orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acTextureBuffer);
@@ -2539,7 +2539,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
         orxCHAR acLinkName[64];
 
         /* Gets link config property name */
-        acLinkName[orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", zAnim, orxANIMSET_KZ_LINK_SUFFIX)] = orxCHAR_NULL;
+        orxString_NPrint(acLinkName, sizeof(acLinkName), "%s%s", zAnim, orxANIMSET_KZ_LINK_SUFFIX);
 
         /* Gets self anim ID */
         u32AnimID = ((orxU32)(orxUPTR)orxHashTable_Get(pstResult->pstIDTable, u64AnimCRC) - 1);

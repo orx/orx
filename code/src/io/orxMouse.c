@@ -280,7 +280,7 @@ orxSTATUS orxFASTCALL orxMouse_SetCursor(const orxSTRING _zName, const orxVECTOR
       orxCHAR acBuffer[128];
 
       /* Prints name & pivot */
-      acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s#(%g,%g)", _zName, _pvPivot->fX, _pvPivot->fY)] = orxCHAR_NULL;
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s#(%g,%g)", _zName, _pvPivot->fX, _pvPivot->fY);
 
       /* Stores it */
       orxConfig_SetString(orxDISPLAY_KZ_CONFIG_CURSOR, acBuffer);

@@ -257,7 +257,7 @@ static void orxFASTCALL orxConsole_SaveHistory()
     orxConfig_PopSection();
 
     /* Gets file name */
-    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
 
     /* Saves it */
     orxConfig_Save(acBuffer, orxFALSE, orxConsole_HistorySaveCallback);
@@ -274,7 +274,7 @@ static void orxFASTCALL orxConsole_LoadHistory()
   orxCHAR acBuffer[256];
 
   /* Gets file name */
-  orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
+  orxString_NPrint(acBuffer, sizeof(acBuffer), "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
 
   /* Loads it */
   orxConfig_Load(acBuffer);
@@ -705,7 +705,7 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           orxS32 s32Offset, i;
 
           /* Prints it */
-          s32Offset = orxString_NPrint((orxCHAR *)pcStart, orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1 - (orxU32)(pcStart - pstEntry->acBuffer), "%s", sstConsole.zCompletedCommand);
+          s32Offset = orxString_NPrint((orxCHAR *)pcStart, orxCONSOLE_KU32_INPUT_ENTRY_SIZE - (orxU32)(pcStart - pstEntry->acBuffer), "%s", sstConsole.zCompletedCommand);
 
           /* Ends string */
           pstEntry->acBuffer[(pcStart - pstEntry->acBuffer) + s32Offset] = orxCHAR_NULL;
@@ -1746,7 +1746,7 @@ orxU32 orxFASTCALL orxConsole_GetCompletionCount(orxU32 *_pu32MaxLength)
     pstEntry = &(sstConsole.astInputEntryList[sstConsole.u32InputIndex]);
 
     /* Gets start of line */
-    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", pstEntry->u32CursorIndex, pstEntry->acBuffer);
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%.*s", pstEntry->u32CursorIndex, pstEntry->acBuffer);
     for(pc = acBuffer + pstEntry->u32CursorIndex; (pc >= acBuffer) && (*pc != ' ') && (*pc != '\t') && (*pc != orxCOMMAND_KC_PUSH_MARKER); pc--)
       ;
     pc++;
@@ -1810,7 +1810,7 @@ const orxSTRING orxFASTCALL orxConsole_GetCompletion(orxU32 _u32Index, orxBOOL *
     pstEntry = &(sstConsole.astInputEntryList[sstConsole.u32InputIndex]);
 
     /* Gets start of line */
-    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", pstEntry->u32CursorIndex, pstEntry->acBuffer);
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%.*s", pstEntry->u32CursorIndex, pstEntry->acBuffer);
     for(pc = acBuffer + pstEntry->u32CursorIndex; (pc >= acBuffer) && (*pc != ' ') && (*pc != '\t') && (*pc != orxCOMMAND_KC_PUSH_MARKER); pc--)
       ;
     pc++;

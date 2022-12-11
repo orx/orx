@@ -880,7 +880,7 @@ const orxSTRING orxFASTCALL orxFrame_GetIgnoreFlagNames(orxU32 _u32Flags)
   /* Clears result buffer */
   orxMemory_Zero(&(sstFrame.acResultBuffer), sizeof(sstFrame.acResultBuffer));
 
-#define orxFRAME_PRINT(STRING) pc += orxString_NPrint(pc, (orxU32)(sizeof(sstFrame.acResultBuffer) - 1 - (pc - sstFrame.acResultBuffer)), STRING)
+#define orxFRAME_PRINT(STRING) pc += orxString_NPrint(pc, (orxU32)(sizeof(sstFrame.acResultBuffer) - (pc - sstFrame.acResultBuffer)), STRING)
 
   /* Depending on flags */
   switch(orxFLAG_GET(_u32Flags, orxFRAME_KU32_MASK_IGNORE_ALL))

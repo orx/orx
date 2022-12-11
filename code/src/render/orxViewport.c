@@ -960,7 +960,7 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                   orxCHAR     acBuffer[256];
 
                   /* Gets its name */
-                  acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s", orxTexture_GetName(pstViewport->apstTextureList[i]))] = orxCHAR_NULL;
+                  orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxTexture_GetName(pstViewport->apstTextureList[i]));
 
                   /* Unlinks its bitmap */
                   orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);

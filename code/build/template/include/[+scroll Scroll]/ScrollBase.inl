@@ -499,9 +499,9 @@ orxSTATUS ScrollBase::LoadMap()
       s32ScrollObjectNumber = orxConfig_GetS32(szConfigScrollObjectNumber);
 
       // For all objects to load
-      for(s32ScrollObjectCount = 0, i = 0, orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, szConfigScrollObjectFormat, i), acBuffer[31] = orxCHAR_NULL;
+      for(s32ScrollObjectCount = 0, i = 0, orxString_NPrint(acBuffer, sizeof(acBuffer), szConfigScrollObjectFormat, i);
           s32ScrollObjectCount < s32ScrollObjectNumber;
-          i++, orxString_NPrint(acBuffer, 32, szConfigScrollObjectFormat, i), acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL)
+          i++, orxString_NPrint(acBuffer, sizeof(acBuffer), szConfigScrollObjectFormat, i))
       {
         // Has section?
         if(orxConfig_HasSection(acBuffer))
@@ -1411,14 +1411,13 @@ orxSTRING ScrollBase::GetNewObjectName(orxCHAR _zInstanceName[32], orxBOOL _bRun
   if(_bRunTime)
   {
     // Creates name
-    orxString_NPrint(zResult, 31, szConfigScrollObjectRuntimeFormat, mu32RuntimeObjectID++);
+    orxString_NPrint(zResult, 32, szConfigScrollObjectRuntimeFormat, mu32RuntimeObjectID++);
   }
   else
   {
     // Creates name
-    orxString_NPrint(zResult, 31, szConfigScrollObjectFormat, mu32NextObjectID++);
+    orxString_NPrint(zResult, 32, szConfigScrollObjectFormat, mu32NextObjectID++);
   }
-  zResult[31] = orxCHAR_NULL;
 
   // Done
   return zResult;
@@ -2030,7 +2029,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstOrxObject, con
     orxObject_SetUserData(_pstOrxObject, poResult);
 
     // Stores its name
-    poResult->macName[orxString_NPrint(poResult->macName, sizeof(poResult->macName) - 1, "%s", _zInstanceName)] = orxCHAR_NULL;
+    orxString_NPrint(poResult->macName, sizeof(poResult->macName), "%s", _zInstanceName);
 
     // Inits flags
     xFlags = _xFlags;

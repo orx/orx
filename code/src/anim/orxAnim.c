@@ -580,9 +580,9 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
     orxMemory_Zero(acEventID, 32 * sizeof(orxCHAR));
 
     /* For all keys/events */
-    for(u32KeyCount = 0, u32EventCount = 0, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCount + 1), orxString_Print(acEventID, "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCount + 1);
+    for(u32KeyCount = 0, u32EventCount = 0, orxString_NPrint(acID, sizeof(acID), "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCount + 1), orxString_NPrint(acEventID, sizeof(acEventID), "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCount + 1);
         orxConfig_HasValue(acID) != orxFALSE;
-        u32KeyCount++, orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCount + 1), orxString_Print(acEventID, "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCount + 1))
+        u32KeyCount++, orxString_NPrint(acID, sizeof(acID), "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, u32KeyCount + 1), orxString_NPrint(acEventID, sizeof(acEventID), "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, u32KeyCount + 1))
     {
       /* Has matching event? */
       if(orxConfig_HasValue(acEventID) != orxFALSE)
@@ -620,7 +620,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
           const orxSTRING zDataName;
 
           /* Gets data ID */
-          orxString_Print(acID, "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, i + 1);
+          orxString_NPrint(acID, sizeof(acID), "%s%d", orxANIM_KZ_CONFIG_KEY_DATA, i + 1);
 
           /* Gets its name */
           zDataName = orxConfig_GetString(acID);
@@ -637,7 +637,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
             if(pstGraphic != orxNULL)
             {
               /* Gets matching event ID */
-              orxString_Print(acEventID, "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, i + 1);
+              orxString_NPrint(acEventID, sizeof(acEventID), "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_NAME, i + 1);
 
               /* Defined? */
               if(orxConfig_HasValue(acEventID) != orxFALSE)
@@ -651,7 +651,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
                 if((zEventName != orxNULL) && (zEventName != orxSTRING_EMPTY))
                 {
                   /* Gets its value IDs */
-                  orxString_Print(acValueID, "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_VALUE, i + 1);
+                  orxString_NPrint(acValueID, sizeof(acValueID), "%s%d", orxANIM_KZ_CONFIG_KEY_EVENT_VALUE, i + 1);
 
                   /* Adds it */
                   if(orxAnim_AddEvent(pstResult, zEventName, fTimeStamp, orxConfig_GetFloat(acValueID)) == orxSTATUS_FAILURE)
@@ -663,7 +663,7 @@ orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID)
               }
 
               /* Gets duration ID */
-              orxString_Print(acTimeID, "%s%d", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
+              orxString_NPrint(acTimeID, sizeof(acTimeID), "%s%d", orxANIM_KZ_CONFIG_KEY_DURATION, i + 1);
 
               /* Updates its timestamp */
               fTimeStamp += orxConfig_HasValue(acTimeID) ? orxConfig_GetFloat(acTimeID) : orxConfig_GetFloat(orxANIM_KZ_CONFIG_DEFAULT_DURATION);

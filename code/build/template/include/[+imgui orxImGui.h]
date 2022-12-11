@@ -263,7 +263,7 @@ orxSTATUS orxFASTCALL orxImGui_Init()
             {
               orxFLOAT fFontSize = orxMAX(orxFLOAT_1, (orxConfig_GetListCount(zFont) > 1) ? orxConfig_GetListFloat(zFont, 1) : orxIMGUI_KU32_DEFAULT_FONT_SIZE);
               ImFontConfig stFontConfig;
-              orxString_NPrint(stFontConfig.Name, sizeof(stFontConfig.Name) - 1, "%s", zFont);
+              orxString_NPrint(stFontConfig.Name, sizeof(stFontConfig.Name), "%s", zFont);
               sstImGui.apstFonts[sstImGui.s32FontCount] = rstIO.Fonts->AddFontFromMemoryTTF(pBuffer, s32Size, fFontSize, &stFontConfig, NULL);
             }
             else

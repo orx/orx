@@ -204,7 +204,7 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
             orxEvent_SetHandlerIDFlags(orxMod_EventHandler, orxEVENT_TYPE_OBJECT, pstModData, orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE), orxEVENT_KU32_MASK_ID_ALL);
 
             // Creates music stream
-            orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "empty 2 %u", orxMOD_KU32_SAMPLE_RATE);
+            orxString_NPrint(acBuffer, sizeof(acBuffer), "empty 2 %u", orxMOD_KU32_SAMPLE_RATE);
             orxConfig_SetString("SoundList", orxObject_GetName(pstObject));
             orxConfig_SetString("Music", acBuffer);
           }
