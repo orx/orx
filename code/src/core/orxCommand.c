@@ -1294,7 +1294,7 @@ void orxFASTCALL orxCommand_CommandListCommands(orxU32 _u32ArgNumber, const orxC
   zPrefix = (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL;
 
   /* For all commands */
-  for(zCommand = orxNULL, zCommand = orxCommand_GetNext(zPrefix, zCommand, orxNULL), u32Count = 0;
+  for(zCommand = orxNULL, zCommand = (orxCommand_IsRegistered(zPrefix) != orxFALSE) ? zPrefix : orxCommand_GetNext(zPrefix, zCommand, orxNULL), u32Count = 0;
       zCommand != orxNULL;
       zCommand = orxCommand_GetNext(zPrefix, zCommand, orxNULL))
   {
@@ -1391,7 +1391,7 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
   zPrefix = (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL;
 
   /* For all commands */
-  for(zAlias = orxNULL, zAlias = orxCommand_GetNext(zPrefix, zAlias, orxNULL), u32Count = 0;
+  for(zAlias = orxNULL, zAlias = (orxCommand_IsAlias(zPrefix) != orxFALSE) ? zPrefix : orxCommand_GetNext(zPrefix, zAlias, orxNULL), u32Count = 0;
       zAlias != orxNULL;
       zAlias = orxCommand_GetNext(zPrefix, zAlias, orxNULL))
   {
