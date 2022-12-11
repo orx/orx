@@ -896,12 +896,12 @@ Functions</h2></td></tr>
 <p>Prints a variable to a buffer, according to its type (and ignoring any bloc/special character) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[out]</td><td class="paramname">_zDstString</td><td>Destination string </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>String available size </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Available string size, including terminating null character </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstVar</td><td>Variable to print </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Number of written characters (excluding trailing orxCHAR_NULL) </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of written characters, excluding terminating null character </dd></dl>
 
 </div>
 </div>
