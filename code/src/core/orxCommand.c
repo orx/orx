@@ -1971,6 +1971,82 @@ void orxFASTCALL orxCommand_CommandDivide(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
+/* Command: Absolute */
+void orxFASTCALL orxCommand_CommandAbsolute(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR stOperand;
+
+  /* Parses numerical argument */
+  if(orxCommand_ParseNumericalArguments(1, _astArgList, &stOperand) != orxSTATUS_FAILURE)
+  {
+    /* Float? */
+    if(stOperand.eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", orxMath_Abs(stOperand.fValue));
+    }
+    else
+    {
+      orxVECTOR vResult;
+
+      /* Updates intermediate result */
+      orxVector_Abs(&vResult, &(stOperand.vValue));
+
+      /* Prints it */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+    }
+
+    /* Updates result */
+    _pstResult->zValue = sstCommand.acResultBuffer;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/* Command: Negate */
+void orxFASTCALL orxCommand_CommandNegate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR stOperand;
+
+  /* Parses numerical argument */
+  if(orxCommand_ParseNumericalArguments(1, _astArgList, &stOperand) != orxSTATUS_FAILURE)
+  {
+    /* Float? */
+    if(stOperand.eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", -stOperand.fValue);
+    }
+    else
+    {
+      orxVECTOR vResult;
+
+      /* Updates intermediate result */
+      orxVector_Neg(&vResult, &(stOperand.vValue));
+
+      /* Prints it */
+      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+    }
+
+    /* Updates result */
+    _pstResult->zValue = sstCommand.acResultBuffer;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
 /* Command: Random */
 void orxFASTCALL orxCommand_CommandRandom(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -2607,6 +2683,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Multiply, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
   /* Command: Divide */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Divide, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
+  /* Command: Absolute */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Absolute, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_NUMERIC});
+  /* Command: Negate */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Negate, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_NUMERIC});
 
   /* Command: Random */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Random, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 0, 3, {"Boundary1 = 1.0", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Boundary2 = 0.0", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Step = <void>", orxCOMMAND_VAR_TYPE_NUMERIC});
@@ -2729,6 +2809,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("Math.Mul", "Command.Multiply", orxNULL);
   /* Alias: Math.Div */
   orxCommand_AddAlias("Math.Div", "Command.Divide", orxNULL);
+  /* Alias: Math.Abs */
+  orxCommand_AddAlias("Math.Abs", "Command.Absolute", orxNULL);
+  /* Alias: Math.Neg */
+  orxCommand_AddAlias("Math.Neg", "Command.Negate", orxNULL);
 
   /* Alias: + */
   orxCommand_AddAlias("+", "Math.Add", orxNULL);
@@ -2738,6 +2822,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("*", "Math.Mul", orxNULL);
   /* Alias: / */
   orxCommand_AddAlias("/", "Math.Div", orxNULL);
+  /* Alias: Abs */
+  orxCommand_AddAlias("Abs", "Math.Abs", orxNULL);
+  /* Alias: Neg */
+  orxCommand_AddAlias("Neg", "Math.Neg", orxNULL);
 
   /* Alias: Math.Random */
   orxCommand_AddAlias("Math.Random", "Command.Random", orxNULL);
@@ -2898,6 +2986,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("Math.Mul");
   /* Alias: Math.Div */
   orxCommand_RemoveAlias("Math.Div");
+  /* Alias: Math.Abs */
+  orxCommand_RemoveAlias("Math.Abs");
+  /* Alias: Math.Neg */
+  orxCommand_RemoveAlias("Math.Neg");
 
   /* Alias: + */
   orxCommand_RemoveAlias("+");
@@ -2907,6 +2999,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("*");
   /* Alias: / */
   orxCommand_RemoveAlias("/");
+  /* Alias: Abs */
+  orxCommand_RemoveAlias("Abs");
+  /* Alias: Neg */
+  orxCommand_RemoveAlias("Neg");
 
   /* Alias: Math.Random */
   orxCommand_RemoveAlias("Math.Random");
