@@ -104,7 +104,7 @@ static orxINLINE const orxSTRING orxBundle_GetHumanReadableSize(orxS64 _s64Size,
     ;
 
   // Prints it
-  sacBuffer[orxString_NPrint(sacBuffer, sizeof(sacBuffer) - 1, "%.*g %s", orxF2U(log10f(fSize) + _u32Decimals + 1), fSize, sazUnitList[u32UnitIndex])] = orxCHAR_NULL;
+  orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%.*g %s", orxF2U(log10f(fSize) + _u32Decimals + 1), fSize, sazUnitList[u32UnitIndex]);
 
   // Done!
   return sacBuffer;
@@ -461,7 +461,7 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zStorage, const or
       if(pstData != orxNULL)
       {
         // Creates location string: index of file
-        sacBuffer[orxString_NPrint(sacBuffer, sizeof(sacBuffer) - 1, "0x%x", (orxU32)(pstData - sastDataList))] = orxCHAR_NULL;
+        orxString_NPrint(sacBuffer, sizeof(sacBuffer), "0x%x", (orxU32)(pstData - sastDataList));
 
         // Updates result
         zResult = sacBuffer;
