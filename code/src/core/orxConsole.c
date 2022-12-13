@@ -296,8 +296,8 @@ static void orxFASTCALL orxConsole_LoadHistory()
       pstEntry = &(sstConsole.astInputEntryList[sstConsole.u32InputIndex++]);
 
       /* Updates it */
-      orxString_NCopy(pstEntry->acBuffer, orxConfig_GetListString(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST, i), orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1);
-      pstEntry->acBuffer[orxCONSOLE_KU32_INPUT_ENTRY_SIZE - 1] = orxCHAR_NULL;
+      orxString_NCopy(pstEntry->acBuffer, orxConfig_GetListString(orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST, i), sizeof(pstEntry->acBuffer) - 1);
+      pstEntry->acBuffer[sizeof(pstEntry->acBuffer) - 1] = orxCHAR_NULL;
       pstEntry->u32CursorIndex = orxString_GetLength(pstEntry->acBuffer);
     }
 

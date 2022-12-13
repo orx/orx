@@ -728,8 +728,8 @@ orxU32 orxFASTCALL orxFrame_GetIgnoreFlagValues(const orxSTRING _zFlags)
   orxASSERT(_zFlags != orxNULL);
 
   /* Gets lower case version */
-  zFlags = orxString_LowerCase(orxString_NCopy(acBuffer, _zFlags, sizeof(acBuffer) - 1));
   acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+  zFlags = orxString_LowerCase(orxString_NCopy(acBuffer, _zFlags, sizeof(acBuffer) - 1));
 
   /* Not none? */
   if(orxString_SearchString(zFlags, orxFRAME_KZ_NONE) == orxNULL)

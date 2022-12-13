@@ -4092,7 +4092,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     orxCONFIG_BOOTSTRAP_FUNCTION  pfnBackupBootstrap;
 
     /* Backups base file name */
-    orxMemory_Copy(zBackupBaseFile, sstConfig.zBaseFile, orxCONFIG_KU32_BASE_FILENAME_LENGTH);
+    orxMemory_Copy(zBackupBaseFile, sstConfig.zBaseFile, sizeof(zBackupBaseFile));
 
     /* Backups encryption key */
     zBackupEncryptionKey = sstConfig.zEncryptionKey;
@@ -4107,12 +4107,12 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     if(*zBackupBaseFile != orxCHAR_NULL)
     {
       /* Restores base file name */
-      orxMemory_Copy(sstConfig.zBaseFile, zBackupBaseFile, orxCONFIG_KU32_BASE_FILENAME_LENGTH);
+      orxMemory_Copy(sstConfig.zBaseFile, zBackupBaseFile, sizeof(sstConfig.zBaseFile));
     }
     else
     {
       /* Stores default base file name */
-      orxString_NCopy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE, orxCONFIG_KU32_BASE_FILENAME_LENGTH - 1);
+      orxString_NCopy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE, sizeof(sstConfig.zBaseFile) - 1);
     }
 
     /* Valid encryption key? */
@@ -4422,7 +4422,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
   {
     /* Uses default name */
     orxString_NCopy(sstConfig.zBaseFile, orxCONFIG_KZ_DEFAULT_FILE, sizeof(sstConfig.zBaseFile) - 1);
-    sstConfig.zBaseFile[orxCONFIG_KU32_BASE_FILENAME_LENGTH] = orxCHAR_NULL;
+    sstConfig.zBaseFile[sizeof(sstConfig.zBaseFile) - 1] = orxCHAR_NULL;
   }
 
   /* Done! */

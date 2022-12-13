@@ -268,8 +268,8 @@ void orxFASTCALL orxViewport_CommandSetRelativePosition(orxU32 _u32ArgNumber, co
     orxU32          u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
 
     /* Gets its relative position */
-    orxString_LowerCase(orxString_NCopy(acBuffer, _astArgList[1].zValue, sizeof(acBuffer) - 1));
     acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+    orxString_LowerCase(orxString_NCopy(acBuffer, _astArgList[1].zValue, sizeof(acBuffer) - 1));
     zRelativePos = orxString_SkipWhiteSpaces(orxString_LowerCase(acBuffer));
 
     /* Not empty? */
