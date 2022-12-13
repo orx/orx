@@ -1119,8 +1119,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         /* Duplicates it */
         pstEntry->stValue.eType   = _pstResult->eType;
         pstEntry->stValue.zValue  = pstEntry->acBuffer;
-        orxString_NCopy(pstEntry->acBuffer, _pstResult->zValue, orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE - 1);
-        pstEntry->acBuffer[orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE - 1] = orxCHAR_NULL;
+        orxString_NCopy(pstEntry->acBuffer, _pstResult->zValue, sizeof(pstEntry->acBuffer) - 1);
+        pstEntry->acBuffer[sizeof(pstEntry->acBuffer) - 1] = orxCHAR_NULL;
       }
       else
       {
@@ -1534,8 +1534,8 @@ void orxFASTCALL orxCommand_CommandRepeat(orxU32 _u32ArgNumber, const orxCOMMAND
   s32Count = _astArgList[0].s32Value;
 
   /* Copies command */
-  orxString_NCopy(acBuffer, _astArgList[1].zValue, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1);
-  acBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1] = orxCHAR_NULL;
+  orxString_NCopy(acBuffer, _astArgList[1].zValue, sizeof(acBuffer) - 1);
+  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
   /* For all iterations */
   while(s32Count--)

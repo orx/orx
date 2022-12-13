@@ -559,22 +559,18 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
       _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
       /* Stores pattern */
-      u32Length = sizeof(_pstFileInfo->zPattern) - 1;
-      orxString_NCopy(_pstFileInfo->zPattern, zFileName, u32Length);
-      _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
+      orxString_NCopy(_pstFileInfo->zPattern, zFileName, sizeof(_pstFileInfo->zPattern) - 1);
+      _pstFileInfo->zPattern[sizeof(_pstFileInfo->zPattern) - 1] = orxCHAR_NULL;
     }
     else
     {
-      orxU32 u32Length;
-
       /* Clears vars */
       _pstFileInfo->zPath[0]      = orxCHAR_NULL;
       _pstFileInfo->zFullName[0]  = orxCHAR_NULL;
 
       /* Stores pattern */
-      u32Length = sizeof(_pstFileInfo->zPattern) - 1;
-      orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Length);
-      _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
+      orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, sizeof(_pstFileInfo->zPattern) - 1);
+      _pstFileInfo->zPattern[sizeof(_pstFileInfo->zPattern) - 1] = orxCHAR_NULL;
     }
 
     /* Tranfers file info */
@@ -612,18 +608,14 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
     _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
     /* Stores pattern */
-    u32Length = sizeof(_pstFileInfo->zPattern) - 1;
-    orxString_NCopy(_pstFileInfo->zPattern, zFileName, u32Length);
-    _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
+    orxString_NCopy(_pstFileInfo->zPattern, zFileName, sizeof(_pstFileInfo->zPattern) - 1);
+    _pstFileInfo->zPattern[sizeof(_pstFileInfo->zPattern) - 1] = orxCHAR_NULL;
   }
   else
   {
-    orxU32 u32Length;
-
     /* Stores pattern */
-    u32Length = sizeof(_pstFileInfo->zPattern) - 1;
-    orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Length);
-    _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
+    orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, sizeof(_pstFileInfo->zPattern) - 1);
+    _pstFileInfo->zPattern[sizeof(_pstFileInfo->zPattern) - 1] = orxCHAR_NULL;
 
     /* Clears vars */
     orxString_NPrint(_pstFileInfo->zPath, sizeof(_pstFileInfo->zPath), "./");
