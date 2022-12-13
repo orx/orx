@@ -357,8 +357,6 @@ static void orxSoundSystem_MiniAudio_ProcessCustomNode(ma_node *_pstNode, const 
 
   /* Done! */
   return;
-
-  //ma_delay_process_pcm_frames(&pDelayNode->delay, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
 }
 
 static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_EventHandler(const orxEVENT *_pstEvent)
@@ -3345,13 +3343,6 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
         /* Success? */
         if(hResult == MA_SUCCESS)
         {
-          /* Is buffer? */
-          if(_pstSample->bBuffer != orxFALSE)
-          {
-            //! TEMP: Checks sample rates match until miniaudio supports audio buffers with sample rate
-            orxASSERT(pstResult->stSound.engineNode.sampleRate == _pstSample->u32SampleRate && "Sound Sample rate [%u] does not match engine's [%u]: This is currently not supported, until miniaudio adds this feature.", _pstSample->u32SampleRate, pstResult->stSound.engineNode.sampleRate);
-          }
-
           /* Stores filter node */
           pstResult->pstFilterNode    = (ma_node_base *)&(pstResult->stSound.engineNode);
 
