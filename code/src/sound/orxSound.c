@@ -2838,41 +2838,29 @@ orxSTATUS orxFASTCALL orxSound_SetVolume(orxSOUND *_pstSound, orxFLOAT _fVolume)
   orxASSERT(sstSound.u32Flags & orxSOUND_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstSound);
 
-  /* Valid? */
-  if(_fVolume >= orxFLOAT_0)
+  /* Has sound? */
+  if(_pstSound->pstData != orxNULL)
   {
-    /* Has sound? */
-    if(_pstSound->pstData != orxNULL)
+    orxSOUND_BUS *pstBus;
+
+    /* Gets bus */
+    pstBus = orxSound_GetBus(_pstSound->stBusID, orxFALSE);
+
+    /* Checks */
+    orxASSERT(pstBus != orxNULL);
+
+    /* Sets its internal volume */
+    eResult = orxSoundSystem_SetVolume(_pstSound->pstData, pstBus->fGlobalVolume * _fVolume);
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
     {
-      orxSOUND_BUS *pstBus;
-
-      /* Gets bus */
-      pstBus = orxSound_GetBus(_pstSound->stBusID, orxFALSE);
-
-      /* Checks */
-      orxASSERT(pstBus != orxNULL);
-
-      /* Sets its internal volume */
-      eResult = orxSoundSystem_SetVolume(_pstSound->pstData, pstBus->fGlobalVolume * _fVolume);
-
-      /* Success? */
-      if(eResult != orxSTATUS_FAILURE)
-      {
-        /* Stores it */
-        _pstSound->fVolume = _fVolume;
-      }
-    }
-    else
-    {
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
+      /* Stores it */
+      _pstSound->fVolume = _fVolume;
     }
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Volume (%f) for sound <%s> must be >= 0.0.", _fVolume, orxSound_GetName(_pstSound));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
