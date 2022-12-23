@@ -136,6 +136,7 @@ extern "C" {
 #define orxSOUNDSYSTEM_KE_DEFAULT_FORMAT                  ma_format_f32
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO         orx2F(0.01f)
 #define orxSOUNDSYSTEM_KF_DEFAULT_THREAD_SLEEP_TIME       orx2F(0.001f)
+#define orxSOUNDSYSTEM_KF_DEVICE_STOP_DELAY               orx2F(1.0f)
 #define orxSOUNDSYSTEM_KU32_TASK_PARAM_LIST_SIZE          512
 #define orxSOUNDSYSTEM_KZ_THREAD_NAME                     "Sound"
 
@@ -324,6 +325,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxFLOAT                        fDimensionRatio;        /**< Dimension ration */
   orxFLOAT                        fRecDimensionRatio;     /**< Reciprocal dimension ratio */
   orxFLOAT                        fForegroundVolume;      /**< Foreground volume */
+  orxFLOAT                        fDeviceDelay;           /**< Device delay */
   orxU32                          u32TaskParamIndex;      /**< Task param index */
   orxU32                          u32ListenerNumber;      /**< Listener number */
   orxU32                          u32WorkerThread;        /**< Worker thread */
@@ -412,46 +414,57 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxSoundSystem_Update");
 
-  /* Has device stopped? */
-  if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED))
+  /* Is device not available? */
+  if(!orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE))
   {
-    orxSOUNDSYSTEM_SOUND *pstSound;
-
-    /* Updates status */
-    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED);
-
-    /* For all sounds */
-    for(pstSound = (orxSOUNDSYSTEM_SOUND *)orxBank_GetNext(sstSoundSystem.pstSoundBank, orxNULL);
-        pstSound != orxNULL;
-        pstSound = (orxSOUNDSYSTEM_SOUND *)orxBank_GetNext(sstSoundSystem.pstSoundBank, pstSound))
+    /* Wasn't deviced stopped? */
+    if(!orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED))
     {
-      orxSTATUS eResult;
+      /* Updates device delay */
+      sstSoundSystem.fDeviceDelay -= _pstClockInfo->fDT;
 
-      /* Stops sound */
-      if(pstSound->bReady != orxFALSE)
+      /* Should stop? */
+      if(sstSoundSystem.fDeviceDelay <= orxFLOAT_0)
       {
-        ma_sound_stop(&(pstSound->stSound));
-      }
+        orxSOUNDSYSTEM_SOUND *pstSound;
 
-      /* Rewinds it */
-      eResult = (ma_sound_seek_to_pcm_frame(&(pstSound->stSound), 0) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        /* Updates status */
+        orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
 
-      /* Success? */
-      if(eResult != orxSTATUS_FAILURE)
-      {
-        /* Updates engine node's local time */
-        ma_node_set_time((ma_node *)&(pstSound->stSound.engineNode), 0);
-
-        /* Is a stream? */
-        if(pstSound->bStream != orxFALSE)
+        /* For all sounds */
+        for(pstSound = (orxSOUNDSYSTEM_SOUND *)orxBank_GetNext(sstSoundSystem.pstSoundBank, orxNULL);
+            pstSound != orxNULL;
+            pstSound = (orxSOUNDSYSTEM_SOUND *)orxBank_GetNext(sstSoundSystem.pstSoundBank, pstSound))
         {
-          /* Clears pending samples */
-          pstSound->stStream.u32PendingSampleNumber = 0;
+          orxSTATUS eResult;
+
+          /* Stops sound */
+          if(pstSound->bReady != orxFALSE)
+          {
+            ma_sound_stop(&(pstSound->stSound));
+          }
+
+          /* Rewinds it */
+          eResult = (ma_sound_seek_to_pcm_frame(&(pstSound->stSound), 0) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+          /* Success? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            /* Updates engine node's local time */
+            ma_node_set_time((ma_node *)&(pstSound->stSound.engineNode), 0);
+
+            /* Is a stream? */
+            if(pstSound->bStream != orxFALSE)
+            {
+              /* Clears pending samples */
+              pstSound->stStream.u32PendingSampleNumber = 0;
+            }
+          }
+
+          /* Updates its status */
+          pstSound->bStopped = orxTRUE;
         }
       }
-
-      /* Updates its status */
-      pstSound->bStopped = orxTRUE;
     }
   }
 
@@ -824,7 +837,10 @@ static void orxSoundSystem_MiniAudio_OnDeviceNotification(const ma_device_notifi
     case ma_device_notification_type_stopped:
     {
       /* Updates status */
-      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE);
+      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE);
+
+      /* Sets device delay */
+      sstSoundSystem.fDeviceDelay = orxSOUNDSYSTEM_KF_DEVICE_STOP_DELAY;
 
       break;
     }
