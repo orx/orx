@@ -946,7 +946,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           /* Found? */
           if(pstSpawner != orxNULL)
           {
-            /* Disables it */
+            /* Updates it */
             orxSpawner_Enable(pstSpawner, (_pstEvent->eID == orxOBJECT_EVENT_ENABLE) ? orxTRUE : orxFALSE);
           }
 
