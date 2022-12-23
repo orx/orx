@@ -50,11 +50,11 @@
 #endif /* !__orxDISPLAY_OPENGL__ && !__orxDISPLAY_OPENGL_ES__ */
 
 #ifdef __orxDISPLAY_OPENGL_ES__
-#define GLFW_INCLUDE_ES3
+  #define GLFW_INCLUDE_ES3
 #else /* __orxDISPLAY_OPENGL_ES__ */
-#define GLFW_INCLUDE_GLEXT
+  #define GLFW_INCLUDE_GLEXT
 #endif /* __orxDISPLAY_OPENGL_ES__ */
-#include "GLFW/glfw3.h"
+  #include "GLFW/glfw3.h"
 #undef GLFW_INCLUDE_ES3
 #undef GLFW_INCLUDE_GLEXT
 
