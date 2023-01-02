@@ -6311,6 +6311,7 @@ orxFLOAT orxFASTCALL orxConfig_GetFloat(const orxSTRING _zKey)
 }
 
 /** Reads a string value from config (will take a random value if a list is provided for this key)
+ * Beware: result might not persist through any subsequent orxConfig_Get* calls
  * @param[in] _zKey             Key name
  * @return The value
  */
@@ -6915,6 +6916,7 @@ orxFLOAT orxFASTCALL orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32Li
 }
 
 /** Reads a string value from config list
+ * Beware: result might not persist through any subsequent orxConfig_Get* calls
  * @param[in] _zKey             Key name
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
