@@ -4890,7 +4890,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       {
         orxVECTOR       vValue, vParentSize, vColor, vPosition, vScale, vPivotOverride;
         orxAABOX        stParentBox;
-        const orxSTRING zGraphicFileName;
+        const orxSTRING zGraphicName;
         const orxSTRING zAnimPointerName;
         const orxSTRING zAutoScrolling;
         const orxSTRING zFlipping;
@@ -4899,7 +4899,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         const orxSTRING zSpawnerName;
         const orxSTRING zParentName;
         const orxSTRING zIgnoreFromParent;
-        const orxSTRING zPosition = orxSTRING_EMPTY;
+        const orxSTRING zPosition;
         const orxSTRING zPivot;
         const orxSTRING zPivotOverride;
         orxCHAR        *pcPivotOverrideMarker;
@@ -4911,6 +4911,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxS32          s32Count;
         orxCOLOR        stColor;
         orxBOOL         bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE, bHasPosition = orxFALSE;
+        orxCHAR         acPositionBuffer[128];
 
         /* Backups current parent */
         pstPreviousObject = sstObject.pstCurrentParent;
@@ -4954,7 +4955,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Gets position literals */
-        zPosition = orxConfig_GetString(orxOBJECT_KZ_CONFIG_POSITION);
+        orxString_NPrint(acPositionBuffer, sizeof(acPositionBuffer), "%s", orxConfig_GetString(orxOBJECT_KZ_CONFIG_POSITION));
+        zPosition = acPositionBuffer;
 
         /* Has pivot override? */
         if((pcPivotOverrideMarker = (orxCHAR *)orxString_SearchString(zPosition, orxOBJECT_KZ_OVERRIDE_MARKER)) != orxNULL)
@@ -5235,15 +5237,15 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* *** Graphic *** */
 
         /* Gets graphic file name */
-        zGraphicFileName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_GRAPHIC_NAME);
+        zGraphicName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_GRAPHIC_NAME);
 
         /* Valid? */
-        if((zGraphicFileName != orxNULL) && (*zGraphicFileName != orxCHAR_NULL))
+        if((zGraphicName != orxNULL) && (*zGraphicName != orxCHAR_NULL))
         {
           orxGRAPHIC *pstGraphic;
 
           /* Creates graphic */
-          pstGraphic = orxGraphic_CreateFromConfig(zGraphicFileName);
+          pstGraphic = orxGraphic_CreateFromConfig(zGraphicName);
 
           /* Valid? */
           if(pstGraphic != orxNULL)
