@@ -1629,9 +1629,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
       }
       else
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Scaling component when rendering object [%s] should not be 0, got (%g, %g).", orxObject_GetName(_pstRenderNode->pstObject), stPayload.stObject.pstTransform->fScaleX, stPayload.stObject.pstTransform->fScaleY);
-
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
