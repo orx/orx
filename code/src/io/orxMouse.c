@@ -261,12 +261,12 @@ orxSTATUS orxFASTCALL orxMouse_SetCursor(const orxSTRING _zName, const orxVECTOR
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-#if defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxIOS__) || defined(__orxANDROID__)
 
   /* Logs message */
   orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
 
-#else /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+#else /* __orxIOS__ || __orxANDROID__ */
 
   /* Pushes display config section */
   orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -303,7 +303,7 @@ orxSTATUS orxFASTCALL orxMouse_SetCursor(const orxSTRING _zName, const orxVECTOR
   /* Updates display */
   orxDisplay_SetVideoMode(orxNULL);
 
-#endif /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxIOS__ || __orxANDROID__ */
 
   /* Done! */
   return eResult;

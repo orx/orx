@@ -46,11 +46,11 @@
 #include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxANDROID__)
 
-#include "main/orxAndroid.h"
+#include "main/android/orxAndroid.h"
 
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID__ */
 
 /** Module flags
  */
@@ -1211,12 +1211,12 @@ orxSTATUS orxFASTCALL orxResource_Init()
             /* Inits vars */
             sstResource.stLastWatchedGroupID = orxSTRINGID_UNDEFINED;
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxANDROID__)
 
             /* Registers APK type */
             eResult = orxAndroid_RegisterAPKResource();
 
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID__ */
           }
         }
       }

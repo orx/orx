@@ -34,10 +34,9 @@
 
 #include "orxPluginAPI.h"
 
-#include "main/orxAndroid.h"
+#include "main/android/orxAndroid.h"
 #include <android/sensor.h>
-
-#include "io/orxJoystick.h"
+#include <paddleboat/paddleboat.h>
 
 /** Module flags
  */
@@ -47,30 +46,16 @@
 
 #define orxJOYSTICK_KU32_STATIC_MASK_ALL      0xFFFFFFFF /**< All mask */
 
-#define orxJOYSTICK_KZ_CONFIG_NAME            "JoyName"
-#define orxJOYSTICK_KZ_CONFIG_ID              "JoyID"
-
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
-
-/** Internal joystick info structure
- */
-typedef struct __orxJOYSTICK_INFO_t
-{
-  float                 afAxisInfoList[orxJOYSTICK_AXIS_SINGLE_NUMBER];
-  unsigned char         au8ButtonInfoList[orxJOYSTICK_BUTTON_SINGLE_NUMBER];
-
-} orxJOYSTICK_INFO;
 
 /** Static structure
  */
 typedef struct __orxJOYSTICK_STATIC_t {
   orxU32                u32Flags;
 
-  orxJOYSTICK_INFO      astJoyInfoList[orxANDROID_KU32_MAX_JOYSTICK_NUMBER];
-  orxS32                au32DeviceIds[orxANDROID_KU32_MAX_JOYSTICK_NUMBER];
-  orxBOOL               bUseJoystick;
+  orxU32                u32JoystickCount;
 
   orxVECTOR             vAcceleration;
   orxS32                s32ScreenRotation;
@@ -94,9 +79,109 @@ static orxJOYSTICK_STATIC sstJoystick;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-static void canonicalToScreen(int     displayRotation,
-                              const float* canVec,
-                              float* screenVec)
+
+static void orxJoystick_Android_GameControllerStatusCallback(const int32_t controllerIndex,
+                                                             const Paddleboat_ControllerStatus status,
+                                                             void *)
+{
+  if(status == PADDLEBOAT_CONTROLLER_JUST_CONNECTED)
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Joystick ID <%d> is becoming active", controllerIndex);
+
+    /* Updates joystick count */
+    sstJoystick.u32JoystickCount++;
+  }
+  else if(status == PADDLEBOAT_CONTROLLER_JUST_DISCONNECTED)
+  {
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Joystick ID <%d> is becoming inactive", controllerIndex);
+
+    /* Checks */
+    orxASSERT(sstJoystick.u32JoystickCount > 0);
+
+    /* Updates joystick count */
+    sstJoystick.u32JoystickCount--;
+  }
+}
+
+uint32_t orxJoystick_Android_GetButtonMask(orxS32 s32Button)
+{
+  uint32_t mask;
+
+  switch (s32Button)
+  {
+    case orxJOYSTICK_BUTTON_1_1:
+    case orxJOYSTICK_BUTTON_A_1:
+      mask = PADDLEBOAT_BUTTON_A;
+      break;
+    case orxJOYSTICK_BUTTON_2_1:
+    case orxJOYSTICK_BUTTON_B_1:
+      mask = PADDLEBOAT_BUTTON_B;
+      break;
+    case orxJOYSTICK_BUTTON_3_1:
+    case orxJOYSTICK_BUTTON_X_1:
+      mask = PADDLEBOAT_BUTTON_X;
+      break;
+    case orxJOYSTICK_BUTTON_4_1:
+    case orxJOYSTICK_BUTTON_Y_1:
+      mask = PADDLEBOAT_BUTTON_Y;
+      break;
+    case orxJOYSTICK_BUTTON_5_1:
+    case orxJOYSTICK_BUTTON_LBUMPER_1:
+      mask = PADDLEBOAT_BUTTON_L1;
+      break;
+    case orxJOYSTICK_BUTTON_6_1:
+    case orxJOYSTICK_BUTTON_RBUMPER_1:
+      mask = PADDLEBOAT_BUTTON_R1;
+      break;
+    case orxJOYSTICK_BUTTON_7_1:
+    case orxJOYSTICK_BUTTON_BACK_1:
+      mask = PADDLEBOAT_BUTTON_SELECT;
+      break;
+    case orxJOYSTICK_BUTTON_8_1:
+    case orxJOYSTICK_BUTTON_START_1:
+      mask = PADDLEBOAT_BUTTON_START;
+      break;
+    case orxJOYSTICK_BUTTON_9_1:
+    case orxJOYSTICK_BUTTON_LTHUMB_1:
+      // TODO: Verify this one!
+      mask = PADDLEBOAT_BUTTON_L3;
+      break;
+    case orxJOYSTICK_BUTTON_10_1:
+    case orxJOYSTICK_BUTTON_RTHUMB_1:
+      // TODO: Verify this one!
+      mask = PADDLEBOAT_BUTTON_R3;
+      break;
+    case orxJOYSTICK_BUTTON_11_1:
+    case orxJOYSTICK_BUTTON_UP_1:
+      mask = PADDLEBOAT_BUTTON_DPAD_UP;
+      break;
+    case orxJOYSTICK_BUTTON_12_1:
+    case orxJOYSTICK_BUTTON_RIGHT_1:
+      mask = PADDLEBOAT_BUTTON_DPAD_RIGHT;
+      break;
+    case orxJOYSTICK_BUTTON_13_1:
+    case orxJOYSTICK_BUTTON_DOWN_1:
+      mask = PADDLEBOAT_BUTTON_DPAD_DOWN;
+      break;
+    case orxJOYSTICK_BUTTON_14_1:
+    case orxJOYSTICK_BUTTON_LEFT_1:
+      mask = PADDLEBOAT_BUTTON_DPAD_LEFT;
+      break;
+    case orxJOYSTICK_BUTTON_15_1:
+    case orxJOYSTICK_BUTTON_GUIDE_1:
+      mask = PADDLEBOAT_BUTTON_SYSTEM;
+      break;
+    default:
+      mask = 0;
+      break;
+  }
+
+  return mask;
+}
+
+static void orxJoystick_Android_CanonicalToScreen(int displayRotation,
+                                                  const float* canVec,
+                                                  float* screenVec)
 {
   struct AxisSwap
   {
@@ -107,10 +192,10 @@ static void canonicalToScreen(int     displayRotation,
   };
 
   static const AxisSwap axisSwap[] = {
-    {-1, 1, 0, 1 }, // ROTATION_0
-    { 1, 1, 1, 0 }, // ROTATION_90
-    { 1, -1, 0, 1 }, // ROTATION_180
-    {-1, -1, 1, 0 } }; // ROTATION_270
+    {-1, 1, 0, 1 },    /* ROTATION_0 */
+    { 1, 1, 1, 0 },    /* ROTATION_90 */
+    { 1, -1, 0, 1 },   /* ROTATION_180 */
+    {-1, -1, 1, 0 } }; /* ROTATION_270 */
 
   const AxisSwap& as = axisSwap[displayRotation];
   screenVec[0] = (float)as.negateX * canVec[ as.xSrc ];
@@ -118,9 +203,9 @@ static void canonicalToScreen(int     displayRotation,
   screenVec[2] = canVec[2];
 }
 
-static void enableSensorManager()
+static void orxJoystick_Android_EnableSensorManager()
 {
-  if(sstJoystick.u32Frequency > 0 && !sstJoystick.bAccelerometerEnabled)
+  if(!sstJoystick.bAccelerometerEnabled && sstJoystick.u32Frequency > 0)
   {
     ASensorEventQueue_enableSensor(sstJoystick.sensorEventQueue, sstJoystick.accelerometerSensor);
     ASensorEventQueue_setEventRate(sstJoystick.sensorEventQueue, sstJoystick.accelerometerSensor, (1000L/sstJoystick.u32Frequency)*1000);
@@ -128,7 +213,7 @@ static void enableSensorManager()
   }
 }
 
-static void disableSensorManager()
+static void orxJoystick_Android_DisableSensorManager()
 {
   if(sstJoystick.bAccelerometerEnabled)
   {
@@ -137,299 +222,33 @@ static void disableSensorManager()
   }
 }
 
-static orxS32 getDeviceIndex(orxU32 _u32DeviceId)
+static orxFLOAT orxJoystick_Android_GetAccelerometerValue(orxJOYSTICK_AXIS _eAxis)
 {
-  for(orxS32 i = 0; i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER; i++)
+  orxFLOAT fResult;
+
+  /* Depending on axis */
+  switch (_eAxis)
   {
-    if(sstJoystick.au32DeviceIds[i] == _u32DeviceId)
-    {
-      return i;
-    }
-  }
-
-  return -1;
-}
-
-static void addJoyInfoInConfig(orxANDROID_JOYSTICK_INFO *pstJoystickInfo, orxS32 deviceIdx) {
-
-      #define NAME_MAX_SIZE sizeof(pstJoystickInfo->name)
-      #define DESC_MAX_SIZE sizeof(pstJoystickInfo->name)
-
-      orxCHAR acJoystickName[NAME_MAX_SIZE];
-      orxCHAR acJoystickId[DESC_MAX_SIZE];
-
-      /* Pushes input section */
-      orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
-
-      orxString_NPrint(acJoystickName, sizeof(acJoystickName), "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, deviceIdx + 1);
-      orxConfig_SetString(acJoystickName, pstJoystickInfo->name);
-
-      /* Stores its id from description */
-      orxString_NPrint(acJoystickId, sizeof(acJoystickId), "%s%u", orxJOYSTICK_KZ_CONFIG_ID, deviceIdx + 1);
-      orxConfig_SetString(acJoystickId, pstJoystickInfo->descriptor);
-
-      /* Pops config section */
-      orxConfig_PopSection();
-}
-
-static orxSTATUS getAndAddJoystickInfo(orxU32 u32DeviceId, orxS32 deviceIdx)
-{
-      // TODO: Save Joystick info (name, id, capabilities etc for use in new plugin API getJoystickInfo(deviceId) )
-      orxANDROID_JOYSTICK_INFO stJoystickInfo;
-      orxSTATUS eResult = orxAndroid_JNI_GetInputDevice(u32DeviceId, &stJoystickInfo);
-      if(eResult == orxSTATUS_FAILURE)
-      {
-        return orxSTATUS_FAILURE;
-      }
-      addJoyInfoInConfig(&stJoystickInfo, deviceIdx);
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Add Joystick #%d: ID: %04x:%04x %s %s", deviceIdx+1,
-        stJoystickInfo.u32VendorId, stJoystickInfo.u32ProductId, stJoystickInfo.name, stJoystickInfo.descriptor);
-
-      return orxSTATUS_SUCCESS;
-}
-
-static orxSTATUS newDeviceIndex(orxU32 _u32DeviceId)
-{
-  for(orxS32 i = 0; i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER; i++)
-  {
-    if(sstJoystick.au32DeviceIds[i] == 0)
-    {
-      sstJoystick.au32DeviceIds[i] = _u32DeviceId;
-
-      return getAndAddJoystickInfo(_u32DeviceId, i);
-    }
-  }
-
-  return orxSTATUS_FAILURE;
-}
-
-static orxSTATUS orxFASTCALL orxJoystick_Android_JoystickEventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxANDROID_JOYSTICK_EVENT *pstJoystickEvent;
-  orxS32 s32DeviceIndex;
-
-  /* Gets payload */
-  pstJoystickEvent = (orxANDROID_JOYSTICK_EVENT *) _pstEvent->pstPayload;
-
-  /* Depending on ID */
-  switch(pstJoystickEvent->u32Type)
-  {
-    case orxANDROID_EVENT_JOYSTICK_ADDED:
-      if(newDeviceIndex(pstJoystickEvent->u32DeviceId) != orxSTATUS_SUCCESS)
-      {
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "couldn't add new device %d", pstJoystickEvent->u32DeviceId);
-      }
+    case orxJOYSTICK_AXIS_LX_1:
+      /* Updates result */
+      fResult = sstJoystick.vAcceleration.fX;
       break;
-
-    case orxANDROID_EVENT_JOYSTICK_REMOVED:
-      s32DeviceIndex = getDeviceIndex(pstJoystickEvent->u32DeviceId);
-      if(s32DeviceIndex != -1)
-      {
-        sstJoystick.au32DeviceIds[s32DeviceIndex] = 0;
-      }
-      else
-      {
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "unknown device %d", pstJoystickEvent->u32DeviceId);
-      }
+    case orxJOYSTICK_AXIS_LY_1:
+      /* Updates result */
+      fResult = sstJoystick.vAcceleration.fY;
       break;
-
-    case orxANDROID_EVENT_JOYSTICK_CHANGED:
+    case orxJOYSTICK_AXIS_RX_1:
+      /* Updates result */
+      fResult = sstJoystick.vAcceleration.fZ;
       break;
-
-    case orxANDROID_EVENT_JOYSTICK_DOWN:
-      s32DeviceIndex = getDeviceIndex(pstJoystickEvent->u32DeviceId);
-
-      if(s32DeviceIndex != -1)
-      {
-        switch(pstJoystickEvent->u32KeyCode)
-        {
-          case 19: // KEYCODE_DPAD_UP
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_11_1] = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_UP_1] = 1;
-            break;
-          case 20: // KEYCODE_DPAD_DOWN
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_13_1]   = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_DOWN_1] = 1;
-            break;
-          case 21: // KEYCODE_DPAD_LEFT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_14_1]   = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LEFT_1] = 1;
-            break;
-          case 22: // KEYCODE_DPAD_RIGHT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_12_1]     = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RIGHT_1]  = 1;
-            break;
-          case 96: // KEYCODE_BUTTON_A
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_1_1] = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_A_1] = 1;
-            break;
-          case 97: // KEYCODE_BUTTON_B
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_2_1] = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_B_1] = 1;
-            break;
-          case 98: // KEYCODE_BUTTON_C
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_15_1] = 1;
-            break;
-          case 99: // KEYCODE_BUTTON_X
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_3_1] = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_X_1] = 1;
-            break;
-          case 100: // KEYCODE_BUTTON_Y
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_4_1] = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_Y_1] = 1;
-            break;
-          case 101: // KEYCODE_BUTTON_Z
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_16_1] = 1;
-            break;
-          case 102: // KEYCODE_BUTTON_L1
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_5_1]        = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LBUMPER_1]  = 1;
-            break;
-          case 103: // KEYCODE_BUTTON_R1
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_6_1]        = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RBUMPER_1]  = 1;
-            break;
-          case 104: // KEYCODE_BUTTON_L2
-            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_LTRIGGER_1] = orxFLOAT_1;
-            break;
-          case 105: // KEYCODE_BUTTON_R2
-            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_RTRIGGER_1] = orxFLOAT_1;
-            break;
-          case 106: // KEYCODE_BUTTON_THUMBL
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_9_1]      = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LTHUMB_1] = 1;
-            break;
-          case 107: // KEYCODE_BUTTON_THUMBR
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_10_1]     = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RTHUMB_1] = 1;
-            break;
-          case 108: // KEYCODE_BUTTON_START
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_8_1]      = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_START_1]  = 1;
-            break;
-          case 109: // KEYCODE_BUTTON_SELECT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_7_1]    = 1;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_BACK_1] = 1;
-            break;
-          default:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "unknown keycode %d", pstJoystickEvent->u32KeyCode);
-            break;
-        }
-      }
-      else
-      {
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "unknown device %d", pstJoystickEvent->u32DeviceId);
-      }
-      break;
-
-    case orxANDROID_EVENT_JOYSTICK_UP:
-      s32DeviceIndex = getDeviceIndex(pstJoystickEvent->u32DeviceId);
-
-      if(s32DeviceIndex != -1)
-      {
-        switch(pstJoystickEvent->u32KeyCode)
-        {
-          case 19: // KEYCODE_DPAD_UP
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_11_1] = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_UP_1] = 0;
-            break;
-          case 20: // KEYCODE_DPAD_DOWN
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_13_1]   = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_DOWN_1] = 0;
-            break;
-          case 21: // KEYCODE_DPAD_LEFT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_14_1]   = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LEFT_1] = 0;
-            break;
-          case 22: // KEYCODE_DPAD_RIGHT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_12_1]     = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RIGHT_1]  = 0;
-            break;
-          case 96: // KEYCODE_BUTTON_A
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_1_1] = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_A_1] = 0;
-            break;
-          case 97: // KEYCODE_BUTTON_B
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_2_1] = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_B_1] = 0;
-            break;
-          case 98: // KEYCODE_BUTTON_C
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_15_1] = 0;
-            break;
-          case 99: // KEYCODE_BUTTON_X
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_3_1] = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_X_1] = 0;
-            break;
-          case 100: // KEYCODE_BUTTON_Y
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_4_1] = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_Y_1] = 0;
-            break;
-          case 101: // KEYCODE_BUTTON_Z
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_16_1] = 0;
-            break;
-          case 102: // KEYCODE_BUTTON_L1
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_5_1]        = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LBUMPER_1]  = 0;
-            break;
-          case 103: // KEYCODE_BUTTON_R1
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_6_1]        = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RBUMPER_1]  = 0;
-            break;
-          case 104: // KEYCODE_BUTTON_L2
-            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_LTRIGGER_1] = orxFLOAT_0;
-            break;
-          case 105: // KEYCODE_BUTTON_R2
-            sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_RTRIGGER_1] = orxFLOAT_0;
-            break;
-          case 106: // KEYCODE_BUTTON_THUMBL
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_9_1]      = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_LTHUMB_1] = 0;
-            break;
-          case 107: // KEYCODE_BUTTON_THUMBR
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_10_1]     = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_RTHUMB_1] = 0;
-            break;
-          case 108: // KEYCODE_BUTTON_START
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_8_1]      = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_START_1]  = 0;
-            break;
-          case 109: // KEYCODE_BUTTON_SELECT
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_7_1]    = 0;
-            sstJoystick.astJoyInfoList[s32DeviceIndex].au8ButtonInfoList[orxJOYSTICK_BUTTON_BACK_1] = 0;
-            break;
-          default:
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "unknown keycode %d", pstJoystickEvent->u32KeyCode);
-            break;
-        }
-      }
-      else
-      {
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "unknown device %d", pstJoystickEvent->u32DeviceId);
-      }
-      break;
-
-    case orxANDROID_EVENT_JOYSTICK_MOVE:
-      s32DeviceIndex = getDeviceIndex(pstJoystickEvent->u32DeviceId);
-
-      if(s32DeviceIndex != -1)
-      {
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_LX_1]        = pstJoystickEvent->stAxisData.fX;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_LY_1]        = pstJoystickEvent->stAxisData.fY;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_RX_1]        = pstJoystickEvent->stAxisData.fZ;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_RY_1]        = pstJoystickEvent->stAxisData.fRZ;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_LTRIGGER_1]  = pstJoystickEvent->stAxisData.fLTRIGGER;
-        sstJoystick.astJoyInfoList[s32DeviceIndex].afAxisInfoList[orxJOYSTICK_AXIS_RTRIGGER_1]  = pstJoystickEvent->stAxisData.fRTRIGGER;
-      }
-      else
-      {
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "unknown device %d", pstJoystickEvent->u32DeviceId);
-      }
+    default:
+      /* Not available */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "<%s> is not available on this platform!", orxJoystick_GetAxisName(_eAxis));
+      fResult = orxFLOAT_0;
       break;
   }
 
-  /* Done! */
-  return eResult;
+  return fResult;
 }
 
 static orxSTATUS orxFASTCALL orxJoystick_Android_AccelerometerEventHandler(const orxEVENT *_pstEvent)
@@ -453,13 +272,13 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_AccelerometerEventHandler(const
       sstJoystick.s32ScreenRotation = orxAndroid_JNI_GetRotation();
     }
 
-    while (ASensorEventQueue_getEvents(sstJoystick.sensorEventQueue, &event, 1) > 0)
+    while(ASensorEventQueue_getEvents(sstJoystick.sensorEventQueue, &event, 1) > 0)
     {
       in[0] = event.acceleration.x;
       in[1] = event.acceleration.y;
       in[2] = event.acceleration.z;
 
-      canonicalToScreen(sstJoystick.s32ScreenRotation, in, out);
+      orxJoystick_Android_CanonicalToScreen(sstJoystick.s32ScreenRotation, in, out);
 
       /* Gets new acceleration */
       orxVector_Set(&(sstJoystick.vAcceleration), out[0], out[1], out[2]);
@@ -471,23 +290,13 @@ static orxSTATUS orxFASTCALL orxJoystick_Android_AccelerometerEventHandler(const
     switch(_pstEvent->eID)
     {
       case orxSYSTEM_EVENT_FOCUS_GAINED:
-      {
-        enableSensorManager();
-
+        orxJoystick_Android_EnableSensorManager();
         break;
-      }
-
       case orxSYSTEM_EVENT_FOCUS_LOST:
-      {
-        disableSensorManager();
-
+        orxJoystick_Android_DisableSensorManager();
         break;
-      }
-
       default:
-      {
         break;
-      }
     }
   }
 
@@ -500,67 +309,54 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Wasn't already initialized? */
-  if (!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY))
+  if(!(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY))
   {
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));
+
+    orxASSERT(Paddleboat_isInitialized());
+    /* Adds controller status callback */
+    /* Note : Undocumented quirk. Without a controller status callback,
+     *        connected devices will remain inactive. */
+    Paddleboat_setControllerStatusCallback(orxJoystick_Android_GameControllerStatusCallback, NULL);
 
     orxConfig_PushSection(KZ_CONFIG_ANDROID);
 
     sstJoystick.s32ScreenRotation = -1;
     sstJoystick.bAccelerometerEnabled = orxFALSE;
-    sstJoystick.bUseJoystick = orxConfig_GetBool(KZ_CONFIG_USE_JOYSTICK);
 
-    if(sstJoystick.bUseJoystick == orxTRUE)
+    if(orxConfig_HasValue(KZ_CONFIG_ACCELEROMETER_FREQUENCY))
     {
-      orxAndroid_JNI_GetDeviceIds(sstJoystick.au32DeviceIds);
-      orxEvent_AddHandler(orxANDROID_EVENT_TYPE_JOYSTICK, orxJoystick_Android_JoystickEventHandler);
-
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "useJoystick config is ON, devices:");
-      for(orxS32 i = 0; i < orxANDROID_KU32_MAX_JOYSTICK_NUMBER; i++)
-      {
-        if(sstJoystick.au32DeviceIds[i] != 0)
-        {
-          getAndAddJoystickInfo(sstJoystick.au32DeviceIds[i], i);
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "joystick deviceId: %d", sstJoystick.au32DeviceIds[i]);
-        }
-      }
-
+      sstJoystick.u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
     }
     else
     {
-      if(orxConfig_HasValue(KZ_CONFIG_ACCELEROMETER_FREQUENCY))
-      {
-        sstJoystick.u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
-      }
-      else
-      { /* enable accelerometer with default rate */
-        sstJoystick.u32Frequency = 60;
-      }
+      /* enable accelerometer with default rate */
+      sstJoystick.u32Frequency = 60;
+    }
 
-      if(sstJoystick.u32Frequency > 0)
-      {
-        sstJoystick.sensorManager = ASensorManager_getInstance();
-        sstJoystick.accelerometerSensor = ASensorManager_getDefaultSensor(sstJoystick.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
+    if(sstJoystick.u32Frequency > 0)
+    {
+      sstJoystick.sensorManager = ASensorManager_getInstance();
+      sstJoystick.accelerometerSensor = ASensorManager_getDefaultSensor(sstJoystick.sensorManager, ASENSOR_TYPE_ACCELEROMETER);
 
-        if(sstJoystick.accelerometerSensor != NULL)
+      if(sstJoystick.accelerometerSensor != NULL)
+      {
+        /* Adds our Accelerometer event handlers */
+        if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
         {
-          /* Adds our Accelerometer event handlers */
-          if ((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
+          orxEvent_SetHandlerIDFlags(orxJoystick_Android_AccelerometerEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_FOCUS_LOST) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_FOCUS_GAINED), orxEVENT_KU32_MASK_ID_ALL);
+
+          if((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_ACCELERATE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
           {
-            orxEvent_SetHandlerIDFlags(orxJoystick_Android_AccelerometerEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_FOCUS_LOST) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_FOCUS_GAINED), orxEVENT_KU32_MASK_ID_ALL);
-
-            if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_ACCELERATE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
+            if((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
             {
-              if ((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_AccelerometerEventHandler)) != orxSTATUS_FAILURE)
-              {
-                ALooper* looper = ALooper_forThread();
-                sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
-                ASensorEventQueue_disableSensor(sstJoystick.sensorEventQueue, sstJoystick.accelerometerSensor);
+              ALooper* looper = ALooper_forThread();
+              sstJoystick.sensorEventQueue = ASensorManager_createEventQueue(sstJoystick.sensorManager, looper, LOOPER_ID_SENSOR, NULL, NULL);
+              ASensorEventQueue_disableSensor(sstJoystick.sensorEventQueue, sstJoystick.accelerometerSensor);
 
-                /* enable sensor */
-                enableSensorManager();
-              }
+              /* enable sensor */
+              orxJoystick_Android_EnableSensorManager();
             }
           }
         }
@@ -580,8 +376,11 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
 void orxFASTCALL orxJoystick_Android_Exit()
 {
   /* Was initialized? */
-  if (sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
+  if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
   {
+    /* Removes controller status callback */
+    Paddleboat_setControllerStatusCallback(NULL, NULL);
+
     if(sstJoystick.accelerometerSensor != NULL)
     {
       /* Removes event handler */
@@ -589,16 +388,10 @@ void orxFASTCALL orxJoystick_Android_Exit()
       orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_SURFACE, orxJoystick_Android_AccelerometerEventHandler);
       orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_ACCELERATE, orxJoystick_Android_AccelerometerEventHandler);
 
-      disableSensorManager();
+      orxJoystick_Android_DisableSensorManager();
 
       /* destroy event queue */
       ASensorManager_destroyEventQueue(sstJoystick.sensorManager, sstJoystick.sensorEventQueue);
-    }
-
-    if(sstJoystick.bUseJoystick != orxFALSE)
-    {
-      /* Removes event handler */
-      orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_JOYSTICK, orxJoystick_Android_JoystickEventHandler);
     }
 
     /* Cleans static controller */
@@ -612,77 +405,57 @@ orxFLOAT orxFASTCALL orxJoystick_Android_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
 {
   orxU32    u32ID;
   orxFLOAT  fResult;
+  orxBOOL   hasAccel;
 
   /* Checks */
   orxASSERT((sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY) == orxJOYSTICK_KU32_STATIC_FLAG_READY);
   orxASSERT(_eAxis < orxJOYSTICK_AXIS_NUMBER);
 
-  if(!sstJoystick.bUseJoystick)
+  /* Gets ID */
+  u32ID = orxJOYSTICK_GET_ID_FROM_AXIS(_eAxis) - 1;
+
+  /* Is ID valid? */
+  if(u32ID < orxANDROID_KU32_MAX_JOYSTICK_NUMBER)
   {
-    /* Depending on axis */
-    switch (_eAxis)
-    {
-      case orxJOYSTICK_AXIS_LX_1:
-      case orxJOYSTICK_AXIS_LX_2:
-      case orxJOYSTICK_AXIS_LX_3:
-      case orxJOYSTICK_AXIS_LX_4:
-      {
-        /* Updates result */
-        fResult = sstJoystick.vAcceleration.fX;
-
-        break;
-      }
-
-      case orxJOYSTICK_AXIS_LY_1:
-      case orxJOYSTICK_AXIS_LY_2:
-      case orxJOYSTICK_AXIS_LY_3:
-      case orxJOYSTICK_AXIS_LY_4:
-      {
-        /* Updates result */
-        fResult = sstJoystick.vAcceleration.fY;
-
-        break;
-      }
-
-      case orxJOYSTICK_AXIS_RX_1:
-      case orxJOYSTICK_AXIS_RX_2:
-      case orxJOYSTICK_AXIS_RX_3:
-      case orxJOYSTICK_AXIS_RX_4:
-      {
-        /* Updates result */
-        fResult = sstJoystick.vAcceleration.fZ;
-
-        break;
-      }
-
-      default:
-      {
-        /* Not available */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "<%s> is not available on this platform!", orxJoystick_GetAxisName(_eAxis));
-        fResult = orxFLOAT_0;
-
-        break;
-      }
-    }
-  }
-  else
-  {
-    /* Gets ID */
-    u32ID = orxJOYSTICK_GET_ID_FROM_AXIS(_eAxis) - 1;
-
-    /* Is ID valid? */
-    if(u32ID < orxANDROID_KU32_MAX_JOYSTICK_NUMBER)
+    /* Has connected joysticks? */
+    if(sstJoystick.u32JoystickCount > 0)
     {
       /* Plugged? */
-      if(sstJoystick.au32DeviceIds[u32ID] != 0)
+      Paddleboat_Controller_Data controllerData;
+      if(Paddleboat_getControllerData(u32ID, &controllerData) == PADDLEBOAT_NO_ERROR)
       {
         orxS32 s32Axis;
-
+        
         /* Gets axis */
         s32Axis = _eAxis % orxJOYSTICK_AXIS_SINGLE_NUMBER;
-
+        
         /* Updates result */
-        fResult = orx2F(sstJoystick.astJoyInfoList[u32ID].afAxisInfoList[s32Axis]);
+        switch(s32Axis)
+        {
+          case orxJOYSTICK_AXIS_LX_1:
+            fResult = controllerData.leftStick.stickX;
+            break;
+          case orxJOYSTICK_AXIS_LY_1:
+            fResult = controllerData.leftStick.stickY;
+            break;
+          case orxJOYSTICK_AXIS_RX_1:
+            fResult = controllerData.rightStick.stickX;
+            break;
+          case orxJOYSTICK_AXIS_RY_1:
+            fResult = controllerData.rightStick.stickY;
+            break;
+          case orxJOYSTICK_AXIS_LTRIGGER_1:
+            fResult = controllerData.triggerL1;
+            break;
+          case orxJOYSTICK_AXIS_RTRIGGER_1:
+            fResult = controllerData.triggerR1;
+            break;
+          default:
+            /* Logs message */
+            orxASSERT(orxFALSE && "Invalid joystick axis %d, this should *not* happen.");
+            fResult = orxFLOAT_0;
+            break;
+        }
       }
       else
       {
@@ -692,12 +465,25 @@ orxFLOAT orxFASTCALL orxJoystick_Android_GetAxisValue(orxJOYSTICK_AXIS _eAxis)
     }
     else
     {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Requested joystick ID <%d> is out of range.", u32ID);
-
-      /* Updates result */
-      fResult = orxFLOAT_0;
+      if(sstJoystick.bAccelerometerEnabled)
+      {
+        /* Updates result */
+        fResult = orxJoystick_Android_GetAccelerometerValue(_eAxis);
+      }
+      else
+      {
+        /* Updates result */
+        fResult = orxFLOAT_0;
+      }
     }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Requested joystick ID <%d> is out of range.", u32ID);
+
+    /* Updates result */
+    fResult = orxFLOAT_0;
   }
 
   /* Done! */
@@ -719,16 +505,24 @@ orxBOOL orxFASTCALL orxJoystick_Android_IsButtonPressed(orxJOYSTICK_BUTTON _eBut
   /* Is ID valid? */
   if(u32ID < orxANDROID_KU32_MAX_JOYSTICK_NUMBER)
   {
-    /* Plugged? */
-    if(sstJoystick.au32DeviceIds[u32ID] != 0)
+    /* Gets controller data if plugged */
+    Paddleboat_Controller_Data controllerData;
+    if(Paddleboat_getControllerData(u32ID, &controllerData) == PADDLEBOAT_NO_ERROR)
     {
       orxS32 s32Button;
+      uint32_t buttonMask;
 
       /* Gets button */
       s32Button = _eButton % orxJOYSTICK_BUTTON_SINGLE_NUMBER;
 
+      if (controllerData.buttonsDown)
+      {
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Joystick buttons DOWN: <%d>", controllerData.buttonsDown);
+      }
+
+      buttonMask = orxJoystick_Android_GetButtonMask(s32Button);
       /* Updates result */
-      bResult = (sstJoystick.astJoyInfoList[u32ID].au8ButtonInfoList[s32Button] != 0) ? orxTRUE : orxFALSE;
+      bResult = orxFLAG_TEST(controllerData.buttonsDown, buttonMask) ? orxTRUE : orxFALSE;
     }
     else
     {
@@ -758,7 +552,7 @@ orxBOOL orxFASTCALL orxJoystick_Android_IsConnected(orxU32 _u32ID)
   orxASSERT((_u32ID >= orxJOYSTICK_KU32_MIN_ID) && (_u32ID <= orxJOYSTICK_KU32_MAX_ID));
 
   /* Updates result */
-  bResult = ((_u32ID <= orxANDROID_KU32_MAX_JOYSTICK_NUMBER) && (sstJoystick.au32DeviceIds[_u32ID - 1] != 0)) ? orxTRUE : orxFALSE;
+  bResult = (_u32ID <= orxANDROID_KU32_MAX_JOYSTICK_NUMBER) && (Paddleboat_getControllerStatus(_u32ID - orxJOYSTICK_KU32_MIN_ID) == PADDLEBOAT_CONTROLLER_ACTIVE);
 
   /* Done! */
   return bResult;

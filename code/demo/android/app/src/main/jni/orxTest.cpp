@@ -34,114 +34,106 @@
 
 #include "orx.h"
 
+static orxOBJECT* spstGenerator;
+static orxVIEWPORT* spstViewport;
+static orxHASHTABLE* pstTextureTable = orxNULL;
 
-static orxOBJECT   *spstGenerator;
-static orxVIEWPORT *spstViewport;
-static orxHASHTABLE *pstTextureTable = orxNULL;
+static orxSTATUS orxFASTCALL EventHandler(const orxEVENT* _pstEvent) {
+    orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+    /* Colliding? */
+    if (_pstEvent->eID==orxPHYSICS_EVENT_CONTACT_ADD) {
+        /* Adds bump FX on both objects */
+        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
+        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
 
-static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+        /* Adds bip sound on one of them */
+        orxObject_AddSound(orxOBJECT(_pstEvent->hSender), "Bip");
+    }
 
-  /* Colliding? */
-  if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
-  {
-    /* Adds bump FX on both objects */
-    orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
-    orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
-
-    /* Adds bip sound on one of them */
-    orxObject_AddSound(orxOBJECT(_pstEvent->hSender), "Bip");
-  }
-
-  /* Done! */
-  return eResult;
+    /* Done! */
+    return eResult;
 }
 
-static orxSTATUS orxFASTCALL Init()
-{
-  /* Creates viewport */
-  spstViewport = orxViewport_CreateFromConfig("Viewport");
+static orxSTATUS orxFASTCALL Init() {
+    /* Creates viewport */
+    spstViewport = orxViewport_CreateFromConfig("Viewport");
 
-  /* Creates generator */
-  spstGenerator = orxObject_CreateFromConfig("Generator");
+    /* Creates generator */
+    spstGenerator = orxObject_CreateFromConfig("Generator");
 
-  /* Creates texture table */
-  pstTextureTable = orxHashTable_Create(16, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    /* Creates texture table */
+    pstTextureTable = orxHashTable_Create(16, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-  /* Creates walls */
-  orxObject_CreateFromConfig("Walls");
+    /* Creates walls */
+    orxObject_CreateFromConfig("Walls");
 
-  /* Registers event handler */
-  orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, EventHandler);
+    /* Registers event handler */
+    orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, EventHandler);
 
-  /* Done! */
-  return (spstViewport && spstGenerator) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    orxLOG("Application save directory: %s", orxFile_GetApplicationSaveDirectory(orxNULL));
+
+    /* Done! */
+    return (spstViewport && spstGenerator) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 }
 
-static orxSTATUS orxFASTCALL Run()
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxVECTOR vMousePos, vGravity;
+static orxSTATUS orxFASTCALL Run() {
+    orxSTATUS eResult = orxSTATUS_SUCCESS;
+    orxVECTOR vMousePos, vGravity;
 
-  /* Updates generator's status */
-  orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
+    /* Updates generator's status */
+    orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
 
-  /* Gets mouse position in world space */
-  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), orxNULL, &vMousePos))
-  {
-    orxVECTOR vGeneratorPos;
+    /* Gets mouse position in world space */
+    if (orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), orxNULL, &vMousePos)) {
+        orxVECTOR vGeneratorPos;
 
-    /* Gets generator position */
-    orxObject_GetPosition(spstGenerator, &vGeneratorPos);
+        /* Gets generator position */
+        orxObject_GetPosition(spstGenerator, &vGeneratorPos);
 
-    /* Keeps generator's Z coord */
-    vMousePos.fZ = vGeneratorPos.fZ;
+        /* Keeps generator's Z coord */
+        vMousePos.fZ = vGeneratorPos.fZ;
 
-    /* Updates generator's position */
-    orxObject_SetPosition(spstGenerator, &vMousePos);
-  }
+        /* Updates generator's position */
+        orxObject_SetPosition(spstGenerator, &vMousePos);
+    }
 
-  /* Gets gravity vector from input */
-  orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), -orxInput_GetValue("GravityY"), orxFLOAT_0);
+    /* Gets gravity vector from input */
+    orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), -orxInput_GetValue("GravityY"),
+            orxFLOAT_0);
 
-  /* Significant enough? */
-  if(orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))
-  {
-    static orxVECTOR svSmoothedGravity =
-    {
-      orx2F(0.0f), orx2F(-1.0f), orx2F(0.0f)
-    };
+    /* Significant enough? */
+    if (orxVector_GetSquareSize(&vGravity)>orx2F(0.5f)) {
+        static orxVECTOR svSmoothedGravity =
+                {
+                        orx2F(0.0f), orx2F(-1.0f), orx2F(0.0f)
+                };
 
-    /* Gets smoothed gravity from new value (low-pass filter) */
-    orxVector_Lerp(&svSmoothedGravity, &svSmoothedGravity, &vGravity, orx2F(0.05f));
+        /* Gets smoothed gravity from new value (low-pass filter) */
+        orxVector_Lerp(&svSmoothedGravity, &svSmoothedGravity, &vGravity, orx2F(0.05f));
 
-    /* Updates camera rotation */
-    orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
-  }
+        /* Updates camera rotation */
+        orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
+    }
 
-  // Is quit action active?
-  if(orxInput_IsActive("Quit"))
-  {
-    // Logs
-    orxLOG("Quit action triggered, exiting!");
+    // Is quit action active?
+    if (orxInput_IsActive("Quit")) {
+        // Logs
+        orxLOG("Quit action triggered, exiting!");
 
-    // Sets return value to orxSTATUS_FAILURE, meaning we want to exit
-    eResult = orxSTATUS_FAILURE;
-  }
+        // Sets return value to orxSTATUS_FAILURE, meaning we want to exit
+        eResult = orxSTATUS_FAILURE;
+    }
 
-  return eResult;
+    return eResult;
 }
 
-static void orxFASTCALL Exit()
-{
-  /* Deletes texture table */
-  orxHashTable_Delete(pstTextureTable);
+static void orxFASTCALL Exit() {
+    /* Deletes texture table */
+    orxHashTable_Delete(pstTextureTable);
 }
 
-int main(int argc, char *argv[])
-{
-  orx_Execute(argc, argv, Init, Run, Exit);
-  return 0;
+int main(int argc, char* argv[]) {
+    orx_Execute(argc, argv, Init, Run, Exit);
+    return 0;
 }

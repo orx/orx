@@ -60,12 +60,6 @@
 
 #endif /* TARGET_OS_ANDROID */
 
-#ifdef TARGET_OS_ANDROID_NATIVE
-
-  #include <android/api-level.h>
-
-#endif /* TARGET_OS_ANDROID_NATIVE */
-
 #include <stddef.h>
 
 
@@ -180,7 +174,7 @@
 #endif /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
 
 /* No platform defines? */
-#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxIOS__) && !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxIOS__) && !defined(__orxANDROID__)
 
   /* Windows? */
   #if defined(_WIN32) || defined(WIN32)
@@ -197,11 +191,6 @@
 
     #define __orxANDROID__
 
-  /* Android Native */
-  #elif defined(TARGET_OS_ANDROID_NATIVE)
-
-    #define __orxANDROID_NATIVE__
-
   /* Linux? */
   #elif defined(linux) || defined(__linux__)
 
@@ -216,11 +205,11 @@
 
   #else
 
-    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxMAC__/__orxLINUX__/__orxIOS__/__orxANDROID__/__orxANDROID_NATIVE__)"
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxMAC__/__orxLINUX__/__orxIOS__/__orxANDROID__)"
 
   #endif
 
-#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxANDROID_NATIVE__ */
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ */
 
 
 #ifdef __cplusplus
@@ -289,10 +278,10 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / iOS / Android */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
 
     /* ARM / ARM64 / LLVM / PPC / PPC64 / X86_64 / iOS / Android */
-    #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__) || defined(__orxARM64__)
+    #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxARM64__)
 
       #ifndef orxFASTCALL
 
@@ -304,7 +293,7 @@
 
       #define orxCDECL
 
-    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxARM64__ */
+    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxARM64__ */
 
       #ifndef orxFASTCALL
 
@@ -316,7 +305,7 @@
 
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ || __orxARM64__ */
+    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxARM64__ */
 
     /** The symbol will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
@@ -334,7 +323,7 @@
     /** The null address */
     #define orxNULL             (0)
 
-    #if defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+    #if defined(__orxIOS__) || defined(__orxANDROID__)
 
       /* iOS versions can only be embedded due to the lack of dlfcn presence */
       #define __orxEMBEDDED__
@@ -342,9 +331,9 @@
       /* Always use static on iOS and Android */
       #define __orxSTATIC__
 
-    #endif /* __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+    #endif /* __orxIOS__ || __orxANDROID__ */
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
 
 #endif /* __orxWINDOWS__ */
 

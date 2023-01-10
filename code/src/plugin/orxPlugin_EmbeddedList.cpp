@@ -48,7 +48,7 @@
 #pragma GCC visibility pop
 
 /* Android? */
-#elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#elif defined(__orxANDROID__)
 
 #include "../plugins/Display/android/orxDisplay.c"
 #include "../plugins/Joystick/android/orxJoystick.c"
@@ -59,7 +59,7 @@
 #include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
 
 /* Others */
-#else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#else /* __orxANDROID__ */
 
 /** Includes all plugins to embed
  */
@@ -73,6 +73,6 @@
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
 
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID__ */
 
 #endif /* __orxEMBEDDED__ */

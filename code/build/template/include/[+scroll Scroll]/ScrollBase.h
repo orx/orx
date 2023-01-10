@@ -29,11 +29,11 @@
 #include "orx.h"
 
 //! Defines
-#if defined(__orxDEBUG__) && !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+#if defined(__orxDEBUG__) && !defined(__orxANDROID__)
 
   #define __SCROLL_DEBUG__
 
-#endif // __orxDEBUG__ && !__orxANDROID__ && !__orxANDROID_NATIVE__
+#endif // __orxDEBUG__ && !__orxANDROID__
 
 #ifdef __SCROLL_DEBUG__
   #include <typeinfo>

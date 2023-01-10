@@ -37,7 +37,7 @@
 
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
-#include "main/orxAndroid.h"
+#include "main/android/orxAndroid.h"
 
 #include <sys/endian.h>
 
