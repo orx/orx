@@ -407,7 +407,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_EventHandler(const orxEVEN
 
 static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxEVENT                stEvent;                                                 \
+  orxEVENT                stEvent;
   orxSOUND_EVENT_PAYLOAD  stPayload;
   orxSOUNDSYSTEM_FILTER  *pstFilter;
 
