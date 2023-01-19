@@ -542,6 +542,7 @@ static orxINLINE orxSTRING                                orxString_NCopy(orxSTR
   /* Checks */
   orxASSERT(_zDstString != orxNULL);
   orxASSERT(_zSrcString != orxNULL);
+  orxASSERT(_u32CharNumber > 0);
 
   /* Done! */
   return(strncpy(_zDstString, _zSrcString, (size_t)_u32CharNumber));
@@ -1392,6 +1393,7 @@ static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxST
   /* Checks */
   orxASSERT(_zDstString != orxNULL);
   orxASSERT(_zSrcString != orxNULL);
+  orxASSERT(_u32CharNumber > 0);
 
   /* Gets variable arguments & prints the string */
   va_start(stArgs, _zSrcString);
