@@ -51,10 +51,6 @@
 #define KZ_CONFIG_ACCELEROMETER_FREQUENCY        "AccelerometerFrequency"
 
 #include <android/native_window.h>
-#include <game-activity/native_app_glue/android_native_app_glue.h>
-#include <game-activity/GameActivity.h>
-
-#define orxANDROID_KU32_MAX_JOYSTICK_NUMBER   PADDLEBOAT_MAX_CONTROLLERS
 
 #define LOOPER_ID_SENSOR                      LOOPER_ID_USER
 
@@ -75,10 +71,6 @@ typedef struct __orxANDROID_SURFACE_CHANGED_EVENT_t {
 
 } orxANDROID_SURFACE_CHANGED_EVENT;
 
-/**
-  Gets Game Activity
-  */
-GameActivity *orxAndroid_GetGameActivity();
 /**
   Gets the window
   */
@@ -111,7 +103,7 @@ orxSTATUS orxFASTCALL orxAndroid_JNI_SetupThread(void *_pContext);
 
 #if defined(__cplusplus)
 }
-#endif /* __orxANDROID__ */
+#endif
 
 #define orxANDROID_EVENT_TYPE_KEYBOARD       (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 0)
 #define orxANDROID_EVENT_KEYBOARD_DOWN       0

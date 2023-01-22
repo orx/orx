@@ -31,7 +31,6 @@
  *
  */
 
-
 #include "orx.h"
 
 static orxOBJECT* spstGenerator;

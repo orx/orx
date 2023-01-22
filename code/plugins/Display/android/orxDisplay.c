@@ -32,7 +32,6 @@
  * @todo
  */
 
-
 #include "orxPluginAPI.h"
 
 #include <EGL/egl.h>
@@ -92,7 +91,6 @@
 #undef QOI_MALLOC
 #undef QOI_IMPLEMENTATION
 #undef QOI_NO_STDIO
-
 
 /** Module flags
  */
@@ -425,7 +423,7 @@ static EGLConfig defaultEGLChooser(EGLDisplay disp)
 
   orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Config count = %d", count);
 
-  EGLConfig* configs = new EGLConfig[count];
+  EGLConfig* configs = (EGLConfig*)orxMemory_Allocate(count * sizeof(EGLConfig), orxMEMORY_TYPE_VIDEO);
   eglGetConfigs(disp, configs, count, &count);
   eglASSERT();
 
@@ -498,7 +496,7 @@ static EGLConfig defaultEGLChooser(EGLDisplay disp)
     }
   }
 
-  delete[] configs;
+  orxMemory_Free(configs);
 
   return bestConfig;
 }

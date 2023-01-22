@@ -1,12 +1,13 @@
-apply from: "${System.env.ORX}/build/android/orx.gradle"
+apply plugin: 'com.android.application'
 
 android {
-    namespace 'org.orxproject.orxtest'
+    namespace 'org.orx.demo'
+    compileSdk sdkVersion.toInteger()
 
-    compileSdkVersion sdkVersion.toInteger()
+    buildFeatures.prefab true
 
     defaultConfig {
-        applicationId "org.orxproject.orxtest"
+        applicationId "org.orx.demo"
         targetSdkVersion sdkVersion.toInteger()
         versionCode 1
         versionName "1.0"
@@ -18,13 +19,15 @@ android {
             abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
         }
     }
-
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_11
+    }
     externalNativeBuild {
         ndkBuild {
             path 'src/main/jni/Android.mk'
         }
     }
-
     sourceSets {
         main {
             // For custom apps, you should have resources in some parent folder with orx data.
@@ -32,8 +35,41 @@ android {
             assets.srcDirs = ['./src/main/assets']
         }
     }
+
+    buildTypes {
+        release {
+            debuggable false
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            externalNativeBuild.ndkBuild {
+                cFlags "-O2"
+            }
+        }
+        debug {
+            debuggable true
+
+            externalNativeBuild.ndkBuild {
+                cFlags "-D__orxDEBUG__ -O0"
+            }
+        }
+        profile {
+            initWith release
+            debuggable false
+
+            externalNativeBuild.ndkBuild {
+                cFlags "-D__orxPROFILE__"
+            }
+        }
+    }
     lint {
         abortOnError true
         warningsAsErrors true
     }
+}
+
+dependencies {
+    releaseImplementation 'org.orx-project:orx:1.13'
+    debugImplementation 'org.orx-project:orxd:1.13'
+    profileImplementation 'org.orx-project:orxp:1.13'
 }

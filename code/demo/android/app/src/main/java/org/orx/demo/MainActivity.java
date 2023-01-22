@@ -1,4 +1,4 @@
-package org.orxproject.orxtest;
+package org.orx.demo;
 
 import org.orx.lib.OrxGameActivity;
 

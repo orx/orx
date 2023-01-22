@@ -34,9 +34,6 @@
 
 #include <android/log.h>
 #include <sys/system_properties.h>
-#include <game-activity/native_app_glue/android_native_app_glue.h>
-#include <game-activity/GameActivity.h>
-#include <paddleboat/paddleboat.h>
 
 #ifdef __orxDEBUG__
 
@@ -58,6 +55,7 @@
 #include "orxInclude.h"
 #include "orxKernel.h"
 #include "orxAndroid.h"
+#include "orxAndroidActivity.h"
 
 /***************************************************************************
  * Structure declaration                                                   *

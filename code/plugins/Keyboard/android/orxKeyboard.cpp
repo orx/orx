@@ -36,6 +36,7 @@
 
 #include "orxPluginAPI.h"
 #include "main/android/orxAndroid.h"
+#include "main/android/orxAndroidActivity.h"
 
 /** Module flags
  */
