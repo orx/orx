@@ -1,0 +1,2 @@
+.\gradlew build publishToMavenLocal
+pause
