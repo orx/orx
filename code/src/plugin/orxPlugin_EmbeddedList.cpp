@@ -51,7 +51,7 @@
 #elif defined(__orxANDROID__)
 
 #include "../plugins/Display/android/orxDisplay.c"
-#include "../plugins/Joystick/android/orxJoystick.c"
+#include "../plugins/Joystick/android/orxJoystick.cpp"
 #include "../plugins/Keyboard/android/orxKeyboard.cpp"
 #include "../plugins/Mouse/android/orxMouse.c"
 #include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
