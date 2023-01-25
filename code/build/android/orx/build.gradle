@@ -53,22 +53,23 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             externalNativeBuild.ndkBuild {
-                cFlags "-O2"
+                arguments 'NDK_DEBUG=0'
             }
         }
         debug {
             debuggable true
 
             externalNativeBuild.ndkBuild {
-                cFlags "-D__orxDEBUG__ -O0"
+                arguments 'NDK_DEBUG=1'
+                cFlags '-D__orxDEBUG__'
             }
         }
         profile {
-            initWith release
-            debuggable false
+            debuggable true
 
             externalNativeBuild.ndkBuild {
-                cFlags "-D__orxPROFILE__"
+                arguments 'NDK_DEBUG=0'
+                cFlags '-D__orxPROFILE__'
             }
         }
     }
