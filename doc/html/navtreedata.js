@@ -42,19 +42,19 @@ var NAVTREEINDEX =
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea8ce48aa98a2699bc9029a5f3e3c8de7e",
 "group__orx_math.html#gae9225444175526724c54a518e649a65f",
 "group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181a7d5cd9033babab037f576a1fcc58525e",
-"group__orx_object.html#gab2c1240e6bec4a872ea25570d1ecf0ca",
-"group__orx_physics.html#ga8af22da257f45c003ae013240a21303a",
-"group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faacaa9f5ada5ac55cbf098793330357d7f",
-"group__orx_plugin.html#ggac8f3a703cf9f5799bff24a129beee67ea9fb529cdf444ee5d8c6bb155e2a2aa95",
-"group__orx_render.html#gadd4ac9e534660a0c1798f4577950f791",
-"group__orx_shader_pointer.html#ga7f9ed712c9be7b7ae522f9de99de5218",
-"group__orx_sound_system.html#ga2ade4f5f870f5fa52cfe748a309aa5e7",
-"group__orx_spawner.html#gga757d724e3601950fccbb85d625991400a7e84311037abc830fe28aef6174ecc48",
-"group__orx_structure.html#gaf3c56df6bbb64e8fde476fbe2a0d784c",
-"group__orx_thread.html#gad394f6c23f87a099791afcc2cccdbd9a",
-"group__orx_version.html#ga0a021f07cec12059367678af1c84f1ce",
-"orx_sound_system_8h.html",
-"structorx_l_i_n_k_l_i_s_t.html#a3b320cfa57be1b67b23a1ee703f8d651"
+"group__orx_object.html#gab2bcfc41b5efcc9ffc0e08ec9bd24b4a",
+"group__orx_physics.html#ga84f4ed2a5a2e636e1ac24fb6e5c79657",
+"group__orx_plugin.html#gga25158caaf5e4db6702d80d3c73b945faab9bce8b674cc33e6790c96c8eade5ba9",
+"group__orx_plugin.html#ggac8f3a703cf9f5799bff24a129beee67ea5d6fc21b2fde68d26f33c5f44f1b263b",
+"group__orx_render.html#gac18069a6467cbcee0503abdaa6aaa5f6",
+"group__orx_shader_pointer.html#ga6467e441b95b2d3c4fc6821199016e1b",
+"group__orx_sound_system.html#ga180120f04cd8b042cdfa0bdff3f3f9d8",
+"group__orx_spawner.html#gga757d724e3601950fccbb85d625991400a028e802edf15f5c910ebb35864ec9e1d",
+"group__orx_structure.html#gae595f4aeb26996db954c589d4582dbd0",
+"group__orx_thread.html#gaafd1ef08638a36023f0332703d3fb6dd",
+"group__orx_vector.html#gaf39a7075d3d7e90f80604b838cc0f917",
+"orx_shader_pointer_8h.html",
+"structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html#a5d66be4dbde3417c65989708e1cf1909"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
