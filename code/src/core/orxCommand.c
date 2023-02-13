@@ -71,7 +71,7 @@
 #define orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE       256
 
 #define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          65536
-#define orxCOMMAND_KU32_PROCESS_BUFFER_SIZE           4096
+#define orxCOMMAND_KU32_PROCESS_BUFFER_SIZE           65536
 #define orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE         512
 
 #define orxCOMMAND_KZ_ERROR_VALUE                     "ERROR"
@@ -150,6 +150,7 @@ typedef struct __orxCOMMAND_STATIC_t
   orxCHAR                   acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE]; /**< Prototype buffer */
   orxCHAR                   acResultBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE];       /**< Result buffer */
   orxS32                    s32EvaluateOffset;                                        /**< Evaluate buffer offset */
+  orxS32                    s32ProcessOffset;                                         /**< Process buffer offset */
   orxU32                    u32Flags;                                                 /**< Control flags */
 
 } orxCOMMAND_STATIC;
@@ -493,7 +494,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     {
 #define orxCOMMAND_KU32_ALIAS_MAX_DEPTH             32
       orxSTATUS             eStatus;
-      orxS32                s32GUIDLength, s32BufferCount = 0, s32VectorDepth = 0, i;
+      orxS32                s32GUIDLength, s32BufferCount = 0, s32VectorDepth = 0, s32Offset, i;
       orxBOOL               bInBlock = orxFALSE;
       orxCOMMAND_TRIE_NODE *pstCommandNode;
       const orxCHAR        *pcSrc;
@@ -545,7 +546,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       *(orxCHAR *)pcCommandEnd = cBackupChar;
 
       /* For all stacked buffers */
-      for(i = s32BufferCount - 1, pcDst = sstCommand.acProcessBuffer; i >= 0; i--)
+      for(i = s32BufferCount - 1, pcDst = sstCommand.acProcessBuffer + sstCommand.s32ProcessOffset; i >= 0; i--)
       {
         orxBOOL bStop;
 
@@ -747,11 +748,14 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       /* Copies end of string */
       *pcDst = orxCHAR_NULL;
 
+      /* Gets new additional offset */
+      s32Offset = (orxS32)(pcDst + 1 - sstCommand.acProcessBuffer - sstCommand.s32ProcessOffset);
+
       /* Updates next command expression */
       zCommand = orxString_SkipWhiteSpaces(pcSrc);
 
       /* For all characters in the buffer */
-      for(pcSrc = sstCommand.acProcessBuffer, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
+      for(pcSrc = sstCommand.acProcessBuffer + sstCommand.s32ProcessOffset, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
           (u32ArgNumber < u32ParamNumber) && (pcSrc - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE) && (*pcSrc != orxCHAR_NULL);
           pcSrc++, u32ArgNumber++)
       {
@@ -1071,7 +1075,9 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       else
       {
         /* Runs it */
+        sstCommand.s32ProcessOffset += s32Offset;
         pstResult = orxCommand_Run(pstCommand, orxFALSE, u32ArgNumber, astArgList, _pstResult);
+        sstCommand.s32ProcessOffset -= s32Offset;
       }
     }
     else
@@ -3279,8 +3285,9 @@ orxSTATUS orxFASTCALL orxCommand_Init()
             sstCommand.acProcessBuffer[orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1]     = orxCHAR_NULL;
             sstCommand.acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1] = orxCHAR_NULL;
 
-            /* Inits offset */
-            sstCommand.s32EvaluateOffset = 0;
+            /* Inits offsets */
+            sstCommand.s32EvaluateOffset  =
+            sstCommand.s32ProcessOffset   = 0;
 
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;
