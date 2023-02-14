@@ -267,33 +267,47 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
     /* Select language event */
     case orxLOCALE_EVENT_SELECT_LANGUAGE:
     {
-      orxGRAPHIC *pstGraphic;
+      orxLOCALE_EVENT_PAYLOAD  *pstPayload;
+      orxBOOL                   bTextureGroup, bTextGroup;
 
-      /* For all graphics */
-      for(pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
-          pstGraphic != orxNULL;
-          pstGraphic = orxGRAPHIC(orxStructure_GetNext(pstGraphic)))
+      /* Gets its payload */
+      pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Updates status */
+      bTextureGroup = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXTURE_KZ_LOCALE_GROUP) == 0)) ? orxTRUE : orxFALSE;
+      bTextGroup    = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXT_KZ_LOCALE_GROUP) == 0))    ? orxTRUE : orxFALSE;
+
+      /* Is it texture or text group? */
+      if((bTextureGroup != orxFALSE) || (bTextGroup != orxFALSE))
       {
-        /* 2D data? */
-        if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
+        orxGRAPHIC *pstGraphic;
+
+        /* For all graphics */
+        for(pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
+            pstGraphic != orxNULL;
+            pstGraphic = orxGRAPHIC(orxStructure_GetNext(pstGraphic)))
         {
-          /* Has locale name ID? */
-          if(pstGraphic->stLocaleNameID != 0)
+          /* Texture group and 2D data? */
+          if((bTextureGroup != orxFALSE) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D)))
           {
-            orxTEXTURE *pstTexture;
+            /* Has locale name ID? */
+            if(pstGraphic->stLocaleNameID != 0)
+            {
+              orxTEXTURE *pstTexture;
 
-            /* Loads texture */
-            pstTexture = orxTexture_Load(orxLocale_GetString(orxString_GetFromID(pstGraphic->stLocaleNameID), orxTEXTURE_KZ_LOCALE_GROUP), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
+              /* Loads texture */
+              pstTexture = orxTexture_Load(orxLocale_GetString(orxString_GetFromID(pstGraphic->stLocaleNameID), orxTEXTURE_KZ_LOCALE_GROUP), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
 
-            /* Updates data */
-            orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
+              /* Updates data */
+              orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
+            }
           }
-        }
-        /* Text data? */
-        else if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
-        {
-          /* Updates graphic's size */
-          orxGraphic_UpdateSize(pstGraphic);
+          /* Text group and text data? */
+          else if((bTextGroup != orxFALSE) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)))
+          {
+            /* Updates graphic's size */
+            orxGraphic_UpdateSize(pstGraphic);
+          }
         }
       }
 
