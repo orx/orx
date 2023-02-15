@@ -1173,6 +1173,9 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
               /* Stops sound */
               orxSound_Stop(pstSound);
 
+              /* Removes all filters */
+              orxSound_RemoveAllFilters(pstSound);
+
               /* Re-processes its config data */
               orxSound_ProcessConfigData(pstSound, orxFALSE);
 
