@@ -87,7 +87,7 @@
 
 #define orxGRAPHIC_KU32_BANK_SIZE                 1024
 
-#define orxGRAPHIC_KC_LOCALE_MARKER              '$'
+#define orxGRAPHIC_KC_LOCALE_MARKER               '$'
 
 
 /***************************************************************************
@@ -298,8 +298,12 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
               /* Loads texture */
               pstTexture = orxTexture_Load(orxLocale_GetString(orxString_GetFromID(pstGraphic->stLocaleNameID), orxTEXTURE_KZ_LOCALE_GROUP), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
 
-              /* Updates data */
-              orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
+              /* Valid? */
+              if(pstTexture != orxNULL)
+              {
+                /* Updates data */
+                orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
+              }
             }
           }
           /* Text group and text data? */
