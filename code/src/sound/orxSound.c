@@ -172,18 +172,18 @@ struct __orxSOUND_t
 {
   orxSTRUCTURE          stStructure;                    /**< Public structure, first structure member : 32 */
   orxLINKLIST_NODE      stBusNode;                      /**< Bus node : 44/56 */
-  const orxSTRING       zReference;                     /**< Sound reference : 48/64 */
-  orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 52/72 */
+  orxSOUNDSYSTEM_SOUND *pstData;                        /**< Sound data : 48/64 */
   union
   {
-    orxSOUND_SAMPLE    *pstSample;                      /**< Sound sample : 56/80 */
-    orxSTRINGID         stStreamID;                     /**< Stream ID : 60/80 */
+    orxSOUND_SAMPLE    *pstSample;                      /**< Sound sample : 52/72 */
+    orxSTRINGID         stStreamID;                     /**< Stream ID : 56/72 */
   };
-  orxSTRINGID           stBusID;                        /**< Sound bus ID: 64/84 */
-  orxSOUND_STATUS       eStatus;                        /**< Sound status : 68/88 */
-  orxFLOAT              fVolume;                        /**< Sound volume : 72/92 */
-  orxFLOAT              fPitch;                         /**< Sound pitch : 76/96 */
-  orxFLOAT              fPitchModifier;                 /**< Sound pitch modifier : 80/100 */
+  orxSTRINGID           stBusID;                        /**< Sound bus ID: 64/80 */
+  const orxSTRING       zReference;                     /**< Sound reference : 68/88 */
+  orxSOUND_STATUS       eStatus;                        /**< Sound status : 72/92 */
+  orxFLOAT              fVolume;                        /**< Sound volume : 76/96 */
+  orxFLOAT              fPitch;                         /**< Sound pitch : 80/100 */
+  orxFLOAT              fPitchModifier;                 /**< Sound pitch modifier : 84/104 */
 };
 
 /** Static structure
@@ -1104,111 +1104,120 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
     /* Select language event? */
     if(_pstEvent->eID == orxLOCALE_EVENT_SELECT_LANGUAGE)
     {
-      orxSOUND *pstSound;
+      orxLOCALE_EVENT_PAYLOAD *pstPayload;
 
-      /* For all sounds */
-      for(pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
-          pstSound != orxNULL;
-          pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
+      /* Gets its payload */
+      pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Sound group? */
+      if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxSOUND_KZ_LOCALE_GROUP) == 0))
       {
-        /* Has a reference? */
-        if(pstSound->zReference != orxNULL)
+        orxSOUND *pstSound;
+
+        /* For all sounds */
+        for(pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
+            pstSound != orxNULL;
+            pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
         {
-          const orxSTRING azProperties[] = {orxSOUND_KZ_CONFIG_SOUND, orxSOUND_KZ_CONFIG_MUSIC};
-          orxBOOL         bUseLocale = orxFALSE;
-          orxU32          i;
-
-          /* Pushes its section */
-          orxConfig_PushSection(pstSound->zReference);
-
-          /* For all properties */
-          for(i = 0; i < orxARRAY_GET_ITEM_COUNT(azProperties); i++)
+          /* Has a reference? */
+          if(pstSound->zReference != orxNULL)
           {
-            const orxSTRING zName;
+            const orxSTRING azProperties[] = {orxSOUND_KZ_CONFIG_SOUND, orxSOUND_KZ_CONFIG_MUSIC};
+            orxBOOL         bUseLocale = orxFALSE;
+            orxU32          i;
 
-            /* Gets its value */
-            zName = orxConfig_GetString(azProperties[i]);
+            /* Pushes its section */
+            orxConfig_PushSection(pstSound->zReference);
+
+            /* For all properties */
+            for(i = 0; i < orxARRAY_GET_ITEM_COUNT(azProperties); i++)
+            {
+              const orxSTRING zName;
+
+              /* Gets its value */
+              zName = orxConfig_GetString(azProperties[i]);
+
+              /* Uses locale? */
+              if((*zName == orxSOUND_KC_LOCALE_MARKER) && (*(zName + 1) != orxSOUND_KC_LOCALE_MARKER))
+              {
+                /* Updates status */
+                bUseLocale = orxTRUE;
+                break;
+              }
+            }
 
             /* Uses locale? */
-            if((*zName == orxSOUND_KC_LOCALE_MARKER) && (*(zName + 1) != orxSOUND_KC_LOCALE_MARKER))
+            if(bUseLocale != orxFALSE)
             {
-              /* Updates status */
-              bUseLocale = orxTRUE;
-              break;
-            }
-          }
+              orxVECTOR       vPosition;
+              orxSTRINGID     stBusID;
+              orxFLOAT        fVolume, fPitch,
+                              fMinDistance = -orxFLOAT_1, fMaxDistance = -orxFLOAT_1,
+                              fMinGain = -orxFLOAT_1, fMaxGain = -orxFLOAT_1,
+                              fRollOff = orxFLOAT_1,
+                              fPanning = orxFLOAT_0;
+              orxBOOL         bMix = orxFALSE;
+              orxSOUND_STATUS eStatus;
 
-          /* Uses locale? */
-          if(bUseLocale != orxFALSE)
-          {
-            orxVECTOR       vPosition;
-            orxSTRINGID     stBusID;
-            orxFLOAT        fVolume, fPitch,
-                            fMinDistance = -orxFLOAT_1, fMaxDistance = -orxFLOAT_1,
-                            fMinGain = -orxFLOAT_1, fMaxGain = -orxFLOAT_1,
-                            fRollOff = orxFLOAT_1,
-                            fPanning = orxFLOAT_0;
-            orxBOOL         bMix = orxFALSE;
-            orxSOUND_STATUS eStatus;
+              /* Gets current status */
+              eStatus = orxSound_GetStatus(pstSound);
 
-            /* Gets current status */
-            eStatus = orxSound_GetStatus(pstSound);
+              /* Backups current state */
+              fVolume       = orxSound_GetVolume(pstSound);
+              fPitch        = orxSound_GetPitch(pstSound);
+              stBusID       = orxSound_GetBusID(pstSound);
+              orxSound_GetSpatialization(pstSound, &fMinDistance, &fMaxDistance, &fMinGain, &fMaxGain, &fRollOff);
+              orxSound_GetPanning(pstSound, &fPanning, &bMix);
+              orxSound_GetPosition(pstSound, &vPosition);
 
-            /* Backups current state */
-            fVolume       = orxSound_GetVolume(pstSound);
-            fPitch        = orxSound_GetPitch(pstSound);
-            stBusID       = orxSound_GetBusID(pstSound);
-            orxSound_GetSpatialization(pstSound, &fMinDistance, &fMaxDistance, &fMinGain, &fMaxGain, &fRollOff);
-            orxSound_GetPanning(pstSound, &fPanning, &bMix);
-            orxSound_GetPosition(pstSound, &vPosition);
+              /* Stops sound */
+              orxSound_Stop(pstSound);
 
-            /* Stops sound */
-            orxSound_Stop(pstSound);
+              /* Re-processes its config data */
+              orxSound_ProcessConfigData(pstSound, orxFALSE);
 
-            /* Re-processes its config data */
-            orxSound_ProcessConfigData(pstSound, orxFALSE);
+              /* Restores state */
+              orxSound_SetVolume(pstSound, fVolume);
+              orxSound_SetPitch(pstSound, fPitch);
+              orxSound_SetBusID(pstSound, stBusID);
+              orxSound_SetSpatialization(pstSound, fMinDistance, fMaxDistance, fMinGain, fMaxGain, fRollOff);
+              orxSound_SetPanning(pstSound, fPanning, bMix);
+              orxSound_SetPosition(pstSound, &vPosition);
 
-            /* Restores state */
-            orxSound_SetVolume(pstSound, fVolume);
-            orxSound_SetPitch(pstSound, fPitch);
-            orxSound_SetBusID(pstSound, stBusID);
-            orxSound_SetSpatialization(pstSound, fMinDistance, fMaxDistance, fMinGain, fMaxGain, fRollOff);
-            orxSound_SetPanning(pstSound, fPanning, bMix);
-            orxSound_SetPosition(pstSound, &vPosition);
-
-            /* Depending on previous status */
-            switch(eStatus)
-            {
-              case orxSOUND_STATUS_PLAY:
+              /* Depending on previous status */
+              switch(eStatus)
               {
-                /* Updates sound */
-                orxSound_Play(pstSound);
+                case orxSOUND_STATUS_PLAY:
+                {
+                  /* Updates sound */
+                  orxSound_Play(pstSound);
 
-                break;
-              }
+                  break;
+                }
 
-              case orxSOUND_STATUS_PAUSE:
-              {
-                /* Updates sound */
-                orxSound_Play(pstSound);
-                orxSound_Pause(pstSound);
+                case orxSOUND_STATUS_PAUSE:
+                {
+                  /* Updates sound */
+                  orxSound_Play(pstSound);
+                  orxSound_Pause(pstSound);
 
-                break;
-              }
+                  break;
+                }
 
-              case orxSOUND_STATUS_STOP:
-              default:
-              {
-                /* Updates sound */
-                orxSound_Stop(pstSound);
+                case orxSOUND_STATUS_STOP:
+                default:
+                {
+                  /* Updates sound */
+                  orxSound_Stop(pstSound);
 
-                break;
+                  break;
+                }
               }
             }
-          }
 
-          /* Pops config section */
-          orxConfig_PopSection();
+            /* Pops config section */
+            orxConfig_PopSection();
+          }
         }
       }
     }
