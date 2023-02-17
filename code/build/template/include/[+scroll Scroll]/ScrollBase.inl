@@ -63,6 +63,9 @@ const orxSTRING ScrollBase::szConfigScrollObjectPausable      = "Pausable";
 //! Static variables
 ScrollBase *ScrollBase::spoInstance                           = orxNULL;
 
+template<class O>
+ScrollObjectBinder<O> *ScrollObjectBinder<O>::spoInstance     = orxNULL;
+
 
 //! Code
 ScrollBase &ScrollBase::GetInstance()
@@ -1851,18 +1854,6 @@ orxHASHTABLE *          ScrollObjectBinderBase::spstTable         = orxNULL;
 
 
 //! Code
-inline void *operator new(size_t _Size, orxBANK *_pstBank)
-{
-  // Done!
-  return orxBank_Allocate(_pstBank);
-}
-
-inline void operator delete(void *_p, orxBANK *_pstBank)
-{
-  // Done!
-  orxBank_Free(_pstBank, _p);
-}
-
 orxHASHTABLE *ScrollObjectBinderBase::GetTable()
 {
   if(!spstTable)

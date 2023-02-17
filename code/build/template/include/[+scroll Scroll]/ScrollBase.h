@@ -44,6 +44,20 @@
 #include "ScrollObject.h"
 
 
+//! Code
+inline void *operator new(size_t _Size, orxBANK *_pstBank)
+{
+  // Done!
+  return orxBank_Allocate(_pstBank);
+}
+
+inline void operator delete(void *_p, orxBANK *_pstBank)
+{
+  // Done!
+  orxBank_Free(_pstBank, _p);
+}
+
+
 //! Template helpers
 template<class T, class U>
 inline static T ScrollCast(U _p)
@@ -227,9 +241,6 @@ ScrollObject *ScrollObjectBinder<O>::ConstructObject(orxBANK *_pstBank) const
   // Done!
   return new(_pstBank) O();
 }
-
-template<class O>
-ScrollObjectBinder<O> *ScrollObjectBinder<O>::spoInstance = orxNULL;
 
 
 //! Scroll object bind helper
