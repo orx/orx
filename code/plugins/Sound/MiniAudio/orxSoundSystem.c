@@ -64,7 +64,16 @@ extern "C" {
 
 #define MINIAUDIO_IMPLEMENTATION
 
+#if defined(__GNUC__)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wstringop-overflow="
+#endif
+
 #include "miniaudio.h"
+
+#if defined(__GNUC__)
+  #pragma GCC diagnostic pop
+#endif
 
 #undef MA_NO_RUNTIME_LINKING
 #undef MA_ON_THREAD_ENTRY
