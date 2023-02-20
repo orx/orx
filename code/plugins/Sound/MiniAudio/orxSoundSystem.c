@@ -64,7 +64,20 @@ extern "C" {
 
 #define MINIAUDIO_IMPLEMENTATION
 
+#ifdef __orxGCC__
+  #if (__GNUC__ >= 7)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wstringop-overflow"
+  #endif // (__GNUC__ >= 7)
+#endif // __orxGCC__
+
 #include "miniaudio.h"
+
+#ifdef __orxGCC__
+  #if (__GNUC__ >= 7)
+    #pragma GCC diagnostic pop
+  #endif // (__GNUC__ >= 7)
+#endif // __orxGCC__
 
 #undef MA_NO_RUNTIME_LINKING
 #undef MA_ON_THREAD_ENTRY
