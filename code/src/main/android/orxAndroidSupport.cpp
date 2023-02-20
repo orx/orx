@@ -498,6 +498,14 @@ extern "C" void orxAndroid_PumpEvents()
   }
 }
 
+static bool orxAndroid_KeyEventFilter(const GameActivityKeyEvent *key_event)
+{
+  if (key_event->keyCode == AKEYCODE_VOLUME_UP || key_event->keyCode == AKEYCODE_VOLUME_DOWN)
+    return false;
+
+  return true;
+}
+
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
@@ -505,7 +513,7 @@ void android_main(android_app* state)
 {
   state->onAppCmd = orxAndroid_handleCmd;
 
-  android_app_set_key_event_filter(state, NULL);
+  android_app_set_key_event_filter(state, &orxAndroid_KeyEventFilter);
   android_app_set_motion_event_filter(state, NULL);
 
   /* Cleans static controller */
