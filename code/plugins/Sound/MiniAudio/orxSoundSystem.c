@@ -66,7 +66,7 @@ extern "C" {
 
 #if defined(__GNUC__)
   #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wstringop-overflow="
+  #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #endif
 
 #include "miniaudio.h"
