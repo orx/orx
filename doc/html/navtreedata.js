@@ -42,19 +42,19 @@ var NAVTREEINDEX =
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaa56c79ba799db968da4468a840adf77a",
 "group__orx_math.html#gaffa08e56ae64571cf13e5b57ecd38cf3",
 "group__orx_mouse.html#ggaa0f43e289f6e13f24f218386c8d30960af0d06db946f7523af467354d7616e2e5",
-"group__orx_object.html#gac60bf5ef1a20705b64ada55597510665",
-"group__orx_physics.html#ga9a93c444bc72743d34ca363f2f608da6",
-"group__orx_plugin.html#gga3c6ff2e6204f4529b348ab5f74b6cc3dae92918877d588322291f6a445bfb3a64",
-"group__orx_plugin.html#ggafc2c82a23f06f10aee546a81239c999fa01517346f0a5f90ee94e801aaa399648",
-"group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684a93d3c87196f358847d4d5ea86d2dde22",
-"group__orx_sound.html#ga0cb4d48333b6bb7482380dc97b319207",
-"group__orx_sound_system.html#ga50b11cf49412fd3ac08513f418528c36",
-"group__orx_string.html#ga12dff19357cd18ca1832e3cf83e555e0",
-"group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a48b14df45d963b21b0ad76063b205d6b",
-"group__orx_time_line.html#ga1281081fa8cb1913b4b769a2a7343157",
-"group__orx_version.html#gaa7fee88752ff33968ff590a1b2bb38c9",
-"orx_time_line_8h.html",
-"structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a33968dfda866556a5090c127cabbd99a"
+"group__orx_object.html#gac43eb6ebd857fd938f9c0c92bbcd6a74",
+"group__orx_physics.html#ga94beef919ead8969687b4030d1f1a25e",
+"group__orx_plugin.html#gga3c6ff2e6204f4529b348ab5f74b6cc3daae5c84483acc727d4d20c82cae8495ac",
+"group__orx_plugin.html#ggacc44072b4baa652403cb58841e316cc9ad19107c81db3489af3b0e8fd97ca7003",
+"group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684a5a95a416e9d7558cd9aaf06c11fc08cc",
+"group__orx_sound.html#ga0390001e26b32b18253b9bcd3ac15e49",
+"group__orx_sound_system.html#ga41370e9556fefbd90a4626bcf3489468",
+"group__orx_string.html#ga05a31fee6e03d85a57bfd33cce575c0f",
+"group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a253810235295d1a07a7c539c966ea702",
+"group__orx_time_line.html",
+"group__orx_version.html#ga70c7e0a0676080a6b1078f699f259445",
+"orx_text_8h.html",
+"structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
