@@ -603,6 +603,26 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetAnimFrequencyRecursive(
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAnimFrequency(const orxOBJECT *_pstObject);
 
+/** Sets an object's animation time.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimTime(orxOBJECT *_pstObject, orxFLOAT _fTime);
+
+/** Sets the animation time for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetAnimTimeRecursive(orxOBJECT *_pstObject, orxFLOAT _fTime);
+
+/** Gets an object's animation time.
+ * @param[in]   _pstObject      Concerned object
+ * @return Animation time / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAnimTime(const orxOBJECT *_pstObject);
+
 /** Sets current animation for an object. This function switches the currently displayed animation of the object
  * immediately. Compare this with orxObject_SetTargetAnim().
  * @param[in]   _pstObject      Concerned object

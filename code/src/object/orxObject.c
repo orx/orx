@@ -3258,6 +3258,68 @@ void orxFASTCALL orxObject_CommandGetAnimFrequency(orxU32 _u32ArgNumber, const o
   return;
 }
 
+/** Command: SetAnimTime
+ */
+void orxFASTCALL orxObject_CommandSetAnimTime(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Sets its anim time */
+      orxObject_SetAnimTimeRecursive(pstObject, _astArgList[1].fValue);
+    }
+    else
+    {
+      /* Sets its anim time */
+      orxObject_SetAnimTime(pstObject, _astArgList[1].fValue);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetAnimTime
+ */
+void orxFASTCALL orxObject_CommandGetAnimTime(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->fValue = orxObject_GetAnimTime(pstObject);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->fValue = -orxFLOAT_1;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetOrigin
  */
 void orxFASTCALL orxObject_CommandSetOrigin(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3635,6 +3697,10 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnimFrequency, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Frequency = 1.0", orxCOMMAND_VAR_TYPE_FLOAT}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: GetAnimFrequency */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAnimFrequency, "Frequency", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetAnimTime */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetAnimTime, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Time", orxCOMMAND_VAR_TYPE_FLOAT}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: GetAnimTime */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetAnimTime, "Time", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetOrigin */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetOrigin, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Origin", orxCOMMAND_VAR_TYPE_VECTOR});
@@ -3854,6 +3920,10 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAnimFrequency);
   /* Command: GetAnimFrequency */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetAnimFrequency);
+  /* Command: SetAnimTime */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetAnimTime);
+  /* Command: GetAnimTime */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetAnimTime);
 
   /* Command: SetOrigin */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetOrigin);
@@ -8691,6 +8761,79 @@ orxFLOAT orxFASTCALL orxObject_GetAnimFrequency(const orxOBJECT *_pstObject)
   {
     /* Updates result */
     fResult = orxAnimPointer_GetFrequency(pstAnimPointer);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = -orxFLOAT_1;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Sets an object's animation time.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetAnimTime(orxOBJECT *_pstObject, orxFLOAT _fTime)
+{
+  orxANIMPOINTER *pstAnimPointer;
+  orxSTATUS       eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_fTime >= orxFLOAT_0);
+
+  /* Gets animation pointer */
+  pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
+
+  /* Valid? */
+  if(pstAnimPointer != orxNULL)
+  {
+    /* Updates result */
+    eResult = orxAnimPointer_SetTime(pstAnimPointer, _fTime);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the animation time for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxOBJECT_MAKE_RECURSIVE(SetAnimTime, orxFLOAT);
+
+/** Gets an object's animation time.
+ * @param[in]   _pstObject      Concerned object
+ * @return Animation time / -orxFLOAT_1
+ */
+orxFLOAT orxFASTCALL orxObject_GetAnimTime(const orxOBJECT *_pstObject)
+{
+  orxANIMPOINTER *pstAnimPointer;
+  orxFLOAT       fResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets animation pointer */
+  pstAnimPointer = orxOBJECT_GET_STRUCTURE(_pstObject, ANIMPOINTER);
+
+  /* Valid? */
+  if(pstAnimPointer != orxNULL)
+  {
+    /* Updates result */
+    fResult = orxAnimPointer_GetTime(pstAnimPointer);
   }
   else
   {
