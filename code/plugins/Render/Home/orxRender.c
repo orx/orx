@@ -2512,6 +2512,9 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
 
         /* Updates console */
         orxRender_Home_UpdateConsole(orxU2F(pstPayload->stVideoMode.u32Width), orxU2F(pstPayload->stVideoMode.u32Height));
+
+        /* Snaps console to its final state */
+        sstRender.fConsoleOffset = (orxConsole_IsEnabled() != orxFALSE) ? orxFLOAT_0 : sstRender.fDefaultConsoleOffset;
       }
 
       break;
