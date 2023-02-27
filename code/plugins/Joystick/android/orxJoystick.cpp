@@ -218,6 +218,7 @@ static void orxJoystick_Android_DisableSensorManager()
   if(sstJoystick.bAccelerometerEnabled)
   {
     ASensorEventQueue_disableSensor(sstJoystick.sensorEventQueue, sstJoystick.accelerometerSensor);
+    orxVector_Copy(&(sstJoystick.vAcceleration), &orxVECTOR_0);
     sstJoystick.bAccelerometerEnabled = orxFALSE;
   }
 }
@@ -329,14 +330,10 @@ orxSTATUS orxFASTCALL orxJoystick_Android_Init()
     {
       sstJoystick.u32Frequency = orxConfig_GetU32(KZ_CONFIG_ACCELEROMETER_FREQUENCY);
     }
-    else
-    {
-      /* Enable accelerometer with default rate */
-      sstJoystick.u32Frequency = 60;
-    }
 
     orxConfig_PopSection();
 
+    /* Note : Avoid consuming battery if accelerometer is not used. */
     if(sstJoystick.u32Frequency > 0)
     {
       sstJoystick.sensorManager = ASensorManager_getInstance();
