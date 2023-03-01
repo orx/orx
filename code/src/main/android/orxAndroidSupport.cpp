@@ -140,6 +140,49 @@ static orxS32 orxAndroid_GetSdkVersion()
   return 0;
 }
 
+static jobject orxAndroid_JNI_getDisplay(JNIEnv *env)
+{
+  jobject display;
+  jobject instance = sstAndroid.app->activity->javaGameActivity;
+
+  /* Note : WindowManager.getDefaultDisplay() was deprecated in Android R */
+  if (orxAndroid_GetSdkVersion() >= __ANDROID_API_R__)
+  {
+    /* Finds classes */
+    jclass contextClass = env->FindClass("android/content/Context");
+
+    /* Finds methods */
+    jmethodID getDisplayMethod = env->GetMethodID(contextClass, "getDisplay", "()Landroid/view/Display;");
+
+    /* Calls methods and stores display object */
+    display = env->CallObjectMethod(instance, getDisplayMethod);
+
+    /* Cleans references */
+    env->DeleteLocalRef(contextClass);
+  }
+  else
+  {
+    /* Finds classes */
+    jclass activityClass = env->GetObjectClass(instance);
+    jclass windowManagerClass = env->FindClass("android/view/WindowManager");
+
+    /* Finds methods */
+    jmethodID getWindowManagerMethod = env->GetMethodID(activityClass, "getWindowManager", "()Landroid/view/WindowManager;");
+    jmethodID getDefaultDisplayMethod = env->GetMethodID(windowManagerClass,"getDefaultDisplay", "()Landroid/view/Display;");
+
+    /* Calls methods and stores display object */
+    jobject windowManager = env->CallObjectMethod(instance, getWindowManagerMethod);
+    display = env->CallObjectMethod(windowManager, getDefaultDisplayMethod);
+
+    /* Cleans references */
+    env->DeleteLocalRef(windowManager);
+    env->DeleteLocalRef(windowManagerClass);
+    env->DeleteLocalRef(activityClass);
+  }
+
+  return display;
+}
+
 orxSTATUS orxFASTCALL orxAndroid_JNI_SetupThread(void *_pContext)
 {
   /* From http://developer.android.com/guide/practices/jni.html
@@ -184,57 +227,49 @@ extern "C" const char *orxAndroid_GetInternalStoragePath()
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
 {
   orxU32 rotation;
-
   JNIEnv *env = orxAndroid_JNI_GetEnv();
-  jobject instance = sstAndroid.app->activity->javaGameActivity;
 
-  /* Note : WindowManager.getDefaultDisplay() was deprecated in Android R */
-  if (orxAndroid_GetSdkVersion() >= __ANDROID_API_R__)
-  {
-    /* Finds classes */
-    jclass contextClass = env->FindClass("android/content/Context");
-    jclass displayClass = env->FindClass("android/view/Display");
+  /* Gets display structure */
+  jobject display = orxAndroid_JNI_getDisplay(env);
 
-    /* Finds methods */
-    jmethodID getDisplayMethod = env->GetMethodID(contextClass, "getDisplay","()Landroid/view/Display;");
-    jmethodID getRotationMethod = env->GetMethodID(displayClass, "getRotation", "()I");
+  /* Finds classes */
+  jclass displayClass = env->FindClass("android/view/Display");
 
-    /* Calls methods and stores rotation */
-    jobject display = env->CallObjectMethod(instance, getDisplayMethod);
-    rotation = (orxU32)env->CallIntMethod(display, getRotationMethod);
+  /* Finds methods */
+  jmethodID getRotationMethod = env->GetMethodID(displayClass, "getRotation", "()I");
 
-    /* Cleans references */
-    env->DeleteLocalRef(display);
-    env->DeleteLocalRef(contextClass);
-    env->DeleteLocalRef(displayClass);
-  }
-  else
-  {
-    /* Finds classes */
-    jclass activityClass = env->GetObjectClass(instance);
-    jclass windowManagerClass = env->FindClass("android/view/WindowManager");
-    jclass displayClass = env->FindClass("android/view/Display");
+  /* Calls method and stores rotation */
+  rotation = (orxU32)env->CallIntMethod(display, getRotationMethod);
 
-    /* Finds methods */
-    jmethodID getWindowManagerMethod = env->GetMethodID(activityClass, "getWindowManager", "()Landroid/view/WindowManager;");
-    jmethodID getDefaultDisplayMethod = env->GetMethodID(windowManagerClass,"getDefaultDisplay","()Landroid/view/Display;");
-    jmethodID getRotationMethod = env->GetMethodID(displayClass, "getRotation", "()I");
-
-    /* Calls methods and stores rotation */
-    jobject windowManager = env->CallObjectMethod(instance, getWindowManagerMethod);
-    jobject display = env->CallObjectMethod(windowManager, getDefaultDisplayMethod);
-    rotation = (orxU32)env->CallIntMethod(display, getRotationMethod);
-
-    /* Cleans references */
-    env->DeleteLocalRef(windowManager);
-    env->DeleteLocalRef(display);
-
-    env->DeleteLocalRef(activityClass);
-    env->DeleteLocalRef(windowManagerClass);
-    env->DeleteLocalRef(displayClass);
-  }
+  /* Cleans references */
+  env->DeleteLocalRef(displayClass);
+  env->DeleteLocalRef(display);
 
   return rotation;
+}
+
+extern "C" orxFLOAT orxAndroid_JNI_GetRefreshRate()
+{
+  orxFLOAT refreshRate;
+  JNIEnv *env = orxAndroid_JNI_GetEnv();
+
+  /* Gets display structure */
+  jobject display = orxAndroid_JNI_getDisplay(env);
+
+  /* Finds classes */
+  jclass displayClass = env->FindClass("android/view/Display");
+
+  /* Finds methods */
+  jmethodID getRefreshRateMethod = env->GetMethodID(displayClass, "getRefreshRate", "()F");
+
+  /* Calls method and stores refresh rate */
+  refreshRate = (orxFLOAT)env->CallFloatMethod(display, getRefreshRateMethod);
+
+  /* Cleans references */
+  env->DeleteLocalRef(displayClass);
+  env->DeleteLocalRef(display);
+
+  return refreshRate;
 }
 
 static void Android_CheckForNewAxis()

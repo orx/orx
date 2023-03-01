@@ -87,6 +87,11 @@ const char *orxAndroid_GetInternalStoragePath();
 orxU32 orxAndroid_JNI_GetRotation();
 
 /**
+  Get the refresh rate
+  */
+orxFLOAT orxAndroid_JNI_GetRefreshRate();
+
+/**
   Register APK resources IO
   */
 orxSTATUS orxAndroid_RegisterAPKResource();
