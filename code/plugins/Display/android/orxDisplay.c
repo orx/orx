@@ -3864,7 +3864,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_Android_GetVideoMode(orxU32 _u32In
   _pstVideoMode->u32Width       = orxF2U(sstDisplay.pstScreen->fWidth);
   _pstVideoMode->u32Height      = orxF2U(sstDisplay.pstScreen->fHeight);
   _pstVideoMode->u32Depth       = sstDisplay.u32Depth;
-  _pstVideoMode->u32RefreshRate = 60;
+  _pstVideoMode->u32RefreshRate = sstDisplay.u32RefreshRate;
   _pstVideoMode->bFullScreen    = orxTRUE;
 
   /* Updates result */
@@ -3917,7 +3917,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
       stPayload.stVideoMode.u32PreviousWidth        = orxF2U(sstDisplay.pstScreen->fWidth);
       stPayload.stVideoMode.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
       stPayload.stVideoMode.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
-      stPayload.stVideoMode.u32PreviousRefreshRate  = 60;
+      stPayload.stVideoMode.u32PreviousRefreshRate  = sstDisplay.u32RefreshRate;
       stPayload.stVideoMode.bFullScreen             = _pstVideoMode->bFullScreen;
 
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "surface changed (%ux%u)->(%ux%u)",
@@ -4123,7 +4123,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
       stVideoMode.u32Width        = pstSurfaceChangedEvent->u32Width;
       stVideoMode.u32Height       = pstSurfaceChangedEvent->u32Height;
       stVideoMode.u32Depth        = sstDisplay.u32Depth;
-      stVideoMode.u32RefreshRate  = 60;
+      stVideoMode.u32RefreshRate  = 0;
       stVideoMode.bFullScreen     = orxTRUE;
 
       /* Applies it */
