@@ -10,7 +10,8 @@
       "-lGLESv2",
       "-lEGL",
       "//game-activity:game-activity_static",
-      "//games-controller:paddleboat_static"
+      "//games-controller:paddleboat_static",
+      "//games-frame-pacing:swappy_static"
     ]
   }
 }

@@ -78,11 +78,12 @@ android {
     }
 }
 dependencies {
-    api 'androidx.appcompat:appcompat:1.6.1'
-    api 'androidx.core:core:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core:1.9.0'
 
-    api 'androidx.games:games-controller:2.0.0-rc01'
     api 'androidx.games:games-activity:2.0.0-rc01'
+    api 'androidx.games:games-controller:2.0.0-rc01'
+    api 'androidx.games:games-frame-pacing:2.0.0-rc01'
 }
 
 afterEvaluate {

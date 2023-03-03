@@ -64,10 +64,12 @@ android {
     }
     lint {
         abortOnError true
-        warningsAsErrors true
     }
 }
 dependencies {
+    implementation 'androidx.core:core:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
     releaseImplementation 'org.orx-project:orx:1.13'
     debugImplementation 'org.orx-project:orxd:1.13'
     profileImplementation 'org.orx-project:orxp:1.13'

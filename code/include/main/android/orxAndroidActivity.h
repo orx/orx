@@ -46,6 +46,9 @@
 #include <game-activity/GameActivity.h>
 #include <paddleboat/paddleboat.h>
 
+#include <swappy/swappyGL.h>
+#include <swappy/swappyGL_extra.h>
+
 #define orxANDROID_KU32_MAX_JOYSTICK_NUMBER   PADDLEBOAT_MAX_CONTROLLERS
 
 #if defined(__cplusplus)

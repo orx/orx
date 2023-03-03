@@ -3,6 +3,7 @@
   "schema_version": 2,
   "dependencies": [
     "game-activity",
-    "games-controller"
+    "games-controller",
+    "games-frame-pacing"
   ]
 }

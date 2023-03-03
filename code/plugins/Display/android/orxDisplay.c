@@ -37,6 +37,8 @@
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
 #include "main/android/orxAndroid.h"
+#include <swappy/swappyGL.h>
+#include <swappy/swappyGL_extra.h>
 
 #include <sys/endian.h>
 
@@ -2851,7 +2853,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   orxDisplay_Android_DrawArrays();
 
   /* Swaps buffers */
-  eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
+  SwappyGL_swap(sstDisplay.display, sstDisplay.surface);
   eglASSERT();
 
   /* Done! */

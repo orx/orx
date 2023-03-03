@@ -82,7 +82,7 @@ LOCAL_MODULE := orx
 LOCAL_SRC_FILES := $(ORX_SRC_FILES)
 LOCAL_C_INCLUDES := $(ORX_INCLUDES)
 LOCAL_CFLAGS := -DNO_MALLINFO=1 -DTARGET_OS_ANDROID
-LOCAL_STATIC_LIBRARIES := webpdecoder_static liquidfun_static cpufeatures game-activity_static paddleboat_static
+LOCAL_STATIC_LIBRARIES := webpdecoder_static liquidfun_static cpufeatures game-activity_static paddleboat_static swappy_static
 
 LOCAL_ARM_MODE := arm
 include $(BUILD_STATIC_LIBRARY)
@@ -93,3 +93,4 @@ $(call import-module,LiquidFun-1.1.0/src/liquidfun/Box2D/jni)
 $(call import-module,libwebp)
 $(call import-module,prefab/game-activity)
 $(call import-module,prefab/games-controller)
+$(call import-module,prefab/games-frame-pacing)

@@ -440,12 +440,14 @@ static void orxAndroid_handleCmd(struct android_app *app, int32_t cmd)
     case APP_CMD_TERM_WINDOW:
       LOGI("APP_CMD_TERM_WINDOW");
 
+      SwappyGL_setWindow(nullptr);
       sstAndroid.fSurfaceScale = orxFLOAT_0;
       orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
       break;
     case APP_CMD_INIT_WINDOW:
       LOGI("APP_CMD_INIT_WINDOW");
 
+      SwappyGL_setWindow(app->window);
       orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
       break;
     case APP_CMD_DESTROY:
@@ -571,6 +573,9 @@ void android_main(android_app* state)
   JNIEnv *env = orxAndroid_JNI_GetEnv();
   Paddleboat_init(env, state->activity->javaGameActivity);
 
+  /* Initializes SwappyGL */
+  SwappyGL_init(env, state->activity->javaGameActivity);
+
   /* Run the application code! */
   main(0, orxNULL);
 
@@ -602,6 +607,7 @@ void android_main(android_app* state)
   }
 
   Paddleboat_destroy(env);
+  SwappyGL_destroy();
 }
 
 /* APK orxRESOURCE */
