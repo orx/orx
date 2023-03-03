@@ -1,1 +1,1 @@
-gradlew assemble publishAllPublicationsToOrxRepository
+gradlew clean assemble publishAllPublicationsToOrxRepository

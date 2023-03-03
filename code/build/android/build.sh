@@ -1,5 +1,5 @@
 #!/bin/bash
 
-./gradlew assemble publishAllPublicationsToOrxRepository
+./gradlew clean assemble publishAllPublicationsToOrxRepository
 
 exit 0
