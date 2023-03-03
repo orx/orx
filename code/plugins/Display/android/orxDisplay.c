@@ -4215,8 +4215,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       }
 
       sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
-      // sstDisplay.u32RefreshRate = orxAndroid_JNI_GetRefreshRate();
-      sstDisplay.u32RefreshRate = 60;
+      sstDisplay.u32RefreshRate = orxAndroid_JNI_GetRefreshRate();
+      SwappyGL_setSwapIntervalNS(1000000000L/sstDisplay.u32RefreshRate);
       
       // Create OpenGL ES Context
       orxAndroid_Display_CreateContext();
