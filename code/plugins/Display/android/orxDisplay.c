@@ -345,6 +345,7 @@ typedef struct __orxDISPLAY_STATIC_t
   EGLSurface                surface;
   EGLContext                context;
   EGLint                    format;
+  orxBOOL                   swappyEnabled;
 
 } orxDISPLAY_STATIC;
 
@@ -2853,7 +2854,14 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   orxDisplay_Android_DrawArrays();
 
   /* Swaps buffers */
-  SwappyGL_swap(sstDisplay.display, sstDisplay.surface);
+  if(sstDisplay.swappyEnabled)
+  {
+    SwappyGL_swap(sstDisplay.display, sstDisplay.surface);
+  }
+  else
+  {
+    eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
+  }
   eglASSERT();
 
   /* Done! */
@@ -4157,6 +4165,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
     sstDisplay.context = EGL_NO_CONTEXT;
     sstDisplay.display = EGL_NO_DISPLAY;
     sstDisplay.config = orxNULL;
+    sstDisplay.swappyEnabled = SwappyGL_isEnabled();
 
     orxU32 i;
     GLushort u16Index;
