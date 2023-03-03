@@ -4215,7 +4215,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       }
 
       sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
-      sstDisplay.u32RefreshRate = orxAndroid_JNI_GetRefreshRate();
+      // sstDisplay.u32RefreshRate = orxAndroid_JNI_GetRefreshRate();
+      sstDisplay.u32RefreshRate = 60;
       
       // Create OpenGL ES Context
       orxAndroid_Display_CreateContext();
@@ -4380,10 +4381,11 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
       /* Inits event payload */
       orxMemory_Zero(&stPayload, sizeof(orxDISPLAY_EVENT_PAYLOAD));
-      stPayload.stVideoMode.u32Width    = orxF2U(sstDisplay.pstScreen->fWidth);
-      stPayload.stVideoMode.u32Height   = orxF2U(sstDisplay.pstScreen->fHeight);
-      stPayload.stVideoMode.u32Depth    = sstDisplay.u32Depth;
-      stPayload.stVideoMode.bFullScreen = orxTRUE;
+      stPayload.stVideoMode.u32Width       = orxF2U(sstDisplay.pstScreen->fWidth);
+      stPayload.stVideoMode.u32Height      = orxF2U(sstDisplay.pstScreen->fHeight);
+      stPayload.stVideoMode.u32Depth       = sstDisplay.u32Depth;
+      stPayload.stVideoMode.u32RefreshRate = sstDisplay.u32RefreshRate;
+      stPayload.stVideoMode.bFullScreen    = orxTRUE;
 
       /* Sends it */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
