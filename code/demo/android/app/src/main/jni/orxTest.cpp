@@ -31,21 +31,18 @@
  *
  */
 
-
 #include "orx.h"
 
+static orxOBJECT* spstGenerator;
+static orxVIEWPORT* spstViewport;
+static orxHASHTABLE* pstTextureTable;
 
-static orxOBJECT   *spstGenerator;
-static orxVIEWPORT *spstViewport;
-static orxHASHTABLE *pstTextureTable = orxNULL;
-
-
-static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
+static orxSTATUS orxFASTCALL EventHandler(const orxEVENT* _pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Colliding? */
-  if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+  if (_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
   {
     /* Adds bump FX on both objects */
     orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
@@ -57,6 +54,51 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT *_pstEvent)
 
   /* Done! */
   return eResult;
+}
+
+static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+{
+  orxVECTOR vMousePos, vGravity;
+
+  /* Updates generator's status */
+  orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
+
+  /* Gets mouse position in world space */
+  if (orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), orxNULL, &vMousePos))
+  {
+    orxVECTOR vGeneratorPos;
+
+    /* Gets generator position */
+    orxObject_GetPosition(spstGenerator, &vGeneratorPos);
+
+    /* Keeps generator's Z coord */
+    vMousePos.fZ = vGeneratorPos.fZ;
+
+    /* Updates generator's position */
+    orxObject_SetPosition(spstGenerator, &vMousePos);
+  }
+
+  /* Gets gravity vector from input */
+  orxVector_Set(&vGravity,
+                orxInput_GetValue("GravityX"),
+                -orxInput_GetValue("GravityY"),
+                orxFLOAT_0);
+
+  /* Significant enough? */
+  if (orxVector_GetSquareSize(&vGravity)>orx2F(0.5f))
+  {
+    static orxVECTOR svSmoothedGravity =
+    {
+      orx2F(0.0f), orx2F(-1.0f), orx2F(0.0f)
+    };
+
+    /* Gets smoothed gravity from new value (low-pass filter) */
+    orxVector_Lerp(&svSmoothedGravity, &svSmoothedGravity, &vGravity, orx2F(0.05f));
+
+    /* Updates camera rotation */
+    orxCamera_SetRotation(orxViewport_GetCamera(spstViewport),
+                          orxMATH_KF_PI_BY_2 + orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
+  }
 }
 
 static orxSTATUS orxFASTCALL Init()
@@ -73,8 +115,13 @@ static orxSTATUS orxFASTCALL Init()
   /* Creates walls */
   orxObject_CreateFromConfig("Walls");
 
+  orxCLOCK* pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
+  orxClock_Register(pstClock, Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
   /* Registers event handler */
   orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, EventHandler);
+
+  orxLOG("Application save directory: %s", orxFile_GetApplicationSaveDirectory(orxNULL));
 
   /* Done! */
   return (spstViewport && spstGenerator) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
@@ -83,46 +130,9 @@ static orxSTATUS orxFASTCALL Init()
 static orxSTATUS orxFASTCALL Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxVECTOR vMousePos, vGravity;
-
-  /* Updates generator's status */
-  orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
-
-  /* Gets mouse position in world space */
-  if(orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), orxNULL, &vMousePos))
-  {
-    orxVECTOR vGeneratorPos;
-
-    /* Gets generator position */
-    orxObject_GetPosition(spstGenerator, &vGeneratorPos);
-
-    /* Keeps generator's Z coord */
-    vMousePos.fZ = vGeneratorPos.fZ;
-
-    /* Updates generator's position */
-    orxObject_SetPosition(spstGenerator, &vMousePos);
-  }
-
-  /* Gets gravity vector from input */
-  orxVector_Set(&vGravity, orxInput_GetValue("GravityX"), -orxInput_GetValue("GravityY"), orxFLOAT_0);
-
-  /* Significant enough? */
-  if(orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))
-  {
-    static orxVECTOR svSmoothedGravity =
-    {
-      orx2F(0.0f), orx2F(-1.0f), orx2F(0.0f)
-    };
-
-    /* Gets smoothed gravity from new value (low-pass filter) */
-    orxVector_Lerp(&svSmoothedGravity, &svSmoothedGravity, &vGravity, orx2F(0.05f));
-
-    /* Updates camera rotation */
-    orxCamera_SetRotation(orxViewport_GetCamera(spstViewport), orxVector_FromCartesianToSpherical(&vGravity, &svSmoothedGravity)->fTheta);
-  }
 
   // Is quit action active?
-  if(orxInput_IsActive("Quit"))
+  if (orxInput_IsActive("Quit"))
   {
     // Logs
     orxLOG("Quit action triggered, exiting!");
@@ -140,7 +150,7 @@ static void orxFASTCALL Exit()
   orxHashTable_Delete(pstTextureTable);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
   orx_Execute(argc, argv, Init, Run, Exit);
   return 0;

@@ -169,9 +169,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #else /* __orxIOS__ */
 
-  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxANDROID__)
 
-#include "main/orxAndroid.h"
+#include "main/android/orxAndroid.h"
 
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
@@ -246,7 +246,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxDEBUG_EXIT();
 }
 
-  #else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #else /* __orxANDROID__ */
 
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
@@ -318,7 +318,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxDEBUG_EXIT();
 }
 
-  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #endif /* __orxANDROID__ */
 
 #endif /* __orxIOS__ */
 

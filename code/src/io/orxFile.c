@@ -58,11 +58,11 @@
 
 #define _FILE_OFFSET_BITS                       64
 
-  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxANDROID__)
 
-    #include "main/orxAndroid.h"
+    #include "main/android/orxAndroid.h"
 
-  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #endif /* __orxANDROID__ */
 
   #include <dirent.h>
   #include <fnmatch.h>
@@ -456,7 +456,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
   /* Prints documents directory */
   s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory), "%s", orxiOS_GetDocumentsPath());
 
-#elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#elif defined(__orxANDROID__)
 
   /* Prints internal storage directory */
   s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory), "%s", orxAndroid_GetInternalStoragePath());
