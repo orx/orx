@@ -449,7 +449,6 @@ typedef struct __orxDISPLAY_STATIC_t
   orxS32                    s32BufferIndex;
   orxS32                    s32ElementNumber;
   orxU32                    u32Flags;
-  orxU32                    u32Depth;
   orxU32                    u32RefreshRate;
   orxU32                    u32DefaultWidth;
   orxU32                    u32DefaultHeight;
@@ -852,7 +851,7 @@ static void orxDisplay_GLFW_ResizeCallback(GLFWwindow *_pstWindow, int _iWidth, 
       /* Inits video mode */
       stVideoMode.u32Width        = (orxU32)_iWidth;
       stVideoMode.u32Height       = (orxU32)_iHeight;
-      stVideoMode.u32Depth        = sstDisplay.u32Depth;
+      stVideoMode.u32Depth        = sstDisplay.pstScreen->u32Depth;
       stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
       stVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
@@ -970,7 +969,7 @@ static void orxDisplay_GLFW_ContentScaleCallback(GLFWwindow *_pstWindow, float _
     /* Retrieves current video mode */
     stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
     stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
-    stVideoMode.u32Depth        = sstDisplay.u32Depth;
+    stVideoMode.u32Depth        = sstDisplay.pstScreen->u32Depth;
     stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
     stVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
@@ -5341,7 +5340,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     if(sstDisplay.pstWindow != orxNULL)
     {
       /* Different depth? */
-      if((orxU32)iDepth != sstDisplay.u32Depth)
+      if((orxU32)iDepth != sstDisplay.pstScreen->u32Depth)
       {
         GLFWwindow *pstNewWindow;
 
@@ -5659,8 +5658,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Enforces VSync status */
       orxDisplay_GLFW_EnableVSync(orxDisplay_GLFW_IsVSyncEnabled());
 
-      /* Stores screen depth & refresh rate */
-      sstDisplay.u32Depth       = (orxU32)iDepth;
+      /* Stores refresh rate */
       sstDisplay.u32RefreshRate = (orxU32)iRefreshRate;
 
       /* Sends event */
@@ -5994,8 +5992,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
-    /* Resets screen depth & refresh rate */
-    sstDisplay.u32Depth       = orxU32_UNDEFINED;
+    /* Resets refresh rate */
     sstDisplay.u32RefreshRate = orxU32_UNDEFINED;
 
     /* Stores stbi callbacks */
