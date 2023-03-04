@@ -67,9 +67,6 @@ typedef struct __orxANDROID_STATIC_t
 {
   orxBOOL bPaused;
   orxBOOL bHasFocus;
-
-  int32_t lastWidth;
-  int32_t lastHeight;
   orxFLOAT fSurfaceScale;
 
   uint64_t activeAxisIds;
@@ -246,30 +243,6 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
   env->DeleteLocalRef(display);
 
   return rotation;
-}
-
-extern "C" orxFLOAT orxAndroid_JNI_GetRefreshRate()
-{
-  orxFLOAT refreshRate;
-  JNIEnv *env = orxAndroid_JNI_GetEnv();
-
-  /* Gets display structure */
-  jobject display = orxAndroid_JNI_getDisplay(env);
-
-  /* Finds classes */
-  jclass displayClass = env->FindClass("android/view/Display");
-
-  /* Finds methods */
-  jmethodID getRefreshRateMethod = env->GetMethodID(displayClass, "getRefreshRate", "()F");
-
-  /* Calls method and stores refresh rate */
-  refreshRate = (orxFLOAT)env->CallFloatMethod(display, getRefreshRateMethod);
-
-  /* Cleans references */
-  env->DeleteLocalRef(displayClass);
-  env->DeleteLocalRef(display);
-
-  return refreshRate;
 }
 
 static void Android_CheckForNewAxis()
@@ -450,9 +423,20 @@ static void orxAndroid_handleCmd(struct android_app *app, int32_t cmd)
       SwappyGL_setWindow(app->window);
       orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
       break;
+    case APP_CMD_CONTENT_RECT_CHANGED:
+      {
+        LOGI("APP_CMD_CONTENT_RECT_CHANGED");
+
+        orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
+        stSurfaceChangedEvent.u32Width = app->contentRect.right - app->contentRect.left;
+        stSurfaceChangedEvent.u32Height = app->contentRect.bottom - app->contentRect.top;
+
+        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
+        sstAndroid.fSurfaceScale = orxFLOAT_0;
+      }
+      break;
     case APP_CMD_DESTROY:
       LOGI("APP_CMD_DESTROY");
-
       orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
       break;
     case APP_CMD_GAINED_FOCUS:
@@ -512,27 +496,6 @@ extern "C" void orxAndroid_PumpEvents()
   Paddleboat_update(orxAndroid_JNI_GetEnv());
 
   Android_HandleGameInput(sstAndroid.app);
-
-  if(sstAndroid.app->window != NULL)
-  {
-    /* Check if window size changed */
-    int32_t newWidth = ANativeWindow_getWidth(sstAndroid.app->window);
-    int32_t newHeight = ANativeWindow_getHeight(sstAndroid.app->window);
-
-    if(newWidth != sstAndroid.lastWidth || newHeight != sstAndroid.lastHeight)
-    {
-      orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
-
-      stSurfaceChangedEvent.u32Width = newWidth;
-      stSurfaceChangedEvent.u32Height = newHeight;
-
-      orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
-
-      sstAndroid.lastWidth = newWidth;
-      sstAndroid.lastHeight = newHeight;
-      sstAndroid.fSurfaceScale = orxFLOAT_0;
-    }
-  }
 }
 
 /* Main function to call */
@@ -548,8 +511,6 @@ void android_main(android_app* state)
   orxMemory_Zero(&sstAndroid, sizeof(orxANDROID_STATIC));
 
   sstAndroid.app = state;
-  sstAndroid.lastWidth = 0;
-  sstAndroid.lastHeight = 0;
   sstAndroid.bPaused = orxTRUE;
   sstAndroid.bHasFocus = orxFALSE;
   sstAndroid.fSurfaceScale = orxFLOAT_0;

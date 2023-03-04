@@ -129,6 +129,8 @@
 
 /**  Misc defines
  */
+ 
+# define REFRESH_RATE_FROM_NANOS(n) (1000000000L / (n - 1))
 
 #define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
 
@@ -345,7 +347,7 @@ typedef struct __orxDISPLAY_STATIC_t
   EGLSurface                surface;
   EGLContext                context;
   EGLint                    format;
-  orxBOOL                   swappyEnabled;
+  orxBOOL                   bSwappyEnabled;
 
 } orxDISPLAY_STATIC;
 
@@ -2854,7 +2856,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   orxDisplay_Android_DrawArrays();
 
   /* Swaps buffers */
-  if(sstDisplay.swappyEnabled)
+  if(sstDisplay.bSwappyEnabled)
   {
     SwappyGL_swap(sstDisplay.display, sstDisplay.surface);
   }
@@ -4075,10 +4077,10 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
   /* Clears last modes */
   sstDisplay.eLastBlendMode = orxDISPLAY_BLEND_MODE_NUMBER;
-  sstDisplay.eLastBufferMode= orxDISPLAY_BUFFER_MODE_NUMBER;
+  sstDisplay.eLastBufferMode = orxDISPLAY_BUFFER_MODE_NUMBER;
 
   /* Resets primitive */
-  sstDisplay.ePrimitive     = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
+  sstDisplay.ePrimitive = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
   /* Done! */
   return eResult;
@@ -4114,7 +4116,30 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CREATED)
   {
+    uint64_t refreshRate;
+
     orxAndroid_Display_CreateSurface();
+    refreshRate = SwappyGL_getRefreshPeriodNanos();
+
+    /* Refresh rate changed? */
+    if (sstDisplay.u32RefreshRate != REFRESH_RATE_FROM_NANOS(refreshRate))
+    {
+      orxDISPLAY_VIDEO_MODE stVideoMode;
+
+      /* Re-inits refresh rate */
+      SwappyGL_setSwapIntervalNS(refreshRate);
+      sstDisplay.u32RefreshRate = REFRESH_RATE_FROM_NANOS(refreshRate);
+
+      /* Inits video mode */
+      stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
+      stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
+      stVideoMode.u32Depth        = sstDisplay.u32Depth;
+      stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+      stVideoMode.bFullScreen     = orxTRUE;
+
+      /* Applies it */
+      orxDisplay_Android_SetVideoMode(&stVideoMode);
+    }
   }
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CHANGED)
@@ -4140,7 +4165,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
       orxDisplay_Android_SetVideoMode(&stVideoMode);
     }
   }
-
+  
   /* Done! */
   return orxSTATUS_SUCCESS;
 }
@@ -4165,7 +4190,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
     sstDisplay.context = EGL_NO_CONTEXT;
     sstDisplay.display = EGL_NO_DISPLAY;
     sstDisplay.config = orxNULL;
-    sstDisplay.swappyEnabled = SwappyGL_isEnabled();
+    sstDisplay.bSwappyEnabled = SwappyGL_isEnabled();
 
     orxU32 i;
     GLushort u16Index;
@@ -4199,6 +4224,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       const orxSTRING zGlRenderer;
       const orxSTRING zGlVersion;
       int32_t width, height;
+      uint64_t refreshRate;
 
       /* Pushes display section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -4215,13 +4241,16 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       }
 
       sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
-      sstDisplay.u32RefreshRate = orxAndroid_JNI_GetRefreshRate();
-      SwappyGL_setSwapIntervalNS(1000000000L/sstDisplay.u32RefreshRate);
+
+      /* Inits refresh rate */
+      refreshRate = SwappyGL_getRefreshPeriodNanos();
+      SwappyGL_setSwapIntervalNS(refreshRate);
+      sstDisplay.u32RefreshRate = REFRESH_RATE_FROM_NANOS(refreshRate);
       
-      // Create OpenGL ES Context
+      /* Create OpenGL ES Context */
       orxAndroid_Display_CreateContext();
 
-      // Create OpenGL ES Surface
+      /* Create OpenGL ES Surface */
       if(orxAndroid_Display_CreateSurface() == orxSTATUS_FAILURE)
       {
         orxConfig_PopSection();
