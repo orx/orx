@@ -1,72 +1,73 @@
 apply plugin: 'com.android.application'
 
-def orx = System.getenv('ORX') ?: "../../.."
-
 android {
-    compileSdkVersion sdkVersion.toInteger()
+    namespace 'org.orx.demo'
+    compileSdk sdkVersion.toInteger()
 
-    // NDK: https://developer.android.com/studio/projects/install-ndk#default-ndk-per-agp
-    // Verify result of ndk_locator in android/app/.cxx/ndk_locator_record_*.log
-    ndkVersion "22.1.7171670"
+    buildFeatures.prefab true
 
     defaultConfig {
-        applicationId "org.orxproject.orxtest"
+        applicationId "org.orx.demo"
         targetSdkVersion sdkVersion.toInteger()
         versionCode 1
         versionName "1.0"
 
-        minSdkVersion 17
+        minSdkVersion 19
         vectorDrawables.useSupportLibrary = true
 
         ndk {
             abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
         }
     }
-
-    lintOptions {
-        abortOnError true
-        warningsAsErrors true
-        disable 'GradleDependency'
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_11
     }
-
-    buildTypes {
-        release {
-            debuggable false
-            shrinkResources true
-            minifyEnabled true
-
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            debuggable true
-            shrinkResources false
-            minifyEnabled false
-        }
-    }
-
-    aaptOptions {
-        ignoreAssetsPattern "!CreationTemplate.ini:!SettingsTemplate.ini"
-    }
-
     externalNativeBuild {
         ndkBuild {
             path 'src/main/jni/Android.mk'
         }
     }
-
     sourceSets {
         main {
-            java.srcDirs += ["${orx}/build/android/java"]
-
             // For custom apps, you should have resources in some parent folder with orx data.
             // E.g. '../../../data'
             assets.srcDirs = ['./src/main/assets']
         }
     }
+    buildTypes {
+        release {
+            debuggable false
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            externalNativeBuild.ndkBuild {
+                arguments 'NDK_DEBUG=0'
+            }
+        }
+        debug {
+            debuggable true
+
+            externalNativeBuild.ndkBuild {
+                arguments 'NDK_DEBUG=1'
+                cFlags '-D__orxDEBUG__'
+            }
+        }
+        profile {
+            debuggable true
+
+            externalNativeBuild.ndkBuild {
+                arguments 'NDK_DEBUG=0'
+                cFlags '-D__orxPROFILE__'
+            }
+        }
+    }
+    lint {
+        abortOnError true
+    }
 }
-
 dependencies {
-    implementation 'androidx.fragment:fragment:1.3.3'
-
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    releaseImplementation 'org.orx-project:orx:1.13'
+    debugImplementation 'org.orx-project:orxd:1.13'
+    profileImplementation 'org.orx-project:orxp:1.13'
 }

@@ -118,8 +118,7 @@ solution "orx"
 
     excludes
     {
-        "../src/main/orxAndroidSupport.cpp",
-        "../src/main/orxAndroidNativeSupport.cpp"
+        "../src/main/orxAndroidSupport.cpp"
     }
 
     flags

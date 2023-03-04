@@ -113,7 +113,7 @@
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / iOS / Android */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
 
     #ifdef __orx64__
 

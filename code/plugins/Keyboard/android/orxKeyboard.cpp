@@ -32,10 +32,11 @@
  */
 
 
-#include "orxPluginAPI.h"
+#include <android/keycodes.h>
 
-#include "main/orxAndroid.h"
-#include "android/keycodes.h"
+#include "orxPluginAPI.h"
+#include "main/android/orxAndroid.h"
+#include "main/android/orxAndroidActivity.h"
 
 /** Module flags
  */
@@ -61,13 +62,9 @@ typedef struct __orxKEYBOARD_STATIC_t
   orxU32            u32Flags;
   orxBOOL           abKeyPressed[orxKEYBOARD_KEY_NUMBER];
 
-  orxU32            u32KeyReadIndex, u32KeyWriteIndex, u32CharReadIndex, u32CharWriteIndex;
+  orxU32            u32KeyReadIndex, u32KeyWriteIndex;
   orxU32            au32KeyBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
-  orxU32            au32CharBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
   orxCHAR           acStringBuffer[orxKEYBOARD_KU32_STRING_BUFFER_SIZE];
-#ifdef __orxANDROID__
-  jmethodID         midShowKeyboard;
-#endif
 } orxKEYBOARD_STATIC;
 
 
@@ -84,9 +81,33 @@ static orxKEYBOARD_STATIC sstKeyboard;
  * Private functions                                                       *
  ***************************************************************************/
 
-/***************************************************************************
- * Private functions                                                       *
- ***************************************************************************/
+static void GameTextInputGetStateCB(void *ctx, const struct GameTextInputState *state)
+{
+  if(!state)
+  {
+    return;
+  }
+
+  orxString_NCopy(sstKeyboard.acStringBuffer, state->text_UTF8, sizeof(sstKeyboard.acStringBuffer) - 1);
+  sstKeyboard.acStringBuffer[sizeof(sstKeyboard.acStringBuffer) - 1] = orxNULL;
+}
+
+static void orxKeyboard_Android_ClearKeyboardBuffer()
+{
+  GameTextInputState state;
+  orxMemory_Zero(&state, sizeof(GameTextInputState));
+  GameActivity_setTextInputState(orxAndroid_GetGameActivity(), &state);
+}
+
+static void orxKeyboard_Android_ConsumeKeyboardBuffer()
+{
+  GameActivity_getTextInputState(
+    orxAndroid_GetGameActivity(),
+    GameTextInputGetStateCB,
+    NULL);
+
+  orxKeyboard_Android_ClearKeyboardBuffer();
+}
 
 static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
 {
@@ -200,25 +221,9 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
           sstKeyboard.u32KeyReadIndex = (sstKeyboard.u32KeyReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
         }
       }
-
-      /* has unicode */
-      if(pstKeyEvent->u32Unicode != 0)
-      {
-        /* Stores it */
-        sstKeyboard.au32CharBuffer[sstKeyboard.u32CharWriteIndex] = pstKeyEvent->u32Unicode;
-        sstKeyboard.u32CharWriteIndex = (sstKeyboard.u32CharWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
-
-        /* Full? */
-        if(sstKeyboard.u32CharReadIndex == sstKeyboard.u32CharWriteIndex)
-        {
-          /* Bounces read index */
-          sstKeyboard.u32CharReadIndex = (sstKeyboard.u32CharReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
-        }
-      }
-
       break;
 
-    case orxANDROID_EVENT_KEYBOARD_UP: // UP
+    case orxANDROID_EVENT_KEYBOARD_UP:
       eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
 
       if(eKey != orxKEYBOARD_KEY_NONE)
@@ -242,7 +247,7 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
 
-    /* Adds our mouse event handlers */
+    /* Adds our keyboard event handlers */
     if((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
       int i;
@@ -250,13 +255,6 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
       {
         sstKeyboard.abKeyPressed[i] = orxFALSE;
       }
-
-#ifdef __orxANDROID__
-      JNIEnv *env = (JNIEnv*) orxAndroid_GetJNIEnv();
-      jclass objClass = env->FindClass("org/orx/lib/OrxActivity");
-      sstKeyboard.midShowKeyboard = env->GetMethodID(objClass, "showKeyboard","(Z)V");
-      env->DeleteLocalRef(objClass);
-#endif
 
       /* Updates status */
       sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
@@ -347,32 +345,12 @@ extern "C" orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_ReadKey()
 
 extern "C" const orxSTRING orxFASTCALL orxKeyboard_Android_ReadString()
 {
-  orxU32          u32BufferSize;
-  orxCHAR        *pc;
   const orxSTRING zResult = sstKeyboard.acStringBuffer;
 
   /* Checks */
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
 
-  /* For all characters */
-  for(zResult = pc = sstKeyboard.acStringBuffer, u32BufferSize = orxKEYBOARD_KU32_STRING_BUFFER_SIZE - 1;
-      sstKeyboard.u32CharReadIndex != sstKeyboard.u32CharWriteIndex;
-      sstKeyboard.u32CharReadIndex = (sstKeyboard.u32CharReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1))
-  {
-    orxU32 u32Size;
-
-    /* Writes it */
-    u32Size = orxString_PrintUTF8Character(pc, u32BufferSize, sstKeyboard.au32CharBuffer[sstKeyboard.u32CharReadIndex]);
-
-    /* Updates buffer size */
-    u32BufferSize -= u32Size;
-
-    /* Updates char pointer */
-    pc += u32Size;
-  }
-
-  /* Terminates string */
-  *pc = orxCHAR_NULL;
+  orxKeyboard_Android_ConsumeKeyboardBuffer();
 
   /* Done! */
   return zResult;
@@ -384,10 +362,12 @@ extern "C" void orxFASTCALL orxKeyboard_Android_ClearBuffer()
   orxASSERT((sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY) == orxKEYBOARD_KU32_STATIC_FLAG_READY);
 
   /* Clears all buffer indices */
-  sstKeyboard.u32KeyReadIndex   =
-  sstKeyboard.u32KeyWriteIndex  =
-  sstKeyboard.u32CharReadIndex  =
-  sstKeyboard.u32CharWriteIndex = 0;
+  sstKeyboard.u32KeyReadIndex   = 0;
+  sstKeyboard.u32KeyWriteIndex  = 0;
+
+  /* Clears keyboard buffers */
+  orxMemory_Zero(sstKeyboard.acStringBuffer, sizeof(sstKeyboard.acStringBuffer));
+  orxKeyboard_Android_ClearKeyboardBuffer();
 
   /* Done! */
   return;
@@ -395,12 +375,14 @@ extern "C" void orxFASTCALL orxKeyboard_Android_ClearBuffer()
 
 extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Show(orxBOOL _bShow)
 {
-#ifdef __orxANDROID__
-  JNIEnv *env = (JNIEnv*) orxAndroid_GetJNIEnv();
-  jobject jActivity = orxAndroid_GetActivity();
-  env->CallVoidMethod(jActivity, sstKeyboard.midShowKeyboard, _bShow == orxTRUE ? JNI_TRUE : JNI_FALSE);
-  env->DeleteLocalRef(jActivity);
-#endif
+  if(_bShow)
+  {
+    GameActivity_showSoftInput(orxAndroid_GetGameActivity(), 0);
+  }
+  else
+  {
+    GameActivity_hideSoftInput(orxAndroid_GetGameActivity(), 0);
+  }
 
   /* Done */
   return orxSTATUS_SUCCESS;

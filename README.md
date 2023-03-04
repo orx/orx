@@ -139,7 +139,6 @@ Here is a list with a small description for each package.
 - `orx-dev-vs2022-64-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86-64), release/profile/debug + tools.
 - `orx-full-ios-1.13.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
 - `orx-dev-android-1.13.zip`          : static embedded binaries for Android, release/profile/debug (device).
-- `orx-dev-android-native-1.13.zip`   : static embedded binaries for Android Native, release/profile/debug (device).
 - `orx-tutorial-linux32-1.13.tar.bz2` : tutorials for Linux (x86)
 - `orx-tutorial-linux64-1.13.tar.bz2` : tutorials for Linux (x86-64)
 - `orx-tutorial-mac-1.13.zip`         : tutorials for MacOS X (x86/x86-64)
@@ -238,7 +237,6 @@ for which you're compiling. Here's a quick list of these flags:
   `__orxLINUX__`          | orx is being compiled for Linux
   `__orxIOS__`            | orx is being compiled for iOS
   `__orxANDROID__`        | orx is being compiled for Android
-  `__orxANDROID_NATIVE__` | orx is being compiled for Android Native
   `__orxCPP__`            | orx is being compiled with a C++ compiler
   `__orxOBJC__`           | orx is being compiled with an Objective-C compiler
   `__orxPLUGIN__`         | a plugin for orx is being compiled
