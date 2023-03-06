@@ -91,7 +91,6 @@
 #define orxCONFIG_KU32_SECTION_BANK_SIZE          2048        /**< Default section bank size */
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE            16384       /**< Default entry bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE          32          /**< Default history bank size */
-#define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
 #define orxCONFIG_KU32_STACK_SIZE                 64          /**< Section stack size */
 
 #define orxCONFIG_KU32_BUFFER_SIZE                16384       /**< Buffer size */
@@ -138,6 +137,12 @@
   #define orxCONFIG_KZ_DEFAULT_FILE               "orx.ini"   /**< Default config file name */
 
 #endif
+
+#ifdef __orxMSVC__
+  #define CHANGE_DIR(path)  _chdir((path))
+#else /* __orxMSVC__ */
+  #define CHANGE_DIR(path)  chdir((path))
+#endif /* __orxMSVC__ */
 
 
 /***************************************************************************
@@ -4351,7 +4356,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT((_zBaseName == orxNULL) || (orxString_GetLength(_zBaseName) < orxCONFIG_KU32_BASE_FILENAME_LENGTH - 5));
+  orxASSERT((_zBaseName == orxNULL) || (orxString_GetLength(_zBaseName) <= orxCONFIG_KU32_MAX_INI_FILENAME_LENGTH));
 
   /* Valid? */
   if((_zBaseName != orxNULL) && (_zBaseName != orxSTRING_EMPTY))
@@ -4373,10 +4378,8 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
       /* Removes it */
       *((orxSTRING)_zBaseName + s32Index) = orxCHAR_NULL;
 
-#ifdef __orxMSVC__
-
       /* Sets current directory */
-      if(_chdir(_zBaseName) < 0)
+      if(CHANGE_DIR(_zBaseName) < 0)
       {
         /* Restores separator */
         *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
@@ -4389,25 +4392,6 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
         /* Restores separator */
         *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
       }
-
-#else /* __orxMSVC__ */
-
-      /* Sets current directory */
-      if(chdir(_zBaseName) < 0)
-      {
-        /* Restores separator */
-        *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
-
-        /* Clears index */
-        s32Index = -1;
-      }
-      else
-      {
-        /* Restores separator */
-        *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
-      }
-
-#endif /* __orxMSVC__ */
     }
     else
     {

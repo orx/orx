@@ -34,6 +34,7 @@
 
 #include <android/log.h>
 #include <sys/system_properties.h>
+#include <dlfcn.h>
 
 #ifdef __orxDEBUG__
 
@@ -498,11 +499,60 @@ extern "C" void orxAndroid_PumpEvents()
   Android_HandleGameInput(sstAndroid.app);
 }
 
+static orxSTRING orxAndroid_GetLibraryName(orxSTRING zLibName)
+{
+  orxU32 n = 0;
+  Dl_info dl_info;
+
+  /* Gets symbolic information for this function */
+  if(dladdr((void*)orxAndroid_GetLibraryName, &dl_info))
+  {
+    const char *pc;
+    const char* filename = dl_info.dli_fname;
+
+    /* Finds last directory separator */
+    pc = strrchr(filename, orxCHAR_DIRECTORY_SEPARATOR_LINUX);
+    if(pc)
+    {
+      /* Gets the file name */
+      filename = pc + 1;
+    }
+
+    /* Skips Unix "lib" prefix */
+    if(orxString_NCompare(filename, "lib", 3) == 0)
+    {
+      filename += 3;
+    }
+
+    n = orxString_GetLength(filename);
+
+    /* Valid library name? */
+    if(n <= orxCONFIG_KU32_MAX_INI_FILENAME_LENGTH)
+    {
+      /* Stores the library name */
+      orxString_NCopy(zLibName, filename, n);
+    }
+    else
+    {
+      /* Invalid library name */
+      n = 0;
+    }
+  }
+
+  zLibName[n] = orxCHAR_NULL;
+
+  /* Done! */
+  return zLibName;
+}
+
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
 void android_main(android_app* state)
 {
+  orxSTRING pszArgs;
+  orxCHAR zLibName[orxCONFIG_KU32_BASE_FILENAME_LENGTH];
+
   state->onAppCmd = orxAndroid_handleCmd;
 
   android_app_set_motion_event_filter(state, NULL);
@@ -541,7 +591,8 @@ void android_main(android_app* state)
   SwappyGL_enableStats(false);
 
   /* Run the application code! */
-  main(0, orxNULL);
+  pszArgs = orxAndroid_GetLibraryName(zLibName);
+  main(1, &pszArgs);
 
   if(state->destroyRequested == 0)
   {
