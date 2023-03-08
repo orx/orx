@@ -34,7 +34,6 @@
 
 #include <android/log.h>
 #include <sys/system_properties.h>
-#include <dlfcn.h>
 
 #ifdef __orxDEBUG__
 
@@ -58,6 +57,15 @@
 #include "orxAndroid.h"
 #include "orxAndroidActivity.h"
 
+/** Defines
+ */
+#define orxANDROID_KU32_ARGUMENT_BUFFER_SIZE    256    /**< Argument buffer size */
+#define orxANDROID_KU32_MAX_ARGUMENT_COUNT      16     /**< Maximum number of arguments */
+
+#define GET_ACTION_INDEX(ACTION)  (((ACTION) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT)
+#define GET_AXIS_X(EV, INDEX)     GameActivityPointerAxes_getX(&(EV)->pointers[INDEX])
+#define GET_AXIS_Y(EV, INDEX)     GameActivityPointerAxes_getY(&(EV)->pointers[INDEX])
+
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
@@ -69,8 +77,9 @@ typedef struct __orxANDROID_STATIC_t
   orxBOOL bPaused;
   orxBOOL bHasFocus;
   orxFLOAT fSurfaceScale;
-
   uint64_t activeAxisIds;
+  orxCHAR zLibName[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
+  orxCHAR zArguments[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
 
   struct android_app *app;
 } orxANDROID_STATIC;
@@ -143,6 +152,8 @@ static jobject orxAndroid_JNI_getDisplay(JNIEnv *env)
   jobject display;
   jobject instance = sstAndroid.app->activity->javaGameActivity;
 
+  env->PushLocalFrame(16);
+
   /* Note : WindowManager.getDefaultDisplay() was deprecated in Android R */
   if (orxAndroid_GetSdkVersion() >= __ANDROID_API_R__)
   {
@@ -154,9 +165,6 @@ static jobject orxAndroid_JNI_getDisplay(JNIEnv *env)
 
     /* Calls methods and stores display object */
     display = env->CallObjectMethod(instance, getDisplayMethod);
-
-    /* Cleans references */
-    env->DeleteLocalRef(contextClass);
   }
   else
   {
@@ -171,14 +179,43 @@ static jobject orxAndroid_JNI_getDisplay(JNIEnv *env)
     /* Calls methods and stores display object */
     jobject windowManager = env->CallObjectMethod(instance, getWindowManagerMethod);
     display = env->CallObjectMethod(windowManager, getDefaultDisplayMethod);
-
-    /* Cleans references */
-    env->DeleteLocalRef(windowManager);
-    env->DeleteLocalRef(windowManagerClass);
-    env->DeleteLocalRef(activityClass);
   }
 
-  return display;
+  /* Frees all the local references except display object */
+  return env->PopLocalFrame(display);
+}
+
+static jobject orxAndroid_JNI_getActivityMetaData(JNIEnv *env)
+{
+  jobject instance = sstAndroid.app->activity->javaGameActivity;
+
+  env->PushLocalFrame(16);
+
+  /* Finds classes */
+  jclass activityClass = env->GetObjectClass(instance);
+  jclass activityInfoClass = env->FindClass("android/content/pm/ActivityInfo");
+  jclass packageManagerClass = env->FindClass("android/content/pm/PackageManager");
+
+  /* Finds methods */
+  jmethodID getPackageManagerMethod = env->GetMethodID(activityClass, "getPackageManager", "()Landroid/content/pm/PackageManager;");
+  jmethodID getComponentNameMethod = env->GetMethodID(activityClass, "getComponentName", "()Landroid/content/ComponentName;");
+  jmethodID getActivityInfoMethod = env->GetMethodID(packageManagerClass, "getActivityInfo", "(Landroid/content/ComponentName;I)Landroid/content/pm/ActivityInfo;");
+
+  /* Finds fields */
+  jfieldID metaDataConstant = env->GetStaticFieldID(packageManagerClass, "GET_META_DATA", "I");
+  jfieldID metaDataField = env->GetFieldID(activityInfoClass, "metaData", "Landroid/os/Bundle;");
+
+  /* Calls fields and methods */
+  jobject componentName = env->CallObjectMethod(instance, getComponentNameMethod);
+  jobject packageManager = env->CallObjectMethod(instance, getPackageManagerMethod);
+  jint GET_META_DATA = env->GetStaticIntField(packageManagerClass, metaDataConstant);
+  jobject activityInfo = env->CallObjectMethod(packageManager, getActivityInfoMethod, componentName, GET_META_DATA);
+
+  /* Stores the meta data */
+  jobject metaData = env->GetObjectField(activityInfo, metaDataField);
+
+  /* Frees all the local references except metadata object */
+  return env->PopLocalFrame(metaData);
 }
 
 orxSTATUS orxFASTCALL orxAndroid_JNI_SetupThread(void *_pContext)
@@ -222,10 +259,62 @@ extern "C" const char *orxAndroid_GetInternalStoragePath()
   return sstAndroid.app->activity->internalDataPath;
 }
 
+extern "C" void orxAndroid_JNI_GetArguments()
+{
+  JNIEnv *env = orxAndroid_JNI_GetEnv();
+
+  env->PushLocalFrame(16);
+
+  /* Gets meta data  */
+  jobject metaData = orxAndroid_JNI_getActivityMetaData(env);
+  if (metaData == NULL)
+  {
+    /* Stores the arguments */
+    *sstAndroid.zArguments = orxNULL;
+  }
+  else
+  {
+    const char *zLibName;
+    const char *zArguments;
+
+    /* Finds classes */
+    jclass bundleClass = env->FindClass("android/os/Bundle");
+
+    /* Finds methods */
+    jmethodID getStringMethod = env->GetMethodID(bundleClass, "getString", "(Ljava/lang/String;)Ljava/lang/String;");
+
+    /* Reads meta data values */
+    jstring libName = (jstring)env->CallObjectMethod(metaData, getStringMethod, env->NewStringUTF("android.app.lib_name"));
+    jstring arguments = (jstring)env->CallObjectMethod(metaData, getStringMethod, env->NewStringUTF("org.orx.lib.arguments"));
+
+    zLibName = (libName == NULL) ? orxSTRING_EMPTY : env->GetStringUTFChars(libName, 0);
+    zArguments = (arguments == NULL) ? orxSTRING_EMPTY : env->GetStringUTFChars(arguments, 0);
+
+    /* Stores lib name and arguments */
+    orxString_NPrint(sstAndroid.zLibName, sizeof(sstAndroid.zLibName) - 1, zLibName);
+    orxString_NPrint(sstAndroid.zArguments, sizeof(sstAndroid.zArguments) - 1, zArguments);
+
+    if (arguments != NULL)
+    {
+      env->ReleaseStringUTFChars(arguments, zArguments);
+    }
+
+    if (libName != NULL)
+    {
+      env->ReleaseStringUTFChars(libName, zLibName);
+    }
+  }
+
+  /* Frees all the local references */
+  env->PopLocalFrame(NULL);
+}
+
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
 {
   orxU32 rotation;
   JNIEnv *env = orxAndroid_JNI_GetEnv();
+
+  env->PushLocalFrame(16);
 
   /* Gets display structure */
   jobject display = orxAndroid_JNI_getDisplay(env);
@@ -239,9 +328,8 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
   /* Calls method and stores rotation */
   rotation = (orxU32)env->CallIntMethod(display, getRotationMethod);
 
-  /* Cleans references */
-  env->DeleteLocalRef(displayClass);
-  env->DeleteLocalRef(display);
+  /* Frees all the local references */
+  env->PopLocalFrame(NULL);
 
   return rotation;
 }
@@ -267,10 +355,6 @@ static void Android_CheckForNewAxis()
     }
   }
 }
-
-#define GET_ACTION_INDEX(action)  (((action) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT)
-#define GET_AXIS_X(ev, index)     GameActivityPointerAxes_getX(&(ev)->pointers[index])
-#define GET_AXIS_Y(ev, index)     GameActivityPointerAxes_getY(&(ev)->pointers[index])
 
 static void Android_HandleGameInput(struct android_app* app)
 {
@@ -499,59 +583,12 @@ extern "C" void orxAndroid_PumpEvents()
   Android_HandleGameInput(sstAndroid.app);
 }
 
-static orxSTRING orxAndroid_GetLibraryName(orxSTRING zLibName)
-{
-  orxU32 n = 0;
-  Dl_info dl_info;
-
-  /* Gets symbolic information for this function */
-  if(dladdr((void*)orxAndroid_GetLibraryName, &dl_info))
-  {
-    const char *pc;
-    const char* filename = dl_info.dli_fname;
-
-    /* Finds last directory separator */
-    pc = strrchr(filename, orxCHAR_DIRECTORY_SEPARATOR_LINUX);
-    if(pc)
-    {
-      /* Gets the file name */
-      filename = pc + 1;
-    }
-
-    /* Skips Unix "lib" prefix */
-    if(orxString_NCompare(filename, "lib", 3) == 0)
-    {
-      filename += 3;
-    }
-
-    n = orxString_GetLength(filename);
-
-    /* Valid library name? */
-    if(n <= orxCONFIG_KU32_MAX_INI_FILENAME_LENGTH)
-    {
-      /* Stores the library name */
-      orxString_NCopy(zLibName, filename, n);
-    }
-    else
-    {
-      /* Invalid library name */
-      n = 0;
-    }
-  }
-
-  zLibName[n] = orxCHAR_NULL;
-
-  /* Done! */
-  return zLibName;
-}
-
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
 void android_main(android_app* state)
 {
-  orxSTRING pszArgs;
-  orxCHAR zLibName[orxCONFIG_KU32_BASE_FILENAME_LENGTH];
+  char *argv[orxANDROID_KU32_MAX_ARGUMENT_COUNT];
 
   state->onAppCmd = orxAndroid_handleCmd;
 
@@ -590,9 +627,23 @@ void android_main(android_app* state)
   SwappyGL_setAutoPipelineMode(false);
   SwappyGL_enableStats(false);
 
+  /* Gets arguments from manifest */
+  orxAndroid_JNI_GetArguments();
+
+  /* Parses the arguments */
+  int argc = 0;
+  argv[argc++] = sstAndroid.zLibName;
+
+  char *pc = strtok(sstAndroid.zArguments, " ");
+  while (pc && argc < orxANDROID_KU32_MAX_ARGUMENT_COUNT - 1)
+  {
+    argv[argc++] = pc;
+    pc = strtok(0, " ");
+  }
+  argv[argc] = NULL;
+
   /* Run the application code! */
-  pszArgs = orxAndroid_GetLibraryName(zLibName);
-  main(1, &pszArgs);
+  main(argc, argv);
 
   if(state->destroyRequested == 0)
   {

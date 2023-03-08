@@ -53,10 +53,6 @@
  */
 #define orxCONFIG_KZ_RESOURCE_GROUP           "Config"  /**< Config resource group */
 
-#define orxCONFIG_KU32_BASE_FILENAME_LENGTH   256       /**< Base file name length */
-
-#define orxCONFIG_KU32_MAX_INI_FILENAME_LENGTH  (orxCONFIG_KU32_BASE_FILENAME_LENGTH - 5)
-
 /** Event enum
  */
 typedef enum __orxCONFIG_EVENT_t
