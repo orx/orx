@@ -78,7 +78,6 @@ typedef struct __orxANDROID_STATIC_t
   orxBOOL bHasFocus;
   orxFLOAT fSurfaceScale;
   uint64_t activeAxisIds;
-  orxCHAR zLibName[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
   orxCHAR zArguments[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
 
   struct android_app *app;
@@ -267,14 +266,8 @@ extern "C" void orxAndroid_JNI_GetArguments()
 
   /* Gets meta data  */
   jobject metaData = orxAndroid_JNI_getActivityMetaData(env);
-  if (metaData == NULL)
+  if (metaData != NULL)
   {
-    /* Stores the arguments */
-    *sstAndroid.zArguments = orxNULL;
-  }
-  else
-  {
-    const char *zLibName;
     const char *zArguments;
 
     /* Finds classes */
@@ -283,26 +276,33 @@ extern "C" void orxAndroid_JNI_GetArguments()
     /* Finds methods */
     jmethodID getStringMethod = env->GetMethodID(bundleClass, "getString", "(Ljava/lang/String;)Ljava/lang/String;");
 
-    /* Reads meta data values */
-    jstring libName = (jstring)env->CallObjectMethod(metaData, getStringMethod, env->NewStringUTF("android.app.lib_name"));
+    /* Reads arguments meta data */
     jstring arguments = (jstring)env->CallObjectMethod(metaData, getStringMethod, env->NewStringUTF("org.orx.lib.arguments"));
-
-    zLibName = (libName == NULL) ? orxSTRING_EMPTY : env->GetStringUTFChars(libName, 0);
-    zArguments = (arguments == NULL) ? orxSTRING_EMPTY : env->GetStringUTFChars(arguments, 0);
-
-    /* Stores lib name and arguments */
-    orxString_NPrint(sstAndroid.zLibName, sizeof(sstAndroid.zLibName) - 1, zLibName);
-    orxString_NPrint(sstAndroid.zArguments, sizeof(sstAndroid.zArguments) - 1, zArguments);
-
-    if (arguments != NULL)
+    if (arguments == NULL)
     {
+      /* Use lib name as fallback */
+      arguments = (jstring)env->CallObjectMethod(metaData, getStringMethod, env->NewStringUTF("android.app.lib_name"));
+    }
+
+    if (arguments == NULL)
+    {
+      /* Clears the arguments */
+      *sstAndroid.zArguments = orxNULL;
+    }
+    else
+    {
+      zArguments = env->GetStringUTFChars(arguments, 0);
+
+      /* Stores arguments */
+      orxString_NPrint(sstAndroid.zArguments, sizeof(sstAndroid.zArguments) - 1, zArguments);
+
       env->ReleaseStringUTFChars(arguments, zArguments);
     }
-
-    if (libName != NULL)
-    {
-      env->ReleaseStringUTFChars(libName, zLibName);
-    }
+  }
+  else
+  {
+    /* Clears the arguments */
+    *sstAndroid.zArguments = orxNULL;
   }
 
   /* Frees all the local references */
@@ -632,7 +632,6 @@ void android_main(android_app* state)
 
   /* Parses the arguments */
   int argc = 0;
-  argv[argc++] = sstAndroid.zLibName;
 
   char *pc = strtok(sstAndroid.zArguments, " ");
   while (pc && argc < orxANDROID_KU32_MAX_ARGUMENT_COUNT - 1)

@@ -1,8 +1,5 @@
 package org.orx.lib;
 
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;

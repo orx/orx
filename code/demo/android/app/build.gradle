@@ -54,7 +54,7 @@ android {
                 arguments 'NDK_DEBUG=1'
                 cFlags '-D__orxDEBUG__'
             }
-            manifestPlaceholders = [ gameArguments: "-c orxDemoDebug.ini" ]
+            manifestPlaceholders = [ gameArguments: "orxDemoDebug" ]
         }
         profile {
             debuggable true
@@ -63,7 +63,7 @@ android {
                 arguments 'NDK_DEBUG=0'
                 cFlags '-D__orxPROFILE__'
             }
-            manifestPlaceholders = [ gameArguments: "-c orxDemoProfile.ini" ]
+            manifestPlaceholders = [ gameArguments: "orxDemoProfile" ]
         }
     }
     lint {
