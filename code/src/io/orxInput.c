@@ -966,7 +966,11 @@ static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, cons
   else
   {
     orxINPUT_SET *pstSet;
+    orxSTRINGID   stSetID;
     orxU32        u32PrefixLength;
+
+    /* Gets the set ID */
+    stSetID = orxString_Hash(_zSetName);
 
     /* Gets internal prefix length */
     u32PrefixLength = orxString_GetLength(orxINPUT_KZ_INTERNAL_SET_PREFIX);
@@ -980,7 +984,7 @@ static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, cons
       if(orxString_NCompare(orxINPUT_KZ_INTERNAL_SET_PREFIX, pstSet->zName, u32PrefixLength) != 0)
       {
         /* Found? */
-        if(orxString_Compare(_zSetName, pstSet->zName) == 0)
+        if(pstSet->stID == stSetID)
         {
           /* Updates result */
           bResult = orxTRUE;
@@ -1013,9 +1017,9 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
       pstSet != orxNULL;
       pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
   {
-    /* Is enabled or current working set? */
-    if(orxFLAG_TEST(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED)
-    || (pstSet == sstInput.pstCurrentSet))
+    /* Is current working set or enabled? */
+    if((pstSet == sstInput.pstCurrentSet)
+    || orxFLAG_TEST(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED))
     {
       /* Updates it */
       orxInput_UpdateSet(pstSet);
@@ -1810,6 +1814,10 @@ orxSTATUS orxFASTCALL orxInput_RemoveSet(const orxSTRING _zSetName)
   if(*_zSetName != orxCHAR_NULL)
   {
     orxINPUT_SET *pstSet;
+    orxSTRINGID   stSetID;
+
+    /* Gets the set ID */
+    stSetID = orxString_Hash(_zSetName);
 
     /* For all the sets */
     for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
@@ -1817,7 +1825,7 @@ orxSTATUS orxFASTCALL orxInput_RemoveSet(const orxSTRING _zSetName)
         pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
     {
       /* Found? */
-      if(orxString_Compare(_zSetName, pstSet->zName) == 0)
+      if(pstSet->stID == stSetID)
       {
         orxINPUT_EVENT_PAYLOAD stPayload;
 
@@ -1926,7 +1934,7 @@ orxBOOL orxFASTCALL orxInput_IsSetEnabled(const orxSTRING _zSetName)
       if(pstSet->stID == stSetID)
       {
         /* Updates result */
-        bResult = orxFLAG_TEST(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED) ? orxTRUE : orxFALSE;
+        bResult = ((pstSet == sstInput.pstCurrentSet) || orxFLAG_TEST(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED)) ? orxTRUE : orxFALSE;
 
         break;
       }
