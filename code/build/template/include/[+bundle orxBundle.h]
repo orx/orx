@@ -339,7 +339,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
         orxFile_Print(pstIncludeFile, "\r\n};\r\n\r\n#define orxBUNDLE_HAS_DATA\r\n");
 
         // Logs message
-        orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_MAGENTA "[%u]" orxANSI_KZ_COLOR_RESET " resources to " orxANSI_KZ_COLOR_FG_MAGENTA orxBUNDLE_KZ_INCLUDE_PATH orxBUNDLE_KZ_INCLUDE_FILENAME orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "(%s)" orxANSI_KZ_COLOR_RESET, orxBank_GetCount(pstResourceBank), orxBundle_GetHumanReadableSize(s64Size, 2));
+        orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_MAGENTA "[%u]" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA orxBUNDLE_KZ_INCLUDE_PATH orxBUNDLE_KZ_INCLUDE_FILENAME orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "(%s)" orxANSI_KZ_COLOR_RESET, orxBank_GetCount(pstResourceBank), orxBundle_GetHumanReadableSize(s64Size, 2));
       }
 
       // Pops resource config section
