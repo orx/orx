@@ -1798,6 +1798,52 @@ const orxSTRING orxFASTCALL orxInput_GetCurrentSet()
   return zResult;
 }
 
+/** Gets next set
+ * @param[in]   _zSetName       Concerned set, orxNULL to get the first one
+ * @return Set name / orxNULL
+ */
+const orxSTRING orxFASTCALL orxInput_GetNextSet(const orxSTRING _zSetName)
+{
+  orxINPUT_SET   *pstSet = orxNULL;
+  const orxSTRING zResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+
+  /* First set? */
+  if(_zSetName == orxNULL)
+  {
+    pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
+  }
+  /* Valid name? */
+  else if(*_zSetName != orxCHAR_NULL)
+  {
+    orxSTRINGID stSetID;
+
+    /* Gets its ID */
+    stSetID = orxString_Hash(_zSetName);
+
+    /* Finds it */
+    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
+        (pstSet != orxNULL) && (pstSet->stID != stSetID);
+        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+      ;
+
+    /* Found? */
+    if(pstSet != orxNULL)
+    {
+      /* Gets next set */
+      pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode));
+    }
+  }
+
+  /* Updates result */
+  zResult = (pstSet != orxNULL) ? pstSet->zName : orxNULL;
+
+  /* Done! */
+  return zResult;
+}
+
 /** Removes a set
  * @param[in] _zSetName         Set name to remove
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
