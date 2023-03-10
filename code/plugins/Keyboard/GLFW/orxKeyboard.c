@@ -533,7 +533,7 @@ const orxSTRING orxFASTCALL orxKeyboard_GLFW_GetKeyDisplayName(orxKEYBOARD_KEY _
     if(zName != orxNULL)
     {
       /* Prints it */
-      orxString_NPrint(sstKeyboard.acNameBuffer, sizeof(sstKeyboard.acNameBuffer) - 1, "%s", zName);
+      orxString_NPrint(sstKeyboard.acNameBuffer, sizeof(sstKeyboard.acNameBuffer), "%s", zName);
 
       /* Gets uppercase version */
       orxString_UpperCase(sstKeyboard.acNameBuffer);

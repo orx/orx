@@ -29,11 +29,11 @@
 #include "orx.h"
 
 //! Defines
-#if defined(__orxDEBUG__) && !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+#if defined(__orxDEBUG__) && !defined(__orxANDROID__)
 
   #define __SCROLL_DEBUG__
 
-#endif // __orxDEBUG__ && !__orxANDROID__ && !__orxANDROID_NATIVE__
+#endif // __orxDEBUG__ && !__orxANDROID__
 
 #ifdef __SCROLL_DEBUG__
   #include <typeinfo>
@@ -42,6 +42,20 @@
 #include <new>
 
 #include "ScrollObject.h"
+
+
+//! Code
+inline void *operator new(size_t _Size, orxBANK *_pstBank)
+{
+  // Done!
+  return orxBank_Allocate(_pstBank);
+}
+
+inline void operator delete(void *_p, orxBANK *_pstBank)
+{
+  // Done!
+  orxBank_Free(_pstBank, _p);
+}
 
 
 //! Template helpers
@@ -228,9 +242,6 @@ ScrollObject *ScrollObjectBinder<O>::ConstructObject(orxBANK *_pstBank) const
   return new(_pstBank) O();
 }
 
-template<class O>
-ScrollObjectBinder<O> *ScrollObjectBinder<O>::spoInstance = orxNULL;
-
 
 //! Scroll object bind helper
 template<class O>
@@ -395,19 +406,20 @@ private:
                 orxLINKLIST     mstObjectList;
                 orxLINKLIST     mstObjectChronoList;
                 orxSTRING       mzMapName;
+                const orxSTRING mzCurrentCreateObject;
+                const orxSTRING mzCurrentDeleteObject;
+                orxVIEWPORT *   mpstMainViewport;
+                orxCAMERA *     mpstMainCamera;
+                orxCONFIG_SAVE_FUNCTION mpfnCustomMapSaveFilter;
+                orxU32          mu32NextObjectID;
+                orxU32          mu32RuntimeObjectID;
+                orxU32          mu32LayerNumber;
+                orxU32          mu32FrameCount;
                 orxBOOL         mbEditorMode;
                 orxBOOL         mbDifferentialMode;
                 orxBOOL         mbObjectListLocked;
                 orxBOOL         mbIsRunning;
                 orxBOOL         mbIsPaused;
-                const orxSTRING mzCurrentObject;
-                orxVIEWPORT *   mpstMainViewport;
-                orxCAMERA *     mpstMainCamera;
-                orxU32          mu32NextObjectID;
-                orxU32          mu32RuntimeObjectID;
-                orxU32          mu32LayerNumber;
-                orxU32          mu32FrameCount;
-                orxCONFIG_SAVE_FUNCTION mpfnCustomMapSaveFilter;
 };
 
 

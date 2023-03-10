@@ -251,7 +251,7 @@ void CreateNormalMap(const orxTEXTURE *_pstTexture)
       orxMemory_Free(pu8DstBuffer);
 
       /* Creates new name with prefix NM_ */
-      orxString_NPrint(acNMName, 256, "NM_%s", zName);
+      orxString_NPrint(acNMName, sizeof(acNMName), "NM_%s", zName);
 
       /* Creates a texture for the normal map */
       pstNMTexture = orxTexture_Create();

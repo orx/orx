@@ -81,22 +81,22 @@ matrix:
     #   name: OSX / XCode 14
 
     - language: android
-      jdk: openjdk8
+      jdk: openjdk11
       android:
         components:
-          - tools
-          - platform-tools
-          - build-tools-28.0.3
-          - android-28
-          - extra-google-m2repository
-          - extra-android-m2repository
+          - build-tools-29.0.3
+      before_install:
+        - touch $HOME/.android/repositories.cfg
+        - wget "https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip" -O commandlinetools.zip
+        - unzip commandlinetools.zip -d $ANDROID_HOME
+        - yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --install "ndk;23.1.7779620" --sdk_root=$ANDROID_HOME
       install:
-        - echo y | sdkmanager "ndk-bundle"
         - ./setup.sh
       before_script:
-        - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
-      script: ./code/build/travis/android.sh
-      name: Android / OpenJDK 8
+        - export ORX=$TRAVIS_BUILD_DIR/code
+      script:
+        - ./code/build/travis/android.sh
+      name: Android / OpenJDK 11
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then

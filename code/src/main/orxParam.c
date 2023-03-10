@@ -330,7 +330,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
         if(s32ParamValueNumber > 0)
         {
           /* Prints first parameter */
-          acFirstParamBuffer[orxString_NPrint(acFirstParamBuffer, sizeof(acFirstParamBuffer) - 1, "%s%s", orxPARAM_KZ_MODULE_LONG_PREFIX, _pstParamInfo->stParam.zLongName)] = orxCHAR_NULL;
+          orxString_NPrint(acFirstParamBuffer, sizeof(acFirstParamBuffer), "%s%s", orxPARAM_KZ_MODULE_LONG_PREFIX, _pstParamInfo->stParam.zLongName);
 
           /* Stores it */
           azConfigParamList[0] = acFirstParamBuffer;
@@ -490,7 +490,7 @@ orxSTATUS orxFASTCALL orxParam_Init()
         stParams.zShortName = "c";
         stParams.zLongName  = "config";
         stParams.zShortDesc = "Loads the specified configuration file(s).";
-        stParams.zLongDesc  = "Loads the specified configuration file(s) from the current execution folder or the available Config resource storages.";
+        stParams.zLongDesc  = "Loads the specified configuration file(s) from the available resource storages. Multiple files can be specified.";
 
         /* Registers it */
         eResult = orxParam_Register(&stParams);
@@ -766,8 +766,7 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     }
 
     /* Copies it locally */
-    orxString_NPrint(zLocalName, sizeof(zLocalName) - 1, "%s", sstParam.azParams[0]);
-    zLocalName[sizeof(zLocalName) - 1] = orxCHAR_NULL;
+    orxString_NPrint(zLocalName, sizeof(zLocalName), "%s", sstParam.azParams[0]);
 
     /* Finds last '.' */
     for(s32Index = orxString_SearchCharIndex(zLocalName, '.', 0);
@@ -804,8 +803,7 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     }
 
     /* Gets debug path */
-    orxString_NPrint(zPath, sizeof(zPath) - 1, orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", zLocalName + s32Index);
-    zPath[sizeof(zPath) - 1] = orxCHAR_NULL;
+    orxString_NPrint(zPath, sizeof(zPath), orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", zLocalName + s32Index);
 
     /* Stores base names for debug */
     orxDEBUG_SETBASEFILENAME(zPath);

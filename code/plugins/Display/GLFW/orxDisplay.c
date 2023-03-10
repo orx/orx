@@ -50,11 +50,11 @@
 #endif /* !__orxDISPLAY_OPENGL__ && !__orxDISPLAY_OPENGL_ES__ */
 
 #ifdef __orxDISPLAY_OPENGL_ES__
-#define GLFW_INCLUDE_ES3
+  #define GLFW_INCLUDE_ES3
 #else /* __orxDISPLAY_OPENGL_ES__ */
-#define GLFW_INCLUDE_GLEXT
+  #define GLFW_INCLUDE_GLEXT
 #endif /* __orxDISPLAY_OPENGL_ES__ */
-#include "GLFW/glfw3.h"
+  #include "GLFW/glfw3.h"
 #undef GLFW_INCLUDE_ES3
 #undef GLFW_INCLUDE_GLEXT
 
@@ -449,7 +449,6 @@ typedef struct __orxDISPLAY_STATIC_t
   orxS32                    s32BufferIndex;
   orxS32                    s32ElementNumber;
   orxU32                    u32Flags;
-  orxU32                    u32Depth;
   orxU32                    u32RefreshRate;
   orxU32                    u32DefaultWidth;
   orxU32                    u32DefaultHeight;
@@ -852,7 +851,7 @@ static void orxDisplay_GLFW_ResizeCallback(GLFWwindow *_pstWindow, int _iWidth, 
       /* Inits video mode */
       stVideoMode.u32Width        = (orxU32)_iWidth;
       stVideoMode.u32Height       = (orxU32)_iHeight;
-      stVideoMode.u32Depth        = sstDisplay.u32Depth;
+      stVideoMode.u32Depth        = sstDisplay.pstScreen->u32Depth;
       stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
       stVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
@@ -970,7 +969,7 @@ static void orxDisplay_GLFW_ContentScaleCallback(GLFWwindow *_pstWindow, float _
     /* Retrieves current video mode */
     stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
     stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
-    stVideoMode.u32Depth        = sstDisplay.u32Depth;
+    stVideoMode.u32Depth        = sstDisplay.pstScreen->u32Depth;
     stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
     stVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
@@ -5341,7 +5340,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     if(sstDisplay.pstWindow != orxNULL)
     {
       /* Different depth? */
-      if((orxU32)iDepth != sstDisplay.u32Depth)
+      if((orxU32)iDepth != sstDisplay.pstScreen->u32Depth)
       {
         GLFWwindow *pstNewWindow;
 
@@ -5659,8 +5658,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Enforces VSync status */
       orxDisplay_GLFW_EnableVSync(orxDisplay_GLFW_IsVSyncEnabled());
 
-      /* Stores screen depth & refresh rate */
-      sstDisplay.u32Depth       = (orxU32)iDepth;
+      /* Stores refresh rate */
       sstDisplay.u32RefreshRate = (orxU32)iRefreshRate;
 
       /* Sends event */
@@ -5994,8 +5992,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
 
-    /* Resets screen depth & refresh rate */
-    sstDisplay.u32Depth       = orxU32_UNDEFINED;
+    /* Resets refresh rate */
     sstDisplay.u32RefreshRate = orxU32_UNDEFINED;
 
     /* Stores stbi callbacks */
@@ -6321,7 +6318,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
         /* Inits shader code buffer */
         sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
         pc                                = sstDisplay.acShaderCodeBuffer;
-        s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1;
+        s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE;
 
         /* Pushes display config section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -6781,9 +6778,6 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
     /* Checks */
     orxASSERT(pstShader->s32ParamCount < sstDisplay.iTextureUnitNumber);
 
-    /* Inits buffer */
-    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-
     /* Gets corresponding param info */
     pstInfo = &pstShader->astParamInfoList[pstShader->s32ParamCount];
 
@@ -6794,29 +6788,29 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
     if(_s32Index >= 0)
     {
       /* Prints its name */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s[%d]", _zParam, _s32Index);
 
       /* Gets parameter location */
       pstInfo->iLocation = glGetUniformLocationARB(pstShader->hProgram, acBuffer);
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_TOP "[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_TOP "[%d]", _zParam, _s32Index);
       pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_LEFT "[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_LEFT "[%d]", _zParam, _s32Index);
       pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM "[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM "[%d]", _zParam, _s32Index);
       pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT "[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT "[%d]", _zParam, _s32Index);
       pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
@@ -6827,22 +6821,22 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
       pstInfo->iLocationTop = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
       pstInfo->iLocationLeft = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
       pstInfo->iLocationBottom = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
       pstInfo->iLocationRight = glGetUniformLocationARB(pstShader->hProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
@@ -6872,8 +6866,7 @@ orxS32 orxFASTCALL orxDisplay_GLFW_GetParameterID(const orxHANDLE _hShader, cons
       orxCHAR acBuffer[256];
 
       /* Prints its name */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%d]", _zParam, _s32Index);
-      acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s[%d]", _zParam, _s32Index);
 
       /* Gets parameter location */
       s32Result = (orxS32)glGetUniformLocationARB(pstShader->hProgram, acBuffer);

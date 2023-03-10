@@ -201,7 +201,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxGraphic_GetFlip(const orxGRAPHIC 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, const orxVECTOR *_pvPivot);
 
-/** Sets relative graphic pivot
+/** Sets graphic relative pivot
  * @param[in]   _pstGraphic     Concerned graphic
  * @param[in]   _u32AlignFlags  Alignment flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

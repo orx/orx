@@ -116,8 +116,8 @@
  */
 typedef struct __orxTIMELINE_TRACK_EVENT_t
 {
-  const orxSTRING           zEventText;               /**< Event text : 4 */
-  orxFLOAT                  fTimeStamp;               /**< Event timestamp : 8 */
+  const orxSTRING           zEventText;               /**< Event text : 4 / 8 */
+  orxFLOAT                  fTimeStamp;               /**< Event timestamp : 8 / 12 */
 
 } orxTIMELINE_TRACK_EVENT;
 
@@ -125,11 +125,11 @@ typedef struct __orxTIMELINE_TRACK_EVENT_t
  */
 typedef struct __orxTIMELINE_TRACK_t
 {
-  const orxSTRING           zReference;               /**< Track reference : 4 */
   orxSTRINGID               stID;                     /**< ID : 8 */
-  orxU32                    u32RefCount;              /**< Reference count : 12 */
-  orxU32                    u32EventCount;            /**< Event count : 16 */
-  orxU32                    u32Flags;
+  const orxSTRING           zReference;               /**< Track reference : 12 / 16 */
+  orxU32                    u32RefCount;              /**< Reference count : 16 / 20 */
+  orxU32                    u32EventCount;            /**< Event count : 20 / 24 */
+  orxU32                    u32Flags;                 /**< Flags: 24 / 28 */
   orxTIMELINE_TRACK_EVENT   astEventList[0];          /**< Track event list */
 
 } orxTIMELINE_TRACK;

@@ -374,6 +374,9 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
         /* Updates cursor status */
         orxMouse_GLFW_ShowCursor(((orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) == orxFALSE) || (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)) ? orxTRUE : orxFALSE);
 
+        /* Triggers initial update */
+        orxMouse_GLFW_Update(orxNULL, orxNULL);
+
         /* Pops config section */
         orxConfig_PopSection();
       }

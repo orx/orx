@@ -728,8 +728,8 @@ orxU32 orxFASTCALL orxFrame_GetIgnoreFlagValues(const orxSTRING _zFlags)
   orxASSERT(_zFlags != orxNULL);
 
   /* Gets lower case version */
-  zFlags = orxString_LowerCase(orxString_NCopy(acBuffer, _zFlags, sizeof(acBuffer) - 1));
   acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+  zFlags = orxString_LowerCase(orxString_NCopy(acBuffer, _zFlags, sizeof(acBuffer) - 1));
 
   /* Not none? */
   if(orxString_SearchString(zFlags, orxFRAME_KZ_NONE) == orxNULL)
@@ -880,7 +880,7 @@ const orxSTRING orxFASTCALL orxFrame_GetIgnoreFlagNames(orxU32 _u32Flags)
   /* Clears result buffer */
   orxMemory_Zero(&(sstFrame.acResultBuffer), sizeof(sstFrame.acResultBuffer));
 
-#define orxFRAME_PRINT(STRING) pc += orxString_NPrint(pc, (orxU32)(sizeof(sstFrame.acResultBuffer) - 1 - (pc - sstFrame.acResultBuffer)), STRING)
+#define orxFRAME_PRINT(STRING) pc += orxString_NPrint(pc, (orxU32)(sizeof(sstFrame.acResultBuffer) - (pc - sstFrame.acResultBuffer)), STRING)
 
   /* Depending on flags */
   switch(orxFLAG_GET(_u32Flags, orxFRAME_KU32_MASK_IGNORE_ALL))
