@@ -57,6 +57,7 @@ typedef struct BundleResource
 {
   orxS64            s64Cursor;
   const BundleData *pstData;
+  orxU8            *pu8FinalBuffer;
 } BundleResource;
 
 #if __has_include(orxBUNDLE_KZ_INCLUDE_FILENAME)
@@ -252,19 +253,11 @@ static orxINLINE orxSTATUS orxBundle_Process()
               // Success?
               if((hResource != orxHANDLE_UNDEFINED) && ((s64Size = orxResource_GetSize(hResource)) > 0))
               {
-                orxBUNDLE_RESOURCE_REF *pstResourceRef;
-                orxU8                  *pu8Buffer;
+                orxU8 *pu8Buffer;
 
                 // Allocates buffer
                 pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)(s64Size * sizeof(orxU8)), orxMEMORY_TYPE_TEMP);
                 orxASSERT(pu8Buffer != orxNULL);
-
-                // Adds ref
-                pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_Allocate(pstResourceBank);
-                orxASSERT(pstResourceRef != orxNULL);
-                pstResourceRef->stNameID        = orxString_GetID(zName);
-                pstResourceRef->s64Size         = s64Size;
-                pstResourceRef->s64FinalSize    = -1;
 
                 // Logs message
                 orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundling " orxBUNDLE_KZ_RESOURCE_FORMAT ", " orxANSI_KZ_COLOR_FG_GREEN "(%s)" orxANSI_KZ_COLOR_RESET, zGroup, zLocation, orxBundle_GetHumanReadableSize(s64Size, 2));
@@ -272,44 +265,74 @@ static orxINLINE orxSTATUS orxBundle_Process()
                 // Reads data
                 if(orxResource_Read(hResource, s64Size, pu8Buffer, orxNULL, orxNULL) == s64Size)
                 {
-                  orxS64 j;
+                  orxS32  s32CompressedSize;
+                  orxU8  *pu8CompressedBuffer;
 
-                  // Outputs structure header
-                  orxFile_Print(pstIncludeFile, "static const orxU8 BundleData%u[] =\r\n{", u32ResourceIndex++);
+                  // Gets compressed buffer size
+                  s32CompressedSize = LZ4_compressBound((orxS32)s64Size);
 
-                  // For all bytes
-                  for(j = 0; j < s64Size; j++)
+                  // Allocates buffer
+                  pu8CompressedBuffer = (orxU8 *)orxMemory_Allocate(s32CompressedSize * sizeof(orxU8), orxMEMORY_TYPE_TEMP);
+                  orxASSERT(pu8CompressedBuffer != orxNULL);
+
+                  // Compresses it
+                  s32CompressedSize = (orxS32)LZ4_compress_HC((const char *)pu8Buffer, (char *)pu8CompressedBuffer, (int)s64Size, (int)s32CompressedSize, LZ4HC_CLEVEL_OPT_MIN);
+
+                  // Success?
+                  if(s32CompressedSize > 0)
                   {
-                    static const orxCHAR  acDigits[]      = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-                    static orxCHAR        acByteBuffer[]  = {' ', '0', 'x', '0', '0', ','};
-                    orxU8                 u8Byte;
+                    orxBUNDLE_RESOURCE_REF *pstResourceRef;
+                    orxS32                  s32Index;
 
-                    // New line?
-                    if((j % orxBUNDLE_KU32_LINE_LENGTH) == 0)
+                    // Outputs structure header
+                    orxFile_Print(pstIncludeFile, "static const orxU8 BundleData%u[] =\r\n{", u32ResourceIndex++);
+
+                    // For all bytes
+                    for(s32Index = 0; s32Index < s32CompressedSize; s32Index++)
                     {
-                      // Output it
-                      orxFile_Write("\r\n ", 1, 3, pstIncludeFile);
+                      static const orxCHAR  acDigits[]      = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+                      static orxCHAR        acByteBuffer[]  = {' ', '0', 'x', '0', '0', ','};
+                      orxU8                 u8Byte;
+
+                      // New line?
+                      if((s32Index % orxBUNDLE_KU32_LINE_LENGTH) == 0)
+                      {
+                        // Output it
+                        orxFile_Write("\r\n ", 1, 3, pstIncludeFile);
+                      }
+
+                      // Outputs byte
+                      u8Byte          = pu8CompressedBuffer[s32Index];
+                      acByteBuffer[3] = acDigits[u8Byte >> 4];
+                      acByteBuffer[4] = acDigits[u8Byte & 0x0F];
+                      orxFile_Write(acByteBuffer, 1, 6, pstIncludeFile);
                     }
 
-                    // Outputs byte
-                    u8Byte          = pu8Buffer[j];
-                    acByteBuffer[3] = acDigits[u8Byte >> 4];
-                    acByteBuffer[4] = acDigits[u8Byte & 0x0F];
-                    orxFile_Write(acByteBuffer, 1, 6, pstIncludeFile);
+                    // Outputs structure footer
+                    if(s64Size > 0)
+                    {
+                      orxFile_Seek(pstIncludeFile, -1, orxSEEK_OFFSET_WHENCE_CURRENT);
+                    }
+                    orxFile_Print(pstIncludeFile, "\r\n};\r\n\r\n");
+
+                    // Adds ref
+                    pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_Allocate(pstResourceBank);
+                    orxASSERT(pstResourceRef != orxNULL);
+                    pstResourceRef->stNameID        = orxString_GetID(zName);
+                    pstResourceRef->s64Size         = (orxS64)s32CompressedSize;
+                    pstResourceRef->s64FinalSize    = s64Size;
+                  }
+                  else
+                  {
+                    // Logs message
+                    orxLOG(orxBUNDLE_KZ_LOG_TAG "Failure, skipping!");
                   }
 
-                  // Outputs structure footer
-                  if(s64Size > 0)
-                  {
-                    orxFile_Seek(pstIncludeFile, -1, orxSEEK_OFFSET_WHENCE_CURRENT);
-                  }
-                  orxFile_Print(pstIncludeFile, "\r\n};\r\n\r\n");
+                  // Frees buffer
+                  orxMemory_Free(pu8CompressedBuffer);
                 }
                 else
                 {
-                  // Updates size
-                  pstResourceRef->s64Size = -1;
-
                   // Logs message
                   orxLOG(orxBUNDLE_KZ_LOG_TAG "Failure, skipping!");
                 }
@@ -328,65 +351,45 @@ static orxINLINE orxSTATUS orxBundle_Process()
       // Has data?
       if(orxBank_GetCount(pstResourceBank) != 0)
       {
-        orxS64                  s64Size;
+        orxS64                  s64Size, s64FinalSize;
         orxBUNDLE_RESOURCE_REF *pstResourceRef;
 
+        // Outputs table header
+        orxFile_Print(pstIncludeFile, "static const BundleData sastDataList[] =\r\n{");
+
         // For all refs
-        for(pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_GetNext(pstResourceBank, orxNULL), s64Size = 0;
+        for(pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_GetNext(pstResourceBank, orxNULL), u32ResourceIndex = 0, s64Size = 0, s64FinalSize = 0;
             pstResourceRef != orxNULL;
-            pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_GetNext(pstResourceBank, pstResourceRef))
+            pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_GetNext(pstResourceBank, pstResourceRef), u32ResourceIndex++)
         {
-          // Valid?
-          if(pstResourceRef->s64Size >= 0)
-          {
-            // Updates size
-            s64Size += pstResourceRef->s64Size;
-          }
-        }
+          const orxSTRING zName;
 
-        // Has content?
-        if(s64Size > 0)
-        {
-          // Outputs table header
-          orxFile_Print(pstIncludeFile, "static const BundleData sastDataList[] =\r\n{");
+          // Gets its name
+          zName = orxString_GetFromID(pstResourceRef->stNameID);
 
-          // For all refs
-          for(pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_GetNext(pstResourceBank, orxNULL), u32ResourceIndex = 0;
-              pstResourceRef != orxNULL;
-              pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_GetNext(pstResourceBank, pstResourceRef))
+          // Outputs ref
+          orxFile_Print(pstIncludeFile, "\r\n  {\"");
+          for(i = 0, iCount = orxString_GetLength(zName); i < iCount; i++)
           {
-            // Valid?
-            if(pstResourceRef->s64Size >= 0)
+            orxFile_Write(zName + i, 1, 1, pstIncludeFile);
+            if(zName[i] == '\\')
             {
-              const orxSTRING zName;
-
-              // Gets its name
-              zName = orxString_GetFromID(pstResourceRef->stNameID);
-
-              // Outputs ref
-              orxFile_Print(pstIncludeFile, "\r\n  {\"");
-              for(i = 0, iCount = orxString_GetLength(zName); i < iCount; i++)
-              {
-                orxFile_Write(zName + i, 1, 1, pstIncludeFile);
-                if(zName[i] == '\\')
-                {
-                  orxFile_Write(zName + i, 1, 1, pstIncludeFile);
-                }
-              }
-              orxFile_Print(pstIncludeFile, "\", (const orxU8 *)BundleData%u, %lld, %lld},", u32ResourceIndex, pstResourceRef->s64Size, pstResourceRef->s64FinalSize);
-
-              // Updates resource index
-              u32ResourceIndex++;
+              orxFile_Write(zName + i, 1, 1, pstIncludeFile);
             }
           }
+          orxFile_Print(pstIncludeFile, "\", (const orxU8 *)BundleData%u, %lld, %lld},", u32ResourceIndex, pstResourceRef->s64Size, pstResourceRef->s64FinalSize);
 
-          // Outputs table footer
-          orxFile_Seek(pstIncludeFile, -1, orxSEEK_OFFSET_WHENCE_CURRENT);
-          orxFile_Print(pstIncludeFile, "\r\n};\r\n\r\n#define orxBUNDLE_HAS_DATA\r\n");
+          // Updates sizes
+          s64Size      += pstResourceRef->s64Size;
+          s64FinalSize += pstResourceRef->s64FinalSize;
         }
 
+        // Outputs table footer
+        orxFile_Seek(pstIncludeFile, -1, orxSEEK_OFFSET_WHENCE_CURRENT);
+        orxFile_Print(pstIncludeFile, "\r\n};\r\n\r\n#define orxBUNDLE_HAS_DATA\r\n");
+
         // Logs message
-        orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_MAGENTA "[%u]" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA orxBUNDLE_KZ_INCLUDE_PATH orxBUNDLE_KZ_INCLUDE_FILENAME orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "(%s)" orxANSI_KZ_COLOR_RESET, u32ResourceIndex, orxBundle_GetHumanReadableSize(s64Size, 2));
+        orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_MAGENTA "[%u]" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA orxBUNDLE_KZ_INCLUDE_PATH orxBUNDLE_KZ_INCLUDE_FILENAME orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_RESET, u32ResourceIndex, orxBundle_GetHumanReadableSize(s64Size, 2));
       }
 
       // Pops resource config section
@@ -551,6 +554,9 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
         // Inits read cursor
         pstResource->s64Cursor = 0;
 
+        // Inits final buffer
+        pstResource->pu8FinalBuffer = orxNULL;
+
         // Updates result
         hResult = (orxHANDLE)pstResource;
       }
@@ -564,8 +570,20 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
 // Close function: releases all that has been allocated in Open
 void orxFASTCALL orxBundle_Close(orxHANDLE _hResource)
 {
+  BundleResource *pstResource;
+
+  // Gets resource
+  pstResource = (BundleResource *)_hResource;
+
+  // Has final buffer?
+  if(pstResource->pu8FinalBuffer != orxNULL)
+  {
+    // Frees it
+    orxMemory_Free(pstResource->pu8FinalBuffer);
+  }
+
   // Frees it
-  orxMemory_Free((BundleResource *)_hResource);
+  orxMemory_Free(pstResource);
 }
 
 // GetSize function: simply returns the size of the extracted resource, in bytes
@@ -574,7 +592,7 @@ orxS64 orxFASTCALL orxBundle_GetSize(orxHANDLE _hResource)
   orxS64 s64Result;
 
   // Updates result
-  s64Result = ((BundleResource *)_hResource)->pstData->s64Size;
+  s64Result = ((BundleResource *)_hResource)->pstData->s64FinalSize;
 
   // Done!
   return s64Result;
@@ -609,7 +627,7 @@ orxS64 orxFASTCALL orxBundle_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSE
     case orxSEEK_OFFSET_WHENCE_END:
     {
       // Computes cursor
-      s64Cursor = pstResource->pstData->s64Size - _s64Offset;
+      s64Cursor = pstResource->pstData->s64FinalSize - _s64Offset;
       break;
     }
 
@@ -622,7 +640,7 @@ orxS64 orxFASTCALL orxBundle_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSE
   }
 
   // Is cursor valid?
-  if((s64Cursor >= 0) && (s64Cursor <= pstResource->pstData->s64Size))
+  if((s64Cursor >= 0) && (s64Cursor <= pstResource->pstData->s64FinalSize))
   {
     // Updates archive's cursor
     pstResource->s64Cursor = s64Cursor;
@@ -658,14 +676,28 @@ orxS64 orxFASTCALL orxBundle_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_
   // Gets resource
   pstResource = (BundleResource *)_hResource;
 
+  // No final buffer?
+  if(pstResource->pu8FinalBuffer == orxNULL)
+  {
+    orxS64 s64Size;
+
+    // Allocates it
+    pstResource->pu8FinalBuffer = (orxU8 *)orxMemory_Allocate((orxU32)pstResource->pstData->s64FinalSize * sizeof(orxU8), orxMEMORY_TYPE_MAIN);
+    orxASSERT(pstResource->pu8FinalBuffer != orxNULL);
+
+    // Decompresses data
+    s64Size = (orxS64)LZ4_decompress_safe((const char *)pstResource->pstData->pu8Buffer, (char *)pstResource->pu8FinalBuffer, (int)pstResource->pstData->s64Size, (int)pstResource->pstData->s64FinalSize);
+    orxASSERT(s64Size == pstResource->pstData->s64FinalSize);
+  }
+
   // Gets actual copy size to prevent any out-of-bound access
-  s64CopySize = orxMIN(_s64Size, pstResource->pstData->s64Size - pstResource->s64Cursor);
+  s64CopySize = orxMIN(_s64Size, pstResource->pstData->s64FinalSize - pstResource->s64Cursor);
 
   // Should copy content?
   if(s64CopySize != 0)
   {
     // Copies content
-    orxMemory_Copy(_pu8Buffer, pstResource->pstData->pu8Buffer + pstResource->s64Cursor, (orxS32)s64CopySize);
+    orxMemory_Copy(_pu8Buffer, pstResource->pu8FinalBuffer + pstResource->s64Cursor, (orxS32)s64CopySize);
   }
 
   // Updates cursor
