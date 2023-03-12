@@ -18,6 +18,8 @@ android {
         ndk {
             abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
         }
+
+        manifestPlaceholders = [ gameArguments: '' ]
     }
     compileOptions {
         targetCompatibility JavaVersion.VERSION_11
@@ -44,6 +46,7 @@ android {
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=0'
             }
+            manifestPlaceholders = [ gameArguments: 'orxDemo' ]
         }
         debug {
             debuggable true
@@ -52,6 +55,7 @@ android {
                 arguments 'NDK_DEBUG=1'
                 cFlags '-D__orxDEBUG__'
             }
+            manifestPlaceholders = [ gameArguments: 'orxDemoDebug' ]
         }
         profile {
             debuggable true
@@ -60,6 +64,7 @@ android {
                 arguments 'NDK_DEBUG=0'
                 cFlags '-D__orxPROFILE__'
             }
+            manifestPlaceholders = [ gameArguments: 'orxDemoProfile' ]
         }
     }
     lint {
