@@ -9,17 +9,14 @@
         android:roundIcon="@drawable/ic_launcher_round"
         android:theme="@style/Application.Fullscreen">
 
-        <!-- Our activity is the built-in NativeActivity framework class.
-             This will take care of integrating with our NDK code. -->
-        <activity android:name=".MainActivity"
+        <activity android:name="org.orx.lib.OrxGameActivity"
             android:label="@string/app_name"
             android:screenOrientation="fullSensor"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true">
 
-            <!-- Tell activity the name of our .so -->
-            <meta-data android:name="android.app.lib_name"
-                android:value="orxTest" />
+            <meta-data android:name="android.app.lib_name" android:value="orxDemo" />
+            <meta-data android:name="org.orx.lib.arguments" android:value="${gameArguments}" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,9 +25,6 @@
                 <!-- Google is reviewing every apps published for Android TV. -->
                 <!--<category android:name="android.intent.category.LEANBACK_LAUNCHER" />-->
             </intent-filter>
-
         </activity>
-
     </application>
-
 </manifest>

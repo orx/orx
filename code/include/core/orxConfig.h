@@ -53,7 +53,6 @@
  */
 #define orxCONFIG_KZ_RESOURCE_GROUP           "Config"  /**< Config resource group */
 
-
 /** Event enum
  */
 typedef enum __orxCONFIG_EVENT_t
