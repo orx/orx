@@ -26,10 +26,13 @@
  * @file orxAndroidSupport.cpp
  * @date 26/06/2011
  * @author simons.philippe@gmail.com
+ * @author hacker.danielsson@gmail.com
  *
  * Android support
  *
  */
+
+
 #if defined(TARGET_OS_ANDROID)
 
 #include <android/log.h>
@@ -38,12 +41,12 @@
 #ifdef __orxDEBUG__
 
 #define MODULE "orxAndroidSupport"
-#define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,MODULE,__VA_ARGS__)
-#define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,MODULE,__VA_ARGS__)
-#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,MODULE,__VA_ARGS__)
-#define LOGV(...)  __android_log_print(ANDROID_LOG_VERBOSE,MODULE,__VA_ARGS__)
+#define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, MODULE, __VA_ARGS__)
+#define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, MODULE, __VA_ARGS__)
+#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, MODULE, __VA_ARGS__)
+#define LOGV(...)  __android_log_print(ANDROID_LOG_VERBOSE, MODULE, __VA_ARGS__)
 
-#else
+#else /* __orxDEBUG__ */
 
 #define LOGE(...)
 #define LOGD(...)
@@ -57,14 +60,16 @@
 #include "orxAndroid.h"
 #include "orxAndroidActivity.h"
 
+
 /** Defines
  */
 #define orxANDROID_KU32_ARGUMENT_BUFFER_SIZE    256    /**< Argument buffer size */
 #define orxANDROID_KU32_MAX_ARGUMENT_COUNT      16     /**< Maximum number of arguments */
 
-#define GET_ACTION_INDEX(ACTION)  (((ACTION) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT)
-#define GET_AXIS_X(EV, INDEX)     GameActivityPointerAxes_getX(&(EV)->pointers[INDEX])
-#define GET_AXIS_Y(EV, INDEX)     GameActivityPointerAxes_getY(&(EV)->pointers[INDEX])
+#define orxANDROID_GET_ACTION_INDEX(ACTION)     (((ACTION) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT)
+#define orxANDROID_GET_AXIS_X(EV, INDEX)        GameActivityPointerAxes_getX(&(EV)->pointers[INDEX])
+#define orxANDROID_GET_AXIS_Y(EV, INDEX)        GameActivityPointerAxes_getY(&(EV)->pointers[INDEX])
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -83,6 +88,7 @@ typedef struct __orxANDROID_STATIC_t
   struct android_app *app;
 } orxANDROID_STATIC;
 
+
 /***************************************************************************
  * Static variables                                                        *
  ***************************************************************************/
@@ -90,6 +96,7 @@ typedef struct __orxANDROID_STATIC_t
 static orxANDROID_STATIC sstAndroid;
 static pthread_key_t sThreadKey;
 static JavaVM *jVM;
+
 
 /***************************************************************************
  * Private functions                                                       *
@@ -424,33 +431,33 @@ static void Android_HandleGameInput(struct android_app* app)
         switch (event->action & AMOTION_EVENT_ACTION_MASK)
         {
           case AMOTION_EVENT_ACTION_POINTER_DOWN:
-            iIndex = GET_ACTION_INDEX(event->action);
+            iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
             stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * GET_AXIS_X(event, iIndex);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * GET_AXIS_Y(event, iIndex);
+            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
+            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
             break;
           case AMOTION_EVENT_ACTION_POINTER_UP:
-            iIndex = GET_ACTION_INDEX(event->action);
+            iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
             stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * GET_AXIS_X(event, iIndex);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * GET_AXIS_Y(event, iIndex);
+            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
+            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
             break;
           case AMOTION_EVENT_ACTION_DOWN:
-            iIndex = GET_ACTION_INDEX(event->action);
+            iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
             stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * GET_AXIS_X(event, iIndex);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * GET_AXIS_Y(event, iIndex);
+            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
+            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
             break;
           case AMOTION_EVENT_ACTION_UP:
           case AMOTION_EVENT_ACTION_CANCEL:
           {
-            iIndex = GET_ACTION_INDEX(event->action);
+            iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
             stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * GET_AXIS_X(event, iIndex);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * GET_AXIS_Y(event, iIndex);
+            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
+            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
             break;
           }
@@ -458,8 +465,8 @@ static void Android_HandleGameInput(struct android_app* app)
             for(iIndex = 0; iIndex < event->pointerCount; iIndex++)
             {
               stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-              stPayload.stTouch.fX = sstAndroid.fSurfaceScale * GET_AXIS_X(event, iIndex);
-              stPayload.stTouch.fY = sstAndroid.fSurfaceScale * GET_AXIS_Y(event, iIndex);
+              stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
+              stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
             }
             break;

@@ -140,9 +140,13 @@
 #endif
 
 #ifdef __orxMSVC__
-  #define orxCONFIG_CHANGE_DIR(PATH)  _chdir((PATH))
+
+  #define orxCONFIG_CHANGE_DIRECTORY(PATH)        _chdir(PATH)
+
 #else /* __orxMSVC__ */
-  #define orxCONFIG_CHANGE_DIR(PATH)  chdir((PATH))
+
+  #define orxCONFIG_CHANGE_DIRECTORY(PATH)        chdir(PATH)
+
 #endif /* __orxMSVC__ */
 
 
@@ -4380,7 +4384,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBaseName(const orxSTRING _zBaseName)
       *((orxSTRING)_zBaseName + s32Index) = orxCHAR_NULL;
 
       /* Sets current directory */
-      if(orxCONFIG_CHANGE_DIR(_zBaseName) < 0)
+      if(orxCONFIG_CHANGE_DIRECTORY(_zBaseName) < 0)
       {
         /* Restores separator */
         *((orxSTRING)_zBaseName + s32Index) = orxCHAR_DIRECTORY_SEPARATOR;
