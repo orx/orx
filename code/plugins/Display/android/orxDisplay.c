@@ -3969,7 +3969,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
       /* Stores screen depth & refresh rate */
       sstDisplay.u32Depth       = (orxU32)iDepth;
-      sstDisplay.u32RefreshRate = 60;
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
