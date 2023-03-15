@@ -631,6 +631,7 @@ void android_main(android_app* state)
   /* Initializes SwappyGL */
   SwappyGL_init(env, state->activity->javaGameActivity);
   SwappyGL_setSwapIntervalNS(SWAPPY_SWAP_60FPS);
+  SwappyGL_setAutoPipelineMode(false);
   SwappyGL_enableStats(false);
 
   /* Gets arguments from manifest */
