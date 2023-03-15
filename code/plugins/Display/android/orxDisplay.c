@@ -130,8 +130,6 @@
 /**  Misc defines
  */
  
-# define REFRESH_RATE_FROM_PERIOD(n) (1000000000L / (n - 1))
-
 #define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
 
 #ifdef __orxDEBUG__
@@ -3876,7 +3874,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_Android_GetVideoMode(orxU32 _u32In
   _pstVideoMode->u32Width       = orxF2U(sstDisplay.pstScreen->fWidth);
   _pstVideoMode->u32Height      = orxF2U(sstDisplay.pstScreen->fHeight);
   _pstVideoMode->u32Depth       = sstDisplay.u32Depth;
-  _pstVideoMode->u32RefreshRate = sstDisplay.u32RefreshRate;
+  _pstVideoMode->u32RefreshRate = 60;
   _pstVideoMode->bFullScreen    = orxTRUE;
 
   /* Updates result */
@@ -3908,7 +3906,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
     if( eResult == orxSTATUS_SUCCESS )
     {
-      int iDepth, iRefreshRate;
+      int iDepth;
 
       /* Gets its info */
       eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &iWidth);
@@ -3916,7 +3914,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
       eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &iHeight);
       eglASSERT();
       iDepth        = (int)_pstVideoMode->u32Depth;
-      iRefreshRate  = (int)_pstVideoMode->u32RefreshRate;
 
       orxDISPLAY_EVENT_PAYLOAD stPayload;
 
@@ -3925,7 +3922,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
       stPayload.stVideoMode.u32Width                = (orxU32)iWidth;
       stPayload.stVideoMode.u32Height               = (orxU32)iHeight;
       stPayload.stVideoMode.u32Depth                = (orxU32)iDepth;
-      stPayload.stVideoMode.u32RefreshRate          = (orxU32)iRefreshRate;
+      stPayload.stVideoMode.u32RefreshRate          = sstDisplay.u32RefreshRate;
       stPayload.stVideoMode.u32PreviousWidth        = orxF2U(sstDisplay.pstScreen->fWidth);
       stPayload.stVideoMode.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
       stPayload.stVideoMode.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
@@ -3972,7 +3969,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
       /* Stores screen depth & refresh rate */
       sstDisplay.u32Depth       = (orxU32)iDepth;
-      sstDisplay.u32RefreshRate = (orxU32)iRefreshRate;
+      sstDisplay.u32RefreshRate = 60;
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
@@ -4117,35 +4114,18 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CREATED)
   {
     orxAndroid_Display_CreateSurface();
+    
+    orxDISPLAY_VIDEO_MODE stVideoMode;
 
-    if(sstDisplay.bSwappyEnabled)
-    {
-      uint64_t refreshPeriod;
-      orxU32 u32CurrentRefreshRate;
+    /* Inits video mode */
+    stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
+    stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
+    stVideoMode.u32Depth        = sstDisplay.u32Depth;
+    stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+    stVideoMode.bFullScreen     = orxTRUE;
 
-      refreshPeriod = SwappyGL_getRefreshPeriodNanos();
-      u32CurrentRefreshRate = REFRESH_RATE_FROM_PERIOD(refreshPeriod);
-
-      /* Refresh rate changed? */
-      if (sstDisplay.u32RefreshRate != u32CurrentRefreshRate)
-      {
-        orxDISPLAY_VIDEO_MODE stVideoMode;
-
-        /* Re-inits refresh rate */
-        SwappyGL_setSwapIntervalNS(refreshPeriod);
-        sstDisplay.u32RefreshRate = u32CurrentRefreshRate;
-
-        /* Inits video mode */
-        stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
-        stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
-        stVideoMode.u32Depth        = sstDisplay.u32Depth;
-        stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
-        stVideoMode.bFullScreen     = orxTRUE;
-
-        /* Applies it */
-        orxDisplay_Android_SetVideoMode(&stVideoMode);
-      }
-    }
+    /* Applies it */
+    orxDisplay_Android_SetVideoMode(&stVideoMode);
   }
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CHANGED)
@@ -4246,20 +4226,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       }
 
       sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
-
-      if (sstDisplay.bSwappyEnabled)
-      {
-        uint64_t refreshPeriod;
-
-        /* Inits refresh rate */
-        refreshPeriod = SwappyGL_getRefreshPeriodNanos();
-        SwappyGL_setSwapIntervalNS(refreshPeriod);
-        sstDisplay.u32RefreshRate = REFRESH_RATE_FROM_PERIOD(refreshPeriod);
-      }
-      else
-      {
-        sstDisplay.u32RefreshRate = 60;
-      }
+      sstDisplay.u32RefreshRate = 60;
       
       /* Create OpenGL ES Context */
       orxAndroid_Display_CreateContext();
