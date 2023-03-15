@@ -3874,7 +3874,7 @@ orxDISPLAY_VIDEO_MODE *orxFASTCALL orxDisplay_Android_GetVideoMode(orxU32 _u32In
   _pstVideoMode->u32Width       = orxF2U(sstDisplay.pstScreen->fWidth);
   _pstVideoMode->u32Height      = orxF2U(sstDisplay.pstScreen->fHeight);
   _pstVideoMode->u32Depth       = sstDisplay.u32Depth;
-  _pstVideoMode->u32RefreshRate = 60;
+  _pstVideoMode->u32RefreshRate = sstDisplay.u32RefreshRate;
   _pstVideoMode->bFullScreen    = orxTRUE;
 
   /* Updates result */
@@ -3906,7 +3906,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
     if( eResult == orxSTATUS_SUCCESS )
     {
-      int iDepth;
+      int iDepth, iRefreshRate;
 
       /* Gets its info */
       eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &iWidth);
@@ -3914,6 +3914,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
       eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &iHeight);
       eglASSERT();
       iDepth        = (int)_pstVideoMode->u32Depth;
+      iRefreshRate  = (int)_pstVideoMode->u32RefreshRate;
 
       orxDISPLAY_EVENT_PAYLOAD stPayload;
 
@@ -3922,7 +3923,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
       stPayload.stVideoMode.u32Width                = (orxU32)iWidth;
       stPayload.stVideoMode.u32Height               = (orxU32)iHeight;
       stPayload.stVideoMode.u32Depth                = (orxU32)iDepth;
-      stPayload.stVideoMode.u32RefreshRate          = sstDisplay.u32RefreshRate;
+      stPayload.stVideoMode.u32RefreshRate          = (orxU32)iRefreshRate;
       stPayload.stVideoMode.u32PreviousWidth        = orxF2U(sstDisplay.pstScreen->fWidth);
       stPayload.stVideoMode.u32PreviousHeight       = orxF2U(sstDisplay.pstScreen->fHeight);
       stPayload.stVideoMode.u32PreviousDepth        = sstDisplay.pstScreen->u32Depth;
@@ -3969,6 +3970,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetVideoMode(const orxDISPLAY_VIDEO_MOD
 
       /* Stores screen depth & refresh rate */
       sstDisplay.u32Depth       = (orxU32)iDepth;
+      sstDisplay.u32RefreshRate = (orxU32)iRefreshRate;
 
       /* Sends event */
       orxEVENT_SEND(orxEVENT_TYPE_DISPLAY, orxDISPLAY_EVENT_SET_VIDEO_MODE, orxNULL, orxNULL, &stPayload);
