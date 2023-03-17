@@ -116,6 +116,13 @@
 #define orxCONFIG_KZ_CONFIG_SECTION               "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_DEFAULT_PARENT        "DefaultParent" /**< Default parent for sections */
 
+#define orxCONFIG_KZ_CONFIG_SECTION_SYSTEM        "System"    /**< System section name */
+#define orxCONFIG_KZ_CONFIG_BITS                  "Bits"      /**< Bits property */
+#define orxCONFIG_KZ_CONFIG_BUILD                 "Build"     /**< Build property */
+#define orxCONFIG_KZ_CONFIG_ENDIANNESS            "Endianness"/**< Endianness property */
+#define orxCONFIG_KZ_CONFIG_PLATFORM              "Platform"  /**< Platform property */
+#define orxCONFIG_KZ_CONFIG_PROCESSOR             "Processor" /**< Processor property */
+
 #define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY       "Orx Default Encryption Key =)" /**< Orx default encryption key */
 #define orxCONFIG_KZ_ENCRYPTION_TAG               "OECF"      /**< Encryption file tag */
 #define orxCONFIG_KU32_ENCRYPTION_TAG_LENGTH      4           /**< Encryption file tag length */
@@ -138,6 +145,77 @@
   #define orxCONFIG_KZ_DEFAULT_FILE               "orx.ini"   /**< Default config file name */
 
 #endif
+
+#if defined(__orx64__)
+
+#define orxCONFIG_KU32_BITS                       64
+
+#elif defined(__orx32__)
+
+#define orxCONFIG_KU32_BITS                       32
+
+#endif
+
+#if defined(__orxLITTLE_ENDIAN__)
+
+  #define orxCONFIG_KZ_ENDIANNESS                 "little"
+
+#elif defined(__orxBIG_ENDIAN__)
+
+  #define orxCONFIG_KZ_ENDIANNESS                 "big"
+
+#endif
+
+#if defined(__orxLINUX__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "linux"
+
+#elif defined(__orxMAC__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "mac"
+
+#elif defined(__orxWINDOWS__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "windows"
+
+#elif defined(__orxIOS__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "ios"
+
+#elif defined(__orxANDROID__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "android"
+
+#endif
+
+#if defined(__orxARM__) || defined(__orxARM64__)
+
+  #define orxCONFIG_KZ_PROCESSOR                  "arm"
+
+#elif defined(__orxPPC__) || defined(__orxPPC64__)
+
+  #define orxCONFIG_KZ_PROCESSOR                  "powerpc"
+
+#elif defined(__orxX86__) || defined(__orxX86_64__)
+
+  #define orxCONFIG_KZ_PROCESSOR                  "x86"
+
+#endif
+
+#if defined(__orxDEBUG__)
+
+  #define orxCONFIG_KZ_BUILD                      "debug"
+
+#elif defined(__orxPROFILER__)
+
+  #define orxCONFIG_KZ_BUILD                      "profile"
+
+#elif defined(__orxRELEASE__)
+
+  #define orxCONFIG_KZ_BUILD                      "release"
+
+#endif
+
 
 #ifdef __orxMSVC__
 
@@ -2838,7 +2916,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           /* Updates pointer */
           pc++;
 
-          /* Finds section end */
+          /* Finds end marker */
           while((pc < _acBuffer + _u32Size) && (*pc != orxCONFIG_KC_INHERITANCE_MARKER))
           {
             /* End of line? */
@@ -4063,6 +4141,27 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetListCount);
 }
 
+/** Sets system values
+ */
+static orxINLINE void orxConfig_SetSystemValues()
+{
+  /* Pushes system section */
+  orxConfig_PushSection(orxCONFIG_KZ_CONFIG_SECTION_SYSTEM);
+
+  /* Sets all system values */
+  orxConfig_SetU32(orxCONFIG_KZ_CONFIG_BITS, orxCONFIG_KU32_BITS);
+  orxConfig_SetString(orxCONFIG_KZ_CONFIG_ENDIANNESS, orxCONFIG_KZ_ENDIANNESS);
+  orxConfig_SetString(orxCONFIG_KZ_CONFIG_PLATFORM, orxCONFIG_KZ_PLATFORM);
+  orxConfig_SetString(orxCONFIG_KZ_CONFIG_PROCESSOR, orxCONFIG_KZ_PROCESSOR);
+  orxConfig_SetString(orxCONFIG_KZ_CONFIG_BUILD, orxCONFIG_KZ_BUILD);
+
+  /* Pops system section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -4162,6 +4261,9 @@ orxSTATUS orxFASTCALL orxConfig_Init()
 
       /* Registers commands */
       orxConfig_RegisterCommands();
+
+      /* Sets system values */
+      orxConfig_SetSystemValues();
 
       /* Has bootstrap? */
       if(sstConfig.pfnBootstrap != orxNULL)
