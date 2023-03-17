@@ -4018,6 +4018,56 @@ void orxFASTCALL orxConfig_CommandGetListCount(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+/** Command: GetSystem
+  */
+void orxFASTCALL orxConfig_CommandGetSystem(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Pushes system section */
+  orxConfig_PushSection(orxCONFIG_KZ_CONFIG_SECTION_SYSTEM);
+
+  /* Is it an existing value? */
+  if(orxConfig_HasValue(_astArgList[0].zValue) != orxFALSE)
+  {
+    /* Updates result */
+    _pstResult->zValue = orxConfig_GetString(_astArgList[0].zValue);
+  }
+  else
+  {
+    orxU32  i, iCount;
+    orxBOOL bResult = orxFALSE;
+
+    /* For all keys */
+    for(i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
+    {
+      const orxSTRING zKey;
+      const orxSTRING zValue;
+
+      /* Gets it */
+      zKey = orxConfig_GetKey(i);
+
+      /* Gets its value */
+      zValue = orxConfig_GetString(zKey);
+
+      /* Matches? */
+      if(orxString_ICompare(_astArgList[0].zValue, zValue) == 0)
+      {
+        /* Updates result */
+        bResult = orxTRUE;
+        break;
+      }
+    }
+
+    /* Updates result */
+    _pstResult->zValue = (bResult != orxFALSE) ? orxSTRING_TRUE: orxSTRING_FALSE;
+  }
+
+  /* Pops system section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the config commands
  */
 static orxINLINE void orxConfig_RegisterCommands()
@@ -4062,6 +4112,9 @@ static orxINLINE void orxConfig_RegisterCommands()
   /* Command: GetListCount */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetListCount, "Count", orxCOMMAND_VAR_TYPE_S32, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: GetSystem */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetSystem, "Value", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Property", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Alias: Load */
   orxCommand_AddAlias("Load", "Config.Load", orxNULL);
   /* Alias: Save */
@@ -4075,6 +4128,11 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCommand_AddAlias("Get", "Config.GetValue", orxNULL);
   /* Alias: GetRaw */
   orxCommand_AddAlias("GetRaw", "Config.GetRawValue", orxNULL);
+
+  /* Alias: System */
+  orxCommand_AddAlias("System", "Config.GetSystem", orxNULL);
+  /* Alias: Sys */
+  orxCommand_AddAlias("Sys", "System", orxNULL);
 
   /* Alias: @ */
   orxCommand_AddAlias("@", "Config.GetCurrentSection", orxNULL);
@@ -4097,6 +4155,11 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCommand_RemoveAlias("Get");
   /* Alias: GetRaw */
   orxCommand_RemoveAlias("GetRaw");
+
+  /* Alias: System */
+  orxCommand_RemoveAlias("System");
+  /* Alias: Sys */
+  orxCommand_RemoveAlias("Sys");
 
   /* Alias: @ */
   orxCommand_RemoveAlias("@");
@@ -4139,6 +4202,9 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetRawValue);
   /* Command: GetListCount */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetListCount);
+
+  /* Command: GetSystem */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetSystem);
 }
 
 /** Sets system values
