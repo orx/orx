@@ -210,7 +210,7 @@
 
   #define orxCONFIG_KZ_BUILD                      "profile"
 
-#elif defined(__orxRELEASE__)
+#else
 
   #define orxCONFIG_KZ_BUILD                      "release"
 
