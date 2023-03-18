@@ -110,6 +110,7 @@
 #define orxCONFIG_KC_LIST_SEPARATOR               '#'         /**< List separator */
 #define orxCONFIG_KC_SECTION_SEPARATOR            '.'         /**< Section separator */
 #define orxCONFIG_KC_INHERITANCE_MARKER           '@'         /**< Inheritance marker character */
+#define orxCONFIG_KC_CONDITIONAL_MARKER           '?'         /**< Conditional marker character */
 #define orxCONFIG_KC_BLOCK                        '"'         /**< Block delimiter character */
 #define orxCONFIG_KZ_BLOCK                        "\""        /**< Block delimiter string */
 
@@ -2935,25 +2936,84 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           /* Valid? */
           if((pc < _acBuffer + _u32Size) && (*pc == orxCONFIG_KC_INHERITANCE_MARKER))
           {
-            orxCONFIG_SECTION *pstCurrentSection;
-
-            /* Gets current section */
-            pstCurrentSection = sstConfig.pstCurrentSection;
+            orxCHAR  *pcConditionalMarker;
+            orxBOOL   bLoad;
 
             /* Cuts string */
             *pc = orxCHAR_NULL;
 
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Begin include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+            /* Finds conditional marker */
+            for(pcConditionalMarker = pc; (pcConditionalMarker > pcLineStart) && (*pcConditionalMarker != orxCONFIG_KC_CONDITIONAL_MARKER); pcConditionalMarker--)
+              ;
 
-            /* Loads file */
-            orxConfig_Load(pcLineStart + 1);
+            /* Found? */
+            if(pcConditionalMarker != pcLineStart)
+            {
+              orxCOMMAND_VAR  stCommandParam, stCommandResult;
+              orxCHAR        *pcConditionEnd;
+              orxBOOL         bDebugLevelBackup;
 
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: End include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+              /* Cuts string */
+              for(pcConditionEnd = pcConditionalMarker - 1; (*pcConditionEnd == ' ') || (*pcConditionEnd == '\t'); pcConditionEnd--)
+                ;
+              *(pcConditionEnd + 1) = orxCHAR_NULL;
 
-            /* Restores current section */
-            sstConfig.pstCurrentSection = pstCurrentSection;
+              /* Inits command parameter */
+              stCommandParam.eType  = orxCOMMAND_VAR_TYPE_STRING;
+              stCommandParam.zValue = orxString_SkipWhiteSpaces(pcLineStart + 1);
+
+              /* Disables command logs */
+              bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_COMMAND);
+              orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_COMMAND, orxFALSE);
+
+              /* Evaluates condition */
+              if(((orxCommand_Evaluate(pcLineStart + 1, &stCommandResult) != orxNULL)
+               || (orxCommand_Execute("Config.GetSystem", 1, &stCommandParam, &stCommandResult) != orxNULL))
+              && (((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
+               || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (*stCommandResult.zValue != orxNULL) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE) != 0))
+               || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE))))
+              {
+                /* Updates line start */
+                pcLineStart = pcConditionalMarker;
+
+                /* Updates status */
+                bLoad = orxTRUE;
+              }
+              else
+              {
+                /* Updates status */
+                bLoad = orxFALSE;
+              }
+
+              /* Reenables command logs */
+              orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_COMMAND, bDebugLevelBackup);
+            }
+            else
+            {
+              /* Updates status */
+              bLoad = orxTRUE;
+            }
+
+            /* Should load? */
+            if(bLoad != orxFALSE)
+            {
+              orxCONFIG_SECTION *pstCurrentSection;
+
+              /* Gets current section */
+              pstCurrentSection = sstConfig.pstCurrentSection;
+
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Begin include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+  
+              /* Loads file */
+              orxConfig_Load(pcLineStart + 1);
+  
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: End include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+
+              /* Restores current section */
+              sstConfig.pstCurrentSection = pstCurrentSection;
+            }
 
             /* Skips the whole line */
             while((pc < _acBuffer + _u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
