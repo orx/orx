@@ -4142,8 +4142,8 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
     || (zCommand == orxNULL)
     || (orxCommand_EvaluateWithGUID(zCommand, orxStructure_GetGUID(_pstObject), &stCommandResult) == orxNULL)
     || ((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
-    || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE))
-    || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE))))
+    || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (*stCommandResult.zValue != orxNULL) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE) != 0))
+    || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
     {
       orxEVENT stEvent;
 
@@ -4955,7 +4955,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       && (((zCommand = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ON_PREPARE)) == orxSTRING_EMPTY)
        || (orxCommand_EvaluateWithGUID(zCommand, orxStructure_GetGUID(pstResult), &stCommandResult) == orxNULL)
        || ((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
-       || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE)))
+       || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (*stCommandResult.zValue != orxNULL) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE) != 0))
        || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE))))
       {
         orxVECTOR       vValue, vParentSize, vColor, vPosition, vScale, vPivotOverride;

@@ -110,11 +110,19 @@
 #define orxCONFIG_KC_LIST_SEPARATOR               '#'         /**< List separator */
 #define orxCONFIG_KC_SECTION_SEPARATOR            '.'         /**< Section separator */
 #define orxCONFIG_KC_INHERITANCE_MARKER           '@'         /**< Inheritance marker character */
+#define orxCONFIG_KC_CONDITIONAL_MARKER           '?'         /**< Conditional marker character */
 #define orxCONFIG_KC_BLOCK                        '"'         /**< Block delimiter character */
 #define orxCONFIG_KZ_BLOCK                        "\""        /**< Block delimiter string */
 
 #define orxCONFIG_KZ_CONFIG_SECTION               "Config"    /**< Config section name */
 #define orxCONFIG_KZ_CONFIG_DEFAULT_PARENT        "DefaultParent" /**< Default parent for sections */
+
+#define orxCONFIG_KZ_CONFIG_SECTION_SYSTEM        "System"    /**< System section name */
+#define orxCONFIG_KZ_CONFIG_BITS                  "Bits"      /**< Bits property */
+#define orxCONFIG_KZ_CONFIG_BUILD                 "Build"     /**< Build property */
+#define orxCONFIG_KZ_CONFIG_ENDIANNESS            "Endianness"/**< Endianness property */
+#define orxCONFIG_KZ_CONFIG_PLATFORM              "Platform"  /**< Platform property */
+#define orxCONFIG_KZ_CONFIG_PROCESSOR             "Processor" /**< Processor property */
 
 #define orxCONFIG_KZ_DEFAULT_ENCRYPTION_KEY       "Orx Default Encryption Key =)" /**< Orx default encryption key */
 #define orxCONFIG_KZ_ENCRYPTION_TAG               "OECF"      /**< Encryption file tag */
@@ -138,6 +146,77 @@
   #define orxCONFIG_KZ_DEFAULT_FILE               "orx.ini"   /**< Default config file name */
 
 #endif
+
+#if defined(__orx64__)
+
+#define orxCONFIG_KU32_BITS                       64
+
+#elif defined(__orx32__)
+
+#define orxCONFIG_KU32_BITS                       32
+
+#endif
+
+#if defined(__orxLITTLE_ENDIAN__)
+
+  #define orxCONFIG_KZ_ENDIANNESS                 "little"
+
+#elif defined(__orxBIG_ENDIAN__)
+
+  #define orxCONFIG_KZ_ENDIANNESS                 "big"
+
+#endif
+
+#if defined(__orxLINUX__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "linux"
+
+#elif defined(__orxMAC__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "mac"
+
+#elif defined(__orxWINDOWS__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "windows"
+
+#elif defined(__orxIOS__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "ios"
+
+#elif defined(__orxANDROID__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "android"
+
+#endif
+
+#if defined(__orxARM__) || defined(__orxARM64__)
+
+  #define orxCONFIG_KZ_PROCESSOR                  "arm"
+
+#elif defined(__orxPPC__) || defined(__orxPPC64__)
+
+  #define orxCONFIG_KZ_PROCESSOR                  "powerpc"
+
+#elif defined(__orxX86__) || defined(__orxX86_64__)
+
+  #define orxCONFIG_KZ_PROCESSOR                  "x86"
+
+#endif
+
+#if defined(__orxDEBUG__)
+
+  #define orxCONFIG_KZ_BUILD                      "debug"
+
+#elif defined(__orxPROFILER__)
+
+  #define orxCONFIG_KZ_BUILD                      "profile"
+
+#else
+
+  #define orxCONFIG_KZ_BUILD                      "release"
+
+#endif
+
 
 #ifdef __orxMSVC__
 
@@ -2838,7 +2917,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           /* Updates pointer */
           pc++;
 
-          /* Finds section end */
+          /* Finds end marker */
           while((pc < _acBuffer + _u32Size) && (*pc != orxCONFIG_KC_INHERITANCE_MARKER))
           {
             /* End of line? */
@@ -2857,25 +2936,84 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           /* Valid? */
           if((pc < _acBuffer + _u32Size) && (*pc == orxCONFIG_KC_INHERITANCE_MARKER))
           {
-            orxCONFIG_SECTION *pstCurrentSection;
-
-            /* Gets current section */
-            pstCurrentSection = sstConfig.pstCurrentSection;
+            orxCHAR  *pcConditionalMarker;
+            orxBOOL   bLoad;
 
             /* Cuts string */
             *pc = orxCHAR_NULL;
 
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Begin include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+            /* Finds conditional marker */
+            for(pcConditionalMarker = pc; (pcConditionalMarker > pcLineStart) && (*pcConditionalMarker != orxCONFIG_KC_CONDITIONAL_MARKER); pcConditionalMarker--)
+              ;
 
-            /* Loads file */
-            orxConfig_Load(pcLineStart + 1);
+            /* Found? */
+            if(pcConditionalMarker != pcLineStart)
+            {
+              orxCOMMAND_VAR  stCommandParam, stCommandResult;
+              orxCHAR        *pcConditionEnd;
+              orxBOOL         bDebugLevelBackup;
 
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: End include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+              /* Cuts string */
+              for(pcConditionEnd = pcConditionalMarker - 1; (*pcConditionEnd == ' ') || (*pcConditionEnd == '\t'); pcConditionEnd--)
+                ;
+              *(pcConditionEnd + 1) = orxCHAR_NULL;
 
-            /* Restores current section */
-            sstConfig.pstCurrentSection = pstCurrentSection;
+              /* Inits command parameter */
+              stCommandParam.eType  = orxCOMMAND_VAR_TYPE_STRING;
+              stCommandParam.zValue = orxString_SkipWhiteSpaces(pcLineStart + 1);
+
+              /* Disables command logs */
+              bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_COMMAND);
+              orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_COMMAND, orxFALSE);
+
+              /* Evaluates condition */
+              if(((orxCommand_Evaluate(pcLineStart + 1, &stCommandResult) != orxNULL)
+               || (orxCommand_Execute("Config.GetSystem", 1, &stCommandParam, &stCommandResult) != orxNULL))
+              && (((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
+               || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (*stCommandResult.zValue != orxNULL) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE) != 0))
+               || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE))))
+              {
+                /* Updates line start */
+                pcLineStart = pcConditionalMarker;
+
+                /* Updates status */
+                bLoad = orxTRUE;
+              }
+              else
+              {
+                /* Updates status */
+                bLoad = orxFALSE;
+              }
+
+              /* Reenables command logs */
+              orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_COMMAND, bDebugLevelBackup);
+            }
+            else
+            {
+              /* Updates status */
+              bLoad = orxTRUE;
+            }
+
+            /* Should load? */
+            if(bLoad != orxFALSE)
+            {
+              orxCONFIG_SECTION *pstCurrentSection;
+
+              /* Gets current section */
+              pstCurrentSection = sstConfig.pstCurrentSection;
+
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Begin include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+  
+              /* Loads file */
+              orxConfig_Load(pcLineStart + 1);
+  
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: End include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+
+              /* Restores current section */
+              sstConfig.pstCurrentSection = pstCurrentSection;
+            }
 
             /* Skips the whole line */
             while((pc < _acBuffer + _u32Size) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF))
@@ -3940,6 +4078,56 @@ void orxFASTCALL orxConfig_CommandGetListCount(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+/** Command: GetSystem
+  */
+void orxFASTCALL orxConfig_CommandGetSystem(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Pushes system section */
+  orxConfig_PushSection(orxCONFIG_KZ_CONFIG_SECTION_SYSTEM);
+
+  /* Is it an existing value? */
+  if(orxConfig_HasValue(_astArgList[0].zValue) != orxFALSE)
+  {
+    /* Updates result */
+    _pstResult->zValue = orxConfig_GetString(_astArgList[0].zValue);
+  }
+  else
+  {
+    orxU32  i, iCount;
+    orxBOOL bResult = orxFALSE;
+
+    /* For all keys */
+    for(i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
+    {
+      const orxSTRING zKey;
+      const orxSTRING zValue;
+
+      /* Gets it */
+      zKey = orxConfig_GetKey(i);
+
+      /* Gets its value */
+      zValue = orxConfig_GetString(zKey);
+
+      /* Matches? */
+      if(orxString_ICompare(_astArgList[0].zValue, zValue) == 0)
+      {
+        /* Updates result */
+        bResult = orxTRUE;
+        break;
+      }
+    }
+
+    /* Updates result */
+    _pstResult->zValue = (bResult != orxFALSE) ? orxSTRING_TRUE: orxSTRING_FALSE;
+  }
+
+  /* Pops system section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the config commands
  */
 static orxINLINE void orxConfig_RegisterCommands()
@@ -3984,6 +4172,9 @@ static orxINLINE void orxConfig_RegisterCommands()
   /* Command: GetListCount */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetListCount, "Count", orxCOMMAND_VAR_TYPE_S32, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: GetSystem */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetSystem, "Value", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Property", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Alias: Load */
   orxCommand_AddAlias("Load", "Config.Load", orxNULL);
   /* Alias: Save */
@@ -3997,6 +4188,11 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCommand_AddAlias("Get", "Config.GetValue", orxNULL);
   /* Alias: GetRaw */
   orxCommand_AddAlias("GetRaw", "Config.GetRawValue", orxNULL);
+
+  /* Alias: System */
+  orxCommand_AddAlias("System", "Config.GetSystem", orxNULL);
+  /* Alias: Sys */
+  orxCommand_AddAlias("Sys", "System", orxNULL);
 
   /* Alias: @ */
   orxCommand_AddAlias("@", "Config.GetCurrentSection", orxNULL);
@@ -4019,6 +4215,11 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCommand_RemoveAlias("Get");
   /* Alias: GetRaw */
   orxCommand_RemoveAlias("GetRaw");
+
+  /* Alias: System */
+  orxCommand_RemoveAlias("System");
+  /* Alias: Sys */
+  orxCommand_RemoveAlias("Sys");
 
   /* Alias: @ */
   orxCommand_RemoveAlias("@");
@@ -4061,6 +4262,30 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetRawValue);
   /* Command: GetListCount */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetListCount);
+
+  /* Command: GetSystem */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetSystem);
+}
+
+/** Sets system values
+ */
+static orxINLINE void orxConfig_SetSystemValues()
+{
+  /* Pushes system section */
+  orxConfig_PushSection(orxCONFIG_KZ_CONFIG_SECTION_SYSTEM);
+
+  /* Sets all system values */
+  orxConfig_SetU32(orxCONFIG_KZ_CONFIG_BITS, orxCONFIG_KU32_BITS);
+  orxConfig_SetString(orxCONFIG_KZ_CONFIG_ENDIANNESS, orxCONFIG_KZ_ENDIANNESS);
+  orxConfig_SetString(orxCONFIG_KZ_CONFIG_PLATFORM, orxCONFIG_KZ_PLATFORM);
+  orxConfig_SetString(orxCONFIG_KZ_CONFIG_PROCESSOR, orxCONFIG_KZ_PROCESSOR);
+  orxConfig_SetString(orxCONFIG_KZ_CONFIG_BUILD, orxCONFIG_KZ_BUILD);
+
+  /* Pops system section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
 }
 
 
@@ -4162,6 +4387,9 @@ orxSTATUS orxFASTCALL orxConfig_Init()
 
       /* Registers commands */
       orxConfig_RegisterCommands();
+
+      /* Sets system values */
+      orxConfig_SetSystemValues();
 
       /* Has bootstrap? */
       if(sstConfig.pfnBootstrap != orxNULL)
