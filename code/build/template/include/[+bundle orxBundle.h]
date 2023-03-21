@@ -586,7 +586,7 @@ static orxSTATUS orxFASTCALL orxBundle_EventHandler(const orxEVENT *_pstEvent)
 }
 
 // Locate function, returns NULL if it can't handle the storage or if the resource can't be found in this storage
-const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zStorage, const orxSTRING _zResource, orxBOOL _bRequireExistence)
+const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zResource, orxBOOL _bRequireExistence)
 {
   static orxCHAR  sacBuffer[32];
   static orxU32   su32StorageLength = 0;

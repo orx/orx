@@ -4956,7 +4956,7 @@ typedef struct ZipArchive
 //! Code
 
 // Locate function, returns NULL if it can't handle the storage or if the resource can't be found in this storage
-const orxSTRING orxFASTCALL orxArchive_ZipLocate(const orxSTRING _zStorage, const orxSTRING _zResource, orxBOOL _bRequireExistence)
+const orxSTRING orxFASTCALL orxArchive_ZipLocate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zResource, orxBOOL _bRequireExistence)
 {
   static orxCHAR  sacBuffer[512];
   orxCHAR         acArchive[512];

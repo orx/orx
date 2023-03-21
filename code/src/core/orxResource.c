@@ -214,7 +214,7 @@ static orxRESOURCE_STATIC sstResource;
  * Private functions                                                       *
  ***************************************************************************/
 
-static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
+static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
   const orxSTRING zResult = orxNULL;
 
@@ -1453,7 +1453,7 @@ orxSTATUS orxFASTCALL orxResource_AddStorage(const orxSTRING _zGroup, const orxS
     orxSTRINGID         stGroupID;
 
     /* Gets group ID */
-    stGroupID = orxString_Hash(_zGroup);
+    stGroupID = orxString_GetID(_zGroup);
 
     /* Gets group */
     pstGroup = orxResource_FindGroup(stGroupID);
@@ -1791,7 +1791,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
     orxSTRINGID         stGroupID;
 
     /* Gets group ID */
-    stGroupID = orxString_Hash(_zGroup);
+    stGroupID = orxString_GetID(_zGroup);
 
     /* Gets group */
     pstGroup = orxResource_FindGroup(stGroupID);
@@ -1840,7 +1840,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
             const orxSTRING zLocation;
 
             /* Locates resource */
-            zLocation = pstType->stInfo.pfnLocate(orxString_GetFromID(pstStorage->stID), _zName, orxTRUE);
+            zLocation = pstType->stInfo.pfnLocate(_zGroup, orxString_GetFromID(pstStorage->stID), _zName, orxTRUE);
 
             /* Success? */
             if(zLocation != orxNULL)
@@ -1908,7 +1908,7 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
     orxSTRINGID         stGroupID;
 
     /* Gets group ID */
-    stGroupID = orxString_Hash(_zGroup);
+    stGroupID = orxString_GetID(_zGroup);
 
     /* Gets group */
     pstGroup = orxResource_FindGroup(stGroupID);
@@ -1949,7 +1949,7 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
             const orxSTRING zLocation;
 
             /* Locates resource */
-            zLocation = pstType->stInfo.pfnLocate(zStorage, _zName, orxFALSE);
+            zLocation = pstType->stInfo.pfnLocate(_zGroup, zStorage, _zName, orxFALSE);
 
             /* Success? */
             if(zLocation != orxNULL)
@@ -2798,7 +2798,7 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
             const orxSTRING zNewLocation;
 
             /* Locates resource */
-            zNewLocation = pstType->stInfo.pfnLocate(orxString_GetFromID(pstStorage->stID), zName, orxTRUE);
+            zNewLocation = pstType->stInfo.pfnLocate(zGroup, orxString_GetFromID(pstStorage->stID), zName, orxTRUE);
 
             /* Success? */
             if(zNewLocation != orxNULL)
