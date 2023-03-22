@@ -42,7 +42,7 @@ const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 #define orxBUNDLE_KU32_LINE_LENGTH          16
 #define orxBUNDLE_KU32_TABLE_SIZE           256
 
-#define orxBUNDLE_KZ_BINARY_TAG             "ORBF"
+#define orxBUNDLE_KZ_BINARY_TAG             "OPBF"
 #define orxBUNDLE_KZ_ENCRYPTED_BINARY_TAG   "OEBF"
 #define orxBUNDLE_KU32_HEADER_INTRO_SIZE    (4 + 4)
 #define orxBUNDLE_KU32_HEADER_ENTRY_SIZE    (8 + 4 + 4 + 4)
@@ -702,7 +702,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
           }
 
           // Logs message
-          orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_MAGENTA "[%u]" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA "%s" orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_RESET, u32ResourceIndex, orxResource_GetPath(orxResource_GetLocation(hOutput)), orxBundle_GetHumanReadableSize(s64Size, 2));
+          orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_MAGENTA "[%u]" orxANSI_KZ_COLOR_RESET "%s resources into " orxANSI_KZ_COLOR_FG_MAGENTA "%s" orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_RESET, u32ResourceIndex, (sbEncrypt != orxFALSE) ? " encrypted" : "", orxResource_GetPath(orxResource_GetLocation(hOutput)), orxBundle_GetHumanReadableSize(s64Size, 2));
         }
       }
 
