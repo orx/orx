@@ -6,6 +6,7 @@ plugins {
 android {
     namespace 'org.orx.lib'
     compileSdk sdkVersion.toInteger()
+    ndkVersion ndkVersion
 
     buildFeatures {
         prefab true
@@ -69,7 +70,7 @@ android {
 
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=0'
-                cFlags '-D__orxPROFILE__'
+                cFlags '-D__orxPROFILER__'
             }
         }
     }
