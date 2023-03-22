@@ -5,7 +5,7 @@
 
 #include "orx.h"
 
-#define LZ4_FREESTANDING 1
+#define LZ4_FREESTANDING                    1
 
 #define LZ4_memmove(dst, src, size)         orxMemory_Move((dst), (src), (orxU32)(size))
 #define LZ4_memcpy(dst, src, size)          orxMemory_Copy((dst), (src), (orxU32)(size))
@@ -22,6 +22,8 @@
 orxSTATUS orxFASTCALL                       orxBundle_Init();
 void orxFASTCALL                            orxBundle_Exit();
 orxBOOL orxFASTCALL                         orxBundle_IsProcessing();
+orxBOOL orxFASTCALL                         orxBundle_IsEncrypting();
+const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 
 
 //! Defines
@@ -40,7 +42,8 @@ orxBOOL orxFASTCALL                         orxBundle_IsProcessing();
 #define orxBUNDLE_KU32_LINE_LENGTH          16
 #define orxBUNDLE_KU32_TABLE_SIZE           256
 
-#define orxBUNDLE_KZ_BINARY_TAG             "OBEF"
+#define orxBUNDLE_KZ_BINARY_TAG             "ORBF"
+#define orxBUNDLE_KZ_ENCRYPTED_BINARY_TAG   "OEBF"
 #define orxBUNDLE_KU32_HEADER_INTRO_SIZE    (4 + 4)
 #define orxBUNDLE_KU32_HEADER_ENTRY_SIZE    (8 + 4 + 4 + 4)
 
@@ -54,19 +57,20 @@ typedef struct BundleData
 {
   union
   {
-    const orxSTRINGID stNameID;
-    orxHANDLE         hResource;
+    orxSTRINGID stNameID;
+    orxHANDLE   hResource;
   };
-  const orxU8        *pu8Buffer;
-  orxS64              s64Size;
-  orxS64              s64FinalSize;
+  const orxU8  *pu8Buffer;
+  orxS64        s64Size;
+  orxS64        s64FinalSize;
+  orxBOOL       bEncrypted;
 } BundleData;
 
 typedef struct BundleResource
 {
-  orxS64            s64Cursor;
-  BundleData        stData;
-  orxU8            *pu8FinalBuffer;
+  orxS64        s64Cursor;
+  BundleData    stData;
+  orxU8        *pu8FinalBuffer;
 } BundleResource;
 
 #if __has_include(orxBUNDLE_KZ_INCLUDE_FILENAME)
@@ -84,6 +88,7 @@ static orxCHAR        sacPrintBuffer[1024];
 static orxHASHTABLE  *spstDataTable = orxNULL;
 static orxHANDLE      shResource    = orxHANDLE_UNDEFINED;
 static orxBOOL        sbProcess     = orxFALSE;
+static orxBOOL        sbEncrypt     = orxFALSE;
 
 
 //! Helpers
@@ -204,7 +209,48 @@ void orxFASTCALL orxBundle_CommandIsProcessing(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
-static orxSTATUS orxFASTCALL ProcessBundleParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
+void orxFASTCALL orxBundle_CommandIsEncrypting(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  // Updates result
+  _pstResult->bValue = orxBundle_IsEncrypting();
+
+  // Done!
+  return;
+}
+
+void orxFASTCALL orxBundle_CommandGetOutputName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  // Updates result
+  _pstResult->zValue = orxBundle_GetOutputName();
+
+  // Done!
+  return;
+}
+
+static orxSTATUS orxFASTCALL orxBundle_EncryptionParamHandler(orxU32 _u32ParamCount, const orxSTRING _azParams[])
+{
+  orxSTATUS eResult;
+
+  // Is processing?
+  if(sbProcess != orxFALSE)
+  {
+    // Updates status
+    sbEncrypt = orxTRUE;
+
+    // Updates result
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    // Updates result
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  // Done!
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
   const orxSTRING zLocation;
   orxSTATUS       eResult;
@@ -506,6 +552,25 @@ static orxINLINE orxSTATUS orxBundle_Process()
             // Success?
             if(s32CompressedSize > 0)
             {
+              // Should encrypt?
+              if(sbEncrypt != orxFALSE)
+              {
+                const orxSTRING zKey;
+                const orxU8    *pu8Key;
+                orxU8          *pu8Data;
+
+                // Gets encryption key
+                zKey = orxConfig_GetEncryptionKey();
+
+                // Encrypts data
+                for(pu8Key = (const orxU8 *)zKey, pu8Data = pu8CompressedBuffer;
+                    pu8Data < pu8CompressedBuffer + s32CompressedSize;
+                    pu8Key = (*pu8Key == orxCHAR_NULL) ? (const orxU8 *)zKey : pu8Key + 1, pu8Data++)
+                {
+                  *pu8Data ^= *pu8Key;
+                }
+              }
+
               // Binary output?
               if(bBinary != orxFALSE)
               {
@@ -590,7 +655,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
           {
             // Inits header
             orxResource_Seek(hOutput, 0, orxSEEK_OFFSET_WHENCE_START);
-            orxResource_Print(hOutput, orxBUNDLE_KZ_BINARY_TAG);
+            orxResource_Print(hOutput, (sbEncrypt != orxFALSE) ? orxBUNDLE_KZ_ENCRYPTED_BINARY_TAG : orxBUNDLE_KZ_BINARY_TAG);
             orxResource_WriteU32(hOutput, orxBank_GetCount(pstResourceBank));
 
             // For all refs
@@ -624,7 +689,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
               pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_GetNext(pstResourceBank, pstResourceRef), u32ResourceIndex++)
             {
               // Outputs ref
-              orxResource_Print(hOutput, "\r\n  {0x%016llx /* %s */, (const orxU8 *)BundleData%u, %lld, %lld},", pstResourceRef->stNameID, orxString_GetFromID(pstResourceRef->stNameID), u32ResourceIndex, pstResourceRef->s64Size, pstResourceRef->s64FinalSize);
+              orxResource_Print(hOutput, "\r\n  {0x%016llx /* %s */, (const orxU8 *)BundleData%u, %lld, %lld, %s},", pstResourceRef->stNameID, orxString_GetFromID(pstResourceRef->stNameID), u32ResourceIndex, pstResourceRef->s64Size, pstResourceRef->s64FinalSize, (sbEncrypt != orxFALSE) ? "orxTRUE" : "orxFALSE");
 
               // Updates sizes
               s64Size      += pstResourceRef->s64Size;
@@ -696,9 +761,14 @@ static orxSTATUS orxFASTCALL orxBundle_EventHandler(const orxEVENT *_pstEvent)
       {
         orxBUNDLE_DECLARE_PARAM("b",
                                 "bundle",
-                                "Create a resource bundle",
-                                "Create a bundle of all resources that are either defined in config or loaded at init time. If no bundle name is provided, data will be embedded in the executable during next compilation.",
-                                ProcessBundleParams),
+                                "Creates a resource bundle.",
+                                "Creates a bundle of all resources that are either defined in config or loaded at init time.\n\t\t\tIf no output name is provided, code will be generated, ready to be used during the next compilation.",
+                                orxBundle_BundleParamHandler),
+        orxBUNDLE_DECLARE_PARAM("e",
+                                "encrypt",
+                                "Encrypts the created bundle.",
+                                "When used with -b/--bundle, encrypts the bundle using the config encryption key.",
+                                orxBundle_EncryptionParamHandler)
       };
 
       // For all params
@@ -782,7 +852,8 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
 
             // Is a bundle?
             if((orxResource_Read(hResource, 4, &acTag, orxNULL, orxNULL) == 4)
-            && (orxMemory_Compare(orxBUNDLE_KZ_BINARY_TAG, acTag, 4) == 0))
+            && ((orxMemory_Compare(orxBUNDLE_KZ_BINARY_TAG, acTag, 4) == 0)
+             || (orxMemory_Compare(orxBUNDLE_KZ_ENCRYPTED_BINARY_TAG, acTag, 4) == 0)))
             {
               orxSTRINGID stResourceID;
               orxU32      i, u32Count;
@@ -893,7 +964,8 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
 
         // Is a bundle?
         if((orxResource_Read(hResource, 4, &acTag, orxNULL, orxNULL) == 4)
-        && (orxMemory_Compare(orxBUNDLE_KZ_BINARY_TAG, acTag, 4) == 0))
+        && ((orxMemory_Compare(orxBUNDLE_KZ_BINARY_TAG, acTag, 4) == 0)
+         || (orxMemory_Compare(orxBUNDLE_KZ_ENCRYPTED_BINARY_TAG, acTag, 4) == 0)))
         {
           orxU32 u32Index;
 
@@ -909,24 +981,22 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
             // Success?
             if(pstResource != orxNULL)
             {
-              orxU32 u32Offset;
-
               // Clears memory
               orxMemory_Zero(pstResource, sizeof(BundleResource));
 
               // Stores its internal resource
               pstResource->stData.hResource = hResource;
 
-              // Gets its entry offset
-              orxResource_Seek(hResource, orxBUNDLE_KU32_HEADER_INTRO_SIZE + u32Index * orxBUNDLE_KU32_HEADER_ENTRY_SIZE + 8, orxSEEK_OFFSET_WHENCE_START);
-              u32Offset = orxResource_ReadU32(hResource);
+              // Skips to its info
+              orxResource_Seek(hResource, orxBUNDLE_KU32_HEADER_INTRO_SIZE + u32Index * orxBUNDLE_KU32_HEADER_ENTRY_SIZE + 8 + 4, orxSEEK_OFFSET_WHENCE_START);
 
               // Stores its info
               pstResource->stData.s64Size       = (orxS64)orxResource_ReadU32(hResource);
               pstResource->stData.s64FinalSize  = (orxS64)orxResource_ReadU32(hResource);
+              pstResource->stData.bEncrypted    = (orxMemory_Compare(orxBUNDLE_KZ_ENCRYPTED_BINARY_TAG, acTag, 4) == 0) ? orxTRUE : orxFALSE;
 
-              // Skips to content
-              orxResource_Seek(hResource, (orxS64)u32Offset, orxSEEK_OFFSET_WHENCE_START);
+              // Skips to its entry
+              orxResource_Seek(hResource, orxBUNDLE_KU32_HEADER_INTRO_SIZE + u32Index * orxBUNDLE_KU32_HEADER_ENTRY_SIZE, orxSEEK_OFFSET_WHENCE_START);
 
               // Updates result
               hResult = (orxHANDLE)pstResource;
@@ -1012,7 +1082,7 @@ orxS64 orxFASTCALL orxBundle_GetSize(orxHANDLE _hResource)
   pstResource = (BundleResource *)_hResource;
 
   // Updates result
-  s64Result = ((BundleResource *)_hResource)->stData.s64FinalSize;
+  s64Result = pstResource->stData.s64FinalSize;
 
   // Done!
   return s64Result;
@@ -1105,22 +1175,76 @@ orxS64 orxFASTCALL orxBundle_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_
     // Has external resource?
     if(pstResource->stData.pu8Buffer == orxNULL)
     {
+      orxHANDLE hResource;
+
+      // Gets it
+      hResource = pstResource->stData.hResource;
+
       // Allocates intermediate buffer
       pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)pstResource->stData.s64Size, orxMEMORY_TYPE_TEMP);
       orxASSERT(pu8Buffer);
 
+      // Store its ID
+      pstResource->stData.stNameID = orxResource_ReadU64(hResource);
+
+      // Skips to content
+      orxResource_Seek(hResource, (orxS64)orxResource_ReadU32(hResource), orxSEEK_OFFSET_WHENCE_START);
+
       // Reads its content
-      s64Size = orxResource_Read(pstResource->stData.hResource, pstResource->stData.s64Size, pu8Buffer, orxNULL, orxNULL);
+      s64Size = orxResource_Read(hResource, pstResource->stData.s64Size, pu8Buffer, orxNULL, orxNULL);
       orxASSERT(s64Size == pstResource->stData.s64Size);
 
+      // Should decrypt?
+      if(pstResource->stData.bEncrypted != orxFALSE)
+      {
+        const orxSTRING zKey;
+        const orxU8    *pu8Key;
+        orxU8          *pu8Data;
+
+        // Gets encryption key
+        zKey = orxConfig_GetEncryptionKey();
+
+        // Decrypts data
+        for(pu8Key = (const orxU8 *)zKey, pu8Data = pu8Buffer;
+            pu8Data < pu8Buffer + pstResource->stData.s64Size;
+            pu8Key = (*pu8Key == orxCHAR_NULL) ? (const orxU8 *)zKey : pu8Key + 1, pu8Data++)
+        {
+          *pu8Data ^= *pu8Key;
+        }
+      }
+
       // Closes it
-      orxResource_Close(pstResource->stData.hResource);
-      pstResource->stData.hResource = orxHANDLE_UNDEFINED;
+      orxResource_Close(hResource);
     }
     else
     {
-      // Updates buffer
-      pu8Buffer = (orxU8 *)pstResource->stData.pu8Buffer;
+      // Should decrypt?
+      if(pstResource->stData.bEncrypted != orxFALSE)
+      {
+        const orxSTRING zKey;
+        const orxU8    *pu8Key, *pu8Src;
+        orxU8          *pu8Dst;
+
+        // Allocates intermediate buffer
+        pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)pstResource->stData.s64Size, orxMEMORY_TYPE_TEMP);
+        orxASSERT(pu8Buffer);
+
+        // Gets encryption key
+        zKey = orxConfig_GetEncryptionKey();
+
+        // Decrypts data
+        for(pu8Key = (const orxU8 *)zKey, pu8Src = pstResource->stData.pu8Buffer, pu8Dst = pu8Buffer;
+            pu8Src < pstResource->stData.pu8Buffer + pstResource->stData.s64Size;
+            pu8Key = (*pu8Key == orxCHAR_NULL) ? (const orxU8 *)zKey : pu8Key + 1, pu8Src++, pu8Dst++)
+        {
+          *pu8Dst = *pu8Src ^ *pu8Key;
+        }
+      }
+      else
+      {
+        // Updates buffer
+        pu8Buffer = (orxU8 *)pstResource->stData.pu8Buffer;
+      }
     }
 
     // Allocates final buffer
@@ -1129,7 +1253,16 @@ orxS64 orxFASTCALL orxBundle_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_
 
     // Decompresses data
     s64Size = (orxS64)LZ4_decompress_safe((const char *)pu8Buffer, (char *)pstResource->pu8FinalBuffer, (int)pstResource->stData.s64Size, (int)pstResource->stData.s64FinalSize);
-    orxASSERT(s64Size == pstResource->stData.s64FinalSize);
+
+    // Failure?
+    if(s64Size != pstResource->stData.s64FinalSize)
+    {
+      // Logs message
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, orxANSI_KZ_COLOR_FG_YELLOW "[Bundle]" orxANSI_KZ_COLOR_FG_RED " Can't decompress resource " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_RED ": invalid decryption key or corrupted data.", orxString_GetFromID(pstResource->stData.stNameID));
+
+      // Updates its final size
+      pstResource->stData.s64FinalSize = 0;
+    }
 
     // External?
     if(pu8Buffer != pstResource->stData.pu8Buffer)
@@ -1164,7 +1297,7 @@ orxSTATUS orxFASTCALL orxBundle_Init()
   // Inits variables
   sbProcess = orxFALSE;
 
-  // Inits our zip resource wrapper
+  // Inits our bundle resource type
   orxMemory_Zero(&stInfo, sizeof(orxRESOURCE_TYPE_INFO));
   stInfo.zTag       = orxBUNDLE_KZ_RESOURCE_TAG;
   stInfo.pfnLocate  = &orxBundle_Locate;
@@ -1216,6 +1349,8 @@ orxSTATUS orxFASTCALL orxBundle_Init()
 
     // Registers commands
     orxCOMMAND_REGISTER_CORE_COMMAND(Bundle, IsProcessing, "Processing?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
+    orxCOMMAND_REGISTER_CORE_COMMAND(Bundle, IsEncrypting, "Encrypting?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
+    orxCOMMAND_REGISTER_CORE_COMMAND(Bundle, GetOutputName, "Name", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
 
     // Registers event handler
     orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxBundle_EventHandler);
@@ -1236,8 +1371,10 @@ void orxFASTCALL orxBundle_Exit()
 
   // Unregisters commands
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Bundle, IsProcessing);
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Bundle, IsEncrypting);
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Bundle, GetOutputName);
 
-  // Has resource handle?
+  // Has pending resource?
   if(shResource != orxHANDLE_UNDEFINED)
   {
     // Closes it
@@ -1258,6 +1395,18 @@ orxBOOL orxFASTCALL orxBundle_IsProcessing()
 {
   // Done!
   return sbProcess;
+}
+
+orxBOOL orxFASTCALL orxBundle_IsEncrypting()
+{
+  // Done!
+  return sbEncrypt;
+}
+
+const orxSTRING orxFASTCALL orxBundle_GetOutputName()
+{
+  // Done!
+  return (shResource != orxHANDLE_UNDEFINED) ? orxResource_GetPath(orxResource_GetLocation(shResource)) : orxSTRING_EMPTY;
 }
 
 #endif // orxBUNDLE_IMPL
