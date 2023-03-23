@@ -4211,7 +4211,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       const orxSTRING zGlRenderer;
       const orxSTRING zGlVersion;
       int32_t width, height;
-
+      orxBOOL bAutoSwapInterval, bAutoPipelineMode;
+      
       /* Pushes display section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -4226,7 +4227,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_NONE;
       }
 
-      sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 24;
+      sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 32;
       sstDisplay.u32RefreshRate = 60;
       
       /* Create OpenGL ES Context */
@@ -4285,7 +4286,22 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
       /* Pops config section */
       orxConfig_PopSection();
-
+      
+      /* Pushes Android section */
+      orxConfig_PushSection(KZ_CONFIG_ANDROID);
+      
+      bAutoSwapInterval = orxConfig_GetBool(KZ_CONFIG_AUTO_SWAP_INTERVAL);
+      bAutoPipelineMode = orxConfig_GetBool(KZ_CONFIG_AUTO_PIPELINE_MODE);
+      /* Pops Android section */
+      orxConfig_PopSection();
+      
+      /* Sets auto-swap interval and auto-pipeline mode */
+      SwappyGL_setAutoSwapInterval(bAutoSwapInterval);
+      SwappyGL_setAutoPipelineMode(bAutoPipelineMode);
+      
+      /* Sets or hints (if auto-swapping) at 60 Hz */
+      SwappyGL_setSwapIntervalNS(SWAPPY_SWAP_60FPS);
+      
       /* Gets max texture unit number */
       glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
       glASSERT();
