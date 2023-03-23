@@ -259,8 +259,11 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
       // Updates status
       sbProcess = orxTRUE;
 
+      // Updates log flags & levels
+      orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE, orxDEBUG_KU32_STATIC_FLAG_TYPE);
+
       // Logs message
-      orxLOG(orxBUNDLE_KZ_LOG_TAG "Processing " orxANSI_KZ_COLOR_FG_MAGENTA "[Please do any resource-related config generation in your init() function!]" orxANSI_KZ_COLOR_RESET);
+      orxLOG(orxBUNDLE_KZ_LOG_TAG "Processing " orxANSI_KZ_COLOR_FG_RED "[Please do any resource-related config generation in your init() function!]" orxANSI_KZ_COLOR_RESET);
 
       // Updates result
       eResult = orxSTATUS_SUCCESS;
@@ -281,7 +284,7 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
 
 static orxINLINE const orxSTRING orxBundle_GetHumanReadableSize(orxS64 _s64Size, orxU32 _u32Decimals)
 {
-  static const orxSTRING  sazUnitList[] = {"b", "kb", "mb", "gb", "tb"};
+  static const orxSTRING  sazUnitList[] = {"B", "KB", "MB", "GB", "TB"};
   static orxCHAR          sacBuffer[16];
   orxU32                  u32UnitIndex;
   orxFLOAT                fSize;
@@ -293,7 +296,7 @@ static orxINLINE const orxSTRING orxBundle_GetHumanReadableSize(orxS64 _s64Size,
     ;
 
   // Prints it
-  orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%.*g %s", orxF2U(log10f(fSize) + _u32Decimals + 1), fSize, sazUnitList[u32UnitIndex]);
+  orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%.*g%s", orxF2U(log10f(fSize) + _u32Decimals + 1), fSize, sazUnitList[u32UnitIndex]);
 
   // Done!
   return sacBuffer;
@@ -303,6 +306,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
 {
   orxHANDLE hOutput;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  // Updates debug flag
+  orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE, orxDEBUG_KU32_STATIC_FLAG_TYPE);
 
   // Opens output resource
   hOutput = (shResource != orxHANDLE_UNDEFINED) ? shResource : orxResource_Open(orxResource_LocateInStorage(orxBUNDLE_KZ_RESOURCE_GROUP, orxNULL, orxBUNDLE_KZ_INCLUDE_PATH orxBUNDLE_KZ_INCLUDE_FILENAME), orxTRUE);
@@ -343,7 +349,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
       orxResource_Sync(orxNULL);
 
       // Reloads config history
+      orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
       orxConfig_ReloadHistory();
+      orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxTRUE);
 
       // Gets group count
       u32GroupCount = orxResource_GetGroupCount();
@@ -351,45 +359,53 @@ static orxINLINE orxSTATUS orxBundle_Process()
       // For all config sections
       for(i = 0, iCount = orxConfig_GetSectionCount(); i < iCount; i++)
       {
-        orxU32 j, jCount;
+        const orxSTRING zSection;
+        orxU32          j, jCount;
 
-        // Selects it
-        orxConfig_SelectSection(orxConfig_GetSection(i));
+        // Gets it
+        zSection = orxConfig_GetSection(i);
 
-        // For all keys
-        for(j = 0, jCount = orxConfig_GetKeyCount(); j < jCount; j++)
+        // Not resource?
+        if(orxString_Compare(zSection, "Resource") != 0)
         {
-          const orxSTRING zKey;
-          orxU32          k, kCount;
+          // Selects it
+          orxConfig_SelectSection(zSection);
 
-          // Gets it
-          zKey = orxConfig_GetKey(j);
-
-          // For all its values
-          for(k = 0, kCount = orxConfig_GetListCount(zKey); k < kCount; k++)
+          // For all keys
+          for(j = 0, jCount = orxConfig_GetKeyCount(); j < jCount; j++)
           {
-            const orxSTRING zValue;
-            orxU32          u32GroupIndex;
+            const orxSTRING zKey;
+            orxU32          k, kCount;
 
             // Gets it
-            zValue = orxConfig_GetListString(zKey, k);
+            zKey = orxConfig_GetKey(j);
 
-            // For all resource groups
-            for(u32GroupIndex = 0; u32GroupIndex < u32GroupCount; u32GroupIndex++)
+            // For all its values
+            for(k = 0, kCount = orxConfig_GetListCount(zKey); k < kCount; k++)
             {
-              const orxSTRING zGroup;
+              const orxSTRING zValue;
+              orxU32          u32GroupIndex;
 
-              // Gets group
-              zGroup = orxResource_GetGroup(u32GroupIndex);
+              // Gets it
+              zValue = orxConfig_GetListString(zKey, k);
 
-              // Locates it
-              if(orxResource_Locate(zGroup, zValue) != orxNULL)
+              // For all resource groups
+              for(u32GroupIndex = 0; u32GroupIndex < u32GroupCount; u32GroupIndex++)
               {
-                // Logs message
-                orxLOG(orxBUNDLE_KZ_LOG_TAG "Discovered " orxBUNDLE_KZ_RESOURCE_FORMAT, zGroup, zValue);
+                const orxSTRING zGroup;
 
-                // Stops
-                break;
+                // Gets group
+                zGroup = orxResource_GetGroup(u32GroupIndex);
+
+                // Locates it
+                if(orxResource_Locate(zGroup, zValue) != orxNULL)
+                {
+                  // Logs message
+                  orxLOG(orxBUNDLE_KZ_LOG_TAG "Discovered " orxBUNDLE_KZ_RESOURCE_FORMAT, zGroup, zValue);
+
+                  // Stops
+                  break;
+                }
               }
             }
           }
@@ -609,6 +625,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
         {
           orxBUNDLE_RESOURCE_REF *pstResourceRef;
           orxS64                  s64Size = 0, s64FinalSize = 0;
+          orxCHAR                 acPrintBuffer[32];
 
           // Binary output?
           if(bBinary != orxFALSE)
@@ -662,7 +679,13 @@ static orxINLINE orxSTATUS orxBundle_Process()
           }
 
           // Logs message
-          orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_MAGENTA "[%u]" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA "%s" orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_RESET, u32ResourceIndex, orxResource_GetPath(orxResource_GetLocation(hOutput)), orxBundle_GetHumanReadableSize(s64Size, 2));
+          orxString_NPrint(acPrintBuffer, sizeof(acPrintBuffer), "%s", orxBundle_GetHumanReadableSize(s64FinalSize, 2));
+          orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_CYAN "[%u]" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA "%s" orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "(%s) -> [%s]" orxANSI_KZ_COLOR_FG_CYAN " (%.2f%%)" orxANSI_KZ_COLOR_RESET,
+                 u32ResourceIndex,
+                 orxResource_GetPath(orxResource_GetLocation(hOutput)),
+                 acPrintBuffer,
+                 orxBundle_GetHumanReadableSize(s64Size, 2),
+                 orx2F(100.0f) * orxS2F(s64Size) / orxS2F(s64FinalSize));
         }
       }
 
@@ -690,6 +713,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
     // Logs message
     orxLOG(orxBUNDLE_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_RED "Can't open output file " orxANSI_KZ_COLOR_RESET "[%s]" orxANSI_KZ_COLOR_FG_RED ", aborting!" orxANSI_KZ_COLOR_RESET, orxBUNDLE_KZ_INCLUDE_PATH orxBUNDLE_KZ_INCLUDE_FILENAME);
   }
+
+  // Updates debug flag
+  orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_TYPE, orxDEBUG_KU32_STATIC_FLAG_NONE);
 
   // Sends close event
   orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
