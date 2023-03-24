@@ -132,6 +132,7 @@ typedef struct __orxRESOURCE_INFO_t
   orxRESOURCE_TYPE_INFO    *pstTypeInfo;                                              /**< Resource type info */
   orxS64                    s64Time;                                                  /**< Resource modification time */
   orxSTRINGID               stGroupID;                                                /**< Group ID */
+  orxSTRINGID               stStorageID;                                              /**< Storage ID */
   orxSTRINGID               stNameID;                                                 /**< Name ID */
   orxBOOL                   bPendingWatch;                                            /**< Pending watch */
 
@@ -707,6 +708,7 @@ static void orxFASTCALL orxResource_NotifyUpdateChange(const orxCLOCK_INFO *_pst
   stPayload.zLocation   = pstResourceInfo->zLocation;
   stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
   stPayload.stGroupID   = pstResourceInfo->stGroupID;
+  stPayload.stStorageID = pstResourceInfo->stStorageID;
   stPayload.stNameID    = pstResourceInfo->stNameID;
 
   /* Sends event */
@@ -742,6 +744,7 @@ static void orxFASTCALL orxResource_NotifyChange(orxHANDLE _hResource, orxS64 _s
         stPayload.zLocation   = pstResourceInfo->zLocation;
         stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
         stPayload.stGroupID   = pstResourceInfo->stGroupID;
+        stPayload.stStorageID = pstResourceInfo->stStorageID;
         stPayload.stNameID    = pstResourceInfo->stNameID;
 
         /* Removed? */
@@ -1862,6 +1865,7 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
               orxASSERT(pstResourceInfo->zLocation != orxNULL);
               orxString_NPrint(pstResourceInfo->zLocation, s32Size, "%s%c%s", pstType->stInfo.zTag, orxRESOURCE_KC_LOCATION_SEPARATOR, zLocation);
               pstResourceInfo->stGroupID    = stGroupID;
+              pstResourceInfo->stStorageID  = pstStorage->stID;
               pstResourceInfo->stNameID     = stKey;
               orxMEMORY_BARRIER();
 
@@ -2835,6 +2839,7 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
                 stPayload.zLocation   = pstResourceInfo->zLocation;
                 stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
                 stPayload.stGroupID   = pstResourceInfo->stGroupID;
+                stPayload.stStorageID = pstResourceInfo->stStorageID;
                 stPayload.stNameID    = pstResourceInfo->stNameID;
 
                 /* Sends event */
@@ -2869,6 +2874,7 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
           stPayload.zLocation   = pstResourceInfo->zLocation;
           stPayload.pstTypeInfo = pstResourceInfo->pstTypeInfo;
           stPayload.stGroupID   = pstResourceInfo->stGroupID;
+          stPayload.stStorageID = pstResourceInfo->stStorageID;
           stPayload.stNameID    = pstResourceInfo->stNameID;
 
           /* Sends event */
@@ -2978,11 +2984,12 @@ orxU32 orxFASTCALL orxResource_GetCacheCount(const orxSTRING _zGroup)
 /** Gets the next cached location for the given group and returns an iterator for next search
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _hIterator        Iterator from previous search or orxHANDLE_UNDEFINED/orxNULL for a new search
- * @param[out] _pzLocation      Current resource's location
- * @param[out] _pzName          Current resource's name
+ * @param[out] _pzLocation      Current resource's location, orxNULL to ignore
+ * @param[out] _pzStorage       Current resource's storage, orxNULL to ignore
+ * @param[out] _pzName          Current resource's name, orxNULL to ignore
  * @return Iterator for next element if an element has been found, orxHANDLE_UNDEFINED otherwise
  */
-orxHANDLE orxFASTCALL orxResource_GetNextCachedLocation(const orxSTRING _zGroup, orxHANDLE _hIterator, const orxSTRING *_pzLocation, const orxSTRING *_pzName)
+orxHANDLE orxFASTCALL orxResource_GetNextCachedLocation(const orxSTRING _zGroup, orxHANDLE _hIterator, const orxSTRING *_pzLocation, const orxSTRING *_pzStorage, const orxSTRING *_pzName)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -3017,6 +3024,12 @@ orxHANDLE orxFASTCALL orxResource_GetNextCachedLocation(const orxSTRING _zGroup,
         if(_pzLocation != orxNULL)
         {
           *_pzLocation = pstResourceInfo->zLocation;
+        }
+
+        /* Updates storage */
+        if(_pzStorage != orxNULL)
+        {
+          *_pzStorage = orxString_GetFromID(pstResourceInfo->stStorageID);
         }
 
         /* Updates name */

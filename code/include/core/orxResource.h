@@ -109,8 +109,9 @@ typedef struct __orxRESOURCE_EVENT_PAYLOAD_t
   orxS64                        s64Time;                  /**< New resource time : 8 */
   const orxSTRING               zLocation;                /**< Resource location : 12 / 16 */
   const orxRESOURCE_TYPE_INFO  *pstTypeInfo;              /**< Type info : 16 / 24 */
-  orxSTRINGID                   stGroupID;                /**< Group ID : 20 / 28 */
-  orxSTRINGID                   stNameID;                 /**< Name ID : 24 / 32 */
+  orxSTRINGID                   stGroupID;                /**< Group ID : 24 / 32 */
+  orxSTRINGID                   stStorageID;              /**< Storage ID : 32 / 40 */
+  orxSTRINGID                   stNameID;                 /**< Name ID : 40 / 48 */
 
 } orxRESOURCE_EVENT_PAYLOAD;
 
@@ -331,11 +332,12 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetCacheCo
 /** Gets the next cached location for the given group and returns an iterator for next search
  * @param[in] _zGroup           Concerned resource group
  * @param[in] _hIterator        Iterator from previous search or orxHANDLE_UNDEFINED/orxNULL for a new search
- * @param[out] _pzLocation      Current resource's location
- * @param[out] _pzName          Current resource's name
+ * @param[out] _pzLocation      Current resource's location, orxNULL to ignore
+ * @param[out] _pzStorage       Current resource's storage, orxNULL to ignore
+ * @param[out] _pzName          Current resource's name, orxNULL to ignore
  * @return Iterator for next element if an element has been found, orxHANDLE_UNDEFINED otherwise
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCachedLocation(const orxSTRING _zGroup, orxHANDLE _hIterator, const orxSTRING *_pzLocation, const orxSTRING *_pzName);
+extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCachedLocation(const orxSTRING _zGroup, orxHANDLE _hIterator, const orxSTRING *_pzLocation, const orxSTRING *_pzStorage, const orxSTRING *_pzName);
 
 
 #endif /* _orxRESOURCE_H_ */
