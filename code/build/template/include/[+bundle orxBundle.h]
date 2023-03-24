@@ -381,7 +381,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
         zRule = orxConfig_GetListString(azRuleInfoList[i].zKey, (orxS32)j);
 
         // Adds it to the rule table
-        orxHashTable_Add(pstRuleTable, orxString_Hash(zRule), azRuleInfoList[i].pValue);
+        *orxHashTable_Retrieve(pstRuleTable, orxString_Hash(zRule)) = azRuleInfoList[i].pValue;
 
         // Logs message
         orxLOG(orxBUNDLE_KZ_LOG_TAG "Applying rule %s" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_RESET, azRuleInfoList[i].zQualifier, zRule);
@@ -537,7 +537,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
               else
               {
                 // Logs message
-                orxLOG(orxBUNDLE_KZ_LOG_TAG "Skipping " orxBUNDLE_KZ_RESOURCE_FORMAT " (rule " orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_RESET ")", zGroup, zLocation, zRule);
+                orxLOG(orxBUNDLE_KZ_LOG_TAG "Skipping " orxBUNDLE_KZ_RESOURCE_FORMAT " (rule " orxANSI_KZ_COLOR_FG_RED "-" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_RESET ")", zGroup, zName, zRule);
 
                 // Closes it
                 orxResource_Close(hResource);
@@ -585,9 +585,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
         if(pstResourceRef->zRule != orxNULL)
         {
           // Logs message
-          orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundling " orxBUNDLE_KZ_RESOURCE_FORMAT orxANSI_KZ_COLOR_FG_CYAN " @0x%x" orxANSI_KZ_COLOR_RESET " (rule " orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_RESET "), " orxANSI_KZ_COLOR_FG_GREEN "(%s)" orxANSI_KZ_COLOR_RESET,
+          orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundling " orxBUNDLE_KZ_RESOURCE_FORMAT orxANSI_KZ_COLOR_FG_YELLOW " @0x%x" orxANSI_KZ_COLOR_RESET " (rule " orxANSI_KZ_COLOR_FG_GREEN "+" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_RESET "), " orxANSI_KZ_COLOR_FG_GREEN "(%s)" orxANSI_KZ_COLOR_RESET,
                  pstResourceRef->zGroup,
-                 orxResource_GetLocation(hResource),
+                 orxString_GetFromID(pstResourceRef->stNameID),
                  u32ResourceIndex,
                  pstResourceRef->zRule,
                  orxBundle_GetHumanReadableSize(pstResourceRef->s64FinalSize, 2));
@@ -595,9 +595,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
         else
         {
           // Logs message
-          orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundling " orxBUNDLE_KZ_RESOURCE_FORMAT orxANSI_KZ_COLOR_FG_CYAN " @0x%x" orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "(%s)" orxANSI_KZ_COLOR_RESET,
+          orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundling " orxBUNDLE_KZ_RESOURCE_FORMAT orxANSI_KZ_COLOR_FG_YELLOW " @0x%x" orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "(%s)" orxANSI_KZ_COLOR_RESET,
                  pstResourceRef->zGroup,
-                 orxResource_GetLocation(hResource),
+                 orxString_GetFromID(pstResourceRef->stNameID),
                  u32ResourceIndex,
                  orxBundle_GetHumanReadableSize(pstResourceRef->s64FinalSize, 2));
         }
@@ -647,7 +647,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
               orxS32 s32Index;
 
               // Outputs structure header
-              orxResource_Print(hOutput, "static const orxU8 BundleData%u[] =\r\n{", u32ResourceIndex);
+              orxResource_Print(hOutput, "static const orxU8 BundleData0x%x[] =\r\n{", u32ResourceIndex);
 
               // For all bytes
               for(s32Index = 0; s32Index < s32CompressedSize; s32Index++)
@@ -758,7 +758,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
             pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_GetNext(pstResourceBank, pstResourceRef), u32ResourceIndex++)
           {
             // Outputs ref
-            orxResource_Print(hOutput, "\r\n  {0x%016llx /* %s */, (const orxU8 *)BundleData%u, %lld, %lld},", pstResourceRef->stNameID, orxString_GetFromID(pstResourceRef->stNameID), u32ResourceIndex, pstResourceRef->s64Size, pstResourceRef->s64FinalSize);
+            orxResource_Print(hOutput, "\r\n  {0x%016llx /* %s */, (const orxU8 *)BundleData0x%x, %lld, %lld},", pstResourceRef->stNameID, orxString_GetFromID(pstResourceRef->stNameID), u32ResourceIndex, pstResourceRef->s64Size, pstResourceRef->s64FinalSize);
 
             // Updates sizes
             s64Size      += pstResourceRef->s64Size;
