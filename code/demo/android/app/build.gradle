@@ -3,8 +3,7 @@ apply plugin: 'com.android.application'
 android {
     namespace 'org.orx.demo'
     compileSdk sdkVersion.toInteger()
-    ndkVersion ndkVersion
-
+    
     buildFeatures.prefab true
 
     defaultConfig {
