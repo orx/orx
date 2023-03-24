@@ -537,7 +537,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
               else
               {
                 // Logs message
-                orxLOG(orxBUNDLE_KZ_LOG_TAG "Skipping " orxBUNDLE_KZ_RESOURCE_FORMAT " (rule " orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_RESET ").", zGroup, zLocation, zRule);
+                orxLOG(orxBUNDLE_KZ_LOG_TAG "Skipping " orxBUNDLE_KZ_RESOURCE_FORMAT " (rule " orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_RESET ")", zGroup, zLocation, zRule);
 
                 // Closes it
                 orxResource_Close(hResource);
