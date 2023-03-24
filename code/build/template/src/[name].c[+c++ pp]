@@ -25,11 +25,6 @@
 #define orxBUNDLE_IMPL
 #include "orxBundle.h"
 #undef orxBUNDLE_IMPL]
-[+archive
-
-#define orxARCHIVE_IMPL
-#include "orxArchive.h"
-#undef orxARCHIVE_IMPL]
 [+remote
 
 #define orxREMOTE_IMPL
@@ -223,19 +218,14 @@ void [!name]::BindObjects()
     // Initialize bundle resource type
     orxBundle_Init();
 ]
-[+archive
-    // Initialize archive (ZIP) resource type
-    orxArchive_Init();
-]
 [+remote
     // Initialize remote (HTTP) resource type
     orxRemote_Init();
 ]
     // Add config storage to find the initial config file
 [+bundle
-    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE, orxFALSE);]
-[+archive
-    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "data.zip:config", orxFALSE);]
+    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE, orxFALSE);
+    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE "[!name].bundle", orxFALSE);]
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
 [+remote
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "http://localhost/config", orxFALSE);]
