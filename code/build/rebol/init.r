@@ -8,8 +8,7 @@ REBOL [
 ; Variables
 params: compose/deep [
   name        {Project name (relative or full path)}                                          (none)    (none)
-  archive     {orxArchive support (resources can be stored inside ZIP files)}                 -         []
-  bundle      {orxBundle support (resources can be automatically bundled in executable)}      -         []
+  bundle      {orxBundle support (resources can be automatically packaged and encrypted)}     -         []
   c++         {Create a C++ project instead of C}                                             +         []
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                         -         [+c++]
   mod         {MOD (ProTracker) decoding support}                                             -         []
