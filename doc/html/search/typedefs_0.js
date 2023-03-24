@@ -37,7 +37,7 @@ var searchData=
   ['orxresource_5ffunction_5fdelete',['orxRESOURCE_FUNCTION_DELETE',['../group__orx_resource.html#ga4170b2b3bf59a113ff2daa8eef897315',1,'orxResource.h']]],
   ['orxresource_5ffunction_5fget_5fsize',['orxRESOURCE_FUNCTION_GET_SIZE',['../group__orx_resource.html#ga21060f626cc481e82b4a627b5ddd90e5',1,'orxResource.h']]],
   ['orxresource_5ffunction_5fget_5ftime',['orxRESOURCE_FUNCTION_GET_TIME',['../group__orx_resource.html#ga8012a2180bd6e0a818b86ebf0ca889a2',1,'orxResource.h']]],
-  ['orxresource_5ffunction_5flocate',['orxRESOURCE_FUNCTION_LOCATE',['../group__orx_resource.html#gaad90b00585a70f7674779b4bea8f9273',1,'orxResource.h']]],
+  ['orxresource_5ffunction_5flocate',['orxRESOURCE_FUNCTION_LOCATE',['../group__orx_resource.html#gac41d218df8845fa0bb9c468e280bf19d',1,'orxResource.h']]],
   ['orxresource_5ffunction_5fopen',['orxRESOURCE_FUNCTION_OPEN',['../group__orx_resource.html#ga2816645d087071e4c470ee554f89d361',1,'orxResource.h']]],
   ['orxresource_5ffunction_5fread',['orxRESOURCE_FUNCTION_READ',['../group__orx_resource.html#ga16f6f5daa189f8c196aa0c59bad58d14',1,'orxResource.h']]],
   ['orxresource_5ffunction_5fseek',['orxRESOURCE_FUNCTION_SEEK',['../group__orx_resource.html#ga5f5c587a02e0d1a8c159a300aa39ca29',1,'orxResource.h']]],
