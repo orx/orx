@@ -505,7 +505,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
                   zRule = azRuleList[j];
 
                   // Updates status
-                  bCollect = (pValue == (void *)orxSTRING_TRUE) ? orxTRUE : orxFALSE;
+                  bCollect = (pValue != (void *)orxSTRING_FALSE) ? orxTRUE : orxFALSE;
                   break;
                 }
               }
