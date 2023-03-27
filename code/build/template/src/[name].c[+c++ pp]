@@ -225,7 +225,7 @@ void [!name]::BindObjects()
     // Add config storage to find the initial config file
 [+bundle
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE, orxFALSE);
-    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE "[!name].bundle", orxFALSE);]
+    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE "[name].obr", orxFALSE);]
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
 [+remote
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "http://localhost/config", orxFALSE);]
