@@ -339,10 +339,14 @@ static orxINLINE orxSTATUS orxBundle_Process()
       {orxBUNDLE_KZ_CONFIG_INCLUDE_LIST, orxANSI_KZ_COLOR_FG_GREEN "+" orxANSI_KZ_COLOR_RESET,  (void *)orxSTRING_TRUE}
     };
 
+    orxDOUBLE     dBeginTime, dEndTime;
     orxBANK      *pstResourceBank;
     orxHASHTABLE *pstRuleTable;
     orxU32        i, j, iCount, jCount, u32GroupCount, u32ResourceIndex, u32ConfigHistoryExtensionLength;
     orxBOOL       bBinary;
+
+    // Gets begin time
+    dBeginTime = orxSystem_GetSystemTime();
 
     // Creates resource bank
     pstResourceBank = orxBank_Create(orxBUNDLE_KU32_TABLE_SIZE, sizeof(orxBUNDLE_RESOURCE_REF), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
@@ -770,11 +774,15 @@ static orxINLINE orxSTATUS orxBundle_Process()
           orxResource_Print(hOutput, "\r\n};\r\n\r\n#define orxBUNDLE_HAS_DATA\r\n");
         }
 
+        // Gets end time
+        dEndTime = orxSystem_GetSystemTime();
+
         // Logs message
         orxString_NPrint(acPrintBuffer, sizeof(acPrintBuffer), "%s", orxBundle_GetHumanReadableSize(s64FinalSize, 2));
-        orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_CYAN "%u" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA "%s" orxANSI_KZ_COLOR_RESET ", " orxANSI_KZ_COLOR_FG_GREEN "(%s) -> [%s]" orxANSI_KZ_COLOR_FG_CYAN " (%.2f%%)" orxANSI_KZ_COLOR_RESET,
+        orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_CYAN "%u" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA "%s" orxANSI_KZ_COLOR_RESET " in " orxANSI_KZ_COLOR_FG_CYAN "%.2g" orxANSI_KZ_COLOR_RESET "s, " orxANSI_KZ_COLOR_FG_GREEN "(%s) -> [%s]" orxANSI_KZ_COLOR_FG_CYAN " (%.2f%%)" orxANSI_KZ_COLOR_RESET,
               u32ResourceIndex,
               orxResource_GetPath(orxResource_GetLocation(hOutput)),
+              orx2F(dEndTime - dBeginTime),
               acPrintBuffer,
               orxBundle_GetHumanReadableSize(s64Size, 2),
               orx2F(100.0f) * orxS2F(s64Size) / orxS2F(s64FinalSize));
