@@ -341,6 +341,11 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
   return rotation;
 }
 
+extern "C" void orxAndroid_SetKeyFilter(android_key_event_filter filter)
+{
+  android_app_set_key_event_filter(sstAndroid.app, filter);
+}
+
 static void Android_CheckForNewAxis()
 {
   /* Tell GameActivity about any new axis ids so it reports their events */

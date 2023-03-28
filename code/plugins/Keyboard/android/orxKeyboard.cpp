@@ -46,6 +46,11 @@
 
 #define orxKEYBOARD_KU32_STATIC_MASK_ALL        0xFFFFFFFF /**< All mask */
 
+#define orxKEYBOARD_KU32_BOUND_KEY_NONE         0x00000000  /** No flags */
+
+#define orxKEYBOARD_KU32_BOUND_KEY_VOLUME_UP    0x00000001  /**< Volume up flag */
+#define orxKEYBOARD_KU32_BOUND_KEY_VOLUME_DOWN  0x00000002  /**< Volume down flag */
+
 /** Misc
  */
 #define orxKEYBOARD_KU32_BUFFER_SIZE            64
@@ -61,6 +66,7 @@ typedef struct __orxKEYBOARD_STATIC_t
 {
   orxU32            u32Flags;
   orxBOOL           abKeyPressed[orxKEYBOARD_KEY_NUMBER];
+  orxU32            u32BoundKeys;
 
   orxU32            u32KeyReadIndex, u32KeyWriteIndex;
   orxU32            au32KeyBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
@@ -191,6 +197,67 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
   return eResult;
 }
 
+static void orxFASTCALL orxKeyboard_Android_UpdateKeyFilterState(const orxCLOCK_INFO* pClockInfo, void* pContext)
+{
+  const orxSTRING zInputSet = orxNULL;
+  const orxSTRING zPreviousSet;
+  const orxSTRING zName;
+
+#define orxKEYBOARD_UPDATE_BOUND_KEY(KEY)                                                                                                     \
+  if(orxInput_GetBoundInput(orxINPUT_TYPE_KEYBOARD_KEY, orxKEYBOARD_KEY_##KEY, orxINPUT_MODE_FULL, 0, &zName, orxNULL) != orxSTATUS_FAILURE)  \
+  {                                                                                                                                           \
+    orxFLAG_SET(sstKeyboard.u32BoundKeys, orxKEYBOARD_KU32_BOUND_KEY_##KEY, orxKEYBOARD_KU32_BOUND_KEY_NONE);                                 \
+  }
+
+  /* Unbound keys are handled by system */
+  sstKeyboard.u32BoundKeys = orxKEYBOARD_KU32_BOUND_KEY_NONE;
+
+  /* Gets previous set */
+  zPreviousSet = orxInput_GetCurrentSet();
+
+  while((zInputSet = orxInput_GetNextSet(zInputSet)))
+  {
+    if(orxInput_IsSetEnabled(zInputSet))
+    {
+      /* Selects set */
+      orxInput_SelectSet(zInputSet);
+
+      orxKEYBOARD_UPDATE_BOUND_KEY(VOLUME_UP);
+      orxKEYBOARD_UPDATE_BOUND_KEY(VOLUME_DOWN);
+
+      /* Restores previous set */
+      orxInput_SelectSet(zPreviousSet);
+    }
+  }
+}
+
+static bool orxKeyboard_Android_KeyEventFilter(const GameActivityKeyEvent *event)
+{
+  bool bAllowKey;
+
+  switch(event->keyCode)
+  {
+    case AKEYCODE_VOLUME_DOWN:
+      bAllowKey = orxFLAG_TEST(sstKeyboard.u32BoundKeys, orxKEYBOARD_KU32_BOUND_KEY_VOLUME_DOWN) ? true : false;
+      break;
+    case AKEYCODE_VOLUME_UP:
+      bAllowKey = orxFLAG_TEST(sstKeyboard.u32BoundKeys, orxKEYBOARD_KU32_BOUND_KEY_VOLUME_UP) ? true : false;
+      break;
+    case AKEYCODE_VOLUME_MUTE:
+    case AKEYCODE_CAMERA:
+    case AKEYCODE_ZOOM_IN:
+    case AKEYCODE_ZOOM_OUT:
+      /* Note : Copied from android_native_app_glue.c in AGDK */
+      bAllowKey = false;
+      break;
+    default:
+      bAllowKey = true;
+      break;
+  }
+  
+  return bAllowKey;
+}
+
 static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -259,7 +326,13 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
       /* Updates status */
       sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
     }
- }
+
+    /* Inits key filter */
+    orxAndroid_SetKeyFilter(&orxKeyboard_Android_KeyEventFilter);
+
+    /* Registers filter state function */
+    orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxKeyboard_Android_UpdateKeyFilterState, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+  }
 
   /* Done! */
   return eResult;
@@ -272,6 +345,9 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
   {
     /* Removes event handler */
     orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler);
+
+    /* Unregisters filter state function */
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxKeyboard_Android_UpdateKeyFilterState);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));

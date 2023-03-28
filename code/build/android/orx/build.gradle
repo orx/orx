@@ -16,7 +16,7 @@ android {
         minSdk 19
         targetSdk sdkVersion.toInteger()
         versionCode 113
-        versionName "1.13"
+        versionName '1.13'
     }
     externalNativeBuild {
         ndkBuild {
@@ -41,7 +41,7 @@ android {
         }
     }
     packagingOptions {
-        exclude("**/libc++_shared.so")
+        exclude('**/libc++_shared.so')
     }
     buildTypes {
         release {
@@ -122,7 +122,7 @@ androidComponents {
                 // See this FR: https://issuetracker.google.com/issues/214034366
                 task.doLast {
                     copy {
-                        from ("./src/main/prefab")
+                        from ('./src/main/prefab')
                         into ("./build/intermediates/prefab_package/${variant.name}/prefab")
                         include '**/*.json'
                     }
