@@ -2928,6 +2928,9 @@ orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
       {
         /* Deletes its location */
         orxMemory_Free(pstResourceInfo->zLocation);
+
+        /* Frees it */
+        orxBank_Free(sstResource.pstResourceInfoBank, pstResourceInfo);
       }
 
       /* Clears cache table */
@@ -2937,9 +2940,6 @@ orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
       eResult = orxSTATUS_SUCCESS;
     }
   }
-
-  /* Clears info bank */
-  orxBank_Clear(sstResource.pstResourceInfoBank);
 
   /* Done! */
   return eResult;
