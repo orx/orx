@@ -267,6 +267,20 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
       // Logs message
       orxLOG(orxBUNDLE_KZ_LOG_TAG "Processing | " orxANSI_KZ_COLOR_FG_YELLOW "Please do any resource-related config generation in your init() function!" orxANSI_KZ_COLOR_RESET);
 
+      // Unregisters bundle type
+      orxResource_UnregisterType(orxBUNDLE_KZ_RESOURCE_TAG);
+
+      // Syncs all groups
+      orxResource_Sync(orxNULL);
+
+      // Clears config group
+      orxResource_ClearCache(orxCONFIG_KZ_RESOURCE_GROUP);
+
+      // Reloads config history
+      orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
+      orxConfig_ReloadHistory();
+      orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxTRUE);
+
       // Updates result
       eResult = orxSTATUS_SUCCESS;
       break;
@@ -358,17 +372,6 @@ static orxINLINE orxSTATUS orxBundle_Process()
 
     // Updates status
     bBinary = (hOutput == shResource) ? orxTRUE : orxFALSE;
-
-    // Unregisters bundle type
-    orxResource_UnregisterType(orxBUNDLE_KZ_RESOURCE_TAG);
-
-    // Syncs all groups
-    orxResource_Sync(orxNULL);
-
-    // Reloads config history
-    orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
-    orxConfig_ReloadHistory();
-    orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxTRUE);
 
     // Pushes bundle section
     orxConfig_PushSection(orxBUNDLE_KZ_CONFIG_SECTION);
