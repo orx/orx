@@ -508,6 +508,19 @@ static EGLConfig defaultEGLChooser(EGLDisplay disp)
  */
 static orxSTATUS orxFASTCALL orxDisplay_Android_RenderInhibitor(const orxEVENT *_pstEvent)
 {
+  /* Render stop? */
+  if(_pstEvent->eID == orxRENDER_EVENT_STOP)
+  {
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("PollEvents");
+
+    /* Polls events */
+    orxAndroid_PumpEvents();
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
+  }
+
   /* Done! */
   return orxSTATUS_FAILURE;
 }
@@ -4105,6 +4118,15 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
   {
     /* Draws remaining items */
     orxDisplay_Android_DrawArrays();
+    
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("PollEvents");
+
+    /* Polls events */
+    orxAndroid_PumpEvents();
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
   }
 
   if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_DESTROYED)
