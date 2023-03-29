@@ -50,6 +50,7 @@ var searchData=
   ['stsphere',['stSphere',['../structorx_b_o_d_y___p_a_r_t___d_e_f.html#ade93d954b6fa2f350f2ad33a392c55ba',1,'orxBODY_PART_DEF']]],
   ['stspring',['stSpring',['../structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#a9dc637a37bfa50f32a39d3a1afc7d6e7',1,'orxBODY_JOINT_DEF']]],
   ['ststorage',['stStorage',['../structorx_s_t_r_u_c_t_u_r_e.html#abf8185cd3a21ba21923ca9e27ee38544',1,'orxSTRUCTURE']]],
+  ['ststorageid',['stStorageID',['../structorx_r_e_s_o_u_r_c_e___e_v_e_n_t___p_a_y_l_o_a_d.html#ab0ac6bbe68a2cefd57740d0765cd07e8',1,'orxRESOURCE_EVENT_PAYLOAD']]],
   ['ststream',['stStream',['../structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a823212063cce42db4a7f425a3ee66211',1,'orxSOUND_EVENT_PAYLOAD']]],
   ['stsuspension',['stSuspension',['../structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#af3a1710a8af6d1327b40d0cd1c2cb64d',1,'orxBODY_JOINT_DEF']]],
   ['sttouch',['stTouch',['../structorx_s_y_s_t_e_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a07669219942faf4327f8cb03747fa81d',1,'orxSYSTEM_EVENT_PAYLOAD']]],

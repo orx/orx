@@ -20,11 +20,11 @@
 #define orxIMGUI_IMPL
 #include "orxImGui.h"
 #undef orxIMGUI_IMPL]
-[+archive
+[+bundle
 
-#define orxARCHIVE_IMPL
-#include "orxArchive.h"
-#undef orxARCHIVE_IMPL]
+#define orxBUNDLE_IMPL
+#include "orxBundle.h"
+#undef orxBUNDLE_IMPL]
 [+remote
 
 #define orxREMOTE_IMPL
@@ -127,17 +127,33 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     orxImGui_Init();
 ]
 [+scroll
+[+bundle
+    // Is processing a new bundle?
+    if(orxBundle_IsProcessing())
+    {
+        // Done!
+        return orxSTATUS_SUCCESS;
+    }
+]
     // Create the [-movie scene][+movie logo]
     CreateObject("[-movie Scene][+movie Logo]");]
 [-scroll
+    // Register the Update function to the core clock
+    orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
+[+bundle
+    // Is processing a new bundle?
+    if(orxBundle_IsProcessing())
+    {
+        // Done!
+        return orxSTATUS_SUCCESS;
+    }
+]
     // Create the viewport
     orxViewport_CreateFromConfig("MainViewport");
 
     // Create the [-movie scene][+movie logo]
-    orxObject_CreateFromConfig("[-movie Scene][+movie Logo]");
-
-    // Register the Update function to the core clock
-    orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);]
+    orxObject_CreateFromConfig("[-movie Scene][+movie Logo]");]
 
     // Done!
     return orxSTATUS_SUCCESS;
@@ -177,6 +193,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     // Exit from remote support
     orxRemote_Exit();
 ]
+[+bundle
+    // Exit from bundle support
+    orxBundle_Exit();
+]
     // Let orx clean all our mess automatically. :)
 }
 
@@ -194,17 +214,18 @@ void [!name]::BindObjects()
 [+scroll orxSTATUS [!name]::Bootstrap() const]
 [-scroll orxSTATUS orxFASTCALL Bootstrap()]
 {
-[+archive
-    // Initialize archive (ZIP) resource type
-    orxArchive_Init();
+[+bundle
+    // Initialize bundle resource type
+    orxBundle_Init();
 ]
 [+remote
     // Initialize remote (HTTP) resource type
     orxRemote_Init();
 ]
     // Add config storage to find the initial config file
-[+archive
-    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "data.zip:config", orxFALSE);]
+[+bundle
+    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE, orxFALSE);
+    orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE "[name].obr", orxFALSE);]
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
 [+remote
     orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "http://localhost/config", orxFALSE);]

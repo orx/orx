@@ -162,7 +162,7 @@ static orxINLINE void *                                   orxMemory_Copy(void *_
  * @param[in]  _u32Size Size of data
  * @return returns a pointer to _pDest
  */
-static orxINLINE void *                                   orxMemory_Move(void *_pDest, void *_pSrc, orxU32 _u32Size)
+static orxINLINE void *                                   orxMemory_Move(void *_pDest, const void *_pSrc, orxU32 _u32Size)
 {
   /* Checks */
   orxASSERT(_pDest != orxNULL);

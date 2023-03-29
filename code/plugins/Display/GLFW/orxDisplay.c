@@ -156,8 +156,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION 0x00001000 /**< No decoration flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN  0x00002000  /**< Full screen flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO  0x00004000  /**< Custom IBO flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR 0x00008000 /**< Swap control tear support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT 0x00010000 /**< Debug output support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT 0x00008000 /**< Debug output support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX   0x10000000  /**< VSync fix flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
@@ -1516,33 +1515,6 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     }
 
 #endif /* __orxDISPLAY_OPENGL_ES__ */
-
-    /* Swap Control Tear extension? */
-#if !defined(__orxDISPLAY_OPENGL_ES__)
-  #if defined(__orxWINDOWS__) || defined(__orxLINUX__)
-    #ifdef __orxWINDOWS__
-
-    if(glfwExtensionSupported("WGL_EXT_swap_control_tear") != GLFW_FALSE)
-
-    #else /* __orxWINDOWS__ */
-
-    if(glfwExtensionSupported("GLX_EXT_swap_control_tear") != GLFW_FALSE)
-
-    #endif /* __orxWINDOWS__ */
-
-    {
-      /* Updates status flags */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-    }
-    else
-
-  #endif /* __orxWINDOWS__ || __orxLINUX__ */
-#endif /* __orxDISPLAY_OPENGL_ES__ */
-
-    {
-      /* Updates status flags */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR);
-    }
 
 #ifdef GL_COMPRESSED_RGBA_BPTC_UNORM
     /* Has BC7 support? */
@@ -5204,7 +5176,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX))
     {
       /* Updates VSync status */
-      glfwSwapInterval(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR) ? -1 : 1);
+      glfwSwapInterval(1);
     }
     else
     {

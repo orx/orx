@@ -689,7 +689,7 @@ static const orxSTRING orxRESOURCE_KZ_TYPE_TAG_APK = "apk";                     
 #define orxRESOURCE_KU32_BUFFER_SIZE                  256                             /**< Buffer size */
 static orxCHAR s_acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];                  /**< File location buffer size */
 
-static const orxSTRING orxFASTCALL orxResource_APK_Locate(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
+static const orxSTRING orxFASTCALL orxResource_APK_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
   const orxSTRING zResult = orxNULL;
   AAsset   *poAsset;

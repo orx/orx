@@ -382,7 +382,7 @@ static orxS64 orxFASTCALL orxRemote_ExecuteQuery(const orxSTRING _zHost, orxU32 
 }
 
 // Locate function, returns NULL if it can't handle the storage or if the resource can't be found in this storage
-static const orxSTRING orxFASTCALL orxRemote_WebLocate(const orxSTRING _zStorage, const orxSTRING _zResource, orxBOOL _bRequireExistence)
+static const orxSTRING orxFASTCALL orxRemote_WebLocate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zResource, orxBOOL _bRequireExistence)
 {
   const orxSTRING zResult = orxNULL;
 

@@ -73,7 +73,7 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
 
 /** Sound filter type enum
  */
-typedef enum __orxSOUND_FILTE_TYPE_t
+typedef enum __orxSOUND_FILTER_TYPE_t
 {
   orxSOUND_FILTER_TYPE_BIQUAD = 0,
   orxSOUND_FILTER_TYPE_LOW_PASS,

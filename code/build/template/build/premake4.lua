@@ -11,7 +11,8 @@ function initconfigurations ()
     {
         "Debug",
         "Profile",
-        "Release"
+        "Release"[+bundle ,
+        "Bundle"]
     }
 end
 
@@ -132,6 +133,11 @@ solution "[name]"
     configuration {"*Release*"}
         flags {"Optimize", "NoRTTI"}
         links {"orx"}
+[+bundle
+
+    configuration {"*Bundle*"}
+        flags {"Optimize", "NoRTTI"}
+        links {"orx"}]
 
     configuration {"windows", "*Release*"}
         kind ("WindowedApp")
@@ -254,6 +260,8 @@ project "[name]"
         "../include/**.h",
 [+scroll
         "../include/**.inl",]
+[+bundle
+        "../include/**.inc",]
         "../data/config/**.ini"
     }
 
@@ -275,8 +283,14 @@ project "[name]"
     {
 [+scroll
         ["inline"] = {"**.inl"},]
+[+bundle
+        ["bundle"] = {"**.inc"},]
         ["config"] = {"**.ini"}
     }
+[+bundle
+
+    configuration {"*Bundle*"}
+        debugargs {"-b", "[name].obr"}]
 
 
 -- Linux

@@ -137,6 +137,7 @@ typedef struct __orxCLOCK_STATIC_t
   orxCLOCK         *pstCore;                    /**< Core clock */
   orxBANK          *pstTimerBank;               /**< Timer bank */
   orxDOUBLE         dTime;                      /**< Current time */
+  orxDOUBLE         dNextTime;                  /**< Next time */
   orxHASHTABLE     *pstReferenceTable;          /**< Table to avoid clock duplication when creating through config file */
   orxFLOAT          fDisplayTickSize;           /**< Display tick size */
   orxU32            u32Flags;                   /**< Control flags */
@@ -653,11 +654,12 @@ orxSTATUS orxFASTCALL orxClock_Update()
     /* Lock clocks */
     sstClock.u32Flags |= orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
-    /* Gets new time */
-    dNewTime  = orxSystem_GetTime();
+    /* Actively waits until next update */
+    while((dNewTime = orxSystem_GetTime()) < sstClock.dNextTime)
+      ;
 
     /* Computes natural DT */
-    fDT       = (orxFLOAT)(dNewTime - sstClock.dTime);
+    fDT = (orxFLOAT)(dNewTime - sstClock.dTime);
 
     /* Updates time */
     sstClock.dTime = dNewTime;
@@ -788,8 +790,11 @@ orxSTATUS orxFASTCALL orxClock_Update()
     /* Unlocks clocks */
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
+    /* Sets next tick time */
+    sstClock.dNextTime = sstClock.dTime + (orxDOUBLE)fDelay;
+
     /* Gets real remaining delay */
-    fDelay = fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT - orx2F(orxSystem_GetTime() - sstClock.dTime);
+    fDelay = orx2F(sstClock.dNextTime - orxSystem_GetTime() + orxCLOCK_KF_DELAY_ADJUSTMENT);
 
     /* Should delay? */
     if(fDelay > orxFLOAT_0)
