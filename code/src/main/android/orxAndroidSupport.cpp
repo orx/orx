@@ -377,7 +377,7 @@ static void Android_HandleGameInput(struct android_app* app)
   /* Early exit if no events. */
   if(ib == NULL)
   {
-      return;
+    return;
   }
 
   if(ib->keyEventsCount != 0)
@@ -391,14 +391,15 @@ static void Android_HandleGameInput(struct android_app* app)
       {
         /* Didn't belong to a game controller, let's process it ourselves. */
 
-        orxANDROID_KEY_EVENT stKeyEvent;
-        /* Inits event payload */
-        orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
-        stKeyEvent.u32KeyCode = event->keyCode;
-        stKeyEvent.u32Action = event->action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN
-                                                                       : orxANDROID_EVENT_KEYBOARD_UP;
         if(event->action != AKEY_EVENT_ACTION_MULTIPLE)
         {
+          orxANDROID_KEY_EVENT stKeyEvent;
+          /* Inits event payload */
+          orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
+          stKeyEvent.u32KeyCode = event->keyCode;
+          stKeyEvent.u32Action = event->action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN
+                                                                         : orxANDROID_EVENT_KEYBOARD_UP;
+
           orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
         }
       }
