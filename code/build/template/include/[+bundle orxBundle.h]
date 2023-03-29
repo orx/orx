@@ -219,6 +219,7 @@ void orxFASTCALL orxBundle_CommandGetOutputName(orxU32 _u32ArgNumber, const orxC
 static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
   const orxSTRING zLocation;
+  orxU32          u32DebugFlags;
   orxSTATUS       eResult;
 
   // Depending on parameters
@@ -261,8 +262,9 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
       // Updates status
       sbProcess = orxTRUE;
 
-      // Updates log flags & levels
-      orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE, orxDEBUG_KU32_STATIC_FLAG_TYPE);
+      // Updates debug flags
+      u32DebugFlags = orxDEBUG_GET_FLAGS();
+      orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE, orxDEBUG_KU32_STATIC_FLAG_TYPE|orxDEBUG_KU32_STATIC_FLAG_TAGGED);
 
       // Logs message
       orxLOG(orxBUNDLE_KZ_LOG_TAG "Processing | " orxANSI_KZ_COLOR_FG_YELLOW "Please do any resource-related config generation in your init() function!" orxANSI_KZ_COLOR_RESET);
@@ -280,6 +282,9 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
       orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
       orxConfig_ReloadHistory();
       orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxTRUE);
+
+      // Updates debug flags
+      orxDEBUG_SET_FLAGS(u32DebugFlags, orxDEBUG_KU32_STATIC_FLAG_NONE);
 
       // Updates result
       eResult = orxSTATUS_SUCCESS;
@@ -321,10 +326,12 @@ static orxINLINE const orxSTRING orxBundle_GetHumanReadableSize(orxS64 _s64Size,
 static orxINLINE orxSTATUS orxBundle_Process()
 {
   orxHANDLE hOutput;
+  orxU32    u32DebugFlags;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   // Updates debug flag
-  orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE, orxDEBUG_KU32_STATIC_FLAG_TYPE);
+  u32DebugFlags = orxDEBUG_GET_FLAGS();
+  orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE, orxDEBUG_KU32_STATIC_FLAG_TYPE|orxDEBUG_KU32_STATIC_FLAG_TAGGED);
 
   // Opens output resource
   hOutput = (shResource != orxHANDLE_UNDEFINED) ? shResource : orxResource_Open(orxResource_LocateInStorage(orxBUNDLE_KZ_RESOURCE_GROUP, orxNULL, orxBUNDLE_KZ_INCLUDE_PATH orxBUNDLE_KZ_INCLUDE_FILENAME), orxTRUE);
@@ -819,7 +826,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
   }
 
   // Updates debug flag
-  orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_TYPE, orxDEBUG_KU32_STATIC_FLAG_NONE);
+  orxDEBUG_SET_FLAGS(u32DebugFlags, orxDEBUG_KU32_STATIC_FLAG_NONE);
 
   // Sends close event
   orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
@@ -893,7 +900,7 @@ static orxSTATUS orxFASTCALL orxBundle_EventHandler(const orxEVENT *_pstEvent)
 }
 
 // Locate function, returns NULL if it can't handle the storage or if the resource can't be found in this storage
-const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zResource, orxBOOL _bRequireExistence)
+const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
   static orxCHAR  sacBuffer[512];
   static orxU32   su32StorageLength = 0;
@@ -907,8 +914,13 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
   // Bundle storage?
   if(orxString_NCompare(_zStorage, orxBUNDLE_KZ_RESOURCE_STORAGE, su32StorageLength) == 0)
   {
+    const orxSTRING zResource;
+
+    // Gets underlying resource
+    zResource = _zStorage + su32StorageLength;
+
     // Not memory?
-    if(*(_zStorage + su32StorageLength) != orxCHAR_NULL)
+    if(*zResource != orxCHAR_NULL)
     {
       static orxBOOL  sbLocating = orxFALSE;
       const orxSTRING zLocation;
@@ -920,7 +932,7 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
         sbLocating = orxTRUE;
 
         // Locates resource
-        zLocation = orxResource_Locate(orxBUNDLE_KZ_RESOURCE_GROUP, _zStorage + su32StorageLength);
+        zLocation = orxResource_Locate(orxBUNDLE_KZ_RESOURCE_GROUP, zResource);
 
         // Found?
         if(zLocation != orxNULL)
@@ -943,7 +955,7 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
               orxU32      i, u32Count;
 
               // Gets resource ID
-              stResourceID = orxString_Hash(_zResource);
+              stResourceID = orxString_Hash(_zName);
 
               // For all stored resources
               for(i = 0, u32Count = orxResource_ReadU32(hResource); i < u32Count; i++)
@@ -989,7 +1001,7 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
         BundleData   *pstData;
 
         // Gets resource ID
-        stResourceID = orxString_Hash(_zResource);
+        stResourceID = orxString_Hash(_zName);
 
         // Gets resource
         pstData = (BundleData *)orxHashTable_Get(spstDataTable, stResourceID);
