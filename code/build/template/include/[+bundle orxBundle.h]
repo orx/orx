@@ -225,7 +225,7 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
   // Depending on parameters
   switch(_u32ParamCount)
   {
-    case 2:
+    default:
     {
       // Updates result
       eResult = orxSTATUS_FAILURE;
@@ -288,13 +288,6 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
 
       // Updates result
       eResult = orxSTATUS_SUCCESS;
-      break;
-    }
-
-    default:
-    {
-      // Updates result
-      eResult = orxSTATUS_FAILURE;
       break;
     }
   }
