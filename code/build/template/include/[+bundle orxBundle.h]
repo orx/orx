@@ -84,8 +84,8 @@ typedef struct BundleResource
 #endif // !orxBUNDLE_HAS_DATA
 
 static orxCHAR        sacPrintBuffer[1024];
+static orxHANDLE      shResource;
 static orxHASHTABLE  *spstDataTable = orxNULL;
-static orxHANDLE      shResource    = orxHANDLE_UNDEFINED;
 static orxBOOL        sbProcess     = orxFALSE;
 
 
@@ -1359,7 +1359,9 @@ orxSTATUS orxFASTCALL orxBundle_Init()
   orxSTATUS             eResult;
 
   // Inits variables
-  sbProcess = orxFALSE;
+  sbProcess         = orxFALSE;
+  spstDataTable     = orxNULL;
+  shResource        = orxHANDLE_UNDEFINED;
 
   // Inits our bundle resource type
   orxMemory_Zero(&stInfo, sizeof(orxRESOURCE_TYPE_INFO));
