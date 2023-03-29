@@ -231,7 +231,7 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
       eResult = orxSTATUS_FAILURE;
 
       // Locates resource
-      zLocation = orxResource_LocateInStorage(orxBUNDLE_KZ_RESOURCE_GROUP, orxNULL, _azParams[1]);
+      zLocation = orxResource_LocateInStorage(orxBUNDLE_KZ_RESOURCE_GROUP, orxRESOURCE_KZ_DEFAULT_STORAGE, _azParams[1]);
 
       // Success?
       if(zLocation != orxNULL)
