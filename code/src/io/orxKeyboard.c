@@ -211,6 +211,8 @@ const orxSTRING orxFASTCALL orxKeyboard_GetKeyName(orxKEYBOARD_KEY _eKey)
     }
   }
 
+#undef orxKEYBOARD_DECLARE_KEY_NAME
+
   /* Done! */
   return zResult;
 }
