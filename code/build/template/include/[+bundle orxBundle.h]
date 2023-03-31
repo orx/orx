@@ -283,6 +283,9 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
       orxConfig_ReloadHistory();
       orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxTRUE);
 
+      // Reloads storages
+      orxResource_ReloadStorage();
+
       // Updates debug flags
       orxDEBUG_SET_FLAGS(u32DebugFlags, orxDEBUG_KU32_STATIC_FLAG_NONE);
 
