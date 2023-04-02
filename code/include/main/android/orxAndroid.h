@@ -49,8 +49,6 @@
 #define KZ_CONFIG_ANDROID                        "Android"
 #define KZ_CONFIG_SURFACE_SCALE                  "SurfaceScale"
 #define KZ_CONFIG_ACCELEROMETER_FREQUENCY        "AccelerometerFrequency"
-#define KZ_CONFIG_AUTO_SWAP_INTERVAL             "AutoSwapInterval"
-#define KZ_CONFIG_AUTO_PIPELINE_MODE             "AutoPipelineMode"
 
 #include <android/native_window.h>
 
