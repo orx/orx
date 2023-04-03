@@ -7,14 +7,14 @@
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@drawable/ic_launcher_round"
-        android:theme="@style/Application.Fullscreen">
+        android:theme="@style/Application.Fullscreen"
+        android:appCategory="game">
 
         <activity android:name="org.orx.lib.OrxGameActivity"
             android:label="@string/app_name"
             android:screenOrientation="fullSensor"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|smallestScreenSize"
             android:resizeableActivity="true"
-            android:appCategory="game"
             android:exported="true">
 
             <meta-data android:name="android.app.lib_name" android:value="orxDemo" />
