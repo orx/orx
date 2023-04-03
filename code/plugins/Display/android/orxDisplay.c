@@ -4367,12 +4367,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       /* Pops config section */
       orxConfig_PopSection();
       
-      /* Pushes Android section */
-      orxConfig_PushSection(KZ_CONFIG_ANDROID);
-      
-      /* Pops Android section */
-      orxConfig_PopSection();
-      
       /* Gets max texture unit number */
       glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
       glASSERT();
