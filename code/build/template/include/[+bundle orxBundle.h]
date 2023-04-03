@@ -1259,23 +1259,26 @@ orxS64 orxFASTCALL orxBundle_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_
   // No final buffer?
   if(pstResource->pu8FinalBuffer == orxNULL)
   {
-    orxS64  s64Size;
-    orxU8  *pu8Buffer;
+    orxS64          s64Size;
+    const orxSTRING zKey;
+    orxU8          *pu8Buffer;
+
+    // Allocates intermediate buffer
+    pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)pstResource->stData.s64Size, orxMEMORY_TYPE_TEMP);
+    orxASSERT(pu8Buffer);
+
+    // Gets encryption key
+    zKey = orxConfig_GetEncryptionKey();
 
     // Has external resource?
     if(pstResource->stData.pu8Buffer == orxNULL)
     {
-      const orxSTRING zKey;
-      const orxU8    *pu8Key;
-      orxU8          *pu8Data;
-      orxHANDLE       hResource;
+      const orxU8  *pu8Key;
+      orxU8        *pu8Data;
+      orxHANDLE     hResource;
 
       // Gets it
       hResource = pstResource->stData.hResource;
-
-      // Allocates intermediate buffer
-      pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)pstResource->stData.s64Size, orxMEMORY_TYPE_TEMP);
-      orxASSERT(pu8Buffer);
 
       // Store its ID
       pstResource->stData.stNameID = orxResource_ReadU64(hResource);
@@ -1286,9 +1289,6 @@ orxS64 orxFASTCALL orxBundle_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_
       // Reads its content
       s64Size = orxResource_Read(hResource, pstResource->stData.s64Size, pu8Buffer, orxNULL, orxNULL);
       orxASSERT(s64Size == pstResource->stData.s64Size);
-
-      // Gets encryption key
-      zKey = orxConfig_GetEncryptionKey();
 
       // Decrypts data
       for(pu8Key = (const orxU8 *)zKey, pu8Data = pu8Buffer;
@@ -1303,16 +1303,8 @@ orxS64 orxFASTCALL orxBundle_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_
     }
     else
     {
-      const orxSTRING zKey;
-      const orxU8    *pu8Key, *pu8Src;
-      orxU8          *pu8Dst;
-
-      // Allocates intermediate buffer
-      pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)pstResource->stData.s64Size, orxMEMORY_TYPE_TEMP);
-      orxASSERT(pu8Buffer);
-
-      // Gets encryption key
-      zKey = orxConfig_GetEncryptionKey();
+      const orxU8  *pu8Key, *pu8Src;
+      orxU8        *pu8Dst;
 
       // Decrypts data
       for(pu8Key = (const orxU8 *)zKey, pu8Src = pstResource->stData.pu8Buffer, pu8Dst = pu8Buffer;
