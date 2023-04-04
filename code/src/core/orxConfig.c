@@ -3821,13 +3821,15 @@ void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAN
  */
 void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxS32 s32Index;
+  orxS32  s32Index;
+  orxBOOL bPush;
 
   /* Gets index */
   s32Index = (_u32ArgNumber > 2) ? _astArgList[2].s32Value : -1;
 
   /* Pushes section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  bPush = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxTRUE : orxFALSE;
+  if(bPush != orxFALSE)
   {
     orxConfig_PushSection(_astArgList[0].zValue);
   }
@@ -3945,7 +3947,7 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
   }
 
   /* Pops section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  if(bPush != orxFALSE)
   {
     orxConfig_PopSection();
   }
