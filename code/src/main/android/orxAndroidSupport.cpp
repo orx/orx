@@ -689,7 +689,6 @@ void android_main(android_app* state)
   SwappyGL_init(env, state->activity->javaGameActivity);
   SwappyGL_setAutoSwapInterval(false);
   SwappyGL_setAutoPipelineMode(false);
-  SwappyGL_enableStats(false);
 
   /* Gets arguments from manifest */
   orxAndroid_JNI_GetArguments();
