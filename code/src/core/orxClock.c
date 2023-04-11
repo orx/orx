@@ -84,6 +84,7 @@
 
 #define orxCLOCK_KU32_BANK_SIZE                 8           /**< Bank size */
 
+#define orxCLOCK_KF_DELAY_THRESHOLD             orx2F(0.003f)
 #define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.001f)
 
 
@@ -794,13 +795,13 @@ orxSTATUS orxFASTCALL orxClock_Update()
     sstClock.dNextTime = sstClock.dTime + (orxDOUBLE)fDelay;
 
     /* Gets real remaining delay */
-    fDelay = orx2F(sstClock.dNextTime - orxSystem_GetTime() + orxCLOCK_KF_DELAY_ADJUSTMENT);
+    fDelay = orx2F(sstClock.dNextTime - orxSystem_GetTime());
 
     /* Should delay? */
-    if(fDelay > orxFLOAT_0)
+    if(fDelay > orxCLOCK_KF_DELAY_THRESHOLD)
     {
       /* Waits for next time slice */
-      orxSystem_Delay(fDelay);
+      orxSystem_Delay(fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT);
     }
   }
 
