@@ -85,11 +85,6 @@ matrix:
       android:
         components:
           - build-tools-29.0.3
-      before_install:
-        - touch $HOME/.android/repositories.cfg
-        - wget "https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip" -O commandlinetools.zip
-        - unzip commandlinetools.zip -d $ANDROID_HOME
-        - yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --install "ndk;23.1.7779620" --sdk_root=$ANDROID_HOME
       install:
         - ./setup.sh
       before_script:
