@@ -436,7 +436,7 @@ typedef struct __orxDISPLAY_STATIC_t
   GLfloat                   fLastOrthoRight, fLastOrthoBottom;
   orxDISPLAY_SHADER        *pstDefaultShader;
   orxDISPLAY_SHADER        *pstNoTextureShader;
-  orxFLOAT                  fClockTickSize;
+  orxBOOL                   bOverrideClockTickSize;
   GLint                     iTextureUnitNumber;
   GLint                     iDrawBufferNumber;
   GLint                     iMaxTextureSize;
@@ -994,10 +994,13 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
       /* Wasn't in the foreground before? */
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
       {
-        /* Has backup clock tick size? */
-        if(sstDisplay.fClockTickSize >= orxFLOAT_0)
+        /* Should restore clock tick size? */
+        if(sstDisplay.bOverrideClockTickSize != orxFALSE)
         {
           orxCLOCK *pstClock;
+
+          /* Updates status */
+          sstDisplay.bOverrideClockTickSize = orxFALSE;
 
           /* Gets core clock */
           pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
@@ -1006,7 +1009,7 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
           if(pstClock != orxNULL)
           {
             /* Restores its tick size */
-            orxClock_SetTickSize(pstClock, sstDisplay.fClockTickSize);
+            orxClock_SetTickSize(pstClock, orxFLOAT_0);
           }
         }
 
@@ -1027,9 +1030,6 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
       /* Wasn't in the background before? */
       if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
       {
-        /* Clears backup clock tick size */
-        sstDisplay.fClockTickSize = -orxFLOAT_1;
-
         /* Sends background event */
         if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
         {
@@ -1044,11 +1044,11 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
             /* Gets core clock */
             pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
-            /* Valid? */
-            if(pstClock != orxNULL)
+            /* Valid and has no frequency? */
+            if((pstClock != orxNULL) && (orxClock_GetInfo(pstClock)->fTickSize == orxFLOAT_0))
             {
-              /* Backups its tick size */
-              sstDisplay.fClockTickSize = orxClock_GetInfo(pstClock)->fTickSize;
+              /* Updates status */
+              sstDisplay.bOverrideClockTickSize = orxTRUE;
 
               /* Sets its tick size to match the refresh rate */
               orxClock_SetTickSize(pstClock, orxFLOAT_1 / orxU2F(sstDisplay.u32RefreshRate));
