@@ -78,7 +78,7 @@ dependencies {
     api 'androidx.core:core:1.9.0'
     api 'androidx.appcompat:appcompat:1.6.1'
 
-    api 'androidx.games:games-activity:2.0.0'
+    api 'androidx.games:games-activity:2.0.1'
     api 'androidx.games:games-controller:2.0.0'
     api 'androidx.games:games-frame-pacing:2.0.0'
 }
