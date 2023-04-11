@@ -8657,42 +8657,54 @@ orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
  */
 orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_pstAnimSet)
 {
-  orxANIMPOINTER *pstAnimPointer;
-  orxSTATUS       eResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxSTRUCTURE_ASSERT(_pstAnimSet);
 
-  /* Creates animation pointer from animation set */
-  pstAnimPointer = orxAnimPointer_Create(_pstAnimSet);
-
-  /* Valid? */
-  if(pstAnimPointer != orxNULL)
+  /* Has animation set? */
+  if(_pstAnimSet != orxNULL)
   {
-    /* Links it to the object */
-    eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstAnimPointer));
+    orxANIMPOINTER *pstAnimPointer;
 
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
+    /* Creates animation pointer from animation set */
+    pstAnimPointer = orxAnimPointer_Create(_pstAnimSet);
+
+    /* Valid? */
+    if(pstAnimPointer != orxNULL)
     {
-      /* Updates status */
-      orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_ANIMPOINTER, orxOBJECT_KU32_FLAG_NONE);
+      /* Links it to the object */
+      eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstAnimPointer));
 
-      /* Updates its owner */
-      orxStructure_SetOwner(pstAnimPointer, _pstObject);
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates status */
+        orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_ANIMPOINTER, orxOBJECT_KU32_FLAG_NONE);
+
+        /* Updates its owner */
+        orxStructure_SetOwner(pstAnimPointer, _pstObject);
+      }
+      else
+      {
+        /* Deletes it */
+        orxAnimPointer_Delete(pstAnimPointer);
+      }
     }
     else
     {
-      /* Deletes it */
-      orxAnimPointer_Delete(pstAnimPointer);
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
   {
+    /* Unlinks animation pointer */
+    orxObject_UnlinkStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER);
+
     /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    eResult = orxSTATUS_SUCCESS;
   }
 
   /* Done! */
