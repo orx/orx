@@ -1,16 +1,14 @@
 language: c++
 
-matrix:
+jobs:
   include:
     - os: linux
       compiler: gcc
-      sudo: required
       script: ./code/build/travis/desktop.sh
       name: Linux / GCC
 
     - os: linux
       compiler: clang
-      sudo: required
       script: ./code/build/travis/desktop.sh
       name: Linux / Clang
 
@@ -85,6 +83,10 @@ matrix:
       android:
         components:
           - build-tools-29.0.3
+      before_install:
+        - sudo mkdir -p /usr/local/android-sdk/licenses/
+        - sudo touch /usr/local/android-sdk/licenses/android-sdk-license
+        - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" | sudo tee -a /usr/local/android-sdk/licenses/android-sdk-license
       install:
         - ./setup.sh
       before_script:
