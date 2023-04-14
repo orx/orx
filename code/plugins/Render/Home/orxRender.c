@@ -61,7 +61,6 @@
 
 /** Defines
  */
-#define orxRENDER_KF_TICK_SIZE                      orx2F(1.0f / 10.0f)
 #define orxRENDER_KU32_ORDER_BANK_SIZE              1024
 #define orxRENDER_KST_DEFAULT_COLOR                 orx2RGBA(255, 0, 0, 255)
 #define orxRENDER_KZ_FPS_FORMAT                     "FPS: %d"
@@ -2973,24 +2972,8 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
     /* Valid? */
     if(sstRender.pstRenderBank != orxNULL)
     {
-      orxFLOAT fMinFrequency = orxFLOAT_0;
-
       /* Gets core clock */
       sstRender.pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
-
-      /* Pushes render config section clock */
-      orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
-
-      /* Min frequency is not inhibited? */
-      if((orxConfig_HasValue(orxRENDER_KZ_CONFIG_MIN_FREQUENCY) == orxFALSE)
-      || ((fMinFrequency = orxConfig_GetFloat(orxRENDER_KZ_CONFIG_MIN_FREQUENCY)) > orxFLOAT_0))
-      {
-        /* Sets clock modifier */
-        orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MODIFIER_MAXED, (fMinFrequency > orxFLOAT_0) ? (orxFLOAT_1 / fMinFrequency) : orxRENDER_KF_TICK_SIZE);
-      }
-
-      /* Pops config section */
-      orxConfig_PopSection();
 
       /* Valid? */
       if(sstRender.pstClock != orxNULL)

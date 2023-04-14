@@ -86,6 +86,10 @@
 
 #define orxCLOCK_KF_DELAY_THRESHOLD             orx2F(0.003f)
 #define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.001f)
+#define orxCLOCK_KF_DEFAULT_MODIFIER_FIXED      (-orxFLOAT_1)
+#define orxCLOCK_KF_DEFAULT_MODIFIER_MULTIPLY   orxFLOAT_0
+#define orxCLOCK_KF_DEFAULT_MODIFIER_MAXED      orx2F(0.1f)
+#define orxCLOCK_KF_DEFAULT_MODIFIER_AVERAGE    orxFLOAT_0
 
 
 /***************************************************************************
@@ -501,6 +505,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
           if(sstClock.pstReferenceTable != orxNULL)
           {
             orxFLOAT fTickSize;
+            orxBOOL  bUseDefaultModifiers;
 
             /* Gets init time */
             sstClock.dTime = orxSystem_GetTime();
@@ -528,6 +533,9 @@ orxSTATUS orxFASTCALL orxClock_Init()
               }
             }
 
+            /* Updates status */
+            bUseDefaultModifiers = (orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_LIST) == orxFALSE) ? orxTRUE : orxFALSE;
+
             /* Pops config section */
             orxConfig_PopSection();
 
@@ -537,6 +545,16 @@ orxSTATUS orxFASTCALL orxClock_Init()
             /* Success? */
             if(sstClock.pstCore != orxNULL)
             {
+              /* Use default modifiers? */
+              if(bUseDefaultModifiers != orxFALSE)
+              {
+                /* Apply them */
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_FIXED, orxCLOCK_KF_DEFAULT_MODIFIER_FIXED);
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_MULTIPLY, orxCLOCK_KF_DEFAULT_MODIFIER_MULTIPLY);
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_MAXED, orxCLOCK_KF_DEFAULT_MODIFIER_MAXED);
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_AVERAGE, orxCLOCK_KF_DEFAULT_MODIFIER_AVERAGE);
+              }
+
               /* Sets it as its own owner */
               orxStructure_SetOwner(sstClock.pstCore, sstClock.pstCore);
 
