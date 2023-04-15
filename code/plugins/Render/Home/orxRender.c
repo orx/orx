@@ -61,7 +61,6 @@
 
 /** Defines
  */
-#define orxRENDER_KF_TICK_SIZE                      orx2F(1.0f / 10.0f)
 #define orxRENDER_KU32_ORDER_BANK_SIZE              1024
 #define orxRENDER_KST_DEFAULT_COLOR                 orx2RGBA(255, 0, 0, 255)
 #define orxRENDER_KZ_FPS_FORMAT                     "FPS: %d"
@@ -1117,7 +1116,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   /* Draws memory stats */
   {
     static const orxFLOAT   sfSaturationThreshold = orxU2F(1.0f / (1024.0f * 1024.0f * 1024.0f));
-    static const orxSTRING  azUnitList[] = {"B", "KB", "MB", "GB", "TB"};
+    static const orxSTRING  sazUnitList[] = {"B", "KB", "MB", "GB", "TB"};
     orxU64                  u64TotalCount = 0, u64TotalPeakCount = 0, u64TotalSize = 0, u64TotalPeakSize = 0, u64TotalOperationCount = 0;
     orxU32                  u32UnitIndex;
 
@@ -1163,7 +1162,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
 
       /* Finds best unit */
       for(u32UnitIndex = 0, fSize = orxU2F(u64Size), fPeakSize = orxU2F(u64PeakSize);
-          (u32UnitIndex < orxARRAY_GET_ITEM_COUNT(azUnitList) - 1) && (fPeakSize > orx2F(1024.0f));
+          (u32UnitIndex < orxARRAY_GET_ITEM_COUNT(sazUnitList) - 1) && (fPeakSize > orx2F(1024.0f));
           u32UnitIndex++, fSize *= orx2F(1.0f/1024.0f), fPeakSize *= orx2F(1.0f/1024.0f))
         ;
 
@@ -1198,7 +1197,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws it */
-      orxString_NPrint(acLabel, sizeof(acLabel), "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u64Count, u64PeakCount, fSize, fPeakSize, azUnitList[u32UnitIndex], u64OperationCount);
+      orxString_NPrint(acLabel, sizeof(acLabel), "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u64Count, u64PeakCount, fSize, fPeakSize, sazUnitList[u32UnitIndex], u64OperationCount);
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxColor_ToRGBA(&stColor), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
     }
   }
@@ -2973,24 +2972,8 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
     /* Valid? */
     if(sstRender.pstRenderBank != orxNULL)
     {
-      orxFLOAT fMinFrequency = orxFLOAT_0;
-
       /* Gets core clock */
       sstRender.pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
-
-      /* Pushes render config section clock */
-      orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
-
-      /* Min frequency is not inhibited? */
-      if((orxConfig_HasValue(orxRENDER_KZ_CONFIG_MIN_FREQUENCY) == orxFALSE)
-      || ((fMinFrequency = orxConfig_GetFloat(orxRENDER_KZ_CONFIG_MIN_FREQUENCY)) > orxFLOAT_0))
-      {
-        /* Sets clock modifier */
-        orxClock_SetModifier(sstRender.pstClock, orxCLOCK_MODIFIER_MAXED, (fMinFrequency > orxFLOAT_0) ? (orxFLOAT_1 / fMinFrequency) : orxRENDER_KF_TICK_SIZE);
-      }
-
-      /* Pops config section */
-      orxConfig_PopSection();
 
       /* Valid? */
       if(sstRender.pstClock != orxNULL)

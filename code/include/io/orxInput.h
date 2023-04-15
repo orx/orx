@@ -169,6 +169,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SelectSet(const orxST
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetCurrentSet();
 
+/** Gets next set
+ * @param[in]   _zSetName       Concerned set, orxNULL to get the first one
+ * @return Set name / orxNULL
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetNextSet(const orxSTRING _zSetName);
+
 /** Removes a set
  * @param[in] _zSetName         Set name to remove
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

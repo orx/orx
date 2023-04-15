@@ -144,8 +144,9 @@ static orxINLINE const orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
   switch(_eLevel)
   {
     orxDEBUG_DECLARE_LEVEL_ENTRY(ANIM);
-    orxDEBUG_DECLARE_LEVEL_ENTRY(CONFIG);
     orxDEBUG_DECLARE_LEVEL_ENTRY(CLOCK);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(COMMAND);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(CONFIG);
     orxDEBUG_DECLARE_LEVEL_ENTRY(DISPLAY);
     orxDEBUG_DECLARE_LEVEL_ENTRY(FILE);
     orxDEBUG_DECLARE_LEVEL_ENTRY(INPUT);
@@ -190,8 +191,9 @@ static orxINLINE const orxSTRING orxDebug_GetLevelFormat(orxDEBUG_LEVEL _eLevel)
   switch(_eLevel)
   {
     case orxDEBUG_LEVEL_ANIM:
-    case orxDEBUG_LEVEL_CONFIG:
     case orxDEBUG_LEVEL_CLOCK:
+    case orxDEBUG_LEVEL_COMMAND:
+    case orxDEBUG_LEVEL_CONFIG:
     case orxDEBUG_LEVEL_DISPLAY:
     case orxDEBUG_LEVEL_FILE:
     case orxDEBUG_LEVEL_INPUT:

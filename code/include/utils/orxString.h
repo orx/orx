@@ -193,9 +193,9 @@ static orxINLINE orxBOOL                                  orxString_IsCharacterA
 static orxINLINE orxBOOL                                  orxString_IsCharacterAlphaNumeric(orxU32 _u32CharacterCodePoint)
 {
   /* Done! */
-  return (((_u32CharacterCodePoint >= 'a') && (_u32CharacterCodePoint <= 'z'))
-       || ((_u32CharacterCodePoint >= 'A') && (_u32CharacterCodePoint <= 'Z'))
-       || ((_u32CharacterCodePoint >= '0') && (_u32CharacterCodePoint <= '9'))) ? orxTRUE : orxFALSE;
+  return(((_u32CharacterCodePoint >= 'a') && (_u32CharacterCodePoint <= 'z'))
+      || ((_u32CharacterCodePoint >= 'A') && (_u32CharacterCodePoint <= 'Z'))
+      || ((_u32CharacterCodePoint >= '0') && (_u32CharacterCodePoint <= '9'))) ? orxTRUE : orxFALSE;
 }
 
 /** Gets the UTF-8 encoding length of given character
@@ -624,7 +624,7 @@ static orxINLINE orxS32                                   orxString_NCompare(con
   orxASSERT(_zString2 != orxNULL);
 
   /* Done! */
-  return strncmp(_zString1, _zString2, (size_t)_u32CharNumber);
+  return(strncmp(_zString1, _zString2, (size_t)_u32CharNumber));
 }
 
 /** Compare two strings, case insensitive. If the first one is smaller than the second, it returns -1,
@@ -647,7 +647,7 @@ static orxINLINE orxS32                                   orxString_ICompare(con
 #else /* __orxWINDOWS__ */
 
   /* Done! */
-  return strcasecmp(_zString1, _zString2);
+  return(strcasecmp(_zString1, _zString2));
 
 #endif /* __orxWINDOWS__ */
 }
@@ -669,12 +669,12 @@ static orxINLINE orxS32                                   orxString_NICompare(co
 #ifdef __orxWINDOWS__
 
   /* Done! */
-  return strnicmp(_zString1, _zString2, (size_t)_u32CharNumber);
+  return(strnicmp(_zString1, _zString2, (size_t)_u32CharNumber));
 
 #else /* __orxWINDOWS__ */
 
   /* Done! */
-  return strncasecmp(_zString1, _zString2, _u32CharNumber);
+  return(strncasecmp(_zString1, _zString2, _u32CharNumber));
 
 #endif /* __orxWINDOWS__ */
 }

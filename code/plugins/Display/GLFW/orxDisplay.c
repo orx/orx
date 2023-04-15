@@ -156,8 +156,7 @@
 #define orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION 0x00001000 /**< No decoration flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN  0x00002000  /**< Full screen flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO  0x00004000  /**< Custom IBO flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR 0x00008000 /**< Swap control tear support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT 0x00010000 /**< Debug output support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT 0x00008000 /**< Debug output support flag */
 #define orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX   0x10000000  /**< VSync fix flag */
 
 #define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
@@ -437,7 +436,7 @@ typedef struct __orxDISPLAY_STATIC_t
   GLfloat                   fLastOrthoRight, fLastOrthoBottom;
   orxDISPLAY_SHADER        *pstDefaultShader;
   orxDISPLAY_SHADER        *pstNoTextureShader;
-  orxFLOAT                  fClockTickSize;
+  orxBOOL                   bOverrideClockTickSize;
   GLint                     iTextureUnitNumber;
   GLint                     iDrawBufferNumber;
   GLint                     iMaxTextureSize;
@@ -995,10 +994,13 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
       /* Wasn't in the foreground before? */
       if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
       {
-        /* Has backup clock tick size? */
-        if(sstDisplay.fClockTickSize >= orxFLOAT_0)
+        /* Should restore clock tick size? */
+        if(sstDisplay.bOverrideClockTickSize != orxFALSE)
         {
           orxCLOCK *pstClock;
+
+          /* Updates status */
+          sstDisplay.bOverrideClockTickSize = orxFALSE;
 
           /* Gets core clock */
           pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
@@ -1007,7 +1009,7 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
           if(pstClock != orxNULL)
           {
             /* Restores its tick size */
-            orxClock_SetTickSize(pstClock, sstDisplay.fClockTickSize);
+            orxClock_SetTickSize(pstClock, orxFLOAT_0);
           }
         }
 
@@ -1028,9 +1030,6 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
       /* Wasn't in the background before? */
       if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND))
       {
-        /* Clears backup clock tick size */
-        sstDisplay.fClockTickSize = -orxFLOAT_1;
-
         /* Sends background event */
         if(orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND) != orxSTATUS_FAILURE)
         {
@@ -1045,11 +1044,11 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
             /* Gets core clock */
             pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
-            /* Valid? */
-            if(pstClock != orxNULL)
+            /* Valid and has no frequency? */
+            if((pstClock != orxNULL) && (orxClock_GetInfo(pstClock)->fTickSize == orxFLOAT_0))
             {
-              /* Backups its tick size */
-              sstDisplay.fClockTickSize = orxClock_GetInfo(pstClock)->fTickSize;
+              /* Updates status */
+              sstDisplay.bOverrideClockTickSize = orxTRUE;
 
               /* Sets its tick size to match the refresh rate */
               orxClock_SetTickSize(pstClock, orxFLOAT_1 / orxU2F(sstDisplay.u32RefreshRate));
@@ -1516,33 +1515,6 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     }
 
 #endif /* __orxDISPLAY_OPENGL_ES__ */
-
-    /* Swap Control Tear extension? */
-#if !defined(__orxDISPLAY_OPENGL_ES__)
-  #if defined(__orxWINDOWS__) || defined(__orxLINUX__)
-    #ifdef __orxWINDOWS__
-
-    if(glfwExtensionSupported("WGL_EXT_swap_control_tear") != GLFW_FALSE)
-
-    #else /* __orxWINDOWS__ */
-
-    if(glfwExtensionSupported("GLX_EXT_swap_control_tear") != GLFW_FALSE)
-
-    #endif /* __orxWINDOWS__ */
-
-    {
-      /* Updates status flags */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR, orxDISPLAY_KU32_STATIC_FLAG_NONE);
-    }
-    else
-
-  #endif /* __orxWINDOWS__ || __orxLINUX__ */
-#endif /* __orxDISPLAY_OPENGL_ES__ */
-
-    {
-      /* Updates status flags */
-      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR);
-    }
 
 #ifdef GL_COMPRESSED_RGBA_BPTC_UNORM
     /* Has BC7 support? */
@@ -5204,7 +5176,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
     if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX))
     {
       /* Updates VSync status */
-      glfwSwapInterval(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_CONTROL_TEAR) ? -1 : 1);
+      glfwSwapInterval(1);
     }
     else
     {

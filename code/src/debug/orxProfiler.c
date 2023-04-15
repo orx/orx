@@ -374,6 +374,7 @@ void orxFASTCALL orxProfiler_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PROFILER, "Tried to exit profiler module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 

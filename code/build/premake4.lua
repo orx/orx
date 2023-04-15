@@ -118,7 +118,7 @@ solution "orx"
 
     excludes
     {
-        "../src/main/orxAndroidSupport.cpp"
+        "../src/main/android/orxAndroidSupport.cpp"
     }
 
     flags
@@ -382,12 +382,38 @@ project "orxLIB"
         "../src/**.cpp",
         "../src/**.c",
         "../include/**.h",
-        "../include/**.inc"
+        "../include/**.inc",
+        "../**premake4.lua",
+        "../**.ini",
+        "../**.r",
+        "../build/template/include/**",
+        "../build/template/src/**",
+        "../build/template/**.ini",
+        "../build/template/**.editorconfig",
+        "../../.editorconfig",
+        "../../.extern"
     }
 
-    excludes {"../src/main/orxMain.c"}
+    excludes
+    {
+        "../src/main/orxMain.c",
+        "../build/template/**.c",
+        "../build/template/**.cpp",
+        "../build/template/**.h",
+        "../build/template/**.txt",
+        "../demo/**"
+    }
 
     targetname ("orx")
+
+    vpaths
+    {
+        ["misc/build"] = {"../build/premake4.lua"},
+        ["misc/config"] = {"../bin/**.ini"},
+        ["misc/rebol"] = {"**.r"},
+        ["misc/template/*"] = {"template/**"},
+        ["misc"] = {"../../.editorconfig", "../../.extern"}
+    }
 
     configuration {"not *Core*"}
         defines

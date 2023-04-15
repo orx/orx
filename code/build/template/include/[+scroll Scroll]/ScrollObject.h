@@ -91,7 +91,7 @@ public:
                 void                    SetFlip(orxBOOL _bFlipX, orxBOOL _bFlipY, orxBOOL _bRecursive = orxTRUE);
 
                 orxBOOL                 IsAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE);
-                void                    SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE, orxBOOL _bRecursive = orxFALSE);
+                void                    SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE, orxBOOL _bRecursive = orxTRUE);
 
                 void                    AddFX(const orxSTRING _zFXName, orxBOOL _bRecursive = orxTRUE, orxFLOAT _fPropagationDelay = orxFLOAT_0);
                 void                    RemoveFX(const orxSTRING _zFXName, orxBOOL _bRecursive = orxTRUE);

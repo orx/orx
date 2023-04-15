@@ -23,7 +23,7 @@ var orx_memory_8h =
     [ "orxMemory_GetCacheLineSize", "group__orx_memory.html#ga7e69f5cbe4ac63c45077cc5d9a3da9f8", null ],
     [ "orxMemory_GetTypeName", "group__orx_memory.html#ga23385dc3cafb19d8e25dd58ea4d30af2", null ],
     [ "orxMemory_Init", "group__orx_memory.html#ga9f26236adad8a0a4d07aa6212280b379", null ],
-    [ "orxMemory_Move", "group__orx_memory.html#ga12cc30293a8637b811b731b445bc5c6c", null ],
+    [ "orxMemory_Move", "group__orx_memory.html#gac3af5ad79d07e4f38f40682272e71953", null ],
     [ "orxMemory_Reallocate", "group__orx_memory.html#gae5c2c5f182122468435fdf55d875a486", null ],
     [ "orxMemory_Set", "group__orx_memory.html#gaf19f65244ab0a99424048ef0b43d681d", null ],
     [ "orxMemory_Setup", "group__orx_memory.html#gaf91c778332c819f06bdde51acfda9fa0", null ],
