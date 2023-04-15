@@ -64,6 +64,7 @@
 #define orxCLOCK_KU32_FLAG_REFERENCED           0x20000000  /**< Referenced flag */
 #define orxCLOCK_KU32_FLAG_UPDATE_LOCK          0x40000000  /**< Lock update flag */
 #define orxCLOCK_KU32_FLAG_DISPLAY              0x80000000  /**< Display sync flag */
+#define orxCLOCK_KU32_FLAG_ALLOW_SLEEP          0x01000000  /**< Allow sleep flag */
 
 #define orxCLOCK_KU32_MASK_ALL                  0xFFFFFFFF  /**< All mask */
 
@@ -72,6 +73,7 @@
  */
 #define orxCLOCK_KZ_CONFIG_SECTION              "Clock"
 #define orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY "MainClockFrequency"
+#define orxCLOCK_KZ_CONFIG_ALLOW_SLEEP          "AllowSleep"
 
 #define orxCLOCK_KZ_MODIFIER_FIXED              "fixed"
 #define orxCLOCK_KZ_MODIFIER_MULTIPLY           "multiply"
@@ -533,7 +535,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
               }
             }
 
-            /* Updates status */
+            /* Updates modifiers status */
             bUseDefaultModifiers = (orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_LIST) == orxFALSE) ? orxTRUE : orxFALSE;
 
             /* Pops config section */
@@ -672,6 +674,19 @@ orxSTATUS orxFASTCALL orxClock_Update()
 
     /* Lock clocks */
     sstClock.u32Flags |= orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
+
+    /* Updates allow sleep status */
+    orxConfig_PushSection(orxCLOCK_KZ_CORE);
+    if((orxConfig_HasValue(orxCLOCK_KZ_CONFIG_ALLOW_SLEEP) == orxFALSE)
+    || (orxConfig_GetBool(orxCLOCK_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE))
+    {
+      sstClock.u32Flags |= orxCLOCK_KU32_FLAG_ALLOW_SLEEP;
+    }
+    else
+    {
+      sstClock.u32Flags &= ~orxCLOCK_KU32_FLAG_ALLOW_SLEEP;
+    }
+    orxConfig_PopSection();
 
     /* Actively waits until next update */
     while((dNewTime = orxSystem_GetTime()) < sstClock.dNextTime)
@@ -816,7 +831,8 @@ orxSTATUS orxFASTCALL orxClock_Update()
     fDelay = orx2F(sstClock.dNextTime - orxSystem_GetTime());
 
     /* Should delay? */
-    if(fDelay > orxCLOCK_KF_DELAY_THRESHOLD)
+    if((fDelay > orxCLOCK_KF_DELAY_THRESHOLD)
+    && (sstClock.u32Flags & orxCLOCK_KU32_FLAG_ALLOW_SLEEP))
     {
       /* Waits for next time slice */
       orxSystem_Delay(fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT);
