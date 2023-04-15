@@ -303,6 +303,9 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
               {
                 /* Updates data */
                 orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
+
+                /* Updates graphic's size */
+                orxGraphic_UpdateSize(pstGraphic);
               }
             }
           }
