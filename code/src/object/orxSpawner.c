@@ -34,6 +34,7 @@
 
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "core/orxResource.h"
@@ -92,6 +93,7 @@
 #define orxSPAWNER_KZ_CONFIG_INTERPOLATE          "Interpolate"
 #define orxSPAWNER_KZ_CONFIG_IMMEDIATE            "Immediate"
 #define orxSPAWNER_KZ_CONFIG_IGNORE_FROM_PARENT   "IgnoreFromParent"
+#define orxSPAWNER_KZ_CONFIG_ON_SPAWN             "OnSpawn"
 
 
 #define orxSPAWNER_KZ_BOTH                        "both"
@@ -343,7 +345,7 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
         orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_OBJECT_SPEED, orxSPAWNER_KU32_FLAG_NONE);
       }
 
-      /* Has list/random/command value? */
+      /* Is value dynamic? */
       if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED) != orxFALSE)
       {
         /* Updates status */
@@ -543,6 +545,7 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
     {
       orxCLOCK_INFO   stClockInfo;
       const orxSTRING zObjectName = orxNULL;
+      const orxSTRING zOnSpawn = orxNULL;
       orxU32          i;
 
       /* Inits clock info for object simulation */
@@ -552,11 +555,28 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
       /* Pushes section */
       orxConfig_PushSection(_pstSpawner->zReference);
 
-      /* Is single spawn or object not dynamic? */
-      if((u32SpawnNumber == 1) || (orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_OBJECT) == orxFALSE))
+      /* Is single spawn? */
+      if(u32SpawnNumber == 1)
       {
-        /* Stores it */
+        /* Stores object name and on spawn command */
         zObjectName = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT);
+        zOnSpawn    = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_ON_SPAWN);
+      }
+      else
+      {
+        /* Is object name not dynamic? */
+        if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_OBJECT) == orxFALSE)
+        {
+          /* Stores it */
+          zObjectName = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT);
+        }
+
+        /* Is on spawn command not dynamic? */
+        if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_ON_SPAWN) == orxFALSE)
+        {
+          /* Stores it */
+          zOnSpawn = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_ON_SPAWN);
+        }
       }
 
       /* For all objects to spawn */
@@ -588,8 +608,22 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
         /* Valid? */
         if(pstObject != orxNULL)
         {
+          const orxSTRING zCommand;
+
           /* Updates result */
           u32Result++;
+
+          /* Gets on spawn command */
+          zCommand = (zOnSpawn == orxNULL) ? orxConfig_GetString(orxSPAWNER_KZ_CONFIG_ON_SPAWN) : zOnSpawn;
+
+          /* Valid? */
+          if(*zCommand != orxCHAR_NULL)
+          {
+            orxCOMMAND_VAR stCommandResult;
+
+            /* Evaluates it */
+            orxCommand_EvaluateWithGUID(zCommand, orxStructure_GetGUID(pstObject), &stCommandResult);
+          }
 
           /* Should simulate object? */
           if(stClockInfo.fDT > orxFLOAT_0)
@@ -1176,6 +1210,7 @@ void orxFASTCALL orxSpawner_Setup()
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_PROFILER);
+  orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_FRAME);
