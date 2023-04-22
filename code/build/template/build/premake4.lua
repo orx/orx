@@ -262,6 +262,7 @@ project "[name]"
         "../include/**.inl",]
 [+bundle
         "../include/**.inc",]
+        "../build/premake4.lua",
         "../data/config/**.ini"
     }
 
@@ -276,15 +277,13 @@ project "[name]"
         "../include"
     }
 
-    configuration {"windows", "vs*"}
-        buildoptions {"/EHsc"}
-
     vpaths
     {
 [+scroll
         ["inline"] = {"**.inl"},]
 [+bundle
         ["bundle"] = {"**.inc"},]
+        ["build"] = {"**premake4.lua"},
         ["config"] = {"**.ini"}
     }
 [+bundle
@@ -312,3 +311,6 @@ project "[name]"
 
     configuration {"windows"}
         postbuildcommands {"cmd /c copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
+
+    configuration {"windows", "vs*"}
+        buildoptions {"/EHsc"}
