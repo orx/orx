@@ -61,6 +61,11 @@ extern "C"
   */
 GameActivity *orxAndroid_GetGameActivity();
 
+/**
+  Set key filter callback
+  */
+void orxAndroid_SetKeyFilter(android_key_event_filter filter);
+
 #if defined(__cplusplus)
 }
 #endif

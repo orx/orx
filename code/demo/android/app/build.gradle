@@ -3,21 +3,17 @@ apply plugin: 'com.android.application'
 android {
     namespace 'org.orx.demo'
     compileSdk sdkVersion.toInteger()
-
+    
     buildFeatures.prefab true
 
     defaultConfig {
-        applicationId "org.orx.demo"
+        applicationId 'org.orx.demo'
         targetSdkVersion sdkVersion.toInteger()
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
 
         minSdkVersion 19
         vectorDrawables.useSupportLibrary = true
-
-        ndk {
-            abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
-        }
 
         manifestPlaceholders = [ gameArguments: '' ]
     }
@@ -62,7 +58,7 @@ android {
 
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=0'
-                cFlags '-D__orxPROFILE__'
+                cFlags '-D__orxPROFILER__'
             }
             manifestPlaceholders = [ gameArguments: 'orxDemoProfile' ]
         }

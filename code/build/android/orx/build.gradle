@@ -6,7 +6,7 @@ plugins {
 android {
     namespace 'org.orx.lib'
     compileSdk sdkVersion.toInteger()
-
+    
     buildFeatures {
         prefab true
         prefabPublishing true
@@ -16,7 +16,7 @@ android {
         minSdk 19
         targetSdk sdkVersion.toInteger()
         versionCode 113
-        versionName "1.13"
+        versionName '1.13'
     }
     externalNativeBuild {
         ndkBuild {
@@ -37,14 +37,11 @@ android {
         liquidfun_static {
             headers "${System.env.ORX}/../extern/LiquidFun-1.1.0/include"
         }
-        // We prefab the NDK cpufeatures module (legacy), until prefab/cpu_features is released.
-        // See https://github.com/google/prefab/issues/93
         cpufeatures {
-            headers "${ndkDirectory}/sources/android/cpufeatures"
         }
     }
     packagingOptions {
-        exclude("**/libc++_shared.so")
+        exclude('**/libc++_shared.so')
     }
     buildTypes {
         release {
@@ -69,7 +66,7 @@ android {
 
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=0'
-                cFlags '-D__orxPROFILE__'
+                cFlags '-D__orxPROFILER__'
             }
         }
     }
@@ -81,9 +78,9 @@ dependencies {
     api 'androidx.core:core:1.9.0'
     api 'androidx.appcompat:appcompat:1.6.1'
 
-    api 'androidx.games:games-activity:2.0.0-rc01'
-    api 'androidx.games:games-controller:2.0.0-rc01'
-    api 'androidx.games:games-frame-pacing:2.0.0-rc01'
+    api 'androidx.games:games-activity:2.0.1'
+    api 'androidx.games:games-controller:2.0.0'
+    api 'androidx.games:games-frame-pacing:2.0.0'
 }
 
 afterEvaluate {
@@ -125,7 +122,7 @@ androidComponents {
                 // See this FR: https://issuetracker.google.com/issues/214034366
                 task.doLast {
                     copy {
-                        from ("./src/main/prefab")
+                        from ('./src/main/prefab')
                         into ("./build/intermediates/prefab_package/${variant.name}/prefab")
                         include '**/*.json'
                     }
