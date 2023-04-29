@@ -7,7 +7,7 @@
 
 void Object::OnCreate()
 {
-    orxConfig_SetBool("IsObject", orxTRUE);
+  orxConfig_SetBool("IsObject", orxTRUE);
 }
 
 void Object::OnDelete()
