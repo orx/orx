@@ -3772,8 +3772,11 @@ void orxFASTCALL orxConfig_CommandGetCurrentSection(orxU32 _u32ArgNumber, const 
  */
 void orxFASTCALL orxConfig_CommandClearValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxBOOL bPush;
+
   /* Pushes section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  bPush = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxTRUE : orxFALSE;
+  if(bPush != orxFALSE)
   {
     orxConfig_PushSection(_astArgList[0].zValue);
   }
@@ -3782,7 +3785,7 @@ void orxFASTCALL orxConfig_CommandClearValue(orxU32 _u32ArgNumber, const orxCOMM
   orxConfig_ClearValue(_astArgList[1].zValue);
 
   /* Pops section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  if(bPush != orxFALSE)
   {
     orxConfig_PopSection();
   }
@@ -3798,8 +3801,11 @@ void orxFASTCALL orxConfig_CommandClearValue(orxU32 _u32ArgNumber, const orxCOMM
  */
 void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxBOOL bPush;
+
   /* Pushes section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  bPush = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxTRUE : orxFALSE;
+  if(bPush != orxFALSE)
   {
     orxConfig_PushSection(_astArgList[0].zValue);
   }
@@ -3808,7 +3814,7 @@ void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAN
   _pstResult->bValue = (orxConfig_HasValue(_astArgList[1].zValue));
 
   /* Pops section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  if(bPush != orxFALSE)
   {
     orxConfig_PopSection();
   }
@@ -3960,8 +3966,11 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
  */
 void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxBOOL bPush;
+
   /* Pushes section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  bPush = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxTRUE : orxFALSE;
+  if(bPush != orxFALSE)
   {
     orxConfig_PushSection(_astArgList[0].zValue);
   }
@@ -3970,7 +3979,7 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
   _pstResult->zValue = (orxConfig_SetString(_astArgList[1].zValue, _astArgList[2].zValue) != orxSTATUS_FAILURE) ? _astArgList[2].zValue : orxSTRING_EMPTY;
 
   /* Pops section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  if(bPush != orxFALSE)
   {
     orxConfig_PopSection();
   }
@@ -3983,8 +3992,11 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
  */
 void orxFASTCALL orxConfig_CommandAppendValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxBOOL bPush;
+
   /* Pushes section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  bPush = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxTRUE : orxFALSE;
+  if(bPush != orxFALSE)
   {
     orxConfig_PushSection(_astArgList[0].zValue);
   }
@@ -3993,7 +4005,7 @@ void orxFASTCALL orxConfig_CommandAppendValue(orxU32 _u32ArgNumber, const orxCOM
   _pstResult->zValue = (orxConfig_SetEntry(_astArgList[1].zValue, _astArgList[2].zValue, orxFALSE, orxTRUE) != orxSTATUS_FAILURE) ? _astArgList[2].zValue : orxSTRING_EMPTY;
 
   /* Pops section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  if(bPush != orxFALSE)
   {
     orxConfig_PopSection();
   }
@@ -4006,10 +4018,12 @@ void orxFASTCALL orxConfig_CommandAppendValue(orxU32 _u32ArgNumber, const orxCOM
  */
 void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxCONFIG_ENTRY *pstEntry;
+  orxCONFIG_ENTRY  *pstEntry;
+  orxBOOL           bPush;
 
   /* Pushes section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  bPush = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxTRUE : orxFALSE;
+  if(bPush != orxFALSE)
   {
     orxConfig_PushSection(_astArgList[0].zValue);
   }
@@ -4048,7 +4062,7 @@ void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOM
   }
 
   /* Pops section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  if(bPush != orxFALSE)
   {
     orxConfig_PopSection();
   }
@@ -4061,8 +4075,11 @@ void orxFASTCALL orxConfig_CommandGetRawValue(orxU32 _u32ArgNumber, const orxCOM
  */
 void orxFASTCALL orxConfig_CommandGetListCount(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxBOOL bPush;
+
   /* Pushes section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  bPush = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxTRUE : orxFALSE;
+  if(bPush != orxFALSE)
   {
     orxConfig_PushSection(_astArgList[0].zValue);
   }
@@ -4071,7 +4088,7 @@ void orxFASTCALL orxConfig_CommandGetListCount(orxU32 _u32ArgNumber, const orxCO
   _pstResult->s32Value = orxConfig_GetListCount(_astArgList[1].zValue);
 
   /* Pops section */
-  if(*_astArgList[0].zValue != orxCHAR_NULL)
+  if(bPush != orxFALSE)
   {
     orxConfig_PopSection();
   }
