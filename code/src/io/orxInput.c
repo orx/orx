@@ -421,7 +421,7 @@ static orxINLINE orxFLOAT orxInput_ScaleValue(orxFLOAT _fValue, orxFLOAT _fThres
   return fResult;
 }
 
-static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM _eID)
+static orxINLINE orxFLOAT orxInput_GetBindingValue(const orxINPUT_SET *_pstSet, orxINPUT_TYPE _eType, orxENUM _eID)
 {
   orxFLOAT fResult = orxFLOAT_0;
 
@@ -429,7 +429,7 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(orxINPUT_TYPE _eType, orxENUM
   orxASSERT(_eType < orxINPUT_TYPE_NUMBER);
 
   /* Is type enabled? */
-  if((sstInput.pstCurrentSet == orxNULL) || orxFLAG_TEST(sstInput.pstCurrentSet->u32Flags, orxINPUT_GET_FLAG(_eType)))
+  if((_pstSet == orxNULL) || orxFLAG_TEST(_pstSet->u32Flags, orxINPUT_GET_FLAG(_eType)))
   {
     /* Depending on type */
     switch(_eType)
@@ -723,7 +723,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
         bHasBinding = orxTRUE;
 
         /* Gets raw value */
-        fValue = orxInput_GetBindingValue(pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID);
+        fValue = orxInput_GetBindingValue(_pstSet, pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID);
 
         /* Depending on mode */
         switch(pstEntry->astBindingList[i].eMode)
@@ -3395,7 +3395,7 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
         orxFLOAT  fValue;
 
         /* Gets binding's value */
-        fValue = orxInput_GetBindingValue((orxINPUT_TYPE)eType, eID);
+        fValue = orxInput_GetBindingValue(sstInput.pstCurrentSet, (orxINPUT_TYPE)eType, eID);
 
         /* Updates active status */
         bActive = (orxMath_Abs(fValue) > sstInput.pstCurrentSet->fDefaultThreshold) ? orxTRUE : orxFALSE;
