@@ -490,17 +490,17 @@ static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClock
     /* Gets request */
     pstRequest = &(sstResource.astRequestList[sstResource.u32RequestOutIndex]);
 
+    /* Decrements operation count */
+    if(pstRequest->pstResourceInfo != orxNULL)
+    {
+      pstRequest->pstResourceInfo->u32OpCount--;
+    }
+
     /* Has callback? */
     if(pstRequest->pfnCallback != orxNULL)
     {
       /* Notifies it */
       pstRequest->pfnCallback((orxHANDLE)pstRequest->pstResourceInfo, pstRequest->s64Size, pstRequest->pBuffer, pstRequest->pContext);
-    }
-
-    /* Decrements operation count */
-    if(pstRequest->pstResourceInfo != orxNULL)
-    {
-      pstRequest->pstResourceInfo->u32OpCount--;
     }
 
     /* Updates request out index */
