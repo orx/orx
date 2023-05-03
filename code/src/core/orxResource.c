@@ -1782,6 +1782,9 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
   orxASSERT(_zGroup != orxNULL);
   orxASSERT(_zName != orxNULL);
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Locate");
+
   /* Updates post-init */
   orxResource_UpdatePostInit();
 
@@ -1881,6 +1884,9 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return zResult;
 }
@@ -1899,6 +1905,9 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zGroup != orxNULL);
   orxASSERT(_zName != orxNULL);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_LocateInStorage");
 
   /* Updates post-init */
   orxResource_UpdatePostInit();
@@ -1983,6 +1992,9 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
       }
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return zResult;
@@ -2092,6 +2104,9 @@ orxS64 orxFASTCALL orxResource_GetTime(const orxSTRING _zLocation)
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zLocation != orxNULL);
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_GetTime");
+
   /* Valid? */
   if(*_zLocation != orxCHAR_NULL)
   {
@@ -2126,6 +2141,9 @@ orxS64 orxFASTCALL orxResource_GetTime(const orxSTRING _zLocation)
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return s64Result;
 }
@@ -2142,6 +2160,9 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zLocation != orxNULL);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Open");
 
   /* Valid? */
   if(*_zLocation != orxCHAR_NULL)
@@ -2209,6 +2230,9 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return hResult;
 }
@@ -2220,6 +2244,9 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
 {
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Close");
 
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
@@ -2247,6 +2274,9 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
       orxBank_Free(sstResource.pstOpenInfoBank, pstOpenInfo);
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
@@ -2290,6 +2320,9 @@ orxS64 orxFASTCALL orxResource_GetSize(orxHANDLE _hResource)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_GetSize");
+
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
   {
@@ -2304,6 +2337,9 @@ orxS64 orxFASTCALL orxResource_GetSize(orxHANDLE _hResource)
     /* Updates result */
     s64Result = pstOpenInfo->pstTypeInfo->pfnGetSize(pstOpenInfo->hResource);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return s64Result;
@@ -2323,6 +2359,9 @@ orxS64 orxFASTCALL orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orx
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_eWhence < orxSEEK_OFFSET_WHENCE_NUMBER);
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Seek");
+
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
   {
@@ -2337,6 +2376,9 @@ orxS64 orxFASTCALL orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orx
     /* Updates result */
     s64Result = pstOpenInfo->pstTypeInfo->pfnSeek(pstOpenInfo->hResource, _s64Offset, _eWhence);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return s64Result;
@@ -2353,6 +2395,9 @@ orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Tell");
+
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
   {
@@ -2367,6 +2412,9 @@ orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
     /* Updates result */
     s64Result = pstOpenInfo->pstTypeInfo->pfnTell(pstOpenInfo->hResource);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return s64Result;
@@ -2387,6 +2435,9 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_pBuffer != orxNULL);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Read");
 
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
@@ -2412,6 +2463,9 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return s64Result;
 }
@@ -2431,6 +2485,9 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_pBuffer != orxNULL);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Write");
 
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
@@ -2460,6 +2517,9 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return s64Result;
 }
@@ -2475,6 +2535,9 @@ orxSTATUS orxFASTCALL orxResource_Delete(const orxSTRING _zLocation)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zLocation != orxNULL);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Delete");
 
   /* Valid? */
   if(*_zLocation != orxCHAR_NULL)
@@ -2515,6 +2578,9 @@ orxSTATUS orxFASTCALL orxResource_Delete(const orxSTRING _zLocation)
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't delete resource <%s>: unknown resource type.", _zLocation);
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
@@ -2754,6 +2820,9 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Sync");
+
   /* Gets group ID */
   stGroupID = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : orxSTRINGID_UNDEFINED;
 
@@ -2881,6 +2950,9 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return eResult;
 }
@@ -2898,6 +2970,9 @@ orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_ClearCache");
 
   /* Waits for all pending operations to complete */
   while(sstResource.u32RequestProcessIndex != sstResource.u32RequestInIndex);
@@ -2936,6 +3011,9 @@ orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
       eResult = orxSTATUS_SUCCESS;
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
