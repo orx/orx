@@ -42,6 +42,7 @@ const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 #define orxBUNDLE_KU32_BUFFER_SIZE          16384
 #define orxBUNDLE_KU32_LINE_LENGTH          16
 #define orxBUNDLE_KU32_TABLE_SIZE           256
+#define orxBUNDLE_KU32_TOC_SIZE             1024
 
 #define orxBUNDLE_KZ_BINARY_TAG             "OBR1"
 #define orxBUNDLE_KU32_HEADER_INTRO_SIZE    (4 + 4)
@@ -84,9 +85,11 @@ typedef struct BundleResource
 #endif // !orxBUNDLE_HAS_DATA
 
 static orxCHAR        sacPrintBuffer[1024];
-static orxHANDLE      shResource;
-static orxHASHTABLE  *spstDataTable = orxNULL;
-static orxBOOL        sbProcess     = orxFALSE;
+static orxHASHTABLE  *sapstResourceTableList[orxTHREAD_KU32_MAX_THREAD_NUMBER];
+static orxHASHTABLE  *spstToCTable        = orxNULL;
+static orxHASHTABLE  *spstDataTable       = orxNULL;
+static orxHANDLE      shResource          = orxHANDLE_UNDEFINED;
+static orxBOOL        sbProcess           = orxFALSE;
 
 
 //! Helpers
@@ -216,6 +219,68 @@ void orxFASTCALL orxBundle_CommandGetOutputName(orxU32 _u32ArgNumber, const orxC
   return;
 }
 
+static orxINLINE void orxBundle_ClearResourceTable(orxHASHTABLE *_pstResourceTable)
+{
+  orxHANDLE hIterator, hResource;
+
+  // For all resources
+  for(hIterator = orxHashTable_GetNext(_pstResourceTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&hResource);
+      hIterator != orxHANDLE_UNDEFINED;
+      hIterator = orxHashTable_GetNext(_pstResourceTable, hIterator, orxNULL, (void **)&hResource))
+  {
+    // Closes it
+    orxResource_Close(hResource);
+  }
+
+  // Clears table
+  orxHashTable_Clear(_pstResourceTable);
+
+  // Done!
+  return;
+}
+
+static orxINLINE void orxBundle_ClearResourceTables()
+{
+  orxU32 i;
+
+  // Checks
+  orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
+
+  // For all resource tables
+  for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sapstResourceTableList); i++)
+  {
+    // Clears it
+    orxBundle_ClearResourceTable(sapstResourceTableList[i]);
+  }
+
+  // Done!
+  return;
+}
+
+static orxINLINE void orxBundle_ClearToCTable()
+{
+  orxHANDLE     hIterator;
+  orxHASHTABLE *pstToC;
+
+  // Checks
+  orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
+
+  // For all ToCs
+  for(hIterator = orxHashTable_GetNext(spstToCTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstToC);
+      hIterator != orxHANDLE_UNDEFINED;
+      hIterator = orxHashTable_GetNext(spstToCTable, hIterator, orxNULL, (void **)&pstToC))
+  {
+    // Deletes it
+    orxHashTable_Delete(pstToC);
+  }
+
+  // Clears ToC table
+  orxHashTable_Clear(spstToCTable);
+
+  // Done!
+  return;
+}
+
 static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
   const orxSTRING zLocation;
@@ -272,6 +337,12 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
       // Unregisters bundle type
       orxResource_UnregisterType(orxBUNDLE_KZ_RESOURCE_TAG);
 
+      // Clears resource tables
+      orxBundle_ClearResourceTables();
+
+      // Clears ToC table
+      orxBundle_ClearToCTable();
+
       // Syncs all groups
       orxResource_Sync(orxNULL);
 
@@ -324,6 +395,10 @@ static orxINLINE orxSTATUS orxBundle_Process()
   orxHANDLE hOutput;
   orxU32    u32DebugFlags;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  // Waits until all pending operations are over
+  while(orxResource_GetTotalPendingOpCount() != 0)
+    ;
 
   // Updates debug flag
   u32DebugFlags = orxDEBUG_GET_FLAGS();
@@ -933,54 +1008,103 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
         // Found?
         if(zLocation != orxNULL)
         {
-          orxHANDLE hResource;
+          orxHASHTABLE  **ppstToC;
+          orxSTRINGID     stLocationID, stResourceID;
+          orxU32          u32ResourceIndex;
 
-          // Opens it
-          hResource = orxResource_Open(zLocation, orxFALSE);
+          // Gets its location ID
+          stLocationID = orxString_Hash(zLocation);
 
-          // Success?
-          if(hResource != orxHANDLE_UNDEFINED)
+          // Gets its ToC
+          ppstToC = (orxHASHTABLE **)orxHashTable_Retrieve(spstToCTable, stLocationID);
+
+          // Not found?
+          if(*ppstToC == orxNULL)
           {
-            orxU8 acTag[4];
+            orxHANDLE hResource;
+            orxU32    u32ThreadID;
 
-            // Is a bundle?
-            if((orxResource_Read(hResource, 4, &acTag, orxNULL, orxNULL) == 4)
-            && (orxMemory_Compare(orxBUNDLE_KZ_BINARY_TAG, acTag, 4) == 0))
+            // Gets current thread ID
+            u32ThreadID = orxThread_GetCurrent();
+            orxASSERT(u32ThreadID != orxU32_UNDEFINED);
+
+            // Gets it from table
+            hResource = orxHashTable_Get(sapstResourceTableList[u32ThreadID], (orxU64)stLocationID);
+
+            // Found?
+            if(hResource != orxNULL)
             {
-              orxSTRINGID stResourceID;
-              orxU32      i, u32Count;
+              orxS64 s64Offset;
 
-              // Gets resource ID
-              stResourceID = orxString_Hash(_zName);
+              // Resets it
+              s64Offset = orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
+              orxASSERT(s64Offset == 0);
+            }
+            else
+            {
+              // Opens it
+              hResource = orxResource_Open(zLocation, orxFALSE);
 
-              // For all stored resources
-              for(i = 0, u32Count = orxResource_ReadU32(hResource); i < u32Count; i++)
+              // Success?
+              if(hResource != orxHANDLE_UNDEFINED)
               {
-                orxSTRINGID stID;
+                orxSTATUS eResult;
 
-                // Gets its ID
-                stID = (orxSTRINGID)orxResource_ReadU64(hResource);
+                // Adds it to table
+                eResult = orxHashTable_Add(sapstResourceTableList[u32ThreadID], (orxU64)stLocationID, hResource);
+                orxASSERT(eResult != orxSTATUS_FAILURE);
+              }
+            }
 
-                // Found?
-                if(stID == stResourceID)
+            // Success?
+            if(hResource != orxHANDLE_UNDEFINED)
+            {
+              orxU8 acTag[4];
+
+              // Is a valid bundle?
+              if((orxResource_Read(hResource, 4, &acTag, orxNULL, orxNULL) == 4)
+              && (orxMemory_Compare(orxBUNDLE_KZ_BINARY_TAG, acTag, 4) == 0))
+              {
+                orxU32 i, u32Count;
+
+                // Creates ToC
+                *ppstToC = orxHashTable_Create(orxBUNDLE_KU32_TOC_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+                orxASSERT(*ppstToC != orxNULL);
+
+                // For all stored resources
+                for(i = 0, u32Count = orxResource_ReadU32(hResource); i < u32Count; i++)
                 {
-                  // Creates location string: location + index
-                  orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%s%c0x%x", zLocation, orxRESOURCE_KC_LOCATION_SEPARATOR, i);
+                  orxSTRINGID stID;
+                  orxSTATUS   eResult;
 
-                  // Updates result
-                  zResult = sacBuffer;
-                  break;
-                }
-                else
-                {
+                  // Gets its ID
+                  stID = (orxSTRINGID)orxResource_ReadU64(hResource);
+
+                  // Adds it
+                  eResult = orxHashTable_Add(*ppstToC, stID, (void *)(orxUPTR)(i + 1));
+                  orxASSERT(eResult != orxSTATUS_FAILURE);
+
                   // Skips entry
                   orxResource_Seek(hResource, orxBUNDLE_KU32_HEADER_ENTRY_SIZE - 8, orxSEEK_OFFSET_WHENCE_CURRENT);
                 }
               }
             }
+          }
 
-            // Closes resource
-            orxResource_Close(hResource);
+          // Gets resource ID
+          stResourceID = orxString_Hash(_zName);
+
+          // Retrieves its index
+          u32ResourceIndex = (orxU32)(orxUPTR)orxHashTable_Get(*ppstToC, stResourceID);
+
+          // Valid?
+          if(u32ResourceIndex != 0)
+          {
+            // Creates location string: location + index
+            orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%s%c0x%x", zLocation, orxRESOURCE_KC_LOCATION_SEPARATOR, u32ResourceIndex - 1);
+
+            // Updates result
+            zResult = sacBuffer;
           }
         }
 
@@ -1042,19 +1166,53 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
     {
       static orxCHAR  sacBuffer[512];
       orxHANDLE       hResource;
+      orxSTRINGID     stLocationID;
+      orxU32          u32ThreadID;
+
+      // Gets current thread ID
+      u32ThreadID = orxThread_GetCurrent();
+      orxASSERT(u32ThreadID != orxU32_UNDEFINED);
 
       // Copies its name
       orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%.*s", (orxU32)(zLastSeparator - _zLocation), _zLocation);
 
-      // Opens it
-      hResource = orxResource_Open(sacBuffer, orxFALSE);
+      // Gets its location ID
+      stLocationID = orxString_Hash(sacBuffer);
+
+      // Gets it from table
+      hResource = orxHashTable_Get(sapstResourceTableList[u32ThreadID], (orxU64)stLocationID);
+
+      // Found?
+      if(hResource != orxNULL)
+      {
+        orxS64 s64Offset;
+
+        // Resets it
+        s64Offset = orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
+        orxASSERT(s64Offset == 0);
+      }
+      else
+      {
+        // Opens it
+        hResource = orxResource_Open(sacBuffer, orxFALSE);
+
+        // Success?
+        if(hResource != orxHANDLE_UNDEFINED)
+        {
+          orxSTATUS eResult;
+
+          // Adds it to table
+          eResult = orxHashTable_Add(sapstResourceTableList[u32ThreadID], (orxU64)stLocationID, hResource);
+          orxASSERT(eResult != orxSTATUS_FAILURE);
+        }
+      }
 
       // Success?
       if(hResource != orxHANDLE_UNDEFINED)
       {
         orxU8 acTag[4];
 
-        // Is a bundle?
+        // Is a valid bundle?
         if((orxResource_Read(hResource, 4, &acTag, orxNULL, orxNULL) == 4)
         && (orxMemory_Compare(orxBUNDLE_KZ_BINARY_TAG, acTag, 4) == 0))
         {
@@ -1092,13 +1250,6 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
               hResult = (orxHANDLE)pstResource;
             }
           }
-        }
-
-        // Failure?
-        if(hResult == orxHANDLE_UNDEFINED)
-        {
-          // Closes resource
-          orxResource_Close(hResource);
         }
       }
     }
@@ -1147,19 +1298,12 @@ void orxFASTCALL orxBundle_Close(orxHANDLE _hResource)
     // Frees it
     orxMemory_Free(pstResource->pu8FinalBuffer);
   }
-  else
-  {
-    // Has pending external resource?
-    if((pstResource->stData.pu8Buffer == orxNULL)
-    && (pstResource->stData.hResource != orxHANDLE_UNDEFINED))
-    {
-      // Closes it
-      orxResource_Close(pstResource->stData.hResource);
-    }
-  }
 
   // Frees it
   orxMemory_Free(pstResource);
+
+  // Done!
+  return;
 }
 
 // GetSize function: simply returns the size of the extracted resource, in bytes
@@ -1297,9 +1441,6 @@ orxS64 orxFASTCALL orxBundle_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_
       {
         *pu8Data ^= *pu8Key;
       }
-
-      // Closes it
-      orxResource_Close(hResource);
     }
     else
     {
@@ -1359,9 +1500,12 @@ orxSTATUS orxFASTCALL orxBundle_Init()
   orxSTATUS             eResult;
 
   // Inits variables
-  sbProcess         = orxFALSE;
+  orxMemory_Zero(sacPrintBuffer, sizeof(sacPrintBuffer));
+  orxMemory_Zero(sapstResourceTableList, sizeof(sapstResourceTableList));
+  spstToCTable      = orxNULL;
   spstDataTable     = orxNULL;
   shResource        = orxHANDLE_UNDEFINED;
+  sbProcess         = orxFALSE;
 
   // Inits our bundle resource type
   orxMemory_Zero(&stInfo, sizeof(orxRESOURCE_TYPE_INFO));
@@ -1383,34 +1527,37 @@ orxSTATUS orxFASTCALL orxBundle_Init()
   // Success?
   if(eResult != orxSTATUS_FAILURE)
   {
+    orxU32 i;
+
     // Has data?
     if(su32DataCount > 0)
     {
       // Creates data table
       spstDataTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      orxASSERT(spstDataTable != orxNULL);
 
-      // Success?
-      if(spstDataTable != orxNULL)
+      // For all bundled data
+      for(i = 0; i < su32DataCount; i++)
       {
-        orxU32 i;
+        orxSTATUS eResult;
 
-        // For all bundled data
-        for(i = 0; i < su32DataCount; i++)
-        {
-          orxSTATUS eResult;
+        // Stores it
+        eResult = orxHashTable_Add(spstDataTable, sastDataList[i].stNameID, (void *)&sastDataList[i]);
 
-          // Stores it
-          eResult = orxHashTable_Add(spstDataTable, sastDataList[i].stNameID, (void *)&sastDataList[i]);
-
-          // Checks
-          orxASSERT(eResult != orxSTATUS_FAILURE);
-        }
+        // Checks
+        orxASSERT(eResult != orxSTATUS_FAILURE);
       }
     }
-    else
+
+    // Creates ToC table
+    spstToCTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    orxASSERT(spstToCTable != orxNULL);
+
+    // Creates resource tables
+    for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sapstResourceTableList); i++)
     {
-      // Clears data table
-      spstDataTable = orxNULL;
+      sapstResourceTableList[i] = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      orxASSERT(sapstResourceTableList[i] != orxNULL);
     }
 
     // Registers commands
@@ -1430,6 +1577,8 @@ orxSTATUS orxFASTCALL orxBundle_Init()
 
 void orxFASTCALL orxBundle_Exit()
 {
+  orxU32 i;
+
   // Unregisters event handler
   orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxBundle_EventHandler);
   orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxBundle_EventHandler);
@@ -1452,6 +1601,24 @@ void orxFASTCALL orxBundle_Exit()
     // Deletes it
     orxHashTable_Delete(spstDataTable);
     spstDataTable = orxNULL;
+  }
+
+  // Clears ToC table
+  orxBundle_ClearToCTable();
+
+  // Deletes ToC table
+  orxHashTable_Delete(spstToCTable);
+  spstToCTable = orxNULL;
+
+  // Clears resource tables
+  orxBundle_ClearResourceTables();
+
+  // For all resource tables
+  for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sapstResourceTableList); i++)
+  {
+    // Deletes it
+    orxHashTable_Delete(sapstResourceTableList[i]);
+    sapstResourceTableList[i] = orxNULL;
   }
 }
 
