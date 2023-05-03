@@ -879,13 +879,12 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
       else if(pstPayload->stGroupID == orxString_Hash(orxSOUND_KZ_RESOURCE_GROUP))
       {
         orxHANDLE         hIterator;
-        orxU64            u64Key;
         orxSOUND_SAMPLE  *pstSample;
 
         /* Looks for matching sample */
-        for(hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstSample);
+        for(hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstSample);
             (hIterator != orxHANDLE_UNDEFINED) && (pstSample->stID != pstPayload->stNameID);
-            hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, hIterator, &u64Key, (void **)&pstSample));
+            hIterator = orxHashTable_GetNext(sstSound.pstSampleTable, hIterator, orxNULL, (void **)&pstSample));
 
         /* Found? */
         if(hIterator != orxHANDLE_UNDEFINED)
