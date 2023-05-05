@@ -49,6 +49,7 @@
 #include "math/orxVector.h"
 #include "math/orxOBox.h"
 #include "memory/orxBank.h"
+#include "render/orxShaderPrecision.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 #include "utils/orxLinkList.h"
@@ -79,8 +80,7 @@ typedef struct __orxRGBA_t
 #define orxCOLOR_NORMALIZER         (orx2F(1.0f / 255.0f))
 #define orxCOLOR_DENORMALIZER       (orx2F(255.0f))
 
-typedef struct __orxBITMAP_t        orxBITMAP;
-
+typedef struct __orxBITMAP_t          orxBITMAP;
 
 /** Vertex info structure
  */
@@ -1092,9 +1092,10 @@ extern orxDLLAPI orxBOOL orxFASTCALL                  orxDisplay_HasShaderSuppor
  * @param[in]   _u32Size                              Size of the shader code list
  * @param[in]   _pstParamList                         Shader parameters (should be a link list of orxSHADER_PARAM)
  * @param[in]   _bUseCustomParam                      Shader uses custom parameters
+ * @param[in]   _eShaderPrecision                     Shader default precision
  * @return orxHANDLE of the compiled shader is successful, orxHANDLE_UNDEFINED otherwise
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL                orxDisplay_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam);
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxDisplay_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam, orxSHADER_PRECISION _eShaderPrecision);
 
 /** Deletes a compiled shader
  * @param[in]   _hShader                              Shader to delete

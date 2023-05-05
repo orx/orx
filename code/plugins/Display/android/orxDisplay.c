@@ -4573,7 +4573,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       orxConfig_PopSection();
 
       static const orxSTRING szFragmentShaderSource =
-      "precision highp float;"
       "varying vec2 _gl_TexCoord0_;"
       "varying vec4 _Color0_;"
       "uniform sampler2D _Texture_;"
@@ -4582,7 +4581,6 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       "  gl_FragColor = _Color0_.rgba * texture2D(_Texture_, _gl_TexCoord0_).rgba;"
       "}";
       static const orxSTRING szNoTextureFragmentShaderSource =
-      "precision highp float;"
       "varying vec2 _gl_TexCoord0_;"
       "varying vec4 _Color0_;"
       "uniform sampler2D _Texture_;"
@@ -4602,8 +4600,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       sstDisplay.apstBoundBitmapList[sstDisplay.s32ActiveTextureUnit] = orxNULL;
 
       /* Creates default shaders */
-      sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER*)orxDisplay_CreateShader(&szFragmentShaderSource, 1, orxNULL, orxFALSE);
-      sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER*)orxDisplay_CreateShader(&szNoTextureFragmentShaderSource, 1, orxNULL, orxTRUE);
+      sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER*)orxDisplay_CreateShader(&szFragmentShaderSource, 1, orxNULL, orxFALSE, orxSHADER_PRECISION_SYSTEM);
+      sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER*)orxDisplay_CreateShader(&szNoTextureFragmentShaderSource, 1, orxNULL, orxTRUE, orxSHADER_PRECISION_SYSTEM);
 
       /* Generates index buffer object (VBO/IBO) */
       glGenBuffers(1, &(sstDisplay.uiVertexBuffer));
@@ -4733,7 +4731,7 @@ orxBOOL orxFASTCALL orxDisplay_Android_HasShaderSupport()
   return orxTRUE;
 }
 
-orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
+orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam, orxSHADER_PRECISION _eShaderPrecision)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -4762,14 +4760,42 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING *_azCodeLi
         sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
         pc                                = sstDisplay.acShaderCodeBuffer;
         s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE;
-
+        
+        /* Sets default shader precision */
+        switch(_eShaderPrecision)
+        {
+          case orxSHADER_PRECISION_LOW:
+          {
+            s32Offset = orxString_NPrint(pc, s32Free, "precision lowp float;\n");
+            pc       += s32Offset;
+            s32Free  -= s32Offset;
+            break;
+          }
+          case orxSHADER_PRECISION_MEDIUM:
+          {
+            s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\n");
+            pc       += s32Offset;
+            s32Free  -= s32Offset;
+            break;
+          }
+          default:
+          case orxSHADER_PRECISION_HIGH:
+          case orxSHADER_PRECISION_SYSTEM:
+          {
+            s32Offset = orxString_NPrint(pc, s32Free, "precision highp float;\n");
+            pc       += s32Offset;
+            s32Free  -= s32Offset;
+            break;
+          }
+        }
+        
         /* Has parameters? */
         if(_pstParamList != orxNULL)
         {
           orxSHADER_PARAM *pstParam;
 
           /* Adds wrapping code */
-          s32Offset = orxString_NPrint(pc, s32Free, "precision highp float;\nvarying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
+          s32Offset = orxString_NPrint(pc, s32Free, "varying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
           pc       += s32Offset;
           s32Free  -= s32Offset;
 
@@ -4782,10 +4808,18 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING *_azCodeLi
             switch(pstParam->eType)
             {
               case orxSHADER_PARAM_TYPE_FLOAT:
-              case orxSHADER_PARAM_TYPE_TIME:
               {
                 /* Adds its literal value */
                 s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%u];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
+                pc       += s32Offset;
+                s32Free  -= s32Offset;
+
+                break;
+              }
+              case orxSHADER_PARAM_TYPE_TIME:
+              {
+                /* Adds its literal value */
+                s32Offset = orxString_NPrint(pc, s32Free, "uniform highp float %s;\n", pstParam->zName);
                 pc       += s32Offset;
                 s32Free  -= s32Offset;
 

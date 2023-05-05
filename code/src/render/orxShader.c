@@ -44,6 +44,7 @@
 #include "display/orxText.h"
 #include "object/orxStructure.h"
 #include "render/orxViewport.h"
+#include "render/orxShaderPrecision.h"
 #include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 
@@ -93,8 +94,12 @@
 #define orxSHADER_KZ_CONFIG_PARAM_LIST        "ParamList"
 #define orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM  "UseCustomParam"
 #define orxSHADER_KZ_CONFIG_KEEP_IN_CACHE     "KeepInCache"
+#define orxSHADER_KZ_CONFIG_DEFAULT_PRECISION "DefaultPrecision"
 
 #define orxSHADER_KZ_TIME                     "time"
+#define orxSHADER_KZ_LOW                      "low"
+#define orxSHADER_KZ_MEDIUM                   "medium"
+#define orxSHADER_KZ_HIGH                     "high"
 
 
 /***************************************************************************
@@ -123,13 +128,14 @@ typedef struct __orxSHADER_PARAM_VALUE_t
  */
 struct __orxSHADER_t
 {
-  orxSTRUCTURE    stStructure;                            /**< Public structure, first structure member : 32 */
-  orxLINKLIST     stParamList;                            /**< Parameter list : 28 */
-  orxLINKLIST     stParamValueList;                       /**< Parameter value list : 40 */
-  const orxSTRING zReference;                             /**< Shader reference : 44 */
-  orxHANDLE       hData;                                  /**< Compiled shader data : 48 */
-  orxBANK        *pstParamValueBank;                      /**< Parameter value bank : 52 */
-  orxBANK        *pstParamBank;                           /**< Parameter bank : 56 */
+  orxSTRUCTURE         stStructure;                       /**< Public structure, first structure member : 32 */
+  orxLINKLIST          stParamList;                       /**< Parameter list : 28 */
+  orxLINKLIST          stParamValueList;                  /**< Parameter value list : 40 */
+  const orxSTRING      zReference;                        /**< Shader reference : 44 */
+  orxHANDLE            hData;                             /**< Compiled shader data : 48 */
+  orxBANK             *pstParamValueBank;                 /**< Parameter value bank : 52 */
+  orxBANK             *pstParamBank;                      /**< Parameter bank : 56 */
+  orxSHADER_PRECISION  ePrecision;                        /**< Default precision : 60 */
 };
 
 /** Static structure
@@ -141,7 +147,6 @@ typedef struct __orxSHADER_STATIC_t
   const orxCLOCK_INFO *pstClockInfo;                      /**< Core clock info */
 
 } orxSHADER_STATIC;
-
 
 /***************************************************************************
  * Static variables                                                        *
@@ -156,6 +161,29 @@ static orxSHADER_STATIC sstShader;
  * Private functions                                                       *
  ***************************************************************************/
 
+static orxSTATUS orxFASTCALL orxShader_SetDefaultPrecision(orxSHADER *_pstShader, const orxSTRING zDefaultPrecision)
+{
+  orxSHADER_PRECISION ePrecision = orxSHADER_PRECISION_SYSTEM;
+  
+  if(orxString_ICompare(zDefaultPrecision, orxSHADER_KZ_LOW) == 0)
+  {
+    ePrecision = orxSHADER_PRECISION_LOW;
+  }
+  else if(orxString_ICompare(zDefaultPrecision, orxSHADER_KZ_MEDIUM) == 0)
+  {
+    ePrecision = orxSHADER_PRECISION_MEDIUM;
+  }
+  else if(orxString_ICompare(zDefaultPrecision, orxSHADER_KZ_HIGH) == 0)
+  {
+    ePrecision = orxSHADER_PRECISION_HIGH;
+  }
+  
+    /* Updates precision */
+  _pstShader->ePrecision = ePrecision;
+  
+  return orxSTATUS_SUCCESS;
+}
+
 /** Processes config data
  */
 static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
@@ -163,6 +191,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
   orxS32                  i, s32Number;
   orxSHADER_PARAM_VALUE  *pstParamValue;
   orxSTATUS               eResult = orxSTATUS_FAILURE;
+  const orxSTRING         zDefaultPrecision;
 
   /* Pushes its section */
   orxConfig_PushSection(_pstShader->zReference);
@@ -177,6 +206,14 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
   {
     /* Updates status */
     orxStructure_SetFlags(_pstShader, orxSHADER_KU32_FLAG_NONE, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM);
+  }
+  
+  /* Has default float precision? */
+  zDefaultPrecision = orxConfig_GetString(orxSHADER_KZ_CONFIG_DEFAULT_PRECISION);
+  if((zDefaultPrecision != orxNULL) && (*zDefaultPrecision != orxCHAR_NULL))
+  {
+    /* Sets default precision */
+    orxShader_SetDefaultPrecision(_pstShader, zDefaultPrecision);
   }
 
   /* For all current parameter values */
@@ -1708,7 +1745,7 @@ orxSTATUS orxFASTCALL orxShader_CompileCode(orxSHADER *_pstShader, const orxSTRI
   if((_azCodeList != orxNULL) && (_u32Size > 0))
   {
     /* Creates compiled shader */
-    _pstShader->hData = orxDisplay_CreateShader(_azCodeList, _u32Size, &(_pstShader->stParamList), orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM) ? orxTRUE : orxFALSE);
+    _pstShader->hData = orxDisplay_CreateShader(_azCodeList, _u32Size, &(_pstShader->stParamList), orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM) ? orxTRUE : orxFALSE, _pstShader->ePrecision);
 
     /* Success? */
     if(_pstShader->hData != orxHANDLE_UNDEFINED)

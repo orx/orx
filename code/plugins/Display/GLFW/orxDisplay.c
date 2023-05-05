@@ -5411,9 +5411,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         {
           orxU32                  u32ShaderVersion = orxU32_UNDEFINED;
           static const orxSTRING  szFragmentShaderSource =
-#ifdef __orxDISPLAY_OPENGL_ES__
-          "precision highp float;"
-#endif /* __orxDISPLAY_OPENGL_ES__ */
           "varying vec2 _gl_TexCoord0_;"
           "varying vec4 _Color0_;"
           "uniform sampler2D orxTexture;"
@@ -5422,9 +5419,6 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           "  gl_FragColor = _Color0_.rgba * texture2D(orxTexture, _gl_TexCoord0_).rgba;"
           "}";
           static const orxSTRING szNoTextureFragmentShaderSource =
-#ifdef __orxDISPLAY_OPENGL_ES__
-          "precision highp float;"
-#endif /* __orxDISPLAY_OPENGL_ES__ */
           "varying vec2 _gl_TexCoord0_;"
           "varying vec4 _Color0_;"
           "void main()"
@@ -5443,8 +5437,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           }
 
           /* Creates default & no texture shaders */
-          sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(&szFragmentShaderSource, 1, orxNULL, orxFALSE);
-          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(&szNoTextureFragmentShaderSource, 1, orxNULL, orxTRUE);
+          sstDisplay.pstDefaultShader   = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(&szFragmentShaderSource, 1, orxNULL, orxFALSE, orxSHADER_PRECISION_SYSTEM);
+          sstDisplay.pstNoTextureShader = (orxDISPLAY_SHADER *)orxDisplay_CreateShader(&szNoTextureFragmentShaderSource, 1, orxNULL, orxTRUE, orxSHADER_PRECISION_SYSTEM);
 
           /* Should restore shader version? */
           if(u32ShaderVersion != orxU32_UNDEFINED)
@@ -6262,7 +6256,7 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_HasShaderSupport()
   return (orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_SHADER)) ? orxTRUE : orxFALSE;
 }
 
-orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
+orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam, orxSHADER_PRECISION _eShaderPrecision)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -6291,7 +6285,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
         sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
         pc                                = sstDisplay.acShaderCodeBuffer;
         s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE;
-
+        
         /* Pushes display config section */
         orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
@@ -6333,6 +6327,36 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           }
         }
 
+        /* Sets default shader precision */
+#ifdef __orxDISPLAY_OPENGL_ES__
+        switch(_eShaderPrecision)
+        {
+          case orxSHADER_PRECISION_LOW:
+          {
+            s32Offset = orxString_NPrint(pc, s32Free, "precision lowp float;\n");
+            pc       += s32Offset;
+            s32Free  -= s32Offset;
+            break;
+          }
+          case orxSHADER_PRECISION_MEDIUM:
+          {
+            s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\n");
+            pc       += s32Offset;
+            s32Free  -= s32Offset;
+            break;
+          }
+          default:
+          case orxSHADER_PRECISION_HIGH:
+          case orxSHADER_PRECISION_SYSTEM:
+          {
+            s32Offset = orxString_NPrint(pc, s32Free, "precision highp float;\n");
+            pc       += s32Offset;
+            s32Free  -= s32Offset;
+            break;
+          }
+        }
+#endif /* __orxDISPLAY_OPENGL_ES__ */
+        
         /* Has shader extension list? */
         if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST) != orxFALSE)
         {
@@ -6409,11 +6433,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           orxSHADER_PARAM *pstParam;
 
           /* Adds wrapping code */
-#ifdef __orxDISPLAY_OPENGL_ES__
-          s32Offset = orxString_NPrint(pc, s32Free, "precision highp float;\nvarying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
-#else /* __orxDISPLAY_OPENGL_ES__ */
           s32Offset = orxString_NPrint(pc, s32Free, "varying vec2 _gl_TexCoord0_;\nvarying vec4 _Color0_;\n");
-#endif /* __orxDISPLAY_OPENGL_ES__ */
           pc       += s32Offset;
           s32Free  -= s32Offset;
 
@@ -6426,10 +6446,18 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
             switch(pstParam->eType)
             {
               case orxSHADER_PARAM_TYPE_FLOAT:
-              case orxSHADER_PARAM_TYPE_TIME:
               {
                 /* Adds its literal value */
                 s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%u];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
+                pc       += s32Offset;
+                s32Free  -= s32Offset;
+
+                break;
+              }
+              case orxSHADER_PARAM_TYPE_TIME:
+              {
+                /* Adds its literal value */
+                s32Offset = orxString_NPrint(pc, s32Free, "uniform highp float %s;\n", pstParam->zName);
                 pc       += s32Offset;
                 s32Free  -= s32Offset;
 

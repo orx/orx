@@ -33,7 +33,6 @@
 #include "display/orxDisplay.h"
 #include "plugin/orxPluginCore.h"
 
-
 /** Misc defines
  */
 #define orxDISPLAY_KZ_ALPHA                       "alpha"
@@ -153,7 +152,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawOBox, orxSTATUS, const orxOBOX *, 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DrawMesh, orxSTATUS, const orxDISPLAY_MESH *, const orxBITMAP *, orxDISPLAY_SMOOTHING, orxDISPLAY_BLEND_MODE);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_HasShaderSupport, orxBOOL);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING *, orxU32, const orxLINKLIST *, orxBOOL);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_CreateShader, orxHANDLE, const orxSTRING *, orxU32, const orxLINKLIST *, orxBOOL, orxSHADER_PRECISION);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteShader, void, orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StartShader, orxSTATUS, const orxHANDLE);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_StopShader, orxSTATUS, const orxHANDLE);
@@ -390,9 +389,9 @@ orxBOOL orxFASTCALL orxDisplay_HasShaderSupport()
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_HasShaderSupport)();
 }
 
-orxHANDLE orxFASTCALL orxDisplay_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam)
+orxHANDLE orxFASTCALL orxDisplay_CreateShader(const orxSTRING *_azCodeList, orxU32 _u32Size, const orxLINKLIST *_pstParamList, orxBOOL _bUseCustomParam, orxSHADER_PRECISION _eShaderPrecision)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_CreateShader)(_azCodeList, _u32Size, _pstParamList, _bUseCustomParam);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_CreateShader)(_azCodeList, _u32Size, _pstParamList, _bUseCustomParam, _eShaderPrecision);
 }
 
 void orxFASTCALL orxDisplay_DeleteShader(orxHANDLE _hShader)
