@@ -80,7 +80,7 @@ typedef struct __orxRGBA_t
 #define orxCOLOR_NORMALIZER         (orx2F(1.0f / 255.0f))
 #define orxCOLOR_DENORMALIZER       (orx2F(255.0f))
 
-typedef struct __orxBITMAP_t          orxBITMAP;
+typedef struct __orxBITMAP_t        orxBITMAP;
 
 /** Vertex info structure
  */

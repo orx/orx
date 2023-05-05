@@ -66,6 +66,7 @@ typedef enum __orxSHADER_PARAM_TYPE_t
 
 } orxSHADER_PARAM_TYPE;
 
+
 /** Shader parameter structure
  */
 typedef struct __orxSHADER_PARAM_t
