@@ -2205,9 +2205,33 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
             /* Moves to next frame on same row */
             *pfRowOrigin += fRowSign * *pfRowDelta;
+
+            /* Has prefix? */
+            if(*zPrefix != orxCHAR_NULL)
+            {
+              /* Sets new parent's parent */
+              orxConfig_SetParent(zNewFrameParent, zCurrentSection);
+            }
+            else
+            {
+              /* Sets frame section's parent */
+              orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
+            }
           }
           else
           {
+            /* Has prefix? */
+            if(*zPrefix != orxCHAR_NULL)
+            {
+              /* Sets new parent's parent */
+              orxConfig_SetParent(zNewFrameParent, zCurrentSection);
+            }
+            else
+            {
+              /* Sets frame section's parent */
+              orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
+            }
+
             /* Doesn't have texture? */
             if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME) == orxFALSE)
             {
@@ -2226,18 +2250,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               /* Sets it */
               orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acTextureBuffer);
             }
-          }
-
-          /* Has prefix? */
-          if(*zPrefix != orxCHAR_NULL)
-          {
-            /* Sets new parent's parent */
-            orxConfig_SetParent(zNewFrameParent, zCurrentSection);
-          }
-          else
-          {
-            /* Sets frame section's parent */
-            orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
           }
 
           /* Gets event value count */
