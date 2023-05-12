@@ -1951,7 +1951,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           const orxSTRING zNewFrameParent;
           orxFLOAT        fEventValue = orxFLOAT_0, fDuration;
           orxS32          s32EventValueCount;
-          orxBOOL         bDebugLevelBackup, bTempSize = orxFALSE, bTempOrigin = orxFALSE;
+          orxBOOL         bDebugLevelBackup, bTempSize = orxFALSE, bTempOrigin = orxFALSE, bTempFrameIndex = orxFALSE, bTempTexture = orxFALSE;
           orxCHAR         acParentBuffer[128], acFrameBuffer[128];
 
           /* Has prefix? */
@@ -2232,23 +2232,37 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
             }
 
+            /* Has frame index? */
+            if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
+            {
+              /* Updates frame ID */
+              u32FrameID = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
+            }
+            else
+            {
+              orxCHAR acFrameIndexBuffer[64];
+
+              /* Stores frame ID as index */
+              orxString_NPrint(acFrameIndexBuffer, sizeof(acFrameIndexBuffer), "%0*u", u32Digits, u32FrameID);
+              orxConfig_SetString(orxANIMSET_KZ_CONFIG_FRAME_INDEX, acFrameIndexBuffer);
+
+              /* Updates status */
+              bTempFrameIndex = orxTRUE;
+            }
+
             /* Doesn't have texture? */
             if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME) == orxFALSE)
             {
               orxCHAR acTextureBuffer[128];
-
-              /* Has frame index? */
-              if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
-              {
-                /* Updates frame ID */
-                u32FrameID = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
-              }
 
               /* Gets texture name */
               orxString_NPrint(acTextureBuffer, sizeof(acTextureBuffer), "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, u32FrameID, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt);
 
               /* Sets it */
               orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acTextureBuffer);
+
+              /* Updates status */
+              bTempTexture = orxTRUE;
             }
           }
 
@@ -2291,6 +2305,20 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           {
             /* Clears it */
             orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN);
+          }
+
+          /* Use temp frame index? */
+          if(bTempFrameIndex != orxFALSE)
+          {
+            /* Clears it */
+            orxConfig_ClearValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
+          }
+
+          /* Use temp texture? */
+          if(bTempTexture != orxFALSE)
+          {
+            /* Clears it */
+            orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
           }
 
           /* Has prefix? */
