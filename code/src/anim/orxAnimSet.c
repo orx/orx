@@ -1800,8 +1800,12 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Not a text? */
           if(bIsText == orxFALSE)
           {
-            /* Stops */
-            bContinue = orxFALSE;
+            /* Not auto-stop mode? */
+            if(s32MaxFrames != 0)
+            {
+              /* Stops */
+              bContinue = orxFALSE;
+            }
           }
         }
       }
@@ -2029,8 +2033,8 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               /* No frame size and not a text? */
               if((orxVector_IsNull(&vFrameSize) != orxFALSE) && (bIsText == orxFALSE))
               {
-                /* Single frame animation? */
-                if((s32MaxFrames == 1) || (s32MaxFrames < 0))
+                /* Single frame animation or auto-stop mode? */
+                if(s32MaxFrames <= 1)
                 {
                   /* Use texture size as frame size */
                   orxVector_Copy(&vFrameSize, &vTextureSize);
@@ -2052,14 +2056,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                 }
               }
 
-              /* Stores default one */
-              orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vFrameSize);
+              /* Is size valid? */
+              if(orxVector_IsNull(&vFrameSize) == orxFALSE)
+              {
+                /* Stores it */
+                orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vFrameSize);
+
+                /* Updates status */
+                bTempSize = orxTRUE;
+              }
 
               /* Copies to local */
               orxVector_Copy(&vCurrentSize, &vFrameSize);
-
-              /* Updates status */
-              bTempSize = orxTRUE;
             }
 
             /* Should go to next row? */
