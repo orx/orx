@@ -217,6 +217,7 @@ static orxRESOURCE_STATIC sstResource;
 
 static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
+  orxFILE_INFO    stInfo;
   const orxSTRING zResult = orxNULL;
 
   /* Default storage? */
@@ -233,7 +234,8 @@ static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGro
 
   /* Exists or doesn't require existence? */
   if((_bRequireExistence == orxFALSE)
-  || (orxFile_Exists(sstResource.acFileLocationBuffer) != orxFALSE))
+  || ((orxFile_GetInfo(sstResource.acFileLocationBuffer, &stInfo) != orxSTATUS_FAILURE)
+   && !orxFLAG_TEST(stInfo.u32Flags, orxFILE_KU32_FLAG_INFO_DIRECTORY)))
   {
     /* Updates result */
     zResult = sstResource.acFileLocationBuffer;

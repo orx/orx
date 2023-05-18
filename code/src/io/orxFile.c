@@ -513,7 +513,7 @@ orxBOOL orxFASTCALL orxFile_Exists(const orxSTRING _zFileName)
   orxMemory_Zero(&stInfo, sizeof(orxFILE_INFO));
 
   /* Done! */
-  return(orxFile_GetInfo(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
+  return(orxFile_GetInfo(_zFileName, &stInfo) != orxSTATUS_FAILURE);
 }
 
 /** Starts a new file search: finds the first file/directory that will match to the given pattern (ex: /bin/foo*)
