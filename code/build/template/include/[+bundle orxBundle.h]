@@ -412,8 +412,8 @@ static orxINLINE orxSTATUS orxBundle_Process()
   {
     typedef struct orxBUNDLE_RESOURCE_REF
     {
-      orxHANDLE       hResource;
       orxSTRINGID     stNameID;
+      const orxSTRING zLocation;
       const orxSTRING zGroup;
       const orxSTRING zRule;
       orxS64          s64Size;
@@ -609,27 +609,22 @@ static orxINLINE orxSTATUS orxBundle_Process()
                     // Adds ref
                     pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_Allocate(pstResourceBank);
                     orxASSERT(pstResourceRef != orxNULL);
-                    pstResourceRef->hResource       = hResource;
                     pstResourceRef->stNameID        = orxString_GetID(zName);
+                    pstResourceRef->zLocation       = zLocation;
                     pstResourceRef->zGroup          = zGroup;
                     pstResourceRef->zRule           = zRule;
                     pstResourceRef->s64Size         = 0;
                     pstResourceRef->s64FinalSize    = s64Size;
-                  }
-                  else
-                  {
-                    // Closes it
-                    orxResource_Close(hResource);
                   }
                 }
                 else
                 {
                   // Logs message
                   orxLOG(orxBUNDLE_KZ_LOG_TAG "Skipping " orxBUNDLE_KZ_RESOURCE_FORMAT " (rule " orxANSI_KZ_COLOR_FG_RED "-" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_RESET ")", zGroup, zName, zRule);
-
-                  // Closes it
-                  orxResource_Close(hResource);
                 }
+
+                // Closes it
+                orxResource_Close(hResource);
               }
             }
           }
@@ -662,10 +657,6 @@ static orxINLINE orxSTATUS orxBundle_Process()
         // Gets next resource ref
         pstNextResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_GetNext(pstResourceBank, pstResourceRef);
 
-        // Gets internal resource
-        hResource                 = pstResourceRef->hResource;
-        pstResourceRef->hResource = orxHANDLE_UNDEFINED;
-
         // Allocates buffer
         pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)(pstResourceRef->s64FinalSize), orxMEMORY_TYPE_TEMP);
         orxASSERT(pu8Buffer != orxNULL);
@@ -691,8 +682,12 @@ static orxINLINE orxSTATUS orxBundle_Process()
                  orxBundle_GetHumanReadableSize(pstResourceRef->s64FinalSize, 2));
         }
 
+        // Gets internal resource
+        hResource = orxResource_Open(pstResourceRef->zLocation, orxFALSE);
+
         // Reads data
-        if(orxResource_Read(hResource, pstResourceRef->s64FinalSize, pu8Buffer, orxNULL, orxNULL) == pstResourceRef->s64FinalSize)
+        if((hResource != orxHANDLE_UNDEFINED)
+        && (orxResource_Read(hResource, pstResourceRef->s64FinalSize, pu8Buffer, orxNULL, orxNULL) == pstResourceRef->s64FinalSize))
         {
           orxS32  s32CompressedSize;
           orxU8  *pu8CompressedBuffer;
@@ -798,7 +793,10 @@ static orxINLINE orxSTATUS orxBundle_Process()
         orxMemory_Free(pu8Buffer);
 
         // Closes resource
-        orxResource_Close(hResource);
+        if(hResource != orxHANDLE_UNDEFINED)
+        {
+          orxResource_Close(hResource);
+        }
       }
 
       // Still has data?
@@ -864,7 +862,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
 
         // Logs message
         orxString_NPrint(acPrintBuffer, sizeof(acPrintBuffer), "%s", orxBundle_GetHumanReadableSize(s64FinalSize, 2));
-        orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_CYAN "%u" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA "%s" orxANSI_KZ_COLOR_RESET " in " orxANSI_KZ_COLOR_FG_CYAN "%.2g" orxANSI_KZ_COLOR_RESET "s, " orxANSI_KZ_COLOR_FG_GREEN "(%s) -> [%s]" orxANSI_KZ_COLOR_FG_CYAN " (%.2f%%)" orxANSI_KZ_COLOR_RESET,
+        orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_CYAN "%u" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA "%s" orxANSI_KZ_COLOR_RESET " in " orxANSI_KZ_COLOR_FG_CYAN "%.2f" orxANSI_KZ_COLOR_RESET "s, " orxANSI_KZ_COLOR_FG_GREEN "(%s) -> [%s]" orxANSI_KZ_COLOR_FG_CYAN " (%.2f%%)" orxANSI_KZ_COLOR_RESET,
               u32ResourceIndex,
               orxResource_GetPath(orxResource_GetLocation(hOutput)),
               orx2F(dEndTime - dBeginTime),
