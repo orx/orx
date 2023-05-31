@@ -124,6 +124,8 @@ var NAVTREEINDEX0 =
 "group__orx_android.html#ga6b733850fcd358e5fc35c4aca02abc69":[1,2,14],
 "group__orx_android.html#ga8497f0065453b50165d9ac20dd951dba":[3,0,0,6,0,0,15],
 "group__orx_android.html#ga8497f0065453b50165d9ac20dd951dba":[1,2,19],
+"group__orx_android.html#ga8974d438a71d1462464df885b5c83698":[3,0,0,6,0,1,2],
+"group__orx_android.html#ga8974d438a71d1462464df885b5c83698":[1,2,22],
 "group__orx_android.html#gaa096d9d24dd165d54a7b302af09267ff":[1,2,8],
 "group__orx_android.html#gaa096d9d24dd165d54a7b302af09267ff":[3,0,0,6,0,0,6],
 "group__orx_android.html#gaaa7cf34e35cd184548f6b11f2124c00c":[1,2,3],
@@ -228,10 +230,10 @@ var NAVTREEINDEX0 =
 "group__orx_anim_pointer.html#ga62d89fd8b1a08c195b38a96c149189bd":[1,4,8],
 "group__orx_anim_pointer.html#ga6e3eb827f50f53c28b61d54ea071e0a8":[3,0,0,0,1,17],
 "group__orx_anim_pointer.html#ga6e3eb827f50f53c28b61d54ea071e0a8":[1,4,17],
-"group__orx_anim_pointer.html#ga715e3806773f3109da95ac09f73df13c":[1,4,2],
 "group__orx_anim_pointer.html#ga715e3806773f3109da95ac09f73df13c":[3,0,0,0,1,2],
-"group__orx_anim_pointer.html#ga73ce77ce72cff853f189bf0d6043e278":[3,0,0,0,1,3],
+"group__orx_anim_pointer.html#ga715e3806773f3109da95ac09f73df13c":[1,4,2],
 "group__orx_anim_pointer.html#ga73ce77ce72cff853f189bf0d6043e278":[1,4,3],
+"group__orx_anim_pointer.html#ga73ce77ce72cff853f189bf0d6043e278":[3,0,0,0,1,3],
 "group__orx_anim_pointer.html#ga77829f740ec1b0302b31b9c4f96d0c70":[3,0,0,0,1,11],
 "group__orx_anim_pointer.html#ga77829f740ec1b0302b31b9c4f96d0c70":[1,4,11],
 "group__orx_anim_pointer.html#ga7965fe0764fb13ff27fabe6d4874b7a1":[3,0,0,0,1,7],
@@ -247,7 +249,5 @@ var NAVTREEINDEX0 =
 "group__orx_anim_pointer.html#gab2b866d5482fe8973a3277f7aa998f8f":[3,0,0,0,1,12],
 "group__orx_anim_pointer.html#gab2b866d5482fe8973a3277f7aa998f8f":[1,4,12],
 "group__orx_anim_pointer.html#gab5f7d0739cb7d42746c32d1f302f5ab3":[1,4,1],
-"group__orx_anim_pointer.html#gab5f7d0739cb7d42746c32d1f302f5ab3":[3,0,0,0,1,1],
-"group__orx_anim_pointer.html#gac065855483719cefe764c95013332d05":[1,4,4],
-"group__orx_anim_pointer.html#gac065855483719cefe764c95013332d05":[3,0,0,0,1,4]
+"group__orx_anim_pointer.html#gab5f7d0739cb7d42746c32d1f302f5ab3":[3,0,0,0,1,1]
 };

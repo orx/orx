@@ -18,6 +18,7 @@ var searchData=
   ['orxandroid_5fjni_5fsetupthread',['orxAndroid_JNI_SetupThread',['../group__orx_android.html#ga8497f0065453b50165d9ac20dd951dba',1,'orxAndroid.h']]],
   ['orxandroid_5fpumpevents',['orxAndroid_PumpEvents',['../group__orx_android.html#ga1bf1fe44b654536f595f07e2bf7bb367',1,'orxAndroid.h']]],
   ['orxandroid_5fregisterapkresource',['orxAndroid_RegisterAPKResource',['../group__orx_android.html#ga0ffbfef2cd5b023b55038e0044ce7564',1,'orxAndroid.h']]],
+  ['orxandroid_5fsetkeyfilter',['orxAndroid_SetKeyFilter',['../group__orx_android.html#ga8974d438a71d1462464df885b5c83698',1,'orxAndroidActivity.h']]],
   ['orxanim_5faddevent',['orxAnim_AddEvent',['../group__orx_anim.html#ga4f50f36eafa77217a827b5d6f4e1705e',1,'orxAnim.h']]],
   ['orxanim_5faddkey',['orxAnim_AddKey',['../group__orx_anim.html#ga34af9e6bbcc1d1b4f65b81cf78f2cef9',1,'orxAnim.h']]],
   ['orxanim_5fcreate',['orxAnim_Create',['../group__orx_anim.html#ga905b2501e745a8c5f49b0e8293281d37',1,'orxAnim.h']]],

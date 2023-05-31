@@ -27,5 +27,6 @@ var group__orx_android =
     [ "orxAndroid_JNI_GetRotation", "group__orx_android.html#ga10c24f6007e9bfd70608c16dc103f17d", null ],
     [ "orxAndroid_JNI_SetupThread", "group__orx_android.html#ga8497f0065453b50165d9ac20dd951dba", null ],
     [ "orxAndroid_PumpEvents", "group__orx_android.html#ga1bf1fe44b654536f595f07e2bf7bb367", null ],
-    [ "orxAndroid_RegisterAPKResource", "group__orx_android.html#ga0ffbfef2cd5b023b55038e0044ce7564", null ]
+    [ "orxAndroid_RegisterAPKResource", "group__orx_android.html#ga0ffbfef2cd5b023b55038e0044ce7564", null ],
+    [ "orxAndroid_SetKeyFilter", "group__orx_android.html#ga8974d438a71d1462464df885b5c83698", null ]
 ];
