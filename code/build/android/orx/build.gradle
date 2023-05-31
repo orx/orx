@@ -6,7 +6,7 @@ plugins {
 android {
     namespace 'org.orx.lib'
     compileSdk sdkVersion.toInteger()
-    
+
     buildFeatures {
         prefab true
         prefabPublishing true
@@ -15,8 +15,8 @@ android {
     defaultConfig {
         minSdk 19
         targetSdk sdkVersion.toInteger()
-        versionCode 113
-        versionName '1.13'
+        versionCode 114
+        versionName '1.14'
     }
     externalNativeBuild {
         ndkBuild {
@@ -50,14 +50,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             externalNativeBuild.ndkBuild {
-                arguments 'NDK_DEBUG=0'
+                arguments 'NDK_DEBUG=0', '-j'
             }
         }
         debug {
             debuggable true
 
             externalNativeBuild.ndkBuild {
-                arguments 'NDK_DEBUG=1'
+                arguments 'NDK_DEBUG=1', '-j'
                 cFlags '-D__orxDEBUG__'
             }
         }
@@ -65,7 +65,7 @@ android {
             debuggable true
 
             externalNativeBuild.ndkBuild {
-                arguments 'NDK_DEBUG=0'
+                arguments 'NDK_DEBUG=0', '-j'
                 cFlags '-D__orxPROFILER__'
             }
         }

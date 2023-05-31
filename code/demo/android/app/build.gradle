@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     namespace 'org.orx.demo'
     compileSdk sdkVersion.toInteger()
-    
+
     buildFeatures.prefab true
 
     defaultConfig {
@@ -40,7 +40,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             externalNativeBuild.ndkBuild {
-                arguments 'NDK_DEBUG=0'
+                arguments 'NDK_DEBUG=0', '-j'
             }
             manifestPlaceholders = [ gameArguments: 'orxDemo' ]
         }
@@ -48,7 +48,7 @@ android {
             debuggable true
 
             externalNativeBuild.ndkBuild {
-                arguments 'NDK_DEBUG=1'
+                arguments 'NDK_DEBUG=1', '-j'
                 cFlags '-D__orxDEBUG__'
             }
             manifestPlaceholders = [ gameArguments: 'orxDemoDebug' ]
@@ -57,7 +57,7 @@ android {
             debuggable true
 
             externalNativeBuild.ndkBuild {
-                arguments 'NDK_DEBUG=0'
+                arguments 'NDK_DEBUG=0', '-j'
                 cFlags '-D__orxPROFILER__'
             }
             manifestPlaceholders = [ gameArguments: 'orxDemoProfile' ]
