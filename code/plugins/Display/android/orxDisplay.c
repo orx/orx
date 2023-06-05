@@ -135,12 +135,12 @@
 #define orxDISPLAY_NANO_INVERSE(N)              (0.5 + 1000000000.0 / (N))
 
 #define orxDISPLAY_orxU32_BIT                   32
-#define orxDISPLAY_BIT_MASK(b)                   (1 << ((b) % orxDISPLAY_orxU32_BIT))
-#define orxDISPLAY_BIT_SLOT(b)                   ((b) / orxDISPLAY_orxU32_BIT)
-#define orxDISPLAY_BIT_SET(a, b)                 ((a)[orxDISPLAY_BIT_SLOT(b)] |= orxDISPLAY_BIT_MASK(b))
-#define orxDISPLAY_BIT_CLEAR(a, b)               ((a)[orxDISPLAY_BIT_SLOT(b)] &= ~orxDISPLAY_BIT_MASK(b))
-#define orxDISPLAY_BIT_TEST(a, b)                ((a)[orxDISPLAY_BIT_SLOT(b)] & orxDISPLAY_BIT_MASK(b))
-#define orxDISPLAY_BIT_NSLOTS(nb)                ((nb + orxDISPLAY_orxU32_BIT - 1) / orxDISPLAY_orxU32_BIT)
+#define orxDISPLAY_BIT_MASK(b)                  (1 << ((b) % orxDISPLAY_orxU32_BIT))
+#define orxDISPLAY_BIT_SLOT(b)                  ((b) / orxDISPLAY_orxU32_BIT)
+#define orxDISPLAY_BIT_SET(a, b)                ((a)[orxDISPLAY_BIT_SLOT(b)] |= orxDISPLAY_BIT_MASK(b))
+#define orxDISPLAY_BIT_CLEAR(a, b)              ((a)[orxDISPLAY_BIT_SLOT(b)] &= ~orxDISPLAY_BIT_MASK(b))
+#define orxDISPLAY_BIT_TEST(a, b)               ((a)[orxDISPLAY_BIT_SLOT(b)] & orxDISPLAY_BIT_MASK(b))
+#define orxDISPLAY_BIT_NSLOTS(nb)               ((nb + orxDISPLAY_orxU32_BIT - 1) / orxDISPLAY_orxU32_BIT)
 
 #define orxDISPLAY_KU32_RATE_BUFFER_SIZE        orxDISPLAY_BIT_NSLOTS(orxDISPLAY_KU32_MAX_REFRESH_RATE + 1)
 
