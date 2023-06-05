@@ -65,11 +65,16 @@
  */
 #define orxANDROID_KU32_ARGUMENT_BUFFER_SIZE    256    /**< Argument buffer size */
 #define orxANDROID_KU32_MAX_ARGUMENT_COUNT      16     /**< Maximum number of arguments */
+#define orxANDROID_KU32_KEY_BUFFER_SIZE         (AKEYCODE_PROFILE_SWITCH + 1)
 
 #define orxANDROID_GET_ACTION_INDEX(ACTION)     (((ACTION) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT)
 #define orxANDROID_GET_AXIS_X(EV, INDEX)        GameActivityPointerAxes_getX(&(EV)->pointers[INDEX])
 #define orxANDROID_GET_AXIS_Y(EV, INDEX)        GameActivityPointerAxes_getY(&(EV)->pointers[INDEX])
 
+#define orxANDROID_KEY_ACTION_NONE              0
+#define orxANDROID_KEY_ACTION_BASE              0x10000000
+#define orxANDROID_KEY_ACTION_DOWN              (orxANDROID_KEY_ACTION_BASE | AKEY_EVENT_ACTION_DOWN)
+#define orxANDROID_KEY_ACTION_UP                (orxANDROID_KEY_ACTION_BASE | AKEY_EVENT_ACTION_UP)
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -79,13 +84,13 @@
  */
 typedef struct __orxANDROID_STATIC_t
 {
-  orxBOOL bPaused;
-  orxBOOL bHasFocus;
-  orxFLOAT fSurfaceScale;
-  uint64_t activeAxisIds;
-  orxCHAR zArguments[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
-
-  struct android_app *app;
+  orxBOOL              bPaused;
+  orxBOOL              bHasFocus;
+  orxFLOAT             fSurfaceScale;
+  uint64_t             activeAxisIds;
+  orxCHAR              zArguments[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
+  orxU32               au32PendingKeyActions[orxANDROID_KU32_KEY_BUFFER_SIZE];
+  struct android_app  *app;
 } orxANDROID_STATIC;
 
 
@@ -346,7 +351,7 @@ extern "C" void orxAndroid_SetKeyFilter(android_key_event_filter filter)
   android_app_set_key_event_filter(sstAndroid.app, filter);
 }
 
-static void Android_CheckForNewAxis()
+static void orxAndroid_CheckForNewAxis()
 {
   /* Tell GameActivity about any new axis ids so it reports their events */
   const uint64_t activeAxisIds = Paddleboat_getActiveAxisMask();
@@ -368,11 +373,43 @@ static void Android_CheckForNewAxis()
   }
 }
 
-static void Android_HandleGameInput(struct android_app* app)
+static void orxAndroid_SendKey(orxU32 u32KeyCode, orxU32 u32Action)
 {
-  Android_CheckForNewAxis();
+  orxANDROID_KEY_EVENT stKeyEvent;
 
-  /* Swap input buffers so we don't miss any events while processing inputBuffer. */
+  /* Checks */
+  orxASSERT(u32Action == AKEY_EVENT_ACTION_DOWN || u32Action == AKEY_EVENT_ACTION_UP);
+
+  /* Inits event payload */
+  stKeyEvent.u32KeyCode = u32KeyCode;
+  stKeyEvent.u32Action = u32Action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN
+                                                             : orxANDROID_EVENT_KEYBOARD_UP;
+
+  orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
+}
+
+static void orxAndroid_HandleGameInput(struct android_app* app)
+{
+  orxU32 u32Key, u32Action;
+  orxU32 au32HandledKeyActions[orxANDROID_KU32_KEY_BUFFER_SIZE];
+
+  /* Handles any pending key events */
+  for(u32Key = 0; u32Key < orxANDROID_KU32_KEY_BUFFER_SIZE; u32Key++)
+  {
+    u32Action = sstAndroid.au32PendingKeyActions[u32Key];
+    sstAndroid.au32PendingKeyActions[u32Key] = orxANDROID_KEY_ACTION_NONE;
+
+    if(u32Action != orxANDROID_KEY_ACTION_NONE)
+    {
+      orxAndroid_SendKey(u32Key, u32Action & ~orxANDROID_KEY_ACTION_BASE);
+    }
+
+    au32HandledKeyActions[u32Key] = u32Action;
+  }
+
+  orxAndroid_CheckForNewAxis();
+
+  /* Swap input buffers so we don't miss any events while processing input buffer. */
   android_input_buffer *ib = android_app_swap_input_buffers(app);
   /* Early exit if no events. */
   if(ib == NULL)
@@ -389,18 +426,41 @@ static void Android_HandleGameInput(struct android_app* app)
       GameActivityKeyEvent *event = &ib->keyEvents[i];
       if(Paddleboat_processGameActivityKeyInputEvent(event, sizeof(GameActivityKeyEvent)) == 0)
       {
-        /* Didn't belong to a game controller, let's process it ourselves. */
+        /** In orx, key state transitions occur between two frames. In that case Paddleboat
+         * delivers paired down/up events, we must schedule the last event until the next frame.
+         * We do not buffer more than one event; any ludicrously fast key presses are ignored,
+         * resulting in a single key press. Note that all down/up events are sequentially
+         * delivered by Paddleboat.
+         *
+         * E.g. Handling a specific key, iterating the key events for the current frame:
+         *
+         * Down Up          -> Invoke Down, Schedule Up
+         * Down Up Down     -> Invoke Down
+         * Down Up Down Up  -> Invoke Down, Schedule Up
+         *
+         * And vice versa for sequences starting with an Up event.
+         */
+
+        /* Checks */
+        orxASSERT(event->keyCode < orxANDROID_KU32_KEY_BUFFER_SIZE);
 
         if(event->action != AKEY_EVENT_ACTION_MULTIPLE)
         {
-          orxANDROID_KEY_EVENT stKeyEvent;
-          /* Inits event payload */
-          orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
-          stKeyEvent.u32KeyCode = event->keyCode;
-          stKeyEvent.u32Action = event->action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN
-                                                                         : orxANDROID_EVENT_KEYBOARD_UP;
-
-          orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
+          /* Key not handled? */
+          if(au32HandledKeyActions[event->keyCode] == orxANDROID_KEY_ACTION_NONE)
+          {
+            orxAndroid_SendKey(event->keyCode, event->action);
+            au32HandledKeyActions[event->keyCode] = orxANDROID_KEY_ACTION_BASE | event->action;
+          }
+          else
+          {
+            /* Key not scheduled? */
+            if(sstAndroid.au32PendingKeyActions[event->keyCode] == orxANDROID_KEY_ACTION_NONE)
+            {
+              /* Schedules key action for next frame */
+              sstAndroid.au32PendingKeyActions[event->keyCode] = orxANDROID_KEY_ACTION_BASE | event->action;
+            }
+          }
         }
       }
     }
@@ -644,7 +704,7 @@ extern "C" void orxAndroid_PumpEvents()
   /* Triggers any registered controller or mouse status callbacks */
   Paddleboat_update(orxAndroid_JNI_GetEnv());
 
-  Android_HandleGameInput(sstAndroid.app);
+  orxAndroid_HandleGameInput(sstAndroid.app);
 }
 
 /* Main function to call */
