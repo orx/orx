@@ -381,6 +381,7 @@ static void orxAndroid_SendKey(orxU32 u32KeyCode, orxU32 u32Action)
   orxASSERT(u32Action == AKEY_EVENT_ACTION_DOWN || u32Action == AKEY_EVENT_ACTION_UP);
 
   /* Inits event payload */
+  orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
   stKeyEvent.u32KeyCode = u32KeyCode;
   stKeyEvent.u32Action = u32Action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN
                                                              : orxANDROID_EVENT_KEYBOARD_UP;
