@@ -64,7 +64,7 @@
 
 /** Misc
  */
-#define orxCAMERA_KU32_GROUP_ID_NUMBER                  16
+#define orxCAMERA_KU32_GROUP_ID_NUMBER                  32
 
 
 /** Internal camera structure
