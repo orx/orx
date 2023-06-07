@@ -1859,9 +1859,13 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
               for(i = 0, u32Number = orxCamera_GetGroupIDCount(pstCamera); i < u32Number; i++)
               {
                 orxSTRINGID stGroupID;
+                orxBOOL     bSorting;
 
                 /* Gets it */
                 stGroupID = orxCamera_GetGroupID(pstCamera, i);
+
+                /* Gets its sorting status */
+                bSorting = orxCamera_IsGroupIDSortingEnabled(pstCamera, i);
 
                 /* For all objects in this group */
                 for(pstObject = orxObject_GetNextEnabled(orxNULL, stGroupID);
@@ -2072,8 +2076,9 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                             /* Stores its depth coef */
                             pstRenderNode->fDepthCoef = fDepthCoef;
 
-                            /* Empty list? */
-                            if(orxLinkList_GetCount(&(sstRender.stRenderList)) == 0)
+                            /* No sorting or empty list? */
+                            if((bSorting == orxFALSE)
+                            || (orxLinkList_GetCount(&(sstRender.stRenderList)) == 0))
                             {
                               /* Adds node at beginning */
                               orxLinkList_AddStart(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
@@ -2094,7 +2099,8 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                                      && ((eBlendMode < pstNode->eBlendMode)
                                       || ((eBlendMode == pstNode->eBlendMode)
                                        && (eSmoothing < pstNode->eSmoothing)))))))));
-                                  pstNode = (orxRENDER_NODE *)orxLinkList_GetNext(&(pstNode->stNode)));
+                                  pstNode = (orxRENDER_NODE *)orxLinkList_GetNext(&(pstNode->stNode)))
+                                ;
 
                               /* End of list reached? */
                               if(pstNode == orxNULL)
