@@ -132,15 +132,15 @@ extern orxDLLAPI orxU32 orxFASTCALL                     orxCamera_GetGroupIDCoun
  */
 extern orxDLLAPI orxSTRINGID orxFASTCALL                orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32 _u32Index);
 
-/** Enables/disables sorting & batching for a group ID.
+/** Enables/disables sorting for a group ID.
  * @param[in] _pstCamera        Concerned camera
  * @param[in] _u32Index         Index of group ID to update
- * @param[in] _bEnableS         Enable / disable sorting & batching
+ * @param[in] _bEnableS         Enable / disable sorting
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_EnableGroupIDSorting(orxCAMERA *_pstCamera, orxU32 _u32Index, orxBOOL _bEnable);
 
-/** Is sorting & batching enabled for a group ID?
+/** Is sorting enabled for a group ID?
  * @param[in] _pstCamera        Concerned camera
  * @param[in] _u32Index         Index of group ID to update
  * @return orxTRUE / orxFALSE

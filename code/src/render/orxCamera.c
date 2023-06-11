@@ -82,6 +82,9 @@
 #define orxCAMERA_KZ_CONFIG_PARENT_CAMERA     "ParentCamera"
 #define orxCAMERA_KZ_CONFIG_IGNORE_FROM_PARENT "IgnoreFromParent"
 
+#define orxCAMERA_KZ_SORT                     "sort"
+#define orxCAMERA_KZ_RAW                      "raw"
+
 #define orxCAMERA_KU32_REFERENCE_TABLE_SIZE   16          /**< Reference table size */
 #define orxCAMERA_KU32_BANK_SIZE              16          /**< Bank size */
 
@@ -700,7 +703,7 @@ static orxINLINE void orxCamera_RegisterCommands()
   /* Command: EnableGroupSorting */
   orxCOMMAND_REGISTER_CORE_COMMAND(Camera, EnableGroupSorting, "Camera", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: IsGroupSortingEnabled */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, IsGroupSortingEnabled, "IsEnabled?", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Group", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, IsGroupSortingEnabled, "IsEnabled?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Group", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the camera commands
@@ -1029,8 +1032,17 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
             /* Valid? */
             if(zGroup != orxSTRING_EMPTY)
             {
+              orxSTRINGID stGroupID;
+
+              /* Gets its ID */
+              stGroupID = orxString_GetID(zGroup);
+
               /* Adds it */
-              orxCamera_AddGroupID(pstResult, orxString_GetID(zGroup), orxFALSE);
+              if(orxCamera_AddGroupID(pstResult, stGroupID, orxFALSE) != orxSTATUS_FAILURE)
+              {
+                /* Updates its sorting status */
+                orxCamera_EnableGroupIDSorting(pstResult, (orxU32)i, ((orxConfig_HasValue(zGroup) == orxFALSE) || (orxString_ICompare(orxConfig_GetString(zGroup), orxCAMERA_KZ_RAW) != 0)) ? orxTRUE : orxFALSE);
+              }
             }
           }
         }
@@ -1348,10 +1360,10 @@ orxSTRINGID orxFASTCALL orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32
   return stResult;
 }
 
-/** Enables/disables sorting & batching for a group ID.
+/** Enables/disables sorting for a group ID.
  * @param[in] _pstCamera        Concerned camera
  * @param[in] _u32Index         Index of group ID to update
- * @param[in] _bEnableS         Enable / disable sorting & batching
+ * @param[in] _bEnableS         Enable / disable sorting
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxCamera_EnableGroupIDSorting(orxCAMERA *_pstCamera, orxU32 _u32Index, orxBOOL _bEnable)
@@ -1386,7 +1398,7 @@ orxSTATUS orxFASTCALL orxCamera_EnableGroupIDSorting(orxCAMERA *_pstCamera, orxU
   return eResult;
 }
 
-/** Is sorting & batching enabled for a group ID?
+/** Is sorting enabled for a group ID?
  * @param[in] _pstCamera        Concerned camera
  * @param[in] _u32Index         Index of group ID to update
  * @return orxTRUE / orxFALSE
