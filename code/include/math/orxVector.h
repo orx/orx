@@ -372,6 +372,26 @@ static orxINLINE orxVECTOR *                  orxVector_Clamp(orxVECTOR *_pvRes,
   return _pvRes;
 }
 
+/** Gets the absolute value of a vector and stores it in another one
+ * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[in]   _pvOp                         Input value
+ * @return      Resulting vector (Abs(Op))
+ */
+static orxINLINE orxVECTOR *                  orxVector_Abs(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp != orxNULL);
+
+  /* Negates all */
+  _pvRes->fX = orxMath_Abs(_pvOp->fX);
+  _pvRes->fY = orxMath_Abs(_pvOp->fY);
+  _pvRes->fZ = orxMath_Abs(_pvOp->fZ);
+
+  /* Done! */
+  return _pvRes;
+}
+
 /** Negates a vector and stores result in another one
  * @param[out]  _pvRes                        Vector where to store result (can be the operand)
  * @param[in]   _pvOp                         Vector to negates

@@ -1,8 +1,9 @@
 [![Join the chat on https://orx-project.org/discord](https://discordapp.com/api/guilds/522167736823185418/widget.png?style=shield)](https://orx-project.org/discord)
 [![Travis build](https://api.travis-ci.com/orx/orx.svg?branch=master)](https://app.travis-ci.com/github/orx/orx)
 [![Build status](https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true)](https://ci.appveyor.com/project/iarwain/orx)
+[![Git Repo Size](https://img.shields.io/github/repo-size/orx/orx.svg)](https://github.com/orx/orx)
 
-Orx - Portable Game Engine (Version 1.13)
+Orx - Portable Game Engine (Version 1.14)
 ========================================
 
 
@@ -21,7 +22,7 @@ Summary
 [Orx](https://orx-project.org) is a 2D-oriented, data-driven, portable game engine focused primarily on ease of use and powerful features.
 See below for a list of supported platforms.
 
-This is a release candidate for orx v1.13. If you find any bugs,
+This is a release candidate for orx v1.14. If you find any bugs,
 please report them on the [forum](https://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://github.com/orx/orx/issues).
 
@@ -101,13 +102,13 @@ Everything compiles out-of-the-box for the hardware platforms cited above.
 
 The embedded versions currently use:
 
-- GLFW-based (+SOIL) plugins for display, joystick, keyboard and mouse for all non-iOS/non-Android platforms
-- OpenAL-based (+libsndfile/stb_vorbis/tremor) plugins for sound for all platforms
-- Box2D-based plugin for physics
-- homemade plugin for 2D rendering
-- OpenGL ES plugins for display on iOS and Android
-- Touch/MultiTouch-based plugin for mouse on iOS and Android
-- Accelerometer-based plugin for joystick on iOS and Android
+- GLFW-based (+stb_image/webp/qoi/BasisU) display, joystick, keyboard and mouse plugins for all non-iOS/non-Android platforms
+- miniaudio (+stb_vorbis) sound plugin for all platforms
+- LiquidFun-based physics plugin
+- Homemade rendering plugin (2D)
+- OpenGL ES display plugins for iOS and Android
+- Touch/MultiTouch-based mouse plugin for iOS and Android
+- Accelerometer-based joystick plugin for iOS and Android
 
 All the 11 basic and advanced official tutorials are shipped with the dev packages, including precompiled release binaries.
 
@@ -120,36 +121,35 @@ Some tools (precompiled binaries only) are also shipped with the dev packages:
 Packages
 --------
 
-You can download all the packages from [sourceforge](https://sf.net/projects/orx) or [github](https://github.com/orx/orx/releases).
+You can download all the packages from [SourceForge](https://sf.net/projects/orx) or [GitHub](https://github.com/orx/orx/releases).
 Here is a list with a small description for each package.
 
-- `orx-doc-1.13.zip`                  : orx's API doxygen documentation
-- `orx-src-1.13.zip`                  : orx's source code, ready for compile after running the setup script
-- `orx-dev-linux32-1.13.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
-- `orx-dev-linux64-1.13.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
-- `orx-dev-mac-1.13.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- `orx-dev-mingw-32-1.13.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
-- `orx-dev-mingw-64-1.13.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
-- `orx-dev-vs2017-32-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
-- `orx-dev-vs2017-64-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2019-32-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
-- `orx-dev-vs2019-64-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2022-32-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86), release/profile/debug + tools.
-- `orx-dev-vs2022-64-1.13.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86-64), release/profile/debug + tools.
-- `orx-full-ios-1.13.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- `orx-dev-android-1.13.zip`          : static embedded binaries for Android, release/profile/debug (device).
-- `orx-dev-android-native-1.13.zip`   : static embedded binaries for Android Native, release/profile/debug (device).
-- `orx-tutorial-linux32-1.13.tar.bz2` : tutorials for Linux (x86)
-- `orx-tutorial-linux64-1.13.tar.bz2` : tutorials for Linux (x86-64)
-- `orx-tutorial-mac-1.13.zip`         : tutorials for MacOS X (x86/x86-64)
-- `orx-tutorial-mingw-32-1.13.zip`    : tutorials for Windows (mingw/x86)
-- `orx-tutorial-mingw-64-1.13.zip`    : tutorials for Windows (mingw/x86-64)
-- `orx-tutorial-vs2017-32-1.13.zip`   : tutorials for Windows (Visual Studio 2017, x86)
-- `orx-tutorial-vs2017-64-1.13.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
-- `orx-tutorial-vs2019-32-1.13.zip`   : tutorials for Windows (Visual Studio 2019, x86)
-- `orx-tutorial-vs2019-64-1.13.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
-- `orx-tutorial-vs2022-32-1.13.zip`   : tutorials for Windows (Visual Studio 2022, x86)
-- `orx-tutorial-vs2022-64-1.13.zip`   : tutorials for Windows (Visual Studio 2022, x86-64)
+- `orx-doc-1.14.zip`                  : orx's API doxygen documentation
+- `orx-src-1.14.zip`                  : orx's source code, ready for compile after running the setup script
+- `orx-dev-linux32-1.14.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
+- `orx-dev-linux64-1.14.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
+- `orx-dev-mac-1.14.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
+- `orx-dev-mingw-32-1.14.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
+- `orx-dev-mingw-64-1.14.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
+- `orx-dev-vs2017-32-1.14.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
+- `orx-dev-vs2017-64-1.14.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2019-32-1.14.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
+- `orx-dev-vs2019-64-1.14.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2022-32-1.14.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86), release/profile/debug + tools.
+- `orx-dev-vs2022-64-1.14.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86-64), release/profile/debug + tools.
+- `orx-full-ios-1.14.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
+- `orx-dev-android-1.14.zip`          : static embedded binaries for Android, release/profile/debug (device).
+- `orx-tutorial-linux32-1.14.tar.bz2` : tutorials for Linux (x86)
+- `orx-tutorial-linux64-1.14.tar.bz2` : tutorials for Linux (x86-64)
+- `orx-tutorial-mac-1.14.zip`         : tutorials for MacOS X (x86/x86-64)
+- `orx-tutorial-mingw-32-1.14.zip`    : tutorials for Windows (mingw/x86)
+- `orx-tutorial-mingw-64-1.14.zip`    : tutorials for Windows (mingw/x86-64)
+- `orx-tutorial-vs2017-32-1.14.zip`   : tutorials for Windows (Visual Studio 2017, x86)
+- `orx-tutorial-vs2017-64-1.14.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
+- `orx-tutorial-vs2019-32-1.14.zip`   : tutorials for Windows (Visual Studio 2019, x86)
+- `orx-tutorial-vs2019-64-1.14.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
+- `orx-tutorial-vs2022-32-1.14.zip`   : tutorials for Windows (Visual Studio 2022, x86)
+- `orx-tutorial-vs2022-64-1.14.zip`   : tutorials for Windows (Visual Studio 2022, x86-64)
 
 All the `*-dev-*` packages above include:
 
@@ -178,10 +178,18 @@ This script will download all the needed dependencies and generate all the proje
 The script will then hook itself to mercurial/git and you shouldn't have to run it manually after subsequent pulls.**
 
 The easiest way to learn how to compile your project using orx for a given platform
-is to look at the tutorial build project files.
+is to check [orx's wiki](https://wiki.orx-project.org).
 
-NB: The debug version is far slower than the release one, but will output all the warning
-and error messages useful during development.
+The generated project files will contain 6 different configurations to build orx: `Debug`, `Profile` & `Release` in both regular and `Core` flavors. Here's what they do:
+
+- `Debug`: These configurations will build orx in debug mode. They are the only configurations that will output warning and error messages resulting from incorrect data, code and behaviors. These configurations are also much slower than the other ones but is recommended during development to catch any mistake. Note: the internal profiler is also available with these configurations.
+
+- `Profile`: These configurations will build orx in optimized mode but will keep the internal profiler, slightly slowing down the execution but allowing the user to get high level profiling information which can be very useful during development.
+
+- `Release`: These configurations will build orx in optimized mode, *without* the internal profiler. These are the configurations one should be using when shipping their project. Note: on Windows, the OS terminal will also be hidden with this configuration.
+
+- `Core`: Those configurations will only build orx's core as a static library. With these configurations, no plugins will be compiled/embedded. In non-`Core` configurations, all the plugins are built and embedded inside orx's library, and should be the configurations used by most users. The `Core` configurations are typically used to build orx's tools that do not require any plugin (`orxCrypt` & `orxFontGen`).
+
 
 Here's a quick list of the available compile preprocessor flags:
 
@@ -229,7 +237,6 @@ for which you're compiling. Here's a quick list of these flags:
   `__orxLINUX__`          | orx is being compiled for Linux
   `__orxIOS__`            | orx is being compiled for iOS
   `__orxANDROID__`        | orx is being compiled for Android
-  `__orxANDROID_NATIVE__` | orx is being compiled for Android Native
   `__orxCPP__`            | orx is being compiled with a C++ compiler
   `__orxOBJC__`           | orx is being compiled with an Objective-C compiler
   `__orxPLUGIN__`         | a plugin for orx is being compiled

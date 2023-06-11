@@ -1,16 +1,14 @@
 language: c++
 
-matrix:
+jobs:
   include:
     - os: linux
       compiler: gcc
-      sudo: required
       script: ./code/build/travis/desktop.sh
       name: Linux / GCC
 
     - os: linux
       compiler: clang
-      sudo: required
       script: ./code/build/travis/desktop.sh
       name: Linux / Clang
 
@@ -46,6 +44,12 @@ matrix:
 
     - os: osx
       compiler: clang
+      osx_image: xcode13.4
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 13
+
+    - os: osx
+      compiler: clang
       osx_image: xcode10.3
       script: ./code/build/travis/ios.sh
       name: iOS / XCode 10
@@ -68,23 +72,28 @@ matrix:
     #   script: ./code/build/travis/ios.sh
     #   name: iOS / XCode 13
 
+    # - os: osx
+    #   compiler: clang
+    #   osx_image: xcode13.4
+    #   script: ./code/build/travis/ios.sh
+    #   name: OSX / XCode 14
+
     - language: android
-      jdk: openjdk8
+      jdk: openjdk11
       android:
         components:
-          - tools
-          - platform-tools
-          - build-tools-28.0.3
-          - android-28
-          - extra-google-m2repository
-          - extra-android-m2repository
+          - build-tools-29.0.3
+      before_install:
+        - sudo mkdir -p /usr/local/android-sdk/licenses/
+        - sudo touch /usr/local/android-sdk/licenses/android-sdk-license
+        - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" | sudo tee -a /usr/local/android-sdk/licenses/android-sdk-license
       install:
-        - echo y | sdkmanager "ndk-bundle"
         - ./setup.sh
       before_script:
-        - export ANDROID_NDK_HOME=$ANDROID_HOME/ndk-bundle
-      script: ./code/build/travis/android.sh
-      name: Android / OpenJDK 8
+        - export ORX=$TRAVIS_BUILD_DIR/code
+      script:
+        - ./code/build/travis/android.sh
+      name: Android / OpenJDK 11
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then

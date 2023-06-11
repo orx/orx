@@ -64,13 +64,26 @@ extern "C" {
 
 #define MINIAUDIO_IMPLEMENTATION
 
+#ifdef __orxGCC__
+  #if (__GNUC__ >= 7)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wstringop-overflow"
+  #endif // (__GNUC__ >= 7)
+#endif // __orxGCC__
+
 #include "miniaudio.h"
 
+#ifdef __orxGCC__
+  #if (__GNUC__ >= 7)
+    #pragma GCC diagnostic pop
+  #endif // (__GNUC__ >= 7)
+#endif // __orxGCC__
+
 #undef MA_NO_RUNTIME_LINKING
-#undef MA_NO_FLAC
-#undef MA_NO_GENERATION
 #undef MA_ON_THREAD_ENTRY
 #undef MA_ON_THREAD_EXIT
+#undef MA_NO_FLAC
+#undef MA_NO_GENERATION
 #undef MINIAUDIO_IMPLEMENTATION
 
 #define FILE                              void
@@ -117,6 +130,11 @@ extern "C" {
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING         0x00000002 /**< Recording flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING    0x00000004 /**< Stop recording flag */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_BACKGROUND_MUTED  0x00000008 /**< Background muted flag */
+#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_EXIT              0x00000010 /**< Exit flag */
+
+#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE  0x80000000 /**< Device available flag */
+#define orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED    0x40000000 /**< Device stopped flag */
+#define orxSOUNDSYSTEM_KU32_STATIC_MASK_DEVICE            0xC0000000 /**< Device mask */
 
 #define orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL               0xFFFFFFFF /**< All mask */
 
@@ -131,6 +149,8 @@ extern "C" {
 #define orxSOUNDSYSTEM_KE_DEFAULT_FORMAT                  ma_format_f32
 #define orxSOUNDSYSTEM_KF_DEFAULT_DIMENSION_RATIO         orx2F(0.01f)
 #define orxSOUNDSYSTEM_KF_DEFAULT_THREAD_SLEEP_TIME       orx2F(0.001f)
+#define orxSOUNDSYSTEM_KF_DEVICE_STOP_DELAY               orx2F(1.0f)
+#define orxSOUNDSYSTEM_KU32_TASK_PARAM_LIST_SIZE          512
 #define orxSOUNDSYSTEM_KZ_THREAD_NAME                     "Sound"
 
 
@@ -162,7 +182,8 @@ struct __orxSOUNDSYSTEM_SAMPLE_t
     } stBuffer;
   };
 
-  orxBOOL                         bIsBuffer;
+  orxBOOL                         bBuffer   : 1;
+  orxBOOL                         bReady    : 1;
 };
 
 /** Internal sound structure
@@ -192,13 +213,15 @@ struct __orxSOUNDSYSTEM_SOUND_t
     struct
     {
       ma_audio_buffer_ref         stDataSource;
+      const orxSOUNDSYSTEM_SAMPLE *pstSample;
 
     } stSample;
   };
 
-  orxBOOL                         bIsStream   : 1;
-  orxBOOL                         bIsStopped  : 1;
-  orxBOOL                         bStopping   : 1;
+  orxBOOL                         bStream   : 1;
+  orxBOOL                         bStopped  : 1;
+  orxBOOL                         bStopping : 1;
+  orxBOOL                         bReady    : 1;
 };
 
 /** Internal bus structure
@@ -246,9 +269,46 @@ typedef struct __orxSOUNDSYSTEM_FILTER_t
   orxSOUND_FILTER_DATA            stData;
   const orxSOUNDSYSTEM_SOUND     *pstSound;
   const orxSOUNDSYSTEM_BUS       *pstBus;
-  orxBOOL                         bUseCustomParam;
+  orxBOOL                         bUseCustomParam : 1;
+  orxBOOL                         bReady          : 1;
 
 } orxSOUNDSYSTEM_FILTER;
+
+/** Internal task parameter structure
+ */
+typedef struct __orxSOUNDSYSTEM_TASK_PARAM_t
+{
+  union
+  {
+    orxVECTOR               vPosition;
+    struct {
+      orxFLOAT              fPanning;
+      orxBOOL               bMix;
+    } stPanning;
+    struct {
+      orxFLOAT              fMinDistance;
+      orxFLOAT              fMaxDistance;
+      orxFLOAT              fMinGain;
+      orxFLOAT              fMaxGain;
+      orxFLOAT              fRollOff;
+    } stSpatialization;
+    const orxSTRING         zLocation;
+    orxSOUNDSYSTEM_BUS *    pstBus;
+    orxFLOAT                fVolume;
+    orxFLOAT                fPitch;
+    orxFLOAT                fTime;
+    orxSOUNDSYSTEM_FILTER  *pstFilter;
+    orxBOOL                 bLoop;
+  };
+
+  union
+  {
+    orxHANDLE               hStructure;
+    orxSOUNDSYSTEM_SOUND   *pstSound;
+    orxSOUNDSYSTEM_SAMPLE  *pstSample;
+  };
+
+} orxSOUNDSYSTEM_TASK_PARAM;
 
 /** Static structure
  */
@@ -274,9 +334,12 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxBANK                        *pstBusBank;             /**< Bus bank */
   orxBANK                        *pstFilterBank;          /**< Filter bank */
   volatile orxHANDLE              hRecordingResource;     /**< Recording resource */
+  orxSOUNDSYSTEM_TASK_PARAM       astTaskParamList[orxSOUNDSYSTEM_KU32_TASK_PARAM_LIST_SIZE]; /**< Task parameters */
   orxFLOAT                        fDimensionRatio;        /**< Dimension ration */
   orxFLOAT                        fRecDimensionRatio;     /**< Reciprocal dimension ratio */
   orxFLOAT                        fForegroundVolume;      /**< Foreground volume */
+  orxFLOAT                        fDeviceDelay;           /**< Device delay */
+  orxU32                          u32TaskParamIndex;      /**< Task param index */
   orxU32                          u32ListenerNumber;      /**< Listener number */
   orxU32                          u32WorkerThread;        /**< Worker thread */
   orxU32                          u32Flags;               /**< Status flags */
@@ -309,8 +372,6 @@ static void orxSoundSystem_MiniAudio_ProcessCustomNode(ma_node *_pstNode, const 
 
   /* Done! */
   return;
-
-  //ma_delay_process_pcm_frames(&pDelayNode->delay, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
 }
 
 static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_EventHandler(const orxEVENT *_pstEvent)
@@ -359,12 +420,66 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_EventHandler(const orxEVEN
 
 static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  orxEVENT                stEvent;                                                 \
+  orxEVENT                stEvent;
   orxSOUND_EVENT_PAYLOAD  stPayload;
-  orxU32                  i, iCount;
+  orxSOUNDSYSTEM_FILTER  *pstFilter;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxSoundSystem_Update");
+
+  /* Is device not available? */
+  if(!orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE))
+  {
+    /* Wasn't deviced stopped? */
+    if(!orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED))
+    {
+      /* Updates device delay */
+      sstSoundSystem.fDeviceDelay -= _pstClockInfo->fDT;
+
+      /* Should stop? */
+      if(sstSoundSystem.fDeviceDelay <= orxFLOAT_0)
+      {
+        orxSOUNDSYSTEM_SOUND *pstSound;
+
+        /* Updates status */
+        orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
+
+        /* For all sounds */
+        for(pstSound = (orxSOUNDSYSTEM_SOUND *)orxBank_GetNext(sstSoundSystem.pstSoundBank, orxNULL);
+            pstSound != orxNULL;
+            pstSound = (orxSOUNDSYSTEM_SOUND *)orxBank_GetNext(sstSoundSystem.pstSoundBank, pstSound))
+        {
+          orxSTATUS eResult;
+
+          /* Stops sound */
+          if(pstSound->bReady != orxFALSE)
+          {
+            ma_sound_stop(&(pstSound->stSound));
+          }
+
+          /* Rewinds it */
+          eResult = (ma_sound_seek_to_pcm_frame(&(pstSound->stSound), 0) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+          /* Success? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            /* Updates engine node's local time */
+            ma_node_set_time((ma_node *)&(pstSound->stSound.engineNode), 0);
+
+            /* Is a stream? */
+            if(pstSound->bStream != orxFALSE)
+            {
+              /* Clears pending samples */
+              pstSound->stStream.u32PendingSampleNumber = 0;
+            }
+          }
+
+          /* Updates its status */
+          pstSound->bStopped = orxTRUE;
+        }
+      }
+    }
+  }
 
   /* Inits event */
   orxEVENT_INIT(stEvent, orxEVENT_TYPE_SOUND, orxSOUND_EVENT_SET_FILTER_PARAM, orxNULL, orxNULL, &stPayload);
@@ -373,15 +488,12 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
   orxMemory_Zero(&stPayload, sizeof(orxSOUND_EVENT_PAYLOAD));
 
   /* For all filters */
-  for(i = 0, iCount = orxBank_GetCount(sstSoundSystem.pstFilterBank); i < iCount; i++)
+  for(pstFilter = (orxSOUNDSYSTEM_FILTER *)orxBank_GetNext(sstSoundSystem.pstFilterBank, orxNULL);
+      pstFilter != orxNULL;
+      pstFilter = (orxSOUNDSYSTEM_FILTER *)orxBank_GetNext(sstSoundSystem.pstFilterBank, pstFilter))
   {
-    orxSOUNDSYSTEM_FILTER *pstFilter;
-
-    /* Gets it */
-    pstFilter = (orxSOUNDSYSTEM_FILTER *)orxBank_GetAtIndex(sstSoundSystem.pstFilterBank, i);
-
-    /* Uses custom param? */
-    if(pstFilter->bUseCustomParam != orxFALSE)
+    /* Uses custom param and is ready? */
+    if((pstFilter->bUseCustomParam != orxFALSE) && (pstFilter->bReady != orxFALSE))
     {
       const ma_engine_node *pstEngineNode;
       const orxSTRING       zName;
@@ -399,8 +511,13 @@ static void orxFASTCALL orxSoundSystem_MiniAudio_Update(const orxCLOCK_INFO *_ps
         /* Doesn't have its owner yet? */
         if(pstFilter->pstSound->hOwner == orxNULL)
         {
+          orxSTRUCTURE *pOwner;
+
           /* Stores it */
-          ((orxSOUNDSYSTEM_SOUND *)pstFilter->pstSound)->hOwner = orxStructure_GetOwner(orxStructure_GetOwner(pstFilter->pstSound->hUserData));
+          if((pOwner = orxStructure_GetOwner(pstFilter->pstSound->hUserData)) != orxNULL)
+          {
+            ((orxSOUNDSYSTEM_SOUND *)pstFilter->pstSound)->hOwner = orxStructure_GetOwner(pOwner);
+          }
         }
 
         /* Updates event */
@@ -658,7 +775,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_OpenRecordingFile()
   orxSTATUS       eResult;
 
   /* Valid file to open? */
-  if(((zResourceLocation = orxResource_LocateInStorage(orxSOUND_KZ_RESOURCE_GROUP, orxNULL, sstSoundSystem.stRecordingPayload.stStream.stInfo.zName)) != orxNULL)
+  if(((zResourceLocation = orxResource_LocateInStorage(orxSOUND_KZ_RESOURCE_GROUP, orxRESOURCE_KZ_DEFAULT_STORAGE, sstSoundSystem.stRecordingPayload.stStream.stInfo.zName)) != orxNULL)
   && ((hResource = orxResource_Open(zResourceLocation, orxTRUE)) != orxHANDLE_UNDEFINED))
   {
     ma_encoder_config stEncoderConfig;
@@ -715,6 +832,41 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StopRecordingTask(void *_p
 
   /* Done! */
   return orxSTATUS_SUCCESS;
+}
+
+static void orxSoundSystem_MiniAudio_OnDeviceNotification(const ma_device_notification *_pstNotification)
+{
+  /* Depending on notification type */
+  switch(_pstNotification->type)
+  {
+    case ma_device_notification_type_started:
+    {
+      /* Updates status */
+      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_STOPPED);
+
+      break;
+    }
+
+    case ma_device_notification_type_stopped:
+    {
+      /* Updates status */
+      orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE);
+
+      /* Sets device delay */
+      sstSoundSystem.fDeviceDelay = orxSOUNDSYSTEM_KF_DEVICE_STOP_DELAY;
+
+      break;
+    }
+
+    default:
+    case ma_device_notification_type_rerouted:
+    {
+      break;
+    }
+  }
+
+  /* Done! */
+  return;
 }
 
 static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void *_pOutput, const void *_pInput, ma_uint32 _u32FrameCount)
@@ -804,7 +956,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSo
   pstSound = (orxSOUNDSYSTEM_SOUND *)_pstDataSource;
 
   /* Checks */
-  orxASSERT(pstSound->bIsStream != orxFALSE);
+  orxASSERT(pstSound->bStream != orxFALSE);
 
   /* Inits frames count */
   *_pu64FramesRead = 0;
@@ -887,8 +1039,13 @@ static ma_result orxSoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSo
         /* Doesn't have its owner yet? */
         if(pstSound->hOwner == orxNULL)
         {
+          orxSTRUCTURE *pOwner;
+
           /* Stores it */
-          pstSound->hOwner = orxStructure_GetOwner(orxStructure_GetOwner(pstSound->hUserData));
+          if((orxSOUND(pstSound->hUserData) != orxNULL) && (pOwner = orxStructure_GetOwner(pstSound->hUserData)) != orxNULL)
+          {
+            pstSound->hOwner = orxStructure_GetOwner(pOwner);
+          }
         }
 
         /* Sends event */
@@ -993,7 +1150,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_Seek(ma_data_source *_pstDataSo
   pstSound = (orxSOUNDSYSTEM_SOUND *)_pstDataSource;
 
   /* Checks */
-  orxASSERT(pstSound->bIsStream != orxFALSE);
+  orxASSERT(pstSound->bStream != orxFALSE);
 
   /* Has data source? */
   if(pstSound->stStream.stDataSource.flags != 0)
@@ -1020,7 +1177,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_GetDataFormat(ma_data_source *_
   pstSound = (orxSOUNDSYSTEM_SOUND *)_pstDataSource;
 
   /* Checks */
-  orxASSERT(pstSound->bIsStream != orxFALSE);
+  orxASSERT(pstSound->bStream != orxFALSE);
 
   /* Updates values */
   if(_peFormat != NULL)
@@ -1053,7 +1210,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_GetCursor(ma_data_source *_pstD
   pstSound = (orxSOUNDSYSTEM_SOUND *)_pstDataSource;
 
   /* Checks */
-  orxASSERT(pstSound->bIsStream != orxFALSE);
+  orxASSERT(pstSound->bStream != orxFALSE);
 
   /* Has data source? */
   if(pstSound->stStream.stDataSource.flags != 0)
@@ -1080,7 +1237,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_GetLength(ma_data_source *_pstD
   pstSound = (orxSOUNDSYSTEM_SOUND *)_pstDataSource;
 
   /* Checks */
-  orxASSERT(pstSound->bIsStream != orxFALSE);
+  orxASSERT(pstSound->bStream != orxFALSE);
 
   /* Has data source? */
   if(pstSound->stStream.stDataSource.flags != 0)
@@ -1107,7 +1264,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_SetLooping(ma_data_source* _pst
   pstSound = (orxSOUNDSYSTEM_SOUND *)_pstDataSource;
 
   /* Checks */
-  orxASSERT(pstSound->bIsStream != orxFALSE);
+  orxASSERT(pstSound->bStream != orxFALSE);
 
   /* Has data source? */
   if(pstSound->stStream.stDataSource.flags != 0)
@@ -1239,13 +1396,28 @@ static void orxSoundSystem_MiniAudio_UninitVorbisBackend(void *_pUserData, ma_da
   return;
 }
 
-static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_ProcessTask(void *_pContext)
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_ProcessJobs(void *_pContext)
 {
-  /* Processes next job */
-  if(ma_resource_manager_process_next_job((ma_resource_manager *)_pContext) == MA_NO_DATA_AVAILABLE)
+  /* Not exiting? */
+  if(!orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_EXIT))
   {
-    /* Sleeps */
-    orxSystem_Delay(orxSOUNDSYSTEM_KF_DEFAULT_THREAD_SLEEP_TIME);
+    ma_result hResult;
+
+    /* Profiles */
+    orxPROFILER_PUSH_MARKER("orxSoundSystem_ProcessTask");
+
+    /* Processes next job */
+    hResult = ma_resource_manager_process_next_job((ma_resource_manager *)_pContext);
+
+    /* Profiles */
+    orxPROFILER_POP_MARKER();
+
+    /* No job left? */
+    if(hResult == MA_NO_DATA_AVAILABLE)
+    {
+     /* Sleeps */
+     orxSystem_Delay(orxSOUNDSYSTEM_KF_DEFAULT_THREAD_SLEEP_TIME);
+    }
   }
 
   /* Done! */
@@ -1384,12 +1556,87 @@ static ma_result orxSoundSystem_MiniAudio_Info(ma_vfs *_pstVFS, ma_vfs_file _stF
   return MA_SUCCESS;
 }
 
+static orxINLINE orxSOUNDSYSTEM_TASK_PARAM *orxSoundSystem_MiniAudio_GetTaskParam(orxHANDLE _hStructure)
+{
+  volatile orxSOUNDSYSTEM_TASK_PARAM *pstResult;
+
+  /* Gets current param */
+  pstResult = &(sstSoundSystem.astTaskParamList[sstSoundSystem.u32TaskParamIndex]);
+
+  /* Waits for it to be free */
+  while(pstResult->hStructure != orxNULL)
+    ;
+
+  /* Stores structure */
+  pstResult->hStructure = _hStructure;
+
+  /* Updates index */
+  sstSoundSystem.u32TaskParamIndex = (sstSoundSystem.u32TaskParamIndex + 1) & (orxSOUNDSYSTEM_KU32_TASK_PARAM_LIST_SIZE - 1);
+
+  /* Done! */
+  return (orxSOUNDSYSTEM_TASK_PARAM *)pstResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_FreeSound(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  orxSTATUS             eResult = orxSTATUS_SUCCESS;
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Deletes it */
+  orxBank_Free(sstSoundSystem.pstSoundBank, pstSound);
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_FreeSample(void *_pContext)
+{
+  orxSOUNDSYSTEM_SAMPLE  *pstSample;
+  orxSTATUS               eResult = orxSTATUS_SUCCESS;
+
+  /* Gets sample */
+  pstSample = (orxSOUNDSYSTEM_SAMPLE *)_pContext;
+
+  /* Is a buffer? */
+  if(pstSample->bBuffer != orxFALSE)
+  {
+    /* Frees it */
+    orxMemory_Free(pstSample->stBuffer.afSampleList);
+  }
+  else
+  {
+    /* Deletes location */
+    orxString_Delete(pstSample->stResource.zLocation);
+  }
+
+  /* Deletes it */
+  orxBank_Free(sstSoundSystem.pstSampleBank, pstSample);
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_FreeFilter(void *_pContext)
+{
+  orxSOUNDSYSTEM_FILTER  *pstFilter;
+  orxSTATUS               eResult = orxSTATUS_SUCCESS;
+
+  /* Gets filter */
+  pstFilter = (orxSOUNDSYSTEM_FILTER *)_pContext;
+
+  /* Deletes it */
+  orxBank_Free(sstSoundSystem.pstFilterBank, pstFilter);
+
+  /* Done! */
+  return eResult;
+}
+
 static ma_result orxSoundSystem_MiniAudio_InitFilter(orxSOUNDSYSTEM_FILTER *_pstFilter, const orxSOUND_FILTER_DATA *_pstFilterData, const ma_engine_node *_pstEngineNode)
 {
   ma_result hResult = MA_ERROR;
-
-  /* Clears filter */
-  orxMemory_Zero(_pstFilter, sizeof(orxSOUNDSYSTEM_FILTER));
 
   /* Depending on filter type */
   switch(_pstFilterData->eType)
@@ -1561,6 +1808,16 @@ static ma_result orxSoundSystem_MiniAudio_InitFilter(orxSOUNDSYSTEM_FILTER *_pst
     }
   }
 
+  /* Failure? */
+  if(hResult != MA_SUCCESS)
+  {
+    /* Updates status */
+    _pstFilter->stData.eType = orxSOUND_FILTER_TYPE_NONE;
+
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't initialize sound filter <%s>: invalid parameters.", orxString_GetFromID(_pstFilterData->stNameID));
+  }
+
   /* Done! */
   return hResult;
 }
@@ -1662,18 +1919,854 @@ static void orxSoundSystem_MiniAudio_DeleteFilter(orxSOUNDSYSTEM_FILTER *_pstFil
 
     default:
     {
-      /* Should not happen! */
-      orxASSERT(orxFALSE);
-
       break;
     }
   }
 
   /* Deletes it */
-  orxBank_Free(sstSoundSystem.pstFilterBank, _pstFilter);
+  orxThread_RunTask(orxNULL, &orxSoundSystem_MiniAudio_FreeFilter, &orxSoundSystem_MiniAudio_FreeFilter, _pstFilter);
 
   /* Done! */
   return;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LoadSampleTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SAMPLE      *pstSample;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+  ma_result                   hResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_LoadSampleTask");
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sample */
+  pstSample = pstTaskParam->pstSample;
+
+  /* Inits data source */
+  hResult = ma_resource_manager_data_source_init(&(sstSoundSystem.stResourceManager), pstTaskParam->zLocation, MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_WAIT_INIT | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_DECODE | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_ASYNC, NULL, &(pstSample->stResource.stDataSource));
+
+  /* Success? */
+  if(hResult == MA_SUCCESS)
+  {
+    ma_format eFormat;
+    ma_uint64 u64Length;
+
+    /* Retrieves channel number & sample rate */
+    hResult = ma_resource_manager_data_source_get_data_format((ma_resource_manager_data_source *)&(pstSample->stResource.stDataSource), &(eFormat), (ma_uint32 *)&(pstSample->u32ChannelNumber), (ma_uint32 *)&(pstSample->u32SampleRate), NULL, 0);
+    orxASSERT(hResult == MA_SUCCESS);
+
+    /* Gets length */
+    hResult = ma_resource_manager_data_source_get_length_in_pcm_frames((ma_resource_manager_data_source *)&(pstSample->stResource.stDataSource), &u64Length);
+    orxASSERT(hResult == MA_SUCCESS);
+
+    /* Stores frame number */
+    pstSample->u32FrameNumber = (orxU32)u64Length;
+
+    /* Updates status */
+    orxMEMORY_BARRIER();
+    pstSample->bReady = orxTRUE;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't process resource [%s].", pstSample->zName, pstTaskParam->zLocation);
+  }
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSample = orxNULL;
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LinkSampleTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  ma_sound_config       stSoundConfig;
+  orxSTATUS             eResult = orxSTATUS_FAILURE;
+  ma_result             hResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_LinkSampleTask");
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Inits sound config */
+  stSoundConfig             = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
+  stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
+  stSoundConfig.flags       = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
+  stSoundConfig.pFilePath   = pstSound->stSample.pstSample->stResource.zLocation;
+
+  /* Creates sound */
+  hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstSound->stSound));
+
+  /* Success? */
+  if(hResult == MA_SUCCESS)
+  {
+    /* Stores filter node */
+    pstSound->pstFilterNode     = (ma_node_base *)&(pstSound->stSound.engineNode);
+
+    /* Stores channel number & sample rate */
+    pstSound->u32ChannelNumber  = pstSound->stSample.pstSample->u32ChannelNumber;
+    pstSound->u32SampleRate     = pstSound->stSample.pstSample->u32SampleRate;
+
+    /* Updates status */
+    orxMEMORY_BARRIER();
+    pstSound->bReady            = orxTRUE;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sound from sample [%s].", pstSound->zName);
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LoadStreamTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SOUND       *pstSound;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+  ma_result                   hResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_LoadStreamTask");
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sound */
+  pstSound = pstTaskParam->pstSound;
+
+  /* Inits data source */
+  hResult = ma_resource_manager_data_source_init(&(sstSoundSystem.stResourceManager), pstTaskParam->zLocation, MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_WAIT_INIT | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_STREAM, NULL, &(pstSound->stStream.stDataSource));
+
+  /* Success? */
+  if(hResult == MA_SUCCESS)
+  {
+    ma_data_source_config stBaseConfig;
+
+    /* Inits base data source config */
+    stBaseConfig        = ma_data_source_config_init();
+    stBaseConfig.vtable = &(sstSoundSystem.stStreamVTable);
+
+    /* Inits base data source */
+    hResult = ma_data_source_init(&stBaseConfig, &(pstSound->stBase));
+
+    /* Success? */
+    if(hResult == MA_SUCCESS)
+    {
+      ma_sound_config stSoundConfig;
+
+      /* Inits sound config */
+      stSoundConfig             = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
+      stSoundConfig.pDataSource = &(pstSound->stBase);
+      stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
+      stSoundConfig.flags       = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
+
+      /* Stores info */
+      hResult = ma_data_source_get_data_format(&(pstSound->stStream.stDataSource), NULL, (ma_uint32 *)&(pstSound->u32ChannelNumber), (ma_uint32 *)&(pstSound->u32SampleRate), NULL, 0);
+
+      /* Creates sound */
+      if(hResult == MA_SUCCESS)
+      {
+        hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstSound->stSound));
+      }
+
+      /* Success? */
+      if(hResult == MA_SUCCESS)
+      {
+        /* Stores filter node */
+        pstSound->pstFilterNode = (ma_node_base *)&(pstSound->stSound.engineNode);
+
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Uninits base data source */
+        ma_data_source_uninit(&(pstSound->stBase));
+
+        /* Uninits data source */
+        ma_resource_manager_data_source_uninit(&(pstSound->stStream.stDataSource));
+        pstSound->stStream.stDataSource.flags = 0;
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't process resource [%s].", pstSound->zName, pstTaskParam->zLocation);
+      }
+    }
+    else
+    {
+      /* Uninits data source */
+      ma_resource_manager_data_source_uninit(&(pstSound->stStream.stDataSource));
+      pstSound->stStream.stDataSource.flags = 0;
+
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't initialize internal data source.", pstSound->zName);
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't initialize resource data source for location [%s].", pstSound->zName, pstTaskParam->zLocation);
+  }
+
+  /* Updates status */
+  orxMEMORY_BARRIER();
+  pstSound->bReady = orxTRUE;
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSound = orxNULL;
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_DeleteSampleTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SAMPLE  *pstSample;
+  orxSTATUS               eResult = orxSTATUS_FAILURE;
+
+  /* Gets sample */
+  pstSample = (orxSOUNDSYSTEM_SAMPLE *)_pContext;
+
+  /* Is ready? */
+  if(pstSample->bReady != orxFALSE)
+  {
+    /* Isn't a buffer? */
+    if(pstSample->bBuffer == orxFALSE)
+    {
+      /* Uninits data source */
+      ma_resource_manager_data_source_uninit(&(pstSample->stResource.stDataSource));
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_DeleteTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  orxSTATUS             eResult = orxSTATUS_FAILURE;
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Removes all filters */
+    orxSoundSystem_RemoveAllFilters(pstSound);
+
+    /* Uninits sound */
+    ma_sound_uninit(&(pstSound->stSound));
+
+    /* Has base data source? */
+    if(pstSound->stBase.vtable != NULL)
+    {
+      /* Uninits base data source */
+      ma_data_source_uninit(&(pstSound->stBase));
+    }
+
+    /* Is stream? */
+    if(pstSound->bStream != orxFALSE)
+    {
+      /* Has data source? */
+      if(pstSound->stStream.stDataSource.flags != 0)
+      {
+        /* Uninits it */
+        ma_resource_manager_data_source_uninit(&(pstSound->stStream.stDataSource));
+      }
+    }
+    else
+    {
+      /* Has data source? */
+      if(pstSound->stSample.stDataSource.pData != NULL)
+      {
+        /* Uninits it */
+        ma_audio_buffer_ref_uninit(&(pstSound->stSample.stDataSource));
+      }
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_PlayTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  orxSTATUS             eResult = orxSTATUS_FAILURE;
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Is device available? */
+    if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE))
+    {
+      /* Plays sound */
+      eResult = (ma_sound_start(&(pstSound->stSound)) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates status */
+        pstSound->bStopped = orxFALSE;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_PauseTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  orxSTATUS             eResult = orxSTATUS_FAILURE;
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Pauses sound */
+    eResult = (ma_sound_stop(&(pstSound->stSound)) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_StopTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  orxSTATUS             eResult = orxSTATUS_FAILURE;
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Stops sound */
+  if((pstSound->bReady != orxFALSE) && (ma_sound_stop(&(pstSound->stSound)) == MA_SUCCESS))
+  {
+    /* Rewinds it */
+    eResult = (ma_sound_seek_to_pcm_frame(&(pstSound->stSound), 0) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Updates engine node's local time */
+      ma_node_set_time((ma_node *)&(pstSound->stSound.engineNode), 0);
+
+      /* Is a stream? */
+      if(pstSound->bStream != orxFALSE)
+      {
+        /* Clears pending samples */
+        pstSound->stStream.u32PendingSampleNumber = 0;
+      }
+
+      /* Updates status */
+      pstSound->bStopped = orxTRUE;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddFilterTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SOUND       *pstSound;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sound */
+  pstSound = pstTaskParam->pstSound;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    orxSOUNDSYSTEM_FILTER  *pstFilter;
+    ma_result               hResult;
+
+    /* Gets filter */
+    pstFilter = pstTaskParam->pstFilter;
+
+    /* Inits it */
+    hResult = orxSoundSystem_MiniAudio_InitFilter(pstFilter, &(pstFilter->stData), &(pstSound->stSound.engineNode));
+
+    /* Success? */
+    if(hResult == MA_SUCCESS)
+    {
+      ma_node *pstOutputNode;
+
+      /* Retrieves output node */
+      orxASSERT(pstSound->pstFilterNode->outputBusCount > 0);
+      pstOutputNode = pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
+
+      /* Attaches filter output */
+      hResult = ma_node_attach_output_bus(&(pstFilter->stNode), 0, pstOutputNode, 0);
+
+      /* Success? */
+      if(hResult == MA_SUCCESS)
+      {
+        /* Attaches filter input */
+        hResult = ma_node_attach_output_bus(pstSound->pstFilterNode, 0, &(pstFilter->stNode), 0);
+
+        /* Success? */
+        if(hResult == MA_SUCCESS)
+        {
+          /* Updates filter node */
+          pstSound->pstFilterNode = (ma_node_base *)(&pstFilter->stNode);
+
+          /* Updates status */
+          orxMEMORY_BARRIER();
+          pstFilter->bReady = orxTRUE;
+
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
+        else
+        {
+          /* Restores previous connection */
+          hResult = ma_node_attach_output_bus(pstSound->pstFilterNode, 0, pstOutputNode, 0);
+          orxASSERT(hResult == MA_SUCCESS);
+
+          /* Deletes filter */
+          orxSoundSystem_MiniAudio_DeleteFilter(pstFilter);
+        }
+      }
+      else
+      {
+        /* Deletes filter */
+        orxSoundSystem_MiniAudio_DeleteFilter(pstFilter);
+      }
+    }
+    else
+    {
+      /* Deletes filter */
+      orxSoundSystem_MiniAudio_DeleteFilter(pstFilter);
+    }
+  }
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSound = orxNULL;
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveLastFilterTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  orxSTATUS             eResult = orxSTATUS_FAILURE;
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Has filter(s)? */
+    if(pstSound->pstFilterNode != (ma_node_base *)&(pstSound->stSound.engineNode))
+    {
+      ma_node  *pstInputNode, *pstOutputNode;
+      ma_result hResult;
+
+      /* Retrieves input & output nodes */
+      orxASSERT(pstSound->pstFilterNode->inputBusCount > 0);
+      orxASSERT(pstSound->pstFilterNode->outputBusCount > 0);
+      pstInputNode  = pstSound->pstFilterNode->pInputBuses[0].head.pNext->pNode;
+      pstOutputNode = pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
+
+      /* Deletes its filter (miniaudio will handle the detaching of the node) */
+      orxSoundSystem_MiniAudio_DeleteFilter(orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, pstSound->pstFilterNode));
+
+      /* Attaches them together */
+      hResult = ma_node_attach_output_bus(pstInputNode, 0, pstOutputNode, 0);
+      orxASSERT(hResult == MA_SUCCESS);
+
+      /* Updates filter node */
+      pstSound->pstFilterNode = (ma_node_base *)pstInputNode;
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveAllFiltersTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_SOUND *pstSound;
+  orxSTATUS             eResult = orxSTATUS_FAILURE;
+
+  /* Gets sound */
+  pstSound = (orxSOUNDSYSTEM_SOUND *)_pContext;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Has filter(s)? */
+    if((pstSound->pstFilterNode != orxNULL) && (pstSound->pstFilterNode != (ma_node_base *)&(pstSound->stSound.engineNode)))
+    {
+      ma_node_base *pstFilterNode;
+      ma_node      *pstOutputNode;
+      ma_result     hResult;
+
+      /* Retrieves last output node */
+      orxASSERT(pstSound->pstFilterNode->outputBusCount > 0);
+      pstOutputNode = pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
+
+      /* For all filter nodes */
+      for(pstFilterNode = pstSound->pstFilterNode; pstFilterNode != (ma_node_base *)&(pstSound->stSound.engineNode);)
+      {
+        ma_node *pstInputNode;
+
+        /* Retrieves its input node */
+        orxASSERT(pstFilterNode->inputBusCount > 0);
+        pstInputNode = pstFilterNode->pInputBuses[0].head.pNext->pNode;
+
+        /* Deletes its filter (miniaudio will handle the detaching of the node) */
+        orxSoundSystem_MiniAudio_DeleteFilter(orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, pstFilterNode));
+
+        /* Updates it */
+        pstFilterNode = (ma_node_base *)pstInputNode;
+      }
+
+      /* Updates filter node */
+      pstSound->pstFilterNode = (ma_node_base *)&(pstSound->stSound.engineNode);
+
+      /* Reattaches sound node */
+      hResult = ma_node_attach_output_bus(pstSound->pstFilterNode, 0, pstOutputNode, 0);
+      orxASSERT(hResult == MA_SUCCESS);
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetBusTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SOUND       *pstSound;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sound */
+  pstSound = pstTaskParam->pstSound;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    ma_result hResult;
+
+    /* Attaches sound to bus input */
+    hResult = ma_node_attach_output_bus(pstSound->pstFilterNode, 0, &(pstTaskParam->pstBus->stGroup.engineNode), 0);
+
+    /* Success? */
+    if(hResult == MA_SUCCESS)
+    {
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSound = orxNULL;
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetVolumeTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SOUND       *pstSound;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sound */
+  pstSound = pstTaskParam->pstSound;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Sets volume */
+    ma_sound_set_volume(&(pstSound->stSound), pstTaskParam->fVolume);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSound = orxNULL;
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPitchTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SOUND       *pstSound;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sound */
+  pstSound = pstTaskParam->pstSound;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Sets pitch */
+    ma_sound_set_pitch(&(pstSound->stSound), pstTaskParam->fPitch);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSound = orxNULL;
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetTimeTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SOUND       *pstSound;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sound */
+  pstSound = pstTaskParam->pstSound;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    ma_uint64 u64Time;
+
+    /* Computes time in frames */
+    u64Time = orxF2U(pstTaskParam->fTime * orxU2F(pstSound->stSound.engineNode.sampleRate));
+
+    /* Sets it */
+    if(ma_sound_seek_to_pcm_frame(&(pstSound->stSound), u64Time) == MA_SUCCESS)
+    {
+      /* Updates engine node's local time */
+      if(ma_node_set_time((ma_node *)&(pstSound->stSound.engineNode), u64Time) == MA_SUCCESS)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+    }
+  }
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSound = orxNULL;
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPositionTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SOUND       *pstSound;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sound */
+  pstSound = pstTaskParam->pstSound;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Updates position */
+    ma_sound_set_position(&(pstSound->stSound), sstSoundSystem.fDimensionRatio * pstTaskParam->vPosition.fX, sstSoundSystem.fDimensionRatio * pstTaskParam->vPosition.fY, sstSoundSystem.fDimensionRatio * pstTaskParam->vPosition.fZ);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSound = orxNULL;
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSpatializationTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SOUND       *pstSound;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sound */
+  pstSound = pstTaskParam->pstSound;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Enable? */
+    if((pstTaskParam->stSpatialization.fMinDistance >= orxFLOAT_0) && (pstTaskParam->stSpatialization.fMaxDistance >= orxFLOAT_0))
+    {
+      /* Updates status */
+      ma_sound_set_spatialization_enabled(&(pstSound->stSound), orxTRUE);
+
+      /* Updates properties */
+      ma_sound_set_min_distance(&(pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * pstTaskParam->stSpatialization.fMinDistance, orxFLOAT_1));
+      ma_sound_set_max_distance(&(pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * pstTaskParam->stSpatialization.fMaxDistance, orxFLOAT_1));
+      ma_sound_set_min_gain(&(pstSound->stSound), pstTaskParam->stSpatialization.fMinGain);
+      ma_sound_set_max_gain(&(pstSound->stSound), pstTaskParam->stSpatialization.fMaxGain);
+      ma_sound_set_rolloff(&(pstSound->stSound), pstTaskParam->stSpatialization.fRollOff);
+    }
+    else
+    {
+      /* Updates status */
+      ma_sound_set_spatialization_enabled(&(pstSound->stSound), orxFALSE);
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSound = orxNULL;
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPanningTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SOUND       *pstSound;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sound */
+  pstSound = pstTaskParam->pstSound;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Updates sound */
+    ma_sound_set_pan(&(pstSound->stSound), pstTaskParam->stPanning.fPanning);
+    ma_sound_set_pan_mode(&(pstSound->stSound), (pstTaskParam->stPanning.bMix != orxFALSE) ? ma_pan_mode_pan : ma_pan_mode_balance);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSound = orxNULL;
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LoopTask(void *_pContext)
+{
+  orxSOUNDSYSTEM_TASK_PARAM  *pstTaskParam;
+  orxSOUNDSYSTEM_SOUND       *pstSound;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
+
+  /* Gets task param */
+  pstTaskParam = (orxSOUNDSYSTEM_TASK_PARAM *)_pContext;
+
+  /* Gets sound */
+  pstSound = pstTaskParam->pstSound;
+
+  /* Ready? */
+  if(pstSound->bReady != orxFALSE)
+  {
+    /* Updates sound's status */
+    ma_sound_set_looping(&(pstSound->stSound), (pstTaskParam->bLoop != orxFALSE) ? MA_TRUE : MA_FALSE);
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Updates task param */
+  orxMEMORY_BARRIER();
+  pstTaskParam->pstSound = orxNULL;
+
+  /* Done! */
+  return eResult;
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
@@ -1783,16 +2876,37 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
       /* Success? */
       if(hResult == MA_SUCCESS)
       {
+        ma_device_info *apstDeviceList;
+        ma_uint32       u32DeviceNumber;
+
+        /* No available playback devices? */
+        if((ma_context_get_devices(&(sstSoundSystem.stContext), &apstDeviceList, &u32DeviceNumber, NULL, NULL) != MA_SUCCESS)
+        || (u32DeviceNumber == 0))
+        {
+          ma_backend eNullBackend = ma_backend_null;
+
+          /* Uninits context */
+          ma_context_uninit(&(sstSoundSystem.stContext));
+
+          /* Re-inits it with the null backend */
+          hResult = ma_context_init(&eNullBackend, 1, &stContextConfig, &(sstSoundSystem.stContext));
+        }
+      }
+
+      /* Success? */
+      if(hResult == MA_SUCCESS)
+      {
         ma_engine_config stEngineConfig;
 
         /* Inits engine */
-        stEngineConfig                  = ma_engine_config_init();
-        stEngineConfig.pContext         = &(sstSoundSystem.stContext);
-        stEngineConfig.pLog             = &(sstSoundSystem.stLog);
-        stEngineConfig.pResourceManager = &(sstSoundSystem.stResourceManager);
-        stEngineConfig.listenerCount    = sstSoundSystem.u32ListenerNumber;
+        stEngineConfig                      = ma_engine_config_init();
+        stEngineConfig.pContext             = &(sstSoundSystem.stContext);
+        stEngineConfig.pLog                 = &(sstSoundSystem.stLog);
+        stEngineConfig.pResourceManager     = &(sstSoundSystem.stResourceManager);
+        stEngineConfig.listenerCount        = sstSoundSystem.u32ListenerNumber;
+        stEngineConfig.notificationCallback = &orxSoundSystem_MiniAudio_OnDeviceNotification;
         ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
-        hResult                         = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
+        hResult                             = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
 
         /* Success? */
         if(hResult == MA_SUCCESS)
@@ -1807,7 +2921,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
           if((sstSoundSystem.pstSampleBank != orxNULL) && (sstSoundSystem.pstSoundBank != orxNULL) && (sstSoundSystem.pstBusBank != orxNULL) && (sstSoundSystem.pstFilterBank != orxNULL))
           {
             /* Adds job thread */
-            sstSoundSystem.u32WorkerThread = orxThread_Start(&orxSoundSystem_MiniAudio_ProcessTask, orxSOUNDSYSTEM_KZ_THREAD_NAME, &(sstSoundSystem.stResourceManager));
+            sstSoundSystem.u32WorkerThread = orxThread_Start(&orxSoundSystem_MiniAudio_ProcessJobs, orxSOUNDSYSTEM_KZ_THREAD_NAME, &(sstSoundSystem.stResourceManager));
 
             /* Valid? */
             if(sstSoundSystem.u32WorkerThread != orxU32_UNDEFINED)
@@ -1837,7 +2951,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
               }
 
               /* Updates status */
-              orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL);
+              orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY, (orxSOUNDSYSTEM_KU32_STATIC_MASK_ALL & ~orxSOUNDSYSTEM_KU32_STATIC_MASK_DEVICE));
 
               /* Updates result */
               eResult = orxSTATUS_SUCCESS;
@@ -1944,6 +3058,13 @@ void orxFASTCALL orxSoundSystem_MiniAudio_Exit()
   /* Was initialized? */
   if(sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY)
   {
+    /* Waits for all pending operations */
+    while(orxThread_GetTaskCount() != 0)
+      ;
+
+    /* Updates status */
+    orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_EXIT, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
+
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_MiniAudio_EventHandler);
 
@@ -1952,9 +3073,6 @@ void orxFASTCALL orxSoundSystem_MiniAudio_Exit()
 
     /* Stops any recording */
     orxSoundSystem_StopRecording();
-
-    /* Joins worker thread */
-    orxThread_Join(sstSoundSystem.u32WorkerThread);
 
     /* Uninits engine */
     ma_engine_uninit(&(sstSoundSystem.stEngine));
@@ -1967,6 +3085,9 @@ void orxFASTCALL orxSoundSystem_MiniAudio_Exit()
 
     /* Uninits log */
     ma_log_uninit(&(sstSoundSystem.stLog));
+
+    /* Joins worker thread */
+    orxThread_Join(sstSoundSystem.u32WorkerThread);
 
     /* Deletes banks */
     orxBank_Delete(sstSoundSystem.pstSampleBank);
@@ -2021,7 +3142,8 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_CreateSample(orxU32 
         pstResult->u32SampleRate     = _u32SampleRate;
 
         /* Updates status */
-        pstResult->bIsBuffer         = orxTRUE;
+        pstResult->bBuffer           = orxTRUE;
+        pstResult->bReady            = orxTRUE;
       }
       else
       {
@@ -2048,84 +3170,69 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_CreateSample(orxU32 
 
 orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_LoadSample(const orxSTRING _zFilename)
 {
+  const orxSTRING zResourceLocation;
   orxSOUNDSYSTEM_SAMPLE *pstResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_LoadSample");
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_zFilename != orxNULL);
 
-  /* Allocates sample */
-  pstResult = (orxSOUNDSYSTEM_SAMPLE *)orxBank_Allocate(sstSoundSystem.pstSampleBank);
+  /* Locates resource */
+  zResourceLocation = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
 
-  /* Valid? */
-  if(pstResult != orxNULL)
+  /* Success? */
+  if(zResourceLocation != orxNULL)
   {
-    const orxSTRING zResourceLocation;
+    /* Allocates sample */
+    pstResult = (orxSOUNDSYSTEM_SAMPLE *)orxBank_Allocate(sstSoundSystem.pstSampleBank);
 
-    /* Clears data */
-    orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SAMPLE));
-
-    /* Locates resource */
-    zResourceLocation = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, _zFilename);
-
-    /* Success? */
-    if(zResourceLocation != orxNULL)
+    /* Valid? */
+    if(pstResult != orxNULL)
     {
-      ma_result hResult;
+      orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
 
-      /* Inits data source */
-      hResult = ma_resource_manager_data_source_init(&(sstSoundSystem.stResourceManager), zResourceLocation, MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_WAIT_INIT | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_DECODE | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_ASYNC, NULL, &(pstResult->stResource.stDataSource));
+      /* Clears it */
+      orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SAMPLE));
 
-      /* Success? */
-      if(hResult == MA_SUCCESS)
-      {
-        ma_format eFormat;
-        ma_uint64 u64Length;
+      /* Stores name */
+      pstResult->zName = orxString_Store(_zFilename);
 
-        /* Stores name */
-        pstResult->zName = orxString_Store(_zFilename);
+      /* Stores location */
+      pstResult->stResource.zLocation = orxString_Duplicate(zResourceLocation);
 
-        /* Stores location */
-        pstResult->stResource.zLocation = orxString_Duplicate(zResourceLocation);
+      /* Updates status */
+      pstResult->bBuffer = orxFALSE;
 
-        /* Retrieves channel number & sample rate */
-        hResult = ma_resource_manager_data_source_get_data_format((ma_resource_manager_data_source *)&(pstResult->stResource.stDataSource), &(eFormat), (ma_uint32 *)&(pstResult->u32ChannelNumber), (ma_uint32 *)&(pstResult->u32SampleRate), NULL, 0);
-        orxASSERT(hResult == MA_SUCCESS);
+      /* Prepares task parameter */
+      pstTaskParam            = orxSoundSystem_MiniAudio_GetTaskParam(pstResult);
+      pstTaskParam->zLocation = zResourceLocation;
 
-        /* Gets length */
-        hResult = ma_resource_manager_data_source_get_length_in_pcm_frames((ma_resource_manager_data_source *)&(pstResult->stResource.stDataSource), &u64Length);
-        orxASSERT(hResult == MA_SUCCESS);
-
-        /* Stores frame number */
-        pstResult->u32FrameNumber = (orxU32)u64Length;
-
-        /* Updates status */
-        pstResult->bIsBuffer = orxFALSE;
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't process resource [%s].", _zFilename, zResourceLocation);
-
-        /* Frees sample */
-        orxBank_Free(sstSoundSystem.pstSampleBank, pstResult);
-
-        /* Updates result */
-        pstResult = orxNULL;
-      }
+      /* Runs load sample task */
+      orxThread_RunTask(&orxSoundSystem_MiniAudio_LoadSampleTask, orxNULL, orxNULL, pstTaskParam);
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't locate resource.", _zFilename);
-
-      /* Frees sample */
-      orxBank_Free(sstSoundSystem.pstSampleBank, pstResult);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't allocate sample structure.", _zFilename);
 
       /* Updates result */
       pstResult = orxNULL;
     }
   }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound sample <%s>: can't locate resource.", _zFilename);
+
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return pstResult;
@@ -2133,29 +3240,14 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_LoadSample(const orx
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_DeleteSample(orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSample != orxNULL);
 
-  /* Is a buffer? */
-  if(_pstSample->bIsBuffer != orxFALSE)
-  {
-    /* Frees it */
-    orxMemory_Free(_pstSample->stBuffer.afSampleList);
-  }
-  else
-  {
-    /* Uninits data source */
-    ma_resource_manager_data_source_uninit(&(_pstSample->stResource.stDataSource));
-
-    /* Deletes location */
-    orxString_Delete(_pstSample->stResource.zLocation);
-  }
-
-  /* Deletes sample */
-  orxBank_Free(sstSoundSystem.pstSampleBank, _pstSample);
+  /* Runs delete sample task */
+  eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_DeleteSampleTask, &orxSoundSystem_MiniAudio_FreeSample, &orxSoundSystem_MiniAudio_FreeSample, _pstSample);
 
   /* Done! */
   return eResult;
@@ -2191,7 +3283,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSampleData(orxSOUNDSYSTEM_SAMP
   orxASSERT(_afData != orxNULL);
 
   /* Is buffer? */
-  if(_pstSample->bIsBuffer != orxFALSE)
+  if(_pstSample->bBuffer != orxFALSE)
   {
     /* Valid size? */
     if(_u32SampleNumber == _pstSample->u32ChannelNumber * _pstSample->u32FrameNumber)
@@ -2210,7 +3302,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSampleData(orxSOUNDSYSTEM_SAMP
 
 orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxHANDLE _hUserData, const orxSOUNDSYSTEM_SAMPLE *_pstSample)
 {
-  orxSOUNDSYSTEM_SOUND *pstResult = orxNULL;
+  orxSOUNDSYSTEM_SOUND *pstResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -2230,22 +3322,28 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
 
     /* Inits sound config */
-    stSoundConfig             = ma_sound_config_init();
+    stSoundConfig             = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
     stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
 
     /* Is buffer? */
-    if(_pstSample->bIsBuffer != orxFALSE)
+    if(_pstSample->bBuffer != orxFALSE)
     {
-      /* Updates sound config*/
+      /* Updates sound config */
       stSoundConfig.flags       = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
       stSoundConfig.pDataSource = &(pstResult->stSample.stDataSource);
 
       /* Creates buffer data source */
       hResult = ma_audio_buffer_ref_init(orxSOUNDSYSTEM_KE_DEFAULT_FORMAT, _pstSample->u32ChannelNumber, _pstSample->stBuffer.afSampleList, (ma_uint64)_pstSample->u32FrameNumber, &(pstResult->stSample.stDataSource));
+
+      /* Enforces its sample rate */
+      pstResult->stSample.stDataSource.sampleRate = _pstSample->u32SampleRate;
+
+      /* Checks */
+      orxASSERT(_pstSample->bReady != orxFALSE);
     }
     else
     {
-      /* Updates sound config*/
+      /* Updates sound config */
       stSoundConfig.flags     = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
       stSoundConfig.pFilePath = _pstSample->stResource.zLocation;
     }
@@ -2253,38 +3351,53 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     /* Success? */
     if(hResult == MA_SUCCESS)
     {
-      /* Creates sound */
-      hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstResult->stSound));
+      /* Stores user data */
+      pstResult->hUserData = _hUserData;
 
-      /* Success? */
-      if(hResult == MA_SUCCESS)
+      /* Stores name */
+      pstResult->zName = _pstSample->zName;
+
+      /* Stores sample */
+      pstResult->stSample.pstSample = _pstSample;
+
+      /* Updates status */
+      pstResult->bStream = orxFALSE;
+
+      /* Ready? */
+      if(_pstSample->bReady != orxFALSE)
       {
-        /* Stores filter node */
-        pstResult->pstFilterNode    = (ma_node_base *)&(pstResult->stSound.engineNode);
+        /* Creates sound */
+        hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstResult->stSound));
 
-        /* Stores user data */
-        pstResult->hUserData        = _hUserData;
+        /* Success? */
+        if(hResult == MA_SUCCESS)
+        {
+          /* Stores filter node */
+          pstResult->pstFilterNode    = (ma_node_base *)&(pstResult->stSound.engineNode);
 
-        /* Stores name */
-        pstResult->zName            = _pstSample->zName;
+          /* Stores channel number & sample rate */
+          pstResult->u32ChannelNumber = _pstSample->u32ChannelNumber;
+          pstResult->u32SampleRate    = _pstSample->u32SampleRate;
 
-        /* Stores channel number & sample rate */
-        pstResult->u32ChannelNumber = _pstSample->u32ChannelNumber;
-        pstResult->u32SampleRate    = _pstSample->u32SampleRate;
+          /* Updates status */
+          pstResult->bReady           = orxTRUE;
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sound from sample [%s].", _pstSample->zName);
 
-        /* Updates status */
-        pstResult->bIsStream        = orxFALSE;
+          /* Deletes sound */
+          orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
+
+          /* Updates result */
+          pstResult = orxNULL;
+        }
       }
       else
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sound from sample [%s].", _pstSample->zName);
-
-        /* Deletes sound */
-        orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
-
-        /* Updates result */
-        pstResult = orxNULL;
+        /* Runs link sample task */
+        orxThread_RunTask(&orxSoundSystem_MiniAudio_LinkSampleTask, orxNULL, orxNULL, pstResult);
       }
     }
     else
@@ -2345,7 +3458,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
         ma_sound_config stSoundConfig;
 
         /* Inits sound config */
-        stSoundConfig               = ma_sound_config_init();
+        stSoundConfig               = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
         stSoundConfig.pDataSource   = &(pstResult->stBase);
         stSoundConfig.channelsOut   = ma_engine_get_channels(&(sstSoundSystem.stEngine));
         stSoundConfig.flags         = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
@@ -2355,7 +3468,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
         pstResult->u32SampleRate    = _u32SampleRate;
 
         /* Updates status */
-        pstResult->bIsStream = orxTRUE;
+        pstResult->bStream          = orxTRUE;
 
         /* Creates sound */
         hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstResult->stSound));
@@ -2371,6 +3484,9 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
 
           /* Stores name */
           pstResult->zName = orxSTRING_EMPTY;
+
+          /* Updates status */
+          pstResult->bReady = orxTRUE;
         }
         else
         {
@@ -2410,10 +3526,13 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
   return pstResult;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(orxHANDLE _hUserData, const orxSTRING _zFilename)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_LoadStream(orxHANDLE _hUserData, const orxSTRING _zFilename)
 {
   const orxSTRING       zResourceLocation;
   orxSOUNDSYSTEM_SOUND *pstResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxSoundSystem_LoadStream");
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -2432,103 +3551,26 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      ma_result hResult;
+      orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
 
       /* Clears it */
       orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
 
-      /* Inits data source */
-      hResult = ma_resource_manager_data_source_init(&(sstSoundSystem.stResourceManager), zResourceLocation, MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_WAIT_INIT | MA_RESOURCE_MANAGER_DATA_SOURCE_FLAG_STREAM, NULL, &(pstResult->stStream.stDataSource));
+      /* Stores user data */
+      pstResult->hUserData = _hUserData;
 
-      /* Success? */
-      if(hResult == MA_SUCCESS)
-      {
-        ma_data_source_config stBaseConfig;
+      /* Stores name */
+      pstResult->zName = orxString_Store(_zFilename);
 
-        /* Inits base data source config */
-        stBaseConfig        = ma_data_source_config_init();
-        stBaseConfig.vtable = &(sstSoundSystem.stStreamVTable);
+      /* Updates status */
+      pstResult->bStream = orxTRUE;
 
-        /* Inits base data source */
-        hResult = ma_data_source_init(&stBaseConfig, &(pstResult->stBase));
+      /* Prepares task parameter */
+      pstTaskParam            = orxSoundSystem_MiniAudio_GetTaskParam(pstResult);
+      pstTaskParam->zLocation = zResourceLocation;
 
-        /* Success? */
-        if(hResult == MA_SUCCESS)
-        {
-          ma_sound_config stSoundConfig;
-
-          /* Inits sound config */
-          stSoundConfig             = ma_sound_config_init();
-          stSoundConfig.pDataSource = &(pstResult->stBase);
-          stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
-          stSoundConfig.flags       = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
-
-          /* Stores info */
-          hResult = ma_data_source_get_data_format(&(pstResult->stStream.stDataSource), NULL, (ma_uint32 *)&(pstResult->u32ChannelNumber), (ma_uint32 *)&(pstResult->u32SampleRate), NULL, 0);
-          orxASSERT(hResult == MA_SUCCESS);
-
-          /* Updates status */
-          pstResult->bIsStream = orxTRUE;
-
-          /* Creates sound */
-          hResult = ma_sound_init_ex(&(sstSoundSystem.stEngine), &stSoundConfig, &(pstResult->stSound));
-
-          /* Success? */
-          if(hResult == MA_SUCCESS)
-          {
-            /* Stores filter node */
-            pstResult->pstFilterNode = (ma_node_base *)&(pstResult->stSound.engineNode);
-
-            /* Stores user data */
-            pstResult->hUserData = _hUserData;
-
-            /* Stores name */
-            pstResult->zName = orxString_Store(_zFilename);
-          }
-          else
-          {
-            /* Uninits base data source */
-            ma_data_source_uninit(&(pstResult->stBase));
-
-            /* Uninits data source */
-            ma_resource_manager_data_source_uninit(&(pstResult->stStream.stDataSource));
-
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't process resource [%s].", _zFilename, zResourceLocation);
-
-            /* Deletes sound */
-            orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
-
-            /* Updates result */
-            pstResult = orxNULL;
-          }
-        }
-        else
-        {
-          /* Uninits data source */
-          ma_resource_manager_data_source_uninit(&(pstResult->stStream.stDataSource));
-
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't initialize internal data source.", _zFilename);
-
-          /* Deletes sound */
-          orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
-
-          /* Updates result */
-          pstResult = orxNULL;
-        }
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't load sound stream <%s>: can't initialize resource data source for location [%s].", _zFilename, zResourceLocation);
-
-        /* Deletes sound */
-        orxBank_Free(sstSoundSystem.pstSoundBank, pstResult);
-
-        /* Updates result */
-        pstResult = orxNULL;
-      }
+      /* Runs load stream task */
+      orxThread_RunTask(&orxSoundSystem_MiniAudio_LoadStreamTask, orxNULL, orxNULL, pstTaskParam);
     }
     else
     {
@@ -2548,53 +3590,23 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStreamFromFile(
     pstResult = orxNULL;
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return pstResult;
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Removes all filters */
-  orxSoundSystem_RemoveAllFilters(_pstSound);
-
-  /* Uninits sound */
-  ma_sound_uninit(&(_pstSound->stSound));
-
-  /* Has base data source? */
-  if(_pstSound->stBase.vtable != NULL)
-  {
-    /* Uninits base data source */
-    ma_data_source_uninit(&(_pstSound->stBase));
-  }
-
-  /* Is stream? */
-  if(_pstSound->bIsStream != orxFALSE)
-  {
-    /* Has data source? */
-    if(_pstSound->stStream.stDataSource.flags != 0)
-    {
-      /* Uninits it */
-      ma_resource_manager_data_source_uninit(&(_pstSound->stStream.stDataSource));
-    }
-  }
-  else
-  {
-    /* Has data source? */
-    if(_pstSound->stSample.stDataSource.pData != NULL)
-    {
-      /* Uninits it */
-      ma_audio_buffer_ref_uninit(&(_pstSound->stSample.stDataSource));
-    }
-  }
-
-  /* Deletes sound */
-  orxBank_Free(sstSoundSystem.pstSoundBank, _pstSound);
+  /* Runs delete task */
+  eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_DeleteTask, &orxSoundSystem_MiniAudio_FreeSound, &orxSoundSystem_MiniAudio_FreeSound, _pstSound);
 
   /* Done! */
   return eResult;
@@ -2608,14 +3620,32 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Play(orxSOUNDSYSTEM_SOUND *_pstSo
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Plays sound */
-  eResult = (ma_sound_start(&(_pstSound->stSound)) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-  /* Success? */
-  if(eResult != orxSTATUS_FAILURE)
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
   {
-    /* Updates status */
-    _pstSound->bIsStopped = orxFALSE;
+    /* Is device available? */
+    if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_DEVICE_AVAILABLE))
+    {
+      /* Plays sound */
+      eResult = (ma_sound_start(&(_pstSound->stSound)) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates status */
+        _pstSound->bStopped = orxFALSE;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    /* Runs play task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_PlayTask, orxNULL, orxNULL, _pstSound);
   }
 
   /* Done! */
@@ -2630,8 +3660,17 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Pause(orxSOUNDSYSTEM_SOUND *_pstS
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Pauses sound */
-  eResult = (ma_sound_stop(&(_pstSound->stSound)) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
+  {
+    /* Pauses sound */
+    eResult = (ma_sound_stop(&(_pstSound->stSound)) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  }
+  else
+  {
+    /* Runs pause task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_PauseTask, orxNULL, orxNULL, _pstSound);
+  }
 
   /* Done! */
   return eResult;
@@ -2645,33 +3684,42 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Stop(orxSOUNDSYSTEM_SOUND *_pstSo
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Stops sound */
-  if(ma_sound_stop(&(_pstSound->stSound)) == MA_SUCCESS)
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
   {
-    /* Rewinds it */
-    eResult = (ma_sound_seek_to_pcm_frame(&(_pstSound->stSound), 0) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
-
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
+    /* Stops sound */
+    if(ma_sound_stop(&(_pstSound->stSound)) == MA_SUCCESS)
     {
-      /* Updates engine node's local time */
-      ma_node_set_time((ma_node *)&(_pstSound->stSound.engineNode), 0);
+      /* Rewinds it */
+      eResult = (ma_sound_seek_to_pcm_frame(&(_pstSound->stSound), 0) == MA_SUCCESS) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
-      /* Is a stream? */
-      if(_pstSound->bIsStream != orxFALSE)
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
       {
-        /* Clears pending samples */
-        _pstSound->stStream.u32PendingSampleNumber = 0;
-      }
+        /* Updates engine node's local time */
+        ma_node_set_time((ma_node *)&(_pstSound->stSound.engineNode), 0);
 
-      /* Updates status */
-      _pstSound->bIsStopped = orxTRUE;
+        /* Is a stream? */
+        if(_pstSound->bStream != orxFALSE)
+        {
+          /* Clears pending samples */
+          _pstSound->stStream.u32PendingSampleNumber = 0;
+        }
+
+        /* Updates status */
+        _pstSound->bStopped = orxTRUE;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
     }
   }
   else
   {
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    /* Runs stop task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_StopTask, orxNULL, orxNULL, _pstSound);
   }
 
   /* Done! */
@@ -2694,64 +3742,21 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddFilter(orxSOUNDSYSTEM_SOUND *_
   /* Success? */
   if(pstFilter != orxNULL)
   {
-    ma_result hResult;
+    orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
 
-    /* Inits it */
-    hResult = orxSoundSystem_MiniAudio_InitFilter(pstFilter, _pstFilterData, &(_pstSound->stSound.engineNode));
+    /* Clears it */
+    orxMemory_Zero(pstFilter, sizeof(orxSOUNDSYSTEM_FILTER));
 
-    /* Success? */
-    if(hResult == MA_SUCCESS)
-    {
-      ma_node *pstOutputNode;
+    /* Prepares task parameter */
+    pstTaskParam                = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
+    pstTaskParam->pstFilter     = pstFilter;
+    pstFilter->bUseCustomParam  = _bUseCustomParam;
+    pstFilter->bReady           = orxFALSE;
+    pstFilter->pstSound         = _pstSound;
+    orxMemory_Copy(&(pstFilter->stData), _pstFilterData, sizeof(orxSOUND_FILTER_DATA));
 
-      /* Retrieves output node */
-      orxASSERT(_pstSound->pstFilterNode->outputBusCount > 0);
-      pstOutputNode = _pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
-
-      /* Attaches filter output */
-      hResult = ma_node_attach_output_bus(&(pstFilter->stNode), 0, pstOutputNode, 0);
-
-      /* Success? */
-      if(hResult == MA_SUCCESS)
-      {
-        /* Attaches filter input */
-        hResult = ma_node_attach_output_bus(_pstSound->pstFilterNode, 0, &(pstFilter->stNode), 0);
-
-        /* Success? */
-        if(hResult == MA_SUCCESS)
-        {
-          /* Updates filter node */
-          _pstSound->pstFilterNode = (ma_node_base *)(&pstFilter->stNode);
-
-          /* Updates filter */
-          orxMemory_Copy(&(pstFilter->stData), _pstFilterData, sizeof(orxSOUND_FILTER_DATA));
-          pstFilter->bUseCustomParam  = _bUseCustomParam;
-          pstFilter->pstSound         = _pstSound;
-
-          /* Updates result */
-          eResult = orxSTATUS_SUCCESS;
-        }
-        else
-        {
-          /* Restores previous connection */
-          hResult = ma_node_attach_output_bus(_pstSound->pstFilterNode, 0, pstOutputNode, 0);
-          orxASSERT(hResult == MA_SUCCESS);
-
-          /* Deletes filter */
-          orxBank_Free(sstSoundSystem.pstFilterBank, pstFilter);
-        }
-      }
-      else
-      {
-        /* Deletes filter */
-        orxBank_Free(sstSoundSystem.pstFilterBank, pstFilter);
-      }
-    }
-    else
-    {
-      /* Deletes filter */
-      orxBank_Free(sstSoundSystem.pstFilterBank, pstFilter);
-    }
+    /* Runs add filter task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_AddFilterTask, orxNULL, orxNULL, pstTaskParam);
   }
 
   /* Done! */
@@ -2766,31 +3771,19 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveLastFilter(orxSOUNDSYSTEM_S
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Has filter(s)? */
-  if(_pstSound->pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode))
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
   {
-    ma_node  *pstInputNode, *pstOutputNode;
-    ma_result hResult;
-
-    /* Retrieves input & output nodes */
-    orxASSERT(_pstSound->pstFilterNode->inputBusCount > 0);
-    orxASSERT(_pstSound->pstFilterNode->outputBusCount > 0);
-    pstInputNode  = _pstSound->pstFilterNode->pInputBuses[0].head.pNext->pNode;
-    pstOutputNode = _pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
-
-    /* Deletes its filter (miniaudio will handle the detaching of the node) */
-    orxSoundSystem_MiniAudio_DeleteFilter(orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, _pstSound->pstFilterNode));
-
-    /* Attaches them together */
-    hResult = ma_node_attach_output_bus(pstInputNode, 0, pstOutputNode, 0);
-    orxASSERT(hResult == MA_SUCCESS);
-
-    /* Updates filter node */
-    _pstSound->pstFilterNode = (ma_node_base *)pstInputNode;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    /* Has filter(s)? */
+    if(_pstSound->pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode))
+    {
+      /* Updates its status */
+      orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, _pstSound->pstFilterNode)->bReady = orxFALSE;
+    }
   }
+
+  /* Runs remove last filter task */
+  eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_RemoveLastFilterTask, orxNULL, orxNULL, _pstSound);
 
   /* Done! */
   return eResult;
@@ -2805,38 +3798,25 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveAllFilters(orxSOUNDSYSTEM_S
   orxASSERT(_pstSound != orxNULL);
 
   /* Has filter(s)? */
-  if(_pstSound->pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode))
+  if((_pstSound->pstFilterNode != orxNULL) && (_pstSound->pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode)))
   {
-    ma_node_base *pstFilterNode;
-    ma_node      *pstOutputNode;
-    ma_result     hResult;
-
-    /* Retrieves last output node */
-    orxASSERT(_pstSound->pstFilterNode->outputBusCount > 0);
-    pstOutputNode = _pstSound->pstFilterNode->pOutputBuses[0].pInputNode;
-
-    /* For all filter nodes */
-    for(pstFilterNode = _pstSound->pstFilterNode; pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode);)
+    /* Ready? */
+    if(_pstSound->bReady != orxFALSE)
     {
-      ma_node *pstInputNode;
+      ma_node_base *pstFilterNode;
 
-      /* Retrieves its input node */
-      orxASSERT(pstFilterNode->inputBusCount > 0);
-      pstInputNode = pstFilterNode->pInputBuses[0].head.pNext->pNode;
-
-      /* Deletes its filter (miniaudio will handle the detaching of the node) */
-      orxSoundSystem_MiniAudio_DeleteFilter(orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, pstFilterNode));
-
-      /* Updates it */
-      pstFilterNode = (ma_node_base *)pstInputNode;
+      /* For all filter nodes */
+      for(pstFilterNode = _pstSound->pstFilterNode;
+          pstFilterNode != (ma_node_base *)&(_pstSound->stSound.engineNode);
+          pstFilterNode = (ma_node_base *)pstFilterNode->pInputBuses[0].head.pNext->pNode)
+      {
+        /* Updates its status */
+        orxSTRUCT_GET_FROM_FIELD(orxSOUNDSYSTEM_FILTER, stNode, pstFilterNode)->bReady = orxFALSE;
+      }
     }
 
-    /* Updates filter node */
-    _pstSound->pstFilterNode = (ma_node_base *)&(_pstSound->stSound.engineNode);
-
-    /* Reattaches sound node */
-    hResult = ma_node_attach_output_bus(_pstSound->pstFilterNode, 0, pstOutputNode, 0);
-    orxASSERT(hResult == MA_SUCCESS);
+    /* Runs remove all filters task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_RemoveAllFiltersTask, orxNULL, orxNULL, _pstSound);
   }
 
   /* Done! */
@@ -2958,20 +3938,35 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetBus(orxSOUNDSYSTEM_SOUND *_pst
   /* Valid? */
   if((_hBus != 0) && (_hBus != orxHANDLE_UNDEFINED))
   {
-    orxSOUNDSYSTEM_BUS *pstBus;
-    ma_result           hResult;
-
-    /* Gets bus */
-    pstBus = (orxSOUNDSYSTEM_BUS *)_hBus;
-
-    /* Attaches sound to bus input */
-    hResult = ma_node_attach_output_bus(_pstSound->pstFilterNode, 0, &(pstBus->stGroup.engineNode), 0);
-
-    /* Success? */
-    if(hResult == MA_SUCCESS)
+    /* Ready? */
+    if(_pstSound->bReady != orxFALSE)
     {
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+      orxSOUNDSYSTEM_BUS *pstBus;
+      ma_result           hResult;
+
+      /* Gets bus */
+      pstBus = (orxSOUNDSYSTEM_BUS *)_hBus;
+
+      /* Attaches sound to bus input */
+      hResult = ma_node_attach_output_bus(_pstSound->pstFilterNode, 0, &(pstBus->stGroup.engineNode), 0);
+
+      /* Success? */
+      if(hResult == MA_SUCCESS)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+    }
+    else
+    {
+      orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
+
+      /* Prepares task parameter */
+      pstTaskParam          = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
+      pstTaskParam->pstBus  = (orxSOUNDSYSTEM_BUS *)_hBus;
+
+      /* Runs set bus task */
+      eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetBusTask, orxNULL, orxNULL, pstTaskParam);
     }
   }
 
@@ -3034,6 +4029,9 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddBusFilter(orxHANDLE _hBus, con
       orxSOUNDSYSTEM_BUS *pstBus;
       ma_result           hResult;
 
+      /* Clears it */
+      orxMemory_Zero(pstFilter, sizeof(orxSOUNDSYSTEM_FILTER));
+
       /* Gets bus */
       pstBus = (orxSOUNDSYSTEM_BUS *)_hBus;
 
@@ -3068,6 +4066,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddBusFilter(orxHANDLE _hBus, con
             orxMemory_Copy(&(pstFilter->stData), _pstFilterData, sizeof(orxSOUND_FILTER_DATA));
             pstFilter->bUseCustomParam  = _bUseCustomParam;
             pstFilter->pstBus           = pstBus;
+            orxMEMORY_BARRIER();
+            pstFilter->bReady           = orxTRUE;
 
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;
@@ -3445,8 +4445,23 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetVolume(orxSOUNDSYSTEM_SOUND *_
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Sets volume */
-  ma_sound_set_volume(&(_pstSound->stSound), _fVolume);
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
+  {
+    /* Sets volume */
+    ma_sound_set_volume(&(_pstSound->stSound), _fVolume);
+  }
+  else
+  {
+    orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
+
+    /* Prepares task parameter */
+    pstTaskParam          = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
+    pstTaskParam->fVolume = _fVolume;
+
+    /* Runs set volume task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetVolumeTask, orxNULL, orxNULL, pstTaskParam);
+  }
 
   /* Done! */
   return eResult;
@@ -3460,8 +4475,23 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPitch(orxSOUNDSYSTEM_SOUND *_p
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Sets pitch */
-  ma_sound_set_pitch(&(_pstSound->stSound), _fPitch);
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
+  {
+    /* Sets pitch */
+    ma_sound_set_pitch(&(_pstSound->stSound), _fPitch);
+  }
+  else
+  {
+    orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
+
+    /* Prepares task parameter */
+    pstTaskParam          = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
+    pstTaskParam->fPitch  = _fPitch;
+
+    /* Runs set pitch task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetPitchTask, orxNULL, orxNULL, pstTaskParam);
+  }
 
   /* Done! */
   return eResult;
@@ -3476,18 +4506,33 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetTime(orxSOUNDSYSTEM_SOUND *_ps
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Computes time in frames */
-  u64Time = orxF2U(_fTime * orxU2F(ma_engine_get_sample_rate(ma_sound_get_engine(&(_pstSound->stSound)))));
-
-  /* Sets it */
-  if(ma_sound_seek_to_pcm_frame(&(_pstSound->stSound), u64Time) == MA_SUCCESS)
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
   {
-    /* Updates engine node's local time */
-    if(ma_node_set_time((ma_node *)&(_pstSound->stSound.engineNode), u64Time) == MA_SUCCESS)
+    /* Computes time in frames */
+    u64Time = orxF2U(_fTime * orxU2F(_pstSound->stSound.engineNode.sampleRate));
+
+    /* Sets it */
+    if(ma_sound_seek_to_pcm_frame(&(_pstSound->stSound), u64Time) == MA_SUCCESS)
     {
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+      /* Updates engine node's local time */
+      if(ma_node_set_time((ma_node *)&(_pstSound->stSound.engineNode), u64Time) == MA_SUCCESS)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
     }
+  }
+  else
+  {
+    orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
+
+    /* Prepares task parameter */
+    pstTaskParam        = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
+    pstTaskParam->fTime = _fTime;
+
+    /* Runs set time task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetTimeTask, orxNULL, orxNULL, pstTaskParam);
   }
 
   /* Done! */
@@ -3503,8 +4548,23 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPosition(orxSOUNDSYSTEM_SOUND 
   orxASSERT(_pstSound != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
 
-  /* Updates position */
-  ma_sound_set_position(&(_pstSound->stSound), sstSoundSystem.fDimensionRatio * _pvPosition->fX, sstSoundSystem.fDimensionRatio * _pvPosition->fY, sstSoundSystem.fDimensionRatio * _pvPosition->fZ);
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
+  {
+    /* Updates position */
+    ma_sound_set_position(&(_pstSound->stSound), sstSoundSystem.fDimensionRatio * _pvPosition->fX, sstSoundSystem.fDimensionRatio * _pvPosition->fY, sstSoundSystem.fDimensionRatio * _pvPosition->fZ);
+  }
+  else
+  {
+    orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
+
+    /* Prepares task parameter */
+    pstTaskParam = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
+    orxVector_Copy(&(pstTaskParam->vPosition), _pvPosition);
+
+    /* Runs set position task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetPositionTask, orxNULL, orxNULL, pstTaskParam);
+  }
 
   /* Done! */
   return eResult;
@@ -3525,27 +4585,46 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSpatialization(orxSOUNDSYSTEM_
   /* Is spatialization enabled? */
   if(sstSoundSystem.u32ListenerNumber > 0)
   {
-    /* Enable? */
-    if((_fMinDistance >= orxFLOAT_0) && (_fMaxDistance >= orxFLOAT_0))
+    /* Ready? */
+    if(_pstSound->bReady != orxFALSE)
     {
-      /* Updates status */
-      ma_sound_set_spatialization_enabled(&(_pstSound->stSound), orxTRUE);
+      /* Enable? */
+      if((_fMinDistance >= orxFLOAT_0) && (_fMaxDistance >= orxFLOAT_0))
+      {
+        /* Updates status */
+        ma_sound_set_spatialization_enabled(&(_pstSound->stSound), orxTRUE);
 
-      /* Updates properties */
-      ma_sound_set_min_distance(&(_pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * _fMinDistance, orxFLOAT_1));
-      ma_sound_set_max_distance(&(_pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * _fMaxDistance, orxFLOAT_1));
-      ma_sound_set_min_gain(&(_pstSound->stSound), _fMinGain);
-      ma_sound_set_max_gain(&(_pstSound->stSound), _fMaxGain);
-      ma_sound_set_rolloff(&(_pstSound->stSound), _fRollOff);
+        /* Updates properties */
+        ma_sound_set_min_distance(&(_pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * _fMinDistance, orxFLOAT_1));
+        ma_sound_set_max_distance(&(_pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * _fMaxDistance, orxFLOAT_1));
+        ma_sound_set_min_gain(&(_pstSound->stSound), _fMinGain);
+        ma_sound_set_max_gain(&(_pstSound->stSound), _fMaxGain);
+        ma_sound_set_rolloff(&(_pstSound->stSound), _fRollOff);
+      }
+      else
+      {
+        /* Updates status */
+        ma_sound_set_spatialization_enabled(&(_pstSound->stSound), orxFALSE);
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
-      /* Updates status */
-      ma_sound_set_spatialization_enabled(&(_pstSound->stSound), orxFALSE);
-    }
+      orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
 
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+      /* Prepares task parameter */
+      pstTaskParam                                = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
+      pstTaskParam->stSpatialization.fMinDistance = _fMinDistance;
+      pstTaskParam->stSpatialization.fMaxDistance = _fMaxDistance;
+      pstTaskParam->stSpatialization.fMinGain     = _fMinGain;
+      pstTaskParam->stSpatialization.fMaxGain     = _fMaxGain;
+      pstTaskParam->stSpatialization.fRollOff     = _fRollOff;
+
+      /* Runs set spatialization task */
+      eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetSpatializationTask, orxNULL, orxNULL, pstTaskParam);
+    }
   }
   else
   {
@@ -3565,9 +4644,25 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPanning(orxSOUNDSYSTEM_SOUND *
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Updates sound */
-  ma_sound_set_pan(&(_pstSound->stSound), _fPanning);
-  ma_sound_set_pan_mode(&(_pstSound->stSound), (_bMix != orxFALSE) ? ma_pan_mode_pan : ma_pan_mode_balance);
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
+  {
+    /* Updates sound */
+    ma_sound_set_pan(&(_pstSound->stSound), _fPanning);
+    ma_sound_set_pan_mode(&(_pstSound->stSound), (_bMix != orxFALSE) ? ma_pan_mode_pan : ma_pan_mode_balance);
+  }
+  else
+  {
+    orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
+
+    /* Prepares task parameter */
+    pstTaskParam                      = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
+    pstTaskParam->stPanning.fPanning  = _fPanning;
+    pstTaskParam->stPanning.bMix      = _bMix;
+
+    /* Runs set panning task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetPanningTask, orxNULL, orxNULL, pstTaskParam);
+  }
 
   /* Done! */
   return eResult;
@@ -3581,8 +4676,23 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Loop(orxSOUNDSYSTEM_SOUND *_pstSo
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Updates sound's status */
-  ma_sound_set_looping(&(_pstSound->stSound), (_bLoop != orxFALSE) ? MA_TRUE : MA_FALSE);
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
+  {
+    /* Updates sound's status */
+    ma_sound_set_looping(&(_pstSound->stSound), (_bLoop != orxFALSE) ? MA_TRUE : MA_FALSE);
+  }
+  else
+  {
+    orxSOUNDSYSTEM_TASK_PARAM *pstTaskParam;
+
+    /* Prepares task parameter */
+    pstTaskParam        = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
+    pstTaskParam->bLoop =_bLoop;
+
+    /* Runs loop task */
+    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_LoopTask, orxNULL, orxNULL, pstTaskParam);
+  }
 
   /* Done! */
   return eResult;
@@ -3596,8 +4706,17 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetVolume(const orxSOUNDSYSTEM_SOU
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Updates result */
-  fResult = ma_node_get_output_bus_volume((ma_node *)&(_pstSound->stSound), 0);
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
+  {
+    /* Updates result */
+    fResult = ma_node_get_output_bus_volume((ma_node *)&(_pstSound->stSound), 0);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = -orxFLOAT_1;
+  }
 
   /* Done! */
   return fResult;
@@ -3611,8 +4730,17 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetPitch(const orxSOUNDSYSTEM_SOUN
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Updates result */
-  fResult = _pstSound->stSound.engineNode.pitch;
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
+  {
+    /* Updates result */
+    fResult = _pstSound->stSound.engineNode.pitch;
+  }
+  else
+  {
+    /* Updates result */
+    fResult = -orxFLOAT_1;
+  }
 
   /* Done! */
   return fResult;
@@ -3620,18 +4748,28 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetPitch(const orxSOUNDSYSTEM_SOUN
 
 orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetTime(const orxSOUNDSYSTEM_SOUND *_pstSound)
 {
-  ma_uint64 u64Time;
-  orxFLOAT  fResult;
+  orxFLOAT fResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Gets time */
-  u64Time = ma_sound_get_time_in_pcm_frames(&(_pstSound->stSound));
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
+  {
+    ma_uint64 u64Time;
 
-  /* Updates result */
-  fResult = orxU2F(u64Time) / orxU2F(ma_engine_get_sample_rate(ma_sound_get_engine((ma_sound *)&(_pstSound->stSound))));
+    /* Gets time */
+    u64Time = ma_sound_get_time_in_pcm_frames(&(_pstSound->stSound));
+
+    /* Updates result */
+    fResult = orxU2F(u64Time) / orxU2F(_pstSound->stSound.engineNode.sampleRate);
+  }
+  else
+  {
+    /* Updates result */
+    fResult = -orxFLOAT_1;
+  }
 
   /* Done! */
   return fResult;
@@ -3639,19 +4777,30 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetTime(const orxSOUNDSYSTEM_SOUND
 
 orxVECTOR *orxFASTCALL orxSoundSystem_MiniAudio_GetPosition(const orxSOUNDSYSTEM_SOUND *_pstSound, orxVECTOR *_pvPosition)
 {
-  ma_vec3f    vPosition;
-  orxVECTOR  *pvResult = _pvPosition;
+  orxVECTOR *pvResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
   orxASSERT(_pvPosition != orxNULL);
 
-  /* Gets position */
-  vPosition = ma_sound_get_position(&(_pstSound->stSound));
+  /* Ready? */
+  if(_pstSound->bReady != orxFALSE)
+  {
+    ma_vec3f vPosition;
 
-  /* Updates result */
-  orxVector_Set(pvResult, sstSoundSystem.fRecDimensionRatio * vPosition.x, sstSoundSystem.fRecDimensionRatio * vPosition.y, sstSoundSystem.fRecDimensionRatio * vPosition.z);
+    /* Gets position */
+    vPosition = ma_sound_get_position(&(_pstSound->stSound));
+
+    /* Updates result */
+    pvResult = _pvPosition;
+    orxVector_Set(pvResult, sstSoundSystem.fRecDimensionRatio * vPosition.x, sstSoundSystem.fRecDimensionRatio * vPosition.y, sstSoundSystem.fRecDimensionRatio * vPosition.z);
+  }
+  else
+  {
+    /* Updates result */
+    pvResult = orxNULL;
+  }
 
   /* Done! */
   return pvResult;
@@ -3671,7 +4820,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSpatialization(const orxSOUNDS
   orxASSERT(_pfRollOff != orxNULL);
 
   /* Is spatialization enabled? */
-  if(sstSoundSystem.u32ListenerNumber > 0)
+  if((_pstSound->bReady != orxFALSE) && (sstSoundSystem.u32ListenerNumber > 0))
   {
     /* Is sound spatialized? */
     if(_pstSound->stSound.engineNode.isSpatializationDisabled == MA_FALSE)
@@ -3713,7 +4862,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSpatialization(const orxSOUNDS
 
 orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetPanning(const orxSOUNDSYSTEM_SOUND *_pstSound, orxFLOAT *_pfPanning, orxBOOL *_pbMix)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
@@ -3721,9 +4870,25 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetPanning(const orxSOUNDSYSTEM_S
   orxASSERT(_pfPanning != orxNULL);
   orxASSERT(_pbMix != orxNULL);
 
-  /* Updates values */
-  *_pfPanning = _pstSound->stSound.engineNode.panner.pan;
-  *_pbMix     = (_pstSound->stSound.engineNode.panner.mode == ma_pan_mode_pan) ? orxTRUE : orxFALSE;
+  /* Playing? */
+  if((_pstSound->bReady == orxFALSE) || (ma_sound_is_playing(&(_pstSound->stSound)) != MA_FALSE))
+  {
+    /* Updates values */
+    *_pfPanning = _pstSound->stSound.engineNode.panner.pan;
+    *_pbMix     = (_pstSound->stSound.engineNode.panner.mode == ma_pan_mode_pan) ? orxTRUE : orxFALSE;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Updates values */
+    *_pfPanning = orxFLOAT_0;
+    *_pbMix     = orxFALSE;
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;
@@ -3738,7 +4903,7 @@ orxBOOL orxFASTCALL orxSoundSystem_MiniAudio_IsLooping(const orxSOUNDSYSTEM_SOUN
   orxASSERT(_pstSound != orxNULL);
 
   /* Updates result */
-  bResult = (ma_sound_is_looping(&(_pstSound->stSound)) != MA_FALSE) ? orxTRUE : orxFALSE;
+  bResult = ((_pstSound->bReady != orxFALSE) && (ma_sound_is_looping(&(_pstSound->stSound)) != MA_FALSE)) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return bResult;
@@ -3754,8 +4919,9 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetDuration(const orxSOUNDSYSTEM_S
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
 
-  /* Not an empty stream? */
-  if((_pstSound->bIsStream == orxFALSE) || (_pstSound->stStream.stDataSource.flags != 0))
+  /* Ready & not an empty stream? */
+  if((_pstSound->bReady != orxFALSE)
+  && ((_pstSound->bStream == orxFALSE) || (_pstSound->stStream.stDataSource.flags != 0)))
   {
     /* Gets length */
     hResult = ma_sound_get_length_in_pcm_frames((ma_sound *)&(_pstSound->stSound), &u64Length);
@@ -3764,7 +4930,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetDuration(const orxSOUNDSYSTEM_S
     if(hResult == MA_SUCCESS)
     {
       /* Updates result */
-      fResult = orxU2F(u64Length) / orxU2F(ma_engine_get_sample_rate(ma_sound_get_engine((ma_sound *)&(_pstSound->stSound))));
+      fResult = orxU2F(u64Length) / orxU2F(_pstSound->stSound.engineNode.sampleRate);
     }
   }
   else
@@ -3786,7 +4952,7 @@ orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_MiniAudio_GetStatus(const orxSO
   orxASSERT(_pstSound != orxNULL);
 
   /* Playing? */
-  if(ma_sound_is_playing(&(_pstSound->stSound)) != MA_FALSE)
+  if((_pstSound->bReady == orxFALSE) || (ma_sound_is_playing(&(_pstSound->stSound)) != MA_FALSE))
   {
     /* Updates result */
     eResult = orxSOUNDSYSTEM_STATUS_PLAY;
@@ -3795,7 +4961,7 @@ orxSOUNDSYSTEM_STATUS orxFASTCALL orxSoundSystem_MiniAudio_GetStatus(const orxSO
   else
   {
     /* Updates result */
-    eResult = ((_pstSound->bIsStopped != orxFALSE) || (ma_sound_get_time_in_pcm_frames(&(_pstSound->stSound)) == 0) || (ma_sound_at_end(&(_pstSound->stSound)) != MA_FALSE)) ? orxSOUNDSYSTEM_STATUS_STOP : orxSOUNDSYSTEM_STATUS_PAUSE;
+    eResult = ((_pstSound->bStopped != orxFALSE) || (ma_sound_at_end(&(_pstSound->stSound)) != MA_FALSE)) ? orxSOUNDSYSTEM_STATUS_STOP : orxSOUNDSYSTEM_STATUS_PAUSE;
   }
 
   /* Done! */
@@ -3959,7 +5125,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_GetSampleInfo, SOUNDSY
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_CreateStream, SOUNDSYSTEM, CREATE_STREAM);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_LoadStream, SOUNDSYSTEM, LOAD_STREAM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_Delete, SOUNDSYSTEM, DELETE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_Play, SOUNDSYSTEM, PLAY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_MiniAudio_Pause, SOUNDSYSTEM, PAUSE);

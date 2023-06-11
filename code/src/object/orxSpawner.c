@@ -34,6 +34,7 @@
 
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "core/orxResource.h"
@@ -92,6 +93,7 @@
 #define orxSPAWNER_KZ_CONFIG_INTERPOLATE          "Interpolate"
 #define orxSPAWNER_KZ_CONFIG_IMMEDIATE            "Immediate"
 #define orxSPAWNER_KZ_CONFIG_IGNORE_FROM_PARENT   "IgnoreFromParent"
+#define orxSPAWNER_KZ_CONFIG_ON_SPAWN             "OnSpawn"
 
 
 #define orxSPAWNER_KZ_BOTH                        "both"
@@ -343,7 +345,7 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
         orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_OBJECT_SPEED, orxSPAWNER_KU32_FLAG_NONE);
       }
 
-      /* Has list/random/command value? */
+      /* Is value dynamic? */
       if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_OBJECT_SPEED) != orxFALSE)
       {
         /* Updates status */
@@ -543,6 +545,7 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
     {
       orxCLOCK_INFO   stClockInfo;
       const orxSTRING zObjectName = orxNULL;
+      const orxSTRING zOnSpawn = orxNULL;
       orxU32          i;
 
       /* Inits clock info for object simulation */
@@ -552,11 +555,28 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
       /* Pushes section */
       orxConfig_PushSection(_pstSpawner->zReference);
 
-      /* Is single spawn or object not dynamic? */
-      if((u32SpawnNumber == 1) || (orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_OBJECT) == orxFALSE))
+      /* Is single spawn? */
+      if(u32SpawnNumber == 1)
       {
-        /* Stores it */
+        /* Stores object name and on spawn command */
         zObjectName = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT);
+        zOnSpawn    = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_ON_SPAWN);
+      }
+      else
+      {
+        /* Is object name not dynamic? */
+        if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_OBJECT) == orxFALSE)
+        {
+          /* Stores it */
+          zObjectName = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_OBJECT);
+        }
+
+        /* Is on spawn command not dynamic? */
+        if(orxConfig_IsDynamicValue(orxSPAWNER_KZ_CONFIG_ON_SPAWN) == orxFALSE)
+        {
+          /* Stores it */
+          zOnSpawn = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_ON_SPAWN);
+        }
       }
 
       /* For all objects to spawn */
@@ -588,8 +608,22 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
         /* Valid? */
         if(pstObject != orxNULL)
         {
+          const orxSTRING zCommand;
+
           /* Updates result */
           u32Result++;
+
+          /* Gets on spawn command */
+          zCommand = (zOnSpawn == orxNULL) ? orxConfig_GetString(orxSPAWNER_KZ_CONFIG_ON_SPAWN) : zOnSpawn;
+
+          /* Valid? */
+          if(*zCommand != orxCHAR_NULL)
+          {
+            orxCOMMAND_VAR stCommandResult;
+
+            /* Evaluates it */
+            orxCommand_EvaluateWithGUID(zCommand, orxStructure_GetGUID(pstObject), &stCommandResult);
+          }
 
           /* Should simulate object? */
           if(stClockInfo.fDT > orxFLOAT_0)
@@ -734,9 +768,6 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             /* Has spawned table? */
             if(pstSpawner->pstSpawnedTable != orxNULL)
             {
-              /* Sets spawner as owner */
-              orxObject_SetOwner(pstObject, pstSpawner);
-
               /* Gets object hash key */
               u64Key = orxStructure_GetGUID(pstObject);
               u64Key = ((u64Key & 0xFFFFFFFF) << 32) | ((u64Key >> 32) & 0xFFFFFFFF);
@@ -920,6 +951,13 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             /* Stores object */
             sstSpawner.pstCurrentSpawner->pstPendingObject = orxOBJECT(_pstEvent->hSender);
 
+            /* Has spawned table? */
+            if(sstSpawner.pstCurrentSpawner->pstSpawnedTable != orxNULL)
+            {
+              /* Sets spawner as owner */
+              orxObject_SetOwner(sstSpawner.pstCurrentSpawner->pstPendingObject, sstSpawner.pstCurrentSpawner);
+            }
+
             /* Stores ourself as temporary parent in payload */
             *((orxSPAWNER **)_pstEvent->pstPayload) = sstSpawner.pstCurrentSpawner;
           }
@@ -942,7 +980,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           /* Found? */
           if(pstSpawner != orxNULL)
           {
-            /* Disables it */
+            /* Updates it */
             orxSpawner_Enable(pstSpawner, (_pstEvent->eID == orxOBJECT_EVENT_ENABLE) ? orxTRUE : orxFALSE);
           }
 
@@ -1065,71 +1103,82 @@ static orxSTATUS orxFASTCALL orxSpawner_Update(orxSTRUCTURE *_pstStructure, cons
       /* Should spawn a new wave? */
       if(pstSpawner->fWaveTimer <= orxFLOAT_0)
       {
+        orxEVENT stEvent;
+
         /* Checks */
         orxASSERT(orxOBJECT(orxStructure_GetOwner(pstSpawner)) == pstObject);
 
-        /* Sends wave start event */
-        orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_START, pstSpawner, orxNULL, orxNULL);
+        /* Inits event */
+        orxEVENT_INIT(stEvent, orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_WAVE_START, pstSpawner, orxNULL, orxNULL);
 
-        /* Is in active interpolate mode with a valid wave delay? */
-        if((orxStructure_GetFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE | orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE) == orxSPAWNER_KU32_FLAG_INTERPOLATE)
-        && (pstSpawner->fWaveDelay > orxFLOAT_0))
+        /* Should spawn wave? */
+        if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
         {
-          orxVECTOR vSpawnerPosition, vSpawnerScale, vPosition, vScale;
-          orxFLOAT  fInvDT, fSpawnerRotation, fDT, fCoef, fDelta;
-
-          /* Gets current spawner frame values */
-          orxSpawner_GetWorldPosition(pstSpawner, &vSpawnerPosition);
-          orxSpawner_GetWorldScale(pstSpawner, &vSpawnerScale);
-          fSpawnerRotation = orxSpawner_GetWorldRotation(pstSpawner);
-
-          /* For all the waves that need to be spawned */
-          for(fInvDT = orxFLOAT_1 / _pstClockInfo->fDT, fCoef = orxFLOAT_1 + (pstSpawner->fWaveTimer * fInvDT), fDelta = pstSpawner->fWaveDelay * fInvDT, fDT = -pstSpawner->fWaveTimer;
-              fCoef <= orxFLOAT_1;
-              fCoef += fDelta, fDT -= pstSpawner->fWaveDelay)
+          /* Is in active interpolate mode with a valid wave delay? */
+          if((orxStructure_GetFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE | orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE) == orxSPAWNER_KU32_FLAG_INTERPOLATE)
+          && (pstSpawner->fWaveDelay > orxFLOAT_0))
           {
-            orxFLOAT fRotation;
+            orxVECTOR vSpawnerPosition, vSpawnerScale, vPosition, vScale;
+            orxFLOAT  fInvDT, fSpawnerRotation, fDT, fCoef, fDelta;
 
-            /* Gets interpolated frame values */
-            orxVector_Lerp(&vPosition, &(pstSpawner->vLastPosition), &vSpawnerPosition, fCoef);
-            orxVector_Lerp(&vScale, &(pstSpawner->vLastScale), &vSpawnerScale, fCoef);
-            fRotation = orxLERP(pstSpawner->fLastRotation, fSpawnerRotation, fCoef);
+            /* Gets current spawner frame values */
+            orxSpawner_GetWorldPosition(pstSpawner, &vSpawnerPosition);
+            orxSpawner_GetWorldScale(pstSpawner, &vSpawnerScale);
+            fSpawnerRotation = orxSpawner_GetWorldRotation(pstSpawner);
 
-            /* Spawns objects */
-            orxSpawner_SpawnInternal(pstSpawner, pstSpawner->u32WaveSize, &vPosition, &vScale, fRotation, fDT);
+            /* For all the waves that need to be spawned */
+            for(fInvDT = orxFLOAT_1 / _pstClockInfo->fDT, fCoef = orxFLOAT_1 + (pstSpawner->fWaveTimer * fInvDT), fDelta = pstSpawner->fWaveDelay * fInvDT, fDT = -pstSpawner->fWaveTimer;
+                fCoef <= orxFLOAT_1;
+                fCoef += fDelta, fDT -= pstSpawner->fWaveDelay)
+            {
+              orxFLOAT fRotation;
+
+              /* Gets interpolated frame values */
+              orxVector_Lerp(&vPosition, &(pstSpawner->vLastPosition), &vSpawnerPosition, fCoef);
+              orxVector_Lerp(&vScale, &(pstSpawner->vLastScale), &vSpawnerScale, fCoef);
+              fRotation = orxLERP(pstSpawner->fLastRotation, fSpawnerRotation, fCoef);
+
+              /* Spawns objects */
+              orxSpawner_SpawnInternal(pstSpawner, pstSpawner->u32WaveSize, &vPosition, &vScale, fRotation, fDT);
+            }
+
+            /* Updates timer */
+            pstSpawner->fWaveTimer = (fCoef - orxFLOAT_1) * _pstClockInfo->fDT;
+
+            /* Updates latest frame values with current ones */
+            orxVector_Copy(&(pstSpawner->vLastPosition), &vSpawnerPosition);
+            orxVector_Copy(&(pstSpawner->vLastScale), &vSpawnerScale);
+            pstSpawner->fLastRotation = fSpawnerRotation;
           }
+          else
+          {
+            /* Should clean interpolation values? */
+            if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE))
+            {
+              /* Stores last values */
+              orxSpawner_GetWorldPosition(pstSpawner, &(pstSpawner->vLastPosition));
+              orxSpawner_GetWorldScale(pstSpawner, &(pstSpawner->vLastScale));
+              pstSpawner->fLastRotation  = orxSpawner_GetWorldRotation(pstSpawner);
 
-          /* Updates timer */
-          pstSpawner->fWaveTimer = (fCoef - orxFLOAT_1) * _pstClockInfo->fDT;
+              /* Updates status */
+              orxStructure_SetFlags(pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE);
+            }
+            /* Is in interpolate mode? */
+            else if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE))
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Spawner <%s>: Ignoring interpolate mode as its WaveDelay isn't strictly positive.", orxSpawner_GetName(pstSpawner));
+            }
 
-          /* Updates latest frame values with current ones */
-          orxVector_Copy(&(pstSpawner->vLastPosition), &vSpawnerPosition);
-          orxVector_Copy(&(pstSpawner->vLastScale), &vSpawnerScale);
-          pstSpawner->fLastRotation = fSpawnerRotation;
+            /* Spawns the wave */
+            orxSpawner_Spawn(pstSpawner, pstSpawner->u32WaveSize);
+
+            /* Updates wave timer */
+            pstSpawner->fWaveTimer = pstSpawner->fWaveDelay;
+          }
         }
         else
         {
-          /* Should clean interpolation values? */
-          if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE))
-          {
-            /* Stores last values */
-            orxSpawner_GetWorldPosition(pstSpawner, &(pstSpawner->vLastPosition));
-            orxSpawner_GetWorldScale(pstSpawner, &(pstSpawner->vLastScale));
-            pstSpawner->fLastRotation  = orxSpawner_GetWorldRotation(pstSpawner);
-
-            /* Updates status */
-            orxStructure_SetFlags(pstSpawner, orxSPAWNER_KU32_FLAG_NONE, orxSPAWNER_KU32_FLAG_CLEAN_INTERPOLATE);
-          }
-          /* Is in interpolate mode? */
-          else if(orxStructure_TestFlags(pstSpawner, orxSPAWNER_KU32_FLAG_INTERPOLATE))
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Spawner <%s>: Ignoring interpolate mode as its WaveDelay isn't strictly positive.", orxSpawner_GetName(pstSpawner));
-          }
-
-          /* Spawns the wave */
-          orxSpawner_Spawn(pstSpawner, pstSpawner->u32WaveSize);
-
           /* Updates wave timer */
           pstSpawner->fWaveTimer = pstSpawner->fWaveDelay;
         }
@@ -1161,6 +1210,7 @@ void orxFASTCALL orxSpawner_Setup()
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_PROFILER);
+  orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SPAWNER, orxMODULE_ID_FRAME);
@@ -1366,30 +1416,23 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
       orxHANDLE   hIterator;
       orxOBJECT  *pstObject;
 
-      /* Should clean? */
-      if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE))
+      /* For all objects */
+      for(hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstObject);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, hIterator, orxNULL, (void **)&pstObject))
       {
-        /* For all objects */
-        for(hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstObject);
-            hIterator != orxHANDLE_UNDEFINED;
-            hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, hIterator, orxNULL, (void **)&pstObject))
+        /* Still owned? */
+        if((orxOBJECT(pstObject) != orxNULL) && (orxObject_GetOwner(pstObject) == (orxSTRUCTURE *)_pstSpawner))
         {
           /* Removes it */
           orxObject_SetOwner(pstObject, orxNULL);
 
-          /* Updates its lifetime */
-          orxObject_SetLifeTime(pstObject, orxFLOAT_0);
-        }
-      }
-      else
-      {
-        /* For all objects */
-        for(hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstObject);
-            hIterator != orxHANDLE_UNDEFINED;
-            hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, hIterator, orxNULL, (void **)&pstObject))
-        {
-          /* Removes it */
-          orxObject_SetOwner(pstObject, orxNULL);
+          /* Should clean? */
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE))
+          {
+            /* Updates its lifetime */
+            orxObject_SetLifeTime(pstObject, orxFLOAT_0);
+          }
         }
       }
 

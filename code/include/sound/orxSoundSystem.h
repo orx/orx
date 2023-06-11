@@ -73,7 +73,7 @@ typedef enum __orxSOUNDSYSTEM_STATUS_t
 
 /** Sound filter type enum
  */
-typedef enum __orxSOUND_FILTE_TYPE_t
+typedef enum __orxSOUND_FILTER_TYPE_t
 {
   orxSOUND_FILTER_TYPE_BIQUAD = 0,
   orxSOUND_FILTER_TYPE_LOW_PASS,
@@ -268,12 +268,12 @@ extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateFromS
  */
 extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStream(orxHANDLE _hUserData, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate);
 
-/** Creates a streamed sound from file (can be played directly)
+/** Loads a streamed sound (can be played directly)
  * @param[in]   _hUserData                            User data to associate with this sound
  * @param[in]   _zFilename                            Name of the file to load as a stream (won't be completely loaded in memory, useful for musics)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
-extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStreamFromFile(orxHANDLE _hUserData, const orxSTRING _zFilename);
+extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_LoadStream(orxHANDLE _hUserData, const orxSTRING _zFilename);
 
 /** Deletes a sound
  * @param[in]   _pstSound                             Concerned sound

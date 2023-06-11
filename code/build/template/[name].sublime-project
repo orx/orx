@@ -1,0 +1,10 @@
+{
+  "folders":
+  [
+    {
+      "path": ".",
+      "file_exclude_patterns": ["*.vcproj", "*.sln", "*.obj", "*.o", "*.d", "*.suo", "*.ncb", "*.exe", "*.exp", "*.", "*.so", "*.dylib", "*.dll", "*.pdb", "*.ilk", "*.idb", "*.opensdf", "*.opendb", "*.tmp", "*.ipch", "*.cih", "*.filters", "*.vcxproj*", "*.sublime-*", "*.make"],
+      "folder_exclude_patterns": ["obj", "lib"]
+    }
+  ]
+}

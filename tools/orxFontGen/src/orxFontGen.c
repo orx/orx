@@ -1027,7 +1027,7 @@ static void Run()
           orxConfig_SetStringBlock("CharacterList", acBuffer);
           orxConfig_SetVector("CharacterSize", &sstFontGen.vCharacterSize);
           orxConfig_SetVector("CharacterSpacing", &sstFontGen.vCharacterSpacing);
-          orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.png", sstFontGen.zFontName);
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s.png", sstFontGen.zFontName);
           orxConfig_SetString("Texture", acBuffer);
         }
         else
@@ -1039,7 +1039,7 @@ static void Run()
           orxConfig_SetListString("CharacterWidthList", (const orxSTRING *)azWidthList, u32Counter);
           orxConfig_SetFloat("CharacterHeight", sstFontGen.vCharacterSize.fY);
           orxConfig_SetVector("CharacterSpacing", &sstFontGen.vCharacterSpacing);
-          orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.png", sstFontGen.zFontName);
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s.png", sstFontGen.zFontName);
           orxConfig_SetString("Texture", acBuffer);
 
           // For all width strings
@@ -1063,7 +1063,7 @@ static void Run()
         orxFONTGEN_LOG(PROCESS, "%d glyphs generated in '%s'.", u32Counter, acBuffer);
 
         // Gets config file name
-        orxString_NPrint(acBuffer, orxFONTGEN_KU32_BUFFER_SIZE, "%s.ini", sstFontGen.zFontName);
+        orxString_NPrint(acBuffer, sizeof(acBuffer), "%s.ini", sstFontGen.zFontName);
 
         // Saves it
         if(orxConfig_Save(acBuffer, orxFALSE, SaveFilter) != orxSTATUS_FAILURE)

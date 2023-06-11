@@ -341,6 +341,7 @@ extern orxDLLAPI orxU64 orxFASTCALL           orxConfig_GetU64(const orxSTRING _
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxConfig_GetFloat(const orxSTRING _zKey);
 
 /** Reads a string value from config (will take a random value if a list is provided for this key)
+ * Beware: result might not persist through any subsequent orxConfig_Get* calls
  * @param[in] _zKey             Key name
  * @return The value
  */
@@ -478,6 +479,7 @@ extern orxDLLAPI orxU64 orxFASTCALL           orxConfig_GetListU64(const orxSTRI
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32ListIndex);
 
 /** Reads a string value from config list
+ * Beware: result might not persist through any subsequent orxConfig_Get* calls
  * @param[in] _zKey             Key name
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value

@@ -7,7 +7,7 @@ REBOL [
 
 ; Default settings
 tag:            <version>
-hosts:          [[{https://orx-project.org/extern/} tag {.zip}] [{https://codeload.github.com/orx/orx-extern/zip/} tag]]
+hosts:          [[{https://orx-project.org/extern/} tag {.zip}] [{https://codeload.github.com/orx/orx-extern/zip/} tag] [{https://orx-mirror.0ok.org/} tag {.zip}]]
 extern:         %extern/
 cache:          %cache/
 temp:           %.temp/
@@ -21,9 +21,9 @@ build-file:     %code/include/base/orxBuild.h
 env-variable:   {ORX}
 env-path:       %code
 platform-data:  compose/deep [
-  windows     [premake {windows}                                              config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]                                               env-msg {Please restart your favorite IDE before using orx.}]
-  mac         [premake {mac}                                                  config [{gmake} {codelite} {codeblocks} {xcode4}                  ]                                               env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
-  linux       [premake (pick [{linux64} {linux32}] system/build/arch = 'x64)  config [{gmake} {codelite} {codeblocks}                           ]   deps [{libgl1-mesa-dev} {libxrandr-dev}]    env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
+  windows     [premake {windows}                                              config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]                                                                 env-msg {Please restart your favorite IDE before using orx.}]
+  mac         [premake {mac}                                                  config [{gmake} {codelite} {codeblocks} {xcode4}                  ]                                                                 env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
+  linux       [premake (pick [{linux64} {linux32}] system/build/arch = 'x64)  config [{gmake} {codelite} {codeblocks}                           ]   deps [{libgl1-mesa-dev} {libxrandr-dev} {libstdc++-static}]   env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
 ]
 
 ; Inits
@@ -38,9 +38,27 @@ change-dir root: system/options/path
 attempt [write build-file {}]
 
 ; Should override cache?
-unless empty? system/options/args [
-  print [{== Overriding cache [} cache {] => [} cache: dirize to-rebol-file system/options/args/1 {]}]
-  skip-env: false skip-hook: true
+unless empty? args: system/options/args [
+  wrap [
+    digits: charset [#"0" - #"9"]
+    foreach arg args [
+      either arg/1 = #"-" [
+        case [
+          parse next arg [(level: 1) [{debug} | {dbg} | {d}] opt [{:} copy level some digits (level: min 5 load level)]] [
+            print [{== Setting debug level [} level {]}]
+            system/options/quiet: false
+            foreach [sub _] system/options/log [system/options/log/:sub: level]
+          ]
+          true [
+            print [{== Ignoring unknown argument [} arg {]}]
+          ]
+        ]
+      ] [
+        print [{== Overriding cache [} cache {] => [} cache: dirize to-rebol-file arg {]}]
+        skip-env: skip-hook: true
+      ]
+    ]
+  ]
 ]
 
 ; Checks version
@@ -85,12 +103,19 @@ either req-ver = cur-ver [
   delete-dir temp
   print [{== Decompressing [} local {] => [} extern {]}]
   wait 0.5
-  foreach [file data] load local [
-    either dir? file [
-      mkdir/deep temp/:file
-    ] [
-      write temp/:file data/2
+  if error? try [
+    foreach [file data] load local [
+      either dir? file [
+        mkdir/deep temp/:file
+      ] [
+        write temp/:file data/2
+      ]
     ]
+  ] [
+    print [{== Corrupt archive [} local {] detected, aborting!}]
+    print {== ! Please re-run the setup script !}
+    delete local
+    quit
   ]
   until [wait 0.5 attempt [rename rejoin [temp load temp] extern]]
   delete-dir temp
@@ -245,11 +270,10 @@ if find platform-info 'deps [
   print [{==^(1b)[31m IMPORTANT - Make sure the following libraries (or equivalent) are installed on your system^(1b)[39m:}]
   foreach lib platform-info/deps [print [{==[^(1b)[33m} lib {^(1b)[39m]}]]
 ]
-if all [
+all [
   new-env
   find platform-info 'env-msg
-] [
-  print [newline {== IMPORTANT - New environment detected:} platform-info/env-msg newline]
+  print [newline {==^(1b)[32m IMPORTANT - New environment detected^(1b)[39m:} platform-info/env-msg newline]
 ]
 end: now/time
 print [{== [} (end - begin) {] Setup successful!}]

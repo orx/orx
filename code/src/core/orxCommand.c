@@ -71,7 +71,7 @@
 #define orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE       256
 
 #define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          65536
-#define orxCOMMAND_KU32_PROCESS_BUFFER_SIZE           4096
+#define orxCOMMAND_KU32_PROCESS_BUFFER_SIZE           65536
 #define orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE         512
 
 #define orxCOMMAND_KZ_ERROR_VALUE                     "ERROR"
@@ -150,6 +150,7 @@ typedef struct __orxCOMMAND_STATIC_t
   orxCHAR                   acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE]; /**< Prototype buffer */
   orxCHAR                   acResultBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE];       /**< Result buffer */
   orxS32                    s32EvaluateOffset;                                        /**< Evaluate buffer offset */
+  orxS32                    s32ProcessOffset;                                         /**< Process buffer offset */
   orxU32                    u32Flags;                                                 /**< Control flags */
 
 } orxCOMMAND_STATIC;
@@ -493,7 +494,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     {
 #define orxCOMMAND_KU32_ALIAS_MAX_DEPTH             32
       orxSTATUS             eStatus;
-      orxS32                s32GUIDLength, s32BufferCount = 0, s32VectorDepth = 0, i;
+      orxS32                s32GUIDLength, s32BufferCount = 0, s32VectorDepth = 0, s32Offset, i;
       orxBOOL               bInBlock = orxFALSE;
       orxCOMMAND_TRIE_NODE *pstCommandNode;
       const orxCHAR        *pcSrc;
@@ -517,8 +518,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       if(_u64GUID != orxU64_UNDEFINED)
       {
         /* Gets owner's GUID */
-        acGUID[19]    = orxCHAR_NULL;
-        s32GUIDLength = orxString_NPrint(acGUID, 19, "0x%016llX", _u64GUID);
+        s32GUIDLength = orxString_NPrint(acGUID, sizeof(acGUID), "0x%016llX", _u64GUID);
       }
       else
       {
@@ -546,7 +546,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       *(orxCHAR *)pcCommandEnd = cBackupChar;
 
       /* For all stacked buffers */
-      for(i = s32BufferCount - 1, pcDst = sstCommand.acProcessBuffer; i >= 0; i--)
+      for(i = s32BufferCount - 1, pcDst = sstCommand.acProcessBuffer + sstCommand.s32ProcessOffset; i >= 0; i--)
       {
         orxBOOL bStop;
 
@@ -642,7 +642,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 
                   default:
                   {
-                    orxCommand_PrintVar(acValue, sizeof(acValue) - 1, &(pstEntry->stValue));
+                    orxCommand_PrintVar(acValue, sizeof(acValue), &(pstEntry->stValue));
 
                     break;
                   }
@@ -748,11 +748,14 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       /* Copies end of string */
       *pcDst = orxCHAR_NULL;
 
+      /* Gets new additional offset */
+      s32Offset = (orxS32)(pcDst + 1 - sstCommand.acProcessBuffer - sstCommand.s32ProcessOffset);
+
       /* Updates next command expression */
       zCommand = orxString_SkipWhiteSpaces(pcSrc);
 
       /* For all characters in the buffer */
-      for(pcSrc = sstCommand.acProcessBuffer, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
+      for(pcSrc = sstCommand.acProcessBuffer + sstCommand.s32ProcessOffset, eStatus = orxSTATUS_SUCCESS, zArg = orxSTRING_EMPTY, u32ArgNumber = 0;
           (u32ArgNumber < u32ParamNumber) && (pcSrc - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE) && (*pcSrc != orxCHAR_NULL);
           pcSrc++, u32ArgNumber++)
       {
@@ -1072,7 +1075,9 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       else
       {
         /* Runs it */
+        sstCommand.s32ProcessOffset += s32Offset;
         pstResult = orxCommand_Run(pstCommand, orxFALSE, u32ArgNumber, astArgList, _pstResult);
+        sstCommand.s32ProcessOffset -= s32Offset;
       }
     }
     else
@@ -1120,8 +1125,8 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         /* Duplicates it */
         pstEntry->stValue.eType   = _pstResult->eType;
         pstEntry->stValue.zValue  = pstEntry->acBuffer;
-        orxString_NCopy(pstEntry->acBuffer, _pstResult->zValue, orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE - 1);
-        pstEntry->acBuffer[orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE - 1] = orxCHAR_NULL;
+        orxString_NCopy(pstEntry->acBuffer, _pstResult->zValue, sizeof(pstEntry->acBuffer) - 1);
+        pstEntry->acBuffer[sizeof(pstEntry->acBuffer) - 1] = orxCHAR_NULL;
       }
       else
       {
@@ -1260,7 +1265,7 @@ void orxFASTCALL orxCommand_CommandExit(orxU32 _u32ArgNumber, const orxCOMMAND_V
   else
   {
     /* Prints value */
-    orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "Exiting: %s.", _astArgList[0].zValue);
+    orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "Exiting: %s.", _astArgList[0].zValue);
 
     /* Updates result */
     _pstResult->zValue = sstCommand.acResultBuffer;
@@ -1294,7 +1299,7 @@ void orxFASTCALL orxCommand_CommandListCommands(orxU32 _u32ArgNumber, const orxC
   zPrefix = (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL;
 
   /* For all commands */
-  for(zCommand = orxNULL, zCommand = orxCommand_GetNext(zPrefix, zCommand, orxNULL), u32Count = 0;
+  for(zCommand = orxNULL, zCommand = (orxCommand_IsRegistered(zPrefix) != orxFALSE) ? zPrefix : orxCommand_GetNext(zPrefix, zCommand, orxNULL), u32Count = 0;
       zCommand != orxNULL;
       zCommand = orxCommand_GetNext(zPrefix, zCommand, orxNULL))
   {
@@ -1391,7 +1396,7 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
   zPrefix = (_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL;
 
   /* For all commands */
-  for(zAlias = orxNULL, zAlias = orxCommand_GetNext(zPrefix, zAlias, orxNULL), u32Count = 0;
+  for(zAlias = orxNULL, zAlias = (orxCommand_IsAlias(zPrefix) != orxFALSE) ? zPrefix : orxCommand_GetNext(zPrefix, zAlias, orxNULL), u32Count = 0;
       zAlias != orxNULL;
       zAlias = orxCommand_GetNext(zPrefix, zAlias, orxNULL))
   {
@@ -1417,21 +1422,18 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
         if(pstAliasNode->pstCommand->zArgs != orxNULL)
         {
           /* Writes log */
-          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s -> %s +<%s> [%s]", zAlias, orxString_GetFromID(pstCommandNode->pstCommand->stNameID), pstAliasNode->pstCommand->zArgs, (pstCommandNode->pstCommand->bIsAlias != orxFALSE) ? "ALIAS" : "COMMAND");
-          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s -> %s +<%s> [%s]", zAlias, orxString_GetFromID(pstCommandNode->pstCommand->stNameID), pstAliasNode->pstCommand->zArgs, (pstCommandNode->pstCommand->bIsAlias != orxFALSE) ? "ALIAS" : "COMMAND");
         }
         else
         {
           /* Writes log */
-          orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s -> %s [%s]", zAlias, orxString_GetFromID(pstCommandNode->pstCommand->stNameID), (pstCommandNode->pstCommand->bIsAlias != orxFALSE) ? "ALIAS" : "COMMAND");
-          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s -> %s [%s]", zAlias, orxString_GetFromID(pstCommandNode->pstCommand->stNameID), (pstCommandNode->pstCommand->bIsAlias != orxFALSE) ? "ALIAS" : "COMMAND");
         }
       }
       else
       {
         /* Writes log */
-        orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s -> %s [UNBOUND]", zAlias, pstAliasNode->pstCommand->zAliasedCommandName);
-        acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+        orxString_NPrint(acBuffer, sizeof(acBuffer), "%s -> %s [UNBOUND]", zAlias, pstAliasNode->pstCommand->zAliasedCommandName);
       }
 
       /* Logs it */
@@ -1538,8 +1540,8 @@ void orxFASTCALL orxCommand_CommandRepeat(orxU32 _u32ArgNumber, const orxCOMMAND
   s32Count = _astArgList[0].s32Value;
 
   /* Copies command */
-  orxString_NCopy(acBuffer, _astArgList[1].zValue, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1);
-  acBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1] = orxCHAR_NULL;
+  orxString_NCopy(acBuffer, _astArgList[1].zValue, sizeof(acBuffer) - 1);
+  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
   /* For all iterations */
   while(s32Count--)
@@ -1776,7 +1778,7 @@ void orxFASTCALL orxCommand_CommandAdd(orxU32 _u32ArgNumber, const orxCOMMAND_VA
     && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", astOperandList[0].fValue + astOperandList[1].fValue);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", astOperandList[0].fValue + astOperandList[1].fValue);
     }
     else
     {
@@ -1799,7 +1801,7 @@ void orxFASTCALL orxCommand_CommandAdd(orxU32 _u32ArgNumber, const orxCOMMAND_VA
       orxVector_Add(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue));
 
       /* Prints it */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
     }
 
     /* Updates result */
@@ -1828,7 +1830,7 @@ void orxFASTCALL orxCommand_CommandSubtract(orxU32 _u32ArgNumber, const orxCOMMA
     && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", astOperandList[0].fValue - astOperandList[1].fValue);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", astOperandList[0].fValue - astOperandList[1].fValue);
     }
     else
     {
@@ -1851,7 +1853,7 @@ void orxFASTCALL orxCommand_CommandSubtract(orxU32 _u32ArgNumber, const orxCOMMA
       orxVector_Sub(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue));
 
       /* Prints it */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
     }
 
     /* Updates result */
@@ -1880,7 +1882,7 @@ void orxFASTCALL orxCommand_CommandMultiply(orxU32 _u32ArgNumber, const orxCOMMA
     && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", astOperandList[0].fValue * astOperandList[1].fValue);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", astOperandList[0].fValue * astOperandList[1].fValue);
     }
     else
     {
@@ -1903,7 +1905,7 @@ void orxFASTCALL orxCommand_CommandMultiply(orxU32 _u32ArgNumber, const orxCOMMA
       orxVector_Mul(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue));
 
       /* Prints it */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
     }
 
     /* Updates result */
@@ -1932,7 +1934,7 @@ void orxFASTCALL orxCommand_CommandDivide(orxU32 _u32ArgNumber, const orxCOMMAND
     && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", astOperandList[0].fValue / astOperandList[1].fValue);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", astOperandList[0].fValue / astOperandList[1].fValue);
     }
     else
     {
@@ -1955,7 +1957,83 @@ void orxFASTCALL orxCommand_CommandDivide(orxU32 _u32ArgNumber, const orxCOMMAND
       orxVector_Div(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue));
 
       /* Prints it */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+    }
+
+    /* Updates result */
+    _pstResult->zValue = sstCommand.acResultBuffer;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/* Command: Absolute */
+void orxFASTCALL orxCommand_CommandAbsolute(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR stOperand;
+
+  /* Parses numerical argument */
+  if(orxCommand_ParseNumericalArguments(1, _astArgList, &stOperand) != orxSTATUS_FAILURE)
+  {
+    /* Float? */
+    if(stOperand.eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", orxMath_Abs(stOperand.fValue));
+    }
+    else
+    {
+      orxVECTOR vResult;
+
+      /* Updates intermediate result */
+      orxVector_Abs(&vResult, &(stOperand.vValue));
+
+      /* Prints it */
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+    }
+
+    /* Updates result */
+    _pstResult->zValue = sstCommand.acResultBuffer;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/* Command: Negate */
+void orxFASTCALL orxCommand_CommandNegate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR stOperand;
+
+  /* Parses numerical argument */
+  if(orxCommand_ParseNumericalArguments(1, _astArgList, &stOperand) != orxSTATUS_FAILURE)
+  {
+    /* Float? */
+    if(stOperand.eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", -stOperand.fValue);
+    }
+    else
+    {
+      orxVECTOR vResult;
+
+      /* Updates intermediate result */
+      orxVector_Neg(&vResult, &(stOperand.vValue));
+
+      /* Prints it */
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
     }
 
     /* Updates result */
@@ -1991,7 +2069,7 @@ void orxFASTCALL orxCommand_CommandRandom(orxU32 _u32ArgNumber, const orxCOMMAND
         fResult = orxMath_GetRandomFloat(orxFLOAT_0, orxFLOAT_1);
 
         /* Prints it */
-        orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", fResult);
+        orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", fResult);
 
         break;
       }
@@ -2005,7 +2083,7 @@ void orxFASTCALL orxCommand_CommandRandom(orxU32 _u32ArgNumber, const orxCOMMAND
           fResult = orxMath_GetRandomFloat(orxFLOAT_0, astOperandList[0].fValue);
 
           /* Prints it */
-          orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", fResult);
+          orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", fResult);
         }
         else
         {
@@ -2013,7 +2091,7 @@ void orxFASTCALL orxCommand_CommandRandom(orxU32 _u32ArgNumber, const orxCOMMAND
           orxVector_Set(&vResult, orxMath_GetRandomFloat(orxFLOAT_0, astOperandList[0].vValue.fX), orxMath_GetRandomFloat(orxFLOAT_0, astOperandList[0].vValue.fY), orxMath_GetRandomFloat(orxFLOAT_0, astOperandList[0].vValue.fZ));
 
           /* Prints it */
-          orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+          orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
         }
 
         break;
@@ -2031,7 +2109,7 @@ void orxFASTCALL orxCommand_CommandRandom(orxU32 _u32ArgNumber, const orxCOMMAND
           fResult = (_u32ArgNumber < 3) ? orxMath_GetRandomFloat(astOperandList[0].fValue, astOperandList[1].fValue) : orxMath_GetSteppedRandomFloat(astOperandList[0].fValue, astOperandList[1].fValue, astOperandList[2].fValue);
 
           /* Prints it */
-          orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", fResult);
+          orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", fResult);
         }
         else
         {
@@ -2065,7 +2143,7 @@ void orxFASTCALL orxCommand_CommandRandom(orxU32 _u32ArgNumber, const orxCOMMAND
           }
 
           /* Prints it */
-          orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+          orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
         }
 
         break;
@@ -2230,7 +2308,7 @@ void orxFASTCALL orxCommand_CommandMinimum(orxU32 _u32ArgNumber, const orxCOMMAN
     && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", orxMIN(astOperandList[0].fValue, astOperandList[1].fValue));
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", orxMIN(astOperandList[0].fValue, astOperandList[1].fValue));
 
       /* Updates result */
       _pstResult->zValue = sstCommand.acResultBuffer;
@@ -2256,7 +2334,7 @@ void orxFASTCALL orxCommand_CommandMinimum(orxU32 _u32ArgNumber, const orxCOMMAN
       orxVector_Min(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue));
 
       /* Prints it */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
 
       /* Updates result */
       _pstResult->zValue = sstCommand.acResultBuffer;
@@ -2285,7 +2363,7 @@ void orxFASTCALL orxCommand_CommandMaximum(orxU32 _u32ArgNumber, const orxCOMMAN
     && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", orxMAX(astOperandList[0].fValue, astOperandList[1].fValue));
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", orxMAX(astOperandList[0].fValue, astOperandList[1].fValue));
 
       /* Updates result */
       _pstResult->zValue = sstCommand.acResultBuffer;
@@ -2311,7 +2389,7 @@ void orxFASTCALL orxCommand_CommandMaximum(orxU32 _u32ArgNumber, const orxCOMMAN
       orxVector_Max(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue));
 
       /* Prints it */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
 
       /* Updates result */
       _pstResult->zValue = sstCommand.acResultBuffer;
@@ -2341,7 +2419,7 @@ void orxFASTCALL orxCommand_CommandClamp(orxU32 _u32ArgNumber, const orxCOMMAND_
     && (astOperandList[2].eType == orxCOMMAND_VAR_TYPE_FLOAT))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%g", orxCLAMP(astOperandList[0].fValue, astOperandList[1].fValue, astOperandList[2].fValue));
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", orxCLAMP(astOperandList[0].fValue, astOperandList[1].fValue, astOperandList[2].fValue));
 
       /* Updates result */
       _pstResult->zValue = sstCommand.acResultBuffer;
@@ -2373,7 +2451,7 @@ void orxFASTCALL orxCommand_CommandClamp(orxU32 _u32ArgNumber, const orxCOMMAND_
       orxVector_Clamp(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue), &(astOperandList[2].vValue));
 
       /* Prints it */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
 
       /* Updates result */
       _pstResult->zValue = sstCommand.acResultBuffer;
@@ -2409,6 +2487,16 @@ void orxFASTCALL orxCommand_CommandHash(orxU32 _u32ArgNumber, const orxCOMMAND_V
   return;
 }
 
+/* Command: GetStringLength */
+void orxFASTCALL orxCommand_CommandGetStringLength(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->u64Value = orxString_GetLength(_astArgList[0].zValue);
+
+  /* Done! */
+  return;
+}
+
 /* Command: GetStringID */
 void orxFASTCALL orxCommand_CommandGetStringID(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -2437,13 +2525,13 @@ void orxFASTCALL orxCommand_CommandVersion(orxU32 _u32ArgNumber, const orxCOMMAN
   || (!orxString_ICompare(_astArgList[0].zValue, "full")))
   {
     /* Prints value */
-    orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%s", orxSystem_GetVersionString());
+    orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%s", orxSystem_GetVersionString());
   }
   /* Numeric? */
   else if(!orxString_ICompare(_astArgList[0].zValue, "numeric"))
   {
     /* Prints value */
-    orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "0x%08X", orxSystem_GetVersionNumeric());
+    orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "0x%08X", orxSystem_GetVersionNumeric());
   }
   else
   {
@@ -2456,31 +2544,31 @@ void orxFASTCALL orxCommand_CommandVersion(orxU32 _u32ArgNumber, const orxCOMMAN
     if(!orxString_ICompare(_astArgList[0].zValue, "major"))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%u", stVersion.u32Major);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%u", stVersion.u32Major);
     }
     /* Minor? */
     else if(!orxString_ICompare(_astArgList[0].zValue, "minor"))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%u", stVersion.u32Minor);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%u", stVersion.u32Minor);
     }
     /* Build? */
     else if(!orxString_ICompare(_astArgList[0].zValue, "build"))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%u", stVersion.u32Build);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%u", stVersion.u32Build);
     }
     /* Release? */
     else if(!orxString_ICompare(_astArgList[0].zValue, "release"))
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%s", stVersion.zRelease);
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%s", stVersion.zRelease);
     }
     /* Full */
     else
     {
       /* Prints value */
-      orxString_NPrint(sstCommand.acResultBuffer, orxCOMMAND_KU32_RESULT_BUFFER_SIZE - 1, "%s", orxSystem_GetVersionString());
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%s", orxSystem_GetVersionString());
     }
   }
 
@@ -2607,6 +2695,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Multiply, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
   /* Command: Divide */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Divide, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
+  /* Command: Absolute */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Absolute, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_NUMERIC});
+  /* Command: Negate */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Negate, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_NUMERIC});
 
   /* Command: Random */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Random, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 0, 3, {"Boundary1 = 1.0", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Boundary2 = 0.0", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Step = <void>", orxCOMMAND_VAR_TYPE_NUMERIC});
@@ -2646,6 +2738,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Compare, "Result", orxCOMMAND_VAR_TYPE_S32, 2, 1, {"String1", orxCOMMAND_VAR_TYPE_STRING}, {"String2", orxCOMMAND_VAR_TYPE_STRING}, {"CaseSensitive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: Hash */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Hash, "Hash", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: GetStringLength */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringLength, "Length", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: GetStringID */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringID, "ID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetStringFromID */
@@ -2729,6 +2825,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("Math.Mul", "Command.Multiply", orxNULL);
   /* Alias: Math.Div */
   orxCommand_AddAlias("Math.Div", "Command.Divide", orxNULL);
+  /* Alias: Math.Abs */
+  orxCommand_AddAlias("Math.Abs", "Command.Absolute", orxNULL);
+  /* Alias: Math.Neg */
+  orxCommand_AddAlias("Math.Neg", "Command.Negate", orxNULL);
 
   /* Alias: + */
   orxCommand_AddAlias("+", "Math.Add", orxNULL);
@@ -2738,6 +2838,10 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("*", "Math.Mul", orxNULL);
   /* Alias: / */
   orxCommand_AddAlias("/", "Math.Div", orxNULL);
+  /* Alias: Abs */
+  orxCommand_AddAlias("Abs", "Math.Abs", orxNULL);
+  /* Alias: Neg */
+  orxCommand_AddAlias("Neg", "Math.Neg", orxNULL);
 
   /* Alias: Math.Random */
   orxCommand_AddAlias("Math.Random", "Command.Random", orxNULL);
@@ -2806,6 +2910,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("String.Hash", "Command.Hash", orxNULL);
   /* Alias: String.CRC */
   orxCommand_AddAlias("String.CRC", "String.Hash", orxNULL);
+
+  /* Alias: String.GetLength */
+  orxCommand_AddAlias("String.GetLength", "Command.GetStringLength", orxNULL);
 
   /* Alias: String.GetID */
   orxCommand_AddAlias("String.GetID", "Command.GetStringID", orxNULL);
@@ -2898,6 +3005,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("Math.Mul");
   /* Alias: Math.Div */
   orxCommand_RemoveAlias("Math.Div");
+  /* Alias: Math.Abs */
+  orxCommand_RemoveAlias("Math.Abs");
+  /* Alias: Math.Neg */
+  orxCommand_RemoveAlias("Math.Neg");
 
   /* Alias: + */
   orxCommand_RemoveAlias("+");
@@ -2907,6 +3018,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("*");
   /* Alias: / */
   orxCommand_RemoveAlias("/");
+  /* Alias: Abs */
+  orxCommand_RemoveAlias("Abs");
+  /* Alias: Neg */
+  orxCommand_RemoveAlias("Neg");
 
   /* Alias: Math.Random */
   orxCommand_RemoveAlias("Math.Random");
@@ -2975,6 +3090,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("String.Hash");
   /* Alias: String.CRC */
   orxCommand_RemoveAlias("String.CRC");
+
+  /* Alias: String.GetLength */
+  orxCommand_RemoveAlias("String.GetLength");
+
   /* Alias: String.GetID */
   orxCommand_RemoveAlias("String.GetID");
   /* Alias: String.GetFromID */
@@ -3087,6 +3206,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Compare);
   /* Command: Hash */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Hash);
+
+  /* Command: GetStringLength */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetStringLength);
+
   /* Command: GetStringID */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetStringID);
   /* Command: GetStringFromID */
@@ -3187,8 +3310,9 @@ orxSTATUS orxFASTCALL orxCommand_Init()
             sstCommand.acProcessBuffer[orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1]     = orxCHAR_NULL;
             sstCommand.acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1] = orxCHAR_NULL;
 
-            /* Inits offset */
-            sstCommand.s32EvaluateOffset = 0;
+            /* Inits offsets */
+            sstCommand.s32EvaluateOffset  =
+            sstCommand.s32ProcessOffset   = 0;
 
             /* Updates result */
             eResult = orxSTATUS_SUCCESS;
@@ -3700,27 +3824,27 @@ const orxSTRING orxFASTCALL orxCommand_GetPrototype(const orxSTRING _zCommand)
       orxU32 i, u32Size;
 
       /* Prints result and function name */
-      u32Size = orxString_NPrint(sstCommand.acPrototypeBuffer, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1, "{%s %s} %s", orxCommand_GetTypeString(pstCommand->stResult.eType), orxString_GetFromID(pstCommand->stResult.stNameID), orxString_GetFromID(pstCommand->stNameID));
+      u32Size = orxString_NPrint(sstCommand.acPrototypeBuffer, sizeof(sstCommand.acPrototypeBuffer), "{%s %s} %s", orxCommand_GetTypeString(pstCommand->stResult.eType), orxString_GetFromID(pstCommand->stResult.stNameID), orxString_GetFromID(pstCommand->stNameID));
 
       /* For all required arguments */
       for(i = 0; i < (orxU32)pstCommand->u16RequiredParamNumber; i++)
       {
         /* Prints it */
-        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1 - u32Size, " (%s %s)", orxCommand_GetTypeString(pstCommand->astParamList[i].eType), orxString_GetFromID(pstCommand->astParamList[i].stNameID));
+        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, sizeof(sstCommand.acPrototypeBuffer) - u32Size, " (%s %s)", orxCommand_GetTypeString(pstCommand->astParamList[i].eType), orxString_GetFromID(pstCommand->astParamList[i].stNameID));
       }
 
       /* For all optional arguments */
       for(; i < (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber; i++)
       {
         /* Prints it */
-        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1 - u32Size, " [%s %s]", orxCommand_GetTypeString(pstCommand->astParamList[i].eType), orxString_GetFromID(pstCommand->astParamList[i].stNameID));
+        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, sizeof(sstCommand.acPrototypeBuffer) - u32Size, " [%s %s]", orxCommand_GetTypeString(pstCommand->astParamList[i].eType), orxString_GetFromID(pstCommand->astParamList[i].stNameID));
       }
 
       /* Had no parameters? */
       if(i == 0)
       {
         /* Prints function end */
-        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1 - u32Size, " <void>");
+        u32Size += orxString_NPrint(sstCommand.acPrototypeBuffer + u32Size, sizeof(sstCommand.acPrototypeBuffer) - u32Size, " <void>");
       }
 
       /* Updates result */
@@ -3944,7 +4068,7 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL orxCommand_EvaluateWithGUID(const o
     orxS32 s32Offset;
 
     /* Stores it in buffer */
-    s32Offset = orxString_NPrint(sstCommand.acEvaluateBuffer + sstCommand.s32EvaluateOffset, orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - sstCommand.s32EvaluateOffset - 1, "%s", _zCommandLine) + 1;
+    s32Offset = orxString_NPrint(sstCommand.acEvaluateBuffer + sstCommand.s32EvaluateOffset, sizeof(sstCommand.acEvaluateBuffer) - sstCommand.s32EvaluateOffset, "%s", _zCommandLine) + 1;
     sstCommand.s32EvaluateOffset += s32Offset;
 
     /* Processes it */
@@ -4095,9 +4219,9 @@ orxSTATUS orxFASTCALL orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, c
 
 /** Prints a variable to a buffer, according to its type (and ignoring any bloc/special character)
 * @param[out]  _zDstString    Destination string
-* @param[in]   _u32Size       String available size
+* @param[in]   _u32Size       Available string size, including terminating null character
 * @param[in]   _pstVar        Variable to print
-* @return Number of written characters (excluding trailing orxCHAR_NULL)
+* @return Number of written characters, excluding terminating null character
 */
 orxU32 orxFASTCALL orxCommand_PrintVar(orxSTRING _zDstString, orxU32 _u32Size, const orxCOMMAND_VAR *_pstVar)
 {

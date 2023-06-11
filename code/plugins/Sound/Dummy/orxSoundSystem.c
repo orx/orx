@@ -92,7 +92,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateStream(orxHANDLE _h
   return orxNULL;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateStreamFromFile(orxHANDLE _hUserData, const orxSTRING _zFilename)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_LoadStream(orxHANDLE _hUserData, const orxSTRING _zFilename)
 {
   /* Done! */
   return orxNULL;
@@ -352,7 +352,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_GetSampleInfo, SOUNDSYSTEM
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_SetSampleData, SOUNDSYSTEM, SET_SAMPLE_DATA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_CreateFromSample, SOUNDSYSTEM, CREATE_FROM_SAMPLE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_CreateStream, SOUNDSYSTEM, CREATE_STREAM);
-orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_CreateStreamFromFile, SOUNDSYSTEM, CREATE_STREAM_FROM_FILE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_LoadStream, SOUNDSYSTEM, LOAD_STREAM);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_Delete, SOUNDSYSTEM, DELETE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_Play, SOUNDSYSTEM, PLAY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxSoundSystem_Dummy_Pause, SOUNDSYSTEM, PAUSE);

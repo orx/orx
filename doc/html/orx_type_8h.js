@@ -12,6 +12,7 @@ var orx_type_8h =
     [ "orxFALSE", "group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14", null ],
     [ "orxSTRINGIFY", "group__orx_type.html#ga29d78aacc5af864dfee06981362b770e", null ],
     [ "orxTRUE", "group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a", null ],
+    [ "orxHANDLE", "group__orx_type.html#ga10ad864319a9d9f12196e133707cae8a", null ],
     [ "orxSEEK_OFFSET_WHENCE", "group__orx_type.html#ga08815b27cb2e29018e06e3d847116915", [
       [ "orxSEEK_OFFSET_WHENCE_START", "group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a9124c1e63f03128103809b24937832ba", null ],
       [ "orxSEEK_OFFSET_WHENCE_CURRENT", "group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a1c0f897b0c87e29f069b2b3f42d32f29", null ],

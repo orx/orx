@@ -91,7 +91,7 @@ public:
                 void                    SetFlip(orxBOOL _bFlipX, orxBOOL _bFlipY, orxBOOL _bRecursive = orxTRUE);
 
                 orxBOOL                 IsAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE);
-                void                    SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE, orxBOOL _bRecursive = orxFALSE);
+                void                    SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE, orxBOOL _bRecursive = orxTRUE);
 
                 void                    AddFX(const orxSTRING _zFXName, orxBOOL _bRecursive = orxTRUE, orxFLOAT _fPropagationDelay = orxFLOAT_0);
                 void                    RemoveFX(const orxSTRING _zFXName, orxBOOL _bRecursive = orxTRUE);
@@ -133,7 +133,7 @@ private:
   virtual       orxBOOL                 OnRender(orxRENDER_EVENT_PAYLOAD &_rstPayload);
   virtual       orxBOOL                 OnShader(orxSHADER_EVENT_PAYLOAD &_rstPayload);
 
-  virtual       orxBOOL                 OnCollide(ScrollObject *_poCollider, const orxSTRING _zPartName, const orxSTRING _zColliderPartName, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal);
+  virtual       orxBOOL                 OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal);
   virtual       orxBOOL                 OnSeparate(ScrollObject *_poCollider);
 
   virtual       void                    OnNewAnim(const orxSTRING _zOldAnim, const orxSTRING _zNewAnim, orxBOOL _bCut);

@@ -268,8 +268,8 @@ void orxFASTCALL orxViewport_CommandSetRelativePosition(orxU32 _u32ArgNumber, co
     orxU32          u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
 
     /* Gets its relative position */
-    orxString_LowerCase(orxString_NCopy(acBuffer, _astArgList[1].zValue, sizeof(acBuffer) - 1));
     acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+    orxString_LowerCase(orxString_NCopy(acBuffer, _astArgList[1].zValue, sizeof(acBuffer) - 1));
     zRelativePos = orxString_SkipWhiteSpaces(orxString_LowerCase(acBuffer));
 
     /* Not empty? */
@@ -960,7 +960,7 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
                   orxCHAR     acBuffer[256];
 
                   /* Gets its name */
-                  acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s", orxTexture_GetName(pstViewport->apstTextureList[i]))] = orxCHAR_NULL;
+                  orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxTexture_GetName(pstViewport->apstTextureList[i]));
 
                   /* Unlinks its bitmap */
                   orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);
@@ -1280,8 +1280,8 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
             /* Deactivates display debug level */
             orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
-            /* Creates texture from file */
-            pstTexture = orxTexture_CreateFromFile(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
+            /* Loads texture */
+            pstTexture = orxTexture_Load(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
 
             /* Restores display debug level state */
             orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
@@ -1408,8 +1408,8 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
           /* Deactivates display debug level */
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
-          /* Creates texture from file */
-          pstTexture = orxTexture_CreateFromFile(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
+          /* Loads texture */
+          pstTexture = orxTexture_Load(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
 
           /* Restores display debug level state */
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);

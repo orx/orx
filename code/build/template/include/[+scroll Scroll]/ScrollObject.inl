@@ -624,7 +624,7 @@ void ScrollObject::Update(const orxCLOCK_INFO &_rstInfo)
 {
 }
 
-orxBOOL ScrollObject::OnCollide(ScrollObject *_poCollider, const orxSTRING _zPartName, const orxSTRING _zColliderPartName, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal)
+orxBOOL ScrollObject::OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal)
 {
   return orxTRUE;
 }

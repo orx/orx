@@ -347,7 +347,7 @@ orxSTATUS orxFASTCALL orxNuklear_Init()
     {
       const orxSTRING zSkin = orxConfig_GetListString(orxNUKLEAR_KZ_CONFIG_SKIN_LIST, sstNuklear.s32SkinCount);
 
-      sstNuklear.astSkins[sstNuklear.s32SkinCount].pstTexture = orxTexture_CreateFromFile(orxConfig_GetListString(zSkin, 0), orxFALSE);
+      sstNuklear.astSkins[sstNuklear.s32SkinCount].pstTexture = orxTexture_Load(orxConfig_GetListString(zSkin, 0), orxFALSE);
 
       if(sstNuklear.astSkins[sstNuklear.s32SkinCount].pstTexture)
       {

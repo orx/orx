@@ -330,7 +330,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
         if(s32ParamValueNumber > 0)
         {
           /* Prints first parameter */
-          acFirstParamBuffer[orxString_NPrint(acFirstParamBuffer, sizeof(acFirstParamBuffer) - 1, "%s%s", orxPARAM_KZ_MODULE_LONG_PREFIX, _pstParamInfo->stParam.zLongName)] = orxCHAR_NULL;
+          orxString_NPrint(acFirstParamBuffer, sizeof(acFirstParamBuffer), "%s%s", orxPARAM_KZ_MODULE_LONG_PREFIX, _pstParamInfo->stParam.zLongName);
 
           /* Stores it */
           azConfigParamList[0] = acFirstParamBuffer;
@@ -489,8 +489,8 @@ orxSTATUS orxFASTCALL orxParam_Init()
         stParams.u32Flags   = orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED;
         stParams.zShortName = "c";
         stParams.zLongName  = "config";
-        stParams.zShortDesc = "Loads the specified configuration file.";
-        stParams.zLongDesc  = "Loads the specified configuration file from the current execution folder. More than one file can be specified.";
+        stParams.zShortDesc = "Loads the specified configuration file(s).";
+        stParams.zLongDesc  = "Loads the specified configuration file(s) from the available resource storages. Multiple files can be specified.";
 
         /* Registers it */
         eResult = orxParam_Register(&stParams);
@@ -556,6 +556,9 @@ orxSTATUS orxFASTCALL orxParam_Init()
 
           /* Pops config section */
           orxConfig_PopSection();
+
+          /* Sends event */
+          orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_PARAM_READY);
         }
         else
         {
@@ -574,6 +577,24 @@ orxSTATUS orxFASTCALL orxParam_Init()
     eResult = orxSTATUS_SUCCESS;
   }
 
+  /* Failed? */
+  if(eResult == orxSTATUS_FAILURE)
+  {
+    /* Deletes table */
+    if(sstParam.pstHashTable != orxNULL)
+    {
+      orxHashTable_Delete(sstParam.pstHashTable);
+      sstParam.pstHashTable = orxNULL;
+    }
+
+    /* Deletes bank */
+    if(sstParam.pstBank != orxNULL)
+    {
+      orxBank_Delete(sstParam.pstBank);
+      sstParam.pstBank = orxNULL;
+    }
+  }
+
   /* Done */
   return eResult;
 }
@@ -587,6 +608,12 @@ void orxFASTCALL orxParam_Exit()
   {
     /* Clears params */
     orxParam_SetArgs(0, orxNULL);
+
+    /* Deletes table */
+    orxHashTable_Delete(sstParam.pstHashTable);
+
+    /* Deletes bank */
+    orxBank_Delete(sstParam.pstBank);
 
     /* Module not ready now */
     sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
@@ -739,8 +766,7 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     }
 
     /* Copies it locally */
-    orxString_NPrint(zLocalName, sizeof(zLocalName) - 1, "%s", sstParam.azParams[0]);
-    zLocalName[sizeof(zLocalName) - 1] = orxCHAR_NULL;
+    orxString_NPrint(zLocalName, sizeof(zLocalName), "%s", sstParam.azParams[0]);
 
     /* Finds last '.' */
     for(s32Index = orxString_SearchCharIndex(zLocalName, '.', 0);
@@ -777,8 +803,7 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     }
 
     /* Gets debug path */
-    orxString_NPrint(zPath, sizeof(zPath) - 1, orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", zLocalName + s32Index);
-    zPath[sizeof(zPath) - 1] = orxCHAR_NULL;
+    orxString_NPrint(zPath, sizeof(zPath), orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", zLocalName + s32Index);
 
     /* Stores base names for debug */
     orxDEBUG_SETBASEFILENAME(zPath);
@@ -823,6 +848,9 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   /* Continue? */
   if(eResult != orxSTATUS_FAILURE)
   {
+    /* Sends event */
+    eResult = orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_PARAM_DISPLAY);
+
     /* Everything seems ok. Register the module help function */
     stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
     stParams.pfnParser  = orxParam_Help;
@@ -832,7 +860,11 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
     stParams.zLongDesc  = "If a parameter is specified, its full description will be printed. Otherwise the list of available parameters will be printed.";
 
     /* Register */
-    eResult = orxParam_Register(&stParams);
+    if(orxParam_Register(&stParams) == orxSTATUS_FAILURE)
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
 
   /* Restores display logs */

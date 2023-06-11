@@ -118,8 +118,7 @@ solution "orx"
 
     excludes
     {
-        "../src/main/orxAndroidSupport.cpp",
-        "../src/main/orxAndroidNativeSupport.cpp"
+        "../src/main/android/orxAndroidSupport.cpp"
     }
 
     flags
@@ -383,18 +382,43 @@ project "orxLIB"
         "../src/**.cpp",
         "../src/**.c",
         "../include/**.h",
-        "../include/**.inc"
+        "../include/**.inc",
+        "../**premake4.lua",
+        "../**.ini",
+        "../**.r",
+        "../build/template/include/**",
+        "../build/template/src/**",
+        "../build/template/**.ini",
+        "../build/template/**.editorconfig",
+        "../../.editorconfig",
+        "../../.extern"
     }
 
-    excludes {"../src/main/orxMain.c"}
+    excludes
+    {
+        "../src/main/orxMain.c",
+        "../build/template/**.c",
+        "../build/template/**.cpp",
+        "../build/template/**.h",
+        "../build/template/**.txt",
+        "../demo/**"
+    }
 
     targetname ("orx")
+
+    vpaths
+    {
+        ["misc/build"] = {"../build/premake4.lua"},
+        ["misc/config"] = {"../bin/**.ini"},
+        ["misc/rebol"] = {"**.r"},
+        ["misc/template/*"] = {"template/**"},
+        ["misc"] = {"../../.editorconfig", "../../.extern"}
+    }
 
     configuration {"not *Core*"}
         defines
         {
-            "__orxEMBEDDED__",
-            "AL_LIBTYPE_STATIC"
+            "__orxEMBEDDED__"
         }
 
     -- Work around for codelite "default" configuration
@@ -575,8 +599,11 @@ project "orxLIB"
     configuration {"windows", "not *Core*", "vs*"}
         links {"OpenGL32"}
 
+    configuration {"windows", "vs*"}
+        linkoptions {"/ignore:4099"}
+
     configuration {"windows", "vs*", "*Debug*"}
-        linkoptions {"/NODEFAULTLIB:LIBCMT", "/ignore:4099"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
     configuration {"windows", "vs*"}
         buildoptions {"/wd\"4577\""}

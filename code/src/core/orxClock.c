@@ -64,6 +64,7 @@
 #define orxCLOCK_KU32_FLAG_REFERENCED           0x20000000  /**< Referenced flag */
 #define orxCLOCK_KU32_FLAG_UPDATE_LOCK          0x40000000  /**< Lock update flag */
 #define orxCLOCK_KU32_FLAG_DISPLAY              0x80000000  /**< Display sync flag */
+#define orxCLOCK_KU32_FLAG_ALLOW_SLEEP          0x01000000  /**< Allow sleep flag */
 
 #define orxCLOCK_KU32_MASK_ALL                  0xFFFFFFFF  /**< All mask */
 
@@ -72,6 +73,7 @@
  */
 #define orxCLOCK_KZ_CONFIG_SECTION              "Clock"
 #define orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY "MainClockFrequency"
+#define orxCLOCK_KZ_CONFIG_ALLOW_SLEEP          "AllowSleep"
 
 #define orxCLOCK_KZ_MODIFIER_FIXED              "fixed"
 #define orxCLOCK_KZ_MODIFIER_MULTIPLY           "multiply"
@@ -84,7 +86,12 @@
 
 #define orxCLOCK_KU32_BANK_SIZE                 8           /**< Bank size */
 
+#define orxCLOCK_KF_DELAY_THRESHOLD             orx2F(0.003f)
 #define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.001f)
+#define orxCLOCK_KF_DEFAULT_MODIFIER_FIXED      (-orxFLOAT_1)
+#define orxCLOCK_KF_DEFAULT_MODIFIER_MULTIPLY   orxFLOAT_0
+#define orxCLOCK_KF_DEFAULT_MODIFIER_MAXED      orx2F(0.1f)
+#define orxCLOCK_KF_DEFAULT_MODIFIER_AVERAGE    orxFLOAT_0
 
 
 /***************************************************************************
@@ -137,6 +144,7 @@ typedef struct __orxCLOCK_STATIC_t
   orxCLOCK         *pstCore;                    /**< Core clock */
   orxBANK          *pstTimerBank;               /**< Timer bank */
   orxDOUBLE         dTime;                      /**< Current time */
+  orxDOUBLE         dNextTime;                  /**< Next time */
   orxHASHTABLE     *pstReferenceTable;          /**< Table to avoid clock duplication when creating through config file */
   orxFLOAT          fDisplayTickSize;           /**< Display tick size */
   orxU32            u32Flags;                   /**< Control flags */
@@ -499,6 +507,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
           if(sstClock.pstReferenceTable != orxNULL)
           {
             orxFLOAT fTickSize;
+            orxBOOL  bUseDefaultModifiers;
 
             /* Gets init time */
             sstClock.dTime = orxSystem_GetTime();
@@ -526,6 +535,9 @@ orxSTATUS orxFASTCALL orxClock_Init()
               }
             }
 
+            /* Updates modifiers status */
+            bUseDefaultModifiers = (orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_LIST) == orxFALSE) ? orxTRUE : orxFALSE;
+
             /* Pops config section */
             orxConfig_PopSection();
 
@@ -535,6 +547,16 @@ orxSTATUS orxFASTCALL orxClock_Init()
             /* Success? */
             if(sstClock.pstCore != orxNULL)
             {
+              /* Use default modifiers? */
+              if(bUseDefaultModifiers != orxFALSE)
+              {
+                /* Apply them */
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_FIXED, orxCLOCK_KF_DEFAULT_MODIFIER_FIXED);
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_MULTIPLY, orxCLOCK_KF_DEFAULT_MODIFIER_MULTIPLY);
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_MAXED, orxCLOCK_KF_DEFAULT_MODIFIER_MAXED);
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_AVERAGE, orxCLOCK_KF_DEFAULT_MODIFIER_AVERAGE);
+              }
+
               /* Sets it as its own owner */
               orxStructure_SetOwner(sstClock.pstCore, sstClock.pstCore);
 
@@ -653,11 +675,25 @@ orxSTATUS orxFASTCALL orxClock_Update()
     /* Lock clocks */
     sstClock.u32Flags |= orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
-    /* Gets new time */
-    dNewTime  = orxSystem_GetTime();
+    /* Updates allow sleep status */
+    orxConfig_PushSection(orxCLOCK_KZ_CORE);
+    if((orxConfig_HasValue(orxCLOCK_KZ_CONFIG_ALLOW_SLEEP) == orxFALSE)
+    || (orxConfig_GetBool(orxCLOCK_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE))
+    {
+      sstClock.u32Flags |= orxCLOCK_KU32_FLAG_ALLOW_SLEEP;
+    }
+    else
+    {
+      sstClock.u32Flags &= ~orxCLOCK_KU32_FLAG_ALLOW_SLEEP;
+    }
+    orxConfig_PopSection();
+
+    /* Actively waits until next update */
+    while((dNewTime = orxSystem_GetTime()) < sstClock.dNextTime)
+      ;
 
     /* Computes natural DT */
-    fDT       = (orxFLOAT)(dNewTime - sstClock.dTime);
+    fDT = (orxFLOAT)(dNewTime - sstClock.dTime);
 
     /* Updates time */
     sstClock.dTime = dNewTime;
@@ -788,14 +824,18 @@ orxSTATUS orxFASTCALL orxClock_Update()
     /* Unlocks clocks */
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
+    /* Sets next tick time */
+    sstClock.dNextTime = sstClock.dTime + (orxDOUBLE)fDelay;
+
     /* Gets real remaining delay */
-    fDelay = fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT - orx2F(orxSystem_GetTime() - sstClock.dTime);
+    fDelay = orx2F(sstClock.dNextTime - orxSystem_GetTime());
 
     /* Should delay? */
-    if(fDelay > orxFLOAT_0)
+    if((fDelay > orxCLOCK_KF_DELAY_THRESHOLD)
+    && (sstClock.u32Flags & orxCLOCK_KU32_FLAG_ALLOW_SLEEP))
     {
       /* Waits for next time slice */
-      orxSystem_Delay(fDelay);
+      orxSystem_Delay(fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT);
     }
   }
 

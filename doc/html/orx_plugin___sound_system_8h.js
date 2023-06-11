@@ -10,7 +10,7 @@ var orx_plugin___sound_system_8h =
       [ "orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_SET_SAMPLE_DATA", "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba11bd69113ce6a8f9e534c131c1f8301e", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_FROM_SAMPLE", "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba5d7691410a4f9b648040c019acc781fa", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_STREAM", "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117bad5ea360ada045f16deddc223bf2341ec", null ],
-      [ "orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_CREATE_STREAM_FROM_FILE", "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117bad6a0e5ddda7f6afde96d1c95cf791ad7", null ],
+      [ "orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_LOAD_STREAM", "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba3ca1757a9be96e97c0b643df3591dfb2", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_DELETE", "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba4becb7e609e1a4174e36df39ded715f8", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_PLAY", "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba8c3d81d4b640499829f376858e00e0b0", null ],
       [ "orxPLUGIN_FUNCTION_BASE_ID_SOUNDSYSTEM_PAUSE", "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba0b2d2a121d70580640f124ec1a1e077f", null ],

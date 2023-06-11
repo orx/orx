@@ -33,15 +33,11 @@ void orxFASTCALL      orxRemote_Exit();
 
 #endif // __orxWINDOWS__
 
+
 //! Defines
 
 #define orxREMOTE_DEFAULT_HOST    "localhost"
 #define orxREMOVE_DEFAULT_PORT    80
-#ifdef __orxX86_64__
-#define orxREMOTE_CAST_HELPER     (orxU64)
-#else // __orxX86_64__
-#define orxREMOTE_CAST_HELPER
-#endif // __orxX86_64__
 
 
 //! Variables / Structures
@@ -83,7 +79,7 @@ static orxSTRINGID orxRemote_GetHash(const orxSTRING _zHost, orxU32 _u32Port)
   orxCHAR     acBuffer[1024];
 
   // Updates result
-  orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s%u", _zHost, _u32Port);
+  orxString_NPrint(acBuffer, sizeof(acBuffer), "%s%u", _zHost, _u32Port);
   stResult = orxString_Hash(acBuffer);
 
   // Done!
@@ -99,7 +95,7 @@ static Socket orxRemote_Connect(const orxSTRING _zHost, orxU32 _u32Port)
   stKey = orxRemote_GetHash(_zHost, _u32Port);
 
   // Not found?
-  if((stResult = (Socket) orxREMOTE_CAST_HELPER orxHashTable_Get(spstTable, stKey)) == 0)
+  if((stResult = (Socket)(orxUPTR)orxHashTable_Get(spstTable, stKey)) == 0)
   {
     struct hostent *pstHost;
 
@@ -135,7 +131,7 @@ static Socket orxRemote_Connect(const orxSTRING _zHost, orxU32 _u32Port)
           if(stResult != 0)
           {
             // Stores socket
-            orxHashTable_Set(spstTable, stKey, (void *) orxREMOTE_CAST_HELPER stResult);
+            orxHashTable_Set(spstTable, stKey, (void *)(orxUPTR)stResult);
           }
         }
         else
@@ -160,7 +156,7 @@ static orxSTATUS orxFASTCALL orxRemote_ParseURL(const orxSTRING _zURL, orxCHAR *
   if((pcSeparator = orxString_SearchChar(_zURL + 7, ':')) != orxNULL)
   {
     // Gets host
-    orxString_NPrint(_acHost, _u32HostLength - 1, "%.*s", pcSeparator - _zURL - 7, _zURL + 7);
+    orxString_NPrint(_acHost, _u32HostLength, "%.*s", pcSeparator - _zURL - 7, _zURL + 7);
 
     // Gets port
     orxString_ToU32(pcSeparator + 1, _pu32Port, orxNULL);
@@ -177,12 +173,12 @@ static orxSTATUS orxFASTCALL orxRemote_ParseURL(const orxSTRING _zURL, orxCHAR *
     if((pcSeparator = orxString_SearchChar(_zURL + 7, '/')) != orxNULL)
     {
       // Gets host
-      orxString_NPrint(_acHost, _u32HostLength - 1, "%.*s", pcSeparator - _zURL - 7, _zURL + 7);
+      orxString_NPrint(_acHost, _u32HostLength, "%.*s", pcSeparator - _zURL - 7, _zURL + 7);
     }
     else
     {
       // Gets host
-      orxString_NPrint(_acHost, _u32HostLength - 1, "%s", _zURL + 7);
+      orxString_NPrint(_acHost, _u32HostLength, "%s", _zURL + 7);
     }
 
     if(_pzResource != orxNULL)
@@ -216,7 +212,7 @@ static orxS64 orxFASTCALL orxRemote_ExecuteQuery(const orxSTRING _zHost, orxU32 
   if(stSocket > 0)
   {
     // Prints query header
-    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s /%s HTTP/1.1\r\nHost: %s:%u\r\nConnection: keep-alive\r\nUser-Agent: orxRemote/1.0 (+http://orx-project.org)\r\n\r\n", (_eType == orxREMOTE_QUERY_TYPE_TIME) ? "HEAD" : "GET", _zResource, _zHost, _u32Port);
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%s /%s HTTP/1.1\r\nHost: %s:%u\r\nConnection: keep-alive\r\nUser-Agent: orxRemote/1.0 (+http://orx-project.org)\r\n\r\n", (_eType == orxREMOTE_QUERY_TYPE_TIME) ? "HEAD" : "GET", _zResource, _zHost, _u32Port);
 
     // Gets its length
     s32Length = (orxS32)orxString_GetLength(acBuffer);
@@ -386,7 +382,7 @@ static orxS64 orxFASTCALL orxRemote_ExecuteQuery(const orxSTRING _zHost, orxU32 
 }
 
 // Locate function, returns NULL if it can't handle the storage or if the resource can't be found in this storage
-static const orxSTRING orxFASTCALL orxRemote_WebLocate(const orxSTRING _zStorage, const orxSTRING _zResource, orxBOOL _bRequireExistence)
+static const orxSTRING orxFASTCALL orxRemote_WebLocate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zResource, orxBOOL _bRequireExistence)
 {
   const orxSTRING zResult = orxNULL;
 
@@ -396,7 +392,7 @@ static const orxSTRING orxFASTCALL orxRemote_WebLocate(const orxSTRING _zStorage
     orxCHAR acBuffer[512];
 
     // Gets console history filename
-    orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%.*s%s", orxString_GetLength(orxConfig_GetMainFileName()) - 3, orxConfig_GetMainFileName(), orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
 
     // Not the console history file?
     if(orxString_ICompare(_zResource, acBuffer))
@@ -411,7 +407,7 @@ static const orxSTRING orxFASTCALL orxRemote_WebLocate(const orxSTRING _zStorage
       if(orxString_SearchString(_zStorage, "http://") != _zStorage)
       {
         // Prints default host
-        u32Offset = orxString_NPrint(sacBuffer, sizeof(sacBuffer) - 1 - u32Offset, "http://%s:%u/", orxREMOTE_DEFAULT_HOST, orxREMOVE_DEFAULT_PORT);
+        u32Offset = orxString_NPrint(sacBuffer, sizeof(sacBuffer) - u32Offset, "http://%s:%u/", orxREMOTE_DEFAULT_HOST, orxREMOVE_DEFAULT_PORT);
       }
 
       // Gets storage length
@@ -421,7 +417,7 @@ static const orxSTRING orxFASTCALL orxRemote_WebLocate(const orxSTRING _zStorage
       bPrintSeparator = ((_zStorage[u32Length - 1] != '/') && (_zStorage[u32Length - 1] != '?') && (_zStorage[u32Length - 1] != '=')) ? orxTRUE : orxFALSE;
 
       // Prints storage + resource
-      u32Offset += orxString_NPrint(sacBuffer + u32Offset, sizeof(sacBuffer) - 1 - u32Offset, "%s%s%s", _zStorage, (bPrintSeparator != orxFALSE) ? "/" : orxSTRING_EMPTY, _zResource);
+      u32Offset += orxString_NPrint(sacBuffer + u32Offset, sizeof(sacBuffer) - u32Offset, "%s%s%s", _zStorage, (bPrintSeparator != orxFALSE) ? "/" : orxSTRING_EMPTY, _zResource);
 
       // Parses storage to extract host & port
       orxRemote_ParseURL(sacBuffer, acHost, sizeof(acHost), &u32Port, &zResource);

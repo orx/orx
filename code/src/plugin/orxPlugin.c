@@ -1042,16 +1042,13 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
   orxASSERT(orxString_GetLength(_zPluginFileName) + orxMAX(orxString_GetLength(orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX)), orxString_GetLength(orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX)) < 252);
   orxASSERT(_zPluginName != orxNULL);
 
-  /* Inits buffer */
-  zFileName[sizeof(zFileName) - 1] = orxCHAR_NULL;
-
 #ifdef __orxDEBUG__
 
   /* Gets debug suffix */
   zDebugSuffix = (orxSTRING)((orxConfig_HasValue(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX) != orxFALSE) ? orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX) : orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX);
 
   /* Gets complete name */
-  orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s%s.%s", _zPluginFileName, zDebugSuffix, szPluginLibraryExt);
+  orxString_NPrint(zFileName, sizeof(zFileName), "%s%s.%s", _zPluginFileName, zDebugSuffix, szPluginLibraryExt);
 
   /* Loads it */
   hResult = orxPlugin_Load(zFileName, _zPluginName);
@@ -1063,7 +1060,7 @@ orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, c
 #endif /* __orxDEBUG__ */
 
   /* Gets complete name */
-  orxString_NPrint(zFileName, sizeof(zFileName) - 1, "%s.%s", _zPluginFileName, szPluginLibraryExt);
+  orxString_NPrint(zFileName, sizeof(zFileName), "%s.%s", _zPluginFileName, szPluginLibraryExt);
 
   /* Loads it */
   hResult = orxPlugin_Load(zFileName, _zPluginName);

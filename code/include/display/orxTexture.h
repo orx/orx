@@ -56,6 +56,7 @@
 
 #define orxTEXTURE_KZ_SCREEN              "screen"
 #define orxTEXTURE_KZ_PIXEL               "pixel"
+#define orxTEXTURE_KZ_TRANSPARENT         "transparent"
 
 
 /** Event enum
@@ -96,12 +97,12 @@ extern orxDLLAPI void orxFASTCALL         orxTexture_Exit();
  */
 extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_Create();
 
-/** Creates a texture from a bitmap file
+/** Loads a texture from a bitmap file
  * @param[in]   _zFileName      Name of the bitmap
  * @param[in]   _bKeepInCache   Should be kept in cache after no more references exist?
  * @return      orxTEXTURE / orxNULL
  */
-extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_CreateFromFile(const orxSTRING _zFileName, orxBOOL _bKeepInCache);
+extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_Load(const orxSTRING _zFileName, orxBOOL _bKeepInCache);
 
 /** Deletes a texture (and its referenced bitmap)
  * @param[in]   _pstTexture     Concerned texture

@@ -385,8 +385,8 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
     {
       orxTEXTURE *pstTexture;
 
-      /* Creates texture */
-      pstTexture = orxTexture_CreateFromFile(zName, orxConfig_GetBool(orxFONT_KZ_CONFIG_KEEP_IN_CACHE));
+      /* Loads texture */
+      pstTexture = orxTexture_Load(zName, orxConfig_GetBool(orxFONT_KZ_CONFIG_KEEP_IN_CACHE));
 
       /* Valid? */
       if(pstTexture != orxNULL)

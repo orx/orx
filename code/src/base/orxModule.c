@@ -228,7 +228,7 @@ void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zM
   orxMemory_Zero(&(sstModule.astModuleInfo[_eModuleID]), sizeof(orxMODULE_INFO));
 
   /* Stores its name */
-  orxString_NPrint(sstModule.astModuleInfo[_eModuleID].acName, orxMODULE_KU32_NAME_SIZE - 1, _zModuleName);
+  orxString_NPrint(sstModule.astModuleInfo[_eModuleID].acName, sizeof(sstModule.astModuleInfo[_eModuleID].acName), _zModuleName);
 
   /* Stores module functions */
   sstModule.astModuleInfo[_eModuleID].pfnSetup  = _pfnSetup;
@@ -405,24 +405,22 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         /* Cleans temp status */
         sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_PENDING;
       }
+    }
 
-      /* Is param initialized? */
-      if(orxModule_IsInitialized(orxMODULE_ID_PARAM) != orxFALSE)
+    /* Is param initialized? */
+    if(orxModule_IsInitialized(orxMODULE_ID_PARAM) != orxFALSE)
+    {
+      /* Displays help */
+      if(orxParam_DisplayHelp() == orxSTATUS_FAILURE)
       {
-        /* Displays help */
-        eResult = orxParam_DisplayHelp();
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
       }
     }
-    /* Failure */
-    else
-    {
-      /* Is param initialized? */
-      if(orxModule_IsInitialized(orxMODULE_ID_PARAM) != orxFALSE)
-      {
-        /* Displays help */
-        orxParam_DisplayHelp();
-      }
 
+    /* Failure? */
+    if(eResult == orxSTATUS_FAILURE)
+    {
       /* Updates temp flag */
       sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_PENDING;
 

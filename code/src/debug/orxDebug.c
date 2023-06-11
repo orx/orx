@@ -35,12 +35,12 @@
 
 #include <stdlib.h>
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxANDROID__)
 
   #include <jni.h>
   #include <android/log.h>
 
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID__ */
 
 #ifdef __orxWINDOWS__
 
@@ -144,8 +144,9 @@ static orxINLINE const orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
   switch(_eLevel)
   {
     orxDEBUG_DECLARE_LEVEL_ENTRY(ANIM);
-    orxDEBUG_DECLARE_LEVEL_ENTRY(CONFIG);
     orxDEBUG_DECLARE_LEVEL_ENTRY(CLOCK);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(COMMAND);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(CONFIG);
     orxDEBUG_DECLARE_LEVEL_ENTRY(DISPLAY);
     orxDEBUG_DECLARE_LEVEL_ENTRY(FILE);
     orxDEBUG_DECLARE_LEVEL_ENTRY(INPUT);
@@ -190,8 +191,9 @@ static orxINLINE const orxSTRING orxDebug_GetLevelFormat(orxDEBUG_LEVEL _eLevel)
   switch(_eLevel)
   {
     case orxDEBUG_LEVEL_ANIM:
-    case orxDEBUG_LEVEL_CONFIG:
     case orxDEBUG_LEVEL_CLOCK:
+    case orxDEBUG_LEVEL_COMMAND:
+    case orxDEBUG_LEVEL_CONFIG:
     case orxDEBUG_LEVEL_DISPLAY:
     case orxDEBUG_LEVEL_FILE:
     case orxDEBUG_LEVEL_INPUT:
@@ -355,17 +357,17 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
     sstDebug.u32DebugFlags  = orxDEBUG_KU32_STATIC_MASK_DEFAULT;
     sstDebug.u32LevelFlags  = orxDEBUG_KU32_STATIC_LEVEL_MASK_DEFAULT;
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxANDROID__)
 
     /* Sets module as initialized */
     sstDebug.u32Flags = orxDEBUG_KU32_STATIC_FLAG_READY;
 
-#else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#else /* __orxANDROID__ */
 
     /* Sets module as initialized, with ANSI support */
     sstDebug.u32Flags = orxDEBUG_KU32_STATIC_FLAG_READY | orxDEBUG_KU32_STATIC_FLAG_ANSI;
 
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID__ */
 
     /* Inits default files */
     _orxDebug_SetDebugFile(orxDEBUG_KZ_DEFAULT_DEBUG_FILE);
@@ -418,7 +420,7 @@ void orxFASTCALL _orxDebug_Exit()
   /* Initialized? */
   if(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
   {
-#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+#if !defined(__orxANDROID__)
 
     /* Closes files */
     if(sstDebug.pstLogFile != orxNULL)
@@ -432,7 +434,7 @@ void orxFASTCALL _orxDebug_Exit()
        sstDebug.pstDebugFile = orxNULL;
     }
 
-#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
+#endif /* !__orxANDROID__ */
 
     /* Clears log callback */
     sstDebug.pfnLogCallback = orxNULL;
@@ -454,7 +456,7 @@ void orxFASTCALL _orxDebug_Exit()
 void orxFASTCALL _orxDebug_Break()
 {
   /* Windows / Linux / Mac / iOS / Android */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
 
   /* Compiler specific */
 
@@ -475,7 +477,7 @@ void orxFASTCALL _orxDebug_Break()
 
   #endif /* __orxMSVC__ */
 
-#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
 
   /* Done! */
   return;
@@ -654,7 +656,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       /* Terminal display? */
       if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
       {
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxANDROID__)
 
 #define  LOG_TAG    "orxDebug"
 #define  LOGI(...)  __android_log_write(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
@@ -669,7 +671,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
           LOGD(zBuffer);
         }
 
-#else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#else /* __orxANDROID__ */
 
         FILE *pstFile;
 
@@ -685,7 +687,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
         fprintf(pstFile, "%s", zBuffer);
         fflush(pstFile);
 
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID__ */
 
       }
 
@@ -723,7 +725,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
             sstDebug.pstLogFile = fopen(sstDebug.zLogFile, "ab+");
           }
 
-#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
+#endif /* !__orxANDROID__ */
 
           pstFile = sstDebug.pstLogFile;
         }
@@ -739,7 +741,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
             sstDebug.pstDebugFile = fopen(sstDebug.zDebugFile, "ab+");
           }
 
-#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
+#endif /* !__orxANDROID__ */
 
           pstFile = sstDebug.pstDebugFile;
         }

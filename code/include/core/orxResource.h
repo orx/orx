@@ -59,7 +59,7 @@ typedef void (orxFASTCALL *orxRESOURCE_OP_FUNCTION)(orxHANDLE _hResource, orxS64
 
 /** Resource handlers
  */
-typedef const orxSTRING (orxFASTCALL *orxRESOURCE_FUNCTION_LOCATE)(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence);
+typedef const orxSTRING (orxFASTCALL *orxRESOURCE_FUNCTION_LOCATE)(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence);
 typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_TIME)(const orxSTRING _zLocation);
 typedef orxHANDLE       (orxFASTCALL *orxRESOURCE_FUNCTION_OPEN)(const orxSTRING _zLocation, orxBOOL _bEraseMode);
 typedef void            (orxFASTCALL *orxRESOURCE_FUNCTION_CLOSE)(orxHANDLE _hResource);
@@ -109,8 +109,9 @@ typedef struct __orxRESOURCE_EVENT_PAYLOAD_t
   orxS64                        s64Time;                  /**< New resource time : 8 */
   const orxSTRING               zLocation;                /**< Resource location : 12 / 16 */
   const orxRESOURCE_TYPE_INFO  *pstTypeInfo;              /**< Type info : 16 / 24 */
-  orxSTRINGID                   stGroupID;                /**< Group ID : 20 / 28 */
-  orxSTRINGID                   stNameID;                 /**< Name ID : 24 / 32 */
+  orxSTRINGID                   stGroupID;                /**< Group ID : 24 / 32 */
+  orxSTRINGID                   stStorageID;              /**< Storage ID : 32 / 40 */
+  orxSTRINGID                   stNameID;                 /**< Name ID : 40 / 48 */
 
 } orxRESOURCE_EVENT_PAYLOAD;
 
@@ -292,12 +293,18 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTotalPe
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pstInfo);
 
+/** Unregisters a resource type
+ * @param[in] _zTypeTag         Tag of the resource type to unregister
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_UnregisterType(const orxSTRING _zTypeTag);
+
 /** Gets number of registered resource types
  * @return Number of registered resource types
  */
 extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCount();
 
-/** Gets registered type info at given index
+/** Gets registered type tag at given index
  * @param[in] _u32Index         Index of storage
  * @return Type tag string if index is valid, orxNULL otherwise
  */
@@ -315,6 +322,22 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_Sync(const
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ClearCache(const orxSTRING _zGroup);
+
+/** Gets the cached location count for a given group
+ * @param[in] _zGroup           Concerned resource group
+ * @return    Item number
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetCacheCount(const orxSTRING _zGroup);
+
+/** Gets the next cached location for the given group and returns an iterator for next search
+ * @param[in] _zGroup           Concerned resource group
+ * @param[in] _hIterator        Iterator from previous search or orxHANDLE_UNDEFINED/orxNULL for a new search
+ * @param[out] _pzLocation      Current resource's location, orxNULL to ignore
+ * @param[out] _pzStorage       Current resource's storage, orxNULL to ignore
+ * @param[out] _pzName          Current resource's name, orxNULL to ignore
+ * @return Iterator for next element if an element has been found, orxHANDLE_UNDEFINED otherwise
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCachedLocation(const orxSTRING _zGroup, orxHANDLE _hIterator, const orxSTRING *_pzLocation, const orxSTRING *_pzStorage, const orxSTRING *_pzName);
 
 
 #endif /* _orxRESOURCE_H_ */

@@ -140,18 +140,12 @@
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
 #define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER 32
-#define orxDISPLAY_KE_DEFAULT_PRIMITIVE         GL_TRIANGLE_STRIP
+#define orxDISPLAY_KE_DEFAULT_PRIMITIVE         GL_TRIANGLES
 
 
 /**  Misc defines
  */
 #define orxDISPLAY_KU32_PVR_TEXTURE_MASK_TYPE   0xFF
-
-#ifdef __orx64__
-  #define orxDISPLAY_CAST_HELPER                (orxU64)
-#else /* __orx64__ */
-  #define orxDISPLAY_CAST_HELPER
-#endif /* __orx64__ */
 
 #define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
 
@@ -2126,13 +2120,13 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_CompileShader(orxDISPLAY_SHADER *_ps
   static const orxSTRING szVertexShaderSource =
   "attribute vec2 __vPosition__;"
   "uniform mat4 __mProjection__;"
-  "attribute mediump vec2 __vTexCoord__;"
-  "varying mediump vec2 ___TexCoord___;"
-  "attribute mediump vec4 __vColor__;"
-  "varying mediump vec4 ___Color;"
+  "attribute highp vec2 __vTexCoord__;"
+  "varying highp vec2 ___TexCoord___;"
+  "attribute highp vec4 __vColor__;"
+  "varying highp vec4 ___Color;"
   "void main()"
   "{"
-  "  mediump float fCoef = 1.0 / 255.0;"
+  "  highp float fCoef = 1.0 / 255.0;"
   "  gl_Position      = __mProjection__ * vec4(__vPosition__.xy, 0.0, 1.0);"
   "  ___TexCoord___   = __vTexCoord__;"
   "  ___Color         = fCoef * __vColor__;"
@@ -3828,7 +3822,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_SaveBitmap(const orxBITMAP *_pstBitmap, con
       orxHANDLE       hResource;
 
       /* Valid file to open? */
-      if(((zResourceLocation = orxResource_LocateInStorage(orxTEXTURE_KZ_RESOURCE_GROUP, orxNULL, _zFileName)) != orxNULL)
+      if(((zResourceLocation = orxResource_LocateInStorage(orxTEXTURE_KZ_RESOURCE_GROUP, orxRESOURCE_KZ_DEFAULT_STORAGE, _zFileName)) != orxNULL)
       && ((hResource = orxResource_Open(zResourceLocation, orxTRUE)) != orxHANDLE_UNDEFINED))
       {
         /* Allocates save info */
@@ -4250,11 +4244,11 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
       {
         /* Computes them */
         sstDisplay.au16IndexList[i]     = u16Index;
-        sstDisplay.au16IndexList[i + 1] = u16Index;
-        sstDisplay.au16IndexList[i + 2] = u16Index + 1;
-        sstDisplay.au16IndexList[i + 3] = u16Index + 2;
+        sstDisplay.au16IndexList[i + 1] = u16Index + 1;
+        sstDisplay.au16IndexList[i + 2] = u16Index + 2;
+        sstDisplay.au16IndexList[i + 3] = u16Index + 1;
         sstDisplay.au16IndexList[i + 4] = u16Index + 3;
-        sstDisplay.au16IndexList[i + 5] = u16Index + 3;
+        sstDisplay.au16IndexList[i + 5] = u16Index + 2;
       }
 
       /* Creates banks */
@@ -4300,8 +4294,9 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         glGetRenderbufferParameterivOES(GL_RENDERBUFFER_OES, GL_RENDERBUFFER_HEIGHT_OES, &iHeight);
         glASSERT();
 
-        /* Stores framebuffer size */
+        /* Stores framebuffer size & content scale */
         orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_FRAMEBUFFER_SIZE, orxVector_Set(&vFramebufferSize, orxS2F(iWidth), orxS2F(iHeight), orxFLOAT_0));
+        orxConfig_SetVector(orxDISPLAY_KZ_CONFIG_CONTENT_SCALE, &orxVECTOR_1);
 
         /* Inits default values */
         sstDisplay.bDefaultSmoothing          = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_SMOOTH);
@@ -4343,7 +4338,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         glASSERT();
 
         static const orxSTRING szFragmentShaderSource =
-        "precision mediump float;"
+        "precision highp float;"
         "varying vec2 ___TexCoord___;"
         "varying vec4 ___Color;"
         "uniform sampler2D __Texture__;"
@@ -4352,7 +4347,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         "  gl_FragColor = ___Color.rgba * texture2D(__Texture__, ___TexCoord___).rgba;"
         "}";
         static const orxSTRING szNoTextureFragmentShaderSource =
-        "precision mediump float;"
+        "precision highp float;"
         "varying vec2 ___TexCoord___;"
         "varying vec4 ___Color;"
         "uniform sampler2D __Texture__;"
@@ -4509,7 +4504,7 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING *_azCodeList, 
       /* Inits shader code buffer */
       sstDisplay.acShaderCodeBuffer[0]  = sstDisplay.acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1] = orxCHAR_NULL;
       pc                                = sstDisplay.acShaderCodeBuffer;
-      s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE - 1;
+      s32Free                           = orxDISPLAY_KU32_SHADER_BUFFER_SIZE;
 
       /* Has parameters? */
       if(_pstParamList != orxNULL)
@@ -4517,7 +4512,7 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING *_azCodeList, 
         orxSHADER_PARAM *pstParam;
 
         /* Adds wrapping code */
-        s32Offset = orxString_NPrint(pc, s32Free, "precision mediump float;\nvarying vec2 ___TexCoord___;\nvarying vec4 ___Color;\n");
+        s32Offset = orxString_NPrint(pc, s32Free, "precision highp float;\nvarying vec2 ___TexCoord___;\nvarying vec4 ___Color;\n");
         pc       += s32Offset;
         s32Free  -= s32Offset;
 
@@ -4601,7 +4596,7 @@ orxHANDLE orxFASTCALL orxDisplay_iOS_CreateShader(const orxSTRING *_azCodeList, 
 
       /* Inits shader */
       orxMemory_Zero(&(pstShader->stNode), sizeof(orxLINKLIST_NODE));
-      pstShader->uiProgram              = (GLuint) orxDISPLAY_CAST_HELPER orxHANDLE_UNDEFINED;
+      pstShader->uiProgram              = (GLuint)(orxUPTR)orxHANDLE_UNDEFINED;
       pstShader->iTextureCount          = 0;
       pstShader->s32ParamCount          = 0;
       pstShader->bPending               = orxFALSE;
@@ -4854,9 +4849,6 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
     /* Checks */
     orxASSERT(pstShader->s32ParamCount < sstDisplay.iTextureUnitNumber);
 
-    /* Inits buffer */
-    acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-
     /* Gets corresponding param info */
     pstInfo = &pstShader->astParamInfoList[pstShader->s32ParamCount];
 
@@ -4867,29 +4859,29 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
     if(_s32Index >= 0)
     {
       /* Prints its name */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s[%d]", _zParam, _s32Index);
 
       /* Gets parameter location */
       pstInfo->iLocation = glGetUniformLocation(pstShader->uiProgram, acBuffer);
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"[%d]", _zParam, _s32Index);
       pstInfo->iLocationTop = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"[%d]", _zParam, _s32Index);
       pstInfo->iLocationLeft = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"[%d]", _zParam, _s32Index);
       pstInfo->iLocationBottom = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"[%d]", _zParam, _s32Index);
       pstInfo->iLocationRight = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
@@ -4900,22 +4892,22 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
       pstInfo->iLocationTop = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
       pstInfo->iLocationLeft = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
       pstInfo->iLocationBottom = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
       pstInfo->iLocationRight = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
@@ -4945,8 +4937,7 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
       orxCHAR acBuffer[256];
 
       /* Prints its name */
-      orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%s[%d]", _zParam, _s32Index);
-      acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s[%d]", _zParam, _s32Index);
 
       /* Gets parameter location */
       s32Result = (orxS32)glGetUniformLocation(pstShader->uiProgram, acBuffer);

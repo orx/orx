@@ -91,7 +91,7 @@
 
 /** Misc
  */
-#define orxTHREAD_KU32_TASK_LIST_SIZE                 64
+#define orxTHREAD_KU32_TASK_LIST_SIZE                 256
 
 #define orxTHREAD_KZ_THREAD_NAME_MAIN                 "Main"
 #define orxTHREAD_KZ_THREAD_NAME_WORKER               "Task Runner"
@@ -897,7 +897,7 @@ orxTHREAD_SEMAPHORE *orxFASTCALL orxThread_CreateSemaphore(orxU32 _u32Value)
     orxCHAR acBuffer[256];
 
     /* Prints name */
-    acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "orx_semaphore_%u_%u", (orxU32)getpid(), (orxU32)orxSystem_GetRealTime())] = orxCHAR_NULL;
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "orx_semaphore_%u_%u", (orxU32)getpid(), (orxU32)orxSystem_GetRealTime());
 
     /* Opens semaphore */
     pstResult = (orxTHREAD_SEMAPHORE *)sem_open(acBuffer, O_CREAT, 0644, _u32Value);

@@ -308,8 +308,8 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
                   break;
                 }
 
-                /* Creates texture */
-                ((orxTEXTURE **)astValueBuffer)[j] = orxTexture_CreateFromFile(zValue, orxFALSE);
+                /* Loads texture */
+                ((orxTEXTURE **)astValueBuffer)[j] = orxTexture_Load(zValue, orxFALSE);
               }
               else
               {
@@ -341,8 +341,8 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
               }
               else
               {
-                /* Creates texture */
-                ((orxTEXTURE **)astValueBuffer)[0] = orxTexture_CreateFromFile(zValue, orxFALSE);
+                /* Loads texture */
+                ((orxTEXTURE **)astValueBuffer)[0] = orxTexture_Load(zValue, orxFALSE);
               }
             }
             else

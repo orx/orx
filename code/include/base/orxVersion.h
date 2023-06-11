@@ -45,19 +45,19 @@
 
 #include "base/orxType.h"
 
-#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__) && !defined(__orxIOS__)
+#if !defined(__orxANDROID__) && !defined(__orxIOS__)
 
 #ifndef __orxVERSION_BUILD__
 #include "base/orxBuild.h"
 #endif /* __orxVERSION_BUILD__ */
 
-#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ && !__orxIOS__ */
+#endif /* !__orxANDROID__ && !__orxIOS__ */
 
 /** Version numbers
  */
 
 #define __orxVERSION_MAJOR__        1
-#define __orxVERSION_MINOR__        13
+#define __orxVERSION_MINOR__        14
 
 #ifndef __orxVERSION_RELEASE__
   #define __orxVERSION_RELEASE__    dev

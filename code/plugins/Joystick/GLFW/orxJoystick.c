@@ -121,11 +121,11 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
       orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
 
       /* Stores its name */
-      acJoystick[orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1)] = orxCHAR_NULL;
+      orxString_NPrint(acJoystick, sizeof(acJoystick), "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1);
       orxConfig_SetString(acJoystick, glfwGetJoystickName((int)_u32ID));
 
       /* Stores its id */
-      acJoystick[orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1)] = orxCHAR_NULL;
+      orxString_NPrint(acJoystick, sizeof(acJoystick), "%s%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1);
       orxConfig_SetString(acJoystick, glfwGetJoystickGUID((int)_u32ID));
 
       /* Pops config section */
@@ -206,11 +206,11 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
       orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
 
       /* Removes its name */
-      acJoystick[orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1)] = orxCHAR_NULL;
+      orxString_NPrint(acJoystick, sizeof(acJoystick), "%s%u", orxJOYSTICK_KZ_CONFIG_NAME, _u32ID + 1);
       orxConfig_ClearValue(acJoystick);
 
       /* Removes its id */
-      acJoystick[orxString_NPrint(acJoystick, sizeof(acJoystick) - 1, "%s%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1)] = orxCHAR_NULL;
+      orxString_NPrint(acJoystick, sizeof(acJoystick), "%s%u", orxJOYSTICK_KZ_CONFIG_ID, _u32ID + 1);
       orxConfig_ClearValue(acJoystick);
 
       /* Pops config section */
@@ -300,6 +300,9 @@ orxSTATUS orxFASTCALL orxJoystick_GLFW_Init()
 
         /* Pops config section */
         orxConfig_PopSection();
+
+        /* Triggers initial update */
+        orxJoystick_GLFW_Update(orxNULL, orxNULL);
       }
 
       /* Updates status */

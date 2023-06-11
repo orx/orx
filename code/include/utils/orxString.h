@@ -193,9 +193,9 @@ static orxINLINE orxBOOL                                  orxString_IsCharacterA
 static orxINLINE orxBOOL                                  orxString_IsCharacterAlphaNumeric(orxU32 _u32CharacterCodePoint)
 {
   /* Done! */
-  return (((_u32CharacterCodePoint >= 'a') && (_u32CharacterCodePoint <= 'z'))
-       || ((_u32CharacterCodePoint >= 'A') && (_u32CharacterCodePoint <= 'Z'))
-       || ((_u32CharacterCodePoint >= '0') && (_u32CharacterCodePoint <= '9'))) ? orxTRUE : orxFALSE;
+  return(((_u32CharacterCodePoint >= 'a') && (_u32CharacterCodePoint <= 'z'))
+      || ((_u32CharacterCodePoint >= 'A') && (_u32CharacterCodePoint <= 'Z'))
+      || ((_u32CharacterCodePoint >= '0') && (_u32CharacterCodePoint <= '9'))) ? orxTRUE : orxFALSE;
 }
 
 /** Gets the UTF-8 encoding length of given character
@@ -542,6 +542,7 @@ static orxINLINE orxSTRING                                orxString_NCopy(orxSTR
   /* Checks */
   orxASSERT(_zDstString != orxNULL);
   orxASSERT(_zSrcString != orxNULL);
+  orxASSERT(_u32CharNumber > 0);
 
   /* Done! */
   return(strncpy(_zDstString, _zSrcString, (size_t)_u32CharNumber));
@@ -623,7 +624,7 @@ static orxINLINE orxS32                                   orxString_NCompare(con
   orxASSERT(_zString2 != orxNULL);
 
   /* Done! */
-  return strncmp(_zString1, _zString2, (size_t)_u32CharNumber);
+  return(strncmp(_zString1, _zString2, (size_t)_u32CharNumber));
 }
 
 /** Compare two strings, case insensitive. If the first one is smaller than the second, it returns -1,
@@ -646,7 +647,7 @@ static orxINLINE orxS32                                   orxString_ICompare(con
 #else /* __orxWINDOWS__ */
 
   /* Done! */
-  return strcasecmp(_zString1, _zString2);
+  return(strcasecmp(_zString1, _zString2));
 
 #endif /* __orxWINDOWS__ */
 }
@@ -668,12 +669,12 @@ static orxINLINE orxS32                                   orxString_NICompare(co
 #ifdef __orxWINDOWS__
 
   /* Done! */
-  return strnicmp(_zString1, _zString2, (size_t)_u32CharNumber);
+  return(strnicmp(_zString1, _zString2, (size_t)_u32CharNumber));
 
 #else /* __orxWINDOWS__ */
 
   /* Done! */
-  return strncasecmp(_zString1, _zString2, _u32CharNumber);
+  return(strncasecmp(_zString1, _zString2, _u32CharNumber));
 
 #endif /* __orxWINDOWS__ */
 }
@@ -1378,37 +1379,11 @@ static orxINLINE orxS32                                   orxString_SearchCharIn
   return s32Result;
 }
 
-/** Prints a formated string to a memory buffer
- * @param[out] _zDstString  Destination string
- * @param[in]  _zSrcString  Source formated string
- * @return The number of written characters
- */
-static orxINLINE orxS32 orxCDECL                          orxString_Print(orxSTRING _zDstString, const orxSTRING _zSrcString, ...)
-{
-  va_list stArgs;
-  orxS32  s32Result;
-
-  /* Checks */
-  orxASSERT(_zDstString != orxNULL);
-  orxASSERT(_zSrcString != orxNULL);
-
-  /* Gets variable arguments & prints the string */
-  va_start(stArgs, _zSrcString);
-  s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
-  va_end(stArgs);
-
-  /* Clamps result */
-  s32Result = orxMAX(s32Result, 0);
-
-  /* Done! */
-  return s32Result;
-}
-
-/** Prints a formated string to a memory buffer using a max size
+/** Prints a formatted string to a memory buffer using a max size
  * @param[out] _zDstString    Destination string
- * @param[in]  _zSrcString    Source formated string
- * @param[in]  _u32CharNumber Max number of character to print
- * @return The number of written characters
+ * @param[in]  _u32CharNumber Max number of character to print, including the terminating null character
+ * @param[in]  _zSrcString    Source formatted string
+ * @return The number of written characters, excluding the terminating null character
  */
 static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxSTRING _zDstString, orxU32 _u32CharNumber, const orxSTRING _zSrcString, ...)
 {
@@ -1418,29 +1393,33 @@ static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxST
   /* Checks */
   orxASSERT(_zDstString != orxNULL);
   orxASSERT(_zSrcString != orxNULL);
+  orxASSERT(_u32CharNumber > 0);
 
   /* Gets variable arguments & prints the string */
   va_start(stArgs, _zSrcString);
   s32Result = vsnprintf(_zDstString, (size_t)_u32CharNumber, _zSrcString, stArgs);
   va_end(stArgs);
 
-#ifdef __orxMSVC__
   /* Overflow? */
   if(s32Result <= 0)
   {
     /* Updates result */
-    s32Result = _u32CharNumber;
+    s32Result = (orxS32)_u32CharNumber - 1;
   }
-#endif /* __orxMSVC__ */
+  else
+  {
+    /* Clamps result */
+    s32Result = orxCLAMP(s32Result, 0, (orxS32)_u32CharNumber - 1);
+  }
 
-  /* Clamps result */
-  s32Result = orxCLAMP(s32Result, 0, (orxS32)_u32CharNumber);
+  /* Enforces terminating null character */
+  _zDstString[s32Result] = orxCHAR_NULL;
 
   /* Done! */
   return s32Result;
 }
 
-/** Scans a formated string from a memory buffer
+/** Scans a formatted string from a memory buffer
  * @param[in]  _zString  String to scan
  * @param[in]  _zFormat  Format string
  * @return The number of scanned items
@@ -1453,38 +1432,10 @@ static orxINLINE orxS32 orxCDECL                          orxString_Scan(const o
   /* Checks */
   orxASSERT(_zString != orxNULL);
 
-#ifdef __orxMSVC__
-
-  /* Ugly workaround the missing vsscanf in MSVC up to version 2013 */
-  {
-    void   *p[16];
-    orxS32  i;
-
-    /* Starts variable list */
-    va_start(stArgs, _zFormat);
-
-    /* For all potential parameters */
-    for(i = 0; i < orxARRAY_GET_ITEM_COUNT(p); i++)
-    {
-      /* Gets its address */
-      p[i] = va_arg(stArgs, void *);
-    }
-
-    /* Scans the string */
-    s32Result = sscanf(_zString, _zFormat, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]);
-
-    /* Ends variable list */
-    va_end(stArgs);
-  }
-
-#else /* __orxMSVC__ */
-
   /* Gets variable arguments & scans the string */
   va_start(stArgs, _zFormat);
   s32Result = vsscanf(_zString, _zFormat, stArgs);
   va_end(stArgs);
-
-#endif /* __orxMSVC__ */
 
   /* Clamps result */
   s32Result = orxMAX(s32Result, 0);

@@ -116,8 +116,8 @@
  */
 typedef struct __orxTIMELINE_TRACK_EVENT_t
 {
-  const orxSTRING           zEventText;               /**< Event text : 4 */
-  orxFLOAT                  fTimeStamp;               /**< Event timestamp : 8 */
+  const orxSTRING           zEventText;               /**< Event text : 4 / 8 */
+  orxFLOAT                  fTimeStamp;               /**< Event timestamp : 8 / 12 */
 
 } orxTIMELINE_TRACK_EVENT;
 
@@ -125,11 +125,11 @@ typedef struct __orxTIMELINE_TRACK_EVENT_t
  */
 typedef struct __orxTIMELINE_TRACK_t
 {
-  const orxSTRING           zReference;               /**< Track reference : 4 */
   orxSTRINGID               stID;                     /**< ID : 8 */
-  orxU32                    u32RefCount;              /**< Reference count : 12 */
-  orxU32                    u32EventCount;            /**< Event count : 16 */
-  orxU32                    u32Flags;
+  const orxSTRING           zReference;               /**< Track reference : 12 / 16 */
+  orxU32                    u32RefCount;              /**< Reference count : 16 / 20 */
+  orxU32                    u32EventCount;            /**< Event count : 20 / 24 */
+  orxU32                    u32Flags;                 /**< Flags: 24 / 28 */
   orxTIMELINE_TRACK_EVENT   astEventList[0];          /**< Track event list */
 
 } orxTIMELINE_TRACK;
@@ -417,13 +417,12 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
     if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxHANDLE           hIterator;
-      orxU64              u64Key;
       orxTIMELINE_TRACK  *pstTrack;
 
       /* For all tracks */
-      for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstTrack);
+      for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstTrack);
           hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, &u64Key, (void **)&pstTrack))
+          hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, orxNULL, (void **)&pstTrack))
       {
         /* Match origin? */
         if(orxConfig_GetOriginID(pstTrack->zReference) == pstPayload->stNameID)
@@ -916,7 +915,6 @@ orxSTATUS orxFASTCALL orxTimeLine_Delete(orxTIMELINE *_pstTimeLine)
 orxSTATUS orxFASTCALL orxTimeLine_ClearCache()
 {
   orxTIMELINE_TRACK  *pstTrack, *pstNewTrack;
-  orxU64              u64Key;
   orxHANDLE           hIterator, hNextIterator;
   orxSTATUS           eResult = orxSTATUS_SUCCESS;
 
@@ -924,12 +922,12 @@ orxSTATUS orxFASTCALL orxTimeLine_ClearCache()
   orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
 
   /* For all tracks */
-  for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstTrack);
+  for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstTrack);
       hIterator != orxHANDLE_UNDEFINED;
       hIterator = hNextIterator, pstTrack = pstNewTrack)
   {
     /* Gets next track */
-    hNextIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, &u64Key, (void **)&pstNewTrack);
+    hNextIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, orxNULL, (void **)&pstNewTrack);
 
     /* Is cached? */
     if(orxFLAG_TEST(pstTrack->u32Flags, orxTIMELINE_TRACK_KU32_FLAG_CACHED))

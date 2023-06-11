@@ -1,0 +1,17 @@
+{
+  "export_libraries": [],
+  "android": {
+    "export_libraries": [
+      ":webpdecoder_static",
+      ":liquidfun_static",
+      ":cpufeatures",
+      "-llog",
+      "-landroid",
+      "-lGLESv2",
+      "-lEGL",
+      "//game-activity:game-activity_static",
+      "//games-controller:paddleboat_static",
+      "//games-frame-pacing:swappy_static"
+    ]
+  }
+}

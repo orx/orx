@@ -58,11 +58,11 @@
 
 #define _FILE_OFFSET_BITS                       64
 
-  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxANDROID__)
 
-    #include "main/orxAndroid.h"
+    #include "main/android/orxAndroid.h"
 
-  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #endif /* __orxANDROID__ */
 
   #include <dirent.h>
   #include <fnmatch.h>
@@ -79,13 +79,6 @@
 #define orxFILE_KU32_STATIC_FLAG_NONE           0x00000000  /**< No flags have been set */
 #define orxFILE_KU32_STATIC_FLAG_READY          0x00000001  /**< The module has been initialized */
 
-#ifdef __orxWINDOWS__
-#ifdef __orxX86_64__
-  #define orxFILE_CAST_HELPER                   (orxS64)
-#else /* __orxX86_64__ */
-  #define orxFILE_CAST_HELPER                   (orxS32)
-#endif /* __orxX86_64__ */
-#endif /* __orxWINDOWS__ */
 
 /** Misc
  */
@@ -334,7 +327,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath)
     if(zHome != orxNULL)
     {
       /* Prints home directory */
-      s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", zHome);
+      s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory), "%s", zHome);
     }
     else
     {
@@ -347,7 +340,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath)
       if(pstPasswd != orxNULL)
       {
         /* Prints home directory */
-        s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", pstPasswd->pw_dir);
+        s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory), "%s", pstPasswd->pw_dir);
       }
     }
   }
@@ -363,7 +356,7 @@ const orxSTRING orxFASTCALL orxFile_GetHomeDirectory(const orxSTRING _zSubPath)
     if(_zSubPath != orxNULL)
     {
       /* Appends folder name */
-      s32Index += orxString_NPrint(sstFile.acWorkDirectory + s32Index, sizeof(sstFile.acWorkDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
+      s32Index += orxString_NPrint(sstFile.acWorkDirectory + s32Index, sizeof(sstFile.acWorkDirectory) - s32Index, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
     }
 
     /* For all characters */
@@ -440,7 +433,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
     if(zHome != orxNULL)
     {
       /* Prints home directory */
-      s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s%c%s", zHome, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
+      s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory), "%s%c%s", zHome, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
     }
     else
     {
@@ -453,7 +446,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
       if(pstPasswd != orxNULL)
       {
         /* Prints home directory */
-        s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s%c%s", pstPasswd->pw_dir, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
+        s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory), "%s%c%s", pstPasswd->pw_dir, orxCHAR_DIRECTORY_SEPARATOR_LINUX, orxFILE_KZ_APPLICATION_FOLDER);
       }
     }
   }
@@ -461,12 +454,12 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
 #elif defined(__orxIOS__)
 
   /* Prints documents directory */
-  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", orxiOS_GetDocumentsPath());
+  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory), "%s", orxiOS_GetDocumentsPath());
 
-#elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#elif defined(__orxANDROID__)
 
   /* Prints internal storage directory */
-  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory) - 1, "%s", orxAndroid_GetInternalStoragePath());
+  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory), "%s", orxAndroid_GetInternalStoragePath());
 
 #endif
 
@@ -479,7 +472,7 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
     if(_zSubPath != orxNULL)
     {
       /* Appends folder name */
-      s32Index += orxString_NPrint(sstFile.acWorkDirectory + s32Index, sizeof(sstFile.acWorkDirectory) - s32Index - 1, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
+      s32Index += orxString_NPrint(sstFile.acWorkDirectory + s32Index, sizeof(sstFile.acWorkDirectory) - s32Index, "%c%s", orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zSubPath);
     }
 
     /* For all characters */
@@ -520,7 +513,7 @@ orxBOOL orxFASTCALL orxFile_Exists(const orxSTRING _zFileName)
   orxMemory_Zero(&stInfo, sizeof(orxFILE_INFO));
 
   /* Done! */
-  return(orxFile_GetInfo(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
+  return(orxFile_GetInfo(_zFileName, &stInfo) != orxSTATUS_FAILURE);
 }
 
 /** Starts a new file search: finds the first file/directory that will match to the given pattern (ex: /bin/foo*)
@@ -546,7 +539,7 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
   hHandle = (orxHANDLE)FindFirstFile(_zSearchPattern, &stData);
 
   /* Valid? */
-  if(orxFILE_CAST_HELPER hHandle > 0)
+  if((orxSPTR)hHandle > 0)
   {
     const orxSTRING zFileName;
 
@@ -566,22 +559,18 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
       _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
       /* Stores pattern */
-      u32Length = sizeof(_pstFileInfo->zPattern) - 1;
-      orxString_NCopy(_pstFileInfo->zPattern, zFileName, u32Length);
-      _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
+      orxString_NCopy(_pstFileInfo->zPattern, zFileName, sizeof(_pstFileInfo->zPattern) - 1);
+      _pstFileInfo->zPattern[sizeof(_pstFileInfo->zPattern) - 1] = orxCHAR_NULL;
     }
     else
     {
-      orxU32 u32Length;
-
       /* Clears vars */
       _pstFileInfo->zPath[0]      = orxCHAR_NULL;
       _pstFileInfo->zFullName[0]  = orxCHAR_NULL;
 
       /* Stores pattern */
-      u32Length = sizeof(_pstFileInfo->zPattern) - 1;
-      orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Length);
-      _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
+      orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, sizeof(_pstFileInfo->zPattern) - 1);
+      _pstFileInfo->zPattern[sizeof(_pstFileInfo->zPattern) - 1] = orxCHAR_NULL;
     }
 
     /* Tranfers file info */
@@ -619,22 +608,18 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
     _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
 
     /* Stores pattern */
-    u32Length = sizeof(_pstFileInfo->zPattern) - 1;
-    orxString_NCopy(_pstFileInfo->zPattern, zFileName, u32Length);
-    _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
+    orxString_NCopy(_pstFileInfo->zPattern, zFileName, sizeof(_pstFileInfo->zPattern) - 1);
+    _pstFileInfo->zPattern[sizeof(_pstFileInfo->zPattern) - 1] = orxCHAR_NULL;
   }
   else
   {
-    orxU32 u32Length;
-
     /* Stores pattern */
-    u32Length = sizeof(_pstFileInfo->zPattern) - 1;
-    orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, u32Length);
-    _pstFileInfo->zPattern[u32Length] = orxCHAR_NULL;
+    orxString_NCopy(_pstFileInfo->zPattern, _zSearchPattern, sizeof(_pstFileInfo->zPattern) - 1);
+    _pstFileInfo->zPattern[sizeof(_pstFileInfo->zPattern) - 1] = orxCHAR_NULL;
 
     /* Clears vars */
-    orxString_Print(_pstFileInfo->zPath, "./");
-    orxString_Print(_pstFileInfo->zFullName, "./");
+    orxString_NPrint(_pstFileInfo->zPath, sizeof(_pstFileInfo->zPath), "./");
+    orxString_NPrint(_pstFileInfo->zFullName, sizeof(_pstFileInfo->zFullName), "./");
   }
 
   /* Open directory */
@@ -739,7 +724,7 @@ void orxFASTCALL orxFile_FindClose(orxFILE_INFO *_pstFileInfo)
 #ifdef __orxWINDOWS__
 
   /* Has valid handle? */
-  if(orxFILE_CAST_HELPER _pstFileInfo->hInternal > 0)
+  if((orxSPTR)_pstFileInfo->hInternal > 0)
   {
     /* Closes the search */
     FindClose((HANDLE)_pstFileInfo->hInternal);
@@ -952,12 +937,12 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     if(bBinaryMode != orxFALSE)
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "rb");
+      orxString_NPrint(acMode, sizeof(acMode), "rb");
     }
     else
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "r");
+      orxString_NPrint(acMode, sizeof(acMode), "r");
     }
   }
   /* Write only ?*/
@@ -967,12 +952,12 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     if(bBinaryMode != orxFALSE)
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "wb+");
+      orxString_NPrint(acMode, sizeof(acMode), "wb+");
     }
     else
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "w+");
+      orxString_NPrint(acMode, sizeof(acMode), "w+");
     }
   }
   /* Append only ? */
@@ -983,12 +968,12 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     if(bBinaryMode != orxFALSE)
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "ab");
+      orxString_NPrint(acMode, sizeof(acMode), "ab");
     }
     else
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "a");
+      orxString_NPrint(acMode, sizeof(acMode), "a");
     }
   }
   else if(_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE))
@@ -997,12 +982,12 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     if(bBinaryMode != orxFALSE)
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "rb+");
+      orxString_NPrint(acMode, sizeof(acMode), "rb+");
     }
     else
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "r+");
+      orxString_NPrint(acMode, sizeof(acMode), "r+");
     }
   }
   else if((_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_APPEND))
@@ -1012,12 +997,12 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
     if(bBinaryMode != orxFALSE)
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "ab+");
+      orxString_NPrint(acMode, sizeof(acMode), "ab+");
     }
     else
     {
       /* Sets literal mode */
-      orxString_Print(acMode, "a+");
+      orxString_NPrint(acMode, sizeof(acMode), "a+");
     }
   }
 
@@ -1038,7 +1023,7 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
       if((orxU32)(zBaseName - _zFileName - 1) < (orxU32)sizeof(acBuffer) - 1)
       {
         /* Copies path locally */
-        acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "%.*s", zBaseName - _zFileName - 1, _zFileName)] = orxCHAR_NULL;
+        orxString_NPrint(acBuffer, sizeof(acBuffer), "%.*s", zBaseName - _zFileName - 1, _zFileName);
 
         /* Makes sure path exists */
         orxFile_MakeDirectory(acBuffer);

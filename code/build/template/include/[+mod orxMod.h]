@@ -65,7 +65,7 @@ static orxSTATUS orxFASTCALL orxMod_Decode(const orxEVENT *_pstEvent)
 {
   ModData *pstModData;
 
-  // Gets movie data
+  // Gets mod data
   pstModData = (ModData *)_pstEvent->pContext;
 
   // Matching object?
@@ -153,7 +153,7 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
   // New object?
   if(_pstEvent->eID == orxOBJECT_EVENT_PREPARE)
   {
-    // Is a movie?
+    // Is a mod?
     if(orxConfig_HasValue("Mod"))
     {
       const orxSTRING zMod;
@@ -204,7 +204,7 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
             orxEvent_SetHandlerIDFlags(orxMod_EventHandler, orxEVENT_TYPE_OBJECT, pstModData, orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE), orxEVENT_KU32_MASK_ID_ALL);
 
             // Creates music stream
-            orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "empty 2 %u", orxMOD_KU32_SAMPLE_RATE);
+            orxString_NPrint(acBuffer, sizeof(acBuffer), "empty 2 %u", orxMOD_KU32_SAMPLE_RATE);
             orxConfig_SetString("SoundList", orxObject_GetName(pstObject));
             orxConfig_SetString("Music", acBuffer);
           }
@@ -229,7 +229,7 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
   {
     ModData *pstModData;
 
-    // Gets movie data
+    // Gets mod data
     pstModData = (ModData *)_pstEvent->pContext;
 
     // Valid deleted object?
@@ -262,7 +262,7 @@ orxSTATUS orxFASTCALL orxMod_Init()
     // Success?
     if(spstModBank)
     {
-      // Registers movie handler
+      // Registers mod handler
       orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxMod_EventHandler);
       orxEvent_SetHandlerIDFlags(orxMod_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE), orxEVENT_KU32_MASK_ID_ALL);
     }
@@ -277,7 +277,7 @@ void orxFASTCALL orxMod_Exit()
   // Was initialized?
   if(spstModBank)
   {
-    // Unregisters movie handler
+    // Unregisters mod handler
     orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxMod_EventHandler);
 
     // Deletes bank

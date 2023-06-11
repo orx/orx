@@ -308,6 +308,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetFlip(const orxOBJECT *_
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR *_pvPivot);
 
+/** Sets object relative pivot.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _u32AlignFlags  Graphic alignment flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRelativePivot(orxOBJECT *_pstObject, orxU32 _u32AlignFlags);
+
 /** Sets object origin. This is a convenience wrapper around orxGraphic_SetOrigin(). The "origin" of a graphic is
  * essentially what is indicated by the "TextureOrigin" field of a config graphic section. The "origin" together with
  * "size" (see orxObject_SetSize()) defines the sprite of an object.
@@ -595,6 +602,26 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetAnimFrequencyRecursive(
  * @return Animation frequency / -orxFLOAT_1
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAnimFrequency(const orxOBJECT *_pstObject);
+
+/** Sets an object's animation time.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimTime(orxOBJECT *_pstObject, orxFLOAT _fTime);
+
+/** Sets the animation time for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetAnimTimeRecursive(orxOBJECT *_pstObject, orxFLOAT _fTime);
+
+/** Gets an object's animation time.
+ * @param[in]   _pstObject      Concerned object
+ * @return Animation time / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAnimTime(const orxOBJECT *_pstObject);
 
 /** Sets current animation for an object. This function switches the currently displayed animation of the object
  * immediately. Compare this with orxObject_SetTargetAnim().

@@ -64,7 +64,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_GetSampleInfo, orxSTATUS, const or
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_SetSampleData, orxSTATUS, orxSOUNDSYSTEM_SAMPLE *, const orxFLOAT *, orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_CreateFromSample, orxSOUNDSYSTEM_SOUND *, orxHANDLE, const orxSOUNDSYSTEM_SAMPLE *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_CreateStream, orxSOUNDSYSTEM_SOUND *, orxHANDLE, orxU32, orxU32);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_CreateStreamFromFile, orxSOUNDSYSTEM_SOUND *, orxHANDLE, const orxSTRING);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_LoadStream, orxSOUNDSYSTEM_SOUND *, orxHANDLE, const orxSTRING);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Delete, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Play, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxSoundSystem_Pause, orxSTATUS, orxSOUNDSYSTEM_SOUND *);
@@ -120,7 +120,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, GET_SAMPLE_INFO, orxSoundSystem_G
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, SET_SAMPLE_DATA, orxSoundSystem_SetSampleData)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, CREATE_FROM_SAMPLE, orxSoundSystem_CreateFromSample)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, CREATE_STREAM, orxSoundSystem_CreateStream)
-orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, CREATE_STREAM_FROM_FILE, orxSoundSystem_CreateStreamFromFile)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, LOAD_STREAM, orxSoundSystem_LoadStream)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, DELETE, orxSoundSystem_Delete)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, PLAY, orxSoundSystem_Play)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(SOUNDSYSTEM, PAUSE, orxSoundSystem_Pause)
@@ -212,9 +212,9 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_CreateStream(orxHANDLE _hUserDa
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_CreateStream)(_hUserData, _u32ChannelNumber, _u32SampleRate);
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_CreateStreamFromFile(orxHANDLE _hUserData, const orxSTRING _zFilename)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_LoadStream(orxHANDLE _hUserData, const orxSTRING _zFilename)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_CreateStreamFromFile)(_hUserData, _zFilename);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_LoadStream)(_hUserData, _zFilename);
 }
 
 orxSTATUS orxFASTCALL orxSoundSystem_Delete(orxSOUNDSYSTEM_SOUND *_pstSound)

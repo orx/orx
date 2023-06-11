@@ -56,16 +56,6 @@
 
 #endif /* __orxGCC__ */
 
-#ifdef __orx64__
-
-  #define orxANIMSET_CAST_HELPER   (orxU64)
-
-#else /* __orx64__ */
-
-  #define orxANIMSET_CAST_HELPER
-
-#endif /* __orx64__ */
-
 
 /** Module flags
  */
@@ -753,7 +743,7 @@ static orxBOOL orxFASTCALL orxAnimSet_UpdateLink(orxU32 _u32Index, orxLINK_UPDAT
     /* Computes base index */
     u32BaseIndex = _u32Index * (orxU32)(pstLinkTable->u16TableSize);
 
-    /* For all found links */
+    /* For all possible links */
     for(i = 0; i < (orxU32)(pstLinkTable->u16TableSize); i++)
     {
       /* Link found? */
@@ -1368,7 +1358,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
           orxStructure_SetOwner(pstAnim, pstResult);
 
           /* Adds it to ID table */
-          orxHashTable_Add(pstResult->pstIDTable, orxString_Hash(orxAnim_GetName(pstAnim)), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+          orxHashTable_Add(pstResult->pstIDTable, orxString_Hash(orxAnim_GetName(pstAnim)), (void *)(orxUPTR)(u32AnimID + 1));
         }
       }
     }
@@ -1400,8 +1390,8 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateClassicFromConfig(const orxSTRIN
         zDstAnim = orxConfig_GetString(orxANIMSET_KZ_CONFIG_LINK_DESTINATION);
 
         /* Gets source & destination anim IDs */
-        u32SrcAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zSrcAnim)) - 1);
-        u32DstAnim = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zDstAnim)) - 1);
+        u32SrcAnim = ((orxU32)(orxUPTR)orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zSrcAnim)) - 1);
+        u32DstAnim = ((orxU32)(orxUPTR)orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zDstAnim)) - 1);
 
         /* Valid? */
         if((u32SrcAnim != orxU32_UNDEFINED) && (u32DstAnim != orxU32_UNDEFINED))
@@ -1490,7 +1480,7 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
     *pzTableBucket = _zAnim;
 
     /* Gets its link name */
-    acLinkName[orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX)] = orxCHAR_NULL;
+    orxString_NPrint(acLinkName, sizeof(acLinkName), "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX);
 
     /* For all linked animations */
     for(i = 0, u32Count = orxConfig_GetListCount(acLinkName);
@@ -1667,7 +1657,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         orxConfig_SetParent(zNewAnimParent, zAnimSet);
 
         /* Gets anim's section name */
-        acAnimBuffer[orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s%s", zPrefix, zNewAnimParent)] = orxCHAR_NULL;
+        orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer), "%s%s", zPrefix, zNewAnimParent);
       }
       else
       {
@@ -1675,7 +1665,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         zNewAnimParent = zAnimSet;
 
         /* Gets anim's section name */
-        acAnimBuffer[orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer) - 1, "%s", zAnim)] = orxCHAR_NULL;
+        orxString_NPrint(acAnimBuffer, sizeof(acAnimBuffer), "%s", zAnim);
       }
 
       /* Gets current parent */
@@ -1810,8 +1800,12 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Not a text? */
           if(bIsText == orxFALSE)
           {
-            /* Stops */
-            bContinue = orxFALSE;
+            /* Not auto-stop mode? */
+            if(s32MaxFrames != 0)
+            {
+              /* Stops */
+              bContinue = orxFALSE;
+            }
           }
         }
       }
@@ -1961,18 +1955,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           const orxSTRING zNewFrameParent;
           orxFLOAT        fEventValue = orxFLOAT_0, fDuration;
           orxS32          s32EventValueCount;
-          orxBOOL         bDebugLevelBackup, bTempSize = orxFALSE, bTempOrigin = orxFALSE, bTempName = orxFALSE;
+          orxBOOL         bDebugLevelBackup, bTempSize = orxFALSE, bTempOrigin = orxFALSE, bTempFrameIndex = orxFALSE, bTempTexture = orxFALSE;
           orxCHAR         acParentBuffer[128], acFrameBuffer[128];
 
           /* Has prefix? */
           if(*zPrefix != orxCHAR_NULL)
           {
             /* Gets new parent */
-            acParentBuffer[orxString_NPrint(acParentBuffer, sizeof(acParentBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
+            orxString_NPrint(acParentBuffer, sizeof(acParentBuffer), "%s%0*u%s%s", zAnim, u32Digits, i + 1, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt);
             zNewFrameParent = acParentBuffer;
 
             /* Gets frame name */
-            acFrameBuffer[orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%s", zPrefix, zNewFrameParent)] = orxCHAR_NULL;
+            orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer), "%s%s", zPrefix, zNewFrameParent);
           }
           else
           {
@@ -1980,7 +1974,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             zNewFrameParent = zCurrentSection;
 
             /* Gets frame name */
-            acFrameBuffer[orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer) - 1, "%s%0*u%s%s", zAnim, u32Digits, i + 1, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
+            orxString_NPrint(acFrameBuffer, sizeof(acFrameBuffer), "%s%0*u%s%s", zAnim, u32Digits, i + 1, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt);
           }
 
           /* From config and should auto-stop? */
@@ -2004,11 +1998,25 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             }
           }
 
+          /* Gets current parent */
+          zParent = orxConfig_GetParent(acFrameBuffer);
+
+          /* Already has parent? */
+          if((zParent != orxNULL)
+          && (orxString_Compare(zParent, zNewFrameParent) != 0))
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acFrameBuffer, (*zParent == orxCHAR_NULL) ? "@" : zParent, zNewFrameParent);
+          }
+
           /* Has prefix? */
           if(*zPrefix != orxCHAR_NULL)
           {
-            /* Sets new parent's parent */
-            orxConfig_SetParent(zNewFrameParent, zCurrentSection);
+            /* Clears new parent's parent */
+            orxConfig_SetParent(zNewFrameParent, orxNULL);
+
+            /* Sets frame section's parent */
+            orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
           }
 
           /* Pushes its section */
@@ -2025,8 +2033,8 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               /* No frame size and not a text? */
               if((orxVector_IsNull(&vFrameSize) != orxFALSE) && (bIsText == orxFALSE))
               {
-                /* Single frame animation? */
-                if((s32MaxFrames == 1) || (s32MaxFrames < 0))
+                /* Single frame animation or auto-stop mode? */
+                if(s32MaxFrames <= 1)
                 {
                   /* Use texture size as frame size */
                   orxVector_Copy(&vFrameSize, &vTextureSize);
@@ -2039,8 +2047,8 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                   /* Has prefix? */
                   if(*zPrefix != orxCHAR_NULL)
                   {
-                    /* Clears new parent's parent */
-                    orxConfig_SetParent(zNewFrameParent, orxNULL);
+                    /* Clears frame section's parent */
+                    orxConfig_SetParent(acFrameBuffer, orxNULL);
                   }
 
                   /* Stops */
@@ -2048,14 +2056,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                 }
               }
 
-              /* Stores default one */
-              orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vFrameSize);
+              /* Is size valid? */
+              if(orxVector_IsNull(&vFrameSize) == orxFALSE)
+              {
+                /* Stores it */
+                orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vFrameSize);
+
+                /* Updates status */
+                bTempSize = orxTRUE;
+              }
 
               /* Copies to local */
               orxVector_Copy(&vCurrentSize, &vFrameSize);
-
-              /* Updates status */
-              bTempSize = orxTRUE;
             }
 
             /* Should go to next row? */
@@ -2118,11 +2130,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                   /* Logs message */
                   orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, u32FrameIndex + 1, _zConfigID, acFrameBuffer);
 
+                  /* Use temp size? */
+                  if(bTempSize != orxFALSE)
+                  {
+                    /* Clears it */
+                    orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE);
+                  }
+
                   /* Has prefix? */
                   if(*zPrefix != orxCHAR_NULL)
                   {
-                    /* Clears new parent's parent */
-                    orxConfig_SetParent(zNewFrameParent, orxNULL);
+                    /* Clears frame section's parent */
+                    orxConfig_SetParent(acFrameBuffer, orxNULL);
                   }
 
                   /* Stops */
@@ -2134,11 +2153,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                 /* Logs message */
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No frame size defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", can't compute frame index " orxANSI_KZ_COLOR_FG_YELLOW "[%d]" orxANSI_KZ_COLOR_FG_DEFAULT " for frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", aborting!", zAnimSet, _zConfigID, u32FrameIndex + 1, acFrameBuffer);
 
+                /* Use temp size? */
+                if(bTempSize != orxFALSE)
+                {
+                  /* Clears it */
+                  orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE);
+                }
+
                 /* Has prefix? */
                 if(*zPrefix != orxCHAR_NULL)
                 {
-                  /* Clears new parent's parent */
-                  orxConfig_SetParent(zNewFrameParent, orxNULL);
+                  /* Clears frame section's parent */
+                  orxConfig_SetParent(acFrameBuffer, orxNULL);
                 }
 
                 /* Stops */
@@ -2162,11 +2188,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               }
               else
               {
+                /* Use temp size? */
+                if(bTempSize != orxFALSE)
+                {
+                  /* Clears it */
+                  orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE);
+                }
+
                 /* Has prefix? */
                 if(*zPrefix != orxCHAR_NULL)
                 {
-                  /* Clears new parent's parent */
-                  orxConfig_SetParent(zNewFrameParent, orxNULL);
+                  /* Clears frame section's parent */
+                  orxConfig_SetParent(acFrameBuffer, orxNULL);
                 }
 
                 /* Stops */
@@ -2180,45 +2213,66 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
             /* Moves to next frame on same row */
             *pfRowOrigin += fRowSign * *pfRowDelta;
+
+            /* Has prefix? */
+            if(*zPrefix != orxCHAR_NULL)
+            {
+              /* Sets new parent's parent */
+              orxConfig_SetParent(zNewFrameParent, zCurrentSection);
+            }
+            else
+            {
+              /* Sets frame section's parent */
+              orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
+            }
           }
           else
           {
+            /* Has prefix? */
+            if(*zPrefix != orxCHAR_NULL)
+            {
+              /* Sets new parent's parent */
+              orxConfig_SetParent(zNewFrameParent, zCurrentSection);
+            }
+            else
+            {
+              /* Sets frame section's parent */
+              orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
+            }
+
+            /* Has frame index? */
+            if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
+            {
+              /* Updates frame ID */
+              u32FrameID = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
+            }
+            else
+            {
+              orxCHAR acFrameIndexBuffer[64];
+
+              /* Stores frame ID as index */
+              orxString_NPrint(acFrameIndexBuffer, sizeof(acFrameIndexBuffer), "%0*u", u32Digits, u32FrameID);
+              orxConfig_SetString(orxANIMSET_KZ_CONFIG_FRAME_INDEX, acFrameIndexBuffer);
+
+              /* Updates status */
+              bTempFrameIndex = orxTRUE;
+            }
+
             /* Doesn't have texture? */
             if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME) == orxFALSE)
             {
               orxCHAR acTextureBuffer[128];
 
-              /* Has frame index? */
-              if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
-              {
-                /* Updates frame ID */
-                u32FrameID = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
-              }
-
               /* Gets texture name */
-              acTextureBuffer[orxString_NPrint(acTextureBuffer, sizeof(acTextureBuffer) - 1, "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, u32FrameID, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt)] = orxCHAR_NULL;
+              orxString_NPrint(acTextureBuffer, sizeof(acTextureBuffer), "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, u32FrameID, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt);
 
               /* Sets it */
               orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acTextureBuffer);
 
               /* Updates status */
-              bTempName = orxTRUE;
+              bTempTexture = orxTRUE;
             }
           }
-
-          /* Gets current parent */
-          zParent = orxConfig_GetParent(acFrameBuffer);
-
-          /* Already has parent? */
-          if((zParent != orxNULL)
-          && (orxString_Compare(zParent, zNewFrameParent) != 0))
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Overriding parent" orxANSI_KZ_COLOR_FG_DEFAULT " of frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": [@%s] -> [@%s]", zAnimSet, acFrameBuffer, (*zParent == orxCHAR_NULL) ? "@" : zParent, zNewFrameParent);
-          }
-
-          /* Sets section's parent */
-          orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
 
           /* Gets event value count */
           s32EventValueCount = orxConfig_GetListCount(orxANIMSET_KZ_CONFIG_KEY_EVENT);
@@ -2247,13 +2301,6 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Re-enables display logs */
           orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
 
-          /* Has prefix? */
-          if(*zPrefix != orxCHAR_NULL)
-          {
-            /* Clears new parent's parent */
-            orxConfig_SetParent(zNewFrameParent, orxNULL);
-          }
-
           /* Use temp size? */
           if(bTempSize != orxFALSE)
           {
@@ -2268,14 +2315,28 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN);
           }
 
-          /* Use temp name? */
-          if(bTempName != orxFALSE)
+          /* Use temp frame index? */
+          if(bTempFrameIndex != orxFALSE)
+          {
+            /* Clears it */
+            orxConfig_ClearValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
+          }
+
+          /* Use temp texture? */
+          if(bTempTexture != orxFALSE)
           {
             /* Clears it */
             orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
           }
 
-          /* Clears frame's section parent */
+          /* Has prefix? */
+          if(*zPrefix != orxCHAR_NULL)
+          {
+            /* Clears new parent's parent */
+            orxConfig_SetParent(zNewFrameParent, orxNULL);
+          }
+
+          /* Clears frame section's parent */
           orxConfig_SetParent(acFrameBuffer, orxNULL);
 
           /* Success? */
@@ -2483,7 +2544,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
         orxStructure_SetOwner(pstAnim, pstResult);
 
         /* Adds it to ID table */
-        orxHashTable_Add(pstResult->pstIDTable, orxString_Hash(zStartAnim), (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+        orxHashTable_Add(pstResult->pstIDTable, orxString_Hash(zStartAnim), (void *)(orxUPTR)(u32AnimID + 1));
       }
 
       /* For all animations */
@@ -2509,7 +2570,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
             orxStructure_SetOwner(pstAnim, pstResult);
 
             /* Adds it to ID table */
-            orxHashTable_Add(pstResult->pstIDTable, u64AnimCRC, (void *) orxANIMSET_CAST_HELPER (u32AnimID + 1));
+            orxHashTable_Add(pstResult->pstIDTable, u64AnimCRC, (void *)(orxUPTR)(u32AnimID + 1));
           }
         }
       }
@@ -2526,10 +2587,10 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
         orxCHAR acLinkName[64];
 
         /* Gets link config property name */
-        acLinkName[orxString_NPrint(acLinkName, sizeof(acLinkName) - 1, "%s%s", zAnim, orxANIMSET_KZ_LINK_SUFFIX)] = orxCHAR_NULL;
+        orxString_NPrint(acLinkName, sizeof(acLinkName), "%s%s", zAnim, orxANIMSET_KZ_LINK_SUFFIX);
 
         /* Gets self anim ID */
-        u32AnimID = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, u64AnimCRC) - 1);
+        u32AnimID = ((orxU32)(orxUPTR)orxHashTable_Get(pstResult->pstIDTable, u64AnimCRC) - 1);
 
         /* Valid? */
         if(u32AnimID != orxU32_UNDEFINED)
@@ -2570,7 +2631,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
                   ;
 
                 /* Gets its anim ID */
-                u32DestAnimID = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zDestAnim)) - 1);
+                u32DestAnimID = ((orxU32)(orxUPTR)orxHashTable_Get(pstResult->pstIDTable, orxString_Hash(zDestAnim)) - 1);
 
                 /* Valid? */
                 if(u32DestAnimID != orxU32_UNDEFINED)
@@ -3811,7 +3872,7 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimIDFromName(const orxANIMSET *_pstAnimSet, c
   if(orxStructure_TestFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_ID_TABLE) != orxFALSE)
   {
     /* Gets corresponding ID */
-    u32Result = ((orxU32) orxANIMSET_CAST_HELPER orxHashTable_Get(_pstAnimSet->pstIDTable, orxString_Hash(_zAnimName)) - 1);
+    u32Result = ((orxU32)(orxUPTR)orxHashTable_Get(_pstAnimSet->pstIDTable, orxString_Hash(_zAnimName)) - 1);
   }
 
   /* Done! */

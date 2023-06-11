@@ -1,0 +1,133 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+
+android {
+    namespace 'org.orx.lib'
+    compileSdk sdkVersion.toInteger()
+
+    buildFeatures {
+        prefab true
+        prefabPublishing true
+    }
+
+    defaultConfig {
+        minSdk 19
+        targetSdk sdkVersion.toInteger()
+        versionCode 114
+        versionName '1.14'
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    prefab {
+        orx {
+            headers "${System.env.ORX}/include"
+        }
+        webpdecoder_static {
+            headers "${System.env.ORX}/../extern/libwebp/include"
+        }
+        liquidfun_static {
+            headers "${System.env.ORX}/../extern/LiquidFun-1.1.0/include"
+        }
+        cpufeatures {
+        }
+    }
+    packagingOptions {
+        exclude('**/libc++_shared.so')
+    }
+    buildTypes {
+        release {
+            debuggable false
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            externalNativeBuild.ndkBuild {
+                arguments 'NDK_DEBUG=0', '-j'
+            }
+        }
+        debug {
+            debuggable true
+
+            externalNativeBuild.ndkBuild {
+                arguments 'NDK_DEBUG=1', '-j'
+                cFlags '-D__orxDEBUG__'
+            }
+        }
+        profile {
+            debuggable true
+
+            externalNativeBuild.ndkBuild {
+                arguments 'NDK_DEBUG=0', '-j'
+                cFlags '-D__orxPROFILER__'
+            }
+        }
+    }
+    lint {
+        abortOnError true
+    }
+}
+dependencies {
+    api 'androidx.core:core:1.9.0'
+    api 'androidx.appcompat:appcompat:1.6.1'
+
+    api 'androidx.games:games-activity:2.0.2'
+    api 'androidx.games:games-controller:2.0.0'
+    api 'androidx.games:games-frame-pacing:2.1.0-beta01'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId 'org.orx-project'
+                artifactId 'orx'
+                version android.defaultConfig.versionName
+                from components.release
+            }
+            debug(MavenPublication) {
+                groupId 'org.orx-project'
+                artifactId 'orxd'
+                version android.defaultConfig.versionName
+                from components.debug
+            }
+            profile(MavenPublication) {
+                groupId 'org.orx-project'
+                artifactId 'orxp'
+                version android.defaultConfig.versionName
+                from components.profile
+            }
+        }
+        repositories {
+            maven {
+                name = 'orx'
+                url "${System.env.ORX}/lib/static/android/repository/"
+            }
+        }
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant->
+        afterEvaluate {
+            tasks.named("prefab${variant.name.capitalize()}Package").configure { task ->
+                // WORKAROUND: Ideally, we would want this to be auto-generated from our modules.
+                // See this FR: https://issuetracker.google.com/issues/214034366
+                task.doLast {
+                    copy {
+                        from ('./src/main/prefab')
+                        into ("./build/intermediates/prefab_package/${variant.name}/prefab")
+                        include '**/*.json'
+                    }
+                }
+            }
+        }
+    }
+}
