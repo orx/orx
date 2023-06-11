@@ -1,6 +1,59 @@
 Orx - Portable Game Engine
 ==========================
 
+orx 1.14
+-----
+* IMPORTANT: Android build system has been revamped & simplified and supports automatic downloading/updating of dependencies
+* IMPORTANT: Major Android revamp with better physical keys support and more flexible VSync/refresh rate support
+* IMPORTANT: Added a new 'Bundle' init extension that is fully customizable, is high performance even for a huge amount of tiny files, supports encryption & compression, cascading resource filtering, any other resource type as transport, external packages & in-executable storage and does auto-discovery of resources to pack. The old 'Archive' init extension has been retired
+* IMPORTANT: Added config property AllowSleep for the core clock, trading potential occasional micro-stuttering for lower CPU/battery usage
+* IMPORTANT: Removed config property MinFrequency from the render section (now handled directly as maxed modifier in the core clock section)
+* IMPORTANT: OpenGL ES default float precision for shaders has been changed mediump -> highp
+* IMPORTANT: Removed support for OpenGL control tear extension for swap intervals as it was introducing tearing artifacts for very short frames
+* IMPORTANT: Part names have been replaced by the parts themselves (orxBODY_PART *) in orxPHYSICS_EVENT_PAYLOAD
+* IMPORTANT: Group parameter has been added to orxRESOURCE_FUNCTION_LOCATE callbacks & storage field to orxRESOURCE_EVENT_PAYLOAD, orxResource_GetNextCachedLocation() now has an additional output storage argument()
+* IMPORTANT: Renamed orxSoundSystem_CreateStreamFromFile() -> orxSoundSystem_LoadStream() & orxTexture_CreateFromFile() -> orxTexture_Load()
+* IMPORTANT: Removed orxSound_GetSample() and added orxSound_GetSampleInfo() & orxSound_SetSampleData()
+* IMPORTANT: Added support for '@' as the current section for all config commands when invoked from config
+* IMPORTANT: Config property Input.JoyIDList now defaults to a list containing the first four joystick IDs
+* IMPORTANT: OnPrepare object command will now be run after the orxOBJECT_EVENT_PREPARE event: object's owner will now be available from the OnPrepare command when created through ChildList or has a ParentCamera
+* IMPORTANT: Default storages of resource groups can now be removed/re-added at a different priority (they default to the lowest one)
+* IMPORTANT: F5 is now the default key to pause/unpause the embedded profiler & F8 the default key to show/hide the profiler's history
+* IMPORTANT: Added support for FrameIndex for animations made with the multiple files mode
+* IMPORTANT: ScrollObject::SetAnim() now defaults to a recursive behavior
+* IMPORATNT: orxString_NPrint() now takes the size of the buffer including the terminating null character (no need for size + 1 as parameter any longer)
+* IMPORTANT: Removed orxString_Print(), orxString_NPrint() should be used instead
+* IMPORTANT: Returning an empty value for OnPrepare & OnDelete commands is now treated as "false" (ie. abort)
+* IMPORTANT: Added System config values (Bits, Build, Endianness, Platform & Processor) + System command for queries
+* IMPORTANT: Added support for optional conditions in config includes: @<condition_command>?file.ini@ or @<system_var>?file.ini@
+* IMPORTANT: Added support for no-sorting at a group level for cameras (allows rendering dozen of thousands of objects inside those groups, albeit with no sorting)
+* Config property Display.ContentScale will now report the ratio between the framebuffer size and the display dimension (useful for HiDPI/Retina displays)
+* Updated all external dependencies to their latest versions circa early 2023
+* Returning orxSTATUS_FAILURE when handling event orxSPAWNER_EVENT_WAVE_START now prevents the wave from spawning
+* When a Prefix is defined for an animation, a frame will now inherit TextureOrigin, TextureSize & FrameIndex from its non-prefixed parent frame
+* Added config property OnSpawn to spawners, used to run commands on spawned objects
+* When a spawner is set to UseSelfAsParent, the spawned object's ownership can be changed during the OnCreate phase (though this will prevent them from being cleaned if CleanOnDelete was also requested)
+* A 0-scale object is now officially supported as a way to bypass its rendering
+* Object.SetColor now accepts color literals
+* Added internal texture named 'transparent', which is a 1x1 black transparent texture (can be reference from config)
+* Updated the default temporary bitmap when doing asynchronous loads to that transparent one (previously a white opaque one was used)
+* Added support for verbose debugging logs to the setup tool (levels: 0 - 5)
+* orxObject_SetRelativePivot() is now public and takes graphic alignment flags
+* Added functions orxObject_SetAnimTime(), orxObject_SetAnimTimeRecursive() & orxObject_GetAnimTime() and associated commands
+* Added orxResource_GetCacheCount(), orxResource_GetNextCachedLocation() & orxResource_UnregisterType()
+* Added support for runtime console font scaling (config property Render.ConsoleFontScale)
+* Audio stream, audio sample and sound creation from file is now entirely asynchronous to prevent any performance spike
+* Miniaudio soundsystem plugin now supports running when no audio device is available
+* Added the following new commands: Physics.EnableSimulation, Physics.GetCollisionFlagName & Physics.GetCollisionFlagValue
+* Added multiple new math/vector commands
+* Better handling of localized graphics for animation frames
+* Negative audio volumes are now supported for better transitions using FXs
+* All display plugins now use GL_TRIANGLES instead of GL_TRIANGLE_STRIP making their output much more readable when using an external debug tool
+* Execution can now be aborted if command line params have been displayed by returning orxSTATUS_FAILURE when handling the new event orxSYSTEM_EVENT_PARAM_DISPLAY
+* Added orxSYSTEM_EVENT_PARAM_READY event
+* Added simple Sublime Text project with new projects created with the init utility
+* *Many* misc fixes, optimizations and additions
+
 orx 1.13
 -----
 * IMPORTANT: Added support for VS2022 and retired support for VS2015
