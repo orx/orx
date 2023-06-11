@@ -1363,7 +1363,7 @@ orxSTRINGID orxFASTCALL orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32
 /** Enables/disables sorting for a group ID.
  * @param[in] _pstCamera        Concerned camera
  * @param[in] _u32Index         Index of group ID to update
- * @param[in] _bEnableS         Enable / disable sorting
+ * @param[in] _bEnable          Enable / disable sorting
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxCamera_EnableGroupIDSorting(orxCAMERA *_pstCamera, orxU32 _u32Index, orxBOOL _bEnable)
