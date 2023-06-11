@@ -68,7 +68,7 @@ android {
     }
 }
 dependencies {
-    releaseImplementation 'org.orx-project:orx:1.14'
-    debugImplementation 'org.orx-project:orxd:1.14'
-    profileImplementation 'org.orx-project:orxp:1.14'
+    releaseImplementation 'org.orx-project:orx:1.15'
+    debugImplementation 'org.orx-project:orxd:1.15'
+    profileImplementation 'org.orx-project:orxp:1.15'
 }

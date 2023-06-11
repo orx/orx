@@ -15,8 +15,8 @@ android {
     defaultConfig {
         minSdk 19
         targetSdk sdkVersion.toInteger()
-        versionCode 114
-        versionName '1.14'
+        versionCode 115
+        versionName '1.15'
     }
     externalNativeBuild {
         ndkBuild {
