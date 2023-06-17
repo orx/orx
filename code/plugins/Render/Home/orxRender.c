@@ -305,8 +305,11 @@ static orxINLINE void orxRender_Home_RenderFPS()
     /* Clears text transform */
     orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
 
-    /* Gets last viewport */
-    pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
+    /* Gets last non-debug viewport */
+    for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
+        (pstViewport != orxNULL) && orxStructure_TestFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG);
+        pstViewport = orxVIEWPORT(orxStructure_GetPrevious(pstViewport)))
+      ;
 
     /* Valid? */
     if(pstViewport != orxNULL)
