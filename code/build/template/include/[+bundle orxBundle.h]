@@ -270,8 +270,12 @@ static orxINLINE void orxBundle_ClearToCTable()
       hIterator != orxHANDLE_UNDEFINED;
       hIterator = orxHashTable_GetNext(spstToCTable, hIterator, orxNULL, (void **)&pstToC))
   {
-    // Deletes it
-    orxHashTable_Delete(pstToC);
+    // Valid?
+    if(pstToC != orxNULL)
+    {
+      // Deletes it
+      orxHashTable_Delete(pstToC);
+    }
   }
 
   // Clears ToC table
@@ -1089,20 +1093,24 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
             }
           }
 
-          // Gets resource ID
-          stResourceID = orxString_Hash(_zName);
-
-          // Retrieves its index
-          u32ResourceIndex = (orxU32)(orxUPTR)orxHashTable_Get(*ppstToC, stResourceID);
-
           // Valid?
-          if(u32ResourceIndex != 0)
+          if(*ppstToC != orxNULL)
           {
-            // Creates location string: location + index
-            orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%s%c0x%x", zLocation, orxRESOURCE_KC_LOCATION_SEPARATOR, u32ResourceIndex - 1);
+            // Gets resource ID
+            stResourceID = orxString_Hash(_zName);
 
-            // Updates result
-            zResult = sacBuffer;
+            // Retrieves its index
+            u32ResourceIndex = (orxU32)(orxUPTR)orxHashTable_Get(*ppstToC, stResourceID);
+
+            // Valid?
+            if(u32ResourceIndex != 0)
+            {
+              // Creates location string: location + index
+              orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%s%c0x%x", zLocation, orxRESOURCE_KC_LOCATION_SEPARATOR, u32ResourceIndex - 1);
+
+              // Updates result
+              zResult = sacBuffer;
+            }
           }
         }
 
