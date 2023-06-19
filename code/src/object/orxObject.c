@@ -6238,6 +6238,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_AGE))
         {
           orxOBJECT **ppstObject;
+          orxBODY    *pstBody;
 
           /* Adds it to the bank */
           ppstObject = (orxOBJECT **)orxBank_Allocate(sstObject.pstAgeBank);
@@ -6245,10 +6246,23 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           *ppstObject = pstResult;
 
           /* Has a body? */
-          if(orxOBJECT_GET_STRUCTURE(pstResult, BODY) != orxNULL)
+          if((pstBody = orxOBJECT_GET_STRUCTURE(pstResult, BODY)) != orxNULL)
           {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object has a body. Age cannot be applied to it: this object will remain " orxANSI_KZ_COLOR_FG_RED "static" orxANSI_KZ_COLOR_FG_DEFAULT " while aging for " orxANSI_KZ_COLOR_FG_YELLOW "<%g>" orxANSI_KZ_COLOR_FG_DEFAULT " seconds.", orxObject_GetName(pstResult), fAge);
+            orxBODY_PART *pstPart;
+
+            /* For all its parts */
+            for(pstPart = orxBody_GetNextPart(pstBody, orxNULL);
+                pstPart != orxNULL;
+                pstPart = orxBody_GetNextPart(pstBody, pstPart))
+            {
+              /* Is it solid? */
+              if(orxBody_IsPartSolid(pstPart) != orxFALSE)
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object has a body with solid parts. Age cannot be applied to it: this object will remain " orxANSI_KZ_COLOR_FG_RED "static" orxANSI_KZ_COLOR_FG_DEFAULT " while aging for " orxANSI_KZ_COLOR_FG_YELLOW "<%g>" orxANSI_KZ_COLOR_FG_DEFAULT " seconds.", orxObject_GetName(pstResult), fAge);
+                break;
+              }
+            }
           }
 
           /* Should apply age? */
