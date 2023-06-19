@@ -82,6 +82,7 @@
 #define orxOBJECT_KU32_FLAG_CHILDREN_LIFETIME   0x00020000  /**< Children lifetime flag */
 #define orxOBJECT_KU32_FLAG_ANIM_LIFETIME       0x00010000  /**< Anim lifetime flag */
 #define orxOBJECT_KU32_FLAG_INTERNAL_CAMERA     0x00008000  /**< Internal camera flag */
+#define orxOBJECT_KU32_FLAG_LOCAL_UPDATE        0x00004000  /**< Local update flag */
 
 #define orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME  0x003F0000  /**< Structure lifetime mask */
 #define orxOBJECT_KU32_MASK_STRUCTURE_INTERNAL  0x00000FFF  /**< Structure internal mask */
@@ -4392,41 +4393,33 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
           }
         }
 
-        /* Has no body? */
-        if(_pstObject->apstStructureList[orxSTRUCTURE_ID_BODY] == orxNULL)
+        /* Has no body or local update? */
+        if((_pstObject->apstStructureList[orxSTRUCTURE_ID_BODY] == orxNULL)
+        || orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_LOCAL_UPDATE))
         {
-          /* Has frame? */
-          if(_pstObject->apstStructureList[orxSTRUCTURE_ID_FRAME] != orxNULL)
+          /* Has speed? */
+          if(orxVector_IsNull(&(_pstObject->vSpeed)) == orxFALSE)
           {
-            orxFRAME *pstFrame;
+            orxVECTOR vPosition, vMove;
 
-            /* Gets it */
-            pstFrame = (orxFRAME *)_pstObject->apstStructureList[orxSTRUCTURE_ID_FRAME];
+            /* Gets its position */
+            orxObject_GetPosition(_pstObject, &vPosition);
 
-            /* Has speed? */
-            if(orxVector_IsNull(&(_pstObject->vSpeed)) == orxFALSE)
-            {
-              orxVECTOR vPosition, vMove;
+            /* Computes its move */
+            orxVector_Mulf(&vMove, &(_pstObject->vSpeed), pstClockInfo->fDT);
 
-              /* Gets its position */
-              orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+            /* Gets its new position */
+            orxVector_Add(&vPosition, &vPosition, &vMove);
 
-              /* Computes its move */
-              orxVector_Mulf(&vMove, &(_pstObject->vSpeed), pstClockInfo->fDT);
+            /* Stores it */
+            orxObject_SetPosition(_pstObject, &vPosition);
+          }
 
-              /* Gets its new position */
-              orxVector_Add(&vPosition, &vPosition, &vMove);
-
-              /* Stores it */
-              orxFrame_SetPosition(pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
-            }
-
-            /* Has angular velocity? */
-            if(_pstObject->fAngularVelocity != orxFLOAT_0)
-            {
-              /* Updates its rotation */
-              orxFrame_SetRotation(pstFrame, orxFRAME_SPACE_LOCAL, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_LOCAL) + (_pstObject->fAngularVelocity * pstClockInfo->fDT));
-            }
+          /* Has angular velocity? */
+          if(_pstObject->fAngularVelocity != orxFLOAT_0)
+          {
+            /* Updates its rotation */
+            orxObject_SetRotation(_pstObject, orxObject_GetRotation(_pstObject) + (_pstObject->fAngularVelocity * pstClockInfo->fDT));
           }
         }
         else
@@ -6259,10 +6252,17 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               if(orxBody_IsPartSolid(pstPart) != orxFALSE)
               {
                 /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object has a body with solid parts. Age cannot be applied to it: this object will remain " orxANSI_KZ_COLOR_FG_RED "static" orxANSI_KZ_COLOR_FG_DEFAULT " while aging for " orxANSI_KZ_COLOR_FG_YELLOW "<%g>" orxANSI_KZ_COLOR_FG_DEFAULT " seconds.", orxObject_GetName(pstResult), fAge);
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object has a body with solid parts. Collisions will " orxANSI_KZ_COLOR_FG_RED "not" orxANSI_KZ_COLOR_FG_DEFAULT " be resolved while aging for " orxANSI_KZ_COLOR_FG_YELLOW "<%g>" orxANSI_KZ_COLOR_FG_DEFAULT " seconds.", orxObject_GetName(pstResult), fAge);
                 break;
               }
             }
+
+            /* Copies its speed and angular velocity locally */
+            orxObject_GetSpeed(pstResult, &(pstResult->vSpeed));
+            pstResult->fAngularVelocity = orxObject_GetAngularVelocity(pstResult);
+
+            /* Requests local update */
+            orxStructure_SetFlags(pstResult, orxOBJECT_KU32_FLAG_LOCAL_UPDATE, orxOBJECT_KU32_FLAG_NONE);
           }
 
           /* Should apply age? */
@@ -6313,6 +6313,27 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 {
                   /* Updates it */
                   orxObject_UpdateInternal(*ppstObject, &stAgeClockInfo);
+                }
+              }
+            }
+
+            /* For all aging objects */
+            for(ppstObject = (orxOBJECT **)orxBank_GetNext(sstObject.pstAgeBank, orxNULL);
+                ppstObject != orxNULL;
+                ppstObject = (orxOBJECT **)orxBank_GetNext(sstObject.pstAgeBank, ppstObject))
+            {
+              /* Still valid? */
+              if(orxOBJECT(*ppstObject) != orxNULL)
+              {
+                /* Has local update? */
+                if(orxStructure_TestFlags(*ppstObject, orxOBJECT_KU32_FLAG_LOCAL_UPDATE))
+                {
+                  /* Clears its speed and angular velocity */
+                  orxVector_Copy(&((*ppstObject)->vSpeed), &orxVECTOR_0);
+                  (*ppstObject)->fAngularVelocity = orxFLOAT_0;
+
+                  /* Updates it */
+                  orxStructure_SetFlags(*ppstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_LOCAL_UPDATE);
                 }
               }
             }
