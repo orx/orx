@@ -1632,7 +1632,6 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
       {
         orxPHYSICS_EVENT_PAYLOAD *pstPayload;
         ScrollObject             *poSender, *poRecipient;
-        orxBOOL                   bContinue = orxTRUE;
 
         // Gets payload
         pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
@@ -1653,17 +1652,17 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
           if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
           {
             // Calls its callback
-            bContinue = poSender->OnCollide(poRecipient, pstPayload->pstSenderPart, pstPayload->pstRecipientPart, pstPayload->vPosition, vNormal);
+            poSender->OnCollide(poRecipient, pstPayload->pstSenderPart, pstPayload->pstRecipientPart, pstPayload->vPosition, vNormal);
           }
           else
           {
             // Calls its callback
-            bContinue = poSender->OnSeparate(poRecipient);
+            poSender->OnSeparate(poRecipient, pstPayload->pstSenderPart, pstPayload->pstRecipientPart);
           }
         }
 
         // Is recipient valid?
-        if(bContinue && poRecipient)
+        if(poRecipient)
         {
           // New collision?
           if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
@@ -1674,7 +1673,7 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
           else
           {
             // Calls its callback
-            poRecipient->OnSeparate(poSender);
+            poRecipient->OnSeparate(poSender, pstPayload->pstRecipientPart, pstPayload->pstSenderPart);
           }
         }
       }
