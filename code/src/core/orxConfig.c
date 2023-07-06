@@ -3707,6 +3707,32 @@ void orxFASTCALL orxConfig_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: SetDefaultParent
+ */
+void orxFASTCALL orxConfig_CommandSetDefaultParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = (orxConfig_SetDefaultParent((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL) != orxSTATUS_FAILURE) ? ((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxSTRING_EMPTY) : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetDefaultParent
+ */
+void orxFASTCALL orxConfig_CommandGetDefaultParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxConfig_GetDefaultParent();
+  if(_pstResult->zValue == orxNULL)
+  {
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: CreateSection
  */
 void orxFASTCALL orxConfig_CommandCreateSection(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -4165,6 +4191,10 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetParent, "Parent", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: SetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetParent, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: SetDefaultParent */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetDefaultParent, "Section", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"DefaultParent = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetDefaultParent */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetDefaultParent, "DefaultParent", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
   /* Command: CreateSection */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, CreateSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasSection */
@@ -4256,6 +4286,10 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetParent);
   /* Command: SetParent */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetParent);
+  /* Command: SetDefaultParent */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetDefaultParent);
+  /* Command: GetDefaultParent */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetDefaultParent);
   /* Command: CreateSection */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, CreateSection);
   /* Command: HasSection */
@@ -5664,7 +5698,7 @@ orxSTATUS orxFASTCALL orxConfig_SetParent(const orxSTRING _zSectionName, const o
 
 /** Gets a section's parent
  * @param[in] _zSectionName     Concerned section
- * @return Section's parent name if set or orxSTRING_EMPTY if no parent has been forced, orxNULL otherwise
+ * @return Section's parent name if set, orxSTRING_EMPTY if no parent has been forced or orxNULL otherwise
  */
 const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)
 {
@@ -5755,6 +5789,27 @@ orxSTATUS orxFASTCALL orxConfig_SetDefaultParent(const orxSTRING _zSectionName)
 
   /* Done! */
   return eResult;
+}
+
+/** Gets default parent for all sections
+ * @return Default parent name if set, orxNULL otherwise
+ */
+const orxSTRING orxFASTCALL orxConfig_GetDefaultParent()
+{
+  const orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Has default section? */
+  if(sstConfig.pstDefaultSection != orxNULL)
+  {
+    /* Updates result */
+    zResult = sstConfig.pstDefaultSection->zName;
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 /** Gets current working section

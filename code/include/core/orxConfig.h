@@ -199,7 +199,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetParent(const orxSTRIN
 
 /** Gets a section's parent
  * @param[in] _zSectionName     Concerned section
- * @return Section's parent name if set or orxSTRING_EMPTY if no parent has been forced, orxNULL otherwise
+ * @return Section's parent name if set, orxSTRING_EMPTY if no parent has been forced or orxNULL otherwise
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRING _zSectionName);
 
@@ -208,6 +208,11 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRIN
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetDefaultParent(const orxSTRING _zSectionName);
+
+/** Gets default parent for all sections
+ * @return Default parent name if set, orxNULL otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetDefaultParent();
 
 /** Gets current working section
  * @return Current selected section
