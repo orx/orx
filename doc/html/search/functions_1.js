@@ -263,6 +263,7 @@ var searchData=
   ['orxconfig_5fexit',['orxConfig_Exit',['../group__orx_config.html#gabc9ffc867226e9cf1d1c225a2c842139',1,'orxConfig.h']]],
   ['orxconfig_5fgetbool',['orxConfig_GetBool',['../group__orx_config.html#ga020eac8fa22c7e5b650ecd730f8b3f92',1,'orxConfig.h']]],
   ['orxconfig_5fgetcurrentsection',['orxConfig_GetCurrentSection',['../group__orx_config.html#gabe3d8af4f39e50865bacc61ca74812b6',1,'orxConfig.h']]],
+  ['orxconfig_5fgetdefaultparent',['orxConfig_GetDefaultParent',['../group__orx_config.html#ga10a0f8ad31902a9ba3b376cd3963c2dc',1,'orxConfig.h']]],
   ['orxconfig_5fgetencryptionkey',['orxConfig_GetEncryptionKey',['../group__orx_config.html#gaae70c4ac05073b8bea6983e9b884d7b8',1,'orxConfig.h']]],
   ['orxconfig_5fgetfloat',['orxConfig_GetFloat',['../group__orx_config.html#ga6ee371e72eb36c58ffa1cc84bc85e93b',1,'orxConfig.h']]],
   ['orxconfig_5fgetkey',['orxConfig_GetKey',['../group__orx_config.html#ga9eb6e288c6ba814066e098f43e93965a',1,'orxConfig.h']]],

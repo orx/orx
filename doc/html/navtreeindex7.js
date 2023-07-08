@@ -1,5 +1,7 @@
 var NAVTREEINDEX7 =
 {
+"group__orx_f_x_pointer.html#gac9327397471848fa184877b11a151052":[1,19,10],
+"group__orx_f_x_pointer.html#gad41398775c3d1393fb089b7823e3de67":[3,0,0,9,2,2],
 "group__orx_f_x_pointer.html#gad41398775c3d1393fb089b7823e3de67":[1,19,2],
 "group__orx_f_x_pointer.html#gada53b6d8bd4aa054fd4340fea68e231c":[3,0,0,9,2,13],
 "group__orx_f_x_pointer.html#gada53b6d8bd4aa054fd4340fea68e231c":[1,19,13],
@@ -101,8 +103,8 @@ var NAVTREEINDEX7 =
 "group__orx_font.html#ga3687283c3e2898d75be8bbf1b5e57b31":[3,0,0,4,2,13],
 "group__orx_font.html#ga421f08f1f7b8931e694a2a82db0e7739":[1,21,6],
 "group__orx_font.html#ga421f08f1f7b8931e694a2a82db0e7739":[3,0,0,4,2,6],
-"group__orx_font.html#ga44605b14708588c0ab44d61a060f8887":[3,0,0,4,2,5],
 "group__orx_font.html#ga44605b14708588c0ab44d61a060f8887":[1,21,5],
+"group__orx_font.html#ga44605b14708588c0ab44d61a060f8887":[3,0,0,4,2,5],
 "group__orx_font.html#ga489a6d4a62d6cef54925d4a070257352":[1,21,24],
 "group__orx_font.html#ga489a6d4a62d6cef54925d4a070257352":[3,0,0,4,2,24],
 "group__orx_font.html#ga5a600515960df2d48b224d2f44d057f8":[3,0,0,4,2,0],
@@ -210,8 +212,8 @@ var NAVTREEINDEX7 =
 "group__orx_frame.html#gac337433335ea7ba593cbc1f21b21ed94":[3,0,0,9,0,16],
 "group__orx_frame.html#gacb328e01d9a133567870b15eb1d4bd0d":[1,22,24],
 "group__orx_frame.html#gacb328e01d9a133567870b15eb1d4bd0d":[3,0,0,9,0,24],
-"group__orx_frame.html#gad2b6e40258a6a518a7390429cb31e5ad":[3,0,0,9,0,36],
 "group__orx_frame.html#gad2b6e40258a6a518a7390429cb31e5ad":[1,22,36],
+"group__orx_frame.html#gad2b6e40258a6a518a7390429cb31e5ad":[3,0,0,9,0,36],
 "group__orx_frame.html#gad698671b738696f6b46b8053058fa4f6":[1,22,14],
 "group__orx_frame.html#gad698671b738696f6b46b8053058fa4f6":[3,0,0,9,0,14],
 "group__orx_frame.html#gae1cd0ffa3ce592ac6134489df030462b":[1,22,4],
@@ -247,7 +249,5 @@ var NAVTREEINDEX7 =
 "group__orx_graphic.html#ga2ff28e37c696cded16d31036b708e934":[1,23,63],
 "group__orx_graphic.html#ga3041630773c0c6ed4763b48e94b15f15":[3,0,0,4,3,50],
 "group__orx_graphic.html#ga3041630773c0c6ed4763b48e94b15f15":[1,23,50],
-"group__orx_graphic.html#ga325d3601ce4f74e9bb0a3941e2403dbc":[3,0,0,4,3,54],
-"group__orx_graphic.html#ga325d3601ce4f74e9bb0a3941e2403dbc":[1,23,54],
-"group__orx_graphic.html#ga38722ec651bca62ed02231a8e1e9172d":[3,0,0,4,3,56]
+"group__orx_graphic.html#ga325d3601ce4f74e9bb0a3941e2403dbc":[3,0,0,4,3,54]
 };

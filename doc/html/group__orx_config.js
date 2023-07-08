@@ -19,6 +19,7 @@ var group__orx_config =
     [ "orxConfig_Exit", "group__orx_config.html#gabc9ffc867226e9cf1d1c225a2c842139", null ],
     [ "orxConfig_GetBool", "group__orx_config.html#ga020eac8fa22c7e5b650ecd730f8b3f92", null ],
     [ "orxConfig_GetCurrentSection", "group__orx_config.html#gabe3d8af4f39e50865bacc61ca74812b6", null ],
+    [ "orxConfig_GetDefaultParent", "group__orx_config.html#ga10a0f8ad31902a9ba3b376cd3963c2dc", null ],
     [ "orxConfig_GetEncryptionKey", "group__orx_config.html#gaae70c4ac05073b8bea6983e9b884d7b8", null ],
     [ "orxConfig_GetFloat", "group__orx_config.html#ga6ee371e72eb36c58ffa1cc84bc85e93b", null ],
     [ "orxConfig_GetKey", "group__orx_config.html#ga9eb6e288c6ba814066e098f43e93965a", null ],
