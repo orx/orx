@@ -2655,23 +2655,8 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       /* Not a vector value? */
       if(orxConfig_ToVector(zColor, &vStartColor) == orxNULL)
       {
-        /* Not empty? */
-        if(zColor != orxSTRING_EMPTY)
-        {
-          /* Pushes color section */
-          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
-
-          /* Retrieves its value */
-          orxConfig_GetVector(zColor, &vStartColor);
-
-          /* Pops config section */
-          orxConfig_PopSection();
-        }
-        else
-        {
-          /* Defaults to black */
-          orxVector_SetAll(&vStartColor, orxFLOAT_0);
-        }
+        /* Defaults to black */
+        orxVector_SetAll(&vStartColor, orxFLOAT_0);
       }
 
       /* Gets end color literal */
@@ -2680,23 +2665,8 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       /* Not a vector value? */
       if(orxConfig_ToVector(zColor, &vEndColor) == orxNULL)
       {
-        /* Not empty? */
-        if(zColor != orxSTRING_EMPTY)
-        {
-          /* Pushes color section */
-          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
-
-          /* Retrieves its value */
-          orxConfig_GetVector(zColor, &vEndColor);
-
-          /* Pops config section */
-          orxConfig_PopSection();
-        }
-        else
-        {
-          /* Defaults to black */
-          orxVector_SetAll(&vEndColor, orxFLOAT_0);
-        }
+        /* Defaults to black */
+        orxVector_SetAll(&vEndColor, orxFLOAT_0);
       }
 
       /* Normalizes them */

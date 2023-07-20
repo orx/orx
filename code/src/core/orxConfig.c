@@ -402,34 +402,104 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
   orxASSERT(_zValue != orxNULL);
   orxASSERT(_pvVector != orxNULL);
 
-  /* Gets value */
-  if(orxString_ToVector(_zValue, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
+  /* Not empty? */
+  if(*_zValue != orxCHAR_NULL)
   {
-    orxS32 s32RandomSeparatorIndex;
+    orxCONFIG_SECTION  *pstPreviousSection;
+    orxSTATUS           eResult;
+    orxS32              s32RandomSeparatorIndex;
 
-    /* Random? */
-    if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+    /* Gets random separator index */
+    s32RandomSeparatorIndex = orxString_SearchCharIndex(_zValue, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+    /* Backups current section */
+    pstPreviousSection = sstConfig.pstCurrentSection;
+
+    /* Gets value */
+    if((eResult = orxString_ToVector(_zValue, _pvVector, &zRemainder)) == orxSTATUS_FAILURE)
     {
-      orxVECTOR vOtherValue, vStepValue;
-      orxBOOL   bRandom = orxFALSE;
+#ifdef __orxMSVC__
+        orxCHAR        *acBuffer = (orxCHAR *)alloca((s32RandomSeparatorIndex + 1) * sizeof(orxCHAR));
+#else /* __orxMSVC__ */
+        orxCHAR         acBuffer[s32RandomSeparatorIndex + 1];
+#endif /* __orxMSVC__ */
+        const orxSTRING zValue = _zValue;
 
-      /* Clears step */
-      orxVector_SetAll(&vStepValue, orxFLOAT_0);
-
-      /* Has another value? */
-      if(orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, &zRemainder) != orxSTATUS_FAILURE)
+      /* Random? */
+      if(s32RandomSeparatorIndex > 0)
       {
-        /* Was step? */
-        if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
-        {
-          /* Stores it */
-          vStepValue = vOtherValue;
+        const orxCHAR *pc;
 
-          /* Can get other value? */
-          if((vStepValue.fX >= orxFLOAT_0)
-          && (vStepValue.fY >= orxFLOAT_0)
-          && (vStepValue.fZ >= orxFLOAT_0)
-          && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
+        /* Skips all white spaces */
+        for(pc = _zValue + s32RandomSeparatorIndex;
+            (pc > _zValue) && ((*pc == orxCONFIG_KC_RANDOM_SEPARATOR) || (*pc == ' ') || (*pc == '\t'));
+            pc--)
+          ;
+
+        /* Stores it */
+        orxString_NCopy(acBuffer, _zValue, pc - _zValue + 1);
+        *(acBuffer + (pc - _zValue + 1)) = orxCHAR_NULL;
+        zValue = (orxSTRING)acBuffer;
+      }
+
+      /* Selects color section */
+      orxConfig_SelectSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+      /* Retrieves its value */
+      eResult = (orxConfig_GetVector(zValue, _pvVector) != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    }
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Random? */
+      if(s32RandomSeparatorIndex > 0)
+      {
+        orxVECTOR vOtherValue, vStepValue;
+        orxBOOL   bRandom = orxFALSE;
+
+        /* Clears step */
+        orxVector_SetAll(&vStepValue, orxFLOAT_0);
+
+        /* Has another value? */
+        if(orxString_ToVector(_zValue + s32RandomSeparatorIndex + 1, &vOtherValue, &zRemainder) != orxSTATUS_FAILURE)
+        {
+          /* Was step? */
+          if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+          {
+            /* Stores it */
+            orxVector_Copy(&vStepValue, &vOtherValue);
+
+            /* Can get other value? */
+            if((vStepValue.fX >= orxFLOAT_0)
+            && (vStepValue.fY >= orxFLOAT_0)
+            && (vStepValue.fZ >= orxFLOAT_0))
+            {
+              /* Gets other value */
+              if(orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE)
+              {
+                /* Updates status */
+                bRandom = orxTRUE;
+              }
+              else
+              {
+                /* Should select color section? */
+                if(pstPreviousSection == sstConfig.pstCurrentSection)
+                {
+                  /* Selects it */
+                  orxConfig_SelectSection(orxCOLOR_KZ_CONFIG_SECTION);
+                }
+
+                /* Retrieves its value */
+                if(orxConfig_GetVector(orxString_SkipWhiteSpaces(zRemainder + s32RandomSeparatorIndex + 1), &vOtherValue) != orxNULL)
+                {
+                  /* Updates status */
+                  bRandom = orxTRUE;
+                }
+              }
+            }
+          }
+          else
           {
             /* Updates status */
             bRandom = orxTRUE;
@@ -437,26 +507,40 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
         }
         else
         {
-          /* Updates status */
-          bRandom = orxTRUE;
+          /* Should select color section? */
+          if(pstPreviousSection == sstConfig.pstCurrentSection)
+          {
+            /* Selects it */
+            orxConfig_SelectSection(orxCOLOR_KZ_CONFIG_SECTION);
+          }
+
+          /* Retrieves its value */
+          if(orxConfig_GetVector(orxString_SkipWhiteSpaces(_zValue + s32RandomSeparatorIndex + 1), &vOtherValue) != orxNULL)
+          {
+            /* Updates status */
+            bRandom = orxTRUE;
+          }
+        }
+
+        /* Valid? */
+        if(bRandom != orxFALSE)
+        {
+          /* Updates result */
+          pvResult = _pvVector;
+          pvResult->fX = (vStepValue.fX != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fX, vOtherValue.fX, vStepValue.fX) : orxMath_GetRandomFloat(pvResult->fX, vOtherValue.fX);
+          pvResult->fY = (vStepValue.fY != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fY, vOtherValue.fY, vStepValue.fY) : orxMath_GetRandomFloat(pvResult->fY, vOtherValue.fY);
+          pvResult->fZ = (vStepValue.fZ != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fZ, vOtherValue.fZ, vStepValue.fZ) : orxMath_GetRandomFloat(pvResult->fZ, vOtherValue.fZ);
         }
       }
-
-      /* Valid? */
-      if(bRandom != orxFALSE)
+      else
       {
         /* Updates result */
         pvResult = _pvVector;
-        pvResult->fX = (vStepValue.fX != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fX, vOtherValue.fX, vStepValue.fX) : orxMath_GetRandomFloat(pvResult->fX, vOtherValue.fX);
-        pvResult->fY = (vStepValue.fY != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fY, vOtherValue.fY, vStepValue.fY) : orxMath_GetRandomFloat(pvResult->fY, vOtherValue.fY);
-        pvResult->fZ = (vStepValue.fZ != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fZ, vOtherValue.fZ, vStepValue.fZ) : orxMath_GetRandomFloat(pvResult->fZ, vOtherValue.fZ);
       }
     }
-    else
-    {
-      /* Updates result */
-      pvResult = _pvVector;
-    }
+
+    /* Restores current section */
+    sstConfig.pstCurrentSection = pstPreviousSection;
   }
 
   /* Done! */
@@ -3004,10 +3088,10 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
 
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Begin include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
-  
+
               /* Loads file */
               orxConfig_Load(pcLineStart + 1);
-  
+
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: End include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 

@@ -1399,26 +1399,10 @@ void orxFASTCALL orxObject_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMAN
     stColor.fAlpha = orxFLOAT_1;
 
     /* Is a vector value? */
-    if(orxString_ToVector(_astArgList[1].zValue, &(stColor.vRGB), orxNULL) != orxSTATUS_FAILURE)
+    if(orxConfig_ToVector(_astArgList[1].zValue, &(stColor.vRGB)) != orxNULL)
     {
       /* Normalizes it */
       orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
-    }
-    /* Color literal */
-    else
-    {
-      /* Pushes color section */
-      orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
-
-      /* Retrieves its value */
-      if(orxConfig_GetVector(_astArgList[1].zValue, &(stColor.vRGB)) != orxNULL)
-      {
-        /* Normalizes it */
-        orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
-      }
-
-      /* Pops config section */
-      orxConfig_PopSection();
     }
 
     /* Recursive? */
@@ -5509,25 +5493,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
             /* Updates status */
             bHasColor = orxTRUE;
-          }
-          /* Color literal */
-          else
-          {
-            /* Pushes color section */
-            orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
-
-            /* Retrieves its value */
-            if(orxConfig_GetVector(zColor, &vColor) != orxNULL)
-            {
-              /* Normalizes it */
-              orxVector_Mulf(&(stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
-
-              /* Updates status */
-              bHasColor = orxTRUE;
-            }
-
-            /* Pops config section */
-            orxConfig_PopSection();
           }
         }
         /* Has RGB values? */

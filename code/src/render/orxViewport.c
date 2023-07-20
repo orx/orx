@@ -1730,21 +1730,17 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         /* Gets literal color */
         zColor = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR);
 
-        /* Not a vector value? */
-        if(orxConfig_ToVector(zColor, &(stColor.vRGB)) == orxNULL)
+        /* Is a vector value? */
+        if(orxConfig_ToVector(zColor, &(stColor.vRGB)) != orxNULL)
         {
-          /* Pushes color section */
-          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
-
-          /* Retrieves its value */
-          orxConfig_GetVector(zColor, &(stColor.vRGB));
-
-          /* Pops config section */
-          orxConfig_PopSection();
+          /* Normalizes it */
+          orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
         }
-
-        /* Normalizes it */
-        orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
+        else
+        {
+          /* Defaults to black */
+          orxVector_SetAll(&(stColor.vRGB), orxFLOAT_0);
+        }
 
         /* Gets alpha value */
         stColor.fAlpha = (orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) != orxFALSE) ? orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) : orxFLOAT_1;

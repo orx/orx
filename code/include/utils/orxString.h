@@ -101,7 +101,8 @@ static orxINLINE const orxSTRING                          orxString_SkipWhiteSpa
   if(_zString != orxNULL)
   {
     /* Skips all white spaces */
-    for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t') || (*zResult == orxCHAR_CR) || (*zResult == orxCHAR_LF); zResult++);
+    for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t') || (*zResult == orxCHAR_CR) || (*zResult == orxCHAR_LF); zResult++)
+      ;
 
     /* Empty? */
     if(*zResult == orxCHAR_NULL)
