@@ -437,7 +437,7 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
           ;
 
         /* Stores it */
-        orxString_NCopy(acBuffer, _zValue, pc - _zValue + 1);
+        orxString_NCopy(acBuffer, _zValue, (orxU32)(pc - _zValue + 1));
         *(acBuffer + (pc - _zValue + 1)) = orxCHAR_NULL;
         zValue = (orxSTRING)acBuffer;
       }
