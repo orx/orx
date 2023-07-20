@@ -1399,7 +1399,7 @@ void orxFASTCALL orxObject_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMAN
     stColor.fAlpha = orxFLOAT_1;
 
     /* Is a vector value? */
-    if(orxString_ToVector(_astArgList[1].zValue, &(stColor.vRGB), orxNULL) != orxNULL)
+    if(orxString_ToVector(_astArgList[1].zValue, &(stColor.vRGB), orxNULL) != orxSTATUS_FAILURE)
     {
       /* Normalizes it */
       orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
