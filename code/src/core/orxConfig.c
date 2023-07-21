@@ -387,12 +387,69 @@ static struct __orxCONFIG_BOM_DEFINITION_t
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Converts color values to color space
+ */
+static orxINLINE void orxConfig_ToColorSpace(orxCOLORSPACE _eColorSpace, orxVECTOR *_pvValue)
+{
+  orxCOLOR stColor;
+
+  /* Depending on color space */
+  switch(_eColorSpace)
+  {
+    case orxCOLORSPACE_COMPONENT:
+    default:
+    {
+      break;
+    }
+
+    case orxCOLORSPACE_HSL:
+    {
+      /* Normalizes it */
+      orxVector_Mulf(&(stColor.vRGB), _pvValue, orxCOLOR_NORMALIZER);
+
+      /* Converts it */
+      orxColor_FromRGBToHSL(&stColor, &stColor);
+
+      /* Updates result */
+      orxVector_Copy(_pvValue, &(stColor.vHSL));
+
+      break;
+    }
+
+    case orxCOLORSPACE_HSV:
+    {
+      /* Normalizes it */
+      orxVector_Mulf(&(stColor.vRGB), _pvValue, orxCOLOR_NORMALIZER);
+
+      /* Converts it */
+      orxColor_FromRGBToHSV(&stColor, &stColor);
+
+      /* Updates result */
+      orxVector_Copy(_pvValue, &(stColor.vHSV));
+
+      break;
+    }
+
+    case orxCOLORSPACE_RGB:
+    {
+      /* Normalizes it */
+      orxVector_Mulf(_pvValue, _pvValue, orxCOLOR_NORMALIZER);
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Converts a string to a vector (with support for stepped/regular randomness)
  * @param[in]   _zValue           Concerned literal value
+ * @param[in]   _eColorSpace      Color space to use when translating color literals (NONE: no literal, COMPONENT: 0-255 RGB values, all others: normalized spaces)
  * @param[out]  _pvVector         Storage for vector value
  * @return The value if valid, orxNULL otherwise
  */
-orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector)
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector)
 {
   const orxSTRING zRemainder;
   orxVECTOR      *pvResult = orxNULL;
@@ -400,6 +457,7 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zValue != orxNULL);
+  orxASSERT((_eColorSpace < orxCOLORSPACE_NUMBER) || (_eColorSpace == orxCOLORSPACE_NONE));
   orxASSERT(_pvVector != orxNULL);
 
   /* Not empty? */
@@ -416,7 +474,8 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
     pstPreviousSection = sstConfig.pstCurrentSection;
 
     /* Gets value */
-    if((eResult = orxString_ToVector(_zValue, _pvVector, &zRemainder)) == orxSTATUS_FAILURE)
+    if(((eResult = orxString_ToVector(_zValue, _pvVector, &zRemainder)) == orxSTATUS_FAILURE)
+    && (_eColorSpace != orxCOLORSPACE_NONE))
     {
 #ifdef __orxMSVC__
         orxCHAR        *acBuffer = (orxCHAR *)alloca((s32RandomSeparatorIndex + 1) * sizeof(orxCHAR));
@@ -446,7 +505,19 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
       orxConfig_SelectSection(orxCOLOR_KZ_CONFIG_SECTION);
 
       /* Retrieves its value */
-      eResult = (orxConfig_GetVector(zValue, _pvVector) != orxNULL) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+      if(orxConfig_GetVector(zValue, _pvVector) != orxNULL)
+      {
+        /* Converts it to color space */
+        orxConfig_ToColorSpace(_eColorSpace, _pvVector);
+
+        /* Updates status */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Updates status */
+        eResult = orxSTATUS_FAILURE;
+      }
     }
 
     /* Success? */
@@ -481,7 +552,8 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
                 /* Updates status */
                 bRandom = orxTRUE;
               }
-              else
+              /* Has colorspace? */
+              else if(_eColorSpace != orxCOLORSPACE_NONE)
               {
                 /* Should select color section? */
                 if(pstPreviousSection == sstConfig.pstCurrentSection)
@@ -493,6 +565,9 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
                 /* Retrieves its value */
                 if(orxConfig_GetVector(orxString_SkipWhiteSpaces(zRemainder + s32RandomSeparatorIndex + 1), &vOtherValue) != orxNULL)
                 {
+                  /* Converts it to color space */
+                  orxConfig_ToColorSpace(_eColorSpace, &vOtherValue);
+
                   /* Updates status */
                   bRandom = orxTRUE;
                 }
@@ -505,7 +580,8 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
             bRandom = orxTRUE;
           }
         }
-        else
+        /* Has color space? */
+        else if(_eColorSpace != orxCOLORSPACE_NONE)
         {
           /* Should select color section? */
           if(pstPreviousSection == sstConfig.pstCurrentSection)
@@ -517,6 +593,9 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
           /* Retrieves its value */
           if(orxConfig_GetVector(orxString_SkipWhiteSpaces(_zValue + s32RandomSeparatorIndex + 1), &vOtherValue) != orxNULL)
           {
+            /* Converts it to color space */
+            orxConfig_ToColorSpace(_eColorSpace, &vOtherValue);
+
             /* Updates status */
             bRandom = orxTRUE;
           }
@@ -6775,6 +6854,56 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pv
   return pvResult;
 }
 
+/** Reads a vector value from config and interpret any color literals in the given color space (will take a random value if a list is provided for this key)
+ * @param[in]   _zKey             Key name
+ * @param[in]   _eColorSpace      Color space to use when translating color literals (NONE: no literal, COMPONENT: 0-255 RGB values, all others: normalized spaces)
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+orxVECTOR *orxFASTCALL orxConfig_GetColorVector(const orxSTRING _zKey, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxVECTOR        *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT((_eColorSpace < orxCOLORSPACE_NUMBER) || (_eColorSpace == orxCOLORSPACE_NONE));
+  orxASSERT(_pvVector != orxNULL);
+
+  /* Gets corresponding value */
+  pstValue = orxConfig_GetValue(_zKey);
+
+  /* Found? */
+  if(pstValue != orxNULL)
+  {
+    const orxSTRING zValue;
+    orxS32          s32ListIndex;
+
+    /* Not a list? */
+    if(!orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    {
+      /* Updates real index */
+      s32ListIndex = 0;
+    }
+    else
+    {
+      /* Updates real index */
+      s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)pstValue->u16ListCount - 1);
+    }
+
+    /* Gets its value */
+    zValue = orxConfig_GetListValue(pstValue, s32ListIndex, orxFALSE);
+
+    /* Converts it */
+    pvResult = orxConfig_ToVector(zValue, _eColorSpace, _pvVector);
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
 /** Duplicates a raw value (string) from config
  * @param[in] _zKey             Key name
  * @return The value
@@ -7404,7 +7533,54 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s3
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get U32 list item config value <%s.%s>, invalid index: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCount);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get VECTOR list item config value <%s.%s>, invalid index: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCount);
+    }
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Reads a vector value from config list and interpret any color literals in the given color space
+ * @param[in]   _zKey             Key name
+ * @param[in]   _s32ListIndex     Index of desired item in list / -1 for random
+ * @param[in]   _eColorSpace      Color space to use when translating color literals (NONE: no literal, COMPONENT: 0-255 RGB values, all others: normalized spaces)
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+orxVECTOR *orxFASTCALL orxConfig_GetListColorVector(const orxSTRING _zKey, orxS32 _s32ListIndex, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxVECTOR        *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT((_eColorSpace < orxCOLORSPACE_NUMBER) || (_eColorSpace == orxCOLORSPACE_NONE));
+  orxASSERT(_pvVector != orxNULL);
+
+  /* Gets corresponding value */
+  pstValue = orxConfig_GetValue(_zKey);
+
+  /* Valid? */
+  if(pstValue != orxNULL)
+  {
+    /* Is index valid? */
+    if(_s32ListIndex < (orxS32)pstValue->u16ListCount)
+    {
+      const orxSTRING zValue;
+
+      /* Gets its value */
+      zValue = orxConfig_GetListValue(pstValue, _s32ListIndex, orxFALSE);
+
+      /* Converts it */
+      pvResult = orxConfig_ToVector(zValue, _eColorSpace, _pvVector);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get VECTOR list item config value <%s.%s>, invalid index: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCount);
     }
   }
 

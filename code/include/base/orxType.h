@@ -192,6 +192,19 @@ typedef enum __orxSEEK_OFFSET_WHENCE_t
 
 } orxSEEK_OFFSET_WHENCE;
 
+typedef enum __orxCOLORSPACE_t
+{
+  orxCOLORSPACE_COMPONENT = 0,
+  orxCOLORSPACE_HSL,
+  orxCOLORSPACE_HSV,
+  orxCOLORSPACE_RGB,
+
+  orxCOLORSPACE_NUMBER,
+
+  orxCOLORSPACE_NONE = orxENUM_NONE
+
+} orxCOLORSPACE;
+
 
 /* *** Boolean constants *** */
 #define orxFALSE                  ((orxBOOL)(1 != 1))

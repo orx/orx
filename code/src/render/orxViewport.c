@@ -150,10 +150,6 @@ static orxVIEWPORT_STATIC sstViewport;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Semi-private, internal-use only forward declarations
- */
-orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector);
-
 /** Command: Create
  */
 void orxFASTCALL orxViewport_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1724,14 +1720,10 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* Has background color? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR) != orxFALSE)
       {
-        orxCOLOR        stColor;
-        const orxSTRING zColor;
-
-        /* Gets literal color */
-        zColor = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR);
+        orxCOLOR stColor;
 
         /* Is a vector value? */
-        if(orxConfig_ToVector(zColor, &(stColor.vRGB)) != orxNULL)
+        if(orxConfig_GetColorVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, orxCOLORSPACE_COMPONENT, &(stColor.vRGB)) != orxNULL)
         {
           /* Normalizes it */
           orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);

@@ -224,10 +224,6 @@ static orxFX_STATIC sstFX;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Semi-private, internal-use only forward declarations
- */
-orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector);
-
 /** Gets FX slot type
  * @param[in] _pstFXSlot        Concerned FX slot
  * @return orxFX_TYPE
@@ -2646,32 +2642,31 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
     /* Color blend? */
     else if(orxString_ICompare(zType, orxFX_KZ_COLOR) == 0)
     {
-      orxVECTOR       vStartColor, vEndColor;
-      const orxSTRING zColor;
+      orxVECTOR vStartColor, vEndColor;
 
-      /* Gets start color literal */
-      zColor = orxConfig_GetString(orxFX_KZ_CONFIG_START_VALUE);
-
-      /* Not a vector value? */
-      if(orxConfig_ToVector(zColor, &vStartColor) == orxNULL)
+      /* Gets start color literal? */
+      if(orxConfig_GetColorVector(orxFX_KZ_CONFIG_START_VALUE, orxCOLORSPACE_COMPONENT, &vStartColor) != orxNULL)
+      {
+        /* Normalizes it */
+        orxVector_Mulf(&vStartColor, &vStartColor, orxCOLOR_NORMALIZER);
+      }
+      else
       {
         /* Defaults to black */
         orxVector_SetAll(&vStartColor, orxFLOAT_0);
       }
 
-      /* Gets end color literal */
-      zColor = orxConfig_GetString(orxFX_KZ_CONFIG_END_VALUE);
-
-      /* Not a vector value? */
-      if(orxConfig_ToVector(zColor, &vEndColor) == orxNULL)
+      /* Gets end color literal? */
+      if(orxConfig_GetColorVector(orxFX_KZ_CONFIG_END_VALUE, orxCOLORSPACE_COMPONENT, &vEndColor) != orxNULL)
+      {
+        /* Normalizes it */
+        orxVector_Mulf(&vEndColor, &vEndColor, orxCOLOR_NORMALIZER);
+      }
+      else
       {
         /* Defaults to black */
         orxVector_SetAll(&vEndColor, orxFLOAT_0);
       }
-
-      /* Normalizes them */
-      orxVector_Mulf(&vStartColor, &vStartColor, orxCOLOR_NORMALIZER);
-      orxVector_Mulf(&vEndColor, &vEndColor, orxCOLOR_NORMALIZER);
 
       /* Adds RGB slot */
       eResult = orxFX_AddRGB(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
@@ -2682,11 +2677,11 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       orxVECTOR vStartColor, vEndColor;
 
       /* Gets color values */
-      if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor) == orxNULL)
+      if(orxConfig_GetColorVector(orxFX_KZ_CONFIG_START_VALUE, orxCOLORSPACE_RGB, &vStartColor) == orxNULL)
       {
         orxVector_SetAll(&vStartColor, orxFLOAT_0);
       }
-      if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor) == orxNULL)
+      if(orxConfig_GetColorVector(orxFX_KZ_CONFIG_END_VALUE, orxCOLORSPACE_RGB, &vEndColor) == orxNULL)
       {
         orxVector_SetAll(&vEndColor, orxFLOAT_0);
       }
@@ -2700,11 +2695,11 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       orxVECTOR vStartColor, vEndColor;
 
       /* Gets color values */
-      if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor) == orxNULL)
+      if(orxConfig_GetColorVector(orxFX_KZ_CONFIG_START_VALUE, orxCOLORSPACE_HSL, &vStartColor) == orxNULL)
       {
         orxVector_SetAll(&vStartColor, orxFLOAT_0);
       }
-      if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor) == orxNULL)
+      if(orxConfig_GetColorVector(orxFX_KZ_CONFIG_END_VALUE, orxCOLORSPACE_HSL, &vEndColor) == orxNULL)
       {
         orxVector_SetAll(&vEndColor, orxFLOAT_0);
       }
@@ -2718,16 +2713,16 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       orxVECTOR vStartColor, vEndColor;
 
       /* Gets color values */
-      if(orxConfig_GetVector(orxFX_KZ_CONFIG_START_VALUE, &vStartColor) == orxNULL)
+      if(orxConfig_GetColorVector(orxFX_KZ_CONFIG_START_VALUE, orxCOLORSPACE_HSV, &vStartColor) == orxNULL)
       {
         orxVector_SetAll(&vStartColor, orxFLOAT_0);
       }
-      if(orxConfig_GetVector(orxFX_KZ_CONFIG_END_VALUE, &vEndColor) == orxNULL)
+      if(orxConfig_GetColorVector(orxFX_KZ_CONFIG_END_VALUE, orxCOLORSPACE_HSV, &vEndColor) == orxNULL)
       {
         orxVector_SetAll(&vEndColor, orxFLOAT_0);
       }
 
-      /* Adds RGB slot */
+      /* Adds HSV slot */
       eResult = orxFX_AddHSV(_pstFX, fStartTime, fEndTime, fCyclePeriod, fCyclePhase, fAmplification, fAcceleration, &vStartColor, &vEndColor, eCurve, fPow, u32Flags);
     }
     /* Rotation? */
