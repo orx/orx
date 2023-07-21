@@ -4935,7 +4935,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
        || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (*stCommandResult.zValue != orxNULL) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE) != 0))
        || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE))))
       {
-        orxVECTOR       vValue, vParentSize, vColor, vPosition, vScale, vPivotOverride;
+        orxVECTOR       vValue, vParentSize, vPosition, vScale, vPivotOverride;
         orxAABOX        stParentBox;
         const orxSTRING zGraphicName;
         const orxSTRING zAnimPointerName;
