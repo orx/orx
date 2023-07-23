@@ -304,6 +304,34 @@ static orxINLINE orxVECTOR *                  orxVector_Lerp(orxVECTOR *_pvRes, 
   return _pvRes;
 }
 
+/** Remaps a vector value from one interval to another one
+ * @param[out]  _pvRes                        Vector where to store result (can be any of the other operands)
+ * @param[in]   _pvA1                         First interval's low boundary
+ * @param[in]   _pvB1                         First interval's high boundary
+ * @param[in]   _pvA2                         Second interval's low boundary
+ * @param[in]   _pvB2                         Second interval's high boundary
+ * @param[in]   _pvV                          Value to remap from the first interval to the second one
+ * @return      Resulting vector
+ */
+static orxINLINE orxVECTOR *                  orxVector_Remap(orxVECTOR *_pvRes, const orxVECTOR *_pvA1, const orxVECTOR *_pvB1, const orxVECTOR *_pvA2, const orxVECTOR *_pvB2, const orxVECTOR *_pvV)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvA1 != orxNULL);
+  orxASSERT(_pvB1 != orxNULL);
+  orxASSERT(_pvA2 != orxNULL);
+  orxASSERT(_pvB2 != orxNULL);
+  orxASSERT(_pvV != orxNULL);
+
+  /* Remaps all*/
+  _pvRes->fX = orxREMAP(_pvA1->fX, _pvB1->fX, _pvA2->fX, _pvB2->fX, _pvV->fX);
+  _pvRes->fY = orxREMAP(_pvA1->fY, _pvB1->fY, _pvA2->fY, _pvB2->fY, _pvV->fY);
+  _pvRes->fZ = orxREMAP(_pvA1->fZ, _pvB1->fZ, _pvA2->fZ, _pvB2->fZ, _pvV->fZ);
+
+  /* Done! */
+  return _pvRes;
+}
+
 /** Gets minimum between two vectors
  * @param[out]  _pvRes                        Vector where to store result (can be one of the two operands)
  * @param[in]   _pvOp1                        First operand

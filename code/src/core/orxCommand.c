@@ -2295,6 +2295,137 @@ void orxFASTCALL orxCommand_CommandVectorZ(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/* Command: Lerp */
+void orxFASTCALL orxCommand_CommandLerp(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR astOperandList[2];
+
+  /* Parses numerical arguments */
+  if(orxCommand_ParseNumericalArguments(2, _astArgList, astOperandList) != orxSTATUS_FAILURE)
+  {
+    /* All floats? */
+    if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", orxLERP(astOperandList[0].fValue, astOperandList[1].fValue, _astArgList[2].fValue));
+
+      /* Updates result */
+      _pstResult->zValue = sstCommand.acResultBuffer;
+    }
+    else
+    {
+      orxVECTOR vResult;
+
+      /* Is A a float? */
+      if(astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[0].vValue), astOperandList[0].fValue);
+      }
+      /* Is B a float? */
+      else if(astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[1].vValue), astOperandList[1].fValue);
+      }
+
+      /* Updates intermediate result */
+      orxVector_Lerp(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue), _astArgList[2].fValue);
+
+      /* Prints it */
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+
+      /* Updates result */
+      _pstResult->zValue = sstCommand.acResultBuffer;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/* Command: Remap */
+void orxFASTCALL orxCommand_CommandRemap(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR astOperandList[5];
+
+  /* Parses numerical arguments */
+  if(orxCommand_ParseNumericalArguments(_u32ArgNumber, _astArgList, astOperandList) != orxSTATUS_FAILURE)
+  {
+    /* All floats? */
+    if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[2].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[3].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[4].eType == orxCOMMAND_VAR_TYPE_FLOAT))
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", orxREMAP(astOperandList[0].fValue, astOperandList[1].fValue, astOperandList[2].fValue, astOperandList[3].fValue, astOperandList[4].fValue));
+
+      /* Updates result */
+      _pstResult->zValue = sstCommand.acResultBuffer;
+    }
+    else
+    {
+      orxVECTOR vResult;
+
+      /* Is A1 a float? */
+      if(astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[0].vValue), astOperandList[0].fValue);
+      }
+      /* Is B1 a float? */
+      if(astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[1].vValue), astOperandList[1].fValue);
+      }
+      /* Is A2 a float? */
+      if(astOperandList[2].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[2].vValue), astOperandList[2].fValue);
+      }
+      /* Is B2 a float? */
+      if(astOperandList[3].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[3].vValue), astOperandList[3].fValue);
+      }
+      /* Is V a float? */
+      if(astOperandList[4].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[4].vValue), astOperandList[4].fValue);
+      }
+
+      /* Updates intermediate result */
+      orxVector_Remap(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue), &(astOperandList[2].vValue), &(astOperandList[3].vValue), &(astOperandList[4].vValue));
+
+      /* Prints it */
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+
+      /* Updates result */
+      _pstResult->zValue = sstCommand.acResultBuffer;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
 /* Command: Minimum */
 void orxFASTCALL orxCommand_CommandMinimum(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -2727,6 +2858,11 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: VectorZ */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, VectorZ, "Result", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_VECTOR});
 
+  /* Command: Lerp */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Lerp, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 3, 0, {"A", orxCOMMAND_VAR_TYPE_NUMERIC}, {"B", orxCOMMAND_VAR_TYPE_NUMERIC}, {"T", orxCOMMAND_VAR_TYPE_FLOAT});
+  /* Command: Remap */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Remap, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 5, 0, {"A1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"B1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"A2", orxCOMMAND_VAR_TYPE_NUMERIC}, {"B2", orxCOMMAND_VAR_TYPE_NUMERIC}, {"V", orxCOMMAND_VAR_TYPE_NUMERIC});
+
   /* Command: Minimum */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Minimum, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
   /* Command: Maximum */
@@ -2890,12 +3026,22 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Alias: Vector.Z */
   orxCommand_AddAlias("Vector.Z", "Command.VectorZ", orxNULL);
 
+  /* Alias: Math.Lerp */
+  orxCommand_AddAlias("Math.Lerp", "Command.Lerp", orxNULL);
+  /* Alias: Math.Remap */
+  orxCommand_AddAlias("Math.Remap", "Command.Remap", orxNULL);
+
   /* Alias: Math.Min */
   orxCommand_AddAlias("Math.Min", "Command.Minimum", orxNULL);
   /* Alias: Math.Max */
   orxCommand_AddAlias("Math.Max", "Command.Maximum", orxNULL);
   /* Alias: Math.Clamp */
   orxCommand_AddAlias("Math.Clamp", "Command.Clamp", orxNULL);
+
+  /* Alias: Lerp */
+  orxCommand_AddAlias("Lerp", "Math.Lerp", orxNULL);
+  /* Alias: Remap */
+  orxCommand_AddAlias("Remap", "Math.Remap", orxNULL);
 
   /* Alias: Min */
   orxCommand_AddAlias("Min", "Math.Min", orxNULL);
@@ -3070,12 +3216,22 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Vector.Z */
   orxCommand_RemoveAlias("Vector.Z");
 
+  /* Alias: Math.Lerp */
+  orxCommand_RemoveAlias("Math.Lerp");
+  /* Alias: Math.Remap */
+  orxCommand_RemoveAlias("Math.Remap");
+
   /* Alias: Math.Min */
   orxCommand_RemoveAlias("Math.Min");
   /* Alias: Math.Max */
   orxCommand_RemoveAlias("Math.Max");
   /* Alias: Math.Clamp */
   orxCommand_RemoveAlias("Math.Clamp");
+
+  /* Alias: Lerp */
+  orxCommand_RemoveAlias("Lerp");
+  /* Alias: Remap */
+  orxCommand_RemoveAlias("Remap");
 
   /* Alias: Min */
   orxCommand_RemoveAlias("Min");
@@ -3194,6 +3350,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, VectorY);
   /* Command: VectorZ */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, VectorZ);
+
+  /* Command: Lerp */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Lerp);
+  /* Command: Remap */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Remap);
 
   /* Command: Minimum */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Minimum);
