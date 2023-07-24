@@ -99,7 +99,7 @@ static orxBOOL        sbProcess           = orxFALSE;
     do                                                                                            \
     {                                                                                             \
       orxS32 s32Count;                                                                            \
-      s32Count = orxString_NPrint(sacPrintBuffer, sizeof(sacPrintBuffer), FORMAT, #__VA_ARGS__);  \
+      s32Count = orxString_NPrint(sacPrintBuffer, sizeof(sacPrintBuffer), FORMAT, ##__VA_ARGS__); \
       orxResource_Write(RESOURCE, (orxS64)s32Count, sacPrintBuffer, orxNULL, orxNULL);            \
     } while(orxFALSE)
 #else // __orxGCC__ || __orxLLVM__
@@ -438,7 +438,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
     orxDOUBLE     dBeginTime, dEndTime;
     orxBANK      *pstResourceBank;
     orxHASHTABLE *pstRuleTable;
-    orxU32        i, j, iCount, jCount, u32GroupCount, u32ResourceIndex, u32ConfigHistoryExtensionLength;
+    orxU32        i, j, iCount, jCount, u32GroupCount, u32ConfigHistoryExtensionLength;
     orxBOOL       bBinary;
 
     // Gets begin time
@@ -540,7 +540,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
     u32ConfigHistoryExtensionLength = orxString_GetLength(orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION);
 
     // For all groups
-    for(i = 0, iCount = orxResource_GetGroupCount(), u32ResourceIndex = 0; i < iCount; i++)
+    for(i = 0, iCount = orxResource_GetGroupCount(); i < iCount; i++)
     {
       const orxSTRING zGroup;
       const orxSTRING zLocation;
@@ -640,7 +640,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
     if(orxBank_GetCount(pstResourceBank) != 0)
     {
       orxBUNDLE_RESOURCE_REF *pstResourceRef, *pstNextResourceRef;
-      orxU32                  u32HeaderSize = 0;
+      orxU32                  u32HeaderSize = 0, u32ResourceIndex;
 
       // Binary output?
       if(bBinary != orxFALSE)
@@ -1011,8 +1011,7 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
         if(zLocation != orxNULL)
         {
           orxHASHTABLE  **ppstToC;
-          orxSTRINGID     stLocationID, stResourceID;
-          orxU32          u32ResourceIndex;
+          orxSTRINGID     stLocationID;
 
           // Gets its location ID
           stLocationID = orxString_Hash(zLocation);
@@ -1096,6 +1095,9 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
           // Valid?
           if(*ppstToC != orxNULL)
           {
+            orxSTRINGID stResourceID;
+            orxU32      u32ResourceIndex;
+
             // Gets resource ID
             stResourceID = orxString_Hash(_zName);
 
