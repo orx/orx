@@ -10119,7 +10119,7 @@ orxSTATUS orxFASTCALL orxObject_SetVolume(orxOBJECT *_pstObject, orxFLOAT _fVolu
 
 /** Sets pitch for all sounds of an object.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _fVolume        Desired pitch (0.0 - 1.0)
+ * @param[in]   _fPitch         Desired pitch (< 1.0 => lower pitch, = 1.0 => original pitch, > 1.0 => higher pitch). 0.0 is ignored.
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch)

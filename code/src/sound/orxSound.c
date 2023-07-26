@@ -2882,7 +2882,7 @@ orxSTATUS orxFASTCALL orxSound_SetVolume(orxSOUND *_pstSound, orxFLOAT _fVolume)
 
 /** Sets sound pitch
  * @param[in] _pstSound       Concerned Sound
- * @param[in] _fPitch         Desired pitch
+ * @param[in] _fPitch         Desired pitch (< 1.0 => lower pitch, = 1.0 => original pitch, > 1.0 => higher pitch). 0.0 is ignored.
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxSound_SetPitch(orxSOUND *_pstSound, orxFLOAT _fPitch)
@@ -3773,7 +3773,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusVolume(orxSTRINGID _stBusI
 
 /** Sets bus pitch
  * @param[in]   _stBusID      Concerned bus ID, will create it if not already existing
- * @param[in]   _fPitch       Desired pitch
+ * @param[in]   _fPitch       Desired pitch (< 1.0 => lower pitch, = 1.0 => original pitch, > 1.0 => higher pitch). 0.0 is ignored.
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusPitch(orxSTRINGID _stBusID, orxFLOAT _fPitch)
