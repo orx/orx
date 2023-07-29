@@ -3714,7 +3714,6 @@ orxBOOL orxFASTCALL orxCommand_IsRegistered(const orxSTRING _zCommand)
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zCommand != orxNULL);
 
   /* Valid? */
   if(_zCommand != orxNULL)
@@ -3933,7 +3932,6 @@ orxBOOL orxFASTCALL orxCommand_IsAlias(const orxSTRING _zAlias)
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zAlias != orxNULL);
 
   /* Valid? */
   if(_zAlias != orxNULL)
