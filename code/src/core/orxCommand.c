@@ -3588,7 +3588,6 @@ orxSTATUS orxFASTCALL orxCommand_Register(const orxSTRING _zCommand, const orxCO
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zCommand != orxNULL);
   orxASSERT(_pfnFunction != orxNULL);
   orxASSERT(_u32RequiredParamNumber <= 0xFFFF);
   orxASSERT(_u32OptionalParamNumber <= 0xFFFF);
@@ -3668,7 +3667,6 @@ orxSTATUS orxFASTCALL orxCommand_Unregister(const orxSTRING _zCommand)
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zCommand != orxNULL);
 
   /* Valid? */
   if(_zCommand != orxNULL)
@@ -3744,7 +3742,6 @@ orxSTATUS orxFASTCALL orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRI
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zAlias != orxNULL);
   orxASSERT(_zCommand != orxNULL);
 
   /* Finds start of alias */
@@ -3871,7 +3868,6 @@ orxSTATUS orxFASTCALL orxCommand_RemoveAlias(const orxSTRING _zAlias)
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zAlias != orxNULL);
 
   /* Valid? */
   if(_zAlias != orxNULL)
@@ -3967,7 +3963,6 @@ const orxSTRING orxFASTCALL orxCommand_GetPrototype(const orxSTRING _zCommand)
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zCommand != orxNULL);
 
   /* Valid? */
   if((_zCommand != orxNULL) & (_zCommand != orxSTRING_EMPTY))
@@ -4257,7 +4252,6 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Execute(const orxSTRING _zCommand, orxU32
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstCommand.u32Flags, orxCOMMAND_KU32_STATIC_FLAG_READY));
-  orxASSERT(_zCommand != orxNULL);
   orxASSERT(_pstResult != orxNULL);
 
   /* Valid? */
