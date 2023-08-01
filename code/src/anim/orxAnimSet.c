@@ -1776,9 +1776,17 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) == orxNULL)
         {
           orxGRAPHIC *pstGraphic;
+          orxBOOL     bDebugLevelBackup;
+
+          /* Disables display logs */
+          bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
           /* Creates graphic */
           pstGraphic = orxGraphic_CreateFromConfig(acAnimBuffer);
+
+          /* Re-enables display logs */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
 
           /* Valid? */
           if(pstGraphic != orxNULL)

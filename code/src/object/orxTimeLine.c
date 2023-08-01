@@ -233,17 +233,6 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
           /* Updates event count */
           u32EventCount += orxConfig_GetListCount(zKey);
         }
-        else
-        {
-          /* Not keep in cache, immediate nor loop? */
-          if((orxString_Compare(orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE, zKey) != 0)
-          && (orxString_Compare(orxTIMELINE_KZ_CONFIG_IMMEDIATE, zKey) != 0)
-          && (orxString_Compare(orxTIMELINE_KZ_CONFIG_LOOP, zKey) != 0))
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "TimeLine track [%s]: ignoring invalid key (%s).", _zTrackID, zKey);
-          }
-        }
       }
 
       /* Allocates track */
