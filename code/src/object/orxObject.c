@@ -6261,13 +6261,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             /* Copies it */
             orxMemory_Copy(&stAgeClockInfo, pstClockInfo, sizeof(orxCLOCK_INFO));
 
-            /* Has multiply modifier? */
-            if(stAgeClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY] != orxFLOAT_0)
-            {
-              /* Updates age */
-              fAge *= stAgeClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY];
-            }
-
             /* For all time slices */
             for(; fAge > orxFLOAT_0; fAge -= stAgeClockInfo.fDT)
             {
