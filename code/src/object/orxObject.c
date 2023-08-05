@@ -272,7 +272,8 @@ static orxOBJECT_STATIC sstObject;
 
 /** Semi-private, internal-use only forward declarations
  */
-orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
+orxVECTOR *orxFASTCALL  orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
+orxFLOAT orxFASTCALL    orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock);
 
 /** Update body scale
  */
@@ -4317,28 +4318,35 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   if((u32UpdateFlags == orxOBJECT_KU32_FLAG_ENABLED)
   || (u32UpdateFlags & orxOBJECT_KU32_FLAG_DEATH_ROW))
   {
-    const orxCLOCK_INFO  *pstClockInfo;
+    orxCLOCK       *pstClock;
+    orxCLOCK_INFO   stClockInfo;
 
     /* Has clock? */
     if(_pstObject->apstStructureList[orxSTRUCTURE_ID_CLOCK] != orxNULL)
     {
       /* Uses it */
-      pstClockInfo = orxClock_GetInfo((orxCLOCK *)_pstObject->apstStructureList[orxSTRUCTURE_ID_CLOCK]);
+      pstClock = (orxCLOCK *)_pstObject->apstStructureList[orxSTRUCTURE_ID_CLOCK];
     }
     else
     {
-      /* Uses default info */
-      pstClockInfo = _pstClockInfo;
+      /* Uses default */
+      pstClock = orxClock_GetFromInfo(_pstClockInfo);
     }
 
+    /* Copies its info */
+    orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
+
+    /* Computes its DT */
+    stClockInfo.fDT = orxClock_ComputeDT(_pstClockInfo->fDT, pstClock);
+
     /* Updates its active time */
-    _pstObject->fActiveTime += pstClockInfo->fDT;
+    _pstObject->fActiveTime += stClockInfo.fDT;
 
     /* Has life time? */
     if(orxFLAG_TEST(pstStructure->u32Flags, orxOBJECT_KU32_FLAG_HAS_LIFETIME))
     {
       /* Updates its life time */
-      _pstObject->fLifeTime -= pstClockInfo->fDT;
+      _pstObject->fLifeTime -= stClockInfo.fDT;
 
       /* Should die? */
       if(_pstObject->fLifeTime <= orxFLOAT_0)
@@ -4358,7 +4366,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
     if(bDeleted == orxFALSE)
     {
       /* Has DT? */
-      if(pstClockInfo->fDT > orxFLOAT_0)
+      if(stClockInfo.fDT > orxFLOAT_0)
       {
         orxU32 u32LifeTimeFlags, i;
 
@@ -4369,7 +4377,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
           if(_pstObject->apstStructureList[i] != orxNULL)
           {
             /* Updates it */
-            if(orxStructure_Update(_pstObject->apstStructureList[i], _pstObject, pstClockInfo) == orxSTATUS_FAILURE)
+            if(orxStructure_Update(_pstObject->apstStructureList[i], _pstObject, &stClockInfo) == orxSTATUS_FAILURE)
             {
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure [%s] for object <%s>.", orxStructure_GetIDString((orxSTRUCTURE_ID)i), orxObject_GetName(_pstObject));
@@ -4390,7 +4398,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
             orxObject_GetPosition(_pstObject, &vPosition);
 
             /* Computes its move */
-            orxVector_Mulf(&vMove, &(_pstObject->vSpeed), pstClockInfo->fDT);
+            orxVector_Mulf(&vMove, &(_pstObject->vSpeed), stClockInfo.fDT);
 
             /* Gets its new position */
             orxVector_Add(&vPosition, &vPosition, &vMove);
@@ -4403,7 +4411,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
           if(_pstObject->fAngularVelocity != orxFLOAT_0)
           {
             /* Updates its rotation */
-            orxObject_SetRotation(_pstObject, orxObject_GetRotation(_pstObject) + (_pstObject->fAngularVelocity * pstClockInfo->fDT));
+            orxObject_SetRotation(_pstObject, orxObject_GetRotation(_pstObject) + (_pstObject->fAngularVelocity * stClockInfo.fDT));
           }
         }
         else
