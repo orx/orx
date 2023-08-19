@@ -937,47 +937,43 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
           /* Auto-resize? */
           else if(orxStructure_TestFlags(pstViewport, orxVIEWPORT_KU32_FLAG_AUTO_RESIZE))
           {
-            /* Has owned textures? */
-            if(pstViewport->u32TextureOwnerFlags != 0)
+            orxU32 i;
+
+            /* Updates relative position & dimension */
+            orxViewport_SetSize(pstViewport, pstViewport->fRealWidth * fWidthRatio, pstViewport->fRealHeight * fHeightRatio);
+            orxViewport_SetPosition(pstViewport, pstViewport->fRealX * fWidthRatio, pstViewport->fRealY * fHeightRatio);
+
+            /* For all textures */
+            for(i = 0; i < pstViewport->u32TextureCount; i++)
             {
-              orxU32 i;
-
-              /* Updates relative position & dimension */
-              orxViewport_SetSize(pstViewport, pstViewport->fRealWidth * fWidthRatio, pstViewport->fRealHeight * fHeightRatio);
-              orxViewport_SetPosition(pstViewport, pstViewport->fRealX * fWidthRatio, pstViewport->fRealY * fHeightRatio);
-
-              /* For all textures */
-              for(i = 0; i < pstViewport->u32TextureCount; i++)
+              /* Is owned? */
+              if(pstViewport->u32TextureOwnerFlags & (1 << i))
               {
-                /* Is owned? */
-                if(pstViewport->u32TextureOwnerFlags & (1 << i))
-                {
-                  orxBITMAP  *pstBitmap;
-                  orxCHAR     acBuffer[256];
+                orxBITMAP  *pstBitmap;
+                orxCHAR     acBuffer[256];
 
-                  /* Gets its name */
-                  orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxTexture_GetName(pstViewport->apstTextureList[i]));
+                /* Gets its name */
+                orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxTexture_GetName(pstViewport->apstTextureList[i]));
 
-                  /* Unlinks its bitmap */
-                  orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);
+                /* Unlinks its bitmap */
+                orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);
 
-                  /* Re-creates it as the right size */
-                  pstBitmap = orxDisplay_CreateBitmap(orxF2U(pstViewport->fWidth), orxF2U(pstViewport->fHeight));
+                /* Re-creates it as the right size */
+                pstBitmap = orxDisplay_CreateBitmap(orxF2U(pstViewport->fWidth), orxF2U(pstViewport->fHeight));
 
-                  /* Checks */
-                  orxASSERT(pstBitmap != orxNULL);
+                /* Checks */
+                orxASSERT(pstBitmap != orxNULL);
 
-                  /* Clears it */
-                  orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
+                /* Clears it */
+                orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
 
-                  /* Re-links it */
-                  orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer, orxTRUE);
-                }
+                /* Re-links it */
+                orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer, orxTRUE);
               }
-
-              /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_VIEWPORT, orxVIEWPORT_EVENT_RESIZE, (orxHANDLE)pstViewport, (orxHANDLE)pstViewport, orxNULL);
             }
+
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_VIEWPORT, orxVIEWPORT_EVENT_RESIZE, (orxHANDLE)pstViewport, (orxHANDLE)pstViewport, orxNULL);
           }
         }
       }
