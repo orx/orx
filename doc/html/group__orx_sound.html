@@ -1738,7 +1738,7 @@ Functions</h2></td></tr>
 <p>Sets bus pitch </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_stBusID</td><td>Concerned bus ID, will create it if not already existing </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPitch</td><td>Desired pitch </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fPitch</td><td>Desired pitch (&lt; 1.0 =&gt; lower pitch, = 1.0 =&gt; original pitch, &gt; 1.0 =&gt; higher pitch). 0.0 is ignored. </td></tr>
   </table>
   </dd>
 </dl>
@@ -1847,7 +1847,7 @@ Functions</h2></td></tr>
 <p>Sets sound pitch </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstSound</td><td>Concerned Sound </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPitch</td><td>Desired pitch </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fPitch</td><td>Desired pitch (&lt; 1.0 =&gt; lower pitch, = 1.0 =&gt; original pitch, &gt; 1.0 =&gt; higher pitch). 0.0 is ignored. </td></tr>
   </table>
   </dd>
 </dl>

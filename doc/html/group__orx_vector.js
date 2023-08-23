@@ -45,6 +45,7 @@ var group__orx_vector =
     [ "orxVector_Neg", "group__orx_vector.html#ga41e797864da57ed8951c4e64828aba7d", null ],
     [ "orxVector_Normalize", "group__orx_vector.html#gacec0e26920a34277bd6f4c50c69af740", null ],
     [ "orxVector_Rec", "group__orx_vector.html#ga9412b01bd07f9397b8239c477848e606", null ],
+    [ "orxVector_Remap", "group__orx_vector.html#ga6541f02cf52c0bcc6a5d41fbe074d044", null ],
     [ "orxVector_Round", "group__orx_vector.html#ga38098d5ee02edc7e19fc1140f31dbfa6", null ],
     [ "orxVector_Set", "group__orx_vector.html#gae376f782e43cc341c95a8a20222ddcae", null ],
     [ "orxVector_SetAll", "group__orx_vector.html#ga203963d0cd1657ebf942217c1640af1a", null ],
