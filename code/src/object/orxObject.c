@@ -5791,6 +5791,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 {
                   /* Uses it as Z component */
                   orxString_ToFloat(pc, &vPosition.fZ, orxNULL);
+
+                  /* Uses parent's position? */
+                  if(bUseParentPosition != orxFALSE)
+                  {
+                    /* Gets world space values */
+                    vPosition.fZ *= vParentSize.fZ;
+                  }
                 }
                 break;
               }
