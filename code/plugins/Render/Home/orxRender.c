@@ -1200,7 +1200,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws it */
-      orxString_NPrint(acLabel, sizeof(acLabel), "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u64Count, u64PeakCount, fSize, fPeakSize, sazUnitList[u32UnitIndex], u64OperationCount);
+      orxString_NPrint(acLabel, sizeof(acLabel), "%-12s[%llu|%llux] [%.2f|%.2f%s] [%llu#]", zType, u64Count, u64PeakCount, fSize, fPeakSize, sazUnitList[u32UnitIndex], u64OperationCount);
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxColor_ToRGBA(&stColor), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
     }
   }
