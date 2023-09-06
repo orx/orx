@@ -4370,7 +4370,7 @@ orxSTATUS orxFASTCALL orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, c
   return eResult;
 }
 
-/** Prints a variable to a buffer, according to its type (and ignoring any bloc/special character)
+/** Prints a variable to a buffer, according to its type (and ignoring any block/special character)
 * @param[out]  _zDstString    Destination string
 * @param[in]   _u32Size       Available string size, including terminating null character
 * @param[in]   _pstVar        Variable to print
