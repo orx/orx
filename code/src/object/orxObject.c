@@ -4318,26 +4318,27 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   if((u32UpdateFlags == orxOBJECT_KU32_FLAG_ENABLED)
   || (u32UpdateFlags & orxOBJECT_KU32_FLAG_DEATH_ROW))
   {
-    orxCLOCK       *pstClock;
-    orxCLOCK_INFO   stClockInfo;
+    orxCLOCK_INFO stClockInfo;
 
     /* Has clock? */
     if(_pstObject->apstStructureList[orxSTRUCTURE_ID_CLOCK] != orxNULL)
     {
+      orxCLOCK *pstClock;
+
       /* Uses it */
       pstClock = (orxCLOCK *)_pstObject->apstStructureList[orxSTRUCTURE_ID_CLOCK];
+
+      /* Copies its info */
+      orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
+
+      /* Computes its DT */
+      stClockInfo.fDT = orxClock_ComputeDT(_pstClockInfo->fDT, pstClock);
     }
     else
     {
-      /* Uses default */
-      pstClock = orxClock_GetFromInfo(_pstClockInfo);
+      /* Copies its info */
+      orxMemory_Copy(&stClockInfo, _pstClockInfo, sizeof(orxCLOCK_INFO));
     }
-
-    /* Copies its info */
-    orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
-
-    /* Computes its DT */
-    stClockInfo.fDT = orxClock_ComputeDT(_pstClockInfo->fDT, pstClock);
 
     /* Updates its active time */
     _pstObject->fActiveTime += stClockInfo.fDT;
