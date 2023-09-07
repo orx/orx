@@ -1610,6 +1610,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
       {
         GLFWimage stImage;
 
+        /* Tracks video memory */
+        orxMEMORY_TRACK(VIDEO, pstInfo->pstBitmap->u32DataSize, orxTRUE);
+
         /* Has cursor? */
         if(sstDisplay.pstCursor != NULL)
         {
@@ -1645,6 +1648,9 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
     /* Icon? */
     else if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_ICON))
     {
+      /* Tracks video memory */
+      orxMEMORY_TRACK(VIDEO, pstInfo->pstBitmap->u32DataSize, orxTRUE);
+
       /* Successful? */
       if(pstInfo->pu8ImageBuffer != orxNULL)
       {
