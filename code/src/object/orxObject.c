@@ -1513,8 +1513,7 @@ void orxFASTCALL orxObject_CommandSetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_
  */
 void orxFASTCALL orxObject_CommandGetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxCOLOR    stColor;
-  orxOBJECT  *pstObject;
+  orxOBJECT *pstObject;
 
   /* Gets object */
   pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
@@ -1522,15 +1521,10 @@ void orxFASTCALL orxObject_CommandGetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Gets its color */
-    if(orxObject_GetColor(pstObject, &stColor) != orxNULL)
+    /* Updates result */
+    if(orxObject_GetRGB(pstObject, &(_pstResult->vValue)) == orxNULL)
     {
-      /* Updates result */
-      orxVector_Copy(&(_pstResult->vValue), &(stColor.vRGB));
-    }
-    else
-    {
-      /* Updates result */
+      /* Clears result */
       orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_WHITE);
     }
   }
@@ -1752,28 +1746,8 @@ void orxFASTCALL orxObject_CommandGetAlpha(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Gets object */
   pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
 
-  /* Valid? */
-  if(pstObject != orxNULL)
-  {
-    orxCOLOR stColor;
-
-    /* Gets its color */
-    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
-    {
-      /* Updates result */
-      _pstResult->fValue = orxFLOAT_1;
-    }
-    else
-    {
-      /* Updates result */
-      _pstResult->fValue = stColor.fAlpha;
-    }
-  }
-  else
-  {
-    /* Updates result */
-    _pstResult->fValue = orxFLOAT_1;
-  }
+  /* Updates result */
+  _pstResult->fValue = (pstObject != orxNULL) ? orxObject_GetAlpha(pstObject) : orxFLOAT_1;
 
   /* Done! */
   return;
@@ -10934,9 +10908,6 @@ orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set color.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -10996,6 +10967,7 @@ orxCOLOR *orxFASTCALL orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pstColor != orxNULL);
 
   /* Gets graphic */
   pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
@@ -11062,9 +11034,6 @@ orxSTATUS orxFASTCALL orxObject_SetRGB(orxOBJECT *_pstObject, const orxVECTOR *_
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set RGB values.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -11078,6 +11047,47 @@ orxSTATUS orxFASTCALL orxObject_SetRGB(orxOBJECT *_pstObject, const orxVECTOR *_
  * @param[in]   _pvRGB          RGB values to set
  */
 orxOBJECT_MAKE_RECURSIVE(SetRGB, const orxVECTOR *);
+
+/** Gets object RGB values.
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvRGB          Object's RGB values
+ * @return      orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetRGB(const orxOBJECT *_pstObject, orxVECTOR *_pvRGB)
+{
+  orxGRAPHIC *pstGraphic;
+  orxVECTOR  *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvRGB != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its color */
+    if(orxGraphic_GetColor(pstGraphic, &stColor) != orxNULL)
+    {
+      /* Updates result */
+      orxVector_Copy(_pvRGB, &(stColor.vRGB));
+      pvResult = _pvRGB;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't get RGB values.", orxObject_GetName(_pstObject));
+  }
+
+  /* Done! */
+  return pvResult;
+}
 
 /** Sets object alpha.
  * @param[in]   _pstObject      Concerned object
@@ -11121,9 +11131,6 @@ orxSTATUS orxFASTCALL orxObject_SetAlpha(orxOBJECT *_pstObject, orxFLOAT _fAlpha
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set alpha values.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -11137,6 +11144,44 @@ orxSTATUS orxFASTCALL orxObject_SetAlpha(orxOBJECT *_pstObject, orxFLOAT _fAlpha
  * @param[in]   _fAlpha         Alpha value to set
  */
 orxOBJECT_MAKE_RECURSIVE(SetAlpha, orxFLOAT);
+
+/** Gets object alpha.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxFLOAT
+ */
+orxFLOAT orxFASTCALL orxObject_GetAlpha(const orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstGraphic;
+  orxFLOAT    fResult = orxFLOAT_1;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its color */
+    if(orxGraphic_GetColor(pstGraphic, &stColor) != orxNULL)
+    {
+      /* Updates result */
+      fResult = stColor.fAlpha;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't get alpha.", orxObject_GetName(_pstObject));
+  }
+
+  /* Done! */
+  return fResult;
+}
 
 /** Sets object repeat (wrap) values.
  * @param[in]   _pstObject      Concerned object
@@ -11164,9 +11209,6 @@ orxSTATUS orxFASTCALL orxObject_SetRepeat(orxOBJECT *_pstObject, orxFLOAT _fRepe
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set repeat.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -11239,9 +11281,6 @@ orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_B
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set blend mode.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
