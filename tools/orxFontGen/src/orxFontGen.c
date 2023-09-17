@@ -256,7 +256,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
                 else
                 {
                   // Logs message
-                  orxFONTGEN_LOG(LOAD, "Character [U+%X]: couldn't add to table, skipping.", u32CharacterCodePoint);
+                  orxFONTGEN_LOG(LOAD, "Character [U+%X] '%.*s': couldn't add to table, skipping.", u32CharacterCodePoint, (orxU32)(pcNext - pc), pc);
                 }
               }
               else
@@ -265,7 +265,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
                 orxHashTable_Add(sstFontGen.pstCharacterTable, u32CharacterCodePoint, (void *)sstFontGen.pstCharacterTable);
 
                 // Logs message
-                orxFONTGEN_LOG(LOAD, "Character [U+%X]: glyph not found in font, skipping.", u32CharacterCodePoint);
+                orxFONTGEN_LOG(LOAD, "Character [U+%X] '%.*s': glyph not found in font, skipping.", u32CharacterCodePoint, (orxU32)(pcNext - pc), pc);
               }
             }
           }
@@ -280,7 +280,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
             else
             {
               // Logs message
-              orxFONTGEN_LOG(LOAD, "Character [U+%X]: invalid, skipping.", u32CharacterCodePoint);
+              orxFONTGEN_LOG(LOAD, "Character [U+%X] '%.*s': invalid, skipping.", u32CharacterCodePoint, (orxU32)(pcNext - pc), pc);
             }
           }
         }
@@ -973,7 +973,7 @@ static void Run()
                 *(pc + u32Offset) = orxCHAR_NULL;
 
                 // Logs message
-                orxFONTGEN_LOG(PROCESS, "Cropping %d rows from character '%s'.", s32DeltaHeight, pc);
+                orxFONTGEN_LOG(PROCESS, "Cropping %d row(s) from character [U+%X] '%s'.", s32DeltaHeight, pstGlyph->u32CodePoint, pc);
               }
 
               // For all rows
