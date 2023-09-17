@@ -256,7 +256,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
                 else
                 {
                   // Logs message
-                  orxFONTGEN_LOG(LOAD, "Character '0x%X': couldn't add to table, skipping.", u32CharacterCodePoint);
+                  orxFONTGEN_LOG(LOAD, "Character [U+%X]: couldn't add to table, skipping.", u32CharacterCodePoint);
                 }
               }
               else
@@ -265,7 +265,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
                 orxHashTable_Add(sstFontGen.pstCharacterTable, u32CharacterCodePoint, (void *)sstFontGen.pstCharacterTable);
 
                 // Logs message
-                orxFONTGEN_LOG(LOAD, "Character '0x%X': glyph not found in font, skipping.", u32CharacterCodePoint);
+                orxFONTGEN_LOG(LOAD, "Character [U+%X]: glyph not found in font, skipping.", u32CharacterCodePoint);
               }
             }
           }
@@ -280,7 +280,7 @@ static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName)
             else
             {
               // Logs message
-              orxFONTGEN_LOG(LOAD, "Invalid character code point '0x%X', skipping.", u32CharacterCodePoint);
+              orxFONTGEN_LOG(LOAD, "Character [U+%X]: invalid, skipping.", u32CharacterCodePoint);
             }
           }
         }
@@ -400,7 +400,7 @@ static orxSTATUS orxFASTCALL ProcessSizeParams(orxU32 _u32ParamCount, const orxS
       orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SIZE, orxFONTGEN_KU32_STATIC_FLAG_NONE);
 
       // Logs message
-      orxFONTGEN_LOG(SIZE, "Character size set to '%g'.", fSize);
+      orxFONTGEN_LOG(SIZE, "Character size set to <%g>.", fSize);
     }
     else
     {
@@ -437,7 +437,7 @@ static orxSTATUS orxFASTCALL ProcessPaddingParams(orxU32 _u32ParamCount, const o
       sstFontGen.fPadding = orx2F(2.0f) * fPadding;
 
       // Logs message
-      orxFONTGEN_LOG(PADDING, "Character padding set to '%g'.", fPadding);
+      orxFONTGEN_LOG(PADDING, "Character padding set to <%g>.", fPadding);
     }
     else
     {
