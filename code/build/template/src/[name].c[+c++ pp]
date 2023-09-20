@@ -127,20 +127,16 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   orxImGui_Init();
 ]
 [+scroll
-[+bundle
-  // Is processing a new bundle?
-  if(orxBundle_IsProcessing())
-  {
-    // Done!
-    return orxSTATUS_SUCCESS;
-  }
-]
   // Create the [-movie scene][+movie logo]
-  CreateObject("[-movie Scene][+movie Logo]");]
+  CreateObject("[-movie Scene][+movie Logo]");
+]
 [-scroll
   // Register the Update function to the core clock
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
+  // Create the [-movie scene][+movie logo]
+  orxObject_CreateFromConfig("[-movie Scene][+movie Logo]");
+]
 [+bundle
   // Is processing a new bundle?
   if(orxBundle_IsProcessing())
@@ -151,9 +147,6 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 ]
   // Create the viewport
   orxViewport_CreateFromConfig("MainViewport");
-
-  // Create the [-movie scene][+movie logo]
-  orxObject_CreateFromConfig("[-movie Scene][+movie Logo]");]
 
   // Done!
   return orxSTATUS_SUCCESS;

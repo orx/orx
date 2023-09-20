@@ -165,43 +165,12 @@ static orxCLOCK_STATIC sstClock;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Finds a clock function storage
- * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _pfnCallback                          Concerned callback
- * @return      orxCLOCK_FUNCTION_STORAGE / orxNULL
- */
-static orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(const orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback)
-{
-  orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstClock);
-  orxASSERT(_pfnCallback != orxNULL);
-
-  /* Finds matching function storage */
-  for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stFunctionList));
-      pstFunctionStorage != orxNULL;
-      pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode)))
-  {
-    /* Match? */
-    if(pstFunctionStorage->pfnCallback == _pfnCallback)
-    {
-      /* Found */
-      break;
-    }
-  }
-
-  /* Done! */
-  return pstFunctionStorage;
-}
-
 /** Computes DT according to modifier
  * @param[in]   _fDT                                  Real DT
  * @param[in]   _pstClock                             Concerned clock
  * @return      Modified DT
  */
-static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock)
+orxFLOAT orxFASTCALL orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock)
 {
   orxFLOAT fResult = _fDT;
 
@@ -265,6 +234,37 @@ static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock)
 
   /* Done! */
   return fResult;
+}
+
+/** Finds a clock function storage
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _pfnCallback                          Concerned callback
+ * @return      orxCLOCK_FUNCTION_STORAGE / orxNULL
+ */
+static orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(const orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback)
+{
+  orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstClock);
+  orxASSERT(_pfnCallback != orxNULL);
+
+  /* Finds matching function storage */
+  for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stFunctionList));
+      pstFunctionStorage != orxNULL;
+      pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode)))
+  {
+    /* Match? */
+    if(pstFunctionStorage->pfnCallback == _pfnCallback)
+    {
+      /* Found */
+      break;
+    }
+  }
+
+  /* Done! */
+  return pstFunctionStorage;
 }
 
 /** Event handler
@@ -1013,6 +1013,13 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
         {
           /* Defaults to fixed/-1 modifier */
           orxClock_SetModifier(pstResult, orxCLOCK_MODIFIER_FIXED, -orxFLOAT_1);
+        }
+
+        /* Should sync with display? */
+        if(orxFLAG_TEST(u32Flags, orxCLOCK_KU32_FLAG_DISPLAY))
+        {
+          /* Updates its tick size */
+          pstResult->stClockInfo.fTickSize = sstClock.fDisplayTickSize;
         }
 
         /* Has core clock? */

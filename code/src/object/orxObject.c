@@ -272,7 +272,8 @@ static orxOBJECT_STATIC sstObject;
 
 /** Semi-private, internal-use only forward declarations
  */
-orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
+orxVECTOR *orxFASTCALL  orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
+orxFLOAT orxFASTCALL    orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock);
 
 /** Update body scale
  */
@@ -1512,8 +1513,7 @@ void orxFASTCALL orxObject_CommandSetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_
  */
 void orxFASTCALL orxObject_CommandGetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxCOLOR    stColor;
-  orxOBJECT  *pstObject;
+  orxOBJECT *pstObject;
 
   /* Gets object */
   pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
@@ -1521,15 +1521,10 @@ void orxFASTCALL orxObject_CommandGetRGB(orxU32 _u32ArgNumber, const orxCOMMAND_
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Gets its color */
-    if(orxObject_GetColor(pstObject, &stColor) != orxNULL)
+    /* Updates result */
+    if(orxObject_GetRGB(pstObject, &(_pstResult->vValue)) == orxNULL)
     {
-      /* Updates result */
-      orxVector_Copy(&(_pstResult->vValue), &(stColor.vRGB));
-    }
-    else
-    {
-      /* Updates result */
+      /* Clears result */
       orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_WHITE);
     }
   }
@@ -1751,28 +1746,8 @@ void orxFASTCALL orxObject_CommandGetAlpha(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Gets object */
   pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
 
-  /* Valid? */
-  if(pstObject != orxNULL)
-  {
-    orxCOLOR stColor;
-
-    /* Gets its color */
-    if(orxObject_GetColor(pstObject, &stColor) == orxNULL)
-    {
-      /* Updates result */
-      _pstResult->fValue = orxFLOAT_1;
-    }
-    else
-    {
-      /* Updates result */
-      _pstResult->fValue = stColor.fAlpha;
-    }
-  }
-  else
-  {
-    /* Updates result */
-    _pstResult->fValue = orxFLOAT_1;
-  }
+  /* Updates result */
+  _pstResult->fValue = (pstObject != orxNULL) ? orxObject_GetAlpha(pstObject) : orxFLOAT_1;
 
   /* Done! */
   return;
@@ -4317,28 +4292,36 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
   if((u32UpdateFlags == orxOBJECT_KU32_FLAG_ENABLED)
   || (u32UpdateFlags & orxOBJECT_KU32_FLAG_DEATH_ROW))
   {
-    const orxCLOCK_INFO  *pstClockInfo;
+    orxCLOCK_INFO stClockInfo;
 
     /* Has clock? */
     if(_pstObject->apstStructureList[orxSTRUCTURE_ID_CLOCK] != orxNULL)
     {
+      orxCLOCK *pstClock;
+
       /* Uses it */
-      pstClockInfo = orxClock_GetInfo((orxCLOCK *)_pstObject->apstStructureList[orxSTRUCTURE_ID_CLOCK]);
+      pstClock = (orxCLOCK *)_pstObject->apstStructureList[orxSTRUCTURE_ID_CLOCK];
+
+      /* Copies its info */
+      orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
+
+      /* Computes its DT */
+      stClockInfo.fDT = orxClock_ComputeDT(_pstClockInfo->fDT, pstClock);
     }
     else
     {
-      /* Uses default info */
-      pstClockInfo = _pstClockInfo;
+      /* Copies its info */
+      orxMemory_Copy(&stClockInfo, _pstClockInfo, sizeof(orxCLOCK_INFO));
     }
 
     /* Updates its active time */
-    _pstObject->fActiveTime += pstClockInfo->fDT;
+    _pstObject->fActiveTime += stClockInfo.fDT;
 
     /* Has life time? */
     if(orxFLAG_TEST(pstStructure->u32Flags, orxOBJECT_KU32_FLAG_HAS_LIFETIME))
     {
       /* Updates its life time */
-      _pstObject->fLifeTime -= pstClockInfo->fDT;
+      _pstObject->fLifeTime -= stClockInfo.fDT;
 
       /* Should die? */
       if(_pstObject->fLifeTime <= orxFLOAT_0)
@@ -4358,7 +4341,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
     if(bDeleted == orxFALSE)
     {
       /* Has DT? */
-      if(pstClockInfo->fDT > orxFLOAT_0)
+      if(stClockInfo.fDT > orxFLOAT_0)
       {
         orxU32 u32LifeTimeFlags, i;
 
@@ -4369,7 +4352,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
           if(_pstObject->apstStructureList[i] != orxNULL)
           {
             /* Updates it */
-            if(orxStructure_Update(_pstObject->apstStructureList[i], _pstObject, pstClockInfo) == orxSTATUS_FAILURE)
+            if(orxStructure_Update(_pstObject->apstStructureList[i], _pstObject, &stClockInfo) == orxSTATUS_FAILURE)
             {
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to update structure [%s] for object <%s>.", orxStructure_GetIDString((orxSTRUCTURE_ID)i), orxObject_GetName(_pstObject));
@@ -4390,7 +4373,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
             orxObject_GetPosition(_pstObject, &vPosition);
 
             /* Computes its move */
-            orxVector_Mulf(&vMove, &(_pstObject->vSpeed), pstClockInfo->fDT);
+            orxVector_Mulf(&vMove, &(_pstObject->vSpeed), stClockInfo.fDT);
 
             /* Gets its new position */
             orxVector_Add(&vPosition, &vPosition, &vMove);
@@ -4403,7 +4386,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
           if(_pstObject->fAngularVelocity != orxFLOAT_0)
           {
             /* Updates its rotation */
-            orxObject_SetRotation(_pstObject, orxObject_GetRotation(_pstObject) + (_pstObject->fAngularVelocity * pstClockInfo->fDT));
+            orxObject_SetRotation(_pstObject, orxObject_GetRotation(_pstObject) + (_pstObject->fAngularVelocity * stClockInfo.fDT));
           }
         }
         else
@@ -5783,6 +5766,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 {
                   /* Uses it as Z component */
                   orxString_ToFloat(pc, &vPosition.fZ, orxNULL);
+
+                  /* Uses parent's position? */
+                  if(bUseParentPosition != orxFALSE)
+                  {
+                    /* Gets world space values */
+                    vPosition.fZ *= vParentSize.fZ;
+                  }
                 }
                 break;
               }
@@ -6252,13 +6242,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
             /* Copies it */
             orxMemory_Copy(&stAgeClockInfo, pstClockInfo, sizeof(orxCLOCK_INFO));
-
-            /* Has multiply modifier? */
-            if(stAgeClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY] != orxFLOAT_0)
-            {
-              /* Updates age */
-              fAge *= stAgeClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY];
-            }
 
             /* For all time slices */
             for(; fAge > orxFLOAT_0; fAge -= stAgeClockInfo.fDT)
@@ -10925,9 +10908,6 @@ orxSTATUS orxFASTCALL orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set color.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -10987,6 +10967,7 @@ orxCOLOR *orxFASTCALL orxObject_GetColor(const orxOBJECT *_pstObject, orxCOLOR *
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pstColor != orxNULL);
 
   /* Gets graphic */
   pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
@@ -11053,9 +11034,6 @@ orxSTATUS orxFASTCALL orxObject_SetRGB(orxOBJECT *_pstObject, const orxVECTOR *_
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set RGB values.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -11069,6 +11047,47 @@ orxSTATUS orxFASTCALL orxObject_SetRGB(orxOBJECT *_pstObject, const orxVECTOR *_
  * @param[in]   _pvRGB          RGB values to set
  */
 orxOBJECT_MAKE_RECURSIVE(SetRGB, const orxVECTOR *);
+
+/** Gets object RGB values.
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvRGB          Object's RGB values
+ * @return      orxVECTOR / orxNULL
+ */
+orxVECTOR *orxFASTCALL orxObject_GetRGB(const orxOBJECT *_pstObject, orxVECTOR *_pvRGB)
+{
+  orxGRAPHIC *pstGraphic;
+  orxVECTOR  *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pvRGB != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its color */
+    if(orxGraphic_GetColor(pstGraphic, &stColor) != orxNULL)
+    {
+      /* Updates result */
+      orxVector_Copy(_pvRGB, &(stColor.vRGB));
+      pvResult = _pvRGB;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't get RGB values.", orxObject_GetName(_pstObject));
+  }
+
+  /* Done! */
+  return pvResult;
+}
 
 /** Sets object alpha.
  * @param[in]   _pstObject      Concerned object
@@ -11112,9 +11131,6 @@ orxSTATUS orxFASTCALL orxObject_SetAlpha(orxOBJECT *_pstObject, orxFLOAT _fAlpha
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set alpha values.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -11128,6 +11144,44 @@ orxSTATUS orxFASTCALL orxObject_SetAlpha(orxOBJECT *_pstObject, orxFLOAT _fAlpha
  * @param[in]   _fAlpha         Alpha value to set
  */
 orxOBJECT_MAKE_RECURSIVE(SetAlpha, orxFLOAT);
+
+/** Gets object alpha.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxFLOAT
+ */
+orxFLOAT orxFASTCALL orxObject_GetAlpha(const orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstGraphic;
+  orxFLOAT    fResult = orxFLOAT_1;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    orxCOLOR stColor;
+
+    /* Gets its color */
+    if(orxGraphic_GetColor(pstGraphic, &stColor) != orxNULL)
+    {
+      /* Updates result */
+      fResult = stColor.fAlpha;
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't get alpha.", orxObject_GetName(_pstObject));
+  }
+
+  /* Done! */
+  return fResult;
+}
 
 /** Sets object repeat (wrap) values.
  * @param[in]   _pstObject      Concerned object
@@ -11155,9 +11209,6 @@ orxSTATUS orxFASTCALL orxObject_SetRepeat(orxOBJECT *_pstObject, orxFLOAT _fRepe
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set repeat.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
@@ -11230,9 +11281,6 @@ orxSTATUS orxFASTCALL orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_B
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No graphic on object <%s>, can't set blend mode.", orxObject_GetName(_pstObject));
-
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
   }
