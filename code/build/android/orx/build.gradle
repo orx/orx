@@ -70,6 +70,17 @@ android {
             }
         }
     }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+        singleVariant('debug') {
+            withSourcesJar()
+        }
+        singleVariant('profile') {
+            withSourcesJar()
+        }
+    }
     lint {
         abortOnError true
     }
@@ -78,31 +89,31 @@ dependencies {
     api 'androidx.core:core:1.9.0'
     api 'androidx.appcompat:appcompat:1.6.1'
 
-    api 'androidx.games:games-activity:2.1.0-alpha01'
-    api 'androidx.games:games-controller:2.0.0'
-    api 'androidx.games:games-frame-pacing:2.1.0-beta01'
+    api 'androidx.games:games-activity:2.1.0-alpha02'
+    api 'androidx.games:games-controller:2.0.1'
+    api 'androidx.games:games-frame-pacing:2.1.0-rc01'
 }
 
 afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
+                from components.release
                 groupId 'org.orx-project'
                 artifactId 'orx'
                 version android.defaultConfig.versionName
-                from components.release
             }
             debug(MavenPublication) {
+                from components.debug
                 groupId 'org.orx-project'
                 artifactId 'orxd'
                 version android.defaultConfig.versionName
-                from components.debug
             }
             profile(MavenPublication) {
+                from components.profile
                 groupId 'org.orx-project'
                 artifactId 'orxp'
                 version android.defaultConfig.versionName
-                from components.profile
             }
         }
         repositories {
