@@ -2101,6 +2101,45 @@ void orxFASTCALL orxObject_CommandGetSibling(orxU32 _u32ArgNumber, const orxCOMM
   return;
 }
 
+/** Command: FindChild
+ */
+void orxFASTCALL orxObject_CommandFindChild(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxOBJECT *pstChild;
+
+    /* Finds its child */
+    pstChild = orxObject_FindChild(pstObject, _astArgList[1].zValue);
+
+    /* Valid? */
+    if(pstChild != orxNULL)
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxStructure_GetGUID(pstChild);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxU64_UNDEFINED;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: Attach
  */
 void orxFASTCALL orxObject_CommandAttach(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -2402,6 +2441,45 @@ void orxFASTCALL orxObject_CommandGetOwnedSibling(orxU32 _u32ArgNumber, const or
     {
       /* Updates result */
       _pstResult->u64Value = orxStructure_GetGUID(pstOwnedSibling);
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxU64_UNDEFINED;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: FindOwnedChild
+ */
+void orxFASTCALL orxObject_CommandFindOwnedChild(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxOBJECT *pstChild;
+
+    /* Finds its owned child */
+    pstChild = orxObject_FindOwnedChild(pstObject, _astArgList[1].zValue);
+
+    /* Valid? */
+    if(pstChild != orxNULL)
+    {
+      /* Updates result */
+      _pstResult->u64Value = orxStructure_GetGUID(pstChild);
     }
     else
     {
@@ -3586,6 +3664,8 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetChild, "Child", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: GetSibling */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetSibling, "Sibling", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: FindChild */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, FindChild, "Child", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Path", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: Attach */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, Attach, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_U64});
@@ -3608,6 +3688,8 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetOwnedChild, "Owned Child", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: GetOwnedSibling */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetOwnedSibling, "Owned Sibling", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: FindOwnedChild */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, FindOwnedChild, "Owned Child", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Path", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: SetClock */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetClock, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Clock = <void>", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
@@ -3809,6 +3891,8 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetChild);
   /* Command: GetSibling */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetSibling);
+  /* Command: FindChild */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, FindChild);
 
   /* Command: Attach */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Attach);
@@ -3831,6 +3915,8 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetOwnedChild);
   /* Command: GetOwnedSibling */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetOwnedSibling);
+  /* Command: FindOwnedChild */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, FindOwnedChild);
 
   /* Command: SetClock */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetClock);
