@@ -67,8 +67,7 @@ android {
         abortOnError true
     }
     androidResources {
-        // Do not compress ORX assets!
-        noCompress = [ '.ini' ]
+        noCompress = [ '.obr', '.ktx2' ]
     }
 }
 dependencies {

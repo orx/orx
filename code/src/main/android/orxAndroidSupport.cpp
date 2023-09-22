@@ -722,7 +722,7 @@ void android_main(android_app *_pstState)
    */
   if(pthread_key_create(&sThreadKey, orxAndroid_JNI_ThreadDestroyed))
   {
-    __android_log_print(ANDROID_LOG_ERROR, "Orx", "Error initializing pthread key");
+    LOGE("Error initializing pthread key");
   }
   else
   {
