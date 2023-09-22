@@ -241,7 +241,8 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedSibling(const orxO
  * orxObject_GetChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
  * @endcode
  * @param[in]   _pstObject      Concerned object
- * @return      First child object / orxNULL
+ * @param[in]   _zPath          Path defining which object to find in the hierarchy (cf. notes above)
+ * @return      Object matching path / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_FindOwnedChild(const orxOBJECT *_pstObject, const orxSTRING _zPath);
 /** @} */
@@ -557,7 +558,8 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetNextChild(const orxOBJE
  * orxObject_GetChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
  * @endcode
  * @param[in]   _pstObject      Concerned object
- * @return      First child object / orxNULL
+ * @param[in]   _zPath          Path defining which object to find in the hierarchy (cf. notes above)
+ * @return      Object matching path / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_FindChild(const orxOBJECT *_pstObject, const orxSTRING _zPath);
 
