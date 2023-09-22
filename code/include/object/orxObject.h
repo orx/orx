@@ -203,8 +203,8 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetOwner(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetOwner(const orxOBJECT *_pstObject);
 
-/** Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner)
- * see orxObject_SetOwner() and orxObject_SetParent() for a comparison of ownership and parenthood in Orx.
+/** Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner).
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of ownership and parenthood in Orx.
  *
  * This function is typically used to iterate over the owned children of an object. For example;
  * @code
@@ -225,6 +225,25 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedChild(const orxOBJ
  * @return      Next sibling object / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedSibling(const orxOBJECT *_pstObject);
+
+/** Finds the child inside an object's owner hierarchy that matches the given path.
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
+ * Paths are composed by object names separated by '.'.
+ * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
+ * For example:
+ * @code
+ * orxObject_GetChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
+ * orxObject_GetChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_GetChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
+ * orxObject_GetChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @return      First child object / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_FindOwnedChild(const orxOBJECT *_pstObject, const orxSTRING _zPath);
 /** @} */
 
 
@@ -522,6 +541,25 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT
  * @return      Next child/sibling structure (camera, spawner, object or frame) / orxNULL
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetNextChild(const orxOBJECT *_pstObject, void *_pChild, orxSTRUCTURE_ID _eStructureID);
+
+/** Finds the child inside an object's frame hierarchy that matches the given path.
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
+ * Paths are composed by object names separated by '.'.
+ * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
+ * For example:
+ * @code
+ * orxObject_GetChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
+ * orxObject_GetChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_GetChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
+ * orxObject_GetChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @return      First child object / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_FindChild(const orxOBJECT *_pstObject, const orxSTRING _zPath);
 
 
 /** Attaches an object to a parent while maintaining the object's world position.

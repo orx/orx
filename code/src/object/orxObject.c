@@ -104,6 +104,11 @@
 
 #define orxOBJECT_KU32_STACK_SIZE               64
 
+#define orxOBJECT_KC_PATH_SEPARATOR             '.'
+#define orxOBJECT_KC_PATH_WILDCARD              '*'
+#define orxOBJECT_KC_PATH_INDEX_START           '['
+#define orxOBJECT_KC_PATH_INDEX_STOP            ']'
+
 #define orxOBJECT_KZ_CONFIG_GRAPHIC_NAME        "Graphic"
 #define orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME    "AnimationSet"
 #define orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY      "AnimationFrequency"
@@ -424,7 +429,7 @@ void orxFASTCALL orxObject_CommandFindNext(orxU32 _u32ArgNumber, const orxCOMMAN
       pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
   {
     /* Correct name? */
-    if((_u32ArgNumber == 0) || (*_astArgList[0].zValue == '*') || (orxString_Compare(_astArgList[0].zValue, orxObject_GetName(pstObject)) == 0))
+    if((_u32ArgNumber == 0) || (*_astArgList[0].zValue == orxOBJECT_KC_PATH_WILDCARD) || (orxString_Compare(_astArgList[0].zValue, orxObject_GetName(pstObject)) == 0))
     {
       /* Updates result */
       _pstResult->u64Value = orxStructure_GetGUID(pstObject);
@@ -4040,6 +4045,145 @@ void orxFASTCALL orxObject_ApplyFXRecursive(orxOBJECT *_pstObject, const orxCLOC
   return;
 }
 
+/* Finds next child
+ */
+static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObject, const orxSTRING _zName, orxS32 *_ps32Skip, orxBOOL _bRecursive, orxOBJECT *(*_pfnGetChild)(const orxOBJECT *), orxOBJECT *(*_pfnGetSibling)(const orxOBJECT *))
+{
+  orxOBJECT *pstChild, *pstResult = orxNULL;
+
+  /* For all children */
+  for(pstChild = _pfnGetChild(_pstObject);
+      pstChild != orxNULL;
+      pstChild = _pfnGetSibling(pstChild))
+  {
+    /* Found? */
+    if(((*_zName == orxCHAR_NULL) || (orxString_Compare(_zName, orxObject_GetName(pstChild)) == 0))
+    && ((*_ps32Skip)-- <= 0))
+    {
+      /* Updates result */
+      pstResult = pstChild;
+      break;
+    }
+    /* Recursive? */
+    else if(_bRecursive != orxFALSE)
+    {
+      /* Updates result */
+      pstResult = orxObject_FindNextChild(pstChild, _zName, _ps32Skip, orxTRUE, _pfnGetChild, _pfnGetSibling);
+
+      /* Found? */
+      if(pstResult != orxNULL)
+      {
+        /* Stops */
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/* Finds a child
+ */
+static orxINLINE orxOBJECT *orxObject_FindChildInternal(const orxOBJECT *_pstObject, const orxSTRING _zPath, orxOBJECT *(*_pfnGetChild)(const orxOBJECT *), orxOBJECT *(*_pfnGetSibling)(const orxOBJECT *))
+{
+  orxOBJECT *pstResult = orxNULL;
+
+  /* Valid? */
+  if(*_zPath != orxCHAR_NULL)
+  {
+    static orxCHAR    sacBuffer[256];
+    const orxOBJECT  *pstObject;
+    const orxCHAR    *pcToken, *pcSeparator;
+    orxBOOL           bWildcard = orxFALSE;
+
+    /* Copies path locally */
+    orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%s", _zPath);
+
+    /* For all tokens */
+    for(pcToken = sacBuffer, pstObject = _pstObject;
+        (pstObject != orxNULL) && (*pcToken != orxCHAR_NULL);
+        pcToken = (pcSeparator != orxNULL) ? pcSeparator + 1 : orxSTRING_EMPTY)
+    {
+      /* Finds separator */
+      pcSeparator = (orxCHAR *)orxString_SearchChar(pcToken, orxOBJECT_KC_PATH_SEPARATOR);
+
+      /* Found? */
+      if(pcSeparator != orxNULL)
+      {
+        /* Cuts string */
+        *(orxCHAR *)pcSeparator = orxCHAR_NULL;
+      }
+
+      /* Wildcard? */
+      if(*pcToken == orxOBJECT_KC_PATH_WILDCARD)
+      {
+        /* Updates status */
+        bWildcard = orxTRUE;
+      }
+      else
+      {
+        orxCHAR  *pcIndex;
+        orxS32    s32Skip = 0;
+
+        /* Has index? */
+        if((pcIndex = (orxCHAR *)orxString_SearchChar(pcToken, orxOBJECT_KC_PATH_INDEX_START)) != orxNULL)
+        {
+          const orxCHAR   *pcIndexStop;
+          const orxSTRING   zIndexEnd;
+
+          /* Is index valid? */
+          if(((pcIndexStop = orxString_SearchChar(pcIndex + 1, orxOBJECT_KC_PATH_INDEX_STOP)) != orxNULL)
+          && (orxString_ToS32(orxString_SkipWhiteSpaces(pcIndex + 1), &s32Skip, &zIndexEnd) != orxSTATUS_FAILURE)
+          && (orxString_SkipWhiteSpaces(zIndexEnd) == pcIndexStop))
+          {
+            /* Cuts string */
+            *pcIndex = orxCHAR_NULL;
+          }
+          else
+          {
+            /* Updates skip counter */
+            s32Skip = -1;
+          }
+        }
+
+        /* Should continue? */
+        if(s32Skip >= 0)
+        {
+          /* Finds current object */
+          pstObject = orxObject_FindNextChild(pstObject, pcToken, &s32Skip, bWildcard, _pfnGetChild, _pfnGetSibling);
+
+          /* Updates status */
+          bWildcard = orxFALSE;
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't find child of <%s>: invalid path syntax <%s>, aborting!", orxObject_GetName(pstObject), pcToken);
+          break;
+        }
+      }
+    }
+
+    /* Complete? */
+    if(pcSeparator == orxNULL)
+    {
+      orxS32 s32Skip = 0;
+
+      /* Updates result */
+      pstResult = (bWildcard != orxFALSE) ? orxObject_FindNextChild(pstObject, orxSTRING_EMPTY, &s32Skip, orxTRUE, _pfnGetChild, _pfnGetSibling) : (orxOBJECT *)pstObject;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Can't find child of <%s>: incomplete path <%s>, aborting!", orxObject_GetName(_pstObject), _zPath);
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Creates an empty object
  */
 static orxINLINE orxOBJECT *orxObject_CreateInternal()
@@ -6866,6 +7010,40 @@ orxOBJECT *orxFASTCALL orxObject_GetOwnedSibling(const orxOBJECT *_pstObject)
   return pstResult;
 }
 
+/** Finds the child inside an object's owner hierarchy that matches the given path.
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
+ * Paths are composed by object names separated by '.'.
+ * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
+ * For example:
+ * @code
+ * orxObject_GetChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
+ * orxObject_GetChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_GetChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
+ * orxObject_GetChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @return      First child object / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_FindOwnedChild(const orxOBJECT *_pstObject, const orxSTRING _zPath)
+{
+  orxOBJECT *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_zPath != orxNULL);
+
+  /* Updates result */
+  pstResult = orxObject_FindChildInternal(_pstObject, _zPath, &orxObject_GetOwnedChild, &orxObject_GetOwnedSibling);
+
+  /* Done! */
+  return pstResult;
+}
+
+
 /** Sets associated clock for an object.
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _pOwner       Clock to associate / orxNULL
@@ -8250,6 +8428,39 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetNextChild(const orxOBJECT *_pstObject, vo
     /* Updates result */
     pstResult = orxNULL;
   }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Finds the child inside an object's frame hierarchy that matches the given path.
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
+ * Paths are composed by object names separated by '.'.
+ * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
+ * For example:
+ * @code
+ * orxObject_GetChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
+ * orxObject_GetChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_GetChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
+ * orxObject_GetChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @return      First child object / orxNULL
+ */
+orxOBJECT *orxFASTCALL orxObject_FindChild(const orxOBJECT *_pstObject, const orxSTRING _zPath)
+{
+  orxOBJECT *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_zPath != orxNULL);
+
+  /* Updates result */
+  pstResult = orxObject_FindChildInternal(_pstObject, _zPath, &orxObject_GetChild, &orxObject_GetSibling);
 
   /* Done! */
   return pstResult;
