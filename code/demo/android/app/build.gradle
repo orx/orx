@@ -66,6 +66,10 @@ android {
     lint {
         abortOnError true
     }
+    androidResources {
+        // Do not compress ORX assets!
+        noCompress = [ '.ini' ]
+    }
 }
 dependencies {
     releaseImplementation 'org.orx-project:orx:1.15'
