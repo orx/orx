@@ -738,6 +738,8 @@ var searchData=
   ['orxobject_5fenableshader',['orxObject_EnableShader',['../group__orx_object.html#ga7e61c5963e3b2def4631a815edc83038',1,'orxObject.h']]],
   ['orxobject_5fenabletimeline',['orxObject_EnableTimeLine',['../group__orx_object.html#ga73c16ff1443e59fb552022b7d15e0dd4',1,'orxObject.h']]],
   ['orxobject_5fexit',['orxObject_Exit',['../group__orx_object.html#ga0d484fe82fc292b75901142e1db6fdd4',1,'orxObject.h']]],
+  ['orxobject_5ffindchild',['orxObject_FindChild',['../group__orx_object.html#gadc3450f11eb742381f581365f3339884',1,'orxObject.h']]],
+  ['orxobject_5ffindownedchild',['orxObject_FindOwnedChild',['../group__orx_object.html#gaa7d7d48aae37fe6f2f8f2b48f0e7f774',1,'orxObject.h']]],
   ['orxobject_5fgetactivetime',['orxObject_GetActiveTime',['../group__orx_object.html#gaeedb8303518d6456b563726ac18dc6d6',1,'orxObject.h']]],
   ['orxobject_5fgetalpha',['orxObject_GetAlpha',['../group__orx_object.html#ga8bf7af770d7bff7ba1a2acd80e9d04cc',1,'orxObject.h']]],
   ['orxobject_5fgetangularvelocity',['orxObject_GetAngularVelocity',['../group__orx_object.html#ga15330f81b355cfe2bd4685c819c40baa',1,'orxObject.h']]],

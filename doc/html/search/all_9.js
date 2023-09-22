@@ -1697,6 +1697,8 @@ var searchData=
   ['orxobject_5fevent_5fprepare',['orxOBJECT_EVENT_PREPARE',['../group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1ab96a69e75382ea4046e8661957c2cd5f',1,'orxObject.h']]],
   ['orxobject_5fevent_5funpause',['orxOBJECT_EVENT_UNPAUSE',['../group__orx_object.html#gga6d3be2b225f5e2ae28fc521d39cbb6b1aef8246d995cbf5d495ca50ed0862cfce',1,'orxObject.h']]],
   ['orxobject_5fexit',['orxObject_Exit',['../group__orx_object.html#ga0d484fe82fc292b75901142e1db6fdd4',1,'orxObject.h']]],
+  ['orxobject_5ffindchild',['orxObject_FindChild',['../group__orx_object.html#gadc3450f11eb742381f581365f3339884',1,'orxObject.h']]],
+  ['orxobject_5ffindownedchild',['orxObject_FindOwnedChild',['../group__orx_object.html#gaa7d7d48aae37fe6f2f8f2b48f0e7f774',1,'orxObject.h']]],
   ['orxobject_5fget_5fstructure',['orxOBJECT_GET_STRUCTURE',['../group__orx_object.html#ga327727f4ebf89729d8518e90c918fddd',1,'orxObject.h']]],
   ['orxobject_5fgetactivetime',['orxObject_GetActiveTime',['../group__orx_object.html#gaeedb8303518d6456b563726ac18dc6d6',1,'orxObject.h']]],
   ['orxobject_5fgetalpha',['orxObject_GetAlpha',['../group__orx_object.html#ga8bf7af770d7bff7ba1a2acd80e9d04cc',1,'orxObject.h']]],
