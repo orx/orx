@@ -4148,19 +4148,34 @@ static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObjec
     {
       /* Updates result */
       pstResult = pstChild;
-      break;
+
+      /* Should stop? */
+      if(*_ps32Skip == -1)
+      {
+        break;
+      }
     }
+
     /* Recursive? */
-    else if(_bRecursive != orxFALSE)
+    if(_bRecursive != orxFALSE)
     {
-      /* Updates result */
-      pstResult = orxObject_FindNextChild(pstChild, _zName, _ps32Skip, orxTRUE, _pfnGetChild, _pfnGetSibling);
+      orxOBJECT *pstObject;
+
+      /* Finds object recursively */
+      pstObject = orxObject_FindNextChild(pstChild, _zName, _ps32Skip, orxTRUE, _pfnGetChild, _pfnGetSibling);
 
       /* Found? */
-      if(pstResult != orxNULL)
+      if(pstObject != orxNULL)
       {
-        /* Stops */
-        break;
+        /* Updates result */
+        pstResult = pstObject;
+
+        /* Should stop? */
+        if(*_ps32Skip == -1)
+        {
+          /* Stops */
+          break;
+        }
       }
     }
   }
@@ -4211,6 +4226,7 @@ static orxINLINE orxOBJECT *orxObject_FindChildInternal(const orxOBJECT *_pstObj
       {
         orxCHAR  *pcIndex;
         orxS32    s32Skip = 0;
+        orxBOOL   bValid = orxTRUE;
 
         /* Has index? */
         if((pcIndex = (orxCHAR *)orxString_SearchChar(pcToken, orxOBJECT_KC_PATH_INDEX_START)) != orxNULL)
@@ -4228,13 +4244,13 @@ static orxINLINE orxOBJECT *orxObject_FindChildInternal(const orxOBJECT *_pstObj
           }
           else
           {
-            /* Updates skip counter */
-            s32Skip = -1;
+            /* Updates status */
+            bValid = orxFALSE;
           }
         }
 
         /* Should continue? */
-        if(s32Skip >= 0)
+        if(bValid != orxFALSE)
         {
           /* Finds current object */
           pstObject = orxObject_FindNextChild(pstObject, pcToken, &s32Skip, bWildcard, _pfnGetChild, _pfnGetSibling);
