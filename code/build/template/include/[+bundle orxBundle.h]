@@ -429,7 +429,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
       const orxSTRING zKey;
       const orxSTRING zQualifier;
       void *          pValue;
-    } azRuleInfoList[] =
+    } astRuleInfoList[] =
     {
       {orxBUNDLE_KZ_CONFIG_EXCLUDE_LIST, orxANSI_KZ_COLOR_FG_RED "-" orxANSI_KZ_COLOR_RESET,    (void *)orxSTRING_FALSE},
       {orxBUNDLE_KZ_CONFIG_INCLUDE_LIST, orxANSI_KZ_COLOR_FG_GREEN "+" orxANSI_KZ_COLOR_RESET,  (void *)orxSTRING_TRUE}
@@ -459,21 +459,21 @@ static orxINLINE orxSTATUS orxBundle_Process()
     orxConfig_PushSection(orxBUNDLE_KZ_CONFIG_SECTION);
 
     // For all rule lists
-    for(i = 0, iCount = orxARRAY_GET_ITEM_COUNT(azRuleInfoList); i < iCount; i++)
+    for(i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astRuleInfoList); i < iCount; i++)
     {
       // For all list entries
-      for(j = 0, jCount = (orxU32)orxConfig_GetListCount(azRuleInfoList[i].zKey); j < jCount; j++)
+      for(j = 0, jCount = (orxU32)orxConfig_GetListCount(astRuleInfoList[i].zKey); j < jCount; j++)
       {
         const orxSTRING zRule;
 
         // Gets it
-        zRule = orxConfig_GetListString(azRuleInfoList[i].zKey, (orxS32)j);
+        zRule = orxConfig_GetListString(astRuleInfoList[i].zKey, (orxS32)j);
 
         // Adds it to the rule table
-        *orxHashTable_Retrieve(pstRuleTable, orxString_Hash(zRule)) = azRuleInfoList[i].pValue;
+        *orxHashTable_Retrieve(pstRuleTable, orxString_Hash(zRule)) = astRuleInfoList[i].pValue;
 
         // Logs message
-        orxLOG(orxBUNDLE_KZ_LOG_TAG "Applying rule %s" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_RESET, azRuleInfoList[i].zQualifier, zRule);
+        orxLOG(orxBUNDLE_KZ_LOG_TAG "Applying rule %s" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_RESET, astRuleInfoList[i].zQualifier, zRule);
       }
     }
 
