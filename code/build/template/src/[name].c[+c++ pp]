@@ -145,9 +145,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     return orxSTATUS_SUCCESS;
   }
 ]
+[-scroll
   // Create the viewport
   orxViewport_CreateFromConfig("MainViewport");
-
+]
   // Done!
   return orxSTATUS_SUCCESS;
 }
