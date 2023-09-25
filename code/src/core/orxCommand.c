@@ -731,7 +731,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               /* Toggles block status */
               bInBlock = !bInBlock;
 
-              /* Falls through */
+              /* Fall through */
             }
 
             default:
