@@ -100,20 +100,6 @@ typedef enum __orxFX_TYPE_t
  } orxFX_CURVE;
 
 
-/** FX operation enum
- */
-typedef enum __orxFX_OPERATION_t
-{
-  orxFX_OPERATION_ADD = 0,
-  orxFX_OPERATION_MULTIPLY,
-
-  orxFX_OPERATION_NUMBER,
-
-  orxFX_OPERATION_NONE = orxENUM_NONE
-
-} orxFX_OPERATION;
-
-
 /** FX curve param
  */
 typedef struct __orxFX_CURVE_PARAM_t
