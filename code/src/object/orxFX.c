@@ -856,6 +856,61 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
             /* Depending on curve */
             switch(pstFXSlot->u32Flags & orxFX_SLOT_KU32_MASK_CURVE)
             {
+              case orxFX_CURVE_BEZIER:
+              {
+                /* Gets linear start coef in period [0.0; 1.0] starting at given phase */
+                fStartCoef = (fStartTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
+
+                /* Non zero? */
+                if(fStartCoef != orxFLOAT_0)
+                {
+                  /* Gets its modulo */
+                  fStartCoef = orxMath_Mod(fStartCoef, orxFLOAT_1);
+
+                  /* Zero? */
+                  if(fStartCoef == orxFLOAT_0)
+                  {
+                    /* Sets it at max value */
+                    fStartCoef = orxFLOAT_1;
+                  }
+                  else
+                  {
+                    orxVECTOR vResult;
+
+                    /* Gets value */
+                    orxVector_Bezier(&vResult, &orxVECTOR_0, &(pstFXSlot->stCurveParam.vCurvePoint1), &(pstFXSlot->stCurveParam.vCurvePoint2), &orxVECTOR_1, fStartCoef);
+                    fStartCoef = vResult.fY;
+                  }
+                }
+
+                /* Gets linear end coef in period [0.0; 1.0] starting at given phase */
+                fEndCoef = (fEndTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
+
+                /* Non zero? */
+                if(fEndCoef != orxFLOAT_0)
+                {
+                  /* Gets its modulo */
+                  fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
+
+                  /* Zero? */
+                  if(fEndCoef == orxFLOAT_0)
+                  {
+                    /* Sets it at max value */
+                    fEndCoef = orxFLOAT_1;
+                  }
+                  else
+                  {
+                    orxVECTOR vResult;
+
+                    /* Gets value */
+                    orxVector_Bezier(&vResult, &orxVECTOR_0, &(pstFXSlot->stCurveParam.vCurvePoint1), &(pstFXSlot->stCurveParam.vCurvePoint2), &orxVECTOR_1, fEndCoef);
+                    fEndCoef = vResult.fY;
+                  }
+                }
+
+                break;
+              }
+
               case orxFX_CURVE_LINEAR:
               {
                 /* Gets linear start coef in period [0.0; 1.0] starting at given phase */

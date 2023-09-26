@@ -85,13 +85,13 @@ typedef enum __orxFX_TYPE_t
  */
  typedef enum __orxFX_CURVE_t
  {
-   orxFX_CURVE_LINEAR = 0,
+   orxFX_CURVE_BEZIER = 0,
+   orxFX_CURVE_LINEAR,
    orxFX_CURVE_SMOOTH,
    orxFX_CURVE_SMOOTHER,
    orxFX_CURVE_TRIANGLE,
    orxFX_CURVE_SINE,
    orxFX_CURVE_SQUARE,
-   orxFX_CURVE_BEZIER,
 
    orxFX_CURVE_NUMBER,
 
