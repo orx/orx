@@ -74,22 +74,22 @@
 #define orxFX_SLOT_KU32_FLAG_ACCELERATION       0x40000000  /**< Acceleration flag */
 #define orxFX_SLOT_KU32_FLAG_POW                0x80000000  /**< Pow flag */
 
-#define orxFX_SLOT_KU32_MASK_CURVE              0x0000000F  /**< Curve mask */
+#define orxFX_SLOT_KU32_MASK_CURVE              0x000000FF  /**< Curve mask */
 
-#define orxFX_SLOT_KU32_MASK_TYPE               0x000000F0  /**< FX type mask */
+#define orxFX_SLOT_KU32_MASK_TYPE               0x00000F00  /**< FX type mask */
 
-#define orxFX_SLOT_KU32_MASK_OPERATION          0x00000300  /**< FX operation mask */
+#define orxFX_SLOT_KU32_MASK_OPERATION          0x00003000  /**< FX operation mask */
 
-#define orxFX_SLOT_KU32_MASK_VALUE_TYPE         0x00000C00  /**< FX value type mask */
+#define orxFX_SLOT_KU32_MASK_VALUE_TYPE         0x0000C000  /**< FX value type mask */
 
-#define orxFX_SLOT_KU32_MASK_USER_ALL           0x000FF000  /**< User all mask */
+#define orxFX_SLOT_KU32_MASK_USER_ALL           0x00FF0000  /**< User all mask */
 
 #define orxFX_SLOT_KU32_MASK_ALL                0xFFFFFFFF  /**< All mask */
 
 
-#define orxFX_SLOT_KU32_SHIFT_TYPE              4
-#define orxFX_SLOT_KU32_SHIFT_OPERATION         8
-#define orxFX_SLOT_KU32_SHIFT_VALUE_TYPE        10
+#define orxFX_SLOT_KU32_SHIFT_TYPE              8
+#define orxFX_SLOT_KU32_SHIFT_OPERATION         12
+#define orxFX_SLOT_KU32_SHIFT_VALUE_TYPE        14
 
 
 /** Misc defines
@@ -336,6 +336,119 @@ static orxINLINE orxSTATUS orxFX_ProcessData(orxFX *_pstFX)
 
   /* Done! */
   return eResult;
+}
+
+static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxFLOAT _fTime)
+{
+  orxFLOAT fResult;
+
+  /* Depending on curve */
+  switch(orxFLAG_GET(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_MASK_CURVE))
+  {
+    case orxFX_CURVE_SINE:
+    {
+      /* Updates result */
+      fResult = orx2F(0.5f) * (orxMath_Sin(orxMATH_KF_2_PI * _fTime - orxMATH_KF_PI_BY_2) + orxFLOAT_1);
+
+      break;
+    }
+
+    case orxFX_CURVE_SQUARE:
+    {
+      /* Updates result */
+      fResult = ((_fTime >= orx2F(0.25f)) && (_fTime < orx2F(0.75f))) ? orxFLOAT_1 : orxFLOAT_0;
+
+      break;
+    }
+
+    case orxFX_CURVE_TRIANGLE:
+    {
+      /* Updates result */
+      fResult = orx2F(2.0f) * _fTime;
+      if(fResult > orxFLOAT_1)
+      {
+        fResult = orx2F(2.0f) - fResult;
+      }
+
+      break;
+    }
+
+    case orxFX_CURVE_BEZIER:
+    {
+      orxVECTOR vResult;
+
+      /* Updates result */
+      orxVector_Bezier(&vResult, &orxVECTOR_0, &(_pstFXSlot->stCurveParam.vCurvePoint1), &(_pstFXSlot->stCurveParam.vCurvePoint2), &orxVECTOR_1, _fTime);
+      fResult = vResult.fY;
+
+      break;
+    }
+
+    default:
+    case orxFX_CURVE_LINEAR:
+    {
+      /* Updates result */
+      fResult = _fTime;
+
+      break;
+    }
+
+    case orxFX_CURVE_SMOOTH:
+    {
+      /* Updates result */
+      fResult = (_fTime * _fTime) * (orx2F(3.0f) - (orx2F(2.0f) * _fTime));
+
+      break;
+    }
+
+    case orxFX_CURVE_SMOOTHER:
+    {
+      /* Updates result */
+      fResult = (_fTime * _fTime * _fTime) * (_fTime * ((_fTime * orx2F(6.0f)) - orx2F(15.0f)) + orx2F(10.0f));
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Computes coef
+ */
+static orxINLINE orxFLOAT orxFX_ComputeCoef(const orxFX_SLOT *_pstFXSlot, orxFLOAT _fTime, orxFLOAT _fFrequency)
+{
+  orxFLOAT fResult;
+
+  /* Gets linear coef in period [0.0; 1.0] starting at given phase */
+  fResult = (_fTime * _fFrequency) + _pstFXSlot->stCurveParam.fPhase;
+
+  /* Non zero? */
+  if(fResult != orxFLOAT_0)
+  {
+    orxFX_CURVE eCurve;
+
+    /* Gets its modulo */
+    fResult = orxMath_Mod(fResult, orxFLOAT_1);
+
+    /* Gets curve */
+    eCurve = (orxFX_CURVE)orxFLAG_GET(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_MASK_CURVE);
+
+    /* Not symmetrical and has wrapped around? */
+    if((eCurve >= orxFX_CURVE_SYMMETRIC_NUMBER) && (fResult == orxFLOAT_0))
+    {
+      /* Sets it at max value */
+      fResult = orxFLOAT_1;
+    }
+    else
+    {
+      /* Gets curve value */
+      fResult = orxFX_GetCurveValue(_pstFXSlot, fResult);
+    }
+  }
+
+  /* Done! */
+  return fResult;
 }
 
 /** Event handler
@@ -884,297 +997,9 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
               fFrequency = orxFLOAT_1 / fPeriod;
             }
 
-            /* Depending on curve */
-            switch(orxFLAG_GET(pstFXSlot->u32Flags, orxFX_SLOT_KU32_MASK_CURVE))
-            {
-              case orxFX_CURVE_BEZIER:
-              {
-                /* Gets linear start coef in period [0.0; 1.0] starting at given phase */
-                fStartCoef = (fStartTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-
-                /* Non zero? */
-                if(fStartCoef != orxFLOAT_0)
-                {
-                  /* Gets its modulo */
-                  fStartCoef = orxMath_Mod(fStartCoef, orxFLOAT_1);
-
-                  /* Zero? */
-                  if(fStartCoef == orxFLOAT_0)
-                  {
-                    /* Sets it at max value */
-                    fStartCoef = orxFLOAT_1;
-                  }
-                  else
-                  {
-                    orxVECTOR vResult;
-
-                    /* Gets value */
-                    orxVector_Bezier(&vResult, &orxVECTOR_0, &(pstFXSlot->stCurveParam.vCurvePoint1), &(pstFXSlot->stCurveParam.vCurvePoint2), &orxVECTOR_1, fStartCoef);
-                    fStartCoef = vResult.fY;
-                  }
-                }
-
-                /* Gets linear end coef in period [0.0; 1.0] starting at given phase */
-                fEndCoef = (fEndTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-
-                /* Non zero? */
-                if(fEndCoef != orxFLOAT_0)
-                {
-                  /* Gets its modulo */
-                  fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
-
-                  /* Zero? */
-                  if(fEndCoef == orxFLOAT_0)
-                  {
-                    /* Sets it at max value */
-                    fEndCoef = orxFLOAT_1;
-                  }
-                  else
-                  {
-                    orxVECTOR vResult;
-
-                    /* Gets value */
-                    orxVector_Bezier(&vResult, &orxVECTOR_0, &(pstFXSlot->stCurveParam.vCurvePoint1), &(pstFXSlot->stCurveParam.vCurvePoint2), &orxVECTOR_1, fEndCoef);
-                    fEndCoef = vResult.fY;
-                  }
-                }
-
-                break;
-              }
-
-              case orxFX_CURVE_LINEAR:
-              {
-                /* Gets linear start coef in period [0.0; 1.0] starting at given phase */
-                fStartCoef = (fStartTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-
-                /* Non zero? */
-                if(fStartCoef != orxFLOAT_0)
-                {
-                  /* Gets its modulo */
-                  fStartCoef = orxMath_Mod(fStartCoef, orxFLOAT_1);
-
-                  /* Zero? */
-                  if(fStartCoef == orxFLOAT_0)
-                  {
-                    /* Sets it at max value */
-                    fStartCoef = orxFLOAT_1;
-                  }
-                }
-
-                /* Gets linear end coef in period [0.0; 1.0] starting at given phase */
-                fEndCoef = (fEndTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-
-                /* Non zero? */
-                if(fEndCoef != orxFLOAT_0)
-                {
-                  /* Gets its modulo */
-                  fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
-
-                  /* Zero? */
-                  if(fEndCoef == orxFLOAT_0)
-                  {
-                    /* Sets it at max value */
-                    fEndCoef = orxFLOAT_1;
-                  }
-                }
-
-                break;
-              }
-
-              case orxFX_CURVE_SMOOTH:
-              {
-                /* Gets linear start coef in period [0.0; 1.0] starting at given phase */
-                fStartCoef = (fStartTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-
-                /* Non zero? */
-                if(fStartCoef != orxFLOAT_0)
-                {
-                  /* Gets its modulo */
-                  fStartCoef = orxMath_Mod(fStartCoef, orxFLOAT_1);
-
-                  /* Zero? */
-                  if(fStartCoef == orxFLOAT_0)
-                  {
-                    /* Sets it at max value */
-                    fStartCoef = orxFLOAT_1;
-                  }
-                  else
-                  {
-                    /* Gets smoothed value */
-                    fStartCoef = (fStartCoef * fStartCoef) * (orx2F(3.0f) - (orx2F(2.0f) * fStartCoef));
-                  }
-                }
-
-                /* Gets linear end coef in period [0.0; 1.0] starting at given phase */
-                fEndCoef = (fEndTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-
-                /* Non zero? */
-                if(fEndCoef != orxFLOAT_0)
-                {
-                  /* Gets its modulo */
-                  fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
-
-                  /* Zero? */
-                  if(fEndCoef == orxFLOAT_0)
-                  {
-                    /* Sets it at max value */
-                    fEndCoef = orxFLOAT_1;
-                  }
-                  else
-                  {
-                    /* Gets smoothed value */
-                    fEndCoef = (fEndCoef * fEndCoef) * (orx2F(3.0f) - (orx2F(2.0f) * fEndCoef));
-                  }
-                }
-
-                break;
-              }
-
-              case orxFX_CURVE_SMOOTHER:
-              {
-                /* Gets linear start coef in period [0.0; 1.0] starting at given phase */
-                fStartCoef = (fStartTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-
-                /* Non zero? */
-                if(fStartCoef != orxFLOAT_0)
-                {
-                  /* Gets its modulo */
-                  fStartCoef = orxMath_Mod(fStartCoef, orxFLOAT_1);
-
-                  /* Zero? */
-                  if(fStartCoef == orxFLOAT_0)
-                  {
-                    /* Sets it at max value */
-                    fStartCoef = orxFLOAT_1;
-                  }
-                  else
-                  {
-                    /* Gets smoothed value */
-                    fStartCoef = (fStartCoef * fStartCoef * fStartCoef) * (fStartCoef * ((fStartCoef * orx2F(6.0f)) - orx2F(15.0f)) + orx2F(10.0f));
-                  }
-                }
-
-                /* Gets linear end coef in period [0.0; 1.0] starting at given phase */
-                fEndCoef = (fEndTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-
-                /* Non zero? */
-                if(fEndCoef != orxFLOAT_0)
-                {
-                  /* Gets its modulo */
-                  fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
-
-                  /* Zero? */
-                  if(fEndCoef == orxFLOAT_0)
-                  {
-                    /* Sets it at max value */
-                    fEndCoef = orxFLOAT_1;
-                  }
-                  else
-                  {
-                    /* Gets smoothed value */
-                    fEndCoef = (fEndCoef * fEndCoef * fEndCoef) * (fEndCoef * ((fEndCoef * orx2F(6.0f)) - orx2F(15.0f)) + orx2F(10.0f));
-                  }
-                }
-
-                break;
-              }
-
-              case orxFX_CURVE_TRIANGLE:
-              {
-                /* Gets linear coef in period [0.0; 2.0] starting at given phase */
-                fStartCoef = (fStartTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-                fStartCoef = orxMath_Mod(fStartCoef * orx2F(2.0f), orx2F(2.0f));
-
-                /* Gets symetric coef between 1.0 & 2.0 */
-                if(fStartCoef > orxFLOAT_1)
-                {
-                  fStartCoef = orx2F(2.0f) - fStartCoef;
-                }
-
-                /* Gets linear coef in period [0.0; 2.0] starting at given phase */
-                fEndCoef = (fEndTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-                fEndCoef = orxMath_Mod(fEndCoef * orx2F(2.0f), orx2F(2.0f));
-
-                /* Gets symetric coef between 1.0 & 2.0 */
-                if(fEndCoef > orxFLOAT_1)
-                {
-                  fEndCoef = orx2F(2.0f) - fEndCoef;
-                }
-
-                break;
-              }
-
-              case orxFX_CURVE_SQUARE:
-              {
-                /* Gets linear start coef in period [0.0; 1.0] starting at given phase */
-                fStartCoef = (fStartTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-
-                /* Non zero? */
-                if(fStartCoef != orxFLOAT_0)
-                {
-                    /* Gets its modulo */
-                    fStartCoef = orxMath_Mod(fStartCoef, orxFLOAT_1);
-
-                    /* High section? */
-                    if((fStartCoef >= orx2F(0.25f))
-                    && (fStartCoef < orx2F(0.75f)))
-                    {
-                        /* Sets it at max value */
-                        fStartCoef = orxFLOAT_1;
-                    }
-                    else
-                    {
-                        /* Sets it at min value */
-                        fStartCoef = orxFLOAT_0;
-                    }
-                }
-
-                /* Gets linear End coef in period [0.0; 1.0] Ending at given phase */
-                fEndCoef = (fEndTime * fFrequency) + pstFXSlot->stCurveParam.fPhase;
-
-                /* Non zero? */
-                if(fEndCoef != orxFLOAT_0)
-                {
-                    /* Gets its modulo */
-                    fEndCoef = orxMath_Mod(fEndCoef, orxFLOAT_1);
-
-                    /* High section? */
-                    if((fEndCoef >= orx2F(0.25f))
-                    && (fEndCoef < orx2F(0.75f)))
-                    {
-                        /* Sets it at max value */
-                        fEndCoef = orxFLOAT_1;
-                    }
-                    else
-                    {
-                        /* Sets it at min value */
-                        fEndCoef = orxFLOAT_0;
-                    }
-                }
-
-                break;
-              }
-
-              case orxFX_CURVE_SINE:
-              {
-                /* Gets sine coef starting at given phase * 2Pi - Pi/2 */
-                fStartCoef = (orxMath_Sin((orxMATH_KF_2_PI * (fStartTime + (fPeriod * (pstFXSlot->stCurveParam.fPhase - orx2F(0.25f))))) * fFrequency) + orxFLOAT_1) * orx2F(0.5f);
-
-                /* Gets sine coef starting at given phase * 2Pi - Pi/2 */
-                fEndCoef = (orxMath_Sin((orxMATH_KF_2_PI * (fEndTime + (fPeriod * (pstFXSlot->stCurveParam.fPhase - orx2F(0.25f))))) * fFrequency) + orxFLOAT_1) * orx2F(0.5f);
-
-                break;
-              }
-
-              default:
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid curve.");
-
-                /* Skips it */
-                continue;
-              }
-            }
+            /* Gets coefs */
+            fStartCoef  = orxFX_ComputeCoef(pstFXSlot, fStartTime, fFrequency);
+            fEndCoef    = orxFX_ComputeCoef(pstFXSlot, fEndTime, fFrequency);
 
             /* Has amplification? */
             if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_AMPLIFICATION))

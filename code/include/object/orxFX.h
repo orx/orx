@@ -51,10 +51,10 @@
 
 /** Slot flags
  */
-#define orxFX_SLOT_KU32_FLAG_ABSOLUTE           0x00001000  /**< Absolute flag */
-#define orxFX_SLOT_KU32_FLAG_STAGGER            0x00002000  /**< Stagger flag */
-#define orxFX_SLOT_KU32_FLAG_USE_ROTATION       0x00004000  /**< Use rotation flag */
-#define orxFX_SLOT_KU32_FLAG_USE_SCALE          0x00008000  /**< Use scale flag */
+#define orxFX_SLOT_KU32_FLAG_ABSOLUTE           0x00010000  /**< Absolute flag */
+#define orxFX_SLOT_KU32_FLAG_STAGGER            0x00020000  /**< Stagger flag */
+#define orxFX_SLOT_KU32_FLAG_USE_ROTATION       0x00040000  /**< Use rotation flag */
+#define orxFX_SLOT_KU32_FLAG_USE_SCALE          0x00080000  /**< Use scale flag */
 
 
 /** FX type enum
@@ -85,13 +85,18 @@ typedef enum __orxFX_TYPE_t
  */
  typedef enum __orxFX_CURVE_t
  {
-   orxFX_CURVE_BEZIER = 0,
+   orxFX_CURVE_SINE = 0,
+   orxFX_CURVE_SQUARE,
+   orxFX_CURVE_TRIANGLE,
+
+   orxFX_CURVE_SYMMETRIC_NUMBER,
+
+   /* Below this point all curves are non-symmetrical */
+
+   orxFX_CURVE_BEZIER = orxFX_CURVE_SYMMETRIC_NUMBER,
    orxFX_CURVE_LINEAR,
    orxFX_CURVE_SMOOTH,
    orxFX_CURVE_SMOOTHER,
-   orxFX_CURVE_TRIANGLE,
-   orxFX_CURVE_SINE,
-   orxFX_CURVE_SQUARE,
 
    orxFX_CURVE_NUMBER,
 
