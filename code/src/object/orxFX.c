@@ -1564,7 +1564,7 @@ orxBOOL orxFASTCALL orxFX_IsEnabled(const orxFX *_pstFX)
  * @param[in]   _eType          Type
  * @param[in]   _eCurve         Curve
  * @param[in]   _pstCurveParam  Curve parameters
- * @param[in]   _u32Flags       Additional flags (Absolute, UseRotation/UseScale for position/speed types only)
+ * @param[in]   _u32Flags       Additional flags (Absolute, Stagger, UseRotation/UseScale for position/speed types only)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxFX_AddSlot(orxFX *_pstFX, orxFX_TYPE _eType, orxFX_CURVE _eCurve, const orxFX_CURVE_PARAM *_pstCurveParam, orxU32 _u32Flags)
