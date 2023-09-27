@@ -66,6 +66,9 @@ android {
     lint {
         abortOnError true
     }
+    androidResources {
+        noCompress = [ '.obr', '.ktx2' ]
+    }
 }
 dependencies {
     releaseImplementation 'org.orx-project:orx:1.15'

@@ -36,7 +36,6 @@
 #if defined(TARGET_OS_ANDROID)
 
 #include <android/log.h>
-#include <sys/system_properties.h>
 
 #ifdef __orxDEBUG__
 
@@ -145,17 +144,7 @@ static void orxAndroid_JNI_ThreadDestroyed(void *_pVvalue)
 
 static orxS32 orxAndroid_GetSdkVersion()
 {
-  orxS32 s32Version;
-
-  char sdkVersion[PROP_VALUE_MAX + 1];
-  int bufferLen = __system_property_get("ro.build.version.sdk", sdkVersion);
-
-  if((bufferLen > 0) && (orxString_ToS32Base(sdkVersion, 10, &s32Version, orxNULL) != orxSTATUS_FAILURE))
-  {
-    return s32Version;
-  }
-
-  return 0;
+  return sstAndroid.app->activity->sdkVersion;
 }
 
 static jobject orxAndroid_JNI_getDisplay(JNIEnv *_pstEnv)
@@ -517,20 +506,18 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
           }
           case AMOTION_EVENT_ACTION_DOWN:
           {
-            iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
-            stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+            stPayload.stTouch.u32ID = event->pointers[0].id;
+            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, 0);
+            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, 0);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
             break;
           }
           case AMOTION_EVENT_ACTION_UP:
           case AMOTION_EVENT_ACTION_CANCEL:
           {
-            iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
-            stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+            stPayload.stTouch.u32ID = event->pointers[0].id;
+            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, 0);
+            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, 0);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
             break;
           }
@@ -682,12 +669,12 @@ extern "C" void orxAndroid_PumpEvents()
    * If animating, we loop until all events are read, then continue
    * to draw the next frame of animation.
    */
-  while( (id = ALooper_pollAll(orxAndroid_IsInteractible() ? 0 : -1, NULL, &events, (void **) &source)) >= 0 )
+  while((id = ALooper_pollAll(orxAndroid_IsInteractible() ? 0 : -1, NULL, &events, (void **) &source)) >= 0)
   {
     /* Process this event. */
     if(source != NULL)
     {
-      source->process( sstAndroid.app, source );
+      source->process(sstAndroid.app, source);
     }
 
     if(id == LOOPER_ID_SENSOR)
@@ -735,7 +722,7 @@ void android_main(android_app *_pstState)
    */
   if(pthread_key_create(&sThreadKey, orxAndroid_JNI_ThreadDestroyed))
   {
-    __android_log_print(ANDROID_LOG_ERROR, "Orx", "Error initializing pthread key");
+    LOGE("Error initializing pthread key");
   }
   else
   {
