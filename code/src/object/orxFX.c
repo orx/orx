@@ -95,6 +95,7 @@
 /** Misc defines
  */
 #define orxFX_KU32_REFERENCE_TABLE_SIZE         128
+#define orxFX_KU32_CURVE_TABLE_SIZE             64
 
 #define orxFX_KU32_SLOT_NUMBER                  8
 
@@ -127,6 +128,38 @@
 #define orxFX_KZ_SMOOTH                         "smooth"
 #define orxFX_KZ_SMOOTHER                       "smoother"
 #define orxFX_KZ_BEZIER                         "bezier"
+
+#define orxFX_KZ_EASE_IN_SINE                   "easeinsine"
+#define orxFX_KZ_EASE_OUT_SINE                  "easeoutsine"
+#define orxFX_KZ_EASE_IN_OUT_SINE               "easeinoutsine"
+#define orxFX_KZ_EASE_IN_QUAD                   "easeinquad"
+#define orxFX_KZ_EASE_OUT_QUAD                  "easeoutquad"
+#define orxFX_KZ_EASE_IN_OUT_QUAD               "easeinoutquad"
+#define orxFX_KZ_EASE_IN_CUBIC                  "easeincubic"
+#define orxFX_KZ_EASE_OUT_CUBIC                 "easeoutcubic"
+#define orxFX_KZ_EASE_IN_OUT_CUBIC              "easeinoutcubic"
+#define orxFX_KZ_EASE_IN_QUART                  "easeinquart"
+#define orxFX_KZ_EASE_OUT_QUART                 "easeoutquart"
+#define orxFX_KZ_EASE_IN_OUT_QUART              "easeinoutquart"
+#define orxFX_KZ_EASE_IN_QUINT                  "easeinquint"
+#define orxFX_KZ_EASE_OUT_QUINT                 "easeoutquint"
+#define orxFX_KZ_EASE_IN_OUT_QUINT              "easeinoutquint"
+#define orxFX_KZ_EASE_IN_EXPO                   "easeinexpo"
+#define orxFX_KZ_EASE_OUT_EXPO                  "easeoutexpo"
+#define orxFX_KZ_EASE_IN_OUT_EXPO               "easeinoutexpo"
+#define orxFX_KZ_EASE_IN_CIRC                   "easeincirc"
+#define orxFX_KZ_EASE_OUT_CIRC                  "easeoutcirc"
+#define orxFX_KZ_EASE_IN_OUT_CIRC               "easeinoutcirc"
+#define orxFX_KZ_EASE_IN_BACK                   "easeinback"
+#define orxFX_KZ_EASE_OUT_BACK                  "easeoutback"
+#define orxFX_KZ_EASE_IN_OUT_BACK               "easeinoutback"
+#define orxFX_KZ_EASE_IN_ELASTIC                "easeinelastic"
+#define orxFX_KZ_EASE_OUT_ELASTIC               "easeoutelastic"
+#define orxFX_KZ_EASE_IN_OUT_ELASTIC            "easeinoutelastic"
+#define orxFX_KZ_EASE_IN_BOUNCE                 "easeinbounce"
+#define orxFX_KZ_EASE_OUT_BOUNCE                "easeoutbounce"
+#define orxFX_KZ_EASE_IN_OUT_BOUNCE             "easeinoutbounce"
+
 #define orxFX_KZ_ALPHA                          "alpha"
 #define orxFX_KZ_COLOR                          "color"
 #define orxFX_KZ_RGB                            "rgb"
@@ -197,6 +230,7 @@ struct __orxFX_t
 typedef struct __orxFX_STATIC_t
 {
   orxHASHTABLE *pstReferenceTable;                        /**< Reference hash table */
+  orxHASHTABLE *pstCurveTable;                            /**< Curve hash table */
   orxU32        u32Flags;                                 /**< Control flags */
 
 } orxFX_STATIC;
@@ -408,6 +442,187 @@ static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxF
 
       break;
     }
+
+    case orxFX_CURVE_EASE_IN_SINE:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_OUT_SINE:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_OUT_SINE:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_QUAD:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_OUT_QUAD:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_OUT_QUAD:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_CUBIC:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_OUT_CUBIC:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_OUT_CUBIC:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_QUART:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_OUT_QUART:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_OUT_QUART:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_QUINT:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_OUT_QUINT:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_OUT_QUINT:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_EXPO:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_OUT_EXPO:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_OUT_EXPO:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_CIRC:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_OUT_CIRC:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_OUT_CIRC:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_BACK:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_OUT_BACK:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_OUT_BACK:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_ELASTIC:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_OUT_ELASTIC:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_OUT_ELASTIC:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_BOUNCE:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_OUT_BOUNCE:
+    {
+      //! TODO
+      break;
+    }
+
+    case orxFX_CURVE_EASE_IN_OUT_BOUNCE:
+    {
+      //! TODO
+      break;
+    }
+
   }
 
   /* Done! */
@@ -567,23 +782,83 @@ orxSTATUS orxFASTCALL orxFX_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstFX, sizeof(orxFX_STATIC));
 
-    /* Creates reference table */
-    sstFX.pstReferenceTable = orxHashTable_Create(orxFX_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    /* Creates curve table */
+    sstFX.pstCurveTable = orxHashTable_Create(orxFX_KU32_CURVE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-    /* Valid? */
-    if(sstFX.pstReferenceTable != orxNULL)
+    /* Success? */
+    if(sstFX.pstCurveTable != orxNULL)
     {
-      /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(FX, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxFX_KU32_BANK_SIZE, orxNULL);
+      /* Creates reference table */
+      sstFX.pstReferenceTable = orxHashTable_Create(orxFX_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-      /* Adds event handler */
-      orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxFX_EventHandler);
-      orxEvent_SetHandlerIDFlags(orxFX_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
+      /* Success? */
+      if(sstFX.pstReferenceTable != orxNULL)
+      {
+        /* Registers structure type */
+        eResult = orxSTRUCTURE_REGISTER(FX, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxFX_KU32_BANK_SIZE, orxNULL);
+
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Inits Flags */
+          orxFLAG_SET(sstFX.u32Flags, orxFX_KU32_STATIC_FLAG_READY, orxFX_KU32_STATIC_FLAG_NONE);
+
+          /* Registers all curves */
+#define orxFX_REGISTER_CURVE(NAME) orxHashTable_Add(sstFX.pstCurveTable, orxString_Hash(orxFX_KZ_##NAME), (void *)(orxFX_CURVE_##NAME + 1))
+          orxFX_REGISTER_CURVE(SINE);
+          orxFX_REGISTER_CURVE(SQUARE);
+          orxFX_REGISTER_CURVE(TRIANGLE);
+          orxFX_REGISTER_CURVE(BEZIER);
+          orxFX_REGISTER_CURVE(LINEAR);
+          orxFX_REGISTER_CURVE(SMOOTH);
+          orxFX_REGISTER_CURVE(SMOOTHER);
+          orxFX_REGISTER_CURVE(EASE_IN_SINE);
+          orxFX_REGISTER_CURVE(EASE_OUT_SINE);
+          orxFX_REGISTER_CURVE(EASE_IN_OUT_SINE);
+          orxFX_REGISTER_CURVE(EASE_IN_QUAD);
+          orxFX_REGISTER_CURVE(EASE_OUT_QUAD);
+          orxFX_REGISTER_CURVE(EASE_IN_OUT_QUAD);
+          orxFX_REGISTER_CURVE(EASE_IN_CUBIC);
+          orxFX_REGISTER_CURVE(EASE_OUT_CUBIC);
+          orxFX_REGISTER_CURVE(EASE_IN_OUT_CUBIC);
+          orxFX_REGISTER_CURVE(EASE_IN_QUART);
+          orxFX_REGISTER_CURVE(EASE_OUT_QUART);
+          orxFX_REGISTER_CURVE(EASE_IN_OUT_QUART);
+          orxFX_REGISTER_CURVE(EASE_IN_QUINT);
+          orxFX_REGISTER_CURVE(EASE_OUT_QUINT);
+          orxFX_REGISTER_CURVE(EASE_IN_OUT_QUINT);
+          orxFX_REGISTER_CURVE(EASE_IN_EXPO);
+          orxFX_REGISTER_CURVE(EASE_OUT_EXPO);
+          orxFX_REGISTER_CURVE(EASE_IN_OUT_EXPO);
+          orxFX_REGISTER_CURVE(EASE_IN_CIRC);
+          orxFX_REGISTER_CURVE(EASE_OUT_CIRC);
+          orxFX_REGISTER_CURVE(EASE_IN_OUT_CIRC);
+          orxFX_REGISTER_CURVE(EASE_IN_BACK);
+          orxFX_REGISTER_CURVE(EASE_OUT_BACK);
+          orxFX_REGISTER_CURVE(EASE_IN_OUT_BACK);
+          orxFX_REGISTER_CURVE(EASE_IN_ELASTIC);
+          orxFX_REGISTER_CURVE(EASE_OUT_ELASTIC);
+          orxFX_REGISTER_CURVE(EASE_IN_OUT_ELASTIC);
+          orxFX_REGISTER_CURVE(EASE_IN_BOUNCE);
+          orxFX_REGISTER_CURVE(EASE_OUT_BOUNCE);
+          orxFX_REGISTER_CURVE(EASE_IN_OUT_BOUNCE);
+#undef orxFX_REGISTER_CURVE
+
+          /* Adds event handler */
+          orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxFX_EventHandler);
+          orxEvent_SetHandlerIDFlags(orxFX_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
+        }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create FX reference table.");
+      }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create FX hashtable storage.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create FX curve table.");
     }
   }
   else
@@ -595,14 +870,18 @@ orxSTATUS orxFASTCALL orxFX_Init()
     eResult = orxSTATUS_SUCCESS;
   }
 
-  /* Initialized? */
-  if(eResult != orxSTATUS_FAILURE)
+  /* Not initialized? */
+  if(eResult == orxSTATUS_FAILURE)
   {
-    /* Inits Flags */
-    orxFLAG_SET(sstFX.u32Flags, orxFX_KU32_STATIC_FLAG_READY, orxFX_KU32_STATIC_FLAG_NONE);
-  }
-  else
-  {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxFX_EventHandler);
+
+    /* Deletes curve table if needed */
+    if(sstFX.pstCurveTable != orxNULL)
+    {
+      orxHashTable_Delete(sstFX.pstCurveTable);
+    }
+
     /* Deletes reference table if needed */
     if(sstFX.pstReferenceTable != orxNULL)
     {
@@ -632,6 +911,9 @@ void orxFASTCALL orxFX_Exit()
 
     /* Deletes reference table */
     orxHashTable_Delete(sstFX.pstReferenceTable);
+
+    /* Deletes curve table */
+    orxHashTable_Delete(sstFX.pstCurveTable);
 
     /* Updates flags */
     sstFX.u32Flags &= ~orxFX_KU32_STATIC_FLAG_READY;
@@ -1701,70 +1983,44 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
   && (orxConfig_PushSection(_zSlotID) != orxSTATUS_FAILURE))
   {
     orxFX_CURVE_PARAM stCurveParam;
-    const orxSTRING   zCurve;
+    void             *pCurve;
     const orxSTRING   zType;
     orxCOLORSPACE     eColorSpace = orxCOLORSPACE_NONE;
     orxFX_CURVE       eCurve      = orxFX_CURVE_LINEAR;
     orxFX_TYPE        eType       = orxFX_TYPE_NONE;
     orxFX_OPERATION   eOperation  = orxFX_OPERATION_ADD;
     orxU32            u32Flags    = orxFX_SLOT_KU32_FLAG_NONE;
+    orxCHAR           acCurve[32];
 
     /* Clears curve param */
     orxMemory_Zero(&stCurveParam, sizeof(orxFX_CURVE_PARAM));
 
-    /* Gets its curve */
-    zCurve = orxConfig_GetListString(orxFX_KZ_CONFIG_CURVE, 0);
+    /* Gets curve's lowercase name */
+    orxString_NPrint(acCurve, sizeof(acCurve), "%s", orxConfig_GetListString(orxFX_KZ_CONFIG_CURVE, 0));
+    orxString_LowerCase(acCurve);
 
-    /* Linear curve? */
-    if(orxString_ICompare(zCurve, orxFX_KZ_LINEAR) == 0)
+    /* Retrieves curve's registration */
+    pCurve = orxHashTable_Get(sstFX.pstCurveTable, orxString_Hash(acCurve));
+
+    /* Valid? */
+    if(pCurve != 0)
     {
-      /* Updates its curve */
-      eCurve = orxFX_CURVE_LINEAR;
-    }
-    /* Sine curve? */
-    else if(orxString_ICompare(zCurve, orxFX_KZ_SINE) == 0)
-    {
-      /* Updates its curve */
-      eCurve = orxFX_CURVE_SINE;
-    }
-    /* Smooth curve? */
-    else if(orxString_ICompare(zCurve, orxFX_KZ_SMOOTH) == 0)
-    {
-      /* Updates its curve */
-      eCurve = orxFX_CURVE_SMOOTH;
-    }
-    /* Smoother curve? */
-    else if(orxString_ICompare(zCurve, orxFX_KZ_SMOOTHER) == 0)
-    {
-      /* Updates its curve */
-      eCurve = orxFX_CURVE_SMOOTHER;
-    }
-    /* Triangle curve? */
-    else if(orxString_ICompare(zCurve, orxFX_KZ_TRIANGLE) == 0)
-    {
-      /* Updates its curve */
-      eCurve = orxFX_CURVE_TRIANGLE;
-    }
-    /* Square curve? */
-    else if(orxString_ICompare(zCurve, orxFX_KZ_SQUARE) == 0)
-    {
-      /* Updates its curve */
-      eCurve = orxFX_CURVE_SQUARE;
-    }
-    /* Bezier curve? */
-    else if(orxString_ICompare(zCurve, orxFX_KZ_BEZIER) == 0)
-    {
-      /* Gets its control points */
-      if((orxConfig_GetListVector(orxFX_KZ_CONFIG_CURVE, 1, &(stCurveParam.vCurvePoint1)) != orxNULL)
-      && (orxConfig_GetListVector(orxFX_KZ_CONFIG_CURVE, 2, &(stCurveParam.vCurvePoint2)) != orxNULL))
+      /* Gets curve */
+      eCurve = (orxFX_CURVE)((orxU32)(orxUPTR)pCurve - 1);
+
+      /* Bezier? */
+      if(eCurve == orxFX_CURVE_BEZIER)
       {
-        /* Updates its curve */
-        eCurve = orxFX_CURVE_BEZIER;
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't add slot [%s]: invalid control point(s) for Bezier curve, defaulting to linear curve.", _zSlotID);
+        /* Can't get its control points */
+        if((orxConfig_GetListVector(orxFX_KZ_CONFIG_CURVE, 1, &(stCurveParam.vCurvePoint1)) == orxNULL)
+        || (orxConfig_GetListVector(orxFX_KZ_CONFIG_CURVE, 2, &(stCurveParam.vCurvePoint2)) == orxNULL))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't add slot [%s]: invalid control point(s) for Bezier curve, defaulting to linear curve.", _zSlotID);
+
+          /* Updates curve */
+          eCurve = orxFX_CURVE_LINEAR;
+        }
       }
     }
 
