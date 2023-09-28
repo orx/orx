@@ -372,6 +372,25 @@ static orxINLINE orxSTATUS orxFX_ProcessData(orxFX *_pstFX)
   return eResult;
 }
 
+static orxINLINE orxFLOAT orxFX_EaseOutBounce(orxFLOAT _fTime)
+{
+  orxFLOAT fN = orx2F(7.5625f), fD = orx2F(1.0f / 2.75f), fTemp, fResult;
+
+  /* Updates result */
+  fResult = (_fTime < fD)
+            ? fN * _fTime * _fTime
+            : (_fTime < orx2F(2.0f) * fD)
+              ? (fTemp = _fTime - orx2F(1.5f) * fD, fN * fTemp * fTemp + orx2F(0.75f))
+              : (_fTime < orx2F(2.5f) * fD)
+                ? (fTemp = _fTime - orx2F(2.25f) * fD, fN * fTemp * fTemp + orx2F(0.9375f))
+                : (fTemp = _fTime - orx2F(2.625f) * fD, fN * fTemp * fTemp + orx2F(0.984375f));
+
+  /* Done! */
+  return fResult;
+}
+
+/** Get Curve value
+ */
 static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxFLOAT _fTime)
 {
   orxFLOAT fResult;
@@ -383,7 +402,6 @@ static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxF
     {
       /* Updates result */
       fResult = orx2F(0.5f) * (orxMath_Sin(orxMATH_KF_2_PI * _fTime - orxMATH_KF_PI_BY_2) + orxFLOAT_1);
-
       break;
     }
 
@@ -391,7 +409,6 @@ static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxF
     {
       /* Updates result */
       fResult = ((_fTime >= orx2F(0.25f)) && (_fTime < orx2F(0.75f))) ? orxFLOAT_1 : orxFLOAT_0;
-
       break;
     }
 
@@ -403,7 +420,6 @@ static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxF
       {
         fResult = orx2F(2.0f) - fResult;
       }
-
       break;
     }
 
@@ -414,7 +430,6 @@ static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxF
       /* Updates result */
       orxVector_Bezier(&vResult, &orxVECTOR_0, &(_pstFXSlot->stCurveParam.vCurvePoint1), &(_pstFXSlot->stCurveParam.vCurvePoint2), &orxVECTOR_1, _fTime);
       fResult = vResult.fY;
-
       break;
     }
 
@@ -423,7 +438,6 @@ static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxF
     {
       /* Updates result */
       fResult = _fTime;
-
       break;
     }
 
@@ -431,7 +445,6 @@ static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxF
     {
       /* Updates result */
       fResult = (_fTime * _fTime) * (orx2F(3.0f) - (orx2F(2.0f) * _fTime));
-
       break;
     }
 
@@ -439,187 +452,252 @@ static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxF
     {
       /* Updates result */
       fResult = (_fTime * _fTime * _fTime) * (_fTime * ((_fTime * orx2F(6.0f)) - orx2F(15.0f)) + orx2F(10.0f));
-
       break;
     }
 
     case orxFX_CURVE_EASE_IN_SINE:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orxFLOAT_1 - orxMath_Cos(_fTime * orxMATH_KF_PI_BY_2);
       break;
     }
 
     case orxFX_CURVE_EASE_OUT_SINE:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orxMath_Sin(_fTime * orxMATH_KF_PI_BY_2);
       break;
     }
 
     case orxFX_CURVE_EASE_IN_OUT_SINE:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orx2F(0.5f) * (orxFLOAT_1 - orxMath_Cos(orxMATH_KF_PI * _fTime));
       break;
     }
 
     case orxFX_CURVE_EASE_IN_QUAD:
     {
-      //! TODO
+      /* Updates result */
+      fResult = _fTime * _fTime;
       break;
     }
 
     case orxFX_CURVE_EASE_OUT_QUAD:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orxFLOAT_1 - (orxFLOAT_1 - _fTime) * (orxFLOAT_1 - _fTime);
       break;
     }
 
     case orxFX_CURVE_EASE_IN_OUT_QUAD:
     {
-      //! TODO
+      /* Updates result */
+      orxFLOAT fTemp = orx2F(-2.0f) * _fTime + orx2F(2.0f);
+      fResult = (_fTime < orx2F(0.5f)) ? orx2F(2.0f) * _fTime * _fTime : orxFLOAT_1 - orx2F(0.5f) * fTemp * fTemp;
       break;
     }
 
     case orxFX_CURVE_EASE_IN_CUBIC:
     {
-      //! TODO
+      /* Updates result */
+      fResult = _fTime * _fTime * _fTime;
       break;
     }
 
     case orxFX_CURVE_EASE_OUT_CUBIC:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orxFLOAT_1 - (orxFLOAT_1 - _fTime) * (orxFLOAT_1 - _fTime) * (orxFLOAT_1 - _fTime);
       break;
     }
 
     case orxFX_CURVE_EASE_IN_OUT_CUBIC:
     {
-      //! TODO
+      /* Updates result */
+      orxFLOAT fTemp = orx2F(-2.0f) * _fTime + orx2F(2.0f);
+      fResult = (_fTime < orx2F(0.5f)) ? orx2F(4.0f) * _fTime * _fTime * _fTime : orxFLOAT_1 - orx2F(0.5f) * fTemp * fTemp * fTemp;
       break;
     }
 
     case orxFX_CURVE_EASE_IN_QUART:
     {
-      //! TODO
+      /* Updates result */
+      fResult = _fTime * _fTime * _fTime * _fTime;
       break;
     }
 
     case orxFX_CURVE_EASE_OUT_QUART:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orxFLOAT_1 - (orxFLOAT_1 - _fTime) * (orxFLOAT_1 - _fTime) * (orxFLOAT_1 - _fTime) * (orxFLOAT_1 - _fTime);
       break;
     }
 
     case orxFX_CURVE_EASE_IN_OUT_QUART:
     {
-      //! TODO
+      /* Updates result */
+      orxFLOAT fTemp = orx2F(-2.0f) * _fTime + orx2F(2.0f);
+      fResult = (_fTime < orx2F(0.5f)) ? orx2F(8.0f) * _fTime * _fTime * _fTime * _fTime : orxFLOAT_1 - orx2F(0.5f) * fTemp * fTemp * fTemp * fTemp;
       break;
     }
 
     case orxFX_CURVE_EASE_IN_QUINT:
     {
-      //! TODO
+      /* Updates result */
+      fResult = _fTime * _fTime * _fTime * _fTime * _fTime;
       break;
     }
 
     case orxFX_CURVE_EASE_OUT_QUINT:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orxFLOAT_1 - (orxFLOAT_1 - _fTime) * (orxFLOAT_1 - _fTime) * (orxFLOAT_1 - _fTime) * (orxFLOAT_1 - _fTime) * (orxFLOAT_1 - _fTime);
       break;
     }
 
     case orxFX_CURVE_EASE_IN_OUT_QUINT:
     {
-      //! TODO
+      /* Updates result */
+      orxFLOAT fTemp = orx2F(-2.0f) * _fTime + orx2F(2.0f);
+      fResult = (_fTime < orx2F(0.5f)) ? orx2F(16.0f) * _fTime * _fTime * _fTime * _fTime * _fTime : orxFLOAT_1 - orx2F(0.5f) * fTemp * fTemp * fTemp * fTemp * fTemp;
       break;
     }
 
     case orxFX_CURVE_EASE_IN_EXPO:
     {
-      //! TODO
+      /* Updates result */
+      fResult = (_fTime == orxFLOAT_0) ? orxFLOAT_0 : orxMath_Pow(orx2F(2.0f), orx2F(10.0f) * _fTime - orx2F(10.0f));
       break;
     }
 
     case orxFX_CURVE_EASE_OUT_EXPO:
     {
-      //! TODO
+      /* Updates result */
+      fResult = (_fTime == orxFLOAT_1) ? orxFLOAT_1 : orxFLOAT_1 - orxMath_Pow(orx2F(2.0f), orx2F(-10.0f) * _fTime);
       break;
     }
 
     case orxFX_CURVE_EASE_IN_OUT_EXPO:
     {
-      //! TODO
+      /* Updates result */
+      fResult = (_fTime == orxFLOAT_0)
+                ? orxFLOAT_0
+                : (_fTime == orxFLOAT_1)
+                  ? orxFLOAT_1
+                  : (_fTime < orx2F(0.5f))
+                    ? orx2F(0.5f) * orxMath_Pow(orx2F(2.0f), orx2F(20.0f) * _fTime - orx2F(10.0f))
+                    : orxFLOAT_1 - orx2F(0.5f) * orxMath_Pow(orx2F(2.0f), orx2F(-20.0f) * _fTime + orx2F(10.0f));
       break;
     }
 
     case orxFX_CURVE_EASE_IN_CIRC:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orxFLOAT_1 - orxMath_Sqrt(orxFLOAT_1 - _fTime * _fTime);
       break;
     }
 
     case orxFX_CURVE_EASE_OUT_CIRC:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orxMath_Sqrt(orxFLOAT_1 - (_fTime - orxFLOAT_1) * (_fTime - orxFLOAT_1));
       break;
     }
 
     case orxFX_CURVE_EASE_IN_OUT_CIRC:
     {
-      //! TODO
+      /* Updates result */
+      fResult = (_fTime < orx2F(0.5f))
+                ? orx2F(0.5f) * (orxFLOAT_1 - orxMath_Sqrt(orxFLOAT_1 - orx2F(4.0f) * _fTime * _fTime))
+                : orx2F(0.5f) * (orxFLOAT_1 + orxMath_Sqrt(orxFLOAT_1 - (orx2F(-2.0f) * _fTime + orx2F(2.0f)) * (orx2F(-2.0f) * _fTime + orx2F(2.0f))));
       break;
     }
 
     case orxFX_CURVE_EASE_IN_BACK:
     {
-      //! TODO
+      /* Updates result */
+      orxFLOAT fW2 = orx2F(1.70158f), fW3 = fW2 + orxFLOAT_1;
+      fResult = fW3 * _fTime * _fTime * _fTime - fW2 * _fTime * _fTime;
       break;
     }
 
     case orxFX_CURVE_EASE_OUT_BACK:
     {
-      //! TODO
+      /* Updates result */
+      orxFLOAT fW2 = orx2F(1.70158f), fW3 = fW2 + orxFLOAT_1;
+      fResult = orxFLOAT_1 + fW3 * (_fTime - orxFLOAT_1) * (_fTime - orxFLOAT_1) * (_fTime - orxFLOAT_1) + fW2 * (_fTime - orxFLOAT_1) * (_fTime - orxFLOAT_1);
       break;
     }
 
     case orxFX_CURVE_EASE_IN_OUT_BACK:
     {
-      //! TODO
+      /* Updates result */
+      orxFLOAT fW = orx2F(1.70158f * 1.525f);
+      fResult = (_fTime < orx2F(0.5f))
+                ? orx2F(2.0f) * _fTime * _fTime * ((fW + orxFLOAT_1) * orx2F(2.0f) * _fTime - fW)
+                : orx2F(0.5f) * ((orx2F(2.0f) * _fTime - orx2F(2.0f)) * (orx2F(2.0f) * _fTime - orx2F(2.0f)) * ((fW + orxFLOAT_1) * (_fTime * orx2F(2.0f) - orx2F(2.0f)) + fW) + orx2F(2.0f));
       break;
     }
 
     case orxFX_CURVE_EASE_IN_ELASTIC:
     {
-      //! TODO
+      /* Updates result */
+      orxFLOAT fW = (orxMATH_KF_2_PI) / orx2F(3.0f);
+      fResult = (_fTime == orxFLOAT_0)
+                ? orxFLOAT_0
+                : (_fTime == orxFLOAT_1)
+                  ? orxFLOAT_1
+                  : -orxMath_Pow(orx2F(2.0f), orx2F(10.0f) * _fTime - orx2F(10.0f)) * orxMath_Sin(fW * (_fTime * orx2F(10.0f) - orx2F(10.75f)));
       break;
     }
 
     case orxFX_CURVE_EASE_OUT_ELASTIC:
     {
-      //! TODO
+      /* Updates result */
+      orxFLOAT fW = (orxMATH_KF_2_PI) / orx2F(3.0f);
+      fResult = (_fTime == orxFLOAT_0)
+                ? orxFLOAT_0
+                : (_fTime == orxFLOAT_1)
+                  ? orxFLOAT_1
+                  : orxFLOAT_1 + orxMath_Pow(orx2F(2.0f), orx2F(-10.0f) * _fTime) * orxMath_Sin(fW * (_fTime * orx2F(10.0f) - orx2F(0.75f)));
       break;
     }
 
     case orxFX_CURVE_EASE_IN_OUT_ELASTIC:
     {
-      //! TODO
+      /* Updates result */
+      orxFLOAT fW = (orxMATH_KF_2_PI) / orx2F(4.5f);
+      fResult = (_fTime == orxFLOAT_0)
+                ? orxFLOAT_0
+                : (_fTime == orxFLOAT_1)
+                  ? orxFLOAT_1
+                  : (_fTime < orx2F(0.5f))
+                    ? orx2F(-0.5f) * orxMath_Pow(orx2F(2.0f), orx2F(20.0f) * _fTime - orx2F(10.0f)) * orxMath_Sin(fW * (_fTime * orx2F(20.0f) - orx2F(11.125f)))
+                    : orxFLOAT_1 + orx2F(0.5f) * orxMath_Pow(orx2F(2.0f), orx2F(-20.0f) * _fTime + orx2F(10.0f)) * orxMath_Sin(fW * (_fTime * orx2F(20.0f) - orx2F(11.125f)));
       break;
     }
 
     case orxFX_CURVE_EASE_IN_BOUNCE:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orxFLOAT_1 - orxFX_EaseOutBounce(orxFLOAT_1 - _fTime);
       break;
     }
 
     case orxFX_CURVE_EASE_OUT_BOUNCE:
     {
-      //! TODO
+      /* Updates result */
+      fResult = orxFX_EaseOutBounce(_fTime);
       break;
     }
 
     case orxFX_CURVE_EASE_IN_OUT_BOUNCE:
     {
-      //! TODO
+      /* Updates result */
+      fResult = (_fTime < orx2F(0.5f))
+                ? orx2F(0.5f) * (orxFLOAT_1 - orxFX_EaseOutBounce(orxFLOAT_1 - orx2F(2.0f) * _fTime))
+                : orx2F(0.5f) * (orxFLOAT_1 + orxFX_EaseOutBounce(orx2F(2.0f) * _fTime - orxFLOAT_1));
       break;
     }
 
