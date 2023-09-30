@@ -1,5 +1,17 @@
 var NAVTREEINDEX25 =
 {
+"orx_anim_set_8h.html":[3,0,0,0,2],
+"orx_anim_set_8h_source.html":[3,0,0,0,2],
+"orx_bank_8h.html":[3,0,0,8,0],
+"orx_bank_8h_source.html":[3,0,0,8,0],
+"orx_body_8h.html":[3,0,0,10,0],
+"orx_body_8h_source.html":[3,0,0,10,0],
+"orx_camera_8h.html":[3,0,0,12,0],
+"orx_camera_8h_source.html":[3,0,0,12,0],
+"orx_clock_8h.html":[3,0,0,2,0],
+"orx_clock_8h_source.html":[3,0,0,2,0],
+"orx_color_list_8inc.html":[3,0,0,4,0],
+"orx_color_list_8inc_source.html":[3,0,0,4,0],
 "orx_command_8h.html":[3,0,0,2,1],
 "orx_command_8h_source.html":[3,0,0,2,1],
 "orx_config_8h.html":[3,0,0,2,2],
@@ -237,17 +249,5 @@ var NAVTREEINDEX25 =
 "structorx_c_h_a_r_a_c_t_e_r___g_l_y_p_h.html#ab82fd9f43a5c81cc62191dc2b7d825b1":[1,15,0,0],
 "structorx_c_h_a_r_a_c_t_e_r___m_a_p.html":[1,15,1],
 "structorx_c_h_a_r_a_c_t_e_r___m_a_p.html#a01a7dcd08cf42946f764f540705e5e83":[1,15,1,0],
-"structorx_c_h_a_r_a_c_t_e_r___m_a_p.html#a5ecf7f15c5669478c86c22337e9f5564":[1,15,1,1],
-"structorx_c_h_a_r_a_c_t_e_r___m_a_p.html#ac95b5d9d4cebc3508f28ec632645391a":[1,15,1,2],
-"structorx_c_l_o_c_k___i_n_f_o.html":[1,9,0],
-"structorx_c_l_o_c_k___i_n_f_o.html#a3cbc9ce0ca215192537bf07d51191974":[1,9,0,0],
-"structorx_c_l_o_c_k___i_n_f_o.html#a81d90e078f16fe314687d8578ae3e0b3":[1,9,0,3],
-"structorx_c_l_o_c_k___i_n_f_o.html#abdaa9e19892ffab521b387be34d3ee0a":[1,9,0,2],
-"structorx_c_l_o_c_k___i_n_f_o.html#adefcf726b9f7e39542f92ca0e5f76655":[1,9,0,1],
-"structorx_c_o_l_o_r.html":[1,15,2],
-"structorx_c_o_l_o_r.html#a1fb6cb6b737986f7016e82e8c95fcf7b":[1,15,2,2],
-"structorx_c_o_l_o_r.html#aa5b80a4cd29c306189c13a62850ae949":[1,15,2,3],
-"structorx_c_o_l_o_r.html#aa8b139033d2288b7b473390a6c042d10":[1,15,2,1],
-"structorx_c_o_l_o_r.html#afb62b809f4918df4cfb5a43ad5bdf93f":[1,15,2,0],
-"structorx_c_o_m_m_a_n_d___v_a_r.html":[1,10,0]
+"structorx_c_h_a_r_a_c_t_e_r___m_a_p.html#a5ecf7f15c5669478c86c22337e9f5564":[1,15,1,1]
 };
