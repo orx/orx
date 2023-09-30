@@ -72,6 +72,11 @@ typedef enum __orxFX_TYPE_t
   orxFX_TYPE_VOLUME,
   orxFX_TYPE_PITCH,
 
+  orxFX_TYPE_FLOAT_ADD,
+  orxFX_TYPE_FLOAT_MULTIPLY,
+  orxFX_TYPE_VECTOR_ADD,
+  orxFX_TYPE_VECTOR_MULTIPLY,
+
   orxFX_TYPE_NUMBER,
 
   orxFX_TYPE_MAX_NUMBER = 16,
@@ -214,18 +219,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Init();
 extern orxDLLAPI void orxFASTCALL               orxFX_Exit();
 
 /** Creates an empty FX
- * @return orxFX / orxNULL
+ * @return      orxFX / orxNULL
  */
 extern orxDLLAPI orxFX *orxFASTCALL             orxFX_Create();
 
 /** Creates an FX from config
- * @param[in]   _zConfigID    Config ID
+ * @param[in]   _zConfigID      Config ID
  * @ return orxFX / orxNULL
  */
 extern orxDLLAPI orxFX *orxFASTCALL             orxFX_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes an FX
- * @param[in] _pstFX            Concerned FX
+ * @param[in]   _pstFX          Concerned FX
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Delete(orxFX *_pstFX);
@@ -236,13 +241,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Delete(orxFX *_pstFX);
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_ClearCache();
 
 /** Applies FX on object
- * @param[in] _pstFX            FX to apply
- * @param[in] _pstObject        Object on which to apply the FX
- * @param[in] _fStartTime       FX local application start time
- * @param[in] _fEndTime         FX local application end time
- * @return    orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstFX          FX to apply
+ * @param[in]   _pstObject      Object on which to apply the FX
+ * @param[in]   _fPreviousTime  Previous time
+ * @param[in]   _fTime          Current time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fPreviousTime, orxFLOAT _fTime);
+
+/** Gets FX user float value between two timestamps
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fPreviousTime  Previous time, if <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
+ * @param[in]   _fTime          Current time
+ * @return      Float value
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL           orxFX_GetFloat(const orxFX *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime);
+
+/** Gets FX user vector value between two timestamps
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fPreviousTime  Previous time, if <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
+ * @param[in]   _fTime          Current time
+ * @return      Vector value if valid, orxNULL otherwise
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL         orxFX_GetVector(const orxFX *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime, orxVECTOR *_pvVector);
 
 /** Enables/disables an FX
  * @param[in]   _pstFX          Concerned FX

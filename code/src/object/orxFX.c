@@ -171,6 +171,9 @@
 #define orxFX_KZ_SPEED                          "speed"
 #define orxFX_KZ_VOLUME                         "volume"
 #define orxFX_KZ_PITCH                          "pitch"
+#define orxFX_KZ_VECTOR                         "vector"
+#define orxFX_KZ_FLOAT                          "float"
+#define orxFX_KZ_MULTIPLY                       "multiply"
 
 
 /***************************************************************************
@@ -205,6 +208,21 @@ typedef enum __orxFX_VALUE_TYPE_t
 } orxFX_VALUE_TYPE;
 
 
+/** FX context
+ */
+typedef struct __orxFX_CONTEXT_t
+{
+  union
+  {
+    orxVECTOR       vValue;
+    orxFLOAT        fValue;
+  }                 astValueList[orxFX_TYPE_NUMBER];
+  const orxOBJECT  *pstObject;
+  orxU32            u32LockFlags, u32UpdateFlags;
+  orxFX_TYPE        eColorBlendUpdate;
+  orxFLOAT          fStartTime, fEndTime;
+} orxFX_CONTEXT;
+
 /** FX slot
  */
 typedef struct __orxFX_SLOT_t
@@ -230,7 +248,7 @@ struct __orxFX_t
 typedef struct __orxFX_STATIC_t
 {
   orxHASHTABLE *pstReferenceTable;                        /**< Reference hash table */
-  orxHASHTABLE *pstCurveTable;                            /**< Curve hash table */
+  orxHASHTABLE *pstIDTable;                               /**< ID table */
   orxU32        u32Flags;                                 /**< Control flags */
 
 } orxFX_STATIC;
@@ -248,6 +266,33 @@ static orxFX_STATIC sstFX;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/* Inits context
+ */
+static orxINLINE void orxFX_InitContext(orxFX_CONTEXT *_pstContext, const orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
+{
+  /* Clears  context */
+  orxMemory_Zero(_pstContext, sizeof(orxFX_CONTEXT));
+
+  /* Inits multiply neutral elements */
+  orxVector_Copy(&(_pstContext->astValueList[orxFX_TYPE_SCALE].vValue), &orxVECTOR_1);
+  orxVector_Copy(&(_pstContext->astValueList[orxFX_TYPE_VECTOR_MULTIPLY].vValue), &orxVECTOR_1);
+  _pstContext->astValueList[orxFX_TYPE_PITCH].fValue          = orxFLOAT_1;
+  _pstContext->astValueList[orxFX_TYPE_FLOAT_MULTIPLY].fValue = orxFLOAT_1;
+
+  /* Inits color blend update */
+  _pstContext->eColorBlendUpdate = orxFX_TYPE_NONE;
+
+  /* Stores object */
+  _pstContext->pstObject  = _pstObject;
+
+  /* Stores times */
+  _pstContext->fStartTime = _fStartTime;
+  _pstContext->fEndTime   = _fEndTime;
+
+  /* Done! */
+  return;
+}
 
 /** Gets FX slot type
  * @param[in] _pstFXSlot        Concerned FX slot
@@ -744,6 +789,388 @@ static orxINLINE orxFLOAT orxFX_ComputeCoef(const orxFX_SLOT *_pstFXSlot, orxFLO
   return fResult;
 }
 
+static void orxFASTCALL orxFX_ComputeSlot(const orxFX_SLOT *_pstFXSlot, orxFX_CONTEXT *_pstContext)
+{
+  orxFLOAT fStartTime;
+  orxBOOL  bFirstCall;
+
+/* Some versions of GCC have an optimization bug on fEndTime which leads to a bogus value when reaching the end of a slot */
+#if defined(__orxGCC__)
+  volatile orxFLOAT fEndTime;
+#else /* __orxGCC__  */
+  orxFLOAT fEndTime;
+#endif /* __orxGCC__ */
+
+  /* Gets corrected start and end time */
+  fStartTime  = orxMAX(_pstContext->fStartTime, _pstFXSlot->stCurveParam.fStartTime);
+  fEndTime    = orxMIN(_pstContext->fEndTime, _pstFXSlot->stCurveParam.fEndTime);
+
+  /* Updates first call status */
+  bFirstCall = (fStartTime == _pstFXSlot->stCurveParam.fStartTime) ? orxTRUE : orxFALSE;
+
+  /* Is this slot active in the time period? */
+  if(fEndTime >= fStartTime)
+  {
+    orxFX_TYPE  eFXType;
+    orxFLOAT    fRecDuration;
+
+    /* Gets slot local time stamps */
+    fStartTime -= _pstFXSlot->stCurveParam.fStartTime;
+    fEndTime   -= _pstFXSlot->stCurveParam.fStartTime;
+
+    /* Gets reciprocal duration */
+    fRecDuration = _pstFXSlot->stCurveParam.fEndTime - _pstFXSlot->stCurveParam.fStartTime;
+    fRecDuration = (fRecDuration > orxFLOAT_0) ? orxFLOAT_1 / fRecDuration : orxFLOAT_1;
+
+    /* Has acceleration? */
+    if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ACCELERATION))
+    {
+      orxFLOAT fStartAcceleration, fEndAcceleration;
+
+      /* Gets acceleration coefs */
+      fStartAcceleration  = orxLERP(orxFLOAT_1, _pstFXSlot->stCurveParam.fAcceleration, fStartTime * fRecDuration);
+      fEndAcceleration    = orxLERP(orxFLOAT_1, _pstFXSlot->stCurveParam.fAcceleration, fEndTime * fRecDuration);
+
+      /* Updates the times */
+      fStartTime *= fStartAcceleration;
+      fEndTime   *= fEndAcceleration;
+
+      /* Updates reciprocal duration */
+      fRecDuration = (_pstFXSlot->stCurveParam.fEndTime - _pstFXSlot->stCurveParam.fStartTime);
+      fRecDuration = (fRecDuration > orxFLOAT_0) ? orxFLOAT_1 / (fRecDuration * _pstFXSlot->stCurveParam.fAcceleration) : orxFLOAT_1;
+    }
+
+    /* Gets FX type */
+    eFXType = orxFX_GetSlotType(_pstFXSlot);
+
+    /* Is FX type not blocked? */
+    if(!orxFLAG_TEST(_pstContext->u32LockFlags, (1 << eFXType)))
+    {
+      orxFLOAT fPeriod, fFrequency, fStartCoef, fEndCoef;
+
+      /* Has a valid cycle period? */
+      if(_pstFXSlot->stCurveParam.fPeriod > orxFLOAT_0)
+      {
+        /* Gets it */
+        fPeriod = _pstFXSlot->stCurveParam.fPeriod;
+      }
+      else
+      {
+        /* Gets whole duration as period */
+        fPeriod = _pstFXSlot->stCurveParam.fEndTime - _pstFXSlot->stCurveParam.fStartTime;
+      }
+
+      /* Instant update? */
+      if(fPeriod == orxFLOAT_0)
+      {
+        /* Gets fake period and frequency */
+        fPeriod = fFrequency = orxFLOAT_1;
+
+        /* Updates times */
+        fStartTime  = orxFLOAT_0;
+        fEndTime    = orxFLOAT_1;
+      }
+      else
+      {
+        /* Gets its corresponding frequency */
+        fFrequency = orxFLOAT_1 / fPeriod;
+      }
+
+      /* Gets coefs */
+      fStartCoef  = orxFX_ComputeCoef(_pstFXSlot, fStartTime, fFrequency);
+      fEndCoef    = orxFX_ComputeCoef(_pstFXSlot, fEndTime, fFrequency);
+
+      /* Has amplification? */
+      if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_AMPLIFICATION))
+      {
+        orxFLOAT fStartAmplification, fEndAmplification;
+
+        /* Gets amplification coefs */
+        fStartAmplification = orxLERP(orxFLOAT_1, _pstFXSlot->stCurveParam.fAmplification, fStartTime * fRecDuration);
+        fEndAmplification   = orxLERP(orxFLOAT_1, _pstFXSlot->stCurveParam.fAmplification, fEndTime * fRecDuration);
+
+        /* Updates the coefs */
+        fStartCoef *= fStartAmplification;
+        fEndCoef   *= fEndAmplification;
+      }
+
+      /* Using an exponential curve? */
+      if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_POW))
+      {
+        /* Updates both coefs */
+        fStartCoef = orxMath_Pow(fStartCoef, _pstFXSlot->stCurveParam.fPow);
+        fEndCoef   = orxMath_Pow(fEndCoef, _pstFXSlot->stCurveParam.fPow);
+      }
+
+      /* Depending on operation and value type */
+      switch(orxFLAG_GET(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_MASK_OPERATION | orxFX_SLOT_KU32_MASK_VALUE_TYPE))
+      {
+        case (orxFX_OPERATION_ADD << orxFX_SLOT_KU32_SHIFT_OPERATION) | (orxFX_VALUE_TYPE_FLOAT << orxFX_SLOT_KU32_SHIFT_VALUE_TYPE):
+        {
+          /* Absolute ? */
+          if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
+          {
+            /* Overrides value */
+            _pstContext->astValueList[eFXType].fValue = orxLERP(_pstFXSlot->stCurveParam.fStartValue, _pstFXSlot->stCurveParam.fEndValue, fEndCoef);
+
+            /* Locks it */
+            orxFLAG_SET(_pstContext->u32LockFlags, (1 << eFXType), 0);
+          }
+          else
+          {
+            orxFLOAT fStartValue, fEndValue;
+
+            /* First call? */
+            if(bFirstCall != orxFALSE)
+            {
+              /* Gets start value */
+              fStartValue = orxFLOAT_0;
+            }
+            else
+            {
+              /* Gets start value */
+              fStartValue = orxLERP(_pstFXSlot->stCurveParam.fStartValue, _pstFXSlot->stCurveParam.fEndValue, fStartCoef);
+            }
+
+            /* Gets end value */
+            fEndValue = orxLERP(_pstFXSlot->stCurveParam.fStartValue, _pstFXSlot->stCurveParam.fEndValue, fEndCoef);
+
+            /* Updates global value */
+            _pstContext->astValueList[eFXType].fValue += fEndValue - fStartValue;
+          }
+
+          /* Updates status */
+          orxFLAG_SET(_pstContext->u32UpdateFlags, (1 << eFXType), 0);
+
+          break;
+        }
+
+        case (orxFX_OPERATION_MULTIPLY << orxFX_SLOT_KU32_SHIFT_OPERATION) | (orxFX_VALUE_TYPE_FLOAT << orxFX_SLOT_KU32_SHIFT_VALUE_TYPE):
+        {
+          /* Absolute ? */
+          if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
+          {
+            /* Overrides value */
+            _pstContext->astValueList[eFXType].fValue = orxLERP(_pstFXSlot->stCurveParam.fStartValue, _pstFXSlot->stCurveParam.fEndValue, fEndCoef);
+            if(_pstContext->astValueList[eFXType].fValue == orxFLOAT_0)
+            {
+              _pstContext->astValueList[eFXType].fValue = orx2F(0.000001f);
+            }
+
+            /* Locks it */
+            orxFLAG_SET(_pstContext->u32LockFlags, (1 << eFXType), 0);
+          }
+          else
+          {
+            orxFLOAT fStartValue, fEndValue;
+
+            /* First call? */
+            if(bFirstCall != orxFALSE)
+            {
+              /* Gets start value */
+              fStartValue = orxFLOAT_1;
+            }
+            else
+            {
+              /* Gets start value */
+              fStartValue = orxLERP(_pstFXSlot->stCurveParam.fStartValue, _pstFXSlot->stCurveParam.fEndValue, fStartCoef);
+              if(fStartValue == orxFLOAT_0)
+              {
+                fStartValue = orx2F(0.000001f);
+              }
+            }
+
+            /* Gets end value */
+            fEndValue = orxLERP(_pstFXSlot->stCurveParam.fStartValue, _pstFXSlot->stCurveParam.fEndValue, fEndCoef);
+            if(fEndValue == orxFLOAT_0)
+            {
+              fEndValue = orx2F(0.000001f);
+            }
+
+            /* Updates global value */
+            _pstContext->astValueList[eFXType].fValue *= fEndValue / fStartValue;
+          }
+
+          /* Updates status */
+          orxFLAG_SET(_pstContext->u32UpdateFlags, (1 << eFXType), 0);
+
+          break;
+        }
+
+        case (orxFX_OPERATION_ADD << orxFX_SLOT_KU32_SHIFT_OPERATION) | (orxFX_VALUE_TYPE_VECTOR << orxFX_SLOT_KU32_SHIFT_VALUE_TYPE):
+        {
+          /* Valid color blend mix? */
+          if(((eFXType != orxFX_TYPE_RGB) && (eFXType != orxFX_TYPE_HSL) && (eFXType != orxFX_TYPE_HSV))
+          || ((_pstContext->eColorBlendUpdate == orxFX_TYPE_NONE) || (_pstContext->eColorBlendUpdate == eFXType)))
+          {
+            /* Absolute ? */
+            if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
+            {
+              /* Overrides values */
+              orxVector_Lerp(&(_pstContext->astValueList[eFXType].vValue), &(_pstFXSlot->stCurveParam.vStartValue), &(_pstFXSlot->stCurveParam.vEndValue), fEndCoef);
+
+              /* Use rotation? */
+              if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_ROTATION))
+              {
+                /* Updates vector */
+                orxVector_2DRotate(&(_pstContext->astValueList[eFXType].vValue), &(_pstContext->astValueList[eFXType].vValue), orxObject_GetRotation(_pstContext->pstObject));
+              }
+
+              /* Use scale? */
+              if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_SCALE))
+              {
+                orxVECTOR vScale;
+
+                /* Updates vector */
+                orxVector_Mul(&(_pstContext->astValueList[eFXType].vValue), &(_pstContext->astValueList[eFXType].vValue), orxObject_GetScale(_pstContext->pstObject, &vScale));
+              }
+
+              /* Locks it */
+              orxFLAG_SET(_pstContext->u32LockFlags, (1 << eFXType), 0);
+            }
+            else
+            {
+              orxVECTOR vStartValue, vEndValue;
+
+              /* First call? */
+              if(bFirstCall != orxFALSE)
+              {
+                /* Gets start value */
+                orxVector_SetAll(&vStartValue, orxFLOAT_0);
+              }
+              else
+              {
+                /* Gets start value */
+                orxVector_Lerp(&vStartValue, &(_pstFXSlot->stCurveParam.vStartValue), &(_pstFXSlot->stCurveParam.vEndValue), fStartCoef);
+              }
+
+              /* Gets end value */
+              orxVector_Lerp(&vEndValue, &(_pstFXSlot->stCurveParam.vStartValue), &(_pstFXSlot->stCurveParam.vEndValue), fEndCoef);
+
+              /* Gets delta value */
+              orxVector_Sub(&vEndValue, &vEndValue, &vStartValue);
+
+              /* Use rotation? */
+              if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_ROTATION))
+              {
+                /* Updates vector */
+                orxVector_2DRotate(&vEndValue, &vEndValue, orxObject_GetRotation(_pstContext->pstObject));
+              }
+
+              /* Use scale? */
+              if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_SCALE))
+              {
+                orxVECTOR vScale;
+
+                /* Updates vector */
+                orxVector_Mul(&vEndValue, &vEndValue, orxObject_GetScale(_pstContext->pstObject, &vScale));
+              }
+
+              /* Updates global value */
+              orxVector_Add(&(_pstContext->astValueList[eFXType].vValue), &(_pstContext->astValueList[eFXType].vValue), &vEndValue);
+            }
+
+            /* Is a color type? */
+            if((eFXType == orxFX_TYPE_RGB) || (eFXType == orxFX_TYPE_HSL) || (eFXType == orxFX_TYPE_HSV))
+            {
+              /* Updates color blend status */
+              _pstContext->eColorBlendUpdate = eFXType;
+            }
+            else
+            {
+              /* Updates status */
+              orxFLAG_SET(_pstContext->u32UpdateFlags, (1 << eFXType), 0);
+            }
+          }
+
+          break;
+        }
+
+        case (orxFX_OPERATION_MULTIPLY << orxFX_SLOT_KU32_SHIFT_OPERATION) | (orxFX_VALUE_TYPE_VECTOR << orxFX_SLOT_KU32_SHIFT_VALUE_TYPE):
+        {
+          /* Absolute ? */
+          if(orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
+          {
+            /* Overrides values */
+            orxVector_Lerp(&(_pstContext->astValueList[eFXType].vValue), &(_pstFXSlot->stCurveParam.vStartValue), &(_pstFXSlot->stCurveParam.vEndValue), fEndCoef);
+
+            /* Makes sure we have valid values */
+            if(_pstContext->astValueList[eFXType].vValue.fX == orxFLOAT_0)
+            {
+              _pstContext->astValueList[eFXType].vValue.fX = orx2F(0.000001f);
+            }
+            if(_pstContext->astValueList[eFXType].vValue.fY == orxFLOAT_0)
+            {
+              _pstContext->astValueList[eFXType].vValue.fY = orx2F(0.000001f);
+            }
+
+            /* Locks it */
+            orxFLAG_SET(_pstContext->u32LockFlags, (1 << eFXType), 0);
+          }
+          else
+          {
+            orxVECTOR vStartValue, vEndValue;
+
+            /* First call? */
+            if(bFirstCall != orxFALSE)
+            {
+              /* Gets start value */
+              orxVector_SetAll(&vStartValue, orxFLOAT_1);
+            }
+            else
+            {
+              /* Gets start value */
+              orxVector_Lerp(&vStartValue, &(_pstFXSlot->stCurveParam.vStartValue), &(_pstFXSlot->stCurveParam.vEndValue), fStartCoef);
+
+              /* Makes sure we have valid values */
+              if(vStartValue.fX == orxFLOAT_0)
+              {
+                vStartValue.fX = orx2F(0.000001f);
+              }
+              if(vStartValue.fY == orxFLOAT_0)
+              {
+                vStartValue.fY = orx2F(0.000001f);
+              }
+            }
+
+            /* Gets end value */
+            orxVector_Lerp(&vEndValue, &(_pstFXSlot->stCurveParam.vStartValue), &(_pstFXSlot->stCurveParam.vEndValue), fEndCoef);
+
+            /* Makes sure we have valid values */
+            if(vEndValue.fX == orxFLOAT_0)
+            {
+              vEndValue.fX = orx2F(0.000001f);
+            }
+            if(vEndValue.fY == orxFLOAT_0)
+            {
+              vEndValue.fY = orx2F(0.000001f);
+            }
+
+            /* Updates global value */
+            orxVector_Mul(&(_pstContext->astValueList[eFXType].vValue), &(_pstContext->astValueList[eFXType].vValue), orxVector_Div(&vEndValue, &vEndValue, &vStartValue));
+          }
+
+          /* Updates status */
+          orxFLAG_SET(_pstContext->u32UpdateFlags, (1 << eFXType), 0);
+
+          break;
+        }
+
+        default:
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid FX type when trying to apply FX.");
+
+          break;
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Event handler
  */
 static orxSTATUS orxFASTCALL orxFX_EventHandler(const orxEVENT *_pstEvent)
@@ -860,11 +1287,11 @@ orxSTATUS orxFASTCALL orxFX_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstFX, sizeof(orxFX_STATIC));
 
-    /* Creates curve table */
-    sstFX.pstCurveTable = orxHashTable_Create(orxFX_KU32_CURVE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    /* Creates ID table */
+    sstFX.pstIDTable = orxHashTable_Create(orxFX_KU32_CURVE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
     /* Success? */
-    if(sstFX.pstCurveTable != orxNULL)
+    if(sstFX.pstIDTable != orxNULL)
     {
       /* Creates reference table */
       sstFX.pstReferenceTable = orxHashTable_Create(orxFX_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -882,7 +1309,7 @@ orxSTATUS orxFASTCALL orxFX_Init()
           orxFLAG_SET(sstFX.u32Flags, orxFX_KU32_STATIC_FLAG_READY, orxFX_KU32_STATIC_FLAG_NONE);
 
           /* Registers all curves */
-#define orxFX_REGISTER_CURVE(NAME) orxHashTable_Add(sstFX.pstCurveTable, orxString_Hash(orxFX_KZ_##NAME), (void *)(orxFX_CURVE_##NAME + 1))
+#define orxFX_REGISTER_CURVE(NAME) orxHashTable_Add(sstFX.pstIDTable, orxString_Hash(orxFX_KZ_##NAME), (void *)(orxFX_CURVE_##NAME + 1))
           orxFX_REGISTER_CURVE(SINE);
           orxFX_REGISTER_CURVE(SQUARE);
           orxFX_REGISTER_CURVE(TRIANGLE);
@@ -922,6 +1349,20 @@ orxSTATUS orxFASTCALL orxFX_Init()
           orxFX_REGISTER_CURVE(EASE_IN_OUT_BOUNCE);
 #undef orxFX_REGISTER_CURVE
 
+          /* Registers all object property types */
+#define orxFX_REGISTER_TYPE(NAME) orxHashTable_Add(sstFX.pstIDTable, orxString_Hash(orxFX_KZ_##NAME), (void *)(orxFX_TYPE_##NAME + 1))
+          orxFX_REGISTER_TYPE(ALPHA);
+          orxFX_REGISTER_TYPE(RGB);
+          orxFX_REGISTER_TYPE(HSL);
+          orxFX_REGISTER_TYPE(HSV);
+          orxFX_REGISTER_TYPE(POSITION);
+          orxFX_REGISTER_TYPE(ROTATION);
+          orxFX_REGISTER_TYPE(SCALE);
+          orxFX_REGISTER_TYPE(SPEED);
+          orxFX_REGISTER_TYPE(VOLUME);
+          orxFX_REGISTER_TYPE(PITCH);
+#undef orxFX_REGISTER_TYPE
+
           /* Adds event handler */
           orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxFX_EventHandler);
           orxEvent_SetHandlerIDFlags(orxFX_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
@@ -954,10 +1395,10 @@ orxSTATUS orxFASTCALL orxFX_Init()
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxFX_EventHandler);
 
-    /* Deletes curve table if needed */
-    if(sstFX.pstCurveTable != orxNULL)
+    /* Deletes ID table if needed */
+    if(sstFX.pstIDTable != orxNULL)
     {
-      orxHashTable_Delete(sstFX.pstCurveTable);
+      orxHashTable_Delete(sstFX.pstIDTable);
     }
 
     /* Deletes reference table if needed */
@@ -990,8 +1431,8 @@ void orxFASTCALL orxFX_Exit()
     /* Deletes reference table */
     orxHashTable_Delete(sstFX.pstReferenceTable);
 
-    /* Deletes curve table */
-    orxHashTable_Delete(sstFX.pstCurveTable);
+    /* Deletes ID table */
+    orxHashTable_Delete(sstFX.pstIDTable);
 
     /* Updates flags */
     sstFX.u32Flags &= ~orxFX_KU32_STATIC_FLAG_READY;
@@ -1007,7 +1448,7 @@ void orxFASTCALL orxFX_Exit()
 }
 
 /** Creates an empty FX
- * @return      Created orxFX / orxNULL
+ * @return      orxFX / orxNULL
  */
 orxFX *orxFASTCALL orxFX_Create()
 {
@@ -1039,7 +1480,7 @@ orxFX *orxFASTCALL orxFX_Create()
 }
 
 /** Creates an FX from config
- * @param[in]   _zConfigID            Config ID
+ * @param[in]   _zConfigID      Config ID
  * @ return orxFX / orxNULL
  */
 orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
@@ -1141,7 +1582,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
 }
 
 /** Deletes an FX
- * @param[in] _pstFX            Concerned FX
+ * @param[in]   _pstFX          Concerned FX
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxFX_Delete(orxFX *_pstFX)
@@ -1214,439 +1655,43 @@ orxSTATUS orxFASTCALL orxFX_ClearCache()
 }
 
 /** Applies FX on object
- * @param[in] _pstFX            FX to apply
- * @param[in] _pstObject        Object on which to apply the FX
- * @param[in] _fStartTime       FX local application start time
- * @param[in] _fEndTime         FX local application end time
- * @return    orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstFX          FX to apply
+ * @param[in]   _pstObject      Object on which to apply the FX
+ * @param[in]   _fPreviousTime  Previous time
+ * @param[in]   _fTime          Current time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
+orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fPreviousTime, orxFLOAT _fTime)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFX);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_fEndTime >= _fStartTime);
+  orxASSERT(_fTime >= _fPreviousTime);
 
   /* Has started? */
-  if(_fEndTime >= orxFLOAT_0)
+  if(_fTime >= orxFLOAT_0)
   {
-    struct
-    {
-      union
-      {
-        orxVECTOR vValue;
-        orxFLOAT  fValue;
-      };
-    }           astValueList[orxFX_TYPE_NUMBER];
-    orxCOLOR    stObjectColor;
-    orxU32      u32LockFlags = 0, u32UpdateFlags = 0, i;
-    orxFLOAT    fRecDuration;
-    orxFX_TYPE  eColorBlendUpdate = orxFX_TYPE_NONE;
-    orxBOOL     bFirstCall;
+    orxFX_CONTEXT stContext;
+    orxU32        i;
 
-    /* Clears values */
-    orxMemory_Zero(astValueList, sizeof(astValueList));
-    orxVector_SetAll(&(astValueList[orxFX_TYPE_SCALE].vValue), orxFLOAT_1);
-    astValueList[orxFX_TYPE_PITCH].fValue = orxFLOAT_1;
-
-    /* Has object color? */
-    if(orxObject_HasColor(_pstObject) != orxFALSE)
-    {
-      /* Stores object color */
-      orxObject_GetColor(_pstObject, &stObjectColor);
-    }
-    else
-    {
-      /* Clears color */
-      orxColor_Set(&stObjectColor, &orxVECTOR_WHITE, orxFLOAT_1);
-    }
+    /* Inits context */
+    orxFX_InitContext(&stContext, _pstObject, _fPreviousTime, _fTime);
 
     /* For all slots */
     for(i = 0; i< orxFX_KU32_SLOT_NUMBER; i++)
     {
       const orxFX_SLOT *pstFXSlot;
 
-      /* Gets the slot */
+      /* Gets it */
       pstFXSlot = &(_pstFX->astFXSlotList[i]);
 
       /* Is defined? */
       if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_DEFINED))
       {
-        orxFLOAT fStartTime;
-
-/* Some versions of GCC have an optimization bug on fEndTime which leads to a bogus value when reaching the end of a slot */
-#if defined(__orxGCC__)
-        volatile orxFLOAT fEndTime;
-#else /* __orxGCC__  */
-        orxFLOAT fEndTime;
-#endif /* __orxGCC__ */
-
-        /* Gets corrected start and end time */
-        fStartTime  = orxMAX(_fStartTime, pstFXSlot->stCurveParam.fStartTime);
-        fEndTime    = orxMIN(_fEndTime, pstFXSlot->stCurveParam.fEndTime);
-
-        /* Updates first call status */
-        bFirstCall = (fStartTime == pstFXSlot->stCurveParam.fStartTime) ? orxTRUE : orxFALSE;
-
-        /* Is this slot active in the time period? */
-        if(fEndTime >= fStartTime)
-        {
-          orxFX_TYPE eFXType;
-
-          /* Gets slot local time stamps */
-          fStartTime -= pstFXSlot->stCurveParam.fStartTime;
-          fEndTime   -= pstFXSlot->stCurveParam.fStartTime;
-
-          /* Gets reciprocal duration */
-          fRecDuration = pstFXSlot->stCurveParam.fEndTime - pstFXSlot->stCurveParam.fStartTime;
-          fRecDuration = (fRecDuration > orxFLOAT_0) ? orxFLOAT_1 / fRecDuration : orxFLOAT_1;
-
-          /* Has acceleration? */
-          if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ACCELERATION))
-          {
-            orxFLOAT fStartAcceleration, fEndAcceleration;
-
-            /* Gets acceleration coefs */
-            fStartAcceleration  = orxLERP(orxFLOAT_1, pstFXSlot->stCurveParam.fAcceleration, fStartTime * fRecDuration);
-            fEndAcceleration    = orxLERP(orxFLOAT_1, pstFXSlot->stCurveParam.fAcceleration, fEndTime * fRecDuration);
-
-            /* Updates the times */
-            fStartTime *= fStartAcceleration;
-            fEndTime   *= fEndAcceleration;
-
-            /* Updates reciprocal duration */
-            fRecDuration = (pstFXSlot->stCurveParam.fEndTime - pstFXSlot->stCurveParam.fStartTime);
-            fRecDuration = (fRecDuration > orxFLOAT_0) ? orxFLOAT_1 / (fRecDuration * pstFXSlot->stCurveParam.fAcceleration) : orxFLOAT_1;
-          }
-
-          /* Gets FX type */
-          eFXType = orxFX_GetSlotType(pstFXSlot);
-
-          /* Is FX type not blocked? */
-          if(!orxFLAG_TEST(u32LockFlags, (1 << eFXType)))
-          {
-            orxFLOAT fPeriod, fFrequency, fStartCoef, fEndCoef;
-
-            /* Has a valid cycle period? */
-            if(pstFXSlot->stCurveParam.fPeriod > orxFLOAT_0)
-            {
-              /* Gets it */
-              fPeriod = pstFXSlot->stCurveParam.fPeriod;
-            }
-            else
-            {
-              /* Gets whole duration as period */
-              fPeriod = pstFXSlot->stCurveParam.fEndTime - pstFXSlot->stCurveParam.fStartTime;
-            }
-
-            /* Instant update? */
-            if(fPeriod == orxFLOAT_0)
-            {
-              /* Gets fake period and frequency */
-              fPeriod = fFrequency = orxFLOAT_1;
-
-              /* Updates times */
-              fStartTime  = orxFLOAT_0;
-              fEndTime    = orxFLOAT_1;
-            }
-            else
-            {
-              /* Gets its corresponding frequency */
-              fFrequency = orxFLOAT_1 / fPeriod;
-            }
-
-            /* Gets coefs */
-            fStartCoef  = orxFX_ComputeCoef(pstFXSlot, fStartTime, fFrequency);
-            fEndCoef    = orxFX_ComputeCoef(pstFXSlot, fEndTime, fFrequency);
-
-            /* Has amplification? */
-            if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_AMPLIFICATION))
-            {
-              orxFLOAT fStartAmplification, fEndAmplification;
-
-              /* Gets amplification coefs */
-              fStartAmplification = orxLERP(orxFLOAT_1, pstFXSlot->stCurveParam.fAmplification, fStartTime * fRecDuration);
-              fEndAmplification   = orxLERP(orxFLOAT_1, pstFXSlot->stCurveParam.fAmplification, fEndTime * fRecDuration);
-
-              /* Updates the coefs */
-              fStartCoef *= fStartAmplification;
-              fEndCoef   *= fEndAmplification;
-            }
-
-            /* Using an exponential curve? */
-            if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_POW))
-            {
-              /* Updates both coefs */
-              fStartCoef = orxMath_Pow(fStartCoef, pstFXSlot->stCurveParam.fPow);
-              fEndCoef   = orxMath_Pow(fEndCoef, pstFXSlot->stCurveParam.fPow);
-            }
-
-            /* Depending on operation and value type */
-            switch(orxFLAG_GET(pstFXSlot->u32Flags, orxFX_SLOT_KU32_MASK_OPERATION | orxFX_SLOT_KU32_MASK_VALUE_TYPE))
-            {
-              case (orxFX_OPERATION_ADD << orxFX_SLOT_KU32_SHIFT_OPERATION) | (orxFX_VALUE_TYPE_FLOAT << orxFX_SLOT_KU32_SHIFT_VALUE_TYPE):
-              {
-                /* Absolute ? */
-                if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
-                {
-                  /* Overrides value */
-                  astValueList[eFXType].fValue = orxLERP(pstFXSlot->stCurveParam.fStartValue, pstFXSlot->stCurveParam.fEndValue, fEndCoef);
-
-                  /* Locks it */
-                  orxFLAG_SET(u32LockFlags, (1 << eFXType), 0);
-                }
-                else
-                {
-                  orxFLOAT fStartValue, fEndValue;
-
-                  /* First call? */
-                  if(bFirstCall != orxFALSE)
-                  {
-                    /* Gets start value */
-                    fStartValue = orxFLOAT_0;
-                  }
-                  else
-                  {
-                    /* Gets start value */
-                    fStartValue = orxLERP(pstFXSlot->stCurveParam.fStartValue, pstFXSlot->stCurveParam.fEndValue, fStartCoef);
-                  }
-
-                  /* Gets end value */
-                  fEndValue = orxLERP(pstFXSlot->stCurveParam.fStartValue, pstFXSlot->stCurveParam.fEndValue, fEndCoef);
-
-                  /* Updates global value */
-                  astValueList[eFXType].fValue += fEndValue - fStartValue;
-                }
-
-                /* Updates status */
-                orxFLAG_SET(u32UpdateFlags, (1 << eFXType), 0);
-
-                break;
-              }
-
-              case (orxFX_OPERATION_MULTIPLY << orxFX_SLOT_KU32_SHIFT_OPERATION) | (orxFX_VALUE_TYPE_FLOAT << orxFX_SLOT_KU32_SHIFT_VALUE_TYPE):
-              {
-                /* Absolute ? */
-                if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
-                {
-                  /* Overrides value */
-                  astValueList[eFXType].fValue = orxLERP(pstFXSlot->stCurveParam.fStartValue, pstFXSlot->stCurveParam.fEndValue, fEndCoef);
-                  if(astValueList[eFXType].fValue == orxFLOAT_0)
-                  {
-                    astValueList[eFXType].fValue = orx2F(0.000001f);
-                  }
-
-                  /* Locks it */
-                  orxFLAG_SET(u32LockFlags, (1 << eFXType), 0);
-                }
-                else
-                {
-                  orxFLOAT fStartValue, fEndValue;
-
-                  /* First call? */
-                  if(bFirstCall != orxFALSE)
-                  {
-                    /* Gets start value */
-                    fStartValue = orxFLOAT_1;
-                  }
-                  else
-                  {
-                    /* Gets start value */
-                    fStartValue = orxLERP(pstFXSlot->stCurveParam.fStartValue, pstFXSlot->stCurveParam.fEndValue, fStartCoef);
-                    if(fStartValue == orxFLOAT_0)
-                    {
-                      fStartValue = orx2F(0.000001f);
-                    }
-                  }
-
-                  /* Gets end value */
-                  fEndValue = orxLERP(pstFXSlot->stCurveParam.fStartValue, pstFXSlot->stCurveParam.fEndValue, fEndCoef);
-                  if(fEndValue == orxFLOAT_0)
-                  {
-                    fEndValue = orx2F(0.000001f);
-                  }
-
-                  /* Updates global value */
-                  astValueList[eFXType].fValue *= fEndValue / fStartValue;
-                }
-
-                /* Updates status */
-                orxFLAG_SET(u32UpdateFlags, (1 << eFXType), 0);
-
-                break;
-              }
-
-              case (orxFX_OPERATION_ADD << orxFX_SLOT_KU32_SHIFT_OPERATION) | (orxFX_VALUE_TYPE_VECTOR << orxFX_SLOT_KU32_SHIFT_VALUE_TYPE):
-              {
-                /* Valid color blend mix? */
-                if(((eFXType != orxFX_TYPE_RGB) && (eFXType != orxFX_TYPE_HSL) && (eFXType != orxFX_TYPE_HSV))
-                || ((eColorBlendUpdate == orxFX_TYPE_NONE) || (eColorBlendUpdate == eFXType)))
-                {
-                  /* Absolute ? */
-                  if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
-                  {
-                    /* Overrides values */
-                    orxVector_Lerp(&(astValueList[eFXType].vValue), &(pstFXSlot->stCurveParam.vStartValue), &(pstFXSlot->stCurveParam.vEndValue), fEndCoef);
-
-                    /* Use rotation? */
-                    if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_ROTATION))
-                    {
-                      /* Updates vector */
-                      orxVector_2DRotate(&(astValueList[eFXType].vValue), &(astValueList[eFXType].vValue), orxObject_GetRotation(_pstObject));
-                    }
-
-                    /* Use scale? */
-                    if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_SCALE))
-                    {
-                      orxVECTOR vScale;
-
-                      /* Updates vector */
-                      orxVector_Mul(&(astValueList[eFXType].vValue), &(astValueList[eFXType].vValue), orxObject_GetScale(_pstObject, &vScale));
-                    }
-
-                    /* Locks it */
-                    orxFLAG_SET(u32LockFlags, (1 << eFXType), 0);
-                  }
-                  else
-                  {
-                    orxVECTOR vStartValue, vEndValue;
-
-                    /* First call? */
-                    if(bFirstCall != orxFALSE)
-                    {
-                      /* Gets start value */
-                      orxVector_SetAll(&vStartValue, orxFLOAT_0);
-                    }
-                    else
-                    {
-                      /* Gets start value */
-                      orxVector_Lerp(&vStartValue, &(pstFXSlot->stCurveParam.vStartValue), &(pstFXSlot->stCurveParam.vEndValue), fStartCoef);
-                    }
-
-                    /* Gets end value */
-                    orxVector_Lerp(&vEndValue, &(pstFXSlot->stCurveParam.vStartValue), &(pstFXSlot->stCurveParam.vEndValue), fEndCoef);
-
-                    /* Gets delta value */
-                    orxVector_Sub(&vEndValue, &vEndValue, &vStartValue);
-
-                    /* Use rotation? */
-                    if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_ROTATION))
-                    {
-                      /* Updates vector */
-                      orxVector_2DRotate(&vEndValue, &vEndValue, orxObject_GetRotation(_pstObject));
-                    }
-
-                    /* Use scale? */
-                    if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_USE_SCALE))
-                    {
-                      orxVECTOR vScale;
-
-                      /* Updates vector */
-                      orxVector_Mul(&vEndValue, &vEndValue, orxObject_GetScale(_pstObject, &vScale));
-                    }
-
-                    /* Updates global value */
-                    orxVector_Add(&(astValueList[eFXType].vValue), &(astValueList[eFXType].vValue), &vEndValue);
-                  }
-
-                  /* Is a color type? */
-                  if((eFXType == orxFX_TYPE_RGB) || (eFXType == orxFX_TYPE_HSL) || (eFXType == orxFX_TYPE_HSV))
-                  {
-                    /* Updates color blend status */
-                    eColorBlendUpdate = eFXType;
-                  }
-                  else
-                  {
-                    /* Updates status */
-                    orxFLAG_SET(u32UpdateFlags, (1 << eFXType), 0);
-                  }
-                }
-
-                break;
-              }
-
-              case (orxFX_OPERATION_MULTIPLY << orxFX_SLOT_KU32_SHIFT_OPERATION) | (orxFX_VALUE_TYPE_VECTOR << orxFX_SLOT_KU32_SHIFT_VALUE_TYPE):
-              {
-                /* Absolute ? */
-                if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE))
-                {
-                  /* Overrides values */
-                  orxVector_Lerp(&(astValueList[eFXType].vValue), &(pstFXSlot->stCurveParam.vStartValue), &(pstFXSlot->stCurveParam.vEndValue), fEndCoef);
-
-                  /* Makes sure we have valid values */
-                  if(astValueList[eFXType].vValue.fX == orxFLOAT_0)
-                  {
-                    astValueList[eFXType].vValue.fX = orx2F(0.000001f);
-                  }
-                  if(astValueList[eFXType].vValue.fY == orxFLOAT_0)
-                  {
-                    astValueList[eFXType].vValue.fY = orx2F(0.000001f);
-                  }
-
-                  /* Locks it */
-                  orxFLAG_SET(u32LockFlags, (1 << eFXType), 0);
-                }
-                else
-                {
-                  orxVECTOR vStartValue, vEndValue;
-
-                  /* First call? */
-                  if(bFirstCall != orxFALSE)
-                  {
-                    /* Gets start value */
-                    orxVector_SetAll(&vStartValue, orxFLOAT_1);
-                  }
-                  else
-                  {
-                    /* Gets start value */
-                    orxVector_Lerp(&vStartValue, &(pstFXSlot->stCurveParam.vStartValue), &(pstFXSlot->stCurveParam.vEndValue), fStartCoef);
-
-                    /* Makes sure we have valid values */
-                    if(vStartValue.fX == orxFLOAT_0)
-                    {
-                      vStartValue.fX = orx2F(0.000001f);
-                    }
-                    if(vStartValue.fY == orxFLOAT_0)
-                    {
-                      vStartValue.fY = orx2F(0.000001f);
-                    }
-                  }
-
-                  /* Gets end value */
-                  orxVector_Lerp(&vEndValue, &(pstFXSlot->stCurveParam.vStartValue), &(pstFXSlot->stCurveParam.vEndValue), fEndCoef);
-
-                  /* Makes sure we have valid values */
-                  if(vEndValue.fX == orxFLOAT_0)
-                  {
-                    vEndValue.fX = orx2F(0.000001f);
-                  }
-                  if(vEndValue.fY == orxFLOAT_0)
-                  {
-                    vEndValue.fY = orx2F(0.000001f);
-                  }
-
-                  /* Updates global value */
-                  orxVector_Mul(&(astValueList[eFXType].vValue), &(astValueList[eFXType].vValue), orxVector_Div(&vEndValue, &vEndValue, &vStartValue));
-                }
-
-                /* Updates status */
-                orxFLAG_SET(u32UpdateFlags, (1 << eFXType), 0);
-
-                break;
-              }
-
-              default:
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Invalid FX type when trying to apply FX.");
-
-                break;
-              }
-            }
-          }
-        }
+        /* Computes it */
+        orxFX_ComputeSlot(pstFXSlot, &stContext);
       }
       else
       {
@@ -1656,24 +1701,36 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     }
 
     /* Global color update? */
-    if((orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_ALPHA)))
-    || (eColorBlendUpdate != orxFX_TYPE_NONE))
+    if((orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_ALPHA)))
+    || (stContext.eColorBlendUpdate != orxFX_TYPE_NONE))
     {
-      orxCOLOR stColor;
+      orxCOLOR stColor, stObjectColor;
+
+      /* Has object color? */
+      if(orxObject_HasColor(_pstObject) != orxFALSE)
+      {
+        /* Stores object color */
+        orxObject_GetColor(_pstObject, &stObjectColor);
+      }
+      else
+      {
+        /* Clears color */
+        orxColor_Set(&stObjectColor, &orxVECTOR_WHITE, orxFLOAT_1);
+      }
 
       /* Update alpha? */
-      if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_ALPHA)))
+      if(orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_ALPHA)))
       {
         /* Non absolute? */
-        if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_ALPHA)))
+        if(!orxFLAG_TEST(stContext.u32LockFlags, (1 << orxFX_TYPE_ALPHA)))
         {
           /* Updates alpha with previous one */
-          stColor.fAlpha = astValueList[orxFX_TYPE_ALPHA].fValue + stObjectColor.fAlpha;
+          stColor.fAlpha = stContext.astValueList[orxFX_TYPE_ALPHA].fValue + stObjectColor.fAlpha;
         }
         else
         {
           /* Updates color */
-          stColor.fAlpha = astValueList[orxFX_TYPE_ALPHA].fValue;
+          stColor.fAlpha = stContext.astValueList[orxFX_TYPE_ALPHA].fValue;
         }
       }
       else
@@ -1683,19 +1740,19 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
       }
 
       /* Update color blend? */
-      if(eColorBlendUpdate != orxFX_TYPE_NONE)
+      if(stContext.eColorBlendUpdate != orxFX_TYPE_NONE)
       {
         /* Non absolute? */
-        if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_RGB)))
+        if(!orxFLAG_TEST(stContext.u32LockFlags, (1 << orxFX_TYPE_RGB)))
         {
           /* HSL? */
-          if(eColorBlendUpdate == orxFX_TYPE_HSL)
+          if(stContext.eColorBlendUpdate == orxFX_TYPE_HSL)
           {
             /* Gets object's HSL color */
             orxColor_FromRGBToHSL(&stObjectColor, &stObjectColor);
 
             /* Updates color with previous one */
-            orxVector_Add(&(stColor.vHSL), &(astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vHSL));
+            orxVector_Add(&(stColor.vHSL), &(stContext.astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vHSL));
 
             /* Applies circular clamp on [0, 1[ */
             stColor.vHSL.fH -= orxS2F(orxF2S(stColor.vHSL.fH) - (orxS32)(stColor.vHSL.fH < orxFLOAT_0));
@@ -1704,13 +1761,13 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
             orxColor_FromHSLToRGB(&stColor, &stColor);
           }
           /* HSV? */
-          else if(eColorBlendUpdate == orxFX_TYPE_HSV)
+          else if(stContext.eColorBlendUpdate == orxFX_TYPE_HSV)
           {
             /* Gets object's HSV color */
             orxColor_FromRGBToHSV(&stObjectColor, &stObjectColor);
 
             /* Updates color with previous one */
-            orxVector_Add(&(stColor.vHSV), &(astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vHSV));
+            orxVector_Add(&(stColor.vHSV), &(stContext.astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vHSV));
 
             /* Applies circular clamp on [0, 1[ */
             stColor.vHSV.fH -= orxS2F(orxF2S(stColor.vHSV.fH) - (orxS32)(stColor.vHSV.fH < orxFLOAT_0));
@@ -1722,16 +1779,16 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
           else
           {
             /* Updates color with previous one */
-            orxVector_Add(&(stColor.vRGB), &(astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vRGB));
+            orxVector_Add(&(stColor.vRGB), &(stContext.astValueList[orxFX_TYPE_RGB].vValue), &(stObjectColor.vRGB));
           }
         }
         else
         {
           /* Copies value */
-          orxVector_Copy(&(stColor.vRGB), &(astValueList[orxFX_TYPE_RGB].vValue));
+          orxVector_Copy(&(stColor.vRGB), &(stContext.astValueList[orxFX_TYPE_RGB].vValue));
 
           /* HSL? */
-          if(eColorBlendUpdate == orxFX_TYPE_HSL)
+          if(stContext.eColorBlendUpdate == orxFX_TYPE_HSL)
           {
             /* Applies circular clamp on [0, 1[ */
             stColor.vHSL.fH -= orxS2F(orxF2S(stColor.vHSL.fH) - (orxS32)(stColor.vHSL.fH < orxFLOAT_0));
@@ -1740,7 +1797,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
             orxColor_FromHSLToRGB(&stColor, &stColor);
           }
           /* HSV? */
-          else if(eColorBlendUpdate == orxFX_TYPE_HSV)
+          else if(stContext.eColorBlendUpdate == orxFX_TYPE_HSV)
           {
             /* Applies circular clamp on [0, 1[ */
             stColor.vHSV.fH -= orxS2F(orxF2S(stColor.vHSV.fH) - (orxS32)(stColor.vHSV.fH < orxFLOAT_0));
@@ -1761,24 +1818,24 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     }
 
     /* Update rotation? */
-    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_ROTATION)))
+    if(orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_ROTATION)))
     {
       /* Non absolute? */
-      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_ROTATION)))
+      if(!orxFLAG_TEST(stContext.u32LockFlags, (1 << orxFX_TYPE_ROTATION)))
       {
         /* Updates rotation with previous one */
-        astValueList[orxFX_TYPE_ROTATION].fValue += orxObject_GetRotation(_pstObject);
+        stContext.astValueList[orxFX_TYPE_ROTATION].fValue += orxObject_GetRotation(_pstObject);
       }
 
       /* Applies it */
-      orxObject_SetRotation(_pstObject, astValueList[orxFX_TYPE_ROTATION].fValue);
+      orxObject_SetRotation(_pstObject, stContext.astValueList[orxFX_TYPE_ROTATION].fValue);
     }
 
     /* Update scale? */
-    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_SCALE)))
+    if(orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_SCALE)))
     {
       /* Non absolute? */
-      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_SCALE)))
+      if(!orxFLAG_TEST(stContext.u32LockFlags, (1 << orxFX_TYPE_SCALE)))
       {
         orxVECTOR vObjectScale;
 
@@ -1786,50 +1843,50 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
         orxObject_GetScale(_pstObject, &vObjectScale);
 
         /* Updates scale with previous one */
-        orxVector_Mul(&(astValueList[orxFX_TYPE_SCALE].vValue), &(astValueList[orxFX_TYPE_SCALE].vValue), &vObjectScale);
+        orxVector_Mul(&(stContext.astValueList[orxFX_TYPE_SCALE].vValue), &(stContext.astValueList[orxFX_TYPE_SCALE].vValue), &vObjectScale);
       }
 
       /* Applies it */
-      orxObject_SetScale(_pstObject, &(astValueList[orxFX_TYPE_SCALE].vValue));
+      orxObject_SetScale(_pstObject, &(stContext.astValueList[orxFX_TYPE_SCALE].vValue));
     }
 
     /* Update translation? */
-    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_POSITION)))
+    if(orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_POSITION)))
     {
       /* Non absolute? */
-      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_POSITION)))
+      if(!orxFLAG_TEST(stContext.u32LockFlags, (1 << orxFX_TYPE_POSITION)))
       {
         orxVECTOR vObjectPosition;
 
         /* Updates position with previous one */
-        orxVector_Add(&(astValueList[orxFX_TYPE_POSITION].vValue), &(astValueList[orxFX_TYPE_POSITION].vValue), orxObject_GetPosition(_pstObject, &vObjectPosition));
+        orxVector_Add(&(stContext.astValueList[orxFX_TYPE_POSITION].vValue), &(stContext.astValueList[orxFX_TYPE_POSITION].vValue), orxObject_GetPosition(_pstObject, &vObjectPosition));
       }
 
       /* Applies it */
-      orxObject_SetPosition(_pstObject, &(astValueList[orxFX_TYPE_POSITION].vValue));
+      orxObject_SetPosition(_pstObject, &(stContext.astValueList[orxFX_TYPE_POSITION].vValue));
     }
 
     /* Update speed? */
-    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_SPEED)))
+    if(orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_SPEED)))
     {
       /* Non absolute? */
-      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_SPEED)))
+      if(!orxFLAG_TEST(stContext.u32LockFlags, (1 << orxFX_TYPE_SPEED)))
       {
         orxVECTOR vObjectSpeed;
 
         /* Updates position with previous one */
-        orxVector_Add(&(astValueList[orxFX_TYPE_SPEED].vValue), &(astValueList[orxFX_TYPE_SPEED].vValue), orxObject_GetSpeed(_pstObject, &vObjectSpeed));
+        orxVector_Add(&(stContext.astValueList[orxFX_TYPE_SPEED].vValue), &(stContext.astValueList[orxFX_TYPE_SPEED].vValue), orxObject_GetSpeed(_pstObject, &vObjectSpeed));
       }
 
       /* Applies it */
-      orxObject_SetSpeed(_pstObject, &(astValueList[orxFX_TYPE_SPEED].vValue));
+      orxObject_SetSpeed(_pstObject, &(stContext.astValueList[orxFX_TYPE_SPEED].vValue));
     }
 
     /* Update volume? */
-    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_VOLUME)))
+    if(orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_VOLUME)))
     {
       /* Non absolute? */
-      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_VOLUME)))
+      if(!orxFLAG_TEST(stContext.u32LockFlags, (1 << orxFX_TYPE_VOLUME)))
       {
         orxSOUND *pstSound;
 
@@ -1840,19 +1897,19 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
         if(pstSound != orxNULL)
         {
           /* Updates volume with previous one */
-          astValueList[orxFX_TYPE_VOLUME].fValue += orxSound_GetVolume(pstSound);
+          stContext.astValueList[orxFX_TYPE_VOLUME].fValue += orxSound_GetVolume(pstSound);
         }
       }
 
       /* Applies it */
-      orxObject_SetVolume(_pstObject, astValueList[orxFX_TYPE_VOLUME].fValue);
+      orxObject_SetVolume(_pstObject, stContext.astValueList[orxFX_TYPE_VOLUME].fValue);
     }
 
     /* Update pitch? */
-    if(orxFLAG_TEST(u32UpdateFlags, (1 << orxFX_TYPE_PITCH)))
+    if(orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_PITCH)))
     {
       /* Non absolute? */
-      if(!orxFLAG_TEST(u32LockFlags, (1 << orxFX_TYPE_PITCH)))
+      if(!orxFLAG_TEST(stContext.u32LockFlags, (1 << orxFX_TYPE_PITCH)))
       {
         orxSOUND *pstSound;
 
@@ -1863,20 +1920,189 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
         if(pstSound != orxNULL)
         {
           /* Updates pitch with previous one */
-          astValueList[orxFX_TYPE_PITCH].fValue *= orxSound_GetPitch(pstSound);
+          stContext.astValueList[orxFX_TYPE_PITCH].fValue *= orxSound_GetPitch(pstSound);
         }
       }
 
       /* Applies it */
-      orxObject_SetPitch(_pstObject, astValueList[orxFX_TYPE_PITCH].fValue);
+      orxObject_SetPitch(_pstObject, stContext.astValueList[orxFX_TYPE_PITCH].fValue);
     }
 
     /* Updates result */
-    eResult = (_fEndTime >= _pstFX->fDuration) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
+    eResult = (_fTime >= _pstFX->fDuration) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
   }
 
   /* Done! */
   return eResult;
+}
+
+/** Gets FX user float value between two timestamps
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fPreviousTime  Previous time, if <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
+ * @param[in]   _fTime          Current time
+ * @return      Float value
+ */
+orxFLOAT orxFASTCALL orxFX_GetFloat(const orxFX *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime)
+{
+  orxFLOAT fResult = orxFLOAT_0;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(_pstFX);
+  orxASSERT(_fTime >= _fPreviousTime);
+
+  /* Is time valid? */
+  if(_fTime >= orxFLOAT_0)
+  {
+    orxFX_CONTEXT stContext;
+    orxFX_TYPE    eType = orxFX_TYPE_NONE;
+    orxU32        i;
+
+    /* Inits context */
+    orxFX_InitContext(&stContext, orxNULL, orxMAX(_fPreviousTime, orxFLOAT_0), _fTime);
+
+    /* For all slots */
+    for(i = 0; i< orxFX_KU32_SLOT_NUMBER; i++)
+    {
+      const orxFX_SLOT *pstFXSlot;
+
+      /* Gets it */
+      pstFXSlot = &(_pstFX->astFXSlotList[i]);
+
+      /* Is defined? */
+      if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_DEFINED))
+      {
+        orxFX_TYPE eSlotType;
+
+        /* Gets its type */
+        eSlotType = orxFX_GetSlotType(pstFXSlot);
+
+        /* Should select a type? */
+        if((eType == orxFX_TYPE_NONE)
+        && ((eSlotType == orxFX_TYPE_FLOAT_ADD) || (eSlotType == orxFX_TYPE_FLOAT_MULTIPLY)))
+        {
+          /* Updates type */
+          eType = eSlotType;
+        }
+
+        /* Should compute slot? */
+        if(eType == eSlotType)
+        {
+          /* Computes it */
+          orxFX_ComputeSlot(pstFXSlot, &stContext);
+        }
+#ifdef __orxDEBUG__
+        else if(((eType == orxFX_TYPE_VECTOR_MULTIPLY) && (eSlotType == orxFX_TYPE_VECTOR_ADD))
+             || ((eType == orxFX_TYPE_VECTOR_ADD) && (eSlotType == orxFX_TYPE_VECTOR_MULTIPLY))
+             || ((eType == orxFX_TYPE_FLOAT_MULTIPLY) && (eSlotType == orxFX_TYPE_FLOAT_ADD))
+             || ((eType == orxFX_TYPE_FLOAT_ADD) && (eSlotType == orxFX_TYPE_FLOAT_MULTIPLY)))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: ignoring slot <%u>: can't mix user values of types <add> & <multiply> in the same FX.", orxFX_GetName(_pstFX), i);
+        }
+#endif /* __orxDEBUG__ */
+      }
+      else
+      {
+        /* Done with the slots */
+        break;
+      }
+    }
+
+    /* Success? */
+    if(eType != orxFX_TYPE_NONE)
+    {
+      /* Updates result */
+      fResult = stContext.astValueList[eType].fValue;
+    }
+  }
+
+  /* Done! */
+  return fResult;
+}
+
+/** Gets FX user vector value between two timestamps
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fPreviousTime  Previous time, if <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
+ * @param[in]   _fTime          Current time
+ * @return      Vector value if valid, orxNULL otherwise
+ */
+orxVECTOR *orxFASTCALL orxFX_GetVector(const orxFX *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime, orxVECTOR *_pvVector)
+{
+  orxVECTOR *pvResult = orxNULL;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(_pstFX);
+  orxASSERT(_fTime >= _fPreviousTime);
+
+  /* Is time valid? */
+  if(_fTime >= orxFLOAT_0)
+  {
+    orxFX_CONTEXT stContext;
+    orxFX_TYPE    eType = orxFX_TYPE_NONE;
+    orxU32        i;
+
+    /* Inits context */
+    orxFX_InitContext(&stContext, orxNULL, orxMAX(_fPreviousTime, orxFLOAT_0), _fTime);
+
+    /* For all slots */
+    for(i = 0; i< orxFX_KU32_SLOT_NUMBER; i++)
+    {
+      const orxFX_SLOT *pstFXSlot;
+
+      /* Gets it */
+      pstFXSlot = &(_pstFX->astFXSlotList[i]);
+
+      /* Is defined? */
+      if(orxFLAG_TEST(pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_DEFINED))
+      {
+        orxFX_TYPE eSlotType;
+
+        /* Gets its type */
+        eSlotType = orxFX_GetSlotType(pstFXSlot);
+
+        /* Should select a type? */
+        if((eType == orxFX_TYPE_NONE)
+        && ((eSlotType == orxFX_TYPE_VECTOR_ADD) || (eSlotType == orxFX_TYPE_VECTOR_MULTIPLY)))
+        {
+          /* Updates type */
+          eType = eSlotType;
+        }
+
+        /* Should compute slot? */
+        if(eType == eSlotType)
+        {
+          /* Computes it */
+          orxFX_ComputeSlot(pstFXSlot, &stContext);
+        }
+#ifdef __orxDEBUG__
+        else if(((eType == orxFX_TYPE_VECTOR_MULTIPLY) && (eSlotType == orxFX_TYPE_VECTOR_ADD))
+             || ((eType == orxFX_TYPE_VECTOR_ADD) && (eSlotType == orxFX_TYPE_VECTOR_MULTIPLY))
+             || ((eType == orxFX_TYPE_FLOAT_MULTIPLY) && (eSlotType == orxFX_TYPE_FLOAT_ADD))
+             || ((eType == orxFX_TYPE_FLOAT_ADD) && (eSlotType == orxFX_TYPE_FLOAT_MULTIPLY)))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: ignoring slot <%u>: can't mix user values of types <add> & <multiply> in the same FX.", orxFX_GetName(_pstFX), i);
+        }
+#endif /* __orxDEBUG__ */
+      }
+      else
+      {
+        /* Done with the slots */
+        break;
+      }
+    }
+
+    /* Success? */
+    if(eType != orxFX_TYPE_NONE)
+    {
+      /* Updates result */
+      pvResult = _pvVector;
+      orxVector_Copy(pvResult, &(stContext.astValueList[eType].vValue));
+    }
+  }
+
+  /* Done! */
+  return pvResult;
 }
 
 /** Enables/disables an FX
@@ -1963,6 +2189,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlot(orxFX *_pstFX, orxFX_TYPE _eType, orxFX_CURV
     switch(_eType)
     {
       case orxFX_TYPE_SCALE:
+      case orxFX_TYPE_VECTOR_MULTIPLY:
       {
         /* Updates operation */
         eOperation = orxFX_OPERATION_MULTIPLY;
@@ -1975,6 +2202,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlot(orxFX *_pstFX, orxFX_TYPE _eType, orxFX_CURV
       case orxFX_TYPE_HSV:
       case orxFX_TYPE_POSITION:
       case orxFX_TYPE_SPEED:
+      case orxFX_TYPE_VECTOR_ADD:
       {
         /* Updates value type */
         eValueType = orxFX_VALUE_TYPE_VECTOR;
@@ -1983,6 +2211,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlot(orxFX *_pstFX, orxFX_TYPE _eType, orxFX_CURV
       }
 
       case orxFX_TYPE_PITCH:
+      case orxFX_TYPE_FLOAT_MULTIPLY:
       {
         /* Updates operation */
         eOperation = orxFX_OPERATION_MULTIPLY;
@@ -2061,30 +2290,29 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
   && (orxConfig_PushSection(_zSlotID) != orxSTATUS_FAILURE))
   {
     orxFX_CURVE_PARAM stCurveParam;
-    void             *pCurve;
-    const orxSTRING   zType;
+    void             *pID;
     orxCOLORSPACE     eColorSpace = orxCOLORSPACE_NONE;
     orxFX_CURVE       eCurve      = orxFX_CURVE_LINEAR;
     orxFX_TYPE        eType       = orxFX_TYPE_NONE;
     orxFX_OPERATION   eOperation  = orxFX_OPERATION_ADD;
     orxU32            u32Flags    = orxFX_SLOT_KU32_FLAG_NONE;
-    orxCHAR           acCurve[32];
+    orxCHAR           acBuffer[32];
 
     /* Clears curve param */
     orxMemory_Zero(&stCurveParam, sizeof(orxFX_CURVE_PARAM));
 
     /* Gets curve's lowercase name */
-    orxString_NPrint(acCurve, sizeof(acCurve), "%s", orxConfig_GetListString(orxFX_KZ_CONFIG_CURVE, 0));
-    orxString_LowerCase(acCurve);
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxConfig_GetListString(orxFX_KZ_CONFIG_CURVE, 0));
+    orxString_LowerCase(acBuffer);
 
     /* Retrieves curve's registration */
-    pCurve = orxHashTable_Get(sstFX.pstCurveTable, orxString_Hash(acCurve));
+    pID = orxHashTable_Get(sstFX.pstIDTable, orxString_Hash(acBuffer));
 
     /* Valid? */
-    if(pCurve != 0)
+    if(pID != 0)
     {
       /* Gets curve */
-      eCurve = (orxFX_CURVE)((orxU32)(orxUPTR)pCurve - 1);
+      eCurve = (orxFX_CURVE)((orxU32)(orxUPTR)pID - 1);
 
       /* Bezier? */
       if(eCurve == orxFX_CURVE_BEZIER)
@@ -2125,119 +2353,88 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       u32Flags |= orxFX_SLOT_KU32_FLAG_STAGGER;
     }
 
-    /* Gets its type */
-    zType = orxConfig_GetString(orxFX_KZ_CONFIG_TYPE);
+    /* Gets type's lowercase name */
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxConfig_GetString(orxFX_KZ_CONFIG_TYPE));
+    orxString_LowerCase(acBuffer);
 
-    /* Alpha? */
-    if(orxString_ICompare(zType, orxFX_KZ_ALPHA) == 0)
-    {
-      /* Updates type */
-      eType = orxFX_TYPE_ALPHA;
-    }
-    /* Color blend? */
-    else if(orxString_ICompare(zType, orxFX_KZ_COLOR) == 0)
-    {
-      /* Updates color space */
-      eColorSpace = orxCOLORSPACE_COMPONENT;
+    /* Retrieves type's registration */
+    pID = orxHashTable_Get(sstFX.pstIDTable, orxString_Hash(acBuffer));
 
-      /* Updates type */
-      eType = orxFX_TYPE_RGB;
-    }
-    /* RGB blend? */
-    else if(orxString_ICompare(zType, orxFX_KZ_RGB) == 0)
+    /* Valid? */
+    if(pID != 0)
     {
-      /* Updates color space */
-      eColorSpace = orxCOLORSPACE_RGB;
+      /* Gets type */
+      eType = (orxFX_TYPE)((orxU32)(orxUPTR)pID - 1);
+    }
 
-      /* Updates type */
-      eType = orxFX_TYPE_RGB;
-    }
-    /* HSL blend? */
-    else if(orxString_ICompare(zType, orxFX_KZ_HSL) == 0)
+    /* Depending on type */
+    switch(eType)
     {
-      /* Updates color space */
-      eColorSpace = orxCOLORSPACE_HSL;
-
-      /* Updates type */
-      eType = orxFX_TYPE_HSL;
-    }
-    /* HSV blend? */
-    else if(orxString_ICompare(zType, orxFX_KZ_HSV) == 0)
-    {
-      /* Updates color space */
-      eColorSpace = orxCOLORSPACE_HSV;
-
-      /* Updates type */
-      eType = orxFX_TYPE_HSV;
-    }
-    /* Rotation? */
-    else if(orxString_ICompare(zType, orxFX_KZ_ROTATION) == 0)
-    {
-      /* Updates type */
-      eType = orxFX_TYPE_ROTATION;
-    }
-    /* Scale? */
-    else if(orxString_ICompare(zType, orxFX_KZ_SCALE) == 0)
-    {
-      /* Updates type */
-      eType = orxFX_TYPE_SCALE;
-    }
-    /* Position? */
-    else if(orxString_ICompare(zType, orxFX_KZ_POSITION) == 0)
-    {
-      /* Use rotation? */
-      if(orxConfig_GetBool(orxFX_KZ_CONFIG_USE_ROTATION) != orxFALSE)
+      case orxFX_TYPE_RGB:
       {
-        /* Updates local flags */
-        u32Flags |= orxFX_SLOT_KU32_FLAG_USE_ROTATION;
+        /* Updates color space */
+        eColorSpace = orxCOLORSPACE_RGB;
+        break;
       }
-
-      /* Use scale? */
-      if(orxConfig_GetBool(orxFX_KZ_CONFIG_USE_SCALE) != orxFALSE)
+      case orxFX_TYPE_HSL:
       {
-        /* Updates local flags */
-        u32Flags |= orxFX_SLOT_KU32_FLAG_USE_SCALE;
+        /* Updates color space */
+        eColorSpace = orxCOLORSPACE_HSL;
+        break;
       }
-
-      /* Updates type */
-      eType = orxFX_TYPE_POSITION;
-    }
-    /* Speed? */
-    else if(orxString_ICompare(zType, orxFX_KZ_SPEED) == 0)
-    {
-      /* Use rotation? */
-      if(orxConfig_GetBool(orxFX_KZ_CONFIG_USE_ROTATION) != orxFALSE)
+      case orxFX_TYPE_HSV:
       {
-        /* Updates local flags */
-        u32Flags |= orxFX_SLOT_KU32_FLAG_USE_ROTATION;
+        /* Updates color space */
+        eColorSpace = orxCOLORSPACE_HSV;
+        break;
       }
-
-      /* Use scale? */
-      if(orxConfig_GetBool(orxFX_KZ_CONFIG_USE_SCALE) != orxFALSE)
+      case orxFX_TYPE_POSITION:
+      case orxFX_TYPE_SPEED:
       {
-        /* Updates local flags */
-        u32Flags |= orxFX_SLOT_KU32_FLAG_USE_SCALE;
-      }
+        /* Use rotation? */
+        if(orxConfig_GetBool(orxFX_KZ_CONFIG_USE_ROTATION) != orxFALSE)
+        {
+          /* Updates local flags */
+          u32Flags |= orxFX_SLOT_KU32_FLAG_USE_ROTATION;
+        }
 
-      /* Updates type */
-      eType = orxFX_TYPE_SPEED;
-    }
-    /* Volume? */
-    else if(orxString_ICompare(zType, orxFX_KZ_VOLUME) == 0)
-    {
-      /* Updates type */
-      eType = orxFX_TYPE_VOLUME;
-    }
-    /* Pitch? */
-    else if(orxString_ICompare(zType, orxFX_KZ_PITCH) == 0)
-    {
-      /* Updates type */
-      eType = orxFX_TYPE_PITCH;
-    }
-    else
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't add slot [%s]: invalid Type found: <%s>.", _zSlotID, zType);
+        /* Use scale? */
+        if(orxConfig_GetBool(orxFX_KZ_CONFIG_USE_SCALE) != orxFALSE)
+        {
+          /* Updates local flags */
+          u32Flags |= orxFX_SLOT_KU32_FLAG_USE_SCALE;
+        }
+        break;
+      }
+      case orxFX_TYPE_NONE:
+      {
+        /* Color? */
+        if(orxString_Compare(acBuffer, orxFX_KZ_COLOR) == 0)
+        {
+          /* Updates color space */
+          eColorSpace = orxCOLORSPACE_COMPONENT;
+
+          /* Updates type */
+          eType = orxFX_TYPE_RGB;
+        }
+        /* Vector? */
+        else if(orxString_SearchString(acBuffer, orxFX_KZ_VECTOR) != orxNULL)
+        {
+          /* Updates type */
+          eType = (orxString_SearchString(acBuffer, orxFX_KZ_MULTIPLY) != orxNULL) ? orxFX_TYPE_VECTOR_MULTIPLY : orxFX_TYPE_VECTOR_ADD;
+        }
+        /* Float? */
+        else if(orxString_SearchString(acBuffer, orxFX_KZ_FLOAT) != orxNULL)
+        {
+          /* Updates type */
+          eType = (orxString_SearchString(acBuffer, orxFX_KZ_MULTIPLY) != orxNULL) ? orxFX_TYPE_FLOAT_MULTIPLY : orxFX_TYPE_FLOAT_ADD;
+        }
+        break;
+      }
+      default:
+      {
+        break;
+      }
     }
 
     /* Valid? */
@@ -2247,6 +2444,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
       switch(eType)
       {
         case orxFX_TYPE_PITCH:
+        case orxFX_TYPE_FLOAT_MULTIPLY:
         {
           /* Updates operation */
           eOperation = orxFX_OPERATION_MULTIPLY;
@@ -2260,6 +2458,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         case orxFX_TYPE_ALPHA:
         case orxFX_TYPE_ROTATION:
         case orxFX_TYPE_VOLUME:
+        case orxFX_TYPE_FLOAT_ADD:
         {
           /* Gets float values */
           if(orxConfig_HasValue(orxFX_KZ_CONFIG_START_VALUE) != orxFALSE)
@@ -2283,6 +2482,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
         }
 
         case orxFX_TYPE_SCALE:
+        case orxFX_TYPE_VECTOR_MULTIPLY:
         {
           /* Updates operation */
           eOperation = orxFX_OPERATION_MULTIPLY;
@@ -2296,6 +2496,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
 
         case orxFX_TYPE_POSITION:
         case orxFX_TYPE_SPEED:
+        case orxFX_TYPE_VECTOR_ADD:
         {
           /* Has start value? */
           if(orxConfig_HasValue(orxFX_KZ_CONFIG_START_VALUE) != orxFALSE)
@@ -2361,6 +2562,11 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
 
       /* Adds slot */
       eResult = orxFX_AddSlot(_pstFX, eType, eCurve, &stCurveParam, u32Flags);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't add slot [%s]: type <%s> is invalid.", _zSlotID, acBuffer);
     }
 
     /* Pops previous section */
