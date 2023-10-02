@@ -51,27 +51,127 @@
 
 /** Slot flags
  */
-#define orxFX_SLOT_KU32_FLAG_ABSOLUTE           0x00000100  /**< Absolute flag */
-#define orxFX_SLOT_KU32_FLAG_USE_ROTATION       0x00000200  /**< Use rotation flag */
-#define orxFX_SLOT_KU32_FLAG_USE_SCALE          0x00000400  /**< Use scale flag */
+#define orxFX_SLOT_KU32_FLAG_ABSOLUTE           0x00010000  /**< Absolute flag */
+#define orxFX_SLOT_KU32_FLAG_STAGGER            0x00020000  /**< Stagger flag */
+#define orxFX_SLOT_KU32_FLAG_USE_ROTATION       0x00040000  /**< Use rotation flag */
+#define orxFX_SLOT_KU32_FLAG_USE_SCALE          0x00080000  /**< Use scale flag */
+
+
+/** FX type enum
+ */
+typedef enum __orxFX_TYPE_t
+{
+  orxFX_TYPE_ALPHA = 0,
+  orxFX_TYPE_RGB,
+  orxFX_TYPE_HSL,
+  orxFX_TYPE_HSV,
+  orxFX_TYPE_POSITION,
+  orxFX_TYPE_ROTATION,
+  orxFX_TYPE_SCALE,
+  orxFX_TYPE_SPEED,
+  orxFX_TYPE_VOLUME,
+  orxFX_TYPE_PITCH,
+
+  orxFX_TYPE_FLOAT_ADD,
+  orxFX_TYPE_FLOAT_MULTIPLY,
+  orxFX_TYPE_VECTOR_ADD,
+  orxFX_TYPE_VECTOR_MULTIPLY,
+
+  orxFX_TYPE_NUMBER,
+
+  orxFX_TYPE_MAX_NUMBER = 16,
+
+  orxFX_TYPE_NONE = orxENUM_NONE
+
+} orxFX_TYPE;
 
 
 /** FX curve enum
  */
- typedef enum __orxFX_CURVE_t
- {
-   orxFX_CURVE_LINEAR = 0,
-   orxFX_CURVE_SMOOTH,
-   orxFX_CURVE_SMOOTHER,
-   orxFX_CURVE_TRIANGLE,
-   orxFX_CURVE_SINE,
-   orxFX_CURVE_SQUARE,
+typedef enum __orxFX_CURVE_t
+{
+  orxFX_CURVE_SINE = 0,
+  orxFX_CURVE_SQUARE,
+  orxFX_CURVE_TRIANGLE,
 
-   orxFX_CURVE_NUMBER,
+  orxFX_CURVE_SYMMETRIC_NUMBER,
 
-   orxFX_CURVE_NONE = orxENUM_NONE
+  /* Below this point all curves are non-symmetrical */
 
- } orxFX_CURVE;
+  orxFX_CURVE_BEZIER = orxFX_CURVE_SYMMETRIC_NUMBER,
+  orxFX_CURVE_LINEAR,
+  orxFX_CURVE_SMOOTH,
+  orxFX_CURVE_SMOOTHER,
+
+  orxFX_CURVE_EASE_IN_SINE,
+  orxFX_CURVE_EASE_OUT_SINE,
+  orxFX_CURVE_EASE_IN_OUT_SINE,
+  orxFX_CURVE_EASE_IN_QUAD,
+  orxFX_CURVE_EASE_OUT_QUAD,
+  orxFX_CURVE_EASE_IN_OUT_QUAD,
+  orxFX_CURVE_EASE_IN_CUBIC,
+  orxFX_CURVE_EASE_OUT_CUBIC,
+  orxFX_CURVE_EASE_IN_OUT_CUBIC,
+  orxFX_CURVE_EASE_IN_QUART,
+  orxFX_CURVE_EASE_OUT_QUART,
+  orxFX_CURVE_EASE_IN_OUT_QUART,
+  orxFX_CURVE_EASE_IN_QUINT,
+  orxFX_CURVE_EASE_OUT_QUINT,
+  orxFX_CURVE_EASE_IN_OUT_QUINT,
+  orxFX_CURVE_EASE_IN_EXPO,
+  orxFX_CURVE_EASE_OUT_EXPO,
+  orxFX_CURVE_EASE_IN_OUT_EXPO,
+  orxFX_CURVE_EASE_IN_CIRC,
+  orxFX_CURVE_EASE_OUT_CIRC,
+  orxFX_CURVE_EASE_IN_OUT_CIRC,
+  orxFX_CURVE_EASE_IN_BACK,
+  orxFX_CURVE_EASE_OUT_BACK,
+  orxFX_CURVE_EASE_IN_OUT_BACK,
+  orxFX_CURVE_EASE_IN_ELASTIC,
+  orxFX_CURVE_EASE_OUT_ELASTIC,
+  orxFX_CURVE_EASE_IN_OUT_ELASTIC,
+  orxFX_CURVE_EASE_IN_BOUNCE,
+  orxFX_CURVE_EASE_OUT_BOUNCE,
+  orxFX_CURVE_EASE_IN_OUT_BOUNCE,
+
+  orxFX_CURVE_NUMBER,
+
+  orxFX_CURVE_NONE = orxENUM_NONE
+
+} orxFX_CURVE;
+
+
+/** FX curve param
+ */
+typedef struct __orxFX_CURVE_PARAM_t
+{
+  union
+  {
+    struct
+    {
+      orxFLOAT          fStartValue;
+      orxFLOAT          fEndValue;
+    };
+
+    struct
+    {
+      orxVECTOR         vStartValue;
+      orxVECTOR         vEndValue;
+    };
+  };
+
+  orxVECTOR             vCurvePoint1;           /**< Only used for Bezier curves, as first control point */
+  orxVECTOR             vCurvePoint2;           /**< Only used for Bezier curves, as second control point */
+
+  orxFLOAT              fStartTime;
+  orxFLOAT              fEndTime;
+  orxFLOAT              fPeriod;
+  orxFLOAT              fPhase;
+  orxFLOAT              fAmplification;
+  orxFLOAT              fAcceleration;
+  orxFLOAT              fPow;
+
+} orxFX_CURVE_PARAM;
 
 
 /** Internal FX structure
@@ -119,18 +219,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Init();
 extern orxDLLAPI void orxFASTCALL               orxFX_Exit();
 
 /** Creates an empty FX
- * @return orxFX / orxNULL
+ * @return      orxFX / orxNULL
  */
 extern orxDLLAPI orxFX *orxFASTCALL             orxFX_Create();
 
 /** Creates an FX from config
- * @param[in]   _zConfigID    Config ID
+ * @param[in]   _zConfigID      Config ID
  * @ return orxFX / orxNULL
  */
 extern orxDLLAPI orxFX *orxFASTCALL             orxFX_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Deletes an FX
- * @param[in] _pstFX            Concerned FX
+ * @param[in]   _pstFX          Concerned FX
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Delete(orxFX *_pstFX);
@@ -141,13 +241,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Delete(orxFX *_pstFX);
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_ClearCache();
 
 /** Applies FX on object
- * @param[in] _pstFX            FX to apply
- * @param[in] _pstObject        Object on which to apply the FX
- * @param[in] _fStartTime       FX local application start time
- * @param[in] _fEndTime         FX local application end time
- * @return    orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pstFX          FX to apply
+ * @param[in]   _pstObject      Object on which to apply the FX
+ * @param[in]   _fPreviousTime  Previous time
+ * @param[in]   _fTime          Current time
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, orxFLOAT _fPreviousTime, orxFLOAT _fTime);
+
+/** Gets FX user float value between two timestamps
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fPreviousTime  Previous time, if <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
+ * @param[in]   _fTime          Current time
+ * @return      Float value
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL           orxFX_GetFloat(const orxFX *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime);
+
+/** Gets FX user vector value between two timestamps
+ * @param[in]   _pstFX          Concerned FX
+ * @param[in]   _fPreviousTime  Previous time, if <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
+ * @param[in]   _fTime          Current time
+ * @return      Vector value if valid, orxNULL otherwise
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL         orxFX_GetVector(const orxFX *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime, orxVECTOR *_pvVector);
 
 /** Enables/disables an FX
  * @param[in]   _pstFX          Concerned FX
@@ -161,175 +277,15 @@ extern orxDLLAPI void orxFASTCALL               orxFX_Enable(orxFX *_pstFX, orxB
  */
 extern orxDLLAPI orxBOOL orxFASTCALL            orxFX_IsEnabled(const orxFX *_pstFX);
 
-/** Adds alpha to an FX
+/** Adds a slot to an FX
  * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fStartTime     Time start
- * @param[in]   _fEndTime       Time end
- * @param[in]   _fCyclePeriod   Cycle period
- * @param[in]   _fCyclePhase    Cycle phase (at start)
- * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
- * @param[in]   _fStartAlpha    Starting alpha value
- * @param[in]   _fEndAlpha      Ending alpha value
- * @param[in]   _eCurve         Blending curve type
- * @param[in]   _fPow           Blending curve exponent
- * @param[in]   _u32Flags       Param flags
+ * @param[in]   _eType          Type
+ * @param[in]   _eCurve         Curve
+ * @param[in]   _pstCurveParam  Curve parameters
+ * @param[in]   _u32Flags       Additional flags (Absolute, Stagger, UseRotation/UseScale for position/speed types only)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddAlpha(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
-
-/** Adds RGB color to an FX
- * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fStartTime     Time start
- * @param[in]   _fEndTime       Time end
- * @param[in]   _fCyclePeriod   Cycle period
- * @param[in]   _fCyclePhase    Cycle phase (at start)
- * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
- * @param[in]   _pvStartColor   Starting color value
- * @param[in]   _pvEndColor     Ending color value
- * @param[in]   _eCurve         Blending curve type
- * @param[in]   _fPow           Blending curve exponent
- * @param[in]   _u32Flags       Param flags
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddRGB(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
-
-/** Adds HSL color to an FX
- * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fStartTime     Time start
- * @param[in]   _fEndTime       Time end
- * @param[in]   _fCyclePeriod   Cycle period
- * @param[in]   _fCyclePhase    Cycle phase (at start)
- * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
- * @param[in]   _pvStartColor   Starting color value
- * @param[in]   _pvEndColor     Ending color value
- * @param[in]   _eCurve         Blending curve type
- * @param[in]   _fPow           Blending curve exponent
- * @param[in]   _u32Flags       Param flags
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddHSL(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
-
-/** Adds HSV color to an FX
- * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fStartTime     Time start
- * @param[in]   _fEndTime       Time end
- * @param[in]   _fCyclePeriod   Cycle period
- * @param[in]   _fCyclePhase    Cycle phase (at start)
- * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
- * @param[in]   _pvStartColor   Starting color value
- * @param[in]   _pvEndColor     Ending color value
- * @param[in]   _eCurve         Blending curve type
- * @param[in]   _fPow           Blending curve exponent
- * @param[in]   _u32Flags       Param flags
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddHSV(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxVECTOR *_pvStartColor, orxVECTOR *_pvEndColor, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
-
-/** Adds rotation to an FX
- * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fStartTime     Time start
- * @param[in]   _fEndTime       Time end
- * @param[in]   _fCyclePeriod   Cycle period
- * @param[in]   _fCyclePhase    Cycle phase (at start)
- * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
- * @param[in]   _fStartRotation Starting rotation value (radians)
- * @param[in]   _fEndRotation   Ending rotation value (radians)
- * @param[in]   _eCurve         Blending curve type
- * @param[in]   _fPow           Blending curve exponent
- * @param[in]   _u32Flags       Param flags
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddRotation(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
-
-/** Adds scale to an FX
- * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fStartTime     Time start
- * @param[in]   _fEndTime       Time end
- * @param[in]   _fCyclePeriod   Cycle period
- * @param[in]   _fCyclePhase    Cycle phase (at start)
- * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
- * @param[in]   _pvStartScale   Starting scale value
- * @param[in]   _pvEndScale     Ending scale value
- * @param[in]   _eCurve         Blending curve type
- * @param[in]   _fPow           Blending curve exponent
- * @param[in]   _u32Flags       Param flags
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddScale(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const orxVECTOR *_pvStartScale, const orxVECTOR *_pvEndScale, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
-
-/** Adds position to an FX
- * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fStartTime     Time start
- * @param[in]   _fEndTime       Time end
- * @param[in]   _fCyclePeriod   Cycle period
- * @param[in]   _fCyclePhase    Cycle phase (at start)
- * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
- * @param[in]   _pvStartTranslation Starting position value
- * @param[in]   _pvEndTranslation Ending position value
- * @param[in]   _eCurve         Blending curve type
- * @param[in]   _fPow           Blending curve exponent
- * @param[in]   _u32Flags       Param flags
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddPosition(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const orxVECTOR *_pvStartTranslation, const orxVECTOR *_pvEndTranslation, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
-
-/** Adds speed to an FX
- * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fStartTime     Time start
- * @param[in]   _fEndTime       Time end
- * @param[in]   _fCyclePeriod   Cycle period
- * @param[in]   _fCyclePhase    Cycle phase (at start)
- * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
- * @param[in]   _pvStartSpeed   Starting speed value
- * @param[in]   _pvEndSpeed     Ending speed value
- * @param[in]   _eCurve         Blending curve type
- * @param[in]   _fPow           Blending curve exponent
- * @param[in]   _u32Flags       Param flags
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddSpeed(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const orxVECTOR *_pvStartSpeed, const orxVECTOR *_pvEndSpeed, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
-
-/** Adds volume to an FX
- * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fStartTime     Time start
- * @param[in]   _fEndTime       Time end
- * @param[in]   _fCyclePeriod   Cycle period
- * @param[in]   _fCyclePhase    Cycle phase (at start)
- * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
- * @param[in]   _fStartVolume   Starting volume value
- * @param[in]   _fEndVolume     Ending volume value
- * @param[in]   _eCurve         Blending curve type
- * @param[in]   _fPow           Blending curve exponent
- * @param[in]   _u32Flags       Param flags
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddVolume(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartVolume, orxFLOAT _fEndVolume, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
-
-/** Adds pitch to an FX
- * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fStartTime     Time start
- * @param[in]   _fEndTime       Time end
- * @param[in]   _fCyclePeriod   Cycle period
- * @param[in]   _fCyclePhase    Cycle phase (at start)
- * @param[in]   _fAmplification Curve linear amplification over time (1.0 for none)
- * @param[in]   _fAcceleration  Curve linear acceleration over time (1.0 for none)
- * @param[in]   _fStartPitch    Starting pitch value
- * @param[in]   _fEndPitch      Ending pitch value
- * @param[in]   _eCurve         Blending curve type
- * @param[in]   _fPow           Blending curve exponent
- * @param[in]   _u32Flags       Param flags
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddPitch(orxFX *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartPitch, orxFLOAT _fEndPitch, orxFX_CURVE _eCurve, orxFLOAT _fPow, orxU32 _u32Flags);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddSlot(orxFX *_pstFX, orxFX_TYPE _eType, orxFX_CURVE _eCurve, const orxFX_CURVE_PARAM *_pstCurveParam, orxU32 _u32Flags);
 
 /** Adds a slot to an FX from config
  * @param[in]   _pstFX          Concerned FX
