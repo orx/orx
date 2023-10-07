@@ -4133,7 +4133,7 @@ void orxFASTCALL orxObject_ApplyFXRecursive(orxOBJECT *_pstObject, const orxCLOC
 
 /* Finds next child
  */
-static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObject, const orxSTRING _zName, orxS32 *_ps32Skip, orxBOOL _bRecursive, orxOBJECT *(*_pfnGetChild)(const orxOBJECT *), orxOBJECT *(*_pfnGetSibling)(const orxOBJECT *))
+static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObject, const orxSTRING _zName, orxS32 *_ps32Skip, orxBOOL _bRecursive, orxOBJECT *(orxFASTCALL *_pfnGetChild)(const orxOBJECT *), orxOBJECT *(orxFASTCALL *_pfnGetSibling)(const orxOBJECT *))
 {
   orxOBJECT *pstChild, *pstResult = orxNULL;
 
@@ -4186,7 +4186,7 @@ static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObjec
 
 /* Finds a child
  */
-static orxINLINE orxOBJECT *orxObject_FindChildInternal(const orxOBJECT *_pstObject, const orxSTRING _zPath, orxOBJECT *(*_pfnGetChild)(const orxOBJECT *), orxOBJECT *(*_pfnGetSibling)(const orxOBJECT *))
+static orxINLINE orxOBJECT *orxObject_FindChildInternal(const orxOBJECT *_pstObject, const orxSTRING _zPath, orxOBJECT *(orxFASTCALL *_pfnGetChild)(const orxOBJECT *), orxOBJECT *(orxFASTCALL *_pfnGetSibling)(const orxOBJECT *))
 {
   orxOBJECT *pstResult = orxNULL;
 
