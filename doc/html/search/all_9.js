@@ -1168,6 +1168,7 @@ var searchData=
   ['orxinput',['OrxInput',['../group__orx_input.html',1,'']]],
   ['orxinput_2eh',['orxInput.h',['../orx_input_8h.html',1,'']]],
   ['orxinput_5fbind',['orxInput_Bind',['../group__orx_input.html#gae7bb2d59504a48c474381788d7ce4e6e',1,'orxInput.h']]],
+  ['orxinput_5fclearset',['orxInput_ClearSet',['../group__orx_input.html#ga1e006aa96d3d1f22aa49f2bd6849150c',1,'orxInput.h']]],
   ['orxinput_5fenableset',['orxInput_EnableSet',['../group__orx_input.html#ga8b0c6c19d0753b894b6d0add816516bc',1,'orxInput.h']]],
   ['orxinput_5fevent',['orxINPUT_EVENT',['../group__orx_input.html#gaad778a6cb60c4e8b47e35f8a9216f108',1,'orxInput.h']]],
   ['orxinput_5fevent_5fnone',['orxINPUT_EVENT_NONE',['../group__orx_input.html#ggaad778a6cb60c4e8b47e35f8a9216f108aae45de01d74ad9364c33533d2fbbac82',1,'orxInput.h']]],

@@ -562,6 +562,7 @@ var searchData=
   ['orxhashtable_5fretrieve',['orxHashTable_Retrieve',['../group__orx_hash_table.html#gaefbee430e1062d8b84ab0b509bd39481',1,'orxHashTable.h']]],
   ['orxhashtable_5fset',['orxHashTable_Set',['../group__orx_hash_table.html#ga13d7c0478ce150000289f6ae17540bc7',1,'orxHashTable.h']]],
   ['orxinput_5fbind',['orxInput_Bind',['../group__orx_input.html#gae7bb2d59504a48c474381788d7ce4e6e',1,'orxInput.h']]],
+  ['orxinput_5fclearset',['orxInput_ClearSet',['../group__orx_input.html#ga1e006aa96d3d1f22aa49f2bd6849150c',1,'orxInput.h']]],
   ['orxinput_5fenableset',['orxInput_EnableSet',['../group__orx_input.html#ga8b0c6c19d0753b894b6d0add816516bc',1,'orxInput.h']]],
   ['orxinput_5fexit',['orxInput_Exit',['../group__orx_input.html#ga494bcae3fb2c30b26d44069ce7a844a1',1,'orxInput.h']]],
   ['orxinput_5fgetactivebinding',['orxInput_GetActiveBinding',['../group__orx_input.html#gab4636c9b964274cfe2cd10203ccd0dd6',1,'orxInput.h']]],

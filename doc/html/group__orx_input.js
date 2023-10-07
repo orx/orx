@@ -46,6 +46,7 @@ var group__orx_input =
       [ "orxINPUT_TYPE_NONE", "group__orx_input.html#gga13d8a7334d0c18530536658991628659ab866e5f4e6df8eb07878919669d8a3d8", null ]
     ] ],
     [ "orxInput_Bind", "group__orx_input.html#gae7bb2d59504a48c474381788d7ce4e6e", null ],
+    [ "orxInput_ClearSet", "group__orx_input.html#ga1e006aa96d3d1f22aa49f2bd6849150c", null ],
     [ "orxInput_EnableSet", "group__orx_input.html#ga8b0c6c19d0753b894b6d0add816516bc", null ],
     [ "orxInput_Exit", "group__orx_input.html#ga494bcae3fb2c30b26d44069ce7a844a1", null ],
     [ "orxInput_GetActiveBinding", "group__orx_input.html#gab4636c9b964274cfe2cd10203ccd0dd6", null ],
