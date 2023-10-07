@@ -263,6 +263,26 @@ void orxFASTCALL orxInput_CommandIsSetEnabled(orxU32 _u32ArgNumber, const orxCOM
   return;
 }
 
+/** Command: ClearSet
+ */
+void orxFASTCALL orxInput_CommandClearSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxSTATUS eResult;
+
+  /* Clears it */
+  eResult = orxInput_ClearSet((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxSTRING_EMPTY);
+
+  /* Updates result */
+  _pstResult->zValue = (eResult != orxSTATUS_FAILURE)
+                       ? (_u32ArgNumber > 0)
+                         ? _astArgList[0].zValue
+                         : orxInput_GetCurrentSet()
+                       : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetValue
  */
 void orxFASTCALL orxInput_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -376,6 +396,9 @@ static orxINLINE void orxInput_RegisterCommands()
   /* Command: IsSetEnabled */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, IsSetEnabled, "Enabled?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: ClearSet */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, ClearSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Set = <current>", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: SetValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, SetValue, "Input", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Input", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT}, {"Permanent = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: ResetValue */
@@ -413,6 +436,9 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, EnableSet);
   /* Command: IsSetEnabled */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, IsSetEnabled);
+
+  /* Command: ClearSet */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, ClearSet);
 
   /* Command: SetValue */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, SetValue);
@@ -2016,6 +2042,61 @@ orxBOOL orxFASTCALL orxInput_IsSetEnabled(const orxSTRING _zSetName)
 
   /* Done! */
   return bResult;
+}
+
+/** Clears all input values of a set
+ * @param[in] _zSetName         Set name to clear, will use current set if orxSTRING_EMPTY/orxNULL
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxInput_ClearSet(const orxSTRING _zSetName)
+{
+  orxINPUT_SET *pstSet;
+  orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+
+  /* Has valid name? */
+  if((_zSetName != orxNULL) && (*_zSetName != orxCHAR_NULL))
+  {
+    /* Gets set */
+    pstSet = (orxINPUT_SET *)orxHashTable_Get(sstInput.pstSetTable, orxString_Hash(_zSetName));
+  }
+  else
+  {
+    /* Uses current set */
+    pstSet = sstInput.pstCurrentSet;
+  }
+
+  /* Valid? */
+  if(pstSet != orxNULL)
+  {
+    orxINPUT_ENTRY *pstEntry;
+
+    /* For all entries */
+    for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(pstSet->stEntryList));
+        pstEntry != orxNULL;
+        pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+    {
+      orxU32 i;
+
+      /* For all bindings */
+      for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
+      {
+        /* Clears its value */
+        pstEntry->astBindingList[i].fValue = orxFLOAT_0;
+      }
+
+      /* Updates its status */
+      orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_NONE, orxINPUT_KU32_ENTRY_FLAG_ACTIVE | orxINPUT_KU32_ENTRY_FLAG_NEW_STATUS | orxINPUT_KU32_ENTRY_FLAG_PERMANENT | orxINPUT_KU32_ENTRY_FLAG_EXTERNAL | orxINPUT_KU32_ENTRY_FLAG_RESET_EXTERNAL | orxINPUT_KU32_ENTRY_FLAG_LAST_EXTERNAL);
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Sets current set's type flags, only set types will be polled when updating the set (use orxINPUT_GET_FLAG(TYPE) in order to get the flag that matches a type)

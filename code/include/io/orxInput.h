@@ -196,6 +196,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_EnableSet(const orxST
 extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsSetEnabled(const orxSTRING _zSetName);
 
 
+/** Clears all input values of a set
+ * @param[in] _zSetName         Set name to clear, will use current set if orxSTRING_EMPTY/orxNULL
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_ClearSet(const orxSTRING _zSetName);
+
+
 /** Sets current set's type flags, only set types will be polled when updating the set (use orxINPUT_GET_FLAG(TYPE) in order to get the flag that matches a type)
  * @param[in] _u32AddTypeFlags      Type flags to add
  * @param[in] _u32RemoveTypeFlags   Type flags to remove
