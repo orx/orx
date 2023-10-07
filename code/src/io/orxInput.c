@@ -40,6 +40,7 @@
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
 #include "memory/orxBank.h"
+#include "utils/orxHashTable.h"
 #include "utils/orxLinkList.h"
 #include "utils/orxString.h"
 
@@ -55,6 +56,7 @@
 #define orxINPUT_KU32_STATIC_FLAG_NONE                0x00000000  /**< No flags */
 
 #define orxINPUT_KU32_STATIC_FLAG_READY               0x00000001  /**< Ready flag */
+#define orxINPUT_KU32_STATIC_FLAG_CUSTOM_SET_LIST     0x00000002  /**< Custom set list flag */
 
 #define orxINPUT_KU32_STATIC_MASK_ALL                 0xFFFFFFFF  /**< All mask */
 
@@ -155,11 +157,10 @@ typedef struct __orxINPUT_SET_t
 typedef struct __orxINPUT_STATIC_t
 {
   orxBANK      *pstSetBank;                                       /**< Set bank */
+  orxHASHTABLE *pstSetTable;                                      /**< Set table */
   orxINPUT_SET *pstCurrentSet;                                    /**< Current set */
   orxINPUT_SET *pstDefaultSet;                                    /**< Default set */
-  orxLINKLIST   stSetList;                                        /**< Set list */
   orxVECTOR     vMouseMove;                                       /**< Mouse move */
-  orxBOOL       bHasCustomSetList;                                /**< Has custom set list */
   orxU32        u32Flags;                                         /**< Control flags */
   orxCHAR       acResultBuffer[orxINPUT_KU32_RESULT_BUFFER_SIZE]; /**< Result buffer */
 
@@ -976,9 +977,9 @@ static orxBOOL orxFASTCALL orxInput_SaveCallback(const orxSTRING _zSetName, cons
     u32PrefixLength = orxString_GetLength(orxINPUT_KZ_INTERNAL_SET_PREFIX);
 
     /* For all sets */
-    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
+    for(pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, orxNULL);
         pstSet != orxNULL;
-        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+        pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, pstSet))
     {
       /* Not internal? */
       if(orxString_NCompare(orxINPUT_KZ_INTERNAL_SET_PREFIX, pstSet->zName, u32PrefixLength) != 0)
@@ -1013,9 +1014,9 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
   orxMouse_GetMoveDelta(&(sstInput.vMouseMove));
 
   /* For all the sets */
-  for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
+  for(pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, orxNULL);
       pstSet != orxNULL;
-      pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+      pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, pstSet))
   {
     /* Is current working set or enabled? */
     if((pstSet == sstInput.pstCurrentSet)
@@ -1125,12 +1126,14 @@ static orxINLINE orxINPUT_SET *orxInput_CreateSet(orxSTRINGID _stSetID)
       /* Valid? */
       if(pstResult->zName != orxNULL)
       {
+        orxSTATUS eResult;
+
         /* Clears its entry list */
         orxMemory_Zero(&(pstResult->stEntryList), sizeof(orxLINKLIST));
 
-        /* Adds it to list */
-        orxMemory_Zero(&(pstResult->stNode), sizeof(orxLINKLIST_NODE));
-        orxLinkList_AddEnd(&(sstInput.stSetList), &(pstResult->stNode));
+        /* Adds it to table */
+        eResult = orxHashTable_Add(sstInput.pstSetTable, _stSetID, pstResult);
+        orxASSERT(eResult != orxSTATUS_FAILURE);
 
         /* Sets its ID */
         pstResult->stID = _stSetID;
@@ -1187,20 +1190,8 @@ static orxINLINE orxSTATUS orxInput_SelectSetInternal(const orxSTRING _zSetName,
   if((sstInput.pstCurrentSet == orxNULL)
   || (sstInput.pstCurrentSet->stID != stSetID))
   {
-    /* For all the sets */
-    for(pstSet = (orxINPUT_SET*)orxLinkList_GetFirst(&(sstInput.stSetList));
-      pstSet != orxNULL;
-      pstSet = (orxINPUT_SET*)orxLinkList_GetNext(&(pstSet->stNode)))
-    {
-      /* Found? */
-      if(pstSet->stID == stSetID)
-      {
-        /* Selects it */
-        sstInput.pstCurrentSet = pstSet;
-
-        break;
-      }
-    }
+    /* Gets it */
+    pstSet = (orxINPUT_SET *)orxHashTable_Get(sstInput.pstSetTable, stSetID);
   }
   else
   {
@@ -1258,8 +1249,8 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
   /* Checks */
   orxASSERT(_pstSet != orxNULL);
 
-  /* Removes it from list */
-  orxLinkList_Remove(&(_pstSet->stNode));
+  /* Removes it from table */
+  orxHashTable_Remove(sstInput.pstSetTable, _pstSet->stID);
 
   /* While there is still an entry */
   while((pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(_pstSet->stEntryList))) != orxNULL)
@@ -1350,40 +1341,58 @@ orxSTATUS orxFASTCALL orxInput_Init()
     /* Creates set banks */
     sstInput.pstSetBank = orxBank_Create(orxINPUT_KU32_SET_BANK_SIZE, sizeof(orxINPUT_SET), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-    /* Valid? */
+    /* Success? */
     if(sstInput.pstSetBank != orxNULL)
     {
-      orxCLOCK *pstClock;
+      /* Creates set table */
+      sstInput.pstSetTable = orxHashTable_Create(orxINPUT_KU32_SET_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-      /* Gets core clock */
-      pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
-
-      /* Valid? */
-      if(pstClock != orxNULL)
+      /* Success? */
+      if(sstInput.pstSetTable != orxNULL)
       {
-        /* Registers to core clock */
-        eResult = orxClock_Register(pstClock, orxInput_Update, orxNULL, orxMODULE_ID_INPUT, orxCLOCK_PRIORITY_HIGH);
+        orxCLOCK *pstClock;
 
-        /* Successful? */
-        if(eResult != orxSTATUS_FAILURE)
+        /* Gets core clock */
+        pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
+
+        /* Valid? */
+        if(pstClock != orxNULL)
         {
-          /* Updates flags */
-          orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY, orxINPUT_KU32_STATIC_FLAG_NONE);
+          /* Registers to core clock */
+          eResult = orxClock_Register(pstClock, orxInput_Update, orxNULL, orxMODULE_ID_INPUT, orxCLOCK_PRIORITY_HIGH);
 
-          /* Loads from input */
-          orxInput_Load(orxNULL);
+          /* Successful? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            /* Updates flags */
+            orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY, orxINPUT_KU32_STATIC_FLAG_NONE);
 
-          /* Registers commands */
-          orxInput_RegisterCommands();
+            /* Loads from input */
+            orxInput_Load(orxNULL);
 
-          /* Adds event handler */
-          orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxInput_EventHandler);
-          orxEvent_SetHandlerIDFlags(orxInput_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
+            /* Registers commands */
+            orxInput_RegisterCommands();
+
+            /* Adds event handler */
+            orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxInput_EventHandler);
+            orxEvent_SetHandlerIDFlags(orxInput_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
+          }
+          else
+          {
+            /* Deletes clock */
+            orxClock_Delete(pstClock);
+
+            /* Deletes set table */
+            orxHashTable_Delete(sstInput.pstSetTable);
+
+            /* Deletes set bank */
+            orxBank_Delete(sstInput.pstSetBank);
+          }
         }
         else
         {
-          /* Deletes clock */
-          orxClock_Delete(pstClock);
+          /* Deletes set table */
+          orxHashTable_Delete(sstInput.pstSetTable);
 
           /* Deletes set bank */
           orxBank_Delete(sstInput.pstSetBank);
@@ -1426,11 +1435,17 @@ void orxFASTCALL orxInput_Exit()
     orxInput_UnregisterCommands();
 
     /* While there's still a set */
-    while((pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList))) != orxNULL)
+    for(pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, orxNULL);
+        pstSet != orxNULL;
+        pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, orxNULL))
     {
       /* Deletes it */
       orxInput_DeleteSet(pstSet);
     }
+
+    /* Deletes set table */
+    orxHashTable_Delete(sstInput.pstSetTable);
+    sstInput.pstSetTable = orxNULL;
 
     /* Clears sets bank */
     orxBank_Delete(sstInput.pstSetBank);
@@ -1477,7 +1492,7 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
   pstPreviousSet = sstInput.pstCurrentSet;
 
   /* Should load main input? */
-  if(orxLinkList_GetCount(&(sstInput.stSetList)) == 0)
+  if(orxBank_GetCount(sstInput.pstSetBank) == 0)
   {
     /* Selects and loads it */
     eResult = orxInput_SelectSetInternal(orxINPUT_KZ_CONFIG_SECTION, orxTRUE);
@@ -1494,9 +1509,9 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
     orxINPUT_SET *pstSet;
 
     /* For all sets */
-    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
+    for(pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, orxNULL);
         pstSet != orxNULL;
-        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+        pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, pstSet))
     {
       /* Selects it */
       sstInput.pstCurrentSet = pstSet;
@@ -1518,7 +1533,7 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
     orxU32 i, u32Count;
 
     /* Updates status */
-    sstInput.bHasCustomSetList = orxTRUE;
+    orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_CUSTOM_SET_LIST, orxINPUT_KU32_STATIC_FLAG_NONE);
 
     /* For all defined sets */
     for(i = 0, u32Count = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_SET_LIST); (i < u32Count) && (eResult != orxSTATUS_FAILURE); i++)
@@ -1576,11 +1591,11 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
 
 #ifdef __orxMSVC__
 
-    const orxSTRING  *azSetNameList = (const orxSTRING *)alloca(orxLinkList_GetCount(&(sstInput.stSetList)) * sizeof(orxSTRING));
+    const orxSTRING  *azSetNameList = (const orxSTRING *)alloca(orxBank_GetCount(sstInput.pstSetBank) * sizeof(orxSTRING));
 
 #else /* __orxMSVC__ */
 
-    const orxSTRING   azSetNameList[orxLinkList_GetCount(&(sstInput.stSetList))];
+    const orxSTRING   azSetNameList[orxBank_GetCount(sstInput.pstSetBank)];
 
 #endif /* __orxMSVC__ */
 
@@ -1591,9 +1606,9 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
     orxConfig_ClearSection(orxINPUT_KZ_CONFIG_SECTION);
 
     /* For all sets */
-    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList)), u32Index = 0;
+    for(pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, orxNULL), u32Index = 0;
         pstSet != orxNULL;
-        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+        pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, pstSet))
     {
       /* Not an internal input set? */
       if(orxString_NCompare(pstSet->zName, orxINPUT_KZ_INTERNAL_SET_PREFIX, u32PrefixLength) != 0)
@@ -1691,7 +1706,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
     }
 
     /* Has custom set list? */
-    if(sstInput.bHasCustomSetList != orxFALSE)
+    if(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_CUSTOM_SET_LIST))
     {
       const orxSTRING *pzSetNameList = azSetNameList;
 
@@ -1813,27 +1828,19 @@ const orxSTRING orxFASTCALL orxInput_GetNextSet(const orxSTRING _zSetName)
   /* First set? */
   if(_zSetName == orxNULL)
   {
-    pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
+    pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, orxNULL);
   }
   /* Valid name? */
   else if(*_zSetName != orxCHAR_NULL)
   {
-    orxSTRINGID stSetID;
-
-    /* Gets its ID */
-    stSetID = orxString_Hash(_zSetName);
-
-    /* Finds it */
-    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
-        (pstSet != orxNULL) && (pstSet->stID != stSetID);
-        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
-      ;
+    /* Gets it */
+    pstSet = (orxINPUT_SET *)orxHashTable_Get(sstInput.pstSetTable, orxString_Hash(_zSetName));
 
     /* Found? */
     if(pstSet != orxNULL)
     {
       /* Gets next set */
-      pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode));
+      pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, pstSet);
     }
   }
 
@@ -1860,42 +1867,34 @@ orxSTATUS orxFASTCALL orxInput_RemoveSet(const orxSTRING _zSetName)
   if(*_zSetName != orxCHAR_NULL)
   {
     orxINPUT_SET *pstSet;
-    orxSTRINGID   stSetID;
-
-    /* Gets the set ID */
-    stSetID = orxString_Hash(_zSetName);
 
     /* For all the sets */
-    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
-        pstSet != orxNULL;
-        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+    pstSet = (orxINPUT_SET *)orxHashTable_Get(sstInput.pstSetTable, orxString_Hash(_zSetName));
+
+    /* Found? */
+    if(pstSet != orxNULL)
     {
-      /* Found? */
-      if(pstSet->stID == stSetID)
+      orxINPUT_EVENT_PAYLOAD stPayload;
+
+      /* Inits event payload */
+      orxMemory_Zero(&stPayload, sizeof(orxINPUT_EVENT_PAYLOAD));
+      stPayload.zSetName = pstSet->zName;
+
+      /* Sends it */
+      orxEVENT_SEND(orxEVENT_TYPE_INPUT, orxINPUT_EVENT_REMOVE_SET, orxNULL, orxNULL, &stPayload);
+
+      /* Is currently selected? */
+      if(sstInput.pstCurrentSet == pstSet)
       {
-        orxINPUT_EVENT_PAYLOAD stPayload;
-
-        /* Inits event payload */
-        orxMemory_Zero(&stPayload, sizeof(orxINPUT_EVENT_PAYLOAD));
-        stPayload.zSetName = pstSet->zName;
-
-        /* Sends it */
-        orxEVENT_SEND(orxEVENT_TYPE_INPUT, orxINPUT_EVENT_REMOVE_SET, orxNULL, orxNULL, &stPayload);
-
-        /* Is currently selected? */
-        if(sstInput.pstCurrentSet == pstSet)
-        {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input set [%s]: removing currently selected set, no set will be left selected.", pstSet->zName);
-        }
-
-        /* Removes it */
-        orxInput_DeleteSet(pstSet);
-
-        /* Updates result */
-        eResult = orxSTATUS_SUCCESS;
-        break;
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Input set [%s]: removing currently selected set, no set will be left selected.", pstSet->zName);
       }
+
+      /* Removes it */
+      orxInput_DeleteSet(pstSet);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 
@@ -1966,24 +1965,15 @@ orxBOOL orxFASTCALL orxInput_IsSetEnabled(const orxSTRING _zSetName)
   if(*_zSetName != orxCHAR_NULL)
   {
     orxINPUT_SET *pstSet;
-    orxSTRINGID   stSetID;
 
-    /* Gets the set ID */
-    stSetID = orxString_Hash(_zSetName);
+    /* Gets set */
+    pstSet = (orxINPUT_SET *)orxHashTable_Get(sstInput.pstSetTable, orxString_Hash(_zSetName));
 
-    /* For all the sets */
-    for(pstSet = (orxINPUT_SET *)orxLinkList_GetFirst(&(sstInput.stSetList));
-        pstSet != orxNULL;
-        pstSet = (orxINPUT_SET *)orxLinkList_GetNext(&(pstSet->stNode)))
+    /* Found? */
+    if(pstSet != orxNULL)
     {
-      /* Found? */
-      if(pstSet->stID == stSetID)
-      {
-        /* Updates result */
-        bResult = ((pstSet == sstInput.pstCurrentSet) || orxFLAG_TEST(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED)) ? orxTRUE : orxFALSE;
-
-        break;
-      }
+      /* Updates result */
+      bResult = ((pstSet == sstInput.pstCurrentSet) || orxFLAG_TEST(pstSet->u32Flags, orxINPUT_KU32_SET_FLAG_ENABLED)) ? orxTRUE : orxFALSE;
     }
   }
 
@@ -2247,7 +2237,7 @@ orxFLOAT orxFASTCALL orxInput_GetValue(const orxSTRING _zInputName)
   return fResult;
 }
 
-/** Sets input value (will prevail on peripheral inputs only once)
+/** Sets input value (will take precedence over peripheral inputs only once)
  * @param[in] _zInputName       Concerned input name
  * @param[in] _fValue           Value to set, orxFLOAT_0 to deactivate
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -2309,7 +2299,7 @@ orxSTATUS orxFASTCALL orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _f
   return eResult;
 }
 
-/** Sets permanent input value (will prevail on peripheral inputs till reset)
+/** Sets permanent input value (will take precedence over peripheral inputs until reset)
  * @param[in] _zInputName       Concerned input name
  * @param[in] _fValue           Value to set, orxFLOAT_0 to deactivate
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

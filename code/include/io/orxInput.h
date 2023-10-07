@@ -234,14 +234,14 @@ extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_HasNewStatus(const or
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL             orxInput_GetValue(const orxSTRING _zInputName);
 
-/** Sets input value (will prevail on peripheral inputs only once)
+/** Sets input value (will take precedence over peripheral inputs only once)
  * @param[in] _zInputName       Concerned input name
  * @param[in] _fValue           Value to set, orxFLOAT_0 to deactivate
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _fValue);
 
-/** Sets permanent input value (will prevail on peripheral inputs till reset)
+/** Sets permanent input value (will take precedence over peripheral inputs until reset)
  * @param[in] _zInputName       Concerned input name
  * @param[in] _fValue           Value to set, orxFLOAT_0 to deactivate
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
