@@ -180,6 +180,28 @@ static orxINPUT_STATIC sstInput;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Command: Load
+ */
+void orxFASTCALL orxInput_CommandLoad(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxInput_Load((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxSTRING_EMPTY) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
+/** Command: Save
+ */
+void orxFASTCALL orxInput_CommandSave(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxInput_Save(_astArgList[0].zValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
 /** Command: SelectSet
  */
 void orxFASTCALL orxInput_CommandSelectSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -337,6 +359,11 @@ void orxFASTCALL orxInput_CommandHasBeenDeactivated(orxU32 _u32ArgNumber, const 
  */
 static orxINLINE void orxInput_RegisterCommands()
 {
+  /* Command: Load */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, Load, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"FileName = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: Save */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"FileName", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: SelectSet */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, SelectSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetCurrentSet */
@@ -370,6 +397,11 @@ static orxINLINE void orxInput_RegisterCommands()
  */
 static orxINLINE void orxInput_UnregisterCommands()
 {
+  /* Command: Load */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, Load);
+  /* Command: Save */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, Save);
+
   /* Command: SelectSet */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, SelectSet);
   /* Command: GetCurrentSet */
@@ -1475,8 +1507,7 @@ void orxFASTCALL orxInput_Exit()
  */
 orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
 {
-  orxINPUT_SET *pstPreviousSet, *pstChosenSet = orxNULL;
-  orxSTATUS     eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
@@ -1485,85 +1516,91 @@ orxSTATUS orxFASTCALL orxInput_Load(const orxSTRING _zFileName)
   if((_zFileName != orxNULL) && (*_zFileName != orxCHAR_NULL))
   {
     /* Loads it */
-    orxConfig_Load(_zFileName);
+    eResult = orxConfig_Load(_zFileName);
   }
 
-  /* Stores current set */
-  pstPreviousSet = sstInput.pstCurrentSet;
-
-  /* Should load main input? */
-  if(orxBank_GetCount(sstInput.pstSetBank) == 0)
+  /* Valid? */
+  if(eResult != orxSTATUS_FAILURE)
   {
-    /* Selects and loads it */
-    eResult = orxInput_SelectSetInternal(orxINPUT_KZ_CONFIG_SECTION, orxTRUE);
+    orxINPUT_SET *pstPreviousSet, *pstChosenSet = orxNULL;
 
-    /* Success? */
-    if(eResult != orxSTATUS_FAILURE)
-    {
-      /* Stores it as default set */
-      sstInput.pstDefaultSet = sstInput.pstCurrentSet;
-    }
-  }
-  else
-  {
-    orxINPUT_SET *pstSet;
+    /* Stores current set */
+    pstPreviousSet = sstInput.pstCurrentSet;
 
-    /* For all sets */
-    for(pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, orxNULL);
-        pstSet != orxNULL;
-        pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, pstSet))
-    {
-      /* Selects it */
-      sstInput.pstCurrentSet = pstSet;
-
-      /* Loads it */
-      orxInput_LoadCurrentSet();
-    }
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-
-  /* Pushes input section */
-  orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
-
-  /* Has list set */
-  if(orxConfig_HasValue(orxINPUT_KZ_CONFIG_SET_LIST) != orxFALSE)
-  {
-    orxU32 i, u32Count;
-
-    /* Updates status */
-    orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_CUSTOM_SET_LIST, orxINPUT_KU32_STATIC_FLAG_NONE);
-
-    /* For all defined sets */
-    for(i = 0, u32Count = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_SET_LIST); (i < u32Count) && (eResult != orxSTATUS_FAILURE); i++)
+    /* Should load main input? */
+    if(orxBank_GetCount(sstInput.pstSetBank) == 0)
     {
       /* Selects and loads it */
-      eResult = orxInput_SelectSetInternal(orxConfig_GetListString(orxINPUT_KZ_CONFIG_SET_LIST, i), orxTRUE);
+      eResult = orxInput_SelectSetInternal(orxINPUT_KZ_CONFIG_SECTION, orxTRUE);
 
-      /* First valid config-defined set? */
-      if((i == 0) && (eResult != orxSTATUS_FAILURE))
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
       {
-        /* Chooses it */
-        pstChosenSet = sstInput.pstCurrentSet;
+        /* Stores it as default set */
+        sstInput.pstDefaultSet = sstInput.pstCurrentSet;
       }
     }
-  }
+    else
+    {
+      orxINPUT_SET *pstSet;
 
-  /* Pops previous section */
-  orxConfig_PopSection();
+      /* For all sets */
+      for(pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, orxNULL);
+          pstSet != orxNULL;
+          pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, pstSet))
+      {
+        /* Selects it */
+        sstInput.pstCurrentSet = pstSet;
 
-  /* Has chosen set? */
-  if(pstChosenSet != orxNULL)
-  {
-    /* Selects it */
-    sstInput.pstCurrentSet = pstChosenSet;
-  }
-  /* Should restore previous set? */
-  else if(pstPreviousSet != orxNULL)
-  {
-    /* Restores it */
-    sstInput.pstCurrentSet = pstPreviousSet;
+        /* Loads it */
+        orxInput_LoadCurrentSet();
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+
+    /* Pushes input section */
+    orxConfig_PushSection(orxINPUT_KZ_CONFIG_SECTION);
+
+    /* Has list set */
+    if(orxConfig_HasValue(orxINPUT_KZ_CONFIG_SET_LIST) != orxFALSE)
+    {
+      orxU32 i, u32Count;
+
+      /* Updates status */
+      orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_CUSTOM_SET_LIST, orxINPUT_KU32_STATIC_FLAG_NONE);
+
+      /* For all defined sets */
+      for(i = 0, u32Count = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_SET_LIST); (i < u32Count) && (eResult != orxSTATUS_FAILURE); i++)
+      {
+        /* Selects and loads it */
+        eResult = orxInput_SelectSetInternal(orxConfig_GetListString(orxINPUT_KZ_CONFIG_SET_LIST, i), orxTRUE);
+
+        /* First valid config-defined set? */
+        if((i == 0) && (eResult != orxSTATUS_FAILURE))
+        {
+          /* Chooses it */
+          pstChosenSet = sstInput.pstCurrentSet;
+        }
+      }
+    }
+
+    /* Pops previous section */
+    orxConfig_PopSection();
+
+    /* Has chosen set? */
+    if(pstChosenSet != orxNULL)
+    {
+      /* Selects it */
+      sstInput.pstCurrentSet = pstChosenSet;
+    }
+    /* Should restore previous set? */
+    else if(pstPreviousSet != orxNULL)
+    {
+      /* Restores it */
+      sstInput.pstCurrentSet = pstPreviousSet;
+    }
   }
 
   /* Done! */
