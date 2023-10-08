@@ -111,7 +111,7 @@ solution "orx"
         "../../extern/stb_image",
         "../../extern/miniaudio",
         "../../extern/stb_vorbis",
-        "../../extern/libwebp/include",
+        "../../extern/libwebp/src",
         "../../extern/basisu/include",
         "../../extern/qoi"
     }
