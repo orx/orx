@@ -644,6 +644,18 @@ void ScrollObject::OnAnimEvent(const orxSTRING _zAnim, const orxSTRING _zEvent, 
 {
 }
 
+void ScrollObject::OnFXStart(const orxSTRING _zFX, orxFX *_pstFX)
+{
+}
+
+void ScrollObject::OnFXStop(const orxSTRING _zFX, orxFX *_pstFX)
+{
+}
+
+void ScrollObject::OnFXLoop(const orxSTRING _zFX, orxFX *_pstFX)
+{
+}
+
 void ScrollObject::OnStartGame()
 {
 }

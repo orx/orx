@@ -140,6 +140,10 @@ private:
   virtual       void                    OnAnimUpdate(const orxSTRING _zAnim);
   virtual       void                    OnAnimEvent(const orxSTRING _zAnim, const orxSTRING _zEvent, orxFLOAT _fTime, orxFLOAT _fValue);
 
+  virtual       void                    OnFXStart(const orxSTRING _zFX, orxFX *_pstFX);
+  virtual       void                    OnFXStop(const orxSTRING _zFX, orxFX *_pstFX);
+  virtual       void                    OnFXLoop(const orxSTRING _zFX, orxFX *_pstFX);
+
                 void                    SetDifferentialMode(orxBOOL _bDifferential = orxTRUE);
 
                 void                    SetOrxObject(orxOBJECT *_pstObject);
