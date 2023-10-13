@@ -3323,6 +3323,10 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Multiply);
   /* Command: Divide */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Divide);
+  /* Command: Absolute */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Absolute);
+  /* Command: Negate */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Negate);
 
   /* Command: Random */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Random);
