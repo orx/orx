@@ -83,6 +83,7 @@
 #define orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE      0x0008      /**< Block mode flag */
 #define orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE      0x0010      /**< Self value flag */
 #define orxCONFIG_VALUE_KU16_FLAG_COMMAND         0x0020      /**< Command flag */
+#define orxCONFIG_VALUE_KU16_FLAG_ALLOCATION      0x0040      /**< Allocation flag */
 
 #define orxCONFIG_VALUE_KU16_MASK_ALL             0xFFFF      /**< All mask */
 
@@ -631,15 +632,23 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE
  */
 static orxINLINE void orxConfig_CleanValue(orxCONFIG_VALUE *_pstValue)
 {
+  /* Is a duplicate? */
+  if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_ALLOCATION))
+  {
+    /* Deletes string */
+    orxString_Delete(_pstValue->zValue);
+    _pstValue->zValue = orxNULL;
+
+    /* Updates status */
+    _pstValue->u16Flags &= ~orxCONFIG_VALUE_KU16_FLAG_ALLOCATION;
+  }
+
   /* Not in block mode? */
   if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
   {
     /* Is a list? */
     if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
     {
-      /* Deletes string */
-      orxString_Delete(_pstValue->zValue);
-
       /* Deletes index table */
       orxMemory_Free(_pstValue->au32ListIndexTable);
       _pstValue->au32ListIndexTable = orxNULL;
@@ -838,7 +847,7 @@ static void orxFASTCALL orxConfig_ComputeWorkingValue(orxCONFIG_VALUE *_pstValue
   }
 
   /* Updates value flags */
-  _pstValue->u16Flags = u16Flags;
+  _pstValue->u16Flags = u16Flags | (_pstValue->u16Flags & ~(orxCONFIG_VALUE_KU16_FLAG_LIST | orxCONFIG_VALUE_KU16_FLAG_RANDOM | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE | orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_COMMAND));
 
   /* Updates list count */
   _pstValue->u16ListCount = (orxU16)u32Count;
@@ -896,6 +905,9 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
   {
     orxU32  u32Size;
     orxBOOL bNeedDuplication = orxFALSE;
+
+    /* Inits status */
+    _pstValue->u16Flags = orxCONFIG_VALUE_KU16_FLAG_NONE;
 
     /* Buffer not already prepared? */
     if(sstConfig.acValueBuffer[0] == orxCHAR_NULL)
@@ -974,6 +986,9 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
       /* Valid? */
       if(_pstValue->zValue != orxNULL)
       {
+        /* Updates status */
+        _pstValue->u16Flags |= orxCONFIG_VALUE_KU16_FLAG_ALLOCATION;
+
         /* Computes working value */
         orxConfig_ComputeWorkingValue(_pstValue, u32Size);
       }
@@ -1150,12 +1165,24 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
     /* Reallocates index table */
     _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Reallocate(_pstValue->au32ListIndexTable, (u32Size + (orxU32)_pstValue->u16ListCount - 1) * sizeof(orxU32), orxMEMORY_TYPE_CONFIG);
 
-    /* Checks */
-    orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
-
     /* Computes buffer size */
     u32BufferSize = _pstValue->au32ListIndexTable[_pstValue->u16ListCount - 2] + orxString_GetLength(_pstValue->zValue + _pstValue->au32ListIndexTable[_pstValue->u16ListCount - 2]) + 1;
+  }
+  else
+  {
+    /* Allocates index table */
+    _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Allocate(u32Size * sizeof(orxU32), orxMEMORY_TYPE_CONFIG);
 
+    /* Computes buffer size */
+    u32BufferSize = orxString_GetLength(_pstValue->zValue) + 1;
+  }
+
+  /* Checks */
+  orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
+
+  /* Has current allocation? */
+  if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_ALLOCATION))
+  {
     /* Reallocates buffer */
     _pstValue->zValue = (orxSTRING)orxMemory_Reallocate(_pstValue->zValue, u32BufferSize + (orxU32)(pcOutput - sstConfig.acValueBuffer), orxMEMORY_TYPE_TEXT);
 
@@ -1166,18 +1193,11 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
   {
     orxSTRING zNewValue;
 
-    /* Allocates index table */
-    _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Allocate(u32Size * sizeof(orxU32), orxMEMORY_TYPE_CONFIG);
-
-    /* Computes buffer size */
-    u32BufferSize = orxString_GetLength(_pstValue->zValue) + 1;
-
     /* Allocates new buffer */
     zNewValue = (orxSTRING)orxMemory_Allocate(u32BufferSize + (orxU32)(pcOutput - sstConfig.acValueBuffer), orxMEMORY_TYPE_TEXT);
 
     /* Checks */
-    orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
-    orxASSERT(_pstValue->zValue != orxNULL);
+    orxASSERT(zNewValue != orxNULL);
 
     /* Copies original content */
     orxMemory_Copy(zNewValue, _pstValue->zValue, u32BufferSize);
@@ -1200,7 +1220,7 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
 
   /* Updates value */
   _pstValue->u16ListCount  += (orxU16)u32Size;
-  _pstValue->u16Flags      |= orxCONFIG_VALUE_KU16_FLAG_LIST;
+  _pstValue->u16Flags      |= orxCONFIG_VALUE_KU16_FLAG_LIST | orxCONFIG_VALUE_KU16_FLAG_ALLOCATION;
 
   /* Clears value buffer */
   sstConfig.u32BufferListSize = 0;
