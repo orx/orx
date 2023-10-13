@@ -976,6 +976,13 @@ orxSTATUS orxFASTCALL orxFont_Delete(orxFONT *_pstFont)
     /* Deletes character bank */
     orxBank_Delete(_pstFont->pstMap->pstCharacterBank);
 
+    /* Had a character width list? */
+    if(_pstFont->afCharacterWidthList != orxNULL)
+    {
+      /* Frees it */
+      orxMemory_Free(_pstFont->afCharacterWidthList);
+    }
+
     /* Deletes map */
     orxBank_Free(sstFont.pstMapBank, _pstFont->pstMap);
 
@@ -1374,18 +1381,14 @@ orxFLOAT orxFASTCALL orxFont_GetCharacterWidth(const orxFONT *_pstFont, orxU32 _
   orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstFont);
 
-  /* Has character map? */
-  if(_pstFont->pstMap != orxNULL)
-  {
-    /* Gets glyph */
-    pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstFont->pstMap->pstCharacterTable, _u32CharacterCodePoint);
+  /* Gets glyph */
+  pstGlyph = (orxCHARACTER_GLYPH *)orxHashTable_Get(_pstFont->pstMap->pstCharacterTable, _u32CharacterCodePoint);
 
-    /* Valid? */
-    if(pstGlyph != orxNULL)
-    {
-      /* Updates result */
-      fResult = pstGlyph->fWidth;
-    }
+  /* Valid? */
+  if(pstGlyph != orxNULL)
+  {
+    /* Updates result */
+    fResult = pstGlyph->fWidth;
   }
 
   /* Done! */
