@@ -153,6 +153,10 @@ static orxCONSOLE_STATIC sstConsole;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Semi-private, internal-use only forward declarations
+ */
+orxVECTOR *orxFASTCALL  orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
+
 /** Resets input callback
  */
 static void orxFASTCALL orxConsole_ResetInput(const orxCLOCK_INFO *_pstInfo, void *_pContext)
@@ -1030,22 +1034,28 @@ void orxFASTCALL orxConsole_CommandSetColor(orxU32 _u32ArgNumber, const orxCOMMA
   /* Pushes render section */
   orxConfig_PushSection(orxRENDER_KZ_CONFIG_SECTION);
 
+  /* Clears result */
+  orxVector_SetAll(&(_pstResult->vValue), -orxFLOAT_1);
+
   /* Default? */
   if(_u32ArgNumber == 0)
   {
     /* Clears color */
     orxConfig_ClearValue(orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_COLOR);
-
-    /* Updates result */
-    orxVector_SetAll(&(_pstResult->vValue), -orxFLOAT_1);
   }
   else
   {
-    /* Stores color */
-    orxConfig_SetVector(orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_COLOR, &(_astArgList[0].vValue));
+    orxVECTOR vColor;
 
-    /* Updates result */
-    orxVector_Copy(&(_pstResult->vValue), &(_astArgList[0].vValue));
+    /* Valid color? */
+    if(orxConfig_ToVector(_astArgList[0].zValue, orxCOLORSPACE_COMPONENT, &vColor) != orxNULL)
+    {
+      /* Stores it */
+      orxConfig_SetVector(orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_COLOR, &vColor);
+
+      /* Updates result */
+      orxVector_Copy(&(_pstResult->vValue), &vColor);
+    }
   }
 
   /* Done! */
@@ -1087,7 +1097,7 @@ static orxINLINE void orxConsole_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Console, Log, "Log", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Text", orxCOMMAND_VAR_TYPE_STRING}, {"ToSystem = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: SetColor */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Console, SetColor, "Color", orxCOMMAND_VAR_TYPE_VECTOR, 0, 1, {"Color = <default>", orxCOMMAND_VAR_TYPE_VECTOR});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Console, SetColor, "Color", orxCOMMAND_VAR_TYPE_VECTOR, 0, 1, {"Color = <default>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: Echo */
   orxCOMMAND_REGISTER_CORE_COMMAND(Console, Echo, "Echo", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Echo = true", orxCOMMAND_VAR_TYPE_BOOL});

@@ -1275,7 +1275,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
 
   /* Gets colors */
 #define orxRENDER_GET_COLOR(Name, NAME)                                                                                             \
-  if(orxConfig_GetVector(orxRENDER_KZ_CONFIG_CONSOLE_##NAME##_COLOR, &vColor) != orxNULL)                                           \
+  if(orxConfig_GetColorVector(orxRENDER_KZ_CONFIG_CONSOLE_##NAME##_COLOR, orxCOLORSPACE_COMPONENT, &vColor) != orxNULL)                                           \
   {                                                                                                                                 \
     st##Name##Color = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxRENDER_KST_CONSOLE_##NAME##_COLOR.u8A);  \
   }                                                                                                                                 \
@@ -1302,7 +1302,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
 #undef orxRENDER_GET_COLOR
 
   /* Uses color short names as background override */
-  if(orxConfig_GetVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, &vColor) != orxNULL)
+  if(orxConfig_GetColorVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, orxCOLORSPACE_COMPONENT, &vColor) != orxNULL)
   {
     stBackgroundColor.u8R = (orxU8)orxF2U(vColor.fR);
     stBackgroundColor.u8G = (orxU8)orxF2U(vColor.fG);
