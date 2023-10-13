@@ -3554,11 +3554,39 @@ void orxFASTCALL orxCommand_Exit()
   /* Initialized? */
   if(sstCommand.u32Flags & orxCOMMAND_KU32_STATIC_FLAG_READY)
   {
+    orxCOMMAND *pstCommand;
+
     /* Unregisters commands */
     orxCommand_UnregisterCommands();
 
     /* Clears trie */
     orxTree_Clean(&(sstCommand.stCommandTrie));
+
+    /* For all remaining commands */
+    for(pstCommand = (orxCOMMAND *)orxBank_GetNext(sstCommand.pstBank, orxNULL);
+        pstCommand != orxNULL;
+        pstCommand = (orxCOMMAND *)orxBank_GetNext(sstCommand.pstBank, pstCommand))
+    {
+      /* Is an alias? */
+      if(pstCommand->bIsAlias != orxFALSE)
+      {
+        /* Deletes its aliased command name */
+        orxString_Delete(pstCommand->zAliasedCommandName);
+
+        /* Has arguments? */
+        if(pstCommand->zArgs != orxNULL)
+        {
+          /* Deletes it */
+          orxString_Delete(pstCommand->zArgs);
+        }
+      }
+      /* Command */
+      else
+      {
+        /* Deletes its variables */
+        orxMemory_Free(pstCommand->astParamList);
+      }
+    }
 
     /* Deletes banks */
     orxBank_Delete(sstCommand.pstBank);
@@ -3681,7 +3709,7 @@ orxSTATUS orxFASTCALL orxCommand_Unregister(const orxSTRING _zCommand)
     pstCommand = orxCommand_FindNoAlias(_zCommand);
 
     /* Found? */
-    if(pstCommand != orxNULL)
+    if((pstCommand != orxNULL) && (pstCommand->bIsAlias == orxFALSE))
     {
       /* Removes it from trie */
       orxCommand_RemoveFromTrie(pstCommand);
