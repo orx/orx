@@ -1302,20 +1302,8 @@ static orxINLINE orxSTATUS orxInput_SelectSetInternal(const orxSTRING _zSetName,
  */
 static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
 {
-  orxINPUT_ENTRY *pstEntry;
-
   /* Checks */
   orxASSERT(_pstSet != orxNULL);
-
-  /* Removes it from table */
-  orxHashTable_Remove(sstInput.pstSetTable, _pstSet->stID);
-
-  /* While there is still an entry */
-  while((pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(_pstSet->stEntryList))) != orxNULL)
-  {
-    /* Deletes entry */
-    orxInput_DeleteEntry(_pstSet, pstEntry);
-  }
 
   /* Is the current selected one? */
   if(sstInput.pstCurrentSet == _pstSet)
@@ -1323,6 +1311,12 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
     /* Deselects it */
     sstInput.pstCurrentSet = orxNULL;
   }
+
+  /* Removes it from table */
+  orxHashTable_Remove(sstInput.pstSetTable, _pstSet->stID);
+
+  /* Deletes its entry bank */
+  orxBank_Delete(_pstSet->pstEntryBank);
 
   /* Removes set */
   orxBank_Free(sstInput.pstSetBank, _pstSet);
