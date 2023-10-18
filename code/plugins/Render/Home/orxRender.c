@@ -325,7 +325,7 @@ static orxINLINE void orxRender_Home_RenderFPS()
       fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
 
       /* Has correction ratio? */
-      if(fCorrectionRatio != orxFLOAT_1)
+      if(orxMath_Abs(fCorrectionRatio - orxFLOAT_1) >= orxMATH_KF_EPSILON)
       {
         /* X axis? */
         if(fCorrectionRatio < orxFLOAT_1)
@@ -1748,7 +1748,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           fCorrectionRatio = orxViewport_GetCorrectionRatio(_pstViewport);
 
           /* Has correction ratio? */
-          if(fCorrectionRatio != orxFLOAT_1)
+          if(orxMath_Abs(fCorrectionRatio - orxFLOAT_1) >= orxMATH_KF_EPSILON)
           {
             /* X axis? */
             if(fCorrectionRatio < orxFLOAT_1)
@@ -2934,7 +2934,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorl
         fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
 
         /* Has correction ratio? */
-        if(fCorrectionRatio != orxFLOAT_1)
+        if(orxMath_Abs(fCorrectionRatio - orxFLOAT_1) >= orxMATH_KF_EPSILON)
         {
           /* X axis? */
           if(fCorrectionRatio < orxFLOAT_1)
