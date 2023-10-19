@@ -4,7 +4,6 @@
     "export_libraries": [
       ":webpdecoder_static",
       ":liquidfun_static",
-      ":cpufeatures",
       "-llog",
       "-landroid",
       "-lGLESv2",

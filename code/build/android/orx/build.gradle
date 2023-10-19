@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.library' version '8.1.1'
+    id 'com.android.library'
     id 'maven-publish'
 }
 
@@ -15,8 +15,6 @@ android {
     defaultConfig {
         minSdk 19
         targetSdk sdkVersion.toInteger()
-        versionCode 115
-        versionName '1.15'
     }
     externalNativeBuild {
         ndkBuild {
@@ -37,15 +35,12 @@ android {
         liquidfun_static {
             headers "${System.env.ORX}/../extern/LiquidFun-1.1.0/include"
         }
-        cpufeatures {
-        }
     }
     packagingOptions {
         exclude('**/libc++_shared.so')
     }
     buildTypes {
         release {
-            debuggable false
 
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
@@ -54,7 +49,6 @@ android {
             }
         }
         debug {
-            debuggable true
 
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=1', '-j'
@@ -62,7 +56,6 @@ android {
             }
         }
         profile {
-            debuggable true
 
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=0', '-j'
