@@ -6,15 +6,21 @@ plugins {
 android {
     namespace 'org.orx.lib'
     compileSdk sdkVersion.toInteger()
-
+    
+    // Ideally, we want to use the default NDK version for the used AGP version.
+    // However, we opt-in to NDK r26 since it comes with many important features/optimizations.
+    ndkVersion '26.1.10909125'
+    
     buildFeatures {
         prefab true
         prefabPublishing true
     }
 
     defaultConfig {
-        minSdk 19
+        minSdk 21
         targetSdk sdkVersion.toInteger()
+        versionCode 115
+        versionName '1.15'
     }
     externalNativeBuild {
         ndkBuild {
@@ -41,7 +47,8 @@ android {
     }
     buildTypes {
         release {
-
+            debuggable false
+            
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             externalNativeBuild.ndkBuild {
@@ -49,14 +56,16 @@ android {
             }
         }
         debug {
-
+            debuggable true
+            
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=1', '-j'
                 cFlags '-D__orxDEBUG__'
             }
         }
         profile {
-
+            debuggable true
+            
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=0', '-j'
                 cFlags '-D__orxPROFILER__'
