@@ -1568,7 +1568,11 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
         if(pstShaderPointer != orxNULL)
         {
           /* Starts it */
-          orxShaderPointer_Start(pstShaderPointer);
+          if(orxShaderPointer_Start(pstShaderPointer) == orxSTATUS_FAILURE)
+          {
+            /* Cancels it */
+            pstShaderPointer = orxNULL;
+          }
         }
 
         /* Gets graphic's pivot */
@@ -2276,13 +2280,14 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           orxDisplay_SetBlendMode(orxViewport_GetBlendMode(_pstViewport));
 
           /* Starts shader */
-          orxShaderPointer_Start(pstShaderPointer);
+          if(orxShaderPointer_Start(pstShaderPointer) != orxSTATUS_FAILURE)
+          {
+            /* Draws render target's content */
+            orxDisplay_TransformBitmap(orxNULL, orxNULL, orx2RGBA(0x00, 0x00, 0x00, 0x00), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_NONE);
 
-          /* Draws render target's content */
-          orxDisplay_TransformBitmap(orxNULL, orxNULL, orx2RGBA(0x00, 0x00, 0x00, 0x00), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_NONE);
-
-          /* Stops shader */
-          orxShaderPointer_Stop(pstShaderPointer);
+            /* Stops shader */
+            orxShaderPointer_Stop(pstShaderPointer);
+          }
         }
       }
     }
