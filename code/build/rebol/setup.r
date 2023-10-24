@@ -5,6 +5,8 @@ REBOL [
   file:         %setup.r
 ]
 
+quote: {^"}
+
 ; Default settings
 tag:            <version>
 hosts:          [[{https://orx-project.org/extern/} tag {.zip}] [{https://codeload.github.com/orx/orx-extern/zip/} tag] [{https://orx-mirror.0ok.org/} tag {.zip}]]
@@ -143,7 +145,12 @@ either req-ver = cur-ver [
 either skip-env [
   print {== Skipping environment setup}
 ] [
-  new-env: (get-env env-variable) != env-path: to-string to-local-file clean-path root/:env-path
+
+  s: to-string [to-local-file clean-path root/:env-path]
+  addquote: {}
+  if (s/1 != s/(length? s)) and (s/1 != quote/1) [addquote: quote]
+  
+  new-env: (get-env env-variable) != env-path: to-string reduce [addquote (to-local-file clean-path root/:env-path) addquote]
   print [{== Setting environment: [} env-variable {=} env-path {]}]
   set-env env-variable env-path
   either platform = 'windows [
