@@ -143,7 +143,7 @@ either req-ver = cur-ver [
 either skip-env [
   print {== Skipping environment setup}
 ] [
-  new-env: (get-env env-variable) != env-path: mold to-local-file clean-path root/:env-path
+  new-env: (trim/with get-env env-variable dbl-quote) != trim/with copy env-path: rejoin [dbl-quote to-local-file clean-path root/:env-path dbl-quote] dbl-quote
   print [{== Setting environment: [} env-variable {=} env-path {]}]
   set-env env-variable env-path
   either platform = 'windows [
