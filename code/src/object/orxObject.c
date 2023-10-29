@@ -12261,3 +12261,5 @@ orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox, orxSTRINGID _st
   /* Done! */
   return pstResult;
 }
+
+#undef orxOBJECT_MAKE_RECURSIVE

@@ -874,6 +874,8 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   return eResult;
 }
 
+#undef orxPARAM_LOG
+
 #ifdef __orxMSVC__
 
   #pragma warning(default : 4996)

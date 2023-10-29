@@ -3169,3 +3169,8 @@ orxU32 orxFASTCALL orxBody_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags
   /* Done! */
   return u32Result;
 }
+
+#undef orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST
+#undef orxBODY_GET_NEXT_JOINT_FROM_SRC_LIST
+#undef orxBODY_GET_FIRST_JOINT_FROM_DST_LIST
+#undef orxBODY_GET_NEXT_JOINT_FROM_DST_LIST

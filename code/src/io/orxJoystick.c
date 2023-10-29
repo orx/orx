@@ -145,6 +145,9 @@ const orxSTRING orxFASTCALL orxJoystick_GetButtonName(orxJOYSTICK_BUTTON _eButto
     }
   }
 
+#undef orxJOYSTICK_DECLARE_BUTTON_NAME
+#undef orxJOYSTICK_DECLARE_BUTTONS
+
   /* Done! */
   return zResult;
 }

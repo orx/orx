@@ -208,6 +208,8 @@ static orxINLINE const orxSTRING orxCommand_GetTypeString(orxCOMMAND_VAR_TYPE _e
     }
   }
 
+#undef orxCOMMAND_DECLARE_TYPE_NAME
+
   /* Done! */
   return zResult;
 }
@@ -1079,6 +1081,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
         pstResult = orxCommand_Run(pstCommand, orxFALSE, u32ArgNumber, astArgList, _pstResult);
         sstCommand.s32ProcessOffset -= s32Offset;
       }
+#undef orxCOMMAND_KU32_ALIAS_MAX_DEPTH
     }
     else
     {

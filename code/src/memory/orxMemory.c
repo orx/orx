@@ -470,6 +470,8 @@ const orxSTRING orxFASTCALL orxMemory_GetTypeName(orxMEMORY_TYPE _eMemType)
     }
   }
 
+#undef orxMEMORY_DECLARE_TYPE_NAME
+
   /* Done! */
   return zResult;
 }

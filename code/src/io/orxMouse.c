@@ -215,6 +215,8 @@ const orxSTRING orxFASTCALL orxMouse_GetButtonName(orxMOUSE_BUTTON _eButton)
     }
   }
 
+#undef orxMOUSE_DECLARE_BUTTON_NAME
+
   /* Done! */
   return zResult;
 }
@@ -247,6 +249,8 @@ const orxSTRING orxFASTCALL orxMouse_GetAxisName(orxMOUSE_AXIS _eAxis)
       zResult = orxSTRING_EMPTY;
     }
   }
+
+#undef orxMOUSE_DECLARE_AXIS_NAME
 
   /* Done! */
   return zResult;

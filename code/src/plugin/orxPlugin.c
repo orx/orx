@@ -50,6 +50,7 @@
 
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
+  #undef WIN32_LEAN_AND_MEAN
 
   typedef HINSTANCE                                         orxSYSPLUGIN;
 
@@ -1263,3 +1264,7 @@ const orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
   /* Done! */
   return zPluginName;
 }
+
+#undef orxPLUGIN_OPEN
+#undef orxPLUGIN_GET_SYMBOL_ADDRESS
+#undef orxPLUGIN_CLOSE
