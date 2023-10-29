@@ -270,64 +270,36 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
         }
         else
         {
-          orxBOOL bIsTime = orxFALSE;
+          orxBOOL   bIsTime = orxFALSE;
+          orxFLOAT  fTimeWrap = orxFLOAT_0;
+          orxS32    j, u32TimeLength;
 
-          /* Is a list? */
-          if(bIsList != orxFALSE)
+          /* Gets length of time parameter */
+          u32TimeLength = orxString_GetLength(orxSHADER_KZ_TIME);
+
+          /* For all defined entries */
+          for(j = 0; (j == 0) || (j < s32ParamListCount); j++)
           {
-            orxS32 j;
+            /* Gets its value */
+            zValue = orxConfig_GetListString(zParamName, j);
 
-            /* For all defined entries */
-            for(j = 0; j < s32ParamListCount; j++)
-            {
-              /* Stores its vector */
-              zValue = orxConfig_GetListString(zParamName, j);
-
-              /* Valid? */
-              if(zValue != orxSTRING_EMPTY)
-              {
-                /* Is time? */
-                if(!orxString_ICompare(zValue, orxSHADER_KZ_TIME))
-                {
-                  /* Marks as time */
-                  bIsTime = orxTRUE;
-
-                  /* Is not using custom param? */
-                  if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
-                  {
-                    /* Forces it */
-                    orxStructure_SetFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
-
-                    /* Logs message */
-                    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", _pstShader->zReference, _pstShader, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
-                  }
-
-                  /* Logs message */
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't use array for time parameter. <%s> will be declared as a regular variable.", _pstShader->zReference, _pstShader, zParamName);
-
-                  break;
-                }
-
-                /* Loads texture */
-                ((orxTEXTURE **)astValueBuffer)[j] = orxTexture_Load(zValue, orxFALSE);
-              }
-              else
-              {
-                /* No texture */
-                ((orxTEXTURE **)astValueBuffer)[j] = orxNULL;
-              }
-            }
-          }
-          else
-          {
             /* Valid? */
             if(zValue != orxSTRING_EMPTY)
             {
               /* Is time? */
-              if(!orxString_ICompare(zValue, orxSHADER_KZ_TIME))
+              if(!orxString_NICompare(zValue, orxSHADER_KZ_TIME, u32TimeLength)
+              && ((*(zValue + u32TimeLength) == orxCHAR_NULL)
+               || (*(zValue + u32TimeLength) == ' ')
+               || (*(zValue + u32TimeLength) == '\t')))
               {
                 /* Marks as time */
                 bIsTime = orxTRUE;
+
+                /* Gets time wrap value */
+                if(orxString_ToFloat(orxString_SkipWhiteSpaces(zValue + u32TimeLength), &fTimeWrap, orxNULL) == orxSTATUS_FAILURE)
+                {
+                  fTimeWrap = orxFLOAT_0;
+                }
 
                 /* Is not using custom param? */
                 if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
@@ -338,17 +310,26 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
                   /* Logs message */
                   orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", _pstShader->zReference, _pstShader, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
                 }
+
+                /* Is list? */
+                if(bIsList != orxFALSE)
+                {
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Can't use array for time parameter. <%s> will be declared as a regular variable.", _pstShader->zReference, _pstShader, zParamName);
+                }
+
+                break;
               }
               else
               {
                 /* Loads texture */
-                ((orxTEXTURE **)astValueBuffer)[0] = orxTexture_Load(zValue, orxFALSE);
+                ((orxTEXTURE **)astValueBuffer)[j] = orxTexture_Load(zValue, orxFALSE);
               }
             }
             else
             {
               /* No texture */
-              ((orxTEXTURE **)astValueBuffer)[0] = orxNULL;
+              ((orxTEXTURE **)astValueBuffer)[j] = orxNULL;
             }
           }
 
@@ -356,7 +337,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
           if(bIsTime != orxFALSE)
           {
             /* Adds time param */
-            orxShader_AddTimeParam(_pstShader, zParamName);
+            orxShader_AddTimeParam(_pstShader, zParamName, fTimeWrap);
           }
           else
           {
@@ -1007,7 +988,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
             case orxSHADER_PARAM_TYPE_TIME:
             {
               /* Sets it */
-              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, fTime);
+              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, (pstParamValue->pstParam->fTimeWrap > orxFLOAT_0) ? orxMath_Mod(fTime, pstParamValue->pstParam->fTimeWrap) : fTime);
 
               break;
             }
@@ -1090,7 +1071,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
             case orxSHADER_PARAM_TYPE_TIME:
             {
               /* Updates value */
-              stPayload.fValue = fTime;
+              stPayload.fValue = (pstParamValue->pstParam->fTimeWrap > orxFLOAT_0) ? orxMath_Mod(fTime, pstParamValue->pstParam->fTimeWrap) : fTime;
 
               /* Sends event */
               if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
@@ -1392,9 +1373,10 @@ orxSTATUS orxFASTCALL orxShader_AddVectorParam(orxSHADER *_pstShader, const orxS
 /** Adds a time parameter definition to a shader (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
+ * @param[in] _fWrap                  Time will wrap around after that amount of seconds, <= 0 to ignore
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName)
+orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fWrap)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1421,7 +1403,7 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_TIME;
       pstParam->zName         = orxString_Store(_zName);
-      pstParam->u32ArraySize  = 0;
+      pstParam->fTimeWrap     = orxMAX(orxFLOAT_0, _fWrap);
 
       /* Adds it to list */
       orxLinkList_AddEnd(&(_pstShader->stParamList), &(pstParam->stNode));
