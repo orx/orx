@@ -423,6 +423,73 @@ void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMM
   return;
 }
 
+/** Command: Pause
+ */
+void orxFASTCALL orxClock_CommandPause(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCLOCK *pstClock;
+
+  /* Gets clock */
+  pstClock = orxClock_Get(_astArgList[0].zValue);
+
+  /* Not found? */
+  if(pstClock == orxNULL)
+  {
+    /* Creates it */
+    pstClock = orxClock_CreateFromConfig(_astArgList[0].zValue);
+  }
+
+  /* Valid? */
+  if(pstClock != orxNULL)
+  {
+    /* Updates it */
+    orxClock_Pause(pstClock, (_u32ArgNumber < 2) || (_astArgList[1].bValue != orxFALSE) ? orxTRUE : orxFALSE);
+
+    /* Updates result */
+    _pstResult->zValue = _astArgList[0].zValue;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: IsPaused
+ */
+void orxFASTCALL orxClock_CommandIsPaused(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCLOCK *pstClock;
+
+  /* Gets clock */
+  pstClock = orxClock_Get(_astArgList[0].zValue);
+
+  /* Not found? */
+  if(pstClock == orxNULL)
+  {
+    /* Creates it */
+    pstClock = orxClock_CreateFromConfig(_astArgList[0].zValue);
+  }
+
+  /* Valid? */
+  if(pstClock != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->bValue = orxClock_IsPaused(pstClock);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the clock commands
  */
 static orxINLINE void orxClock_RegisterCommands()
@@ -431,6 +498,11 @@ static orxINLINE void orxClock_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Clock, SetFrequency, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Frequency = display", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: SetModifier */
   orxCOMMAND_REGISTER_CORE_COMMAND(Clock, SetModifier, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 3, 0, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Type", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT});
+
+  /* Command: Pause */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Clock, Pause, "Clock", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Pause = true", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: IsPaused */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Clock, IsPaused, "IsPaused?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Clock", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the clock commands
@@ -441,6 +513,11 @@ static orxINLINE void orxClock_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Clock, SetFrequency);
   /* Command: SetModifier */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Clock, SetModifier);
+
+  /* Command: Pause */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Clock, Pause);
+  /* Command: IsPaused */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Clock, IsPaused);
 }
 
 
@@ -1230,46 +1307,35 @@ orxSTATUS orxFASTCALL orxClock_Restart(orxCLOCK *_pstClock)
 
 /** Pauses a clock
  * @param[in]   _pstClock                             Concerned clock
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _bPause                               Pause / unpause
  */
-orxSTATUS orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
+void orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock, orxBOOL _bPause)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
 
-  /* Sends event */
-  orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_PAUSE, _pstClock, orxNULL, orxNULL);
+  /* Pause? */
+  if(_bPause != orxFALSE)
+  {
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_PAUSE, _pstClock, orxNULL, orxNULL);
 
-  /* Updates clock flags */
-  orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_PAUSED, orxCLOCK_KU32_FLAG_NONE);
+    /* Updates clock flags */
+    orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_PAUSED, orxCLOCK_KU32_FLAG_NONE);
+  }
+  /* Unpause */
+  else
+  {
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_UNPAUSE, _pstClock, orxNULL, orxNULL);
 
-  /* Done! */
-  return eResult;
-}
-
-/** Unpauses a clock
- * @param[in]   _pstClock                             Concerned clock
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstClock);
-
-  /* Sends event */
-  orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_UNPAUSE, _pstClock, orxNULL, orxNULL);
-
-  /* Updates clock flags */
-  orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_FLAG_PAUSED);
+    /* Updates clock flags */
+    orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_FLAG_PAUSED);
+  }
 
   /* Done! */
-  return eResult;
+  return;
 }
 
 /** Is a clock paused?
@@ -1283,7 +1349,7 @@ orxBOOL orxFASTCALL orxClock_IsPaused(const orxCLOCK *_pstClock)
   orxSTRUCTURE_ASSERT(_pstClock);
 
   /* Tests flags */
-  return(orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_PAUSED) ? orxTRUE : orxFALSE);
+  return(orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_PAUSED));
 }
 
 /** Gets clock info
