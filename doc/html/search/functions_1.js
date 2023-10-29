@@ -1024,7 +1024,7 @@ var searchData=
   ['orxscreenshot_5fsetup',['orxScreenshot_Setup',['../group__orx_screenshot.html#ga1f9631ae57b99d820a23b66a9cc515de',1,'orxScreenshot.h']]],
   ['orxshader_5faddfloatparam',['orxShader_AddFloatParam',['../group__orx_shader.html#gaee59c669a705b28e66cc8ff5f2c0ae48',1,'orxShader.h']]],
   ['orxshader_5faddtextureparam',['orxShader_AddTextureParam',['../group__orx_shader.html#ga82b3b438d904bd790dfb062ae77d31aa',1,'orxShader.h']]],
-  ['orxshader_5faddtimeparam',['orxShader_AddTimeParam',['../group__orx_shader.html#ga4a302c1f77503f9da2376807f7e8edb9',1,'orxShader.h']]],
+  ['orxshader_5faddtimeparam',['orxShader_AddTimeParam',['../group__orx_shader.html#gaea56fd2b2b0ac3617ce6aec552baa573',1,'orxShader.h']]],
   ['orxshader_5faddvectorparam',['orxShader_AddVectorParam',['../group__orx_shader.html#ga49da9795481144df82fc146aa777e499',1,'orxShader.h']]],
   ['orxshader_5fclearcache',['orxShader_ClearCache',['../group__orx_shader.html#ga79418ebbcbbac84063f6300860cec6f2',1,'orxShader.h']]],
   ['orxshader_5fcompilecode',['orxShader_CompileCode',['../group__orx_shader.html#ga85854ca01130cf5376ac3dbb18ebf6b7',1,'orxShader.h']]],
