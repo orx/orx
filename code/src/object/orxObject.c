@@ -4552,7 +4552,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
       orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
 
       /* Computes its DT */
-      stClockInfo.fDT = orxClock_ComputeDT(_pstClockInfo->fDT, pstClock);
+      stClockInfo.fDT = (orxClock_IsPaused(pstClock) != orxFALSE) ? orxFLOAT_0 : orxClock_ComputeDT(_pstClockInfo->fDT, pstClock);
     }
     else
     {
