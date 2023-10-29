@@ -968,16 +968,25 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
     /* Valid */
     if(pstClock != orxNULL)
     {
-      orxFLOAT fModifier;
-
-      /* Gets multiply modifier */
-      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
-
-      /* Valid? */
-      if(fModifier != orxFLOAT_0)
+      /* Paused? */
+      if(orxClock_IsPaused(pstClock) != orxFALSE)
       {
         /* Updates coef */
-        fCoef = orxFLOAT_1 / fModifier;
+        fCoef = orxFLOAT_0;
+      }
+      else
+      {
+        orxFLOAT fModifier;
+
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
+
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
+        {
+          /* Updates coef */
+          fCoef = orxFLOAT_1 / fModifier;
+        }
       }
     }
 
@@ -1005,20 +1014,20 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
     /* Should interpolate? */
     if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
     {
-      orxFLOAT fCoef;
+      orxFLOAT fInterpolationCoef;
 
       /* Gets interpolation coef */
-      fCoef = sstPhysics.fDTAccumulator / sstPhysics.fFixedDT;
+      fInterpolationCoef = sstPhysics.fDTAccumulator / sstPhysics.fFixedDT;
 
       /* Updates rotation */
-      _pstBody->fInterpolatedRotation = orxLERP(_pstBody->fPreviousRotation, orxPhysics_GetRotation(_pstBody), fCoef);
+      _pstBody->fInterpolatedRotation = orxLERP(_pstBody->fPreviousRotation, orxPhysics_GetRotation(_pstBody), fInterpolationCoef);
       orxFrame_SetRotation(pstFrame, eFrameSpace, _pstBody->fInterpolatedRotation);
 
       /* Updates position */
       orxFrame_GetPosition(pstFrame, eFrameSpace, &vOldPos);
       orxPhysics_GetPosition(_pstBody, &vNewPos);
-      _pstBody->vInterpolatedPosition.fX = orxLERP(_pstBody->vPreviousPosition.fX, vNewPos.fX, fCoef);
-      _pstBody->vInterpolatedPosition.fY = orxLERP(_pstBody->vPreviousPosition.fY, vNewPos.fY, fCoef);
+      _pstBody->vInterpolatedPosition.fX = orxLERP(_pstBody->vPreviousPosition.fX, vNewPos.fX, fInterpolationCoef);
+      _pstBody->vInterpolatedPosition.fY = orxLERP(_pstBody->vPreviousPosition.fY, vNewPos.fY, fInterpolationCoef);
       _pstBody->vInterpolatedPosition.fZ = vOldPos.fZ;
       orxFrame_SetPosition(pstFrame, eFrameSpace, &_pstBody->vInterpolatedPosition);
     }
@@ -1130,16 +1139,25 @@ static void orxFASTCALL orxPhysics_LiquidFun_Update(const orxCLOCK_INFO *_pstClo
       /* Valid */
       if(pstClock != orxNULL)
       {
-        orxFLOAT fModifier;
-
-        /* Gets multiply modifier */
-        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
-
-        /* Valid? */
-        if(fModifier != orxFLOAT_0)
+        /* Paused? */
+        if(orxClock_IsPaused(pstClock) != orxFALSE)
         {
-          /* Uses it */
-          fCoef = fModifier;
+          /* Updates coef */
+          fCoef = orxFLOAT_0;
+        }
+        else
+        {
+          orxFLOAT fModifier;
+
+          /* Gets multiply modifier */
+          fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
+
+          /* Valid? */
+          if(fModifier != orxFLOAT_0)
+          {
+            /* Uses it */
+            fCoef = fModifier;
+          }
         }
       }
 
@@ -2750,16 +2768,25 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyTorque(orxPHYSICS_BOD
     /* Valid */
     if(pstClock != orxNULL)
     {
-      orxFLOAT fModifier;
-
-      /* Gets multiply modifier */
-      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
-
-      /* Valid? */
-      if(fModifier != orxFLOAT_0)
+      /* Paused? */
+      if(orxClock_IsPaused(pstClock) != orxFALSE)
       {
         /* Updates torque */
-        fTorque *= (float32)fModifier;
+        fTorque = orxFLOAT_0;
+      }
+      else
+      {
+        orxFLOAT fModifier;
+
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
+
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
+        {
+          /* Updates torque */
+          fTorque *= (float32)fModifier;
+        }
       }
     }
   }
@@ -2803,16 +2830,25 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyForce(orxPHYSICS_BODY
     /* Valid */
     if(pstClock != orxNULL)
     {
-      orxFLOAT fModifier;
-
-      /* Gets multiply modifier */
-      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
-
-      /* Valid? */
-      if(fModifier != orxFLOAT_0)
+      /* Paused? */
+      if(orxClock_IsPaused(pstClock) != orxFALSE)
       {
         /* Updates force */
-        vForce *= (float32)(fModifier * fModifier);
+        vForce *= (float32)orxFLOAT_0;
+      }
+      else
+      {
+        orxFLOAT fModifier;
+
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
+
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
+        {
+          /* Updates force */
+          vForce *= (float32)(fModifier * fModifier);
+        }
       }
     }
   }
@@ -2868,16 +2904,25 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyImpulse(orxPHYSICS_BO
     /* Valid */
     if(pstClock != orxNULL)
     {
-      orxFLOAT fModifier;
-
-      /* Gets multiply modifier */
-      fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
-
-      /* Valid? */
-      if(fModifier != orxFLOAT_0)
+      /* Paused? */
+      if(orxClock_IsPaused(pstClock) != orxFALSE)
       {
         /* Updates impulse */
-        vImpulse *= (float32)fModifier;
+        vImpulse *= (float32)orxFLOAT_0;
+      }
+      else
+      {
+        orxFLOAT fModifier;
+
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
+
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
+        {
+          /* Updates impulse */
+          vImpulse *= (float32)fModifier;
+        }
       }
     }
   }
