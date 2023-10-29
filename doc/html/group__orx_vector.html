@@ -176,6 +176,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga7f793888572a06e5ff09e1e0862db134"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga398dc5589f7e8581bb14ef2a5c3c643b"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#ga398dc5589f7e8581bb14ef2a5c3c643b">orxVector_Min</a> (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)</td></tr>
 <tr class="separator:ga398dc5589f7e8581bb14ef2a5c3c643b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga83e7961df7a76bbbfe365142abc97f35"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#ga83e7961df7a76bbbfe365142abc97f35">orxVector_Mod</a> (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)</td></tr>
+<tr class="separator:ga83e7961df7a76bbbfe365142abc97f35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga862ea8f52930a245fc06bcb894fdbf48"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#ga862ea8f52930a245fc06bcb894fdbf48">orxVector_Mul</a> (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp2)</td></tr>
 <tr class="separator:ga862ea8f52930a245fc06bcb894fdbf48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa9269252d414e37fa6b994752443b384"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_vector.html#gaa9269252d414e37fa6b994752443b384">orxVector_Mulf</a> (<a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvRes, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvOp1, orxFLOAT _fOp2)</td></tr>
@@ -249,7 +251,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00947">947</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00969">969</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -294,7 +296,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>2D dot product </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00871">871</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00893">893</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -337,7 +339,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Rotates a 2D vector (along Z-axis) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp</td><td>Vector to rotate </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_fAngle</td><td>Angle of rotation (radians) </td></tr>
   </table>
@@ -345,7 +347,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Rotated vector </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00621">621</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00643">643</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -382,14 +384,14 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Gets the absolute value of a vector and stores it in another one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp</td><td>Input value </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Resulting vector (Abs(Op)) </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00408">408</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00430">430</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -432,7 +434,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Adds vectors and stores result in a third one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be one of the two operands) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be one of the two operands) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp2</td><td>Second operand </td></tr>
   </table>
@@ -484,7 +486,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxTRUE if both vectors are equal, orxFALSE otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00690">690</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00712">712</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -537,7 +539,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Computes an interpolated point on a cubic Bezier curve segment for a given parameter </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPoint1</td><td>First point for this curve segment </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPoint2</td><td>First control point for this curve segment </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPoint3</td><td>Second control point for this curve segment </td></tr>
@@ -599,7 +601,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Computes an interpolated point on a Catmull-Rom curve segment for a given parameter </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPoint1</td><td>First control point for this curve segment </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPoint2</td><td>Second control point for this curve segment </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPoint3</td><td>Third control point for this curve segment </td></tr>
@@ -657,7 +659,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Clamps a vector between two others </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp</td><td>Vector to clamp </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvMin</td><td>Minimum boundary </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvMax</td><td>Maximum boundary </td></tr>
@@ -666,7 +668,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Resulting vector CLAMP(Op, MIN, MAX) </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00386">386</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00408">408</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -753,7 +755,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Gets cross product of two vectors </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp2</td><td>Second operand </td></tr>
   </table>
@@ -761,7 +763,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Cross product <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> / orxNULL </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00892">892</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00914">914</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -804,7 +806,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Divides a vector by another vector and stores result in a third one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be one of the two operands) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be one of the two operands) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp2</td><td>Second operand </td></tr>
   </table>
@@ -855,7 +857,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Divides a vector by an orxFLOAT and stores result in another one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_fOp2</td><td>Second operand </td></tr>
   </table>
@@ -907,7 +909,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Dot product </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00851">851</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00873">873</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -944,14 +946,14 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Gets floored vector and stores the result in another one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp</td><td>Input value </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Resulting vector Floor(Op) </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00468">468</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00490">490</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -988,14 +990,14 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Transforms a cartesian vector into a spherical one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp</td><td>Vector to transform </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Transformed vector </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00710">710</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00732">732</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1032,14 +1034,14 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Transforms a spherical vector into a cartesian one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp</td><td>Vector to transform </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Transformed vector </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00804">804</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00826">826</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1083,7 +1085,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Distance </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00568">568</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00590">590</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1116,7 +1118,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Vector's size </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00525">525</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00547">547</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1160,7 +1162,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Squared distance </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00544">544</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00566">566</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1193,7 +1195,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Vector's squared size </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00507">507</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00529">529</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1226,7 +1228,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxTRUE if vector's null, orxFALSE otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00671">671</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00693">693</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1275,7 +1277,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Lerps from one vector to another one using a coefficient </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be one of the two operands) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be one of the two operands) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp2</td><td>Second operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_fOp</td><td>Lerp coefficient parameter </td></tr>
@@ -1284,7 +1286,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Resulting vector </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00291">291</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00313">313</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1327,7 +1329,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Gets maximum between two vectors </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be one of the two operands) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be one of the two operands) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp2</td><td>Second operand </td></tr>
   </table>
@@ -1335,7 +1337,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Resulting vector MAX(Op1, Op2) </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00363">363</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00385">385</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1378,7 +1380,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Gets minimum between two vectors </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be one of the two operands) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be one of the two operands) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp2</td><td>Second operand </td></tr>
   </table>
@@ -1386,7 +1388,58 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Resulting vector MIN(Op1, Op2) </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00341">341</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00363">363</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga83e7961df7a76bbbfe365142abc97f35"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxVector_Mod </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvRes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvOp1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvOp2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Gets the modulo of a vector by another vector and stores result in a third one </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be one of the two operands) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp2</td><td>Second operand </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Resulting vector (Op1 / Op2) </dd></dl>
+
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00290">290</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1429,7 +1482,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Multiplies a vector by another vector and stores result in a third one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be one of the two operands) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be one of the two operands) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp2</td><td>Second operand </td></tr>
   </table>
@@ -1480,7 +1533,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Multiplies a vector by an orxFLOAT and stores result in another one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_fOp2</td><td>Second operand </td></tr>
   </table>
@@ -1525,14 +1578,14 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Negates a vector and stores result in another one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp</td><td>Vector to negates </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Resulting vector (-Op) </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00428">428</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00450">450</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1569,14 +1622,14 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Normalizes a vector </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp</td><td>Vector to normalize </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Normalized vector </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00592">592</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00614">614</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1613,14 +1666,14 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Gets reciprocal (1.0 /) vector and stores the result in another one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp</td><td>Input value </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Resulting vector (1 / Op) </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00448">448</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00470">470</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1681,7 +1734,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Remaps a vector value from one interval to another one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be any of the other operands) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be any of the other operands) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvA1</td><td>First interval's low boundary </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvB1</td><td>First interval's high boundary </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvA2</td><td>Second interval's low boundary </td></tr>
@@ -1692,7 +1745,7 @@ Variables</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Resulting vector </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00316">316</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00338">338</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1729,14 +1782,14 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Gets rounded vector and stores the result in another one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be the operand) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be the operand) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp</td><td>Input value </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Resulting vector Round(Op) </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00488">488</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_vector_8h_source.html#l00510">510</a> of file <a class="el" href="orx_vector_8h_source.html">orxVector.h</a>.</p>
 
 </div>
 </div>
@@ -1881,7 +1934,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <p>Substracts vectors and stores result in a third one </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store result (can be one of the two operands) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvRes</td><td>Vector where to store the result (can be one of the two operands) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp1</td><td>First operand </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvOp2</td><td>Second operand </td></tr>
   </table>
