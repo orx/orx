@@ -1463,8 +1463,17 @@ void orxFASTCALL orxCommand_CommandEvaluate(orxU32 _u32ArgNumber, const orxCOMMA
   /* Disables marker operations */
   orxProfiler_EnableMarkerOperations(orxFALSE);
 
-  /* Evaluates command */
-  orxCommand_Evaluate(_astArgList[0].zValue, _pstResult);
+  /* Has GUID? */
+  if(_u32ArgNumber > 1)
+  {
+    /* Evaluates command with GUID */
+    orxCommand_EvaluateWithGUID(_astArgList[0].zValue, _astArgList[1].u64Value, _pstResult);
+  }
+  else
+  {
+    /* Evaluates command */
+    orxCommand_Evaluate(_astArgList[0].zValue, _pstResult);
+  }
 
   /* Re-enables marker operations */
   orxProfiler_EnableMarkerOperations(orxTRUE);
@@ -2846,7 +2855,7 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, ListAliases, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 1, {"Prefix = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: Evaluate */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Evaluate, "Result", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Command", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Evaluate, "Result", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Command", orxCOMMAND_VAR_TYPE_STRING}, {"GUID = <void>", orxCOMMAND_VAR_TYPE_U64});
   /* Command: EvaluateIf */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, EvaluateIf, "Result", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Test", orxCOMMAND_VAR_TYPE_STRING}, {"If-Command", orxCOMMAND_VAR_TYPE_STRING}, {"Else-Command = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: If */
