@@ -209,12 +209,12 @@ static orxPHYSICS_STATIC sstPhysics;
  * Private functions                                                       *
  ***************************************************************************/
 
-void *orxPhysics_LiquidFun_Allocate(int32 _iSize, void* callbackData)
+void *orxPhysics_LiquidFun_Allocate(int32 _iSize, void *)
 {
   return orxMemory_Allocate((orxU32)_iSize, orxMEMORY_TYPE_PHYSICS);
 }
 
-void orxPhysics_LiquidFun_Free(void *_pMem, void* callbackData)
+void orxPhysics_LiquidFun_Free(void *_pMem, void *)
 {
   orxMemory_Free(_pMem);
 }
@@ -3401,6 +3401,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
     orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
 
     /* Sets custom memory alloc/free */
+    b2SetNumAllocs(0);
     b2SetAllocFreeCallbacks(orxPhysics_LiquidFun_Allocate, orxPhysics_LiquidFun_Free, NULL);
 
     /* Gets gravity & allow sleep from config */
