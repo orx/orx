@@ -42,6 +42,7 @@
 #include "display/orxFont.h"
 #include "display/orxGraphic.h"
 #include "display/orxText.h"
+#include "object/orxFX.h"
 #include "object/orxStructure.h"
 #include "render/orxViewport.h"
 #include "utils/orxHashTable.h"
@@ -117,6 +118,9 @@ typedef struct __orxSHADER_PARAM_VALUE_t
     orxVECTOR         vValue;                             /**< Vector value : 36 */
   };                                                      /**< Union value : 36 */
 
+  orxFLOAT            fTimeWrap;                          /**< Time wrap : 40 */
+  orxFX              *pstTimeFX;                          /**< Time FX : 44 */
+
 } orxSHADER_PARAM_VALUE;
 
 /** Shader structure
@@ -184,14 +188,36 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
       pstParamValue != orxNULL;
       pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParamValue->stNode)))
   {
-    /* Is a texture? */
-    if(pstParamValue->pstParam->eType == orxSHADER_PARAM_TYPE_TEXTURE)
+    /* Depending on its type */
+    switch(pstParamValue->pstParam->eType)
     {
-      /* Is valid? */
-      if(pstParamValue->pstValue != orxNULL)
+      /* Texture */
+      case orxSHADER_PARAM_TYPE_TEXTURE:
       {
-        /* Deletes it */
-        orxTexture_Delete((orxTEXTURE *)pstParamValue->pstValue);
+        /* Is valid? */
+        if(pstParamValue->pstValue != orxNULL)
+        {
+          /* Deletes it */
+          orxTexture_Delete((orxTEXTURE *)pstParamValue->pstValue);
+        }
+        break;
+      }
+
+      /* Time */
+      case orxSHADER_PARAM_TYPE_TIME:
+      {
+        /* Has FX? */
+        if(pstParamValue->pstTimeFX != orxNULL)
+        {
+          /* Deletes it */
+          orxFX_Delete(pstParamValue->pstTimeFX);
+        }
+        break;
+      }
+
+      default:
+      {
+        break;
       }
     }
   }
@@ -270,9 +296,10 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
         }
         else
         {
-          orxBOOL   bIsTime = orxFALSE;
-          orxFLOAT  fTimeWrap = orxFLOAT_0;
-          orxS32    j, u32TimeLength;
+          const orxSTRING zFXName = orxNULL;
+          orxFLOAT        fTimeWrap = orxFLOAT_0;
+          orxS32          u32TimeLength, j;
+          orxBOOL         bIsTime = orxFALSE;
 
           /* Gets length of time parameter */
           u32TimeLength = orxString_GetLength(orxSHADER_KZ_TIME);
@@ -296,10 +323,13 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
                 bIsTime = orxTRUE;
 
                 /* Gets time wrap value */
-                if(orxString_ToFloat(orxString_SkipWhiteSpaces(zValue + u32TimeLength), &fTimeWrap, orxNULL) == orxSTATUS_FAILURE)
+                if(orxString_ToFloat(orxString_SkipWhiteSpaces(zValue += u32TimeLength), &fTimeWrap, &zValue) == orxSTATUS_FAILURE)
                 {
                   fTimeWrap = orxFLOAT_0;
                 }
+
+                /* Gets FX name */
+                zFXName = orxString_SkipWhiteSpaces(zValue);
 
                 /* Is not using custom param? */
                 if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
@@ -337,7 +367,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
           if(bIsTime != orxFALSE)
           {
             /* Adds time param */
-            orxShader_AddTimeParam(_pstShader, zParamName, fTimeWrap);
+            orxShader_AddTimeParam(_pstShader, zParamName, fTimeWrap, zFXName);
           }
           else
           {
@@ -481,6 +511,7 @@ void orxFASTCALL orxShader_Setup()
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_DISPLAY);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_GRAPHIC);
+  orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_FX);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_TEXTURE);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_PROFILER);
 
@@ -802,14 +833,36 @@ orxSTATUS orxFASTCALL orxShader_Delete(orxSHADER *_pstShader)
           pstParamValue != orxNULL;
           pstParamValue = (orxSHADER_PARAM_VALUE *)orxLinkList_GetNext(&(pstParamValue->stNode)))
       {
-        /* Is a texture? */
-        if(pstParamValue->pstParam->eType == orxSHADER_PARAM_TYPE_TEXTURE)
+        /* Depending on its type */
+        switch(pstParamValue->pstParam->eType)
         {
-          /* Is valid? */
-          if(pstParamValue->pstValue != orxNULL)
+          /* Texture */
+          case orxSHADER_PARAM_TYPE_TEXTURE:
           {
-            /* Deletes it */
-            orxTexture_Delete((orxTEXTURE *)pstParamValue->pstValue);
+            /* Is valid? */
+            if(pstParamValue->pstValue != orxNULL)
+            {
+              /* Deletes it */
+              orxTexture_Delete((orxTEXTURE *)pstParamValue->pstValue);
+            }
+            break;
+          }
+
+          /* Time */
+          case orxSHADER_PARAM_TYPE_TIME:
+          {
+            /* Has FX? */
+            if(pstParamValue->pstTimeFX != orxNULL)
+            {
+              /* Deletes it */
+              orxFX_Delete(pstParamValue->pstTimeFX);
+            }
+            break;
+          }
+
+          default:
+          {
+            break;
           }
         }
       }
@@ -892,7 +945,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
     {
       orxTEXTURE             *pstOwnerTexture = orxNULL;
       orxSHADER_PARAM_VALUE  *pstParamValue;
-      orxFLOAT                fTime = orxFLOAT_0;
+      orxFLOAT                fTime = orxFLOAT_0, fLocalTime;
 
       /* Depending on its type */
       switch(orxStructure_GetID(_pstOwner))
@@ -987,8 +1040,25 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
 
             case orxSHADER_PARAM_TYPE_TIME:
             {
+              /* Gets local time */
+              fLocalTime = fTime;
+
+              /* Has time wrap? */
+              if(pstParamValue->fTimeWrap > orxFLOAT_0)
+              {
+                /* Applies it */
+                fLocalTime = orxMath_Mod(fLocalTime, pstParamValue->fTimeWrap);
+              }
+
+              /* Has time FX? */
+              if(pstParamValue->pstTimeFX != orxNULL)
+              {
+                /* Applies it */
+                fLocalTime = orxFX_GetFloat(pstParamValue->pstTimeFX, orxFLOAT_0, fLocalTime);
+              }
+
               /* Sets it */
-              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, (pstParamValue->pstParam->fTimeWrap > orxFLOAT_0) ? orxMath_Mod(fTime, pstParamValue->pstParam->fTimeWrap) : fTime);
+              orxDisplay_SetShaderFloat(_pstShader->hData, pstParamValue->s32ID, fLocalTime);
 
               break;
             }
@@ -1070,8 +1140,25 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
 
             case orxSHADER_PARAM_TYPE_TIME:
             {
+              /* Gets local time */
+              fLocalTime = fTime;
+
+              /* Has time wrap? */
+              if(pstParamValue->fTimeWrap > orxFLOAT_0)
+              {
+                /* Applies it */
+                fLocalTime = orxMath_Mod(fLocalTime, pstParamValue->fTimeWrap);
+              }
+
+              /* Has time FX? */
+              if(pstParamValue->pstTimeFX != orxNULL)
+              {
+                /* Applies it */
+                fLocalTime = orxFX_GetFloat(pstParamValue->pstTimeFX, orxFLOAT_0, fLocalTime);
+              }
+
               /* Updates value */
-              stPayload.fValue = (pstParamValue->pstParam->fTimeWrap > orxFLOAT_0) ? orxMath_Mod(fTime, pstParamValue->pstParam->fTimeWrap) : fTime;
+              stPayload.fValue = fLocalTime;
 
               /* Sends event */
               if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
@@ -1374,9 +1461,10 @@ orxSTATUS orxFASTCALL orxShader_AddVectorParam(orxSHADER *_pstShader, const orxS
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _fWrap                  Time will wrap around after that amount of seconds, <= 0 to ignore
+ * @param[in] _zFXName                FX to apply as transformation (should be of type FLOAT), orxNULL for none
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fWrap)
+orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fWrap, const orxSTRING _zFXName)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1403,7 +1491,6 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
       /* Inits it */
       pstParam->eType         = orxSHADER_PARAM_TYPE_TIME;
       pstParam->zName         = orxString_Store(_zName);
-      pstParam->fTimeWrap     = orxMAX(orxFLOAT_0, _fWrap);
 
       /* Adds it to list */
       orxLinkList_AddEnd(&(_pstShader->stParamList), &(pstParam->stNode));
@@ -1418,9 +1505,11 @@ orxSTATUS orxFASTCALL orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTR
         orxMemory_Zero(pstParamValue, sizeof(orxSHADER_PARAM_VALUE));
 
         /* Inits it */
-        pstParamValue->pstParam = pstParam;
-        pstParamValue->s32Index = -1;
-        pstParamValue->fValue   = orxFLOAT_0;
+        pstParamValue->pstParam   = pstParam;
+        pstParamValue->s32Index   = -1;
+        pstParamValue->fValue     = orxFLOAT_0;
+        pstParamValue->fTimeWrap  = orxMAX(orxFLOAT_0, _fWrap);
+        pstParamValue->pstTimeFX  = ((_zFXName != orxNULL) && (*_zFXName != orxCHAR_NULL)) ? orxFX_CreateFromConfig(_zFXName) : orxNULL;
 
         /* Adds it to list */
         orxLinkList_AddEnd(&(_pstShader->stParamValueList), &(pstParamValue->stNode));

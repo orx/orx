@@ -74,11 +74,7 @@ typedef struct __orxSHADER_PARAM_t
   orxLINKLIST_NODE      stNode;                 /**< Linklist node : 12 */
   const orxSTRING       zName;                  /**< Parameter literal name : 26 */
   orxSHADER_PARAM_TYPE  eType;                  /**< Parameter type : 20 */
-  union
-  {
-    orxU32              u32ArraySize;           /**< Parameter array size : 24 */
-    orxFLOAT            fTimeWrap;              /**< Time wrap around value : 24 */
-  };
+  orxU32                u32ArraySize;           /**< Parameter array size : 24 */
 
 } orxSHADER_PARAM;
 
@@ -201,9 +197,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddVectorParam(orxSHAD
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _fWrap                  Time will wrap around after that amount of seconds, <= 0 to ignore
+ * @param[in] _zFXName                FX to apply as transformation (should be of type FLOAT), orxNULL for none
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fWrap);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fWrap, const orxSTRING _zFXName);
 
 /** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
