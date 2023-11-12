@@ -280,8 +280,9 @@ static orxINLINE void orxFX_InitContext(orxFX_CONTEXT *_pstContext, const orxFX 
     /* Clamps start time */
     _fStartTime = orxMAX(_fStartTime, orxFLOAT_0);
 
-    /* Not instant? */
-    if(_pstFX->fDuration > orxFLOAT_0)
+    /* Not instant and looping? */
+    if((_pstFX->fDuration > orxFLOAT_0)
+    && (orxStructure_TestFlags(_pstFX, orxFX_KU32_FLAG_LOOP)))
     {
       /* Should wrap around? */
       if(_fEndTime > _pstFX->fDuration)
