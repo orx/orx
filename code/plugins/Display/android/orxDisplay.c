@@ -119,8 +119,6 @@
 #define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 16384) /**< 16384 items batch capacity */
 #define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      131072
 
-#define orxDISPLAY_KF_BORDER_FIX                0.1f
-
 #define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
 
 #define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER 32
