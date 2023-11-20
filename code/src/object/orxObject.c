@@ -5937,21 +5937,16 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             && (orxStructure_GetID(pstParent) == orxSTRUCTURE_ID_OBJECT)
             && ((u32IgnoreFlags = orxObject_GetIgnoreFlags(pstResult)) != orxFRAME_KU32_FLAG_IGNORE_NONE))
             {
-              /* Ignoring position components? */
-              if(orxFLAG_TEST(u32IgnoreFlags, orxFRAME_KU32_MASK_IGNORE_POSITION))
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": object has both a placement pivot override [" orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_FG_DEFAULT "] and position ignore flags [" orxANSI_KZ_COLOR_FG_YELLOW "%s" orxANSI_KZ_COLOR_FG_DEFAULT "]: this will likely yield unexpected results.", orxObject_GetName(pstResult), zPivotOverride, orxFrame_GetIgnoreFlagNames(orxFLAG_GET(u32IgnoreFlags, orxFRAME_KU32_MASK_IGNORE_POSITION)));
-              }
-
               /* Sets pivot override in object's space */
+              orxStructure_SetFlags(sstObject.pstFrame, orxFRAME_KU32_FLAG_IGNORE_NONE, orxFRAME_KU32_MASK_IGNORE_ALL);
               orxFrame_SetParent(sstObject.pstFrame, orxOBJECT_GET_STRUCTURE(pstResult, FRAME));
               orxFrame_SetPosition(sstObject.pstFrame, orxFRAME_SPACE_LOCAL, &vPivotOverride);
 
               /* Retrieves it in global space */
               orxFrame_GetPosition(sstObject.pstFrame, orxFRAME_SPACE_GLOBAL, &vPivotOverride);
 
-              /* Converts it in parent's space */
+              /* Converts it to parent's space */
+              orxStructure_SetFlags(sstObject.pstFrame, u32IgnoreFlags, orxFRAME_KU32_MASK_IGNORE_ALL);
               orxFrame_SetParent(sstObject.pstFrame, orxOBJECT_GET_STRUCTURE(orxOBJECT(pstParent), FRAME));
               orxFrame_SetPosition(sstObject.pstFrame, orxFRAME_SPACE_GLOBAL, &vPivotOverride);
               orxFrame_GetPosition(sstObject.pstFrame, orxFRAME_SPACE_LOCAL, &vPivotOverride);
@@ -5974,13 +5969,36 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           if(*zPosition != orxCHAR_NULL)
           {
             const orxCHAR  *pc;
-            orxU32          u32AlignFlags;
+            orxU32          u32IgnoreFlags, u32AlignFlags;
 
             /* Gets align flags */
             u32AlignFlags = orxGraphic_GetAlignFlags(zPosition);
 
             /* Updates position */
             orxGraphic_AlignVector(u32AlignFlags, &stParentBox, &vPosition);
+
+            /* Has parent and position ignore flags? */
+            if((pstParent != orxNULL)
+            && (orxStructure_GetID(pstParent) == orxSTRUCTURE_ID_OBJECT)
+            && ((u32IgnoreFlags = orxObject_GetIgnoreFlags(pstResult)) != orxFRAME_KU32_FLAG_IGNORE_NONE)
+            && (orxFLAG_TEST(u32IgnoreFlags, orxFRAME_KU32_MASK_IGNORE_POSITION)))
+            {
+              /* Sets position in parent's space */
+              orxStructure_SetFlags(sstObject.pstFrame, orxFRAME_KU32_FLAG_IGNORE_NONE, orxFRAME_KU32_MASK_IGNORE_ALL);
+              orxFrame_SetParent(sstObject.pstFrame, orxOBJECT_GET_STRUCTURE(orxOBJECT(pstParent), FRAME));
+              orxFrame_SetPosition(sstObject.pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+
+              /* Retrieves it in global space */
+              orxFrame_GetPosition(sstObject.pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+
+              /* Converts it to local space */
+              orxStructure_SetFlags(sstObject.pstFrame, u32IgnoreFlags, orxFRAME_KU32_MASK_IGNORE_ALL);
+              orxFrame_SetPosition(sstObject.pstFrame, orxFRAME_SPACE_GLOBAL, &vPosition);
+              orxFrame_GetPosition(sstObject.pstFrame, orxFRAME_SPACE_LOCAL, &vPosition);
+
+              /* Removes conversion frame */
+              orxFrame_SetParent(sstObject.pstFrame, orxNULL);
+            }
 
             /* Looks for numerical value */
             for(pc = zPosition; *pc != orxCHAR_NULL; pc++)
