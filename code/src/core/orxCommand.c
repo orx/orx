@@ -2242,6 +2242,7 @@ void orxFASTCALL orxCommand_CommandToSpherical(orxU32 _u32ArgNumber, const orxCO
 {
   /* Updates result */
   orxVector_FromCartesianToSpherical(&(_pstResult->vValue), &(_astArgList[0].vValue));
+  _pstResult->vValue.fTheta *= orxMATH_KF_RAD_TO_DEG;
 
   /* Done! */
   return;
@@ -2250,8 +2251,11 @@ void orxFASTCALL orxCommand_CommandToSpherical(orxU32 _u32ArgNumber, const orxCO
 /* Command: ToCartesian */
 void orxFASTCALL orxCommand_CommandToCartesian(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxVECTOR vTemp;
+
   /* Updates result */
-  orxVector_FromSphericalToCartesian(&(_pstResult->vValue), &(_astArgList[0].vValue));
+  orxVector_Set(&vTemp, _astArgList[0].vValue.fRho, orxMATH_KF_DEG_TO_RAD * _astArgList[0].vValue.fTheta, _astArgList[0].vValue.fPhi);
+  orxVector_FromSphericalToCartesian(&(_pstResult->vValue), &vTemp);
 
   /* Done! */
   return;
