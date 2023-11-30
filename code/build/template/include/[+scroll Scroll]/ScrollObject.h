@@ -109,8 +109,14 @@ public:
                 orxFLOAT                GetLifeTime() const;
                 void                    SetLifeTime(orxFLOAT _fLifeTime);
 
+                ScrollObject *          FindChild(const orxSTRING _zPath) const;
+                ScrollObject *          GetChild() const;
+                ScrollObject *          GetSibling() const;
+
+                ScrollObject *          FindOwnedChild(const orxSTRING _zPath) const;
                 ScrollObject *          GetOwnedChild() const;
                 ScrollObject *          GetOwnedSibling() const;
+
 
                 void                    PushConfigSection(orxBOOL _bPushInstanceSection = orxFALSE) const;
                 void                    PopConfigSection() const;
