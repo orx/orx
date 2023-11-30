@@ -6,11 +6,11 @@ plugins {
 android {
     namespace 'org.orx.lib'
     compileSdk sdkVersion.toInteger()
-    
+
     // Ideally, we want to use the default NDK version for the used AGP version.
     // However, we opt-in to NDK r26 since it comes with many important features/optimizations.
     ndkVersion '26.1.10909125'
-    
+
     buildFeatures {
         prefab true
         prefabPublishing true
@@ -48,7 +48,7 @@ android {
     buildTypes {
         release {
             debuggable false
-            
+
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             externalNativeBuild.ndkBuild {
@@ -57,7 +57,7 @@ android {
         }
         debug {
             debuggable true
-            
+
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=1', '-j'
                 cFlags '-D__orxDEBUG__'
@@ -65,7 +65,7 @@ android {
         }
         profile {
             debuggable true
-            
+
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=0', '-j'
                 cFlags '-D__orxPROFILER__'
@@ -94,9 +94,9 @@ dependencies {
     api 'androidx.core:core:1.12.0'
     api 'androidx.appcompat:appcompat:1.6.1'
 
-    api 'androidx.games:games-activity:2.1.0-alpha02'
+    api 'androidx.games:games-activity:3.0.0-beta01'
     api 'androidx.games:games-controller:2.0.1'
-    api 'androidx.games:games-frame-pacing:2.1.0-rc01'
+    api 'androidx.games:games-frame-pacing:2.1.0'
 }
 
 afterEvaluate {
