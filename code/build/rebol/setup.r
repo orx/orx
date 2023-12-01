@@ -29,7 +29,7 @@ platform-data:  compose/deep [
 ; Inits
 begin: now/time
 new-env: skip-env: skip-hook: false
-switch platform: system/build/os [
+switch platform: system/platform [
   macos [platform: 'mac]
 ]
 platform-info: platform-data/:platform
