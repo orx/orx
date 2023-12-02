@@ -399,7 +399,7 @@ orxU32 orxFASTCALL orxSoundSystem_GetListenerCount()
 
 void orxFASTCALL orxSoundSystem_EnableListener(orxU32 _u32ListenerIndex, orxBOOL _bEnable)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_EnableListener)(_u32ListenerIndex, _bEnable);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_EnableListener)(_u32ListenerIndex, _bEnable);
 }
 
 orxBOOL orxFASTCALL orxSoundSystem_IsListenerEnabled(orxU32 _u32ListenerIndex)
