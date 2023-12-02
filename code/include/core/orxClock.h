@@ -184,15 +184,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Restart(orxCLOCK 
 
 /** Pauses a clock
  * @param[in]   _pstClock                             Concerned clock
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _bPause                               Pause / unpause
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Pause(orxCLOCK *_pstClock);
-
-/** Unpauses a clock
- * @param[in]   _pstClock                             Concerned clock
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unpause(orxCLOCK *_pstClock);
+extern orxDLLAPI void orxFASTCALL                     orxClock_Pause(orxCLOCK *_pstClock, orxBOOL _bPause);
 
 /** Is a clock paused?
  * @param[in]   _pstClock                             Concerned clock

@@ -39,13 +39,9 @@
   #pragma warning(disable : 4276)
 #endif /* __orxMSVC__ */
 
-/** Module registration macro
- */
-#define orxMODULE_REGISTER(MODULE_ID, MODULE_BASENAME)  orxModule_Register(orxMODULE_ID_##MODULE_ID, #MODULE_ID, MODULE_BASENAME##_Setup, MODULE_BASENAME##_Init, MODULE_BASENAME##_Exit)
-
-
 /** Registers all engine modules
  */
+#define orxMODULE_REGISTER(MODULE_ID, MODULE_BASENAME)  orxModule_Register(orxMODULE_ID_##MODULE_ID, #MODULE_ID, MODULE_BASENAME##_Setup, MODULE_BASENAME##_Init, MODULE_BASENAME##_Exit)
 static orxINLINE void orxModule_RegisterAll()
 {
   /* *** All modules registration *** */
@@ -100,6 +96,9 @@ static orxINLINE void orxModule_RegisterAll()
   /* Done! */
   return;
 }
+
+#undef orxMODULE_REGISTER
+
 
 /** Module flags
  */
@@ -547,3 +546,7 @@ const orxSTRING orxFASTCALL orxModule_GetName(orxMODULE_ID _eModuleID)
   /* Done! */
   return zResult;
 }
+
+#ifdef __orxMSVC__
+  #pragma warning(default : 4276)
+#endif /* __orxMSVC__ */

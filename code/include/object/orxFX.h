@@ -251,7 +251,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_Apply(const orxFX *_pstFX,
 
 /** Gets FX user float value between two timestamps
  * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fPreviousTime  Previous time, if <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
+ * @param[in]   _fPreviousTime  Previous time, ignored for Absolute slots. If <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
  * @param[in]   _fTime          Current time
  * @return      Float value
  */
@@ -259,8 +259,9 @@ extern orxDLLAPI orxFLOAT orxFASTCALL           orxFX_GetFloat(const orxFX *_pst
 
 /** Gets FX user vector value between two timestamps
  * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fPreviousTime  Previous time, if <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
+ * @param[in]   _fPreviousTime  Previous time, ignored for Absolute slots. If <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
  * @param[in]   _fTime          Current time
+ * @param[out]  _pvVector       Storage for vector value
  * @return      Vector value if valid, orxNULL otherwise
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL         orxFX_GetVector(const orxFX *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime, orxVECTOR *_pvVector);

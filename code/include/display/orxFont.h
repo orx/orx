@@ -51,7 +51,7 @@
 
 /** Misc defines
  */
-#define orxFONT_KZ_DEFAULT_FONT_NAME                  "default"
+#define orxFONT_KZ_DEFAULT_FONT_NAME                  "orx:font:default"
 
 
 /** Internal font structure */

@@ -235,10 +235,10 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedSibling(const orxO
  * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
  * For example:
  * @code
- * orxObject_GetChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
- * orxObject_GetChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
- * orxObject_GetChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
- * orxObject_GetChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
+ * orxObject_FindOwnedChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
  * @endcode
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zPath          Path defining which object to find in the hierarchy (cf. notes above)
@@ -552,10 +552,10 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetNextChild(const orxOBJE
  * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
  * For example:
  * @code
- * orxObject_GetChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
- * orxObject_GetChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
- * orxObject_GetChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
- * orxObject_GetChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
+ * orxObject_FindChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
+ * orxObject_FindChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
+ * orxObject_FindChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
  * @endcode
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zPath          Path defining which object to find in the hierarchy (cf. notes above)

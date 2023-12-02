@@ -8,14 +8,14 @@ REBOL [
 ; Variables
 params: compose/deep [
   name        {Project name (relative or full path)}                                          (none)    (none)
-  bundle      {orxBundle support (resources can be automatically packaged and encrypted)}     -         []
+  bundle      {orxBundle support (resources can be automatically packaged and encrypted)}     +         []
   c++         {Create a C++ project instead of C}                                             +         []
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                         -         [+c++]
   mod         {MOD (ProTracker) decoding support}                                             -         []
   movie       {Movie (MPEG-1) decoding support}                                               -         []
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}                -         []
   remote      {orxRemote support (resources can be stored on a web server, HTTP-only)}        -         []
-  scroll      {C++ convenience layer with config-object binding}                              -         [+c++]
+  scroll      {C++ convenience layer with config-object binding}                              +         [+c++]
 ]
 platforms:  [
   windows     [config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]

@@ -50,17 +50,6 @@
 #include "math/orxVector.h"
 #include "memory/orxMemory.h"
 
-#ifdef __orxMSVC__
-
-  #pragma warning(disable : 4996)
-
-  #define strtoll   _strtoi64
-  #define strtoull  _strtoui64
-
-#endif /* __orxMSVC__ */
-
-#define STRTO_CAST (int)
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -72,13 +61,23 @@
 
 #include "debug/orxDebug.h"
 
+#ifdef __orxMSVC__
+
+  #pragma warning(disable : 4996)
+
+  #define strtoll   _strtoi64
+  #define strtoull  _strtoui64
+
+#endif /* __orxMSVC__ */
+
+#define STRTO_CAST (int)
+
 
 #define orxSTRING_KC_VECTOR_START                         '('
 #define orxSTRING_KC_VECTOR_START_ALT                     '{'
 #define orxSTRING_KC_VECTOR_SEPARATOR                     ','
 #define orxSTRING_KC_VECTOR_END                           ')'
 #define orxSTRING_KC_VECTOR_END_ALT                       '}'
-
 
 
 /** Defines
@@ -1521,7 +1520,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_Store(const 
 
   #pragma warning(default : 4996)
 
+  #undef strtoll
+  #undef strtoull
+
 #endif /* __orxMSVC__ */
+
+#undef STRTO_CAST
 
 #endif /* _orxSTRING_H_ */
 

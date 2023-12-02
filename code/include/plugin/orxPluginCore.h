@@ -141,7 +141,7 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
 
 /* *** Definition macro *** */
 #ifdef __orxMSVC__
-#pragma warning(disable : 4113)
+  #pragma warning(disable : 4113)
 #endif /* __orxMSVC__ */
 
 #define orxPLUGIN_DEFINE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...)          \
@@ -196,6 +196,10 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
     orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxMODULE_ID_##PLUGIN_SUFFIX, sastPluginFunctionInfo_##PLUGIN_SUFFIX, sizeof(sastPluginFunctionInfo_##PLUGIN_SUFFIX) / sizeof(orxPLUGIN_CORE_FUNCTION));
 
   #endif /* __orxEMBEDDED__ */
+
+#ifdef __orxMSVC__
+  #pragma warning(default : 4113)
+#endif /* __orxMSVC__ */
 
 #endif /* _orxPLUGIN_CORE_H_ */
 

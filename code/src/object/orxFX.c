@@ -269,10 +269,45 @@ static orxFX_STATIC sstFX;
 
 /* Inits context
  */
-static orxINLINE void orxFX_InitContext(orxFX_CONTEXT *_pstContext, const orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
+static orxINLINE void orxFX_InitContext(orxFX_CONTEXT *_pstContext, const orxFX *_pstFX, const orxOBJECT *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)
 {
   /* Clears  context */
   orxMemory_Zero(_pstContext, sizeof(orxFX_CONTEXT));
+
+  /* User? */
+  if(_pstObject == orxNULL)
+  {
+    /* Clamps start time */
+    _fStartTime = orxMAX(_fStartTime, orxFLOAT_0);
+
+    /* Not instant and looping? */
+    if((_pstFX->fDuration > orxFLOAT_0)
+    && (orxStructure_TestFlags(_pstFX, orxFX_KU32_FLAG_LOOP)))
+    {
+      /* Should wrap around? */
+      if(_fEndTime > _pstFX->fDuration)
+      {
+        /* Current value requested? */
+        if(_fStartTime == orxFLOAT_0)
+        {
+          orxFLOAT fTemp;
+
+          /* Wraps around end time */
+          fTemp     = orxMath_Mod(_fEndTime, _pstFX->fDuration);
+          _fEndTime = (fTemp == orxFLOAT_0) ? _pstFX->fDuration : fTemp;
+        }
+        else
+        {
+          orxFLOAT fTemp;
+
+          /* Wraps around both times */
+          fTemp       = orxMath_Mod(_fStartTime, _pstFX->fDuration);
+          _fEndTime  += fTemp - _fStartTime;
+          _fStartTime = fTemp;
+        }
+      }
+    }
+  }
 
   /* Inits multiply neutral elements */
   orxVector_Copy(&(_pstContext->astValueList[orxFX_TYPE_SCALE].vValue), &orxVECTOR_1);
@@ -877,7 +912,7 @@ static void orxFASTCALL orxFX_ComputeSlot(const orxFX_SLOT *_pstFXSlot, orxFX_CO
       }
 
       /* Gets coefs */
-      fStartCoef  = orxFX_ComputeCoef(_pstFXSlot, fStartTime, fFrequency);
+      fStartCoef  = orxFLAG_TEST(_pstFXSlot->u32Flags, orxFX_SLOT_KU32_FLAG_ABSOLUTE) ? orxFLOAT_0 : orxFX_ComputeCoef(_pstFXSlot, fStartTime, fFrequency);
       fEndCoef    = orxFX_ComputeCoef(_pstFXSlot, fEndTime, fFrequency);
 
       /* Has amplification? */
@@ -1677,7 +1712,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
     orxU32        i;
 
     /* Inits context */
-    orxFX_InitContext(&stContext, _pstObject, _fPreviousTime, _fTime);
+    orxFX_InitContext(&stContext, _pstFX, _pstObject, _fPreviousTime, _fTime);
 
     /* For all slots */
     for(i = 0; i< orxFX_KU32_SLOT_NUMBER; i++)
@@ -1946,7 +1981,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
 
 /** Gets FX user float value between two timestamps
  * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fPreviousTime  Previous time, if <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
+ * @param[in]   _fPreviousTime  Previous time, ignored for Absolute slots. If <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
  * @param[in]   _fTime          Current time
  * @return      Float value
  */
@@ -1966,7 +2001,7 @@ orxFLOAT orxFASTCALL orxFX_GetFloat(const orxFX *_pstFX, orxFLOAT _fPreviousTime
     orxU32        i;
 
     /* Inits context */
-    orxFX_InitContext(&stContext, orxNULL, orxMAX(_fPreviousTime, orxFLOAT_0), _fTime);
+    orxFX_InitContext(&stContext, _pstFX, orxNULL, _fPreviousTime, _fTime);
 
     /* For all slots */
     for(i = 0; i< orxFX_KU32_SLOT_NUMBER; i++)
@@ -2030,8 +2065,9 @@ orxFLOAT orxFASTCALL orxFX_GetFloat(const orxFX *_pstFX, orxFLOAT _fPreviousTime
 
 /** Gets FX user vector value between two timestamps
  * @param[in]   _pstFX          Concerned FX
- * @param[in]   _fPreviousTime  Previous time, if <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
+ * @param[in]   _fPreviousTime  Previous time, ignored for Absolute slots. If <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
  * @param[in]   _fTime          Current time
+ * @param[out]  _pvVector       Storage for vector value
  * @return      Vector value if valid, orxNULL otherwise
  */
 orxVECTOR *orxFASTCALL orxFX_GetVector(const orxFX *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime, orxVECTOR *_pvVector)
@@ -2050,7 +2086,7 @@ orxVECTOR *orxFASTCALL orxFX_GetVector(const orxFX *_pstFX, orxFLOAT _fPreviousT
     orxU32        i;
 
     /* Inits context */
-    orxFX_InitContext(&stContext, orxNULL, orxMAX(_fPreviousTime, orxFLOAT_0), _fTime);
+    orxFX_InitContext(&stContext, _pstFX, orxNULL, _fPreviousTime, _fTime);
 
     /* For all slots */
     for(i = 0; i< orxFX_KU32_SLOT_NUMBER; i++)

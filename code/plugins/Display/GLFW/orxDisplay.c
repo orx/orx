@@ -139,57 +139,56 @@
 
 /** Module flags
  */
-#define orxDISPLAY_KU32_STATIC_FLAG_NONE        0x00000000  /**< No flags */
+#define orxDISPLAY_KU32_STATIC_FLAG_NONE            0x00000000  /**< No flags */
 
-#define orxDISPLAY_KU32_STATIC_FLAG_READY       0x00000001  /**< Ready flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_VSYNC       0x00000002  /**< VSync flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_SHADER      0x00000004  /**< Shader support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_VBO         0x00000008  /**< VBO support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_FOCUS       0x00000010  /**< Focus flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND  0x00000020  /**< Background flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_NPOT        0x00000040  /**< NPOT texture support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_EXT_READY   0x00000080  /**< Extensions ready flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER 0x00000100  /**< Framebuffer support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER 0x00000200  /**< Depthbuffer support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE   0x00000400  /**< No resize flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT 0x00000800 /**< Ignore event flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION 0x00001000 /**< No decoration flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN  0x00002000  /**< Full screen flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO  0x00004000  /**< Custom IBO flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT 0x00008000 /**< Debug output support flag */
-#define orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX   0x10000000  /**< VSync fix flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_READY           0x00000001  /**< Ready flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_VSYNC           0x00000002  /**< VSync flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_SHADER          0x00000004  /**< Shader support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_VBO             0x00000008  /**< VBO support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_FOCUS           0x00000010  /**< Focus flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_BACKGROUND      0x00000020  /**< Background flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_NPOT            0x00000040  /**< NPOT texture support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_EXT_READY       0x00000080  /**< Extensions ready flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER     0x00000100  /**< Framebuffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEPTHBUFFER     0x00000200  /**< Depthbuffer support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE       0x00000400  /**< No resize flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_IGNORE_EVENT    0x00000800 /**< Ignore event flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_NO_DECORATION   0x00001000 /**< No decoration flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN      0x00002000  /**< Full screen flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_CUSTOM_IBO      0x00004000  /**< Custom IBO flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_DEBUG_OUTPUT    0x00008000 /**< Debug output support flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_VSYNC_FIX       0x10000000  /**< VSync fix flag */
+#define orxDISPLAY_KU32_STATIC_FLAG_UPDATE_REQUEST  0x20000000 /**< Video mode update request flag */
 
-#define orxDISPLAY_KU32_STATIC_MASK_ALL         0xFFFFFFFF  /**< All mask */
+#define orxDISPLAY_KU32_STATIC_MASK_ALL             0xFFFFFFFF  /**< All mask */
 
-#define orxDISPLAY_KU32_BITMAP_FLAG_NONE        0x00000000  /** No flags */
+#define orxDISPLAY_KU32_BITMAP_FLAG_NONE            0x00000000  /** No flags */
 
-#define orxDISPLAY_KU32_BITMAP_FLAG_LOADING     0x00000001  /**< Loading flag */
-#define orxDISPLAY_KU32_BITMAP_FLAG_DELETE      0x00000002  /**< Delete flag */
-#define orxDISPLAY_KU32_BITMAP_FLAG_CURSOR      0x00000004  /**< Cursor flag */
-#define orxDISPLAY_KU32_BITMAP_FLAG_ICON        0x00000008  /**< Icon flag */
+#define orxDISPLAY_KU32_BITMAP_FLAG_LOADING         0x00000001  /**< Loading flag */
+#define orxDISPLAY_KU32_BITMAP_FLAG_DELETE          0x00000002  /**< Delete flag */
+#define orxDISPLAY_KU32_BITMAP_FLAG_CURSOR          0x00000004  /**< Cursor flag */
+#define orxDISPLAY_KU32_BITMAP_FLAG_ICON            0x00000008  /**< Icon flag */
 
-#define orxDISPLAY_KU32_BITMAP_MASK_ALL         0xFFFFFFFF  /**< All mask */
+#define orxDISPLAY_KU32_BITMAP_MASK_ALL             0xFFFFFFFF  /**< All mask */
 
-#define orxDISPLAY_KU32_BITMAP_BANK_SIZE        256
-#define orxDISPLAY_KU32_SHADER_BANK_SIZE        64
+#define orxDISPLAY_KU32_BITMAP_BANK_SIZE            256
+#define orxDISPLAY_KU32_SHADER_BANK_SIZE            64
 
-#define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (4 * 2048) /**< 2048 items batch capacity */
-#define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 2048) /**< 2048 items batch capacity */
-#define orxDISPLAY_KU32_SHADER_BUFFER_SIZE      131072
+#define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE          (4 * 2048) /**< 2048 items batch capacity */
+#define orxDISPLAY_KU32_INDEX_BUFFER_SIZE           (6 * 2048) /**< 2048 items batch capacity */
+#define orxDISPLAY_KU32_SHADER_BUFFER_SIZE          131072
 
-#define orxDISPLAY_KF_BORDER_FIX                0.1f
+#define orxDISPLAY_KF_VSYNC_DELAY_FIX               0.5f
 
-#define orxDISPLAY_KF_VSYNC_DELAY_FIX           0.5f
+#define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER          32
 
-#define orxDISPLAY_KU32_CIRCLE_LINE_NUMBER      32
+#define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER     32
+#define orxDISPLAY_KE_DEFAULT_PRIMITIVE             GL_TRIANGLES
+#define orxDISPLAY_KV_DEFAULT_DECORATED_POSITION    orx2F(100.0f), orx2F(120.0f), orxFLOAT_0
 
-#define orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER 32
-#define orxDISPLAY_KE_DEFAULT_PRIMITIVE         GL_TRIANGLES
-#define orxDISPLAY_KV_DEFAULT_DECORATED_POSITION orx2F(100.0f), orx2F(120.0f), orxFLOAT_0
+#define orxDISPLAY_KU32_MAX_ICON_NUMBER             16
 
-#define orxDISPLAY_KU32_MAX_ICON_NUMBER         16
-
-#define orxDISPLAY_KU32_MAX_SHADER_VERSION      410
+#define orxDISPLAY_KU32_MAX_SHADER_VERSION          410
 
 
 /**  Misc defines
@@ -464,6 +463,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxDISPLAY_GLFW_VERTEX    astVertexList[orxDISPLAY_KU32_VERTEX_BUFFER_SIZE];
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
+  orxDISPLAY_VIDEO_MODE     stRequestVideoMode;
 
 } orxDISPLAY_STATIC;
 
@@ -845,17 +845,16 @@ static void orxDisplay_GLFW_ResizeCallback(GLFWwindow *_pstWindow, int _iWidth, 
     /* Valid? */
     if((_iWidth > 0) && (_iHeight > 0))
     {
-      orxDISPLAY_VIDEO_MODE stVideoMode;
-
       /* Inits video mode */
-      stVideoMode.u32Width        = (orxU32)_iWidth;
-      stVideoMode.u32Height       = (orxU32)_iHeight;
-      stVideoMode.u32Depth        = sstDisplay.pstScreen->u32Depth;
-      stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
-      stVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
+      orxMemory_Zero(&(sstDisplay.stRequestVideoMode), sizeof(orxDISPLAY_VIDEO_MODE));
+      sstDisplay.stRequestVideoMode.u32Width        = (orxU32)_iWidth;
+      sstDisplay.stRequestVideoMode.u32Height       = (orxU32)_iHeight;
+      sstDisplay.stRequestVideoMode.u32Depth        = sstDisplay.pstScreen->u32Depth;
+      sstDisplay.stRequestVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+      sstDisplay.stRequestVideoMode.bFullScreen     = orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN) ? orxTRUE : orxFALSE;
 
-      /* Applies it */
-      orxDisplay_GLFW_SetVideoMode(&stVideoMode);
+      /* Requests video mode update */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_UPDATE_REQUEST, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
   }
 
@@ -1097,6 +1096,23 @@ static void orxFASTCALL orxDisplay_GLFW_Update(const orxCLOCK_INFO *_pstClockInf
         /* Resets close status */
         glfwSetWindowShouldClose(sstDisplay.pstWindow, GLFW_FALSE);
       }
+    }
+    /* Video mode update requested? */
+    else if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_UPDATE_REQUEST))
+    {
+      int iWindowX = 0, iWindowY = 0;
+
+      /* Gets window position */
+      glfwGetWindowPos(sstDisplay.pstWindow, &iWindowX, &iWindowY);
+
+      /* Forces a position update */
+      orxDisplay_GLFW_PosCallback(sstDisplay.pstWindow, iWindowX, iWindowY);
+
+      /* Updates video mode */
+      orxDisplay_GLFW_SetVideoMode(&(sstDisplay.stRequestVideoMode));
+
+      /* Updates status */
+      orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_UPDATE_REQUEST);
     }
   }
 
@@ -2785,13 +2801,13 @@ static orxINLINE void orxDisplay_GLFW_DrawBitmap(const orxBITMAP *_pstBitmap, co
 
   /* Fills the texture coord list */
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fU      =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fU  = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fU  = (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vTL.fX);
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = (GLfloat)(_pstBitmap->fRecRealWidth * (_pstBitmap->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = (GLfloat)(_pstBitmap->fRecRealWidth * _pstBitmap->stClip.vBR.fX);
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(_pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(_pstBitmap->fRecRealHeight * _pstBitmap->stClip.vTL.fY);
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
-  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(_pstBitmap->fRecRealHeight * (_pstBitmap->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+  sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(_pstBitmap->fRecRealHeight * _pstBitmap->stClip.vBR.fY);
 
   /* Fills the color list */
   sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
@@ -3335,13 +3351,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fY  = (mTransform.vY.fX * (fX + fWidth)) + (mTransform.vY.fY * fY) + mTransform.vY.fZ;
 
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fU      =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fU  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fU  = (GLfloat)(_pstFont->fRecRealWidth * pstGlyph->fX);
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fU  =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth - orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fU  = (GLfloat)(_pstFont->fRecRealWidth * (pstGlyph->fX + fWidth));
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 1].fV  =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(_pstFont->fRecRealHeight * (pstGlyph->fY + orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 3].fV  = (GLfloat)(_pstFont->fRecRealHeight * pstGlyph->fY);
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].fV      =
-          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(_pstFont->fRecRealHeight * (pstGlyph->fY + fHeight - orxDISPLAY_KF_BORDER_FIX));
+          sstDisplay.astVertexList[sstDisplay.s32BufferIndex + 2].fV  = (GLfloat)(_pstFont->fRecRealHeight * (pstGlyph->fY + fHeight));
 
           /* Fills the color list */
           sstDisplay.astVertexList[sstDisplay.s32BufferIndex].stRGBA      =
@@ -4697,8 +4713,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
       fHeight = (GLfloat)((_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY) / _pstTransform->fRepeatY);
 
       /* Inits texture coords */
-      fLeft = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + orxDISPLAY_KF_BORDER_FIX);
-      fTop  = _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + orxDISPLAY_KF_BORDER_FIX);
+      fLeft = _pstSrc->fRecRealWidth * _pstSrc->stClip.vTL.fX;
+      fTop  = _pstSrc->fRecRealHeight * _pstSrc->stClip.vTL.fY;
 
       /* For all lines */
       for(fY = 0.0f, i = _pstTransform->fRepeatY, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
@@ -4710,14 +4726,14 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
           fHeight *= (GLfloat)i;
 
           /* Resets texture coords */
-          fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-          fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY)) - orxDISPLAY_KF_BORDER_FIX));
+          fRight  = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
+          fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + (i * (_pstSrc->stClip.vBR.fY - _pstSrc->stClip.vTL.fY))));
         }
         else
         {
           /* Resets texture coords */
-          fRight  = (GLfloat)(_pstSrc->fRecRealWidth * (_pstSrc->stClip.vBR.fX - orxDISPLAY_KF_BORDER_FIX));
-          fBottom = (GLfloat)(_pstSrc->fRecRealHeight * (_pstSrc->stClip.vBR.fY - orxDISPLAY_KF_BORDER_FIX));
+          fRight  = (GLfloat)(_pstSrc->fRecRealWidth * _pstSrc->stClip.vBR.fX);
+          fBottom = (GLfloat)(_pstSrc->fRecRealHeight * _pstSrc->stClip.vBR.fY);
         }
 
         /* Resets bitmap width */
@@ -6435,7 +6451,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
               case orxSHADER_PARAM_TYPE_TIME:
               {
                 /* Adds its literal value */
-                s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%u];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
+                s32Offset = ((pstParam->eType != orxSHADER_PARAM_TYPE_TIME) && (pstParam->u32ArraySize >= 1)) ? orxString_NPrint(pc, s32Free, "uniform float %s[%u];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
                 pc       += s32Offset;
                 s32Free  -= s32Offset;
 

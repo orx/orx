@@ -25,6 +25,7 @@ var orx_vector_8h =
     [ "orxVector_Lerp", "group__orx_vector.html#ga55f049a5f889276aa34fc527d3e4356e", null ],
     [ "orxVector_Max", "group__orx_vector.html#ga7f793888572a06e5ff09e1e0862db134", null ],
     [ "orxVector_Min", "group__orx_vector.html#ga398dc5589f7e8581bb14ef2a5c3c643b", null ],
+    [ "orxVector_Mod", "group__orx_vector.html#ga83e7961df7a76bbbfe365142abc97f35", null ],
     [ "orxVector_Mul", "group__orx_vector.html#ga862ea8f52930a245fc06bcb894fdbf48", null ],
     [ "orxVector_Mulf", "group__orx_vector.html#gaa9269252d414e37fa6b994752443b384", null ],
     [ "orxVector_Neg", "group__orx_vector.html#ga41e797864da57ed8951c4e64828aba7d", null ],

@@ -499,6 +499,82 @@ void ScrollObject::PushConfigSection(orxBOOL _bPushInstanceSection) const
   orxConfig_PushSection(_bPushInstanceSection ? macName : mzModelName);
 }
 
+ScrollObject *ScrollObject::FindChild(const orxSTRING _zPath) const
+{
+  orxOBJECT    *pstChild;
+  ScrollObject *poResult = orxNULL;
+
+  // Finds child
+  pstChild = orxObject_FindChild(mpstObject, _zPath);
+
+  // Valid?
+  if(pstChild)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstChild);
+  }
+
+  // Done!
+  return poResult;
+}
+
+ScrollObject *ScrollObject::GetChild() const
+{
+  orxOBJECT    *pstChild;
+  ScrollObject *poResult = orxNULL;
+
+  // Gets child
+  pstChild = orxObject_GetChild(mpstObject);
+
+  // Valid?
+  if(pstChild)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstChild);
+  }
+
+  // Done!
+  return poResult;
+}
+
+ScrollObject *ScrollObject::GetSibling() const
+{
+  orxOBJECT    *pstSibling;
+  ScrollObject *poResult = orxNULL;
+
+  // Gets sibling
+  pstSibling = orxObject_GetSibling(mpstObject);
+
+  // Valid?
+  if(pstSibling)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstSibling);
+  }
+
+  // Done!
+  return poResult;
+}
+
+ScrollObject *ScrollObject::FindOwnedChild(const orxSTRING _zPath) const
+{
+  orxOBJECT    *pstChild;
+  ScrollObject *poResult = orxNULL;
+
+  // Finds child
+  pstChild = orxObject_FindOwnedChild(mpstObject, _zPath);
+
+  // Valid?
+  if(pstChild)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstChild);
+  }
+
+  // Done!
+  return poResult;
+}
+
 ScrollObject *ScrollObject::GetOwnedChild() const
 {
   orxOBJECT    *pstChild;

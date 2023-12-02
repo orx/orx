@@ -58,6 +58,8 @@
 #define orxTEXTURE_KZ_PIXEL               "pixel"
 #define orxTEXTURE_KZ_TRANSPARENT         "transparent"
 
+#define orxTEXTURE_KZ_LOGO_NAME           "orx:texture:logo"
+
 
 /** Event enum
  */

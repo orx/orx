@@ -1335,8 +1335,21 @@ void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
           // Gets its clock
           pstClock = orxObject_GetClock(pstObject);
 
-          // Updates object
-          poObject->Update(pstClock ? *orxClock_GetInfo(pstClock) : _rstInfo);
+          // Valid?
+          if(pstClock)
+          {
+            // Not paused?
+            if(!orxClock_IsPaused(pstClock))
+            {
+              // Updates object
+              poObject->Update(*orxClock_GetInfo(pstClock));
+            }
+          }
+          else
+          {
+            // Updates object
+            poObject->Update(_rstInfo);
+          }
         }
       }
     }

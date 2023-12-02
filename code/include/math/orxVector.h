@@ -146,7 +146,7 @@ static orxINLINE orxVECTOR *                  orxVector_Copy(orxVECTOR *_pvDst, 
 }
 
 /** Adds vectors and stores result in a third one
- * @param[out]  _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[out]  _pvRes                        Vector where to store the result (can be one of the two operands)
  * @param[in]   _pvOp1                        First operand
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector (Op1 + Op2)
@@ -168,7 +168,7 @@ static orxINLINE orxVECTOR *                  orxVector_Add(orxVECTOR *_pvRes, c
 }
 
 /** Substracts vectors and stores result in a third one
- * @param[out]  _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[out]  _pvRes                        Vector where to store the result (can be one of the two operands)
  * @param[in]   _pvOp1                        First operand
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector (Op1 - Op2)
@@ -190,7 +190,7 @@ static orxINLINE orxVECTOR *                  orxVector_Sub(orxVECTOR *_pvRes, c
 }
 
 /** Multiplies a vector by an orxFLOAT and stores result in another one
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp1                        First operand
  * @param[in]   _fOp2                         Second operand
  * @return      Resulting vector
@@ -211,7 +211,7 @@ static orxINLINE orxVECTOR *                  orxVector_Mulf(orxVECTOR *_pvRes, 
 }
 
 /** Multiplies a vector by another vector and stores result in a third one
- * @param[out]  _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[out]  _pvRes                        Vector where to store the result (can be one of the two operands)
  * @param[in]   _pvOp1                        First operand
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector (Op1 * Op2)
@@ -233,7 +233,7 @@ static orxINLINE orxVECTOR *                  orxVector_Mul(orxVECTOR *_pvRes, c
 }
 
 /** Divides a vector by an orxFLOAT and stores result in another one
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp1                        First operand
  * @param[in]   _fOp2                         Second operand
  * @return      Resulting vector
@@ -260,7 +260,7 @@ static orxINLINE orxVECTOR *                  orxVector_Divf(orxVECTOR *_pvRes, 
 }
 
 /** Divides a vector by another vector and stores result in a third one
- * @param[out]  _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[out]  _pvRes                        Vector where to store the result (can be one of the two operands)
  * @param[in]   _pvOp1                        First operand
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector (Op1 / Op2)
@@ -281,8 +281,30 @@ static orxINLINE orxVECTOR *                  orxVector_Div(orxVECTOR *_pvRes, c
   return _pvRes;
 }
 
+/** Gets the modulo of a vector by another vector and stores result in a third one
+ * @param[out]  _pvRes                        Vector where to store the result (can be one of the two operands)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _pvOp2                        Second operand
+ * @return      Resulting vector (Op1 / Op2)
+ */
+static orxINLINE orxVECTOR *                  orxVector_Mod(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp1 != orxNULL);
+  orxASSERT(_pvOp2 != orxNULL);
+
+  /* Modulos all */
+  _pvRes->fX = orxMath_Mod(_pvOp1->fX, _pvOp2->fX);
+  _pvRes->fY = orxMath_Mod(_pvOp1->fY, _pvOp2->fY);
+  _pvRes->fZ = orxMath_Mod(_pvOp1->fZ, _pvOp2->fZ);
+
+  /* Done! */
+  return _pvRes;
+}
+
 /** Lerps from one vector to another one using a coefficient
- * @param[out]  _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[out]  _pvRes                        Vector where to store the result (can be one of the two operands)
  * @param[in]   _pvOp1                        First operand
  * @param[in]   _pvOp2                        Second operand
  * @param[in]   _fOp                          Lerp coefficient parameter
@@ -305,7 +327,7 @@ static orxINLINE orxVECTOR *                  orxVector_Lerp(orxVECTOR *_pvRes, 
 }
 
 /** Remaps a vector value from one interval to another one
- * @param[out]  _pvRes                        Vector where to store result (can be any of the other operands)
+ * @param[out]  _pvRes                        Vector where to store the result (can be any of the other operands)
  * @param[in]   _pvA1                         First interval's low boundary
  * @param[in]   _pvB1                         First interval's high boundary
  * @param[in]   _pvA2                         Second interval's low boundary
@@ -333,7 +355,7 @@ static orxINLINE orxVECTOR *                  orxVector_Remap(orxVECTOR *_pvRes,
 }
 
 /** Gets minimum between two vectors
- * @param[out]  _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[out]  _pvRes                        Vector where to store the result (can be one of the two operands)
  * @param[in]   _pvOp1                        First operand
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector MIN(Op1, Op2)
@@ -355,7 +377,7 @@ static orxINLINE orxVECTOR *                  orxVector_Min(orxVECTOR *_pvRes, c
 }
 
 /** Gets maximum between two vectors
- * @param[out]  _pvRes                        Vector where to store result (can be one of the two operands)
+ * @param[out]  _pvRes                        Vector where to store the result (can be one of the two operands)
  * @param[in]   _pvOp1                        First operand
  * @param[in]   _pvOp2                        Second operand
  * @return      Resulting vector MAX(Op1, Op2)
@@ -377,7 +399,7 @@ static orxINLINE orxVECTOR *                  orxVector_Max(orxVECTOR *_pvRes, c
 }
 
 /** Clamps a vector between two others
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Vector to clamp
  * @param[in]   _pvMin                        Minimum boundary
  * @param[in]   _pvMax                        Maximum boundary
@@ -401,7 +423,7 @@ static orxINLINE orxVECTOR *                  orxVector_Clamp(orxVECTOR *_pvRes,
 }
 
 /** Gets the absolute value of a vector and stores it in another one
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Input value
  * @return      Resulting vector (Abs(Op))
  */
@@ -421,7 +443,7 @@ static orxINLINE orxVECTOR *                  orxVector_Abs(orxVECTOR *_pvRes, c
 }
 
 /** Negates a vector and stores result in another one
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Vector to negates
  * @return      Resulting vector (-Op)
  */
@@ -441,7 +463,7 @@ static orxINLINE orxVECTOR *                  orxVector_Neg(orxVECTOR *_pvRes, c
 }
 
 /** Gets reciprocal (1.0 /) vector and stores the result in another one
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Input value
  * @return      Resulting vector (1 / Op)
  */
@@ -461,7 +483,7 @@ static orxINLINE orxVECTOR *                  orxVector_Rec(orxVECTOR *_pvRes, c
 }
 
 /** Gets floored vector and stores the result in another one
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Input value
  * @return      Resulting vector Floor(Op)
  */
@@ -481,7 +503,7 @@ static orxINLINE orxVECTOR *                  orxVector_Floor(orxVECTOR *_pvRes,
 }
 
 /** Gets rounded vector and stores the result in another one
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Input value
  * @return      Resulting vector Round(Op)
  */
@@ -585,7 +607,7 @@ static orxINLINE orxFLOAT                     orxVector_GetDistance(const orxVEC
 }
 
 /** Normalizes a vector
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Vector to normalize
  * @return      Normalized vector
  */
@@ -613,7 +635,7 @@ static orxINLINE orxVECTOR *                  orxVector_Normalize(orxVECTOR *_pv
 }
 
 /** Rotates a 2D vector (along Z-axis)
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Vector to rotate
  * @param[in]   _fAngle                       Angle of rotation (radians)
  * @return      Rotated vector
@@ -703,7 +725,7 @@ static orxINLINE orxBOOL                      orxVector_AreEqual(const orxVECTOR
 }
 
 /** Transforms a cartesian vector into a spherical one
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Vector to transform
  * @return      Transformed vector
  */
@@ -797,7 +819,7 @@ static orxINLINE orxVECTOR *                  orxVector_FromCartesianToSpherical
 }
 
 /** Transforms a spherical vector into a cartesian one
- * @param[out]  _pvRes                        Vector where to store result (can be the operand)
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Vector to transform
  * @return      Transformed vector
  */
@@ -884,7 +906,7 @@ static orxINLINE orxFLOAT                   orxVector_2DDot(const orxVECTOR *_pv
 }
 
 /** Gets cross product of two vectors
- * @param[out]  _pvRes                       Vector where to store result
+ * @param[out]  _pvRes                       Vector where to store the result
  * @param[in]   _pvOp1                      First operand
  * @param[in]   _pvOp2                      Second operand
  * @return      Cross product orxVECTOR / orxNULL
@@ -913,7 +935,7 @@ static orxINLINE orxVECTOR *                orxVector_Cross(orxVECTOR *_pvRes, c
 /* *** Vector functions *** */
 
 /** Computes an interpolated point on a cubic Bezier curve segment for a given parameter
- * @param[out]  _pvRes                      Vector where to store result
+ * @param[out]  _pvRes                      Vector where to store the result
  * @param[in]   _pvPoint1                   First point for this curve segment
  * @param[in]   _pvPoint2                   First control point for this curve segment
  * @param[in]   _pvPoint3                   Second control point for this curve segment
@@ -924,7 +946,7 @@ static orxINLINE orxVECTOR *                orxVector_Cross(orxVECTOR *_pvRes, c
 extern orxDLLAPI orxVECTOR *orxFASTCALL orxVector_Bezier(orxVECTOR *_pvRes, const orxVECTOR *_pvPoint1, const orxVECTOR *_pvPoint2, const orxVECTOR *_pvPoint3, const orxVECTOR *_pvPoint4, orxFLOAT _fT);
 
 /** Computes an interpolated point on a Catmull-Rom curve segment for a given parameter
- * @param[out]  _pvRes                      Vector where to store result
+ * @param[out]  _pvRes                      Vector where to store the result
  * @param[in]   _pvPoint1                   First control point for this curve segment
  * @param[in]   _pvPoint2                   Second control point for this curve segment
  * @param[in]   _pvPoint3                   Third control point for this curve segment
