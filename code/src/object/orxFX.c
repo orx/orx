@@ -2067,6 +2067,7 @@ orxFLOAT orxFASTCALL orxFX_GetFloat(const orxFX *_pstFX, orxFLOAT _fPreviousTime
  * @param[in]   _pstFX          Concerned FX
  * @param[in]   _fPreviousTime  Previous time, ignored for Absolute slots. If <= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned
  * @param[in]   _fTime          Current time
+ * @param[out]  _pvVector       Storage for vector value
  * @return      Vector value if valid, orxNULL otherwise
  */
 orxVECTOR *orxFASTCALL orxFX_GetVector(const orxFX *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime, orxVECTOR *_pvVector)
