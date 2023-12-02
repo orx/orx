@@ -50,6 +50,7 @@
 
 #define orxRESOURCE_KZ_DEFAULT_STORAGE                    "."
 #define orxRESOURCE_KZ_TYPE_TAG_FILE                      "file"
+#define orxRESOURCE_KZ_TYPE_TAG_MEMORY                    "mem"
 
 
 /** Resource asynchronous operation callback function
@@ -339,6 +340,14 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetCacheCo
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCachedLocation(const orxSTRING _zGroup, orxHANDLE _hIterator, const orxSTRING *_pzLocation, const orxSTRING *_pzStorage, const orxSTRING *_pzName);
 
+/** Sets an internal memory resource
+ * !IMPORTANT! The content of _pBuffer is *required* to remain valid until this resource has been successfully unset (by passing _s64Size=0 or _pBuffer=orxNULL), no internal copies will be made!
+ * @param[in] _zName            Name of the resource to set/unset
+ * @param[in] _s64Size          Size of the resource's data (0 to unset)
+ * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer);
 
 #endif /* _orxRESOURCE_H_ */
 
