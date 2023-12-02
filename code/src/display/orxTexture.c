@@ -110,6 +110,8 @@ typedef struct __orxTEXTURE_STATIC_t
 
 static orxTEXTURE_STATIC sstTexture;
 
+#include "../src/display/orxLogo.inc"
+
 
 /***************************************************************************
  * Private functions                                                       *
@@ -595,13 +597,14 @@ static orxINLINE orxTEXTURE *orxTexture_CreateInternal()
 void orxFASTCALL orxTexture_Setup()
 {
   /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_COMMAND);
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_DISPLAY);
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_PROFILER);
+  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_RESOURCE);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_STRUCTURE);
-  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_PROFILER);
-  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_COMMAND);
-  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_EVENT);
-  orxModule_AddDependency(orxMODULE_ID_TEXTURE, orxMODULE_ID_DISPLAY);
 
   /* Done! */
   return;
@@ -624,7 +627,6 @@ orxSTATUS orxFASTCALL orxTexture_Init()
     /* Registers structure type */
     if(orxSTRUCTURE_REGISTER(TEXTURE, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxTEXTURE_KU32_BANK_SIZE, orxNULL) != orxSTATUS_FAILURE)
     {
-
       /* Creates hash table */
       sstTexture.pstTable = orxHashTable_Create(orxTEXTURE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
@@ -693,6 +695,9 @@ orxSTATUS orxFASTCALL orxTexture_Init()
                       orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxTexture_EventHandler);
                       orxEvent_SetHandlerIDFlags(orxTexture_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
                       orxEvent_SetHandlerIDFlags(orxTexture_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_LOAD_BITMAP), orxEVENT_KU32_MASK_ID_ALL);
+
+                      /* Sets logo memory resource */
+                      orxResource_SetMemoryResource(orxTEXTURE_KZ_LOGO_NAME, sstLogo.s64Size, sstLogo.pu8Data);
 
                       /* Updates result */
                       eResult = orxSTATUS_SUCCESS;
@@ -789,6 +794,9 @@ void orxFASTCALL orxTexture_Exit()
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_TEXTURE);
+
+    /* Unsets logo memory resource */
+    orxResource_SetMemoryResource(orxTEXTURE_KZ_LOGO_NAME, 0, orxNULL);
 
     /* Updates flags */
     sstTexture.u32Flags &= ~orxTEXTURE_KU32_STATIC_FLAG_READY;

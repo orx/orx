@@ -29,7 +29,7 @@
  *
  */
 
-/** Dina font exported with GIMP and adapted for orx's internal structure
+/** Dina font exported with GIMP, adapted for orx's internal structure and encoded as WEBP
  */
 static const struct
 {
