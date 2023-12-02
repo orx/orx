@@ -60,6 +60,16 @@ static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstCon
 {
   orxVECTOR vMousePos, vGravity;
 
+  /* Is quit action active? */
+  if (orxInput_HasBeenActivated("Quit"))
+  {
+    /* Logs */
+    orxLOG("Quit action triggered, exiting!");
+
+    /* Sends system close event */
+    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+  }
+
   /* Updates generator's status */
   orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
 
@@ -85,7 +95,7 @@ static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstCon
                 orxFLOAT_0);
 
   /* Significant enough? */
-  if (orxVector_GetSquareSize(&vGravity)>orx2F(0.5f))
+  if (orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))
   {
     static orxVECTOR svSmoothedGravity =
     {
@@ -127,23 +137,17 @@ static orxSTATUS orxFASTCALL Init()
   return (spstViewport && spstGenerator) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 }
 
+/** Run function, it is called every clock cycle
+ */
 static orxSTATUS orxFASTCALL Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  // Is quit action active?
-  if (orxInput_IsActive("Quit"))
-  {
-    // Logs
-    orxLOG("Quit action triggered, exiting!");
-
-    // Sets return value to orxSTATUS_FAILURE, meaning we want to exit
-    eResult = orxSTATUS_FAILURE;
-  }
-
   return eResult;
 }
 
+/** Exit function, it is called before exiting from orx
+ */
 static void orxFASTCALL Exit()
 {
   /* Deletes texture table */
@@ -160,11 +164,16 @@ orxSTATUS orxFASTCALL Bootstrap()
   return orxSTATUS_SUCCESS;
 }
 
+/** Main function
+ */
 int main(int argc, char* argv[])
 {
-  // Set the bootstrap function to provide at least one resource storage before loading any config files
+  /* Set the bootstrap function to provide at least one resource storage before loading any config files */
   orxConfig_SetBootstrap(Bootstrap);
 
+  /* Execute our game */
   orx_Execute(argc, argv, Init, Run, Exit);
+
+  /* Done! */
   return 0;
 }
