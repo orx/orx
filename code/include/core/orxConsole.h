@@ -48,7 +48,7 @@
 
 /** Inputs
  */
-#define orxCONSOLE_KZ_INPUT_SET                       "-=ConsoleSet=-"                /**< Console input set */
+#define orxCONSOLE_KZ_INPUT_SET                       "orx:input:console"             /**< Console input set */
 
 #define orxCONSOLE_KZ_INPUT_TOGGLE                    "Toggle"                        /**< Toggle input */
 #define orxCONSOLE_KZ_INPUT_AUTOCOMPLETE              "AutoComplete"                  /**< Autocomplete input */
