@@ -345,6 +345,11 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
           /* Registers clean function */
           eResult = orxClock_Register(pstClock, orxMouse_GLFW_Clean, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_LOWER);
         }
+        else
+        {
+          /* Unregisters update function */
+          orxClock_Unregister(pstClock, orxMouse_GLFW_Update);
+        }
       }
 
       /* Success? */
