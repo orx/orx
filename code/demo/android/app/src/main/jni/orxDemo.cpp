@@ -56,6 +56,8 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT* _pstEvent)
   return eResult;
 }
 
+/** Update function, it has been registered to be called every tick of the core clock
+ */
 static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vMousePos, vGravity;
@@ -111,6 +113,8 @@ static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstCon
   }
 }
 
+/** Init function, it is called when all orx's modules have been initialized
+ */
 static orxSTATUS orxFASTCALL Init()
 {
   /* Creates viewport */
@@ -137,7 +141,7 @@ static orxSTATUS orxFASTCALL Init()
   return (spstViewport && spstGenerator) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 }
 
-/** Run function, it is called every clock cycle
+/** Run function, it should not contain any game logic
  */
 static orxSTATUS orxFASTCALL Run()
 {
@@ -151,7 +155,10 @@ static orxSTATUS orxFASTCALL Run()
 static void orxFASTCALL Exit()
 {
   /* Deletes texture table */
-  orxHashTable_Delete(pstTextureTable);
+  if (pstTextureTable != orxNULL)
+  {
+    orxHashTable_Delete(pstTextureTable);
+  }
 }
 
 /** Bootstrap function, it is called before config is initialized, allowing for early resource storage definitions

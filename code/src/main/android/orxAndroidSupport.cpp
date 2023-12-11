@@ -665,6 +665,12 @@ extern "C" void orxAndroid_PumpEvents()
   int events;
   android_poll_source *source;
 
+  /* Check if we are exiting. */
+  if(sstAndroid.app->destroyRequested != 0)
+  {
+    return;
+  }
+
   /* If not animating, we will block forever waiting for events.
    * If animating, we loop until all events are read, then continue
    * to draw the next frame of animation.
@@ -722,6 +728,7 @@ void android_main(android_app *_pstState)
    */
   if(pthread_key_create(&sThreadKey, orxAndroid_JNI_ThreadDestroyed))
   {
+    sThreadKey = 0;
     LOGE("Error initializing pthread key");
   }
   else
