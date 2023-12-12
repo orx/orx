@@ -198,6 +198,7 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
 }
 
 static void orxFASTCALL orxKeyboard_Android_UpdateKeyFilterState(const orxCLOCK_INFO* pClockInfo, void* pContext) {
+  orxU32 u32BoundKeys;
   const orxSTRING zInputSet = orxNULL;
   const orxSTRING zPreviousSet;
   const orxSTRING zName;
@@ -207,12 +208,12 @@ static void orxFASTCALL orxKeyboard_Android_UpdateKeyFilterState(const orxCLOCK_
   {                                                                                                                                             \
     if(orxInput_GetBoundInput(orxINPUT_TYPE_KEYBOARD_KEY, orxKEYBOARD_KEY_##KEY, orxINPUT_MODE_FULL, 0, &zName, orxNULL) != orxSTATUS_FAILURE)  \
     {                                                                                                                                           \
-      orxFLAG_SET(sstKeyboard.u32BoundKeys, orxKEYBOARD_KU32_BOUND_KEY_##KEY, orxKEYBOARD_KU32_BOUND_KEY_NONE);                                 \
+      orxFLAG_SET(u32BoundKeys, orxKEYBOARD_KU32_BOUND_KEY_##KEY, orxKEYBOARD_KU32_BOUND_KEY_NONE);                                             \
     }                                                                                                                                           \
   } while(orxFALSE)
 
   /* Unbound keys are handled by system */
-  sstKeyboard.u32BoundKeys = orxKEYBOARD_KU32_BOUND_KEY_NONE;
+  u32BoundKeys = orxKEYBOARD_KU32_BOUND_KEY_NONE;
 
   /* Gets previous set */
   zPreviousSet = orxInput_GetCurrentSet();
@@ -231,6 +232,9 @@ static void orxFASTCALL orxKeyboard_Android_UpdateKeyFilterState(const orxCLOCK_
       orxInput_SelectSet(zPreviousSet);
     }
   }
+
+  /* Updates bound keys */
+  sstKeyboard.u32BoundKeys = u32BoundKeys;
 
 #undef orxKEYBOARD_UPDATE_BOUND_KEY
 }
@@ -266,7 +270,7 @@ static bool orxKeyboard_Android_KeyEventFilter(const GameActivityKeyEvent *event
       break;
     }
   }
-  
+
   return bAllowKey;
 }
 
@@ -337,7 +341,7 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     }
 
     /* Inits key filter */
-    orxAndroid_SetKeyFilter(&orxKeyboard_Android_KeyEventFilter);
+    orxAndroid_SetKeyFilter(orxKeyboard_Android_KeyEventFilter);
 
     /* Registers filter state function */
     orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxKeyboard_Android_UpdateKeyFilterState, orxNULL, orxMODULE_ID_KEYBOARD, orxCLOCK_PRIORITY_NORMAL);
@@ -354,6 +358,9 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
   {
     /* Removes event handler */
     orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler);
+
+    /* Clears key filter */
+    orxAndroid_SetKeyFilter(NULL);
 
     /* Unregisters filter state function */
     orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxKeyboard_Android_UpdateKeyFilterState);

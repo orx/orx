@@ -773,7 +773,7 @@ void android_main(android_app *_pstState)
 
     _pstState->onAppCmd = NULL;
 
-    while((id = ALooper_pollAll(-1, NULL, &events, (void **) &source )) >= 0)
+    while((id = ALooper_pollAll(-1, NULL, &events, (void **)&source)) >= 0)
     {
       /* Process this event. */
       if(source != NULL)
@@ -933,7 +933,7 @@ orxSTATUS orxAndroid_RegisterAPKResource()
 
   /* Inits apk type */
   orxMemory_Zero(&stAPKTypeInfo, sizeof(orxRESOURCE_TYPE_INFO));
-  stAPKTypeInfo.zTag       = (orxCHAR *) orxRESOURCE_KZ_TYPE_TAG_APK;
+  stAPKTypeInfo.zTag       = (orxCHAR *)orxRESOURCE_KZ_TYPE_TAG_APK;
   stAPKTypeInfo.pfnLocate  = orxResource_APK_Locate;
   stAPKTypeInfo.pfnOpen    = orxResource_APK_Open;
   stAPKTypeInfo.pfnClose   = orxResource_APK_Close;
