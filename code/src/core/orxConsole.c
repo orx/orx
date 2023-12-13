@@ -193,7 +193,7 @@ static void orxFASTCALL orxConsole_ResetInput(const orxCLOCK_INFO *_pstInfo, voi
 static void orxFASTCALL orxConsole_RepeatInput(const orxSTRING _zInput)
 {
   /* New repeat? */
-  if(sstConsole.s32RepeatCounter <= 1)
+  if(sstConsole.s32RepeatCounter < 1)
   {
     /* Removes existing timer */
     orxClock_RemoveGlobalTimer(orxConsole_ResetInput, -orxFLOAT_1, (void *)_zInput);
