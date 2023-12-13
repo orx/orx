@@ -56,6 +56,7 @@ typedef struct __orxMOUSE_STATIC_t
   orxU32      u32TouchCount;
   orxBOOL     bIsClicked;
   orxVECTOR   vMouseMove, vMousePosition;
+  orxBOOL     bClearMove;
 
 } orxMOUSE_STATIC;
 
@@ -137,6 +138,23 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
   return eResult;
 }
 
+/** Clean callback
+ */
+static void orxFASTCALL orxMouse_Android_Clean(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  /* Should clear move? */
+  if(sstMouse.bClearMove != orxFALSE)
+  {
+    /* Clears it */
+    sstMouse.vMouseMove.fX  =
+    sstMouse.vMouseMove.fY  = orxFLOAT_0;
+    sstMouse.bClearMove     = orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
 orxSTATUS orxFASTCALL orxMouse_Android_ShowCursor(orxBOOL _bShow)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -190,26 +208,42 @@ orxSTATUS orxFASTCALL orxMouse_Android_Init()
   /* Wasn't already initialized? */
   if(!(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY))
   {
+    orxCLOCK *pstClock;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
 
-    /* Adds our mouse event handlers */
-    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMouse_Android_EventHandler)) != orxSTATUS_FAILURE)
+    /* Gets core clock */
+    pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
     {
-      /* Filters relevant event IDs */
-      orxEvent_SetHandlerIDFlags(orxMouse_Android_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_BEGIN) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_MOVE) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_END), orxEVENT_KU32_MASK_ID_ALL);
+      /* Registers clean function */
+      eResult = orxClock_Register(pstClock, orxMouse_Android_Clean, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_LOWER);
+    }
 
-      /* Updates status */
-      sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Adds event handlers */
+      if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMouse_Android_EventHandler)) != orxSTATUS_FAILURE)
+      {
+        /* Filters relevant event IDs */
+        orxEvent_SetHandlerIDFlags(orxMouse_Android_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_BEGIN) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_MOVE) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_END), orxEVENT_KU32_MASK_ID_ALL);
 
-      /* Sets config section */
-      orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+        /* Updates status */
+        sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
 
-      /* Updates cursor status */
-      orxMouse_Android_ShowCursor(((orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) == orxFALSE) || (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)) ? orxTRUE : orxFALSE);
+        /* Sets config section */
+        orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
 
-      /* Pops config section */
-      orxConfig_PopSection();
+        /* Updates cursor status */
+        orxMouse_Android_ShowCursor(((orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) == orxFALSE) || (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)) ? orxTRUE : orxFALSE);
+
+        /* Pops config section */
+        orxConfig_PopSection();
+      }
     }
   }
 
@@ -222,6 +256,14 @@ void orxFASTCALL orxMouse_Android_Exit()
   /* Was initialized? */
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
   {
+    orxCLOCK *pstClock;
+
+    /* Gets core clock */
+    pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
+
+    /* Unregisters clean function */
+    orxClock_Unregister(pstClock, orxMouse_Android_Clean);
+
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxMouse_Android_EventHandler);
 
@@ -300,8 +342,8 @@ orxVECTOR *orxFASTCALL orxMouse_Android_GetMoveDelta(orxVECTOR *_pvMoveDelta)
   /* Updates result */
   orxVector_Copy(_pvMoveDelta, &(sstMouse.vMouseMove));
 
-  /* Clears move */
-  orxVector_Copy(&(sstMouse.vMouseMove), &orxVECTOR_0);
+  /* Clears mouse move on next update */
+  sstMouse.bClearMove = orxTRUE;
 
   /* Done! */
   return pvResult;
