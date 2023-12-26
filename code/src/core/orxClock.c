@@ -44,6 +44,14 @@
 #include "utils/orxLinkList.h"
 #include "utils/orxHashTable.h"
 
+#ifdef __orxWINDOWS__
+
+  #define NO_WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+  #undef NO_WIN32_LEAN_AND_MEAN
+
+#endif /* __orxWINDOWS__ */
+
 
 /** Module flags
  */
@@ -86,8 +94,8 @@
 
 #define orxCLOCK_KU32_BANK_SIZE                 8           /**< Bank size */
 
-#define orxCLOCK_KF_DELAY_THRESHOLD             orx2F(0.003f)
-#define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.001f)
+#define orxCLOCK_KF_DELAY_THRESHOLD             orx2F(0.005f)
+#define orxCLOCK_KF_DELAY                       orx2F(0.001f)
 #define orxCLOCK_KF_DEFAULT_MODIFIER_FIXED      (-orxFLOAT_1)
 #define orxCLOCK_KF_DEFAULT_MODIFIER_MULTIPLY   orxFLOAT_0
 #define orxCLOCK_KF_DEFAULT_MODIFIER_MAXED      orx2F(0.1f)
@@ -904,15 +912,21 @@ orxSTATUS orxFASTCALL orxClock_Update()
     /* Sets next tick time */
     sstClock.dNextTime = sstClock.dTime + (orxDOUBLE)fDelay;
 
-    /* Gets real remaining delay */
-    fDelay = orx2F(sstClock.dNextTime - orxSystem_GetTime());
-
-    /* Should delay? */
-    if((fDelay > orxCLOCK_KF_DELAY_THRESHOLD)
-    && (sstClock.u32Flags & orxCLOCK_KU32_FLAG_ALLOW_SLEEP))
+    /* Can sleep? */
+    if(sstClock.u32Flags & orxCLOCK_KU32_FLAG_ALLOW_SLEEP)
     {
-      /* Waits for next time slice */
-      orxSystem_Delay(fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT);
+      /* Should delay? */
+      while(orx2F(sstClock.dNextTime - orxSystem_GetTime()) > orxCLOCK_KF_DELAY_THRESHOLD)
+      {
+        /* Sleeps */
+#ifdef __orxWINDOWS__
+      timeBeginPeriod(1);
+#endif /* __orxWINDOWS__ */
+        orxSystem_Delay(orxCLOCK_KF_DELAY);
+#ifdef __orxWINDOWS__
+      timeEndPeriod(1);
+#endif /* __orxWINDOWS__ */
+      }
     }
   }
 
