@@ -437,7 +437,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
 
     orxDOUBLE     dBeginTime, dEndTime;
     orxBANK      *pstResourceBank;
-    orxHASHTABLE *pstRuleTable;
+    orxHASHTABLE *pstRuleTable, *pstDiscoveryTable;
     orxU32        i, j, iCount, jCount, u32GroupCount, u32ConfigHistoryExtensionLength;
     orxBOOL       bBinary;
 
@@ -448,9 +448,11 @@ static orxINLINE orxSTATUS orxBundle_Process()
     pstResourceBank = orxBank_Create(orxBUNDLE_KU32_TABLE_SIZE, sizeof(orxBUNDLE_RESOURCE_REF), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
     orxASSERT(pstResourceBank != orxNULL);
 
-    // Creates rule table
+    // Creates rule & discovery tables
     pstRuleTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
     orxASSERT(pstRuleTable != orxNULL);
+    pstDiscoveryTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+    orxASSERT(pstDiscoveryTable != orxNULL);
 
     // Updates status
     bBinary = (hOutput == shResource) ? orxTRUE : orxFALSE;
@@ -525,13 +527,17 @@ static orxINLINE orxSTATUS orxBundle_Process()
               // Locates it
               zLocation = orxResource_Locate(zGroup, zValue);
 
-              // Valid & not an internal resource?
-              if((zLocation != orxNULL)
-              && ((orxString_Compare(orxResource_GetType(zLocation)->zTag, orxRESOURCE_KZ_TYPE_TAG_MEMORY) != 0)
-               || (orxString_SearchString(zValue, "orx:") != zValue)))
+              // Valid?
+              if(zLocation != orxNULL)
               {
-                // Logs message
-                orxLOG(orxBUNDLE_KZ_LOG_TAG "Discovered " orxBUNDLE_KZ_RESOURCE_FORMAT, zGroup, zValue);
+                // Not an internal resource & not already discovered?
+                if(((orxString_Compare(orxResource_GetType(zLocation)->zTag, orxRESOURCE_KZ_TYPE_TAG_MEMORY) != 0)
+                 || (orxString_SearchString(zValue, "orx:") != zValue))
+                && (orxHashTable_Add(pstDiscoveryTable, orxString_Hash(zLocation), (void *)orxTRUE) != orxSTATUS_FAILURE))
+                {
+                  // Logs message
+                  orxLOG(orxBUNDLE_KZ_LOG_TAG "Discovered " orxBUNDLE_KZ_RESOURCE_FORMAT, zGroup, zValue);
+                }
 
                 // Stops
                 break;
@@ -895,8 +901,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
     // Pops config section
     orxConfig_PopSection();
 
-    // Deletes rule table
+    // Deletes rule & discovery tables
     orxHashTable_Delete(pstRuleTable);
+    orxHashTable_Delete(pstDiscoveryTable);
 
     // Deletes resource bank
     orxBank_Delete(pstResourceBank);
