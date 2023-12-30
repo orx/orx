@@ -1604,16 +1604,10 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
 
             // Gets binder
             poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject));
+            orxASSERT(poBinder);
 
-            // Found?
-            if(poBinder)
-            {
-              // Uses it to delete object
-              poBinder->DeleteObject(poObject, orxObject_GetName(pstObject));
-            }
-
-            // Clears internal reference
-            poObject->SetOrxObject(orxNULL);
+            // Uses it to delete object
+            poBinder->DeleteObject(poObject, orxObject_GetName(pstObject));
           }
         }
         else
@@ -2197,6 +2191,12 @@ void ScrollObjectBinderBase::DeleteObject(ScrollObject *_poObject, const orxSTRI
     orxConfig_ClearSection(zName);
     orxASSERT(!orxConfig_HasSection(zName));
   }
+
+  // Removes object as user data
+  orxObject_SetUserData(_poObject->mpstObject, orxNULL);
+
+  // Clears internal reference
+  _poObject->SetOrxObject(orxNULL);
 
   // Savable or runtime?
   if(_poObject->TestFlags(ScrollObject::FlagSave | ScrollObject::FlagRunTime))
