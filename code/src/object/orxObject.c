@@ -5248,7 +5248,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Is Cartesian position? */
-        if(orxConfig_ToVector(zPosition, orxCOLORSPACE_NONE, &vPosition) != orxNULL)
+        if((orxConfig_ToVector(zPosition, orxCOLORSPACE_NONE, &vPosition) != orxNULL)
+        || (orxVector_SetAll(&vPosition, orxFLOAT_0), orxString_ToFloat(zPosition, &vPosition.fZ, orxNULL) != orxSTATUS_FAILURE))
         {
           /* Updates status */
           bHasPosition  = orxTRUE;
