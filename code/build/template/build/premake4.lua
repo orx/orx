@@ -146,7 +146,11 @@ solution "[name]"
 -- Linux
 
     configuration {"linux"}
-        buildoptions {"-Wno-unused-function"}
+        buildoptions
+        {
+            "-Wno-unused-function"[+imgui ,
+            "-std=c++11"]
+        }
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
         links
         {
@@ -166,6 +170,8 @@ solution "[name]"
         buildoptions
         {
             "-stdlib=libc++",
+[+imgui
+            "-std=c++11",]
             "-gdwarf-2",
             "-Wno-unused-function",
             "-Wno-write-strings"
