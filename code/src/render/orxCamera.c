@@ -1046,6 +1046,11 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
             }
           }
         }
+        else
+        {
+          /* Updates its sorting status */
+          orxCamera_EnableGroupIDSorting(pstResult, 0, ((orxConfig_HasValue(orxOBJECT_KZ_DEFAULT_GROUP) == orxFALSE) || (orxString_ICompare(orxConfig_GetString(orxOBJECT_KZ_DEFAULT_GROUP), orxCAMERA_KZ_RAW) != 0)) ? orxTRUE : orxFALSE);
+        }
 
         /* Gets frustum info */
         fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_NEAR);
