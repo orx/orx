@@ -264,7 +264,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLO
 
 
 /** Gets clock given its name
- * @param[in]   _zName          Clock name
+ * @param[in]   _zName                                Clock name, orxCLOCK_KZ_CORE for core clock
  * @return      orxCLOCK / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Get(const orxSTRING _zName);
