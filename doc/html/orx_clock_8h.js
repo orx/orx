@@ -47,7 +47,6 @@ var orx_clock_8h =
     [ "orxClock_GetInfo", "group__orx_clock.html#ga8d3b728555b290fbb0c68e358fd3ea1f", null ],
     [ "orxClock_GetModifier", "group__orx_clock.html#ga06a40ba8124b21fe3bd237e12b85a105", null ],
     [ "orxClock_GetName", "group__orx_clock.html#ga2febcd1fdcc22f2a0b10f45455a90cbb", null ],
-    [ "orxClock_GetNext", "group__orx_clock.html#ga85c2ed06f5fe9246269cabb8ad3ab6be", null ],
     [ "orxClock_Init", "group__orx_clock.html#gad206221403f4932f57ee5c7c9d137ed7", null ],
     [ "orxClock_IsPaused", "group__orx_clock.html#gab9ee35cfa4682cf9b9dd65766a6dfb43", null ],
     [ "orxClock_Pause", "group__orx_clock.html#ga1bac2213b705cf653167b1237a3682f4", null ],

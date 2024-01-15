@@ -376,7 +376,6 @@ var searchData=
   ['orxclock_5fgetinfo',['orxClock_GetInfo',['../group__orx_clock.html#ga8d3b728555b290fbb0c68e358fd3ea1f',1,'orxClock.h']]],
   ['orxclock_5fgetmodifier',['orxClock_GetModifier',['../group__orx_clock.html#ga06a40ba8124b21fe3bd237e12b85a105',1,'orxClock.h']]],
   ['orxclock_5fgetname',['orxClock_GetName',['../group__orx_clock.html#ga2febcd1fdcc22f2a0b10f45455a90cbb',1,'orxClock.h']]],
-  ['orxclock_5fgetnext',['orxClock_GetNext',['../group__orx_clock.html#ga85c2ed06f5fe9246269cabb8ad3ab6be',1,'orxClock.h']]],
   ['orxclock_5finfo',['orxCLOCK_INFO',['../structorx_c_l_o_c_k___i_n_f_o.html',1,'']]],
   ['orxclock_5finit',['orxClock_Init',['../group__orx_clock.html#gad206221403f4932f57ee5c7c9d137ed7',1,'orxClock.h']]],
   ['orxclock_5fispaused',['orxClock_IsPaused',['../group__orx_clock.html#gab9ee35cfa4682cf9b9dd65766a6dfb43',1,'orxClock.h']]],
