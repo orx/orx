@@ -263,12 +263,6 @@ extern orxDLLAPI void *orxFASTCALL                    orxClock_GetContext(const 
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pContext);
 
 
-/** Gets next existing clock in list (can be used to parse all existing clocks)
- * @param[in]   _pstClock                             Concerned clock
- * @return      orxCLOCK / orxNULL
- */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(const orxCLOCK *_pstClock);
-
 /** Gets clock given its name
  * @param[in]   _zName          Clock name
  * @return      orxCLOCK / orxNULL

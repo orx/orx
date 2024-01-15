@@ -1700,19 +1700,6 @@ orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FU
   return eResult;
 }
 
-/** Gets next existing clock in list (can be used to parse all existing clocks)
- * @param[in]   _pstClock                             Concerned clock
- * @return      orxCLOCK / orxNULL
- */
-orxCLOCK *orxFASTCALL orxClock_GetNext(const orxCLOCK *_pstClock)
-{
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-
-  /* Returns next stored clock */
-  return(orxCLOCK(orxStructure_GetNext(_pstClock)));
-}
-
 /** Gets clock given its name
  * @param[in]   _zName          Clock name
  * @return      orxCLOCK / orxNULL
