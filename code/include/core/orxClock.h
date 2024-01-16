@@ -155,7 +155,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Update();
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize);
 
 /** Creates a clock from config
- * @param[in]   _zConfigID    Config ID
+ * @param[in]   _zConfigID                            Config ID
  * @ return orxCLOCK / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_CreateFromConfig(const orxSTRING _zConfigID);
