@@ -4431,8 +4431,12 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
       {
         orxU32 i;
 
-        /* Removes parent */
-        orxObject_SetParent(_pstObject, orxNULL);
+        /* Has frame? */
+        if(_pstObject->apstStructureList[orxSTRUCTURE_ID_FRAME] != orxNULL)
+        {
+          /* Removes parent */
+          orxObject_SetParent(_pstObject, orxNULL);
+        }
 
         /* Has children? */
         if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_HAS_CHILDREN))
