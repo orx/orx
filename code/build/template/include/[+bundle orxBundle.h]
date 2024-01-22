@@ -51,12 +51,17 @@ const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 
 #ifdef orxBUNDLE_IMPL
 
-#ifdef __orxGCC__
+#if defined(__orxGCC__)
 
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wtautological-compare"
 
-#endif /* __orxGCC__ */
+#elif defined(__orxLLVM__)
+
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wtautological-compare"
+
+#endif
 
 //! Variables / Structures
 
@@ -1671,11 +1676,15 @@ const orxSTRING orxFASTCALL orxBundle_GetOutputName()
   return (shResource != orxHANDLE_UNDEFINED) ? orxResource_GetPath(orxResource_GetLocation(shResource)) : orxSTRING_EMPTY;
 }
 
-#ifdef __orxGCC__
+#if defined(__orxGCC__)
 
   #pragma GCC diagnostic pop
 
-#endif /* __orxGCC__ */
+#elif defined(__orxLLVM__)
+
+  #pragma clang diagnostic pop
+
+#endif
 
 #endif // orxBUNDLE_IMPL
 
