@@ -1318,6 +1318,34 @@ void orxFASTCALL orxObject_CommandGetActiveTime(orxU32 _u32ArgNumber, const orxC
   return;
 }
 
+/** Command: ResetActiveTime
+ */
+void orxFASTCALL orxObject_CommandResetActiveTime(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Resets its active time */
+    orxObject_ResetActiveTime(pstObject);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetLifeTime
  */
 void orxFASTCALL orxObject_CommandSetLifeTime(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3677,6 +3705,8 @@ static orxINLINE void orxObject_RegisterCommands()
 
   /* Command: GetActiveTime */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetActiveTime, "ActiveTime", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: ResetActiveTime */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, ResetActiveTime, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: SetLifeTime */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"LifeTime", orxCOMMAND_VAR_TYPE_STRING});
@@ -3908,6 +3938,8 @@ static orxINLINE void orxObject_UnregisterCommands()
 
   /* Command: GetActiveTime */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetActiveTime);
+  /* Command: ResetActiveTime */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, ResetActiveTime);
 
   /* Command: SetLifeTime */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetLifeTime);
@@ -12042,6 +12074,25 @@ orxFLOAT orxFASTCALL orxObject_GetActiveTime(const orxOBJECT *_pstObject)
 
   /* Done! */
   return fResult;
+}
+
+/** Resets an object active time
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_ResetActiveTime(orxOBJECT *_pstObject)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Resets object's active time result */
+  _pstObject->fActiveTime = orxFLOAT_0;
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets default group ID.

@@ -1354,6 +1354,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(const orxOBJEC
  * @return      Active time
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetActiveTime(const orxOBJECT *_pstObject);
+
+/** Resets an object active time
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ResetActiveTime(orxOBJECT *_pstObject);
 /** @} */
 
 /** @name Group
