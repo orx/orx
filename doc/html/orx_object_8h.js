@@ -121,6 +121,7 @@ var orx_object_8h =
     [ "orxObject_RemoveSound", "group__orx_object.html#gab166e5f18d9efe2cb4c63a955cc6d4af", null ],
     [ "orxObject_RemoveTimeLineTrack", "group__orx_object.html#ga6eeac2bcb4f1ea8ad9b960e7ff58201f", null ],
     [ "orxObject_RemoveTimeLineTrackRecursive", "group__orx_object.html#gadf495fda645a83012389a6b877ba82ea", null ],
+    [ "orxObject_ResetActiveTime", "group__orx_object.html#gaf70b8e79b6b833ae4041c88aaa2f875d", null ],
     [ "orxObject_SetAlpha", "group__orx_object.html#ga98b10faefdeda019cdb6e9371fa2a1fd", null ],
     [ "orxObject_SetAlphaRecursive", "group__orx_object.html#ga10a64afcec6cb3427439e18f23070926", null ],
     [ "orxObject_SetAngularVelocity", "group__orx_object.html#ga69f5fe0d7734d4df0c392b858d7faaf0", null ],

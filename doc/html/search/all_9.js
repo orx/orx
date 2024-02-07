@@ -1823,6 +1823,7 @@ var searchData=
   ['orxobject_5fremovesound',['orxObject_RemoveSound',['../group__orx_object.html#gab166e5f18d9efe2cb4c63a955cc6d4af',1,'orxObject.h']]],
   ['orxobject_5fremovetimelinetrack',['orxObject_RemoveTimeLineTrack',['../group__orx_object.html#ga6eeac2bcb4f1ea8ad9b960e7ff58201f',1,'orxObject.h']]],
   ['orxobject_5fremovetimelinetrackrecursive',['orxObject_RemoveTimeLineTrackRecursive',['../group__orx_object.html#gadf495fda645a83012389a6b877ba82ea',1,'orxObject.h']]],
+  ['orxobject_5fresetactivetime',['orxObject_ResetActiveTime',['../group__orx_object.html#gaf70b8e79b6b833ae4041c88aaa2f875d',1,'orxObject.h']]],
   ['orxobject_5fsetalpha',['orxObject_SetAlpha',['../group__orx_object.html#ga98b10faefdeda019cdb6e9371fa2a1fd',1,'orxObject.h']]],
   ['orxobject_5fsetalpharecursive',['orxObject_SetAlphaRecursive',['../group__orx_object.html#ga10a64afcec6cb3427439e18f23070926',1,'orxObject.h']]],
   ['orxobject_5fsetangularvelocity',['orxObject_SetAngularVelocity',['../group__orx_object.html#ga69f5fe0d7734d4df0c392b858d7faaf0',1,'orxObject.h']]],
