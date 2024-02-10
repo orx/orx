@@ -3,21 +3,22 @@ apply plugin: 'com.android.application'
 android {
     namespace 'org.orx.demo'
     compileSdk sdkVersion.toInteger()
+    
+    // Ideally, we want to use the default NDK version for the used AGP version.
+    // However, we opt-in to NDK r26 since it comes with many important features/optimizations.
+    ndkVersion '26.1.10909125'
 
     buildFeatures.prefab true
 
     defaultConfig {
-        applicationId "org.orx.demo"
-        targetSdkVersion sdkVersion.toInteger()
+        applicationId 'org.orx.demo'
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
 
-        minSdkVersion 19
+        minSdk 21
+        targetSdk sdkVersion.toInteger()
+        
         vectorDrawables.useSupportLibrary = true
-
-        ndk {
-            abiFilters "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
-        }
 
         manifestPlaceholders = [ gameArguments: '' ]
     }
@@ -44,7 +45,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             externalNativeBuild.ndkBuild {
-                arguments 'NDK_DEBUG=0'
+                arguments 'NDK_DEBUG=0', '-j'
             }
             manifestPlaceholders = [ gameArguments: 'orxDemo' ]
         }
@@ -52,7 +53,7 @@ android {
             debuggable true
 
             externalNativeBuild.ndkBuild {
-                arguments 'NDK_DEBUG=1'
+                arguments 'NDK_DEBUG=1', '-j'
                 cFlags '-D__orxDEBUG__'
             }
             manifestPlaceholders = [ gameArguments: 'orxDemoDebug' ]
@@ -61,8 +62,8 @@ android {
             debuggable true
 
             externalNativeBuild.ndkBuild {
-                arguments 'NDK_DEBUG=0'
-                cFlags '-D__orxPROFILE__'
+                arguments 'NDK_DEBUG=0', '-j'
+                cFlags '-D__orxPROFILER__'
             }
             manifestPlaceholders = [ gameArguments: 'orxDemoProfile' ]
         }
@@ -70,9 +71,12 @@ android {
     lint {
         abortOnError true
     }
+    androidResources {
+        noCompress = [ '.obr', '.ktx2' ]
+    }
 }
 dependencies {
-    releaseImplementation 'org.orx-project:orx:1.13'
-    debugImplementation 'org.orx-project:orxd:1.13'
-    profileImplementation 'org.orx-project:orxp:1.13'
+    releaseImplementation 'org.orx-project:orx:1.15'
+    debugImplementation 'org.orx-project:orxd:1.15'
+    profileImplementation 'org.orx-project:orxp:1.15'
 }

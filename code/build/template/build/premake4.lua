@@ -35,6 +35,7 @@ function initplatforms ()
     elseif os.is ("macosx") then
         return
         {
+            "universal64",
             "x64"
         }
     end
@@ -146,7 +147,11 @@ solution "[name]"
 -- Linux
 
     configuration {"linux"}
-        buildoptions {"-Wno-unused-function"}
+        buildoptions
+        {
+            "-Wno-unused-function"[+imgui ,
+            "-std=c++11"]
+        }
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
         links
         {
@@ -166,6 +171,8 @@ solution "[name]"
         buildoptions
         {
             "-stdlib=libc++",
+[+imgui
+            "-std=c++11",]
             "-gdwarf-2",
             "-Wno-unused-function",
             "-Wno-write-strings"
@@ -262,6 +269,7 @@ project "[name]"
         "../include/**.inl",]
 [+bundle
         "../include/**.inc",]
+        "../build/premake4.lua",
         "../data/config/**.ini"
     }
 
@@ -276,15 +284,13 @@ project "[name]"
         "../include"
     }
 
-    configuration {"windows", "vs*"}
-        buildoptions {"/EHsc"}
-
     vpaths
     {
 [+scroll
         ["inline"] = {"**.inl"},]
 [+bundle
         ["bundle"] = {"**.inc"},]
+        ["build"] = {"**premake4.lua"},
         ["config"] = {"**.ini"}
     }
 [+bundle
@@ -312,3 +318,6 @@ project "[name]"
 
     configuration {"windows"}
         postbuildcommands {"cmd /c copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
+
+    configuration {"windows", "vs*"}
+        buildoptions {"/EHsc"}

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -37,6 +37,7 @@
 #include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
+#include "core/orxSystem.h"
 #include "core/orxThread.h"
 #include "debug/orxProfiler.h"
 #include "io/orxFile.h"
@@ -75,6 +76,8 @@
 #define orxRESOURCE_KU32_GROUP_BANK_SIZE              8                               /**< Group bank size */
 #define orxRESOURCE_KU32_TYPE_BANK_SIZE               8                               /**< Type bank size */
 
+#define orxRESOURCE_KU32_MEMORY_BANK_SIZE             32                              /**< Memory bank size */
+
 #define orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE          64                              /**< Open resource info bank size */
 
 #define orxRESOURCE_KU32_WATCH_ITERATION_LIMIT        2                               /**< Watch iteration limit */
@@ -86,7 +89,7 @@
 #define orxRESOURCE_KZ_CONFIG_SECTION                 "Resource"                      /**< Config section name */
 #define orxRESOURCE_KZ_CONFIG_WATCH_LIST              "WatchList"                     /**< Config watch list */
 
-#define orxRESOURCE_KU32_REQUEST_LIST_SIZE            2048                            /**< Request list size */
+#define orxRESOURCE_KU32_REQUEST_LIST_SIZE            8192                            /**< Request list size */
 
 #define orxRESOURCE_KZ_THREAD_NAME                    "Resource"
 
@@ -177,6 +180,27 @@ typedef struct __orxRESOURCE_REQUEST_t
 
 } orxRESOURCE_REQUEST;
 
+/** Memory data
+ */
+typedef struct __orxRESOURCE_MEMORY_DATA_t
+{
+  orxSTRINGID               stNameID;                                                 /**< Memory Data Name ID */
+  orxS64                    s64Size;                                                  /**< Memory Data Size */
+  orxS64                    s64Time;                                                  /**< Memory Data Time */
+  const orxU8              *pu8Buffer;                                                /**< Memory Data Buffer */
+  orxU32                    u32RefCount;                                              /**< Memory Data Ref count */
+
+} orxRESOURCE_MEMORY_DATA;
+
+/** Memory resource
+ */
+typedef struct __orxRESOURCE_MEMORY_RESOURCE_t
+{
+  orxS64                    s64Cursor;                                                /**< Memory Resource Cursor */
+  orxRESOURCE_MEMORY_DATA  *pstData;                                                  /**< Memory Resource Data */
+
+} orxRESOURCE_MEMORY_RESOURCE;
+
 /** Static structure
  */
 typedef struct __orxRESOURCE_STATIC_t
@@ -190,6 +214,9 @@ typedef struct __orxRESOURCE_STATIC_t
   orxLINKLIST               stTypeList;                                               /**< Type list */
   orxSTRING                 zLastUncachedLocation;                                    /**< Last uncached location */
   orxSTRINGID               stLastWatchedGroupID;                                     /**< Last watched group ID */
+  orxHASHTABLE             *pstMemoryDataTable;                                       /**< Memory data table */
+  orxBANK                  *pstMemoryDataBank;                                        /**< Memory data bank */
+  orxBANK                  *pstMemoryResourceBank;                                    /**< Memory resource bank */
   volatile orxSTATUS        eThreadResult;                                            /**< Thread result */
   orxCHAR                   acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];       /**< File location buffer size */
   volatile orxRESOURCE_REQUEST astRequestList[orxRESOURCE_KU32_REQUEST_LIST_SIZE];    /**< Request list */
@@ -217,6 +244,7 @@ static orxRESOURCE_STATIC sstResource;
 
 static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
+  orxFILE_INFO    stInfo;
   const orxSTRING zResult = orxNULL;
 
   /* Default storage? */
@@ -233,7 +261,8 @@ static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGro
 
   /* Exists or doesn't require existence? */
   if((_bRequireExistence == orxFALSE)
-  || (orxFile_Exists(sstResource.acFileLocationBuffer) != orxFALSE))
+  || ((orxFile_GetInfo(sstResource.acFileLocationBuffer, &stInfo) != orxSTATUS_FAILURE)
+   && !orxFLAG_TEST(stInfo.u32Flags, orxFILE_KU32_FLAG_INFO_DIRECTORY)))
   {
     /* Updates result */
     zResult = sstResource.acFileLocationBuffer;
@@ -386,16 +415,220 @@ static orxSTATUS orxFASTCALL orxResource_File_Delete(const orxSTRING _zLocation)
   return eResult;
 }
 
+static const orxSTRING orxFASTCALL orxResource_Memory_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
+{
+  const orxSTRING zResult = orxNULL;
+
+  /* Default storage? */
+  if(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
+  {
+    /* Found? */
+    if(orxHashTable_Get(sstResource.pstMemoryDataTable, orxString_Hash(_zName)) != orxNULL)
+    {
+      /* Updates result */
+      zResult = _zName;
+    }
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+static orxHANDLE orxFASTCALL orxResource_Memory_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
+{
+  orxHANDLE hResult = orxHANDLE_UNDEFINED;
+
+  /* Not in erase mode? */
+  if(_bEraseMode == orxFALSE)
+  {
+    orxRESOURCE_MEMORY_DATA *pstData;
+
+    /* Gets its data */
+    pstData = (orxRESOURCE_MEMORY_DATA *)orxHashTable_Get(sstResource.pstMemoryDataTable, orxString_Hash(_zLocation));
+
+    /* Found? */
+    if(pstData != orxNULL)
+    {
+      orxRESOURCE_MEMORY_RESOURCE *pstResource;
+
+      /* Allocates its internal resource */
+      pstResource = (orxRESOURCE_MEMORY_RESOURCE *)orxBank_Allocate(sstResource.pstMemoryResourceBank);
+
+      /* Success? */
+      if(pstResource != orxNULL)
+      {
+        /* Inits it */
+        orxMemory_Zero(pstResource, sizeof(orxRESOURCE_MEMORY_RESOURCE));
+        pstData->u32RefCount++;
+        pstResource->pstData = pstData;
+
+        /* Updates result */
+        hResult = (orxHANDLE)pstResource;
+      }
+    }
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static void orxFASTCALL orxResource_Memory_Close(orxHANDLE _hResource)
+{
+  orxRESOURCE_MEMORY_RESOURCE *pstResource;
+
+  /* Gets internal resource */
+  pstResource = (orxRESOURCE_MEMORY_RESOURCE *)_hResource;
+
+  /* Updates its data's ref count */
+  orxASSERT(pstResource->pstData->u32RefCount > 0);
+  pstResource->pstData->u32RefCount--;
+
+  /* Frees it */
+  orxBank_Free(sstResource.pstMemoryResourceBank, pstResource);
+
+  /* Done! */
+  return;
+}
+
+static orxS64 orxFASTCALL orxResource_Memory_GetSize(orxHANDLE _hResource)
+{
+  orxRESOURCE_MEMORY_RESOURCE  *pstResource;
+  orxS64                        s64Result;
+
+  /* Gets internal resource */
+  pstResource = (orxRESOURCE_MEMORY_RESOURCE *)_hResource;
+
+  /* Updates result */
+  s64Result = pstResource->pstData->s64Size;
+
+  /* Done! */
+  return s64Result;
+}
+
+static orxS64 orxFASTCALL orxResource_Memory_GetTime(const orxSTRING _zLocation)
+{
+  orxRESOURCE_MEMORY_DATA *pstData;
+  orxS64                   s64Result = 0;
+
+  /* Gets its data */
+  pstData = (orxRESOURCE_MEMORY_DATA *)orxHashTable_Get(sstResource.pstMemoryDataTable, orxString_Hash(_zLocation));
+
+  /* Found? */
+  if(pstData != orxNULL)
+  {
+    /* Updates result */
+    s64Result = pstData->s64Time;
+  }
+
+  /* Done! */
+  return s64Result;
+}
+
+static orxS64 orxFASTCALL orxResource_Memory_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence)
+{
+  orxRESOURCE_MEMORY_RESOURCE  *pstResource;
+  orxS64                        s64Cursor;
+
+  /* Gets internal resource */
+  pstResource = (orxRESOURCE_MEMORY_RESOURCE *)_hResource;
+
+  // Depending on seek mode
+  switch(_eWhence)
+  {
+    case orxSEEK_OFFSET_WHENCE_START:
+    {
+      // Computes cursor
+      s64Cursor = _s64Offset;
+      break;
+    }
+
+    case orxSEEK_OFFSET_WHENCE_CURRENT:
+    {
+      // Computes cursor
+      s64Cursor = pstResource->s64Cursor + _s64Offset;
+      break;
+    }
+
+    case orxSEEK_OFFSET_WHENCE_END:
+    {
+      // Computes cursor
+      s64Cursor = pstResource->pstData->s64Size - _s64Offset;
+      break;
+    }
+
+    default:
+    {
+      // Failure
+      s64Cursor = -1;
+      break;
+    }
+  }
+
+  // Is cursor valid?
+  if((s64Cursor >= 0) && (s64Cursor <= pstResource->pstData->s64Size))
+  {
+    // Updates cursor
+    pstResource->s64Cursor = s64Cursor;
+  }
+  else
+  {
+    // Clears value
+    s64Cursor = -1;
+  }
+
+  /* Done! */
+  return s64Cursor;
+}
+
+static orxS64 orxFASTCALL orxResource_Memory_Tell(orxHANDLE _hResource)
+{
+  orxRESOURCE_MEMORY_RESOURCE  *pstResource;
+  orxS64                        s64Result;
+
+  /* Gets internal resource */
+  pstResource = (orxRESOURCE_MEMORY_RESOURCE *)_hResource;
+
+  /* Updates result */
+  s64Result = pstResource->s64Cursor;
+
+  /* Done! */
+  return s64Result;
+}
+
+static orxS64 orxFASTCALL orxResource_Memory_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pBuffer)
+{
+  orxRESOURCE_MEMORY_RESOURCE  *pstResource;
+  orxS64                        s64CopySize;
+
+  /* Gets internal resource */
+  pstResource = (orxRESOURCE_MEMORY_RESOURCE *)_hResource;
+
+  // Gets actual copy size to prevent any out-of-bound access
+  s64CopySize = orxMIN(_s64Size, pstResource->pstData->s64Size - pstResource->s64Cursor);
+
+  // Should copy content?
+  if(s64CopySize != 0)
+  {
+    // Copies content
+    orxMemory_Copy(_pBuffer, pstResource->pstData->pu8Buffer + pstResource->s64Cursor, (orxS32)s64CopySize);
+  }
+
+  // Updates cursor
+  pstResource->s64Cursor += s64CopySize;
+
+  // Done!
+  return s64CopySize;
+}
+
 static orxINLINE void orxResource_DeleteGroup(orxRESOURCE_GROUP *_pstGroup)
 {
   orxRESOURCE_INFO *pstResourceInfo;
-  orxU64            u64Key;
   orxHANDLE         hIterator;
 
   /* For all cached resources */
-  for(hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstResourceInfo);
+  for(hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstResourceInfo);
       hIterator != orxHANDLE_UNDEFINED;
-      hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
+      hIterator = orxHashTable_GetNext(_pstGroup->pstCacheTable, hIterator, orxNULL, (void **)&pstResourceInfo))
   {
     /* Deletes its location */
     orxMemory_Free(pstResourceInfo->zLocation);
@@ -491,17 +724,17 @@ static void orxFASTCALL orxResource_NotifyRequest(const orxCLOCK_INFO *_pstClock
     /* Gets request */
     pstRequest = &(sstResource.astRequestList[sstResource.u32RequestOutIndex]);
 
+    /* Decrements operation count */
+    if(pstRequest->pstResourceInfo != orxNULL)
+    {
+      pstRequest->pstResourceInfo->u32OpCount--;
+    }
+
     /* Has callback? */
     if(pstRequest->pfnCallback != orxNULL)
     {
       /* Notifies it */
       pstRequest->pfnCallback((orxHANDLE)pstRequest->pstResourceInfo, pstRequest->s64Size, pstRequest->pBuffer, pstRequest->pContext);
-    }
-
-    /* Decrements operation count */
-    if(pstRequest->pstResourceInfo != orxNULL)
-    {
-      pstRequest->pstResourceInfo->u32OpCount--;
     }
 
     /* Updates request out index */
@@ -812,7 +1045,6 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
     if(pstGroup != orxNULL)
     {
       static orxHANDLE  shIterator;
-      orxU64            u64Key;
       orxRESOURCE_INFO *pstResourceInfo;
 
       /* New group? */
@@ -826,9 +1058,9 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
       }
 
       /* For all its cached resources */
-      for(shIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, shIterator, &u64Key, (void **)&pstResourceInfo);
+      for(shIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, shIterator, orxNULL, (void **)&pstResourceInfo);
           shIterator != orxHANDLE_UNDEFINED;
-          shIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, shIterator, &u64Key, (void **)&pstResourceInfo))
+          shIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, shIterator, orxNULL, (void **)&pstResourceInfo))
       {
         /* Does its type support time? */
         if(pstResourceInfo->pstTypeInfo->pfnGetTime != orxNULL)
@@ -1118,14 +1350,15 @@ static orxINLINE void orxResource_UnregisterCommands()
 void orxFASTCALL orxResource_Setup()
 {
   /* Adds module dependencies */
-  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_THREAD);
-  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_STRING);
+  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_FILE);
+  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_PROFILER);
-  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_COMMAND);
+  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_STRING);
+  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_SYSTEM);
+  orxModule_AddDependency(orxMODULE_ID_RESOURCE, orxMODULE_ID_THREAD);
 
   /* Done! */
   return;
@@ -1155,22 +1388,28 @@ orxSTATUS orxFASTCALL orxResource_Init()
     if((sstResource.pstRequestSemaphore != orxNULL) && (sstResource.pstWorkerSemaphore != orxNULL))
     {
       /* Inits request thread ID */
-      sstResource.u32RequestThreadID = orxU32_UNDEFINED;
+      sstResource.u32RequestThreadID    = orxU32_UNDEFINED;
 
       /* Creates resource info bank */
-      sstResource.pstResourceInfoBank = orxBank_Create(orxRESOURCE_KU32_RESOURCE_INFO_BANK_SIZE, sizeof(orxRESOURCE_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstResource.pstResourceInfoBank   = orxBank_Create(orxRESOURCE_KU32_RESOURCE_INFO_BANK_SIZE, sizeof(orxRESOURCE_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Creates open resource info bank */
-      sstResource.pstOpenInfoBank     = orxBank_Create(orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE, sizeof(orxRESOURCE_OPEN_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstResource.pstOpenInfoBank       = orxBank_Create(orxRESOURCE_KU32_OPEN_INFO_BANK_SIZE, sizeof(orxRESOURCE_OPEN_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Creates group bank */
-      sstResource.pstGroupBank        = orxBank_Create(orxRESOURCE_KU32_GROUP_BANK_SIZE, sizeof(orxRESOURCE_GROUP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstResource.pstGroupBank          = orxBank_Create(orxRESOURCE_KU32_GROUP_BANK_SIZE, sizeof(orxRESOURCE_GROUP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Creates type info bank */
-      sstResource.pstTypeBank         = orxBank_Create(orxRESOURCE_KU32_TYPE_BANK_SIZE, sizeof(orxRESOURCE_TYPE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstResource.pstTypeBank           = orxBank_Create(orxRESOURCE_KU32_TYPE_BANK_SIZE, sizeof(orxRESOURCE_TYPE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+      /* Creates memory table & banks */
+      sstResource.pstMemoryDataTable    = orxHashTable_Create(orxRESOURCE_KU32_MEMORY_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstResource.pstMemoryDataBank     = orxBank_Create(orxRESOURCE_KU32_MEMORY_BANK_SIZE, sizeof(orxRESOURCE_MEMORY_DATA), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstResource.pstMemoryResourceBank = orxBank_Create(orxRESOURCE_KU32_MEMORY_BANK_SIZE, sizeof(orxRESOURCE_MEMORY_RESOURCE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Success? */
-      if((sstResource.pstResourceInfoBank != orxNULL) && (sstResource.pstOpenInfoBank != orxNULL) && (sstResource.pstGroupBank != orxNULL) && (sstResource.pstTypeBank != orxNULL))
+      if((sstResource.pstResourceInfoBank != orxNULL) && (sstResource.pstOpenInfoBank != orxNULL) && (sstResource.pstGroupBank != orxNULL) && (sstResource.pstTypeBank != orxNULL)
+      && (sstResource.pstMemoryDataTable != orxNULL) && (sstResource.pstMemoryDataBank != orxNULL) && (sstResource.pstMemoryResourceBank != orxNULL))
       {
         orxRESOURCE_TYPE_INFO stTypeInfo;
 
@@ -1178,6 +1417,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
         sstResource.u32Flags = orxRESOURCE_KU32_STATIC_FLAG_READY;
 
         /* Inits file type */
+        orxMemory_Zero(&stTypeInfo, sizeof(orxRESOURCE_TYPE_INFO));
         stTypeInfo.zTag       = orxRESOURCE_KZ_TYPE_TAG_FILE;
         stTypeInfo.pfnLocate  = orxResource_File_Locate;
         stTypeInfo.pfnGetTime = orxResource_File_GetTime;
@@ -1196,30 +1436,51 @@ orxSTATUS orxFASTCALL orxResource_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          /* Inits thread result */
-          sstResource.eThreadResult = orxSTATUS_SUCCESS;
+          /* Inits file type */
+          orxMemory_Zero(&stTypeInfo, sizeof(orxRESOURCE_TYPE_INFO));
+          stTypeInfo.zTag       = orxRESOURCE_KZ_TYPE_TAG_MEMORY;
+          stTypeInfo.pfnLocate  = orxResource_Memory_Locate;
+          stTypeInfo.pfnGetTime = orxResource_Memory_GetTime;
+          stTypeInfo.pfnOpen    = orxResource_Memory_Open;
+          stTypeInfo.pfnClose   = orxResource_Memory_Close;
+          stTypeInfo.pfnGetSize = orxResource_Memory_GetSize;
+          stTypeInfo.pfnSeek    = orxResource_Memory_Seek;
+          stTypeInfo.pfnTell    = orxResource_Memory_Tell;
+          stTypeInfo.pfnRead    = orxResource_Memory_Read;
+          stTypeInfo.pfnWrite   = orxNULL;
+          stTypeInfo.pfnDelete  = orxNULL;
 
-          /* Waits for worker semaphore */
-          orxThread_WaitSemaphore(sstResource.pstWorkerSemaphore);
-
-          /* Starts request processing thread */
-          sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxRESOURCE_KZ_THREAD_NAME, orxNULL);
+          /* Registers it */
+          eResult = orxResource_RegisterType(&stTypeInfo);
 
           /* Success? */
-          if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
+          if(eResult != orxSTATUS_FAILURE)
           {
-            /* Registers commands */
-            orxResource_RegisterCommands();
+            /* Inits thread result */
+            sstResource.eThreadResult = orxSTATUS_SUCCESS;
 
-            /* Inits vars */
-            sstResource.stLastWatchedGroupID = orxSTRINGID_UNDEFINED;
+            /* Waits for worker semaphore */
+            orxThread_WaitSemaphore(sstResource.pstWorkerSemaphore);
 
-#if defined(__orxANDROID__)
+            /* Starts request processing thread */
+            sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxRESOURCE_KZ_THREAD_NAME, orxNULL);
 
-            /* Registers APK type */
-            eResult = orxAndroid_RegisterAPKResource();
+            /* Success? */
+            if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
+            {
+              /* Registers commands */
+              orxResource_RegisterCommands();
+
+              /* Inits vars */
+              sstResource.stLastWatchedGroupID = orxSTRINGID_UNDEFINED;
+
+#ifdef __orxANDROID__
+
+              /* Registers APK type */
+              eResult = orxAndroid_RegisterAPKResource();
 
 #endif /* __orxANDROID__ */
+            }
           }
         }
       }
@@ -1228,6 +1489,10 @@ orxSTATUS orxFASTCALL orxResource_Init()
     /* Failed? */
     if(eResult != orxSTATUS_SUCCESS)
     {
+      /* Unregisters internal types */
+      orxResource_UnregisterType(orxRESOURCE_KZ_TYPE_TAG_FILE);
+      orxResource_UnregisterType(orxRESOURCE_KZ_TYPE_TAG_MEMORY);
+
       /* Removes Flags */
       sstResource.u32Flags &= ~orxRESOURCE_KU32_STATIC_FLAG_READY;
 
@@ -1263,6 +1528,20 @@ orxSTATUS orxFASTCALL orxResource_Init()
       if(sstResource.pstTypeBank != orxNULL)
       {
         orxBank_Delete(sstResource.pstTypeBank);
+      }
+
+      /* Deletes memory table & banks */
+      if(sstResource.pstMemoryDataTable != orxNULL)
+      {
+        orxHashTable_Delete(sstResource.pstMemoryDataTable);
+      }
+      if(sstResource.pstMemoryDataBank != orxNULL)
+      {
+        orxBank_Delete(sstResource.pstMemoryDataBank);
+      }
+      if(sstResource.pstMemoryResourceBank != orxNULL)
+      {
+        orxBank_Delete(sstResource.pstMemoryResourceBank);
       }
 
       /* Has request thread? */
@@ -1375,6 +1654,11 @@ void orxFASTCALL orxResource_Exit()
 
     /* Deletes info bank */
     orxBank_Delete(sstResource.pstResourceInfoBank);
+
+    /* Deletes memory table & banks */
+    orxHashTable_Delete(sstResource.pstMemoryDataTable);
+    orxBank_Delete(sstResource.pstMemoryDataBank);
+    orxBank_Delete(sstResource.pstMemoryResourceBank);
 
     /* Updates flags */
     sstResource.u32Flags &= ~orxRESOURCE_KU32_STATIC_FLAG_READY;
@@ -1784,6 +2068,9 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
   orxASSERT(_zGroup != orxNULL);
   orxASSERT(_zName != orxNULL);
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Locate");
+
   /* Updates post-init */
   orxResource_UpdatePostInit();
 
@@ -1883,6 +2170,9 @@ const orxSTRING orxFASTCALL orxResource_Locate(const orxSTRING _zGroup, const or
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return zResult;
 }
@@ -1901,6 +2191,9 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zGroup != orxNULL);
   orxASSERT(_zName != orxNULL);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_LocateInStorage");
 
   /* Updates post-init */
   orxResource_UpdatePostInit();
@@ -1985,6 +2278,9 @@ const orxSTRING orxFASTCALL orxResource_LocateInStorage(const orxSTRING _zGroup,
       }
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return zResult;
@@ -2094,6 +2390,9 @@ orxS64 orxFASTCALL orxResource_GetTime(const orxSTRING _zLocation)
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zLocation != orxNULL);
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_GetTime");
+
   /* Valid? */
   if(*_zLocation != orxCHAR_NULL)
   {
@@ -2128,6 +2427,9 @@ orxS64 orxFASTCALL orxResource_GetTime(const orxSTRING _zLocation)
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return s64Result;
 }
@@ -2144,6 +2446,9 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zLocation != orxNULL);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Open");
 
   /* Valid? */
   if(*_zLocation != orxCHAR_NULL)
@@ -2211,6 +2516,9 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return hResult;
 }
@@ -2222,6 +2530,9 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
 {
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Close");
 
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
@@ -2249,6 +2560,9 @@ void orxFASTCALL orxResource_Close(orxHANDLE _hResource)
       orxBank_Free(sstResource.pstOpenInfoBank, pstOpenInfo);
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
@@ -2292,6 +2606,9 @@ orxS64 orxFASTCALL orxResource_GetSize(orxHANDLE _hResource)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_GetSize");
+
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
   {
@@ -2306,6 +2623,9 @@ orxS64 orxFASTCALL orxResource_GetSize(orxHANDLE _hResource)
     /* Updates result */
     s64Result = pstOpenInfo->pstTypeInfo->pfnGetSize(pstOpenInfo->hResource);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return s64Result;
@@ -2325,6 +2645,9 @@ orxS64 orxFASTCALL orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orx
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_eWhence < orxSEEK_OFFSET_WHENCE_NUMBER);
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Seek");
+
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
   {
@@ -2339,6 +2662,9 @@ orxS64 orxFASTCALL orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orx
     /* Updates result */
     s64Result = pstOpenInfo->pstTypeInfo->pfnSeek(pstOpenInfo->hResource, _s64Offset, _eWhence);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return s64Result;
@@ -2355,6 +2681,9 @@ orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Tell");
+
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
   {
@@ -2369,6 +2698,9 @@ orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
     /* Updates result */
     s64Result = pstOpenInfo->pstTypeInfo->pfnTell(pstOpenInfo->hResource);
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return s64Result;
@@ -2389,6 +2721,9 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_pBuffer != orxNULL);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Read");
 
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
@@ -2414,6 +2749,9 @@ orxS64 orxFASTCALL orxResource_Read(orxHANDLE _hResource, orxS64 _s64Size, void 
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return s64Result;
 }
@@ -2433,6 +2771,9 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_pBuffer != orxNULL);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Write");
 
   /* Valid? */
   if((_hResource != orxHANDLE_UNDEFINED) && (_hResource != orxNULL))
@@ -2462,6 +2803,9 @@ orxS64 orxFASTCALL orxResource_Write(orxHANDLE _hResource, orxS64 _s64Size, cons
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return s64Result;
 }
@@ -2477,6 +2821,9 @@ orxSTATUS orxFASTCALL orxResource_Delete(const orxSTRING _zLocation)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zLocation != orxNULL);
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Delete");
 
   /* Valid? */
   if(*_zLocation != orxCHAR_NULL)
@@ -2517,6 +2864,9 @@ orxSTATUS orxFASTCALL orxResource_Delete(const orxSTRING _zLocation)
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't delete resource <%s>: unknown resource type.", _zLocation);
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
@@ -2756,6 +3106,9 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_Sync");
+
   /* Gets group ID */
   stGroupID = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : orxSTRINGID_UNDEFINED;
 
@@ -2769,7 +3122,6 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
     || (pstGroup->stID == stGroupID))
     {
       orxHANDLE         hIterator;
-      orxU64            u64Key;
       orxRESOURCE_INFO *pstResourceInfo;
       const orxSTRING   zGroup;
 
@@ -2777,9 +3129,9 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
       zGroup = orxString_GetFromID(pstGroup->stID);
 
       /* For all cached resources */
-      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstResourceInfo);
+      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstResourceInfo);
           hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
+          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, orxNULL, (void **)&pstResourceInfo))
       {
         orxRESOURCE_STORAGE  *pstStorage;
         const orxSTRING       zName;
@@ -2884,6 +3236,9 @@ orxSTATUS orxFASTCALL orxResource_Sync(const orxSTRING _zGroup)
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return eResult;
 }
@@ -2902,6 +3257,9 @@ orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxResource_ClearCache");
+
   /* Waits for all pending operations to complete */
   while(sstResource.u32RequestProcessIndex != sstResource.u32RequestInIndex);
 
@@ -2918,13 +3276,12 @@ orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
     || (pstGroup->stID == stGroupID))
     {
       orxHANDLE         hIterator;
-      orxU64            u64Key;
       orxRESOURCE_INFO *pstResourceInfo;
 
       /* For all cached resources */
-      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstResourceInfo);
+      for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstResourceInfo);
           hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &u64Key, (void **)&pstResourceInfo))
+          hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, orxNULL, (void **)&pstResourceInfo))
       {
         /* Deletes its location */
         orxMemory_Free(pstResourceInfo->zLocation);
@@ -2940,6 +3297,9 @@ orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
       eResult = orxSTATUS_SUCCESS;
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
@@ -3043,4 +3403,102 @@ orxHANDLE orxFASTCALL orxResource_GetNextCachedLocation(const orxSTRING _zGroup,
 
   /* Done! */
   return hResult;
+}
+
+/** Sets an internal memory resource
+ * !IMPORTANT! The content of _pBuffer is *required* to remain valid until this resource has been successfully unset (by passing _s64Size=0 or _pBuffer=orxNULL), no internal copies will be made!
+ * @param[in] _zName            Name of the resource to set/unset
+ * @param[in] _s64Size          Size of the resource's data (0 to unset)
+ * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zName != orxNULL);
+
+  /* Valid name? */
+  if(*_zName != orxCHAR_NULL)
+  {
+    orxRESOURCE_MEMORY_DATA  *pstData;
+    orxSTRINGID               stNameID;
+
+    /* Gets its ID */
+    stNameID = orxString_Hash(_zName);
+
+    /* Gets its data */
+    pstData = (orxRESOURCE_MEMORY_DATA *)orxHashTable_Get(sstResource.pstMemoryDataTable, stNameID);
+
+    /* Found? */
+    if(pstData != orxNULL)
+    {
+      /* Has ref count? */
+      if(pstData->u32RefCount != 0)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+
+    /* Should continue? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Set? */
+      if((_s64Size > 0) && (_pBuffer != orxNULL))
+      {
+        /* No data? */
+        if(pstData == orxNULL)
+        {
+          /* Allocates its internal data */
+          pstData = (orxRESOURCE_MEMORY_DATA *)orxBank_Allocate(sstResource.pstMemoryDataBank);
+        }
+
+        /* Success? */
+        if(pstData != orxNULL)
+        {
+          /* Inits it */
+          orxMemory_Zero(pstData, sizeof(orxRESOURCE_MEMORY_DATA));
+          pstData->stNameID   = stNameID;
+          pstData->s64Size    = _s64Size;
+          pstData->s64Time    = (orxS64)(1000000 * orxSystem_GetSystemTime());
+          pstData->pu8Buffer  = (orxU8 *)_pBuffer;
+
+          /* Stores it */
+          eResult = orxHashTable_Set(sstResource.pstMemoryDataTable, stNameID, pstData);
+        }
+        else
+        {
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
+      }
+      /* Unset */
+      else
+      {
+        /* Has data? */
+        if(pstData != orxNULL)
+        {
+          /* Checks */
+          orxASSERT(pstData->u32RefCount == 0);
+
+          /* Removes it */
+          orxHashTable_Remove(sstResource.pstMemoryDataTable, stNameID);
+
+          /* Frees it */
+          orxBank_Free(sstResource.pstMemoryDataBank, pstData);
+        }
+      }
+    }
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done!*/
+  return eResult;
 }

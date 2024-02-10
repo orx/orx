@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -513,7 +513,7 @@ orxBOOL orxFASTCALL orxFile_Exists(const orxSTRING _zFileName)
   orxMemory_Zero(&stInfo, sizeof(orxFILE_INFO));
 
   /* Done! */
-  return(orxFile_GetInfo(_zFileName, &(stInfo)) != orxSTATUS_FAILURE);
+  return(orxFile_GetInfo(_zFileName, &stInfo) != orxSTATUS_FAILURE);
 }
 
 /** Starts a new file search: finds the first file/directory that will match to the given pattern (ex: /bin/foo*)

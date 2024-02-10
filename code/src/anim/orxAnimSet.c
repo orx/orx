@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1776,9 +1776,17 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) == orxNULL)
         {
           orxGRAPHIC *pstGraphic;
+          orxBOOL     bDebugLevelBackup;
+
+          /* Disables display logs */
+          bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
 
           /* Creates graphic */
           pstGraphic = orxGraphic_CreateFromConfig(acAnimBuffer);
+
+          /* Re-enables display logs */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
 
           /* Valid? */
           if(pstGraphic != orxNULL)
@@ -1800,8 +1808,12 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* Not a text? */
           if(bIsText == orxFALSE)
           {
-            /* Stops */
-            bContinue = orxFALSE;
+            /* Not auto-stop mode? */
+            if(s32MaxFrames != 0)
+            {
+              /* Stops */
+              bContinue = orxFALSE;
+            }
           }
         }
       }
@@ -1951,7 +1963,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           const orxSTRING zNewFrameParent;
           orxFLOAT        fEventValue = orxFLOAT_0, fDuration;
           orxS32          s32EventValueCount;
-          orxBOOL         bDebugLevelBackup, bTempSize = orxFALSE, bTempOrigin = orxFALSE;
+          orxBOOL         bDebugLevelBackup, bTempSize = orxFALSE, bTempOrigin = orxFALSE, bTempFrameIndex = orxFALSE, bTempTexture = orxFALSE;
           orxCHAR         acParentBuffer[128], acFrameBuffer[128];
 
           /* Has prefix? */
@@ -2029,8 +2041,8 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               /* No frame size and not a text? */
               if((orxVector_IsNull(&vFrameSize) != orxFALSE) && (bIsText == orxFALSE))
               {
-                /* Single frame animation? */
-                if((s32MaxFrames == 1) || (s32MaxFrames < 0))
+                /* Single frame animation or auto-stop mode? */
+                if(s32MaxFrames <= 1)
                 {
                   /* Use texture size as frame size */
                   orxVector_Copy(&vFrameSize, &vTextureSize);
@@ -2052,14 +2064,18 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                 }
               }
 
-              /* Stores default one */
-              orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vFrameSize);
+              /* Is size valid? */
+              if(orxVector_IsNull(&vFrameSize) == orxFALSE)
+              {
+                /* Stores it */
+                orxConfig_SetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vFrameSize);
+
+                /* Updates status */
+                bTempSize = orxTRUE;
+              }
 
               /* Copies to local */
               orxVector_Copy(&vCurrentSize, &vFrameSize);
-
-              /* Updates status */
-              bTempSize = orxTRUE;
             }
 
             /* Should go to next row? */
@@ -2205,39 +2221,65 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
             /* Moves to next frame on same row */
             *pfRowOrigin += fRowSign * *pfRowDelta;
+
+            /* Has prefix? */
+            if(*zPrefix != orxCHAR_NULL)
+            {
+              /* Sets new parent's parent */
+              orxConfig_SetParent(zNewFrameParent, zCurrentSection);
+            }
+            else
+            {
+              /* Sets frame section's parent */
+              orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
+            }
           }
           else
           {
+            /* Has prefix? */
+            if(*zPrefix != orxCHAR_NULL)
+            {
+              /* Sets new parent's parent */
+              orxConfig_SetParent(zNewFrameParent, zCurrentSection);
+            }
+            else
+            {
+              /* Sets frame section's parent */
+              orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
+            }
+
+            /* Has frame index? */
+            if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
+            {
+              /* Updates frame ID */
+              u32FrameID = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
+            }
+            else
+            {
+              orxCHAR acFrameIndexBuffer[64];
+
+              /* Stores frame ID as index */
+              orxString_NPrint(acFrameIndexBuffer, sizeof(acFrameIndexBuffer), "%0*u", u32Digits, u32FrameID);
+              orxConfig_SetString(orxANIMSET_KZ_CONFIG_FRAME_INDEX, acFrameIndexBuffer);
+
+              /* Updates status */
+              bTempFrameIndex = orxTRUE;
+            }
+
             /* Doesn't have texture? */
             if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME) == orxFALSE)
             {
               orxCHAR acTextureBuffer[128];
-
-              /* Has frame index? */
-              if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX) != orxFALSE)
-              {
-                /* Updates frame ID */
-                u32FrameID = orxConfig_GetU32(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
-              }
 
               /* Gets texture name */
               orxString_NPrint(acTextureBuffer, sizeof(acTextureBuffer), "%s%s%0*u%s%s", zPrefix, zAnim, u32Digits, u32FrameID, (*zExt != orxCHAR_NULL) ? "." : orxSTRING_EMPTY, zExt);
 
               /* Sets it */
               orxConfig_SetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME, acTextureBuffer);
-            }
-          }
 
-          /* Has prefix? */
-          if(*zPrefix != orxCHAR_NULL)
-          {
-            /* Sets new parent's parent */
-            orxConfig_SetParent(zNewFrameParent, zCurrentSection);
-          }
-          else
-          {
-            /* Sets frame section's parent */
-            orxConfig_SetParent(acFrameBuffer, zNewFrameParent);
+              /* Updates status */
+              bTempTexture = orxTRUE;
+            }
           }
 
           /* Gets event value count */
@@ -2279,6 +2321,20 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           {
             /* Clears it */
             orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN);
+          }
+
+          /* Use temp frame index? */
+          if(bTempFrameIndex != orxFALSE)
+          {
+            /* Clears it */
+            orxConfig_ClearValue(orxANIMSET_KZ_CONFIG_FRAME_INDEX);
+          }
+
+          /* Use temp texture? */
+          if(bTempTexture != orxFALSE)
+          {
+            /* Clears it */
+            orxConfig_ClearValue(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
           }
 
           /* Has prefix? */

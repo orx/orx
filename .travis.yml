@@ -1,16 +1,14 @@
 language: c++
 
-matrix:
+jobs:
   include:
     - os: linux
       compiler: gcc
-      sudo: required
       script: ./code/build/travis/desktop.sh
       name: Linux / GCC
 
     - os: linux
       compiler: clang
-      sudo: required
       script: ./code/build/travis/desktop.sh
       name: Linux / Clang
 
@@ -81,22 +79,21 @@ matrix:
     #   name: OSX / XCode 14
 
     - language: android
-      jdk: openjdk11
+      jdk: openjdk17
       android:
         components:
-          - build-tools-29.0.3
+          - build-tools-34.0.0
       before_install:
-        - touch $HOME/.android/repositories.cfg
-        - wget "https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip" -O commandlinetools.zip
-        - unzip commandlinetools.zip -d $ANDROID_HOME
-        - yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --install "ndk;23.1.7779620" --sdk_root=$ANDROID_HOME
+        - sudo mkdir -p /usr/local/android-sdk/licenses/
+        - sudo touch /usr/local/android-sdk/licenses/android-sdk-license
+        - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" | sudo tee -a /usr/local/android-sdk/licenses/android-sdk-license
       install:
         - ./setup.sh
       before_script:
         - export ORX=$TRAVIS_BUILD_DIR/code
       script:
         - ./code/build/travis/android.sh
-      name: Android / OpenJDK 11
+      name: Android / OpenJDK 17
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then

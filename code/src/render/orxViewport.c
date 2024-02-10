@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -149,10 +149,6 @@ static orxVIEWPORT_STATIC sstViewport;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-
-/** Semi-private, internal-use only forward declarations
- */
-orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector);
 
 /** Command: Create
  */
@@ -941,47 +937,43 @@ static orxSTATUS orxFASTCALL orxViewport_EventHandler(const orxEVENT *_pstEvent)
           /* Auto-resize? */
           else if(orxStructure_TestFlags(pstViewport, orxVIEWPORT_KU32_FLAG_AUTO_RESIZE))
           {
-            /* Has owned textures? */
-            if(pstViewport->u32TextureOwnerFlags != 0)
+            orxU32 i;
+
+            /* Updates relative position & dimension */
+            orxViewport_SetSize(pstViewport, pstViewport->fRealWidth * fWidthRatio, pstViewport->fRealHeight * fHeightRatio);
+            orxViewport_SetPosition(pstViewport, pstViewport->fRealX * fWidthRatio, pstViewport->fRealY * fHeightRatio);
+
+            /* For all textures */
+            for(i = 0; i < pstViewport->u32TextureCount; i++)
             {
-              orxU32 i;
-
-              /* Updates relative position & dimension */
-              orxViewport_SetSize(pstViewport, pstViewport->fRealWidth * fWidthRatio, pstViewport->fRealHeight * fHeightRatio);
-              orxViewport_SetPosition(pstViewport, pstViewport->fRealX * fWidthRatio, pstViewport->fRealY * fHeightRatio);
-
-              /* For all textures */
-              for(i = 0; i < pstViewport->u32TextureCount; i++)
+              /* Is owned? */
+              if(pstViewport->u32TextureOwnerFlags & (1 << i))
               {
-                /* Is owned? */
-                if(pstViewport->u32TextureOwnerFlags & (1 << i))
-                {
-                  orxBITMAP  *pstBitmap;
-                  orxCHAR     acBuffer[256];
+                orxBITMAP  *pstBitmap;
+                orxCHAR     acBuffer[256];
 
-                  /* Gets its name */
-                  orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxTexture_GetName(pstViewport->apstTextureList[i]));
+                /* Gets its name */
+                orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxTexture_GetName(pstViewport->apstTextureList[i]));
 
-                  /* Unlinks its bitmap */
-                  orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);
+                /* Unlinks its bitmap */
+                orxTexture_UnlinkBitmap(pstViewport->apstTextureList[i]);
 
-                  /* Re-creates it as the right size */
-                  pstBitmap = orxDisplay_CreateBitmap(orxF2U(pstViewport->fWidth), orxF2U(pstViewport->fHeight));
+                /* Re-creates it as the right size */
+                pstBitmap = orxDisplay_CreateBitmap(orxF2U(pstViewport->fWidth), orxF2U(pstViewport->fHeight));
 
-                  /* Checks */
-                  orxASSERT(pstBitmap != orxNULL);
+                /* Checks */
+                orxASSERT(pstBitmap != orxNULL);
 
-                  /* Clears it */
-                  orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
+                /* Clears it */
+                orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
 
-                  /* Re-links it */
-                  orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer, orxTRUE);
-                }
+                /* Re-links it */
+                orxTexture_LinkBitmap(pstViewport->apstTextureList[i], pstBitmap, acBuffer, orxTRUE);
               }
-
-              /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_VIEWPORT, orxVIEWPORT_EVENT_RESIZE, (orxHANDLE)pstViewport, (orxHANDLE)pstViewport, orxNULL);
             }
+
+            /* Sends event */
+            orxEVENT_SEND(orxEVENT_TYPE_VIEWPORT, orxVIEWPORT_EVENT_RESIZE, (orxHANDLE)pstViewport, (orxHANDLE)pstViewport, orxNULL);
           }
         }
       }
@@ -1724,27 +1716,19 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
       /* Has background color? */
       if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR) != orxFALSE)
       {
-        orxCOLOR        stColor;
-        const orxSTRING zColor;
+        orxCOLOR stColor;
 
-        /* Gets literal color */
-        zColor = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR);
-
-        /* Not a vector value? */
-        if(orxConfig_ToVector(zColor, &(stColor.vRGB)) == orxNULL)
+        /* Is a vector value? */
+        if(orxConfig_GetColorVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, orxCOLORSPACE_COMPONENT, &(stColor.vRGB)) != orxNULL)
         {
-          /* Pushes color section */
-          orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
-
-          /* Retrieves its value */
-          orxConfig_GetVector(zColor, &(stColor.vRGB));
-
-          /* Pops config section */
-          orxConfig_PopSection();
+          /* Normalizes it */
+          orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
         }
-
-        /* Normalizes it */
-        orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
+        else
+        {
+          /* Defaults to black */
+          orxVector_SetAll(&(stColor.vRGB), orxFLOAT_0);
+        }
 
         /* Gets alpha value */
         stColor.fAlpha = (orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) != orxFALSE) ? orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) : orxFLOAT_1;

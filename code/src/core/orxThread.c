@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -370,9 +370,6 @@ orxSTATUS orxFASTCALL orxThread_Init()
       /* Sets thread CPU affinity to remain on the same core */
       SetThreadAffinityMask(sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread, 1);
 
-      /* Asks for small time slices */
-      timeBeginPeriod(1);
-
 #else /* __orxWINDOWS__ */
 
       /* Inits main thread info */
@@ -418,13 +415,6 @@ orxSTATUS orxFASTCALL orxThread_Init()
         orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
         orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
         orxThread_DeleteSemaphore(sstThread.pstWorkerSemaphore);
-
-#ifdef __orxWINDOWS__
-
-        /* Asks for small time slices */
-        timeEndPeriod(1);
-
-#endif /* __orxWINDOWS__ */
 
         /* Updates status */
         sstThread.u32Flags &= ~orxTHREAD_KU32_STATIC_FLAG_READY;
@@ -488,13 +478,6 @@ void orxFASTCALL orxThread_Exit()
 
     /* Joins all remaining threads */
     orxThread_JoinAll();
-
-#ifdef __orxWINDOWS__
-
-    /* Resets time slices */
-    timeEndPeriod(1);
-
-#endif /* __orxWINDOWS__ */
 
     /* Deletes semaphores */
     orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);

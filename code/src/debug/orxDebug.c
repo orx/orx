@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -46,6 +46,7 @@
 
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
+  #undef WIN32_LEAN_AND_MEAN
 
 #endif /* __orxWINDOWS__ */
 
@@ -174,6 +175,8 @@ static orxINLINE const orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
 
     default: zResult = "INVALID DEBUG LEVEL"; break;
   }
+
+#undef orxDEBUG_DECLARE_LEVEL_ENTRY
 
   /* Done! */
   return zResult;
@@ -659,8 +662,8 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 #if defined(__orxANDROID__)
 
 #define  LOG_TAG    "orxDebug"
-#define  LOGI(...)  __android_log_write(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGD(...)  __android_log_write(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+#define  LOGI(...)  __android_log_write(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define  LOGD(...)  __android_log_write(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 
         if(_eLevel == orxDEBUG_LEVEL_LOG)
         {
@@ -670,6 +673,10 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
         {
           LOGD(zBuffer);
         }
+
+#undef LOG_TAG
+#undef LOGI
+#undef LOGD
 
 #else /* __orxANDROID__ */
 

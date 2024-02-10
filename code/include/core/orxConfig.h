@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -199,7 +199,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetParent(const orxSTRIN
 
 /** Gets a section's parent
  * @param[in] _zSectionName     Concerned section
- * @return Section's parent name if set or orxSTRING_EMPTY if no parent has been forced, orxNULL otherwise
+ * @return Section's parent name if set, orxSTRING_EMPTY if no parent has been forced or orxNULL otherwise
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRING _zSectionName);
 
@@ -208,6 +208,11 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRIN
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetDefaultParent(const orxSTRING _zSectionName);
+
+/** Gets default parent for all sections
+ * @return Default parent name if set, orxNULL otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetDefaultParent();
 
 /** Gets current working section
  * @return Current selected section
@@ -360,6 +365,14 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_GetBool(const orxSTRING 
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pvVector);
 
+/** Reads a vector value from config and interpret any color literals in the given color space (will take a random value if a list is provided for this key)
+ * @param[in]   _zKey             Key name
+ * @param[in]   _eColorSpace      Color space to use when translating color literals (NONE: no literal, COMPONENT: 0-255 RGB values, all others: normalized spaces)
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetColorVector(const orxSTRING _zKey, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
+
 /** Duplicates a raw value (string) from config
  * @param[in] _zKey             Key name
  * @return The value. If non-null, needs to be deleted by the caller with orxString_Delete()
@@ -500,6 +513,15 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_GetListBool(const orxSTR
  * @return The value
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s32ListIndex, orxVECTOR *_pvVector);
+
+/** Reads a vector value from config list and interpret any color literals in the given color space
+ * @param[in]   _zKey             Key name
+ * @param[in]   _s32ListIndex     Index of desired item in list / -1 for random
+ * @param[in]   _eColorSpace      Color space to use when translating color literals (NONE: no literal, COMPONENT: 0-255 RGB values, all others: normalized spaces)
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetListColorVector(const orxSTRING _zKey, orxS32 _s32ListIndex, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
 
 /** Writes a list of string values to config
  * @param[in] _zKey             Key name

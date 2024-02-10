@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -46,6 +46,11 @@
 
 #define orxKEYBOARD_KU32_STATIC_MASK_ALL        0xFFFFFFFF /**< All mask */
 
+#define orxKEYBOARD_KU32_BOUND_KEY_NONE         0x00000000  /** No flags */
+
+#define orxKEYBOARD_KU32_BOUND_KEY_VOLUME_UP    0x00000001  /**< Volume up flag */
+#define orxKEYBOARD_KU32_BOUND_KEY_VOLUME_DOWN  0x00000002  /**< Volume down flag */
+
 /** Misc
  */
 #define orxKEYBOARD_KU32_BUFFER_SIZE            64
@@ -61,6 +66,7 @@ typedef struct __orxKEYBOARD_STATIC_t
 {
   orxU32            u32Flags;
   orxBOOL           abKeyPressed[orxKEYBOARD_KEY_NUMBER];
+  orxU32            u32BoundKeys;
 
   orxU32            u32KeyReadIndex, u32KeyWriteIndex;
   orxU32            au32KeyBuffer[orxKEYBOARD_KU32_BUFFER_SIZE];
@@ -116,79 +122,156 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
   /* Depending on key */
   switch(_eKey)
   {
-    case AKEYCODE_BACK:               {eResult = orxKEYBOARD_KEY_ESCAPE; break;}
-    case AKEYCODE_SPACE:              {eResult = orxKEYBOARD_KEY_SPACE; break;}
-    case AKEYCODE_ENTER:              {eResult = orxKEYBOARD_KEY_ENTER; break;}
-    case AKEYCODE_BUTTON_SELECT:      {eResult = orxKEYBOARD_KEY_ENTER; break;}
-    case AKEYCODE_DEL:                {eResult = orxKEYBOARD_KEY_BACKSPACE; break;}
-    case AKEYCODE_TAB:                {eResult = orxKEYBOARD_KEY_TAB; break;}
-    case AKEYCODE_PAGE_UP:            {eResult = orxKEYBOARD_KEY_PAGE_UP; break;}
-    case AKEYCODE_PAGE_DOWN:          {eResult = orxKEYBOARD_KEY_PAGE_DOWN; break;}
-    case AKEYCODE_PLUS:               {eResult = orxKEYBOARD_KEY_NUMPAD_ADD; break;}
-    case AKEYCODE_STAR:               {eResult = orxKEYBOARD_KEY_NUMPAD_MULTIPLY; break;}
-    case AKEYCODE_MEDIA_PLAY_PAUSE:   {eResult = orxKEYBOARD_KEY_PAUSE; break;}
-    case AKEYCODE_ALT_RIGHT:          {eResult = orxKEYBOARD_KEY_RALT; break;}
-    case AKEYCODE_SHIFT_RIGHT:        {eResult = orxKEYBOARD_KEY_RSHIFT; break;}
-    case AKEYCODE_ALT_LEFT:           {eResult = orxKEYBOARD_KEY_LALT; break;}
-    case AKEYCODE_SHIFT_LEFT:         {eResult = orxKEYBOARD_KEY_LSHIFT; break;}
-    case AKEYCODE_MENU:               {eResult = orxKEYBOARD_KEY_MENU; break;}
-    case AKEYCODE_LEFT_BRACKET:       {eResult = orxKEYBOARD_KEY_LBRACKET; break;}
-    case AKEYCODE_RIGHT_BRACKET:      {eResult = orxKEYBOARD_KEY_RBRACKET; break;}
-    case AKEYCODE_SEMICOLON:          {eResult = orxKEYBOARD_KEY_SEMICOLON; break;}
-    case AKEYCODE_COMMA:              {eResult = orxKEYBOARD_KEY_COMMA; break;}
-    case AKEYCODE_PERIOD:             {eResult = orxKEYBOARD_KEY_PERIOD; break;}
-    case AKEYCODE_APOSTROPHE:         {eResult = orxKEYBOARD_KEY_QUOTE; break;}
-    case AKEYCODE_SLASH:              {eResult = orxKEYBOARD_KEY_SLASH; break;}
-    case AKEYCODE_BACKSLASH:          {eResult = orxKEYBOARD_KEY_BACKSLASH; break;}
-    case AKEYCODE_EQUALS:             {eResult = orxKEYBOARD_KEY_EQUAL; break;}
-    case AKEYCODE_MINUS:              {eResult = orxKEYBOARD_KEY_DASH; break;}
-    case AKEYCODE_DPAD_UP:            {eResult = orxKEYBOARD_KEY_UP; break;}
-    case AKEYCODE_DPAD_RIGHT:         {eResult = orxKEYBOARD_KEY_RIGHT; break;}
-    case AKEYCODE_DPAD_DOWN:          {eResult = orxKEYBOARD_KEY_DOWN; break;}
-    case AKEYCODE_DPAD_LEFT:          {eResult = orxKEYBOARD_KEY_LEFT; break;}
-    case AKEYCODE_VOLUME_DOWN:        {eResult = orxKEYBOARD_KEY_VOLUME_DOWN; break;}
-    case AKEYCODE_VOLUME_UP:          {eResult = orxKEYBOARD_KEY_VOLUME_UP; break;}
-    case AKEYCODE_A:                  {eResult = orxKEYBOARD_KEY_A; break;}
-    case AKEYCODE_Z:                  {eResult = orxKEYBOARD_KEY_Z; break;}
-    case AKEYCODE_E:                  {eResult = orxKEYBOARD_KEY_E; break;}
-    case AKEYCODE_R:                  {eResult = orxKEYBOARD_KEY_R; break;}
-    case AKEYCODE_T:                  {eResult = orxKEYBOARD_KEY_T; break;}
-    case AKEYCODE_Y:                  {eResult = orxKEYBOARD_KEY_Y; break;}
-    case AKEYCODE_U:                  {eResult = orxKEYBOARD_KEY_U; break;}
-    case AKEYCODE_I:                  {eResult = orxKEYBOARD_KEY_I; break;}
-    case AKEYCODE_O:                  {eResult = orxKEYBOARD_KEY_O; break;}
-    case AKEYCODE_P:                  {eResult = orxKEYBOARD_KEY_P; break;}
-    case AKEYCODE_Q:                  {eResult = orxKEYBOARD_KEY_Q; break;}
-    case AKEYCODE_S:                  {eResult = orxKEYBOARD_KEY_S; break;}
-    case AKEYCODE_D:                  {eResult = orxKEYBOARD_KEY_D; break;}
-    case AKEYCODE_F:                  {eResult = orxKEYBOARD_KEY_F; break;}
-    case AKEYCODE_G:                  {eResult = orxKEYBOARD_KEY_G; break;}
-    case AKEYCODE_H:                  {eResult = orxKEYBOARD_KEY_H; break;}
-    case AKEYCODE_J:                  {eResult = orxKEYBOARD_KEY_J; break;}
-    case AKEYCODE_K:                  {eResult = orxKEYBOARD_KEY_K; break;}
-    case AKEYCODE_L:                  {eResult = orxKEYBOARD_KEY_L; break;}
-    case AKEYCODE_M:                  {eResult = orxKEYBOARD_KEY_M; break;}
-    case AKEYCODE_W:                  {eResult = orxKEYBOARD_KEY_W; break;}
-    case AKEYCODE_X:                  {eResult = orxKEYBOARD_KEY_X; break;}
-    case AKEYCODE_C:                  {eResult = orxKEYBOARD_KEY_C; break;}
-    case AKEYCODE_V:                  {eResult = orxKEYBOARD_KEY_V; break;}
-    case AKEYCODE_B:                  {eResult = orxKEYBOARD_KEY_B; break;}
-    case AKEYCODE_N:                  {eResult = orxKEYBOARD_KEY_N; break;}
-    case AKEYCODE_0:                  {eResult = orxKEYBOARD_KEY_0; break;}
-    case AKEYCODE_1:                  {eResult = orxKEYBOARD_KEY_1; break;}
-    case AKEYCODE_2:                  {eResult = orxKEYBOARD_KEY_2; break;}
-    case AKEYCODE_3:                  {eResult = orxKEYBOARD_KEY_3; break;}
-    case AKEYCODE_4:                  {eResult = orxKEYBOARD_KEY_4; break;}
-    case AKEYCODE_5:                  {eResult = orxKEYBOARD_KEY_5; break;}
-    case AKEYCODE_6:                  {eResult = orxKEYBOARD_KEY_6; break;}
-    case AKEYCODE_7:                  {eResult = orxKEYBOARD_KEY_7; break;}
-    case AKEYCODE_8:                  {eResult = orxKEYBOARD_KEY_8; break;}
-    case AKEYCODE_9:                  {eResult = orxKEYBOARD_KEY_9; break;}
-    default:                          {eResult = orxKEYBOARD_KEY_NONE; break;}
+    case AKEYCODE_BACK:               { eResult = orxKEYBOARD_KEY_ESCAPE; break; }
+    case AKEYCODE_SPACE:              { eResult = orxKEYBOARD_KEY_SPACE; break; }
+    case AKEYCODE_ENTER:              { eResult = orxKEYBOARD_KEY_ENTER; break; }
+    case AKEYCODE_BUTTON_SELECT:      { eResult = orxKEYBOARD_KEY_ENTER; break; }
+    case AKEYCODE_DEL:                { eResult = orxKEYBOARD_KEY_BACKSPACE; break; }
+    case AKEYCODE_TAB:                { eResult = orxKEYBOARD_KEY_TAB; break; }
+    case AKEYCODE_PAGE_UP:            { eResult = orxKEYBOARD_KEY_PAGE_UP; break; }
+    case AKEYCODE_PAGE_DOWN:          { eResult = orxKEYBOARD_KEY_PAGE_DOWN; break; }
+    case AKEYCODE_PLUS:               { eResult = orxKEYBOARD_KEY_NUMPAD_ADD; break; }
+    case AKEYCODE_STAR:               { eResult = orxKEYBOARD_KEY_NUMPAD_MULTIPLY; break; }
+    case AKEYCODE_MEDIA_PLAY_PAUSE:   { eResult = orxKEYBOARD_KEY_PAUSE; break; }
+    case AKEYCODE_ALT_RIGHT:          { eResult = orxKEYBOARD_KEY_RALT; break; }
+    case AKEYCODE_SHIFT_RIGHT:        { eResult = orxKEYBOARD_KEY_RSHIFT; break; }
+    case AKEYCODE_ALT_LEFT:           { eResult = orxKEYBOARD_KEY_LALT; break; }
+    case AKEYCODE_SHIFT_LEFT:         { eResult = orxKEYBOARD_KEY_LSHIFT; break; }
+    case AKEYCODE_MENU:               { eResult = orxKEYBOARD_KEY_MENU; break; }
+    case AKEYCODE_LEFT_BRACKET:       { eResult = orxKEYBOARD_KEY_LBRACKET; break; }
+    case AKEYCODE_RIGHT_BRACKET:      { eResult = orxKEYBOARD_KEY_RBRACKET; break; }
+    case AKEYCODE_SEMICOLON:          { eResult = orxKEYBOARD_KEY_SEMICOLON; break; }
+    case AKEYCODE_COMMA:              { eResult = orxKEYBOARD_KEY_COMMA; break; }
+    case AKEYCODE_PERIOD:             { eResult = orxKEYBOARD_KEY_PERIOD; break; }
+    case AKEYCODE_APOSTROPHE:         { eResult = orxKEYBOARD_KEY_QUOTE; break; }
+    case AKEYCODE_SLASH:              { eResult = orxKEYBOARD_KEY_SLASH; break; }
+    case AKEYCODE_BACKSLASH:          { eResult = orxKEYBOARD_KEY_BACKSLASH; break; }
+    case AKEYCODE_EQUALS:             { eResult = orxKEYBOARD_KEY_EQUAL; break; }
+    case AKEYCODE_MINUS:              { eResult = orxKEYBOARD_KEY_DASH; break; }
+    case AKEYCODE_DPAD_UP:            { eResult = orxKEYBOARD_KEY_UP; break; }
+    case AKEYCODE_DPAD_RIGHT:         { eResult = orxKEYBOARD_KEY_RIGHT; break; }
+    case AKEYCODE_DPAD_DOWN:          { eResult = orxKEYBOARD_KEY_DOWN; break; }
+    case AKEYCODE_DPAD_LEFT:          { eResult = orxKEYBOARD_KEY_LEFT; break; }
+    case AKEYCODE_VOLUME_DOWN:        { eResult = orxKEYBOARD_KEY_VOLUME_DOWN; break; }
+    case AKEYCODE_VOLUME_UP:          { eResult = orxKEYBOARD_KEY_VOLUME_UP; break; }
+    case AKEYCODE_A:                  { eResult = orxKEYBOARD_KEY_A; break; }
+    case AKEYCODE_Z:                  { eResult = orxKEYBOARD_KEY_Z; break; }
+    case AKEYCODE_E:                  { eResult = orxKEYBOARD_KEY_E; break; }
+    case AKEYCODE_R:                  { eResult = orxKEYBOARD_KEY_R; break; }
+    case AKEYCODE_T:                  { eResult = orxKEYBOARD_KEY_T; break; }
+    case AKEYCODE_Y:                  { eResult = orxKEYBOARD_KEY_Y; break; }
+    case AKEYCODE_U:                  { eResult = orxKEYBOARD_KEY_U; break; }
+    case AKEYCODE_I:                  { eResult = orxKEYBOARD_KEY_I; break; }
+    case AKEYCODE_O:                  { eResult = orxKEYBOARD_KEY_O; break; }
+    case AKEYCODE_P:                  { eResult = orxKEYBOARD_KEY_P; break; }
+    case AKEYCODE_Q:                  { eResult = orxKEYBOARD_KEY_Q; break; }
+    case AKEYCODE_S:                  { eResult = orxKEYBOARD_KEY_S; break; }
+    case AKEYCODE_D:                  { eResult = orxKEYBOARD_KEY_D; break; }
+    case AKEYCODE_F:                  { eResult = orxKEYBOARD_KEY_F; break; }
+    case AKEYCODE_G:                  { eResult = orxKEYBOARD_KEY_G; break; }
+    case AKEYCODE_H:                  { eResult = orxKEYBOARD_KEY_H; break; }
+    case AKEYCODE_J:                  { eResult = orxKEYBOARD_KEY_J; break; }
+    case AKEYCODE_K:                  { eResult = orxKEYBOARD_KEY_K; break; }
+    case AKEYCODE_L:                  { eResult = orxKEYBOARD_KEY_L; break; }
+    case AKEYCODE_M:                  { eResult = orxKEYBOARD_KEY_M; break; }
+    case AKEYCODE_W:                  { eResult = orxKEYBOARD_KEY_W; break; }
+    case AKEYCODE_X:                  { eResult = orxKEYBOARD_KEY_X; break; }
+    case AKEYCODE_C:                  { eResult = orxKEYBOARD_KEY_C; break; }
+    case AKEYCODE_V:                  { eResult = orxKEYBOARD_KEY_V; break; }
+    case AKEYCODE_B:                  { eResult = orxKEYBOARD_KEY_B; break; }
+    case AKEYCODE_N:                  { eResult = orxKEYBOARD_KEY_N; break; }
+    case AKEYCODE_0:                  { eResult = orxKEYBOARD_KEY_0; break; }
+    case AKEYCODE_1:                  { eResult = orxKEYBOARD_KEY_1; break; }
+    case AKEYCODE_2:                  { eResult = orxKEYBOARD_KEY_2; break; }
+    case AKEYCODE_3:                  { eResult = orxKEYBOARD_KEY_3; break; }
+    case AKEYCODE_4:                  { eResult = orxKEYBOARD_KEY_4; break; }
+    case AKEYCODE_5:                  { eResult = orxKEYBOARD_KEY_5; break; }
+    case AKEYCODE_6:                  { eResult = orxKEYBOARD_KEY_6; break; }
+    case AKEYCODE_7:                  { eResult = orxKEYBOARD_KEY_7; break; }
+    case AKEYCODE_8:                  { eResult = orxKEYBOARD_KEY_8; break; }
+    case AKEYCODE_9:                  { eResult = orxKEYBOARD_KEY_9; break; }
+    default:                          { eResult = orxKEYBOARD_KEY_NONE; break; }
   }
 
   /* Done! */
   return eResult;
+}
+
+static void orxFASTCALL orxKeyboard_Android_UpdateKeyFilterState(const orxCLOCK_INFO* pClockInfo, void* pContext) {
+  orxU32 u32BoundKeys;
+  const orxSTRING zInputSet = orxNULL;
+  const orxSTRING zPreviousSet;
+  const orxSTRING zName;
+
+#define orxKEYBOARD_UPDATE_BOUND_KEY(KEY)                                                                                                       \
+  do                                                                                                                                            \
+  {                                                                                                                                             \
+    if(orxInput_GetBoundInput(orxINPUT_TYPE_KEYBOARD_KEY, orxKEYBOARD_KEY_##KEY, orxINPUT_MODE_FULL, 0, &zName, orxNULL) != orxSTATUS_FAILURE)  \
+    {                                                                                                                                           \
+      orxFLAG_SET(u32BoundKeys, orxKEYBOARD_KU32_BOUND_KEY_##KEY, orxKEYBOARD_KU32_BOUND_KEY_NONE);                                             \
+    }                                                                                                                                           \
+  } while(orxFALSE)
+
+  /* Unbound keys are handled by system */
+  u32BoundKeys = orxKEYBOARD_KU32_BOUND_KEY_NONE;
+
+  /* Gets previous set */
+  zPreviousSet = orxInput_GetCurrentSet();
+
+  while((zInputSet = orxInput_GetNextSet(zInputSet)))
+  {
+    if(orxInput_IsSetEnabled(zInputSet))
+    {
+      /* Selects set */
+      orxInput_SelectSet(zInputSet);
+
+      orxKEYBOARD_UPDATE_BOUND_KEY(VOLUME_UP);
+      orxKEYBOARD_UPDATE_BOUND_KEY(VOLUME_DOWN);
+
+      /* Restores previous set */
+      orxInput_SelectSet(zPreviousSet);
+    }
+  }
+
+  /* Updates bound keys */
+  sstKeyboard.u32BoundKeys = u32BoundKeys;
+
+#undef orxKEYBOARD_UPDATE_BOUND_KEY
+}
+
+static bool orxKeyboard_Android_KeyEventFilter(const GameActivityKeyEvent *event)
+{
+  bool bAllowKey;
+
+  switch(event->keyCode)
+  {
+    case AKEYCODE_VOLUME_DOWN:
+    {
+      bAllowKey = orxFLAG_TEST(sstKeyboard.u32BoundKeys, orxKEYBOARD_KU32_BOUND_KEY_VOLUME_DOWN);
+      break;
+    }
+    case AKEYCODE_VOLUME_UP:
+    {
+      bAllowKey = orxFLAG_TEST(sstKeyboard.u32BoundKeys, orxKEYBOARD_KU32_BOUND_KEY_VOLUME_UP);
+      break;
+    }
+    case AKEYCODE_VOLUME_MUTE:
+    case AKEYCODE_CAMERA:
+    case AKEYCODE_ZOOM_IN:
+    case AKEYCODE_ZOOM_OUT:
+    {
+      /* Note : Copied from android_native_app_glue.c in AGDK */
+      bAllowKey = false;
+      break;
+    }
+    default:
+    {
+      bAllowKey = true;
+      break;
+    }
+  }
+
+  return bAllowKey;
 }
 
 static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_pstEvent)
@@ -204,33 +287,36 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
   switch(pstKeyEvent->u32Action)
   {
     case orxANDROID_EVENT_KEYBOARD_DOWN:
+    {
       eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
-
-      if(eKey != orxKEYBOARD_KEY_NONE)
+      if (eKey != orxKEYBOARD_KEY_NONE)
       {
         sstKeyboard.abKeyPressed[eKey] = orxTRUE;
 
         /* Stores it */
         sstKeyboard.au32KeyBuffer[sstKeyboard.u32KeyWriteIndex] = pstKeyEvent->u32KeyCode;
-        sstKeyboard.u32KeyWriteIndex = (sstKeyboard.u32KeyWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+        sstKeyboard.u32KeyWriteIndex =
+                (sstKeyboard.u32KeyWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
 
         /* Full? */
-        if(sstKeyboard.u32KeyReadIndex == sstKeyboard.u32KeyWriteIndex)
+        if (sstKeyboard.u32KeyReadIndex == sstKeyboard.u32KeyWriteIndex)
         {
           /* Bounces read index */
-          sstKeyboard.u32KeyReadIndex = (sstKeyboard.u32KeyReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
+          sstKeyboard.u32KeyReadIndex =
+                  (sstKeyboard.u32KeyReadIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
         }
       }
       break;
-
+    }
     case orxANDROID_EVENT_KEYBOARD_UP:
+    {
       eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
-
       if(eKey != orxKEYBOARD_KEY_NONE)
       {
         sstKeyboard.abKeyPressed[eKey] = orxFALSE;
       }
       break;
+    }
   }
 
   /* Done! */
@@ -250,16 +336,16 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     /* Adds our keyboard event handlers */
     if((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
-      int i;
-      for(i = 0; i < orxKEYBOARD_KEY_NUMBER; i++)
-      {
-        sstKeyboard.abKeyPressed[i] = orxFALSE;
-      }
-
       /* Updates status */
       sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
     }
- }
+
+    /* Inits key filter */
+    orxAndroid_SetKeyFilter(orxKeyboard_Android_KeyEventFilter);
+
+    /* Registers filter state function */
+    orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxKeyboard_Android_UpdateKeyFilterState, orxNULL, orxMODULE_ID_KEYBOARD, orxCLOCK_PRIORITY_NORMAL);
+  }
 
   /* Done! */
   return eResult;
@@ -272,6 +358,12 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
   {
     /* Removes event handler */
     orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler);
+
+    /* Clears key filter */
+    orxAndroid_SetKeyFilter(NULL);
+
+    /* Unregisters filter state function */
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxKeyboard_Android_UpdateKeyFilterState);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));

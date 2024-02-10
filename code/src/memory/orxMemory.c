@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -469,6 +469,8 @@ const orxSTRING orxFASTCALL orxMemory_GetTypeName(orxMEMORY_TYPE _eMemType)
       zResult = orxSTRING_EMPTY;
     }
   }
+
+#undef orxMEMORY_DECLARE_TYPE_NAME
 
   /* Done! */
   return zResult;

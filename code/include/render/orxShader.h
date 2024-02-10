@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -196,9 +196,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddVectorParam(orxSHAD
 /** Adds a time parameter definition to a shader (parameters need to be set before compiling the shader code)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
+ * @param[in] _fWrap                  Time will wrap around after that amount of seconds, <= 0 to ignore
+ * @param[in] _zFXName                FX to apply as transformation (should be of type FLOAT), orxNULL for none
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fWrap, const orxSTRING _zFXName);
 
 /** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader

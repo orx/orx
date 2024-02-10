@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -64,7 +64,7 @@
 
 /** Misc
  */
-#define orxCAMERA_KU32_GROUP_ID_NUMBER                  16
+#define orxCAMERA_KU32_GROUP_ID_NUMBER                  32
 
 
 /** Internal camera structure
@@ -131,6 +131,21 @@ extern orxDLLAPI orxU32 orxFASTCALL                     orxCamera_GetGroupIDCoun
  * @return Group ID if index is valid, orxSTRINGID_UNDEFINED otherwise
  */
 extern orxDLLAPI orxSTRINGID orxFASTCALL                orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32 _u32Index);
+
+/** Enables/disables sorting for a group ID.
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32Index         Index of group ID to update
+ * @param[in] _bEnable          Enable / disable sorting
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                  orxCamera_EnableGroupIDSorting(orxCAMERA *_pstCamera, orxU32 _u32Index, orxBOOL _bEnable);
+
+/** Is sorting enabled for a group ID?
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32Index         Index of group ID to update
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                    orxCamera_IsGroupIDSortingEnabled(const orxCAMERA *_pstCamera, orxU32 _u32Index);
 
 
 /** Sets camera frustum

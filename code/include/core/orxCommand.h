@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -253,7 +253,7 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const o
 */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_astOperandList);
 
-/** Prints a variable to a buffer, according to its type (and ignoring any bloc/special character)
+/** Prints a variable to a buffer, according to its type (and ignoring any block/special character)
 * @param[out]  _zDstString    Destination string
 * @param[in]   _u32Size       Available string size, including terminating null character
 * @param[in]   _pstVar        Variable to print

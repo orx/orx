@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -141,7 +141,7 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
 
 /* *** Definition macro *** */
 #ifdef __orxMSVC__
-#pragma warning(disable : 4113)
+  #pragma warning(disable : 4113)
 #endif /* __orxMSVC__ */
 
 #define orxPLUGIN_DEFINE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...)          \
@@ -196,6 +196,10 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
     orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxMODULE_ID_##PLUGIN_SUFFIX, sastPluginFunctionInfo_##PLUGIN_SUFFIX, sizeof(sastPluginFunctionInfo_##PLUGIN_SUFFIX) / sizeof(orxPLUGIN_CORE_FUNCTION));
 
   #endif /* __orxEMBEDDED__ */
+
+#ifdef __orxMSVC__
+  #pragma warning(default : 4113)
+#endif /* __orxMSVC__ */
 
 #endif /* _orxPLUGIN_CORE_H_ */
 

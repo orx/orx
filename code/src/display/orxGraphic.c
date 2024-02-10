@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -135,10 +135,6 @@ static orxGRAPHIC_STATIC sstGraphic;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
-
-/** Semi-private, internal-use only forward declarations
- */
-orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector);
 
 /** Sets graphic data
  * @param[in]   _pstGraphic     Graphic concerned
@@ -867,39 +863,14 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has color? */
         if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_COLOR) != orxFALSE)
         {
-          orxVECTOR       vColor;
-          const orxSTRING zColor;
-
-          /* Gets its literal */
-          zColor = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_COLOR);
-
-          /* Is a vector value? */
-          if(orxConfig_ToVector(zColor, &vColor) != orxNULL)
+          /* Gets it */
+          if(orxConfig_GetColorVector(orxGRAPHIC_KZ_CONFIG_COLOR, orxCOLORSPACE_COMPONENT, &(pstResult->stColor.vRGB)) != orxNULL)
           {
-            /* Normalizes and applies it */
-            orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
+            /* Normalizes it */
+            orxVector_Mulf(&(pstResult->stColor.vRGB), &(pstResult->stColor.vRGB), orxCOLOR_NORMALIZER);
 
             /* Updates status */
             orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
-          }
-          /* Color literal */
-          else
-          {
-            /* Pushes color section */
-            orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
-
-            /* Retrieves its value */
-            if(orxConfig_GetVector(zColor, &vColor) != orxNULL)
-            {
-              /* Normalizes and applies it */
-              orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
-
-              /* Updates status */
-              orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
-            }
-
-            /* Pops config section */
-            orxConfig_PopSection();
           }
         }
         /* Has RGB values? */

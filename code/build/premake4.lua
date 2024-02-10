@@ -37,6 +37,7 @@ function initplatforms ()
     elseif os.is ("macosx") then
         return
         {
+            "universal64",
             "x64"
         }
     end
@@ -111,7 +112,7 @@ solution "orx"
         "../../extern/stb_image",
         "../../extern/miniaudio",
         "../../extern/stb_vorbis",
-        "../../extern/libwebp/include",
+        "../../extern/libwebp/src",
         "../../extern/basisu/include",
         "../../extern/qoi"
     }

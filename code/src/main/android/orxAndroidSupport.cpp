@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -36,7 +36,6 @@
 #if defined(TARGET_OS_ANDROID)
 
 #include <android/log.h>
-#include <sys/system_properties.h>
 
 #ifdef __orxDEBUG__
 
@@ -65,11 +64,16 @@
  */
 #define orxANDROID_KU32_ARGUMENT_BUFFER_SIZE    256    /**< Argument buffer size */
 #define orxANDROID_KU32_MAX_ARGUMENT_COUNT      16     /**< Maximum number of arguments */
+#define orxANDROID_KU32_KEY_BUFFER_SIZE         (AKEYCODE_PROFILE_SWITCH + 1)
 
 #define orxANDROID_GET_ACTION_INDEX(ACTION)     (((ACTION) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT)
 #define orxANDROID_GET_AXIS_X(EV, INDEX)        GameActivityPointerAxes_getX(&(EV)->pointers[INDEX])
 #define orxANDROID_GET_AXIS_Y(EV, INDEX)        GameActivityPointerAxes_getY(&(EV)->pointers[INDEX])
 
+#define orxANDROID_KEY_ACTION_NONE              0
+#define orxANDROID_KEY_ACTION_BASE              0x10000000
+#define orxANDROID_KEY_ACTION_DOWN              (orxANDROID_KEY_ACTION_BASE | AKEY_EVENT_ACTION_DOWN)
+#define orxANDROID_KEY_ACTION_UP                (orxANDROID_KEY_ACTION_BASE | AKEY_EVENT_ACTION_UP)
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -79,13 +83,13 @@
  */
 typedef struct __orxANDROID_STATIC_t
 {
-  orxBOOL bPaused;
-  orxBOOL bHasFocus;
-  orxFLOAT fSurfaceScale;
-  uint64_t activeAxisIds;
-  orxCHAR zArguments[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
-
-  struct android_app *app;
+  orxBOOL              bPaused;
+  orxBOOL              bHasFocus;
+  orxFLOAT             fSurfaceScale;
+  uint64_t             activeAxisIds;
+  orxCHAR              zArguments[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
+  orxU32               au32PendingKeyActions[orxANDROID_KU32_KEY_BUFFER_SIZE];
+  struct android_app  *app;
 } orxANDROID_STATIC;
 
 
@@ -116,22 +120,22 @@ static JNIEnv *orxAndroid_JNI_GetEnv()
    * Note: You can call this function any number of times for the same thread, there's no harm in it
    */
 
-  JNIEnv *env;
-  int status = jVM->AttachCurrentThread(&env, NULL);
+  JNIEnv *pstEnv;
+  int status = jVM->AttachCurrentThread(&pstEnv, NULL);
   if(status < 0)
   {
     LOGE("failed to attach current thread");
     return NULL;
   }
 
-  return env;
+  return pstEnv;
 }
 
-static void orxAndroid_JNI_ThreadDestroyed(void *value)
+static void orxAndroid_JNI_ThreadDestroyed(void *_pVvalue)
 {
-  /* The thread is being destroyed, detach it from the Java VM and set the mThreadKey value to NULL as required */
-  JNIEnv *env = (JNIEnv*)value;
-  if(env != NULL)
+  /* The thread is being destroyed, detach it from the Java VM and set the mThreadKey _pVvalue to NULL as required */
+  JNIEnv *pstEnv = (JNIEnv *)_pVvalue;
+  if(pstEnv != NULL)
   {
     jVM->DetachCurrentThread();
     pthread_setspecific(sThreadKey, NULL);
@@ -140,88 +144,78 @@ static void orxAndroid_JNI_ThreadDestroyed(void *value)
 
 static orxS32 orxAndroid_GetSdkVersion()
 {
-  orxS32 s32Version;
-
-  char sdkVersion[PROP_VALUE_MAX + 1];
-  int bufferLen = __system_property_get("ro.build.version.sdk", sdkVersion);
-
-  if(bufferLen > 0 && orxString_ToS32Base(sdkVersion, 10, &s32Version, orxNULL) != orxSTATUS_FAILURE)
-  {
-    return s32Version;
-  }
-
-  return 0;
+  return sstAndroid.app->activity->sdkVersion;
 }
 
-static jobject orxAndroid_JNI_getDisplay(JNIEnv *env)
+static jobject orxAndroid_JNI_getDisplay(JNIEnv *_pstEnv)
 {
   jobject display;
   jobject instance = sstAndroid.app->activity->javaGameActivity;
 
-  env->PushLocalFrame(16);
+  _pstEnv->PushLocalFrame(16);
 
   /* Note : WindowManager.getDefaultDisplay() was deprecated in Android R */
-  if (orxAndroid_GetSdkVersion() >= __ANDROID_API_R__)
+  if(orxAndroid_GetSdkVersion() >= __ANDROID_API_R__)
   {
     /* Finds classes */
-    jclass contextClass = env->FindClass("android/content/Context");
+    jclass contextClass = _pstEnv->FindClass("android/content/Context");
 
     /* Finds methods */
-    jmethodID getDisplayMethod = env->GetMethodID(contextClass, "getDisplay", "()Landroid/view/Display;");
+    jmethodID getDisplayMethod = _pstEnv->GetMethodID(contextClass, "getDisplay", "()Landroid/view/Display;");
 
     /* Calls methods and stores display object */
-    display = env->CallObjectMethod(instance, getDisplayMethod);
+    display = _pstEnv->CallObjectMethod(instance, getDisplayMethod);
   }
   else
   {
     /* Finds classes */
-    jclass activityClass = env->GetObjectClass(instance);
-    jclass windowManagerClass = env->FindClass("android/view/WindowManager");
+    jclass activityClass = _pstEnv->GetObjectClass(instance);
+    jclass windowManagerClass = _pstEnv->FindClass("android/view/WindowManager");
 
     /* Finds methods */
-    jmethodID getWindowManagerMethod = env->GetMethodID(activityClass, "getWindowManager", "()Landroid/view/WindowManager;");
-    jmethodID getDefaultDisplayMethod = env->GetMethodID(windowManagerClass,"getDefaultDisplay", "()Landroid/view/Display;");
+    jmethodID getWindowManagerMethod = _pstEnv->GetMethodID(activityClass, "getWindowManager", "()Landroid/view/WindowManager;");
+    jmethodID getDefaultDisplayMethod = _pstEnv->GetMethodID(windowManagerClass,"getDefaultDisplay", "()Landroid/view/Display;");
 
     /* Calls methods and stores display object */
-    jobject windowManager = env->CallObjectMethod(instance, getWindowManagerMethod);
-    display = env->CallObjectMethod(windowManager, getDefaultDisplayMethod);
+    jobject windowManager = _pstEnv->CallObjectMethod(instance, getWindowManagerMethod);
+    display = _pstEnv->CallObjectMethod(windowManager, getDefaultDisplayMethod);
   }
 
   /* Frees all the local references except display object */
-  return env->PopLocalFrame(display);
+  return _pstEnv->PopLocalFrame(display);
 }
 
-static jobject orxAndroid_JNI_getActivityMetaData(JNIEnv *env)
+static jobject orxAndroid_JNI_getActivityMetaData(JNIEnv *_pstEnv)
 {
   jobject instance = sstAndroid.app->activity->javaGameActivity;
 
-  env->PushLocalFrame(16);
+  _pstEnv->PushLocalFrame(16);
 
   /* Finds classes */
-  jclass activityClass = env->GetObjectClass(instance);
-  jclass activityInfoClass = env->FindClass("android/content/pm/ActivityInfo");
-  jclass packageManagerClass = env->FindClass("android/content/pm/PackageManager");
+  jclass activityClass = _pstEnv->GetObjectClass(instance);
+  jclass activityInfoClass = _pstEnv->FindClass("android/content/pm/ActivityInfo");
+  jclass packageManagerClass = _pstEnv->FindClass("android/content/pm/PackageManager");
 
   /* Finds methods */
-  jmethodID getPackageManagerMethod = env->GetMethodID(activityClass, "getPackageManager", "()Landroid/content/pm/PackageManager;");
-  jmethodID getComponentNameMethod = env->GetMethodID(activityClass, "getComponentName", "()Landroid/content/ComponentName;");
-  jmethodID getActivityInfoMethod = env->GetMethodID(packageManagerClass, "getActivityInfo", "(Landroid/content/ComponentName;I)Landroid/content/pm/ActivityInfo;");
+  jmethodID getPackageManagerMethod = _pstEnv->GetMethodID(activityClass, "getPackageManager", "()Landroid/content/pm/PackageManager;");
+  jmethodID getComponentNameMethod = _pstEnv->GetMethodID(activityClass, "getComponentName", "()Landroid/content/ComponentName;");
+  jmethodID getActivityInfoMethod = _pstEnv->GetMethodID(packageManagerClass, "getActivityInfo", "(Landroid/content/ComponentName;I)Landroid/content/pm/ActivityInfo;");
 
   /* Finds fields */
-  jfieldID metaDataConstant = env->GetStaticFieldID(packageManagerClass, "GET_META_DATA", "I");
-  jfieldID metaDataField = env->GetFieldID(activityInfoClass, "metaData", "Landroid/os/Bundle;");
+  jfieldID metaDataConstant = _pstEnv->GetStaticFieldID(packageManagerClass, "GET_META_DATA", "I");
+  jfieldID metaDataField = _pstEnv->GetFieldID(activityInfoClass, "metaData", "Landroid/os/Bundle;");
 
   /* Calls fields and methods */
-  jobject componentName = env->CallObjectMethod(instance, getComponentNameMethod);
-  jobject packageManager = env->CallObjectMethod(instance, getPackageManagerMethod);
-  jint GET_META_DATA = env->GetStaticIntField(packageManagerClass, metaDataConstant);
-  jobject activityInfo = env->CallObjectMethod(packageManager, getActivityInfoMethod, componentName, GET_META_DATA);
+  jobject componentName = _pstEnv->CallObjectMethod(instance, getComponentNameMethod);
+  jobject packageManager = _pstEnv->CallObjectMethod(instance, getPackageManagerMethod);
+  jint GET_META_DATA = _pstEnv->GetStaticIntField(packageManagerClass, metaDataConstant);
+  jobject activityInfo = _pstEnv->CallObjectMethod(packageManager, getActivityInfoMethod, componentName, GET_META_DATA);
 
   /* Stores the meta data */
-  jobject metaData = env->GetObjectField(activityInfo, metaDataField);
+  jobject metaData = _pstEnv->GetObjectField(activityInfo, metaDataField);
 
   /* Frees all the local references except metadata object */
-  return env->PopLocalFrame(metaData);
+  return _pstEnv->PopLocalFrame(metaData);
 }
 
 orxSTATUS orxFASTCALL orxAndroid_JNI_SetupThread(void *_pContext)
@@ -236,8 +230,7 @@ orxSTATUS orxFASTCALL orxAndroid_JNI_SetupThread(void *_pContext)
    *       (except for some lost CPU cycles)
    */
 
-  JNIEnv *env = orxAndroid_JNI_GetEnv();
-  pthread_setspecific(sThreadKey, (void*) env);
+  pthread_setspecific(sThreadKey, (void *)orxAndroid_JNI_GetEnv());
 
   return orxSTATUS_SUCCESS;
 }
@@ -246,7 +239,7 @@ extern "C" ANativeWindow *orxAndroid_GetNativeWindow()
 {
   LOGI("orxAndroid_GetNativeWindow()");
 
-  while(sstAndroid.app->window == NULL && !sstAndroid.app->destroyRequested)
+  while((sstAndroid.app->window == NULL) && !sstAndroid.app->destroyRequested)
   {
     LOGI("no window received yet");
     orxAndroid_PumpEvents();
@@ -267,43 +260,43 @@ extern "C" const char *orxAndroid_GetInternalStoragePath()
 
 extern "C" void orxAndroid_JNI_GetArguments()
 {
-  JNIEnv *env = orxAndroid_JNI_GetEnv();
+  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
 
-  env->PushLocalFrame(16);
+  pstEnv->PushLocalFrame(16);
 
   /* Gets meta data  */
-  jobject metaData = orxAndroid_JNI_getActivityMetaData(env);
-  if (metaData != NULL)
+  jobject metaData = orxAndroid_JNI_getActivityMetaData(pstEnv);
+  if(metaData != NULL)
   {
     const char *zArguments;
 
     /* Finds classes */
-    jclass bundleClass = env->FindClass("android/os/Bundle");
+    jclass bundleClass = pstEnv->FindClass("android/os/Bundle");
 
     /* Finds methods */
-    jmethodID getStringMethod = env->GetMethodID(bundleClass, "getString", "(Ljava/lang/String;)Ljava/lang/String;");
+    jmethodID getStringMethod = pstEnv->GetMethodID(bundleClass, "getString", "(Ljava/lang/String;)Ljava/lang/String;");
 
     /* Reads arguments meta data */
-    jstring arguments = (jstring)env->CallObjectMethod(metaData, getStringMethod, env->NewStringUTF("org.orx.lib.arguments"));
-    if (arguments == NULL)
+    jstring arguments = (jstring)pstEnv->CallObjectMethod(metaData, getStringMethod, pstEnv->NewStringUTF("org.orx.lib.arguments"));
+    if(arguments == NULL)
     {
       /* Use lib name as fallback */
-      arguments = (jstring)env->CallObjectMethod(metaData, getStringMethod, env->NewStringUTF("android.app.lib_name"));
+      arguments = (jstring)pstEnv->CallObjectMethod(metaData, getStringMethod, pstEnv->NewStringUTF("android.app.lib_name"));
     }
 
-    if (arguments == NULL)
+    if(arguments == NULL)
     {
       /* Clears the arguments */
       *sstAndroid.zArguments = orxNULL;
     }
     else
     {
-      zArguments = env->GetStringUTFChars(arguments, 0);
+      zArguments = pstEnv->GetStringUTFChars(arguments, 0);
 
       /* Stores arguments */
       orxString_NPrint(sstAndroid.zArguments, sizeof(sstAndroid.zArguments) - 1, zArguments);
 
-      env->ReleaseStringUTFChars(arguments, zArguments);
+      pstEnv->ReleaseStringUTFChars(arguments, zArguments);
     }
   }
   else
@@ -313,35 +306,40 @@ extern "C" void orxAndroid_JNI_GetArguments()
   }
 
   /* Frees all the local references */
-  env->PopLocalFrame(NULL);
+  pstEnv->PopLocalFrame(NULL);
 }
 
 extern "C" orxU32 orxAndroid_JNI_GetRotation()
 {
   orxU32 rotation;
-  JNIEnv *env = orxAndroid_JNI_GetEnv();
+  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
 
-  env->PushLocalFrame(16);
+  pstEnv->PushLocalFrame(16);
 
   /* Gets display structure */
-  jobject display = orxAndroid_JNI_getDisplay(env);
+  jobject display = orxAndroid_JNI_getDisplay(pstEnv);
 
   /* Finds classes */
-  jclass displayClass = env->FindClass("android/view/Display");
+  jclass displayClass = pstEnv->FindClass("android/view/Display");
 
   /* Finds methods */
-  jmethodID getRotationMethod = env->GetMethodID(displayClass, "getRotation", "()I");
+  jmethodID getRotationMethod = pstEnv->GetMethodID(displayClass, "getRotation", "()I");
 
   /* Calls method and stores rotation */
-  rotation = (orxU32)env->CallIntMethod(display, getRotationMethod);
+  rotation = (orxU32)pstEnv->CallIntMethod(display, getRotationMethod);
 
   /* Frees all the local references */
-  env->PopLocalFrame(NULL);
+  pstEnv->PopLocalFrame(NULL);
 
   return rotation;
 }
 
-static void Android_CheckForNewAxis()
+extern "C" void orxAndroid_SetKeyFilter(android_key_event_filter _pfnFilter)
+{
+  android_app_set_key_event_filter(sstAndroid.app, _pfnFilter);
+}
+
+static void orxAndroid_CheckForNewAxis()
 {
   /* Tell GameActivity about any new axis ids so it reports their events */
   const uint64_t activeAxisIds = Paddleboat_getActiveAxisMask();
@@ -363,38 +361,96 @@ static void Android_CheckForNewAxis()
   }
 }
 
-static void Android_HandleGameInput(struct android_app* app)
+static void orxAndroid_SendKey(orxU32 _u32KeyCode, orxU32 _u32Action)
 {
-  Android_CheckForNewAxis();
+  orxANDROID_KEY_EVENT stKeyEvent;
 
-  /* Swap input buffers so we don't miss any events while processing inputBuffer. */
-  android_input_buffer *ib = android_app_swap_input_buffers(app);
+  /* Checks */
+  orxASSERT((_u32Action == AKEY_EVENT_ACTION_DOWN) || (_u32Action == AKEY_EVENT_ACTION_UP));
+
+  /* Inits event payload */
+  orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
+  stKeyEvent.u32KeyCode = _u32KeyCode;
+  stKeyEvent.u32Action  = (_u32Action == AKEY_EVENT_ACTION_DOWN)
+                          ? orxANDROID_EVENT_KEYBOARD_DOWN
+                          : orxANDROID_EVENT_KEYBOARD_UP;
+
+  orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
+}
+
+static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
+{
+  orxU32 u32Key, u32Action;
+  orxU32 au32HandledKeyActions[orxANDROID_KU32_KEY_BUFFER_SIZE];
+
+  /* Handles any pending key events */
+  for(u32Key = 0; u32Key < orxANDROID_KU32_KEY_BUFFER_SIZE; u32Key++)
+  {
+    u32Action = sstAndroid.au32PendingKeyActions[u32Key];
+    sstAndroid.au32PendingKeyActions[u32Key] = orxANDROID_KEY_ACTION_NONE;
+
+    if(u32Action != orxANDROID_KEY_ACTION_NONE)
+    {
+      orxAndroid_SendKey(u32Key, u32Action & ~orxANDROID_KEY_ACTION_BASE);
+    }
+
+    au32HandledKeyActions[u32Key] = u32Action;
+  }
+
+  orxAndroid_CheckForNewAxis();
+
+  /* Swap input buffers so we don't miss any events while processing input buffer. */
+  android_input_buffer *ib = android_app_swap_input_buffers(_pstApp);
   /* Early exit if no events. */
   if(ib == NULL)
   {
-      return;
+    return;
   }
 
   if(ib->keyEventsCount != 0)
   {
     uint64_t i;
 
-    for (i = 0; i < ib->keyEventsCount; i++)
+    for(i = 0; i < ib->keyEventsCount; i++)
     {
       GameActivityKeyEvent *event = &ib->keyEvents[i];
       if(Paddleboat_processGameActivityKeyInputEvent(event, sizeof(GameActivityKeyEvent)) == 0)
       {
-        /* Didn't belong to a game controller, let's process it ourselves. */
+        /** In orx, key state transitions occur between two frames. In that case Paddleboat
+         * delivers paired down/up events, we must schedule the last event until the next frame.
+         * We do not buffer more than one event; any ludicrously fast key presses are ignored,
+         * resulting in a single key press. Note that all down/up events are sequentially
+         * delivered by Paddleboat.
+         *
+         * E.g. Handling a specific key, iterating the key events for the current frame:
+         *
+         * Down Up          -> Invoke Down, Schedule Up
+         * Down Up Down     -> Invoke Down
+         * Down Up Down Up  -> Invoke Down, Schedule Up
+         *
+         * And vice versa for sequences starting with an Up event.
+         */
 
-        orxANDROID_KEY_EVENT stKeyEvent;
-        /* Inits event payload */
-        orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
-        stKeyEvent.u32KeyCode = event->keyCode;
-        stKeyEvent.u32Action = event->action == AKEY_EVENT_ACTION_DOWN ? orxANDROID_EVENT_KEYBOARD_DOWN
-                                                                       : orxANDROID_EVENT_KEYBOARD_UP;
+        /* Checks */
+        orxASSERT(event->keyCode < orxANDROID_KU32_KEY_BUFFER_SIZE);
+
         if(event->action != AKEY_EVENT_ACTION_MULTIPLE)
         {
-          orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
+          /* Key not handled? */
+          if(au32HandledKeyActions[event->keyCode] == orxANDROID_KEY_ACTION_NONE)
+          {
+            orxAndroid_SendKey(event->keyCode, event->action);
+            au32HandledKeyActions[event->keyCode] = orxANDROID_KEY_ACTION_BASE | event->action;
+          }
+          else
+          {
+            /* Key not scheduled? */
+            if(sstAndroid.au32PendingKeyActions[event->keyCode] == orxANDROID_KEY_ACTION_NONE)
+            {
+              /* Schedules key action for next frame */
+              sstAndroid.au32PendingKeyActions[event->keyCode] = orxANDROID_KEY_ACTION_BASE | event->action;
+            }
+          }
         }
       }
     }
@@ -431,28 +487,15 @@ static void Android_HandleGameInput(struct android_app* app)
         switch (event->action & AMOTION_EVENT_ACTION_MASK)
         {
           case AMOTION_EVENT_ACTION_POINTER_DOWN:
+          {
             iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
             stPayload.stTouch.u32ID = event->pointers[iIndex].id;
             stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
             stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
             break;
+          }
           case AMOTION_EVENT_ACTION_POINTER_UP:
-            iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
-            stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
-            break;
-          case AMOTION_EVENT_ACTION_DOWN:
-            iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
-            stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
-            break;
-          case AMOTION_EVENT_ACTION_UP:
-          case AMOTION_EVENT_ACTION_CANCEL:
           {
             iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
             stPayload.stTouch.u32ID = event->pointers[iIndex].id;
@@ -461,7 +504,25 @@ static void Android_HandleGameInput(struct android_app* app)
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
             break;
           }
+          case AMOTION_EVENT_ACTION_DOWN:
+          {
+            stPayload.stTouch.u32ID = event->pointers[0].id;
+            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, 0);
+            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, 0);
+            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+            break;
+          }
+          case AMOTION_EVENT_ACTION_UP:
+          case AMOTION_EVENT_ACTION_CANCEL:
+          {
+            stPayload.stTouch.u32ID = event->pointers[0].id;
+            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, 0);
+            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, 0);
+            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+            break;
+          }
           case AMOTION_EVENT_ACTION_MOVE:
+          {
             for(iIndex = 0; iIndex < event->pointerCount; iIndex++)
             {
               stPayload.stTouch.u32ID = event->pointers[iIndex].id;
@@ -470,6 +531,7 @@ static void Android_HandleGameInput(struct android_app* app)
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_MOVE, orxNULL, orxNULL, &stPayload);
             }
             break;
+          }
         }
       }
     }
@@ -478,73 +540,116 @@ static void Android_HandleGameInput(struct android_app* app)
   }
 }
 
-static void orxAndroid_handleCmd(struct android_app *app, int32_t cmd)
+static void orxAndroid_handleCmd(struct android_app *_pstApp, int32_t _s32Cmd)
 {
-  switch(cmd)
+  switch(_s32Cmd)
   {
-    case APP_CMD_PAUSE:
-      LOGI("APP_CMD_PAUSE");
-
-      sstAndroid.bPaused = orxTRUE;
-      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
+    case APP_CMD_INIT_WINDOW:
+    {
+      LOGI("APP_CMD_INIT_WINDOW");
+      SwappyGL_setWindow(_pstApp->window);
+      orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
       break;
-    case APP_CMD_RESUME:
-      LOGI("APP_CMD_RESUME");
-
-      sstAndroid.bPaused = orxFALSE;
-      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
-      break;
-    case APP_CMD_START:
-      LOGI("APP_CMD_START");
-      Paddleboat_onStart(orxAndroid_JNI_GetEnv());
-      break;
-    case APP_CMD_STOP:
-      LOGI("APP_CMD_STOP");
-      Paddleboat_onStop(orxAndroid_JNI_GetEnv());
-      break;
+    }
     case APP_CMD_TERM_WINDOW:
+    {
       LOGI("APP_CMD_TERM_WINDOW");
-
       SwappyGL_setWindow(nullptr);
       sstAndroid.fSurfaceScale = orxFLOAT_0;
       orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
       break;
-    case APP_CMD_INIT_WINDOW:
-      LOGI("APP_CMD_INIT_WINDOW");
-
-      SwappyGL_setWindow(app->window);
-      orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
+    }
+    case APP_CMD_WINDOW_RESIZED:
+    {
+      LOGI("APP_CMD_WINDOW_RESIZED");
       break;
+    }
+    case APP_CMD_WINDOW_REDRAW_NEEDED:
+    {
+      LOGI("APP_CMD_WINDOW_REDRAW_NEEDED");
+      break;
+    }
     case APP_CMD_CONTENT_RECT_CHANGED:
-      {
-        LOGI("APP_CMD_CONTENT_RECT_CHANGED");
+    {
+      LOGI("APP_CMD_CONTENT_RECT_CHANGED");
+      orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
+      stSurfaceChangedEvent.u32Width = _pstApp->contentRect.right - _pstApp->contentRect.left;
+      stSurfaceChangedEvent.u32Height = _pstApp->contentRect.bottom - _pstApp->contentRect.top;
 
-        orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
-        stSurfaceChangedEvent.u32Width = app->contentRect.right - app->contentRect.left;
-        stSurfaceChangedEvent.u32Height = app->contentRect.bottom - app->contentRect.top;
-
-        orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
-        sstAndroid.fSurfaceScale = orxFLOAT_0;
-      }
+      orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
+      sstAndroid.fSurfaceScale = orxFLOAT_0;
       break;
-    case APP_CMD_DESTROY:
-      LOGI("APP_CMD_DESTROY");
-      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
-      break;
+    }
     case APP_CMD_GAINED_FOCUS:
+    {
       LOGI("APP_CMD_GAINED_FOCUS");
-
       sstAndroid.bHasFocus = orxTRUE;
       orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_GAINED);
       break;
+    }
     case APP_CMD_LOST_FOCUS:
+    {
       LOGI("APP_CMD_LOST_FOCUS");
-
       sstAndroid.bHasFocus = orxFALSE;
       orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOCUS_LOST);
       break;
-    default:
+    }
+    case APP_CMD_CONFIG_CHANGED:
+    {
+      LOGI("APP_CMD_CONFIG_CHANGED");
       break;
+    }
+    case APP_CMD_LOW_MEMORY:
+    {
+      LOGI("APP_CMD_LOW_MEMORY");
+      break;
+    }
+    case APP_CMD_START:
+    {
+      LOGI("APP_CMD_START");
+      Paddleboat_onStart(orxAndroid_JNI_GetEnv());
+      break;
+    }
+    case APP_CMD_RESUME:
+    {
+      LOGI("APP_CMD_RESUME");
+      sstAndroid.bPaused = orxFALSE;
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_FOREGROUND);
+      break;
+    }
+    case APP_CMD_SAVE_STATE:
+    {
+      LOGI("APP_CMD_SAVE_STATE");
+      break;
+    }
+    case APP_CMD_PAUSE:
+    {
+      LOGI("APP_CMD_PAUSE");
+      sstAndroid.bPaused = orxTRUE;
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_BACKGROUND);
+      break;
+    }
+    case APP_CMD_STOP:
+    {
+      LOGI("APP_CMD_STOP");
+      Paddleboat_onStop(orxAndroid_JNI_GetEnv());
+      break;
+    }
+    case APP_CMD_DESTROY:
+    {
+      LOGI("APP_CMD_DESTROY");
+      orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+      break;
+    }
+    case APP_CMD_WINDOW_INSETS_CHANGED:
+    {
+      LOGI("APP_CMD_WINDOW_INSETS_CHANGED");
+      break;
+    }
+    default:
+    {
+      break;
+    }
   }
 }
 
@@ -560,16 +665,22 @@ extern "C" void orxAndroid_PumpEvents()
   int events;
   android_poll_source *source;
 
+  /* Check if we are exiting. */
+  if(sstAndroid.app->destroyRequested != 0)
+  {
+    return;
+  }
+
   /* If not animating, we will block forever waiting for events.
    * If animating, we loop until all events are read, then continue
    * to draw the next frame of animation.
    */
-  while( (id = ALooper_pollAll(orxAndroid_IsInteractible() ? 0 : -1, NULL, &events, (void**) &source)) >= 0 )
+  while((id = ALooper_pollAll(orxAndroid_IsInteractible() ? 0 : -1, NULL, &events, (void **) &source)) >= 0)
   {
     /* Process this event. */
     if(source != NULL)
     {
-      source->process( sstAndroid.app, source );
+      source->process(sstAndroid.app, source);
     }
 
     if(id == LOOPER_ID_SENSOR)
@@ -587,29 +698,29 @@ extern "C" void orxAndroid_PumpEvents()
   /* Triggers any registered controller or mouse status callbacks */
   Paddleboat_update(orxAndroid_JNI_GetEnv());
 
-  Android_HandleGameInput(sstAndroid.app);
+  orxAndroid_HandleGameInput(sstAndroid.app);
 }
 
 /* Main function to call */
 extern int main(int argc, char *argv[]);
 
-void android_main(android_app* state)
+void android_main(android_app *_pstState)
 {
   char *argv[orxANDROID_KU32_MAX_ARGUMENT_COUNT];
 
-  state->onAppCmd = orxAndroid_handleCmd;
+  _pstState->onAppCmd = orxAndroid_handleCmd;
 
-  android_app_set_motion_event_filter(state, NULL);
+  android_app_set_motion_event_filter(_pstState, NULL);
 
   /* Cleans static controller */
   orxMemory_Zero(&sstAndroid, sizeof(orxANDROID_STATIC));
 
-  sstAndroid.app = state;
+  sstAndroid.app = _pstState;
   sstAndroid.bPaused = orxTRUE;
   sstAndroid.bHasFocus = orxFALSE;
   sstAndroid.fSurfaceScale = orxFLOAT_0;
 
-  jVM = state->activity->vm;
+  jVM = _pstState->activity->vm;
 
   /*
    * Create sThreadKey so we can keep track of the JNIEnv assigned to each thread
@@ -617,7 +728,8 @@ void android_main(android_app* state)
    */
   if(pthread_key_create(&sThreadKey, orxAndroid_JNI_ThreadDestroyed))
   {
-    __android_log_print(ANDROID_LOG_ERROR, "Orx", "Error initializing pthread key");
+    sThreadKey = 0;
+    LOGE("Error initializing pthread key");
   }
   else
   {
@@ -625,14 +737,13 @@ void android_main(android_app* state)
   }
 
   /* Initializes joystick support */
-  JNIEnv *env = orxAndroid_JNI_GetEnv();
-  Paddleboat_init(env, state->activity->javaGameActivity);
+  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
+  Paddleboat_init(pstEnv, _pstState->activity->javaGameActivity);
 
   /* Initializes SwappyGL */
-  SwappyGL_init(env, state->activity->javaGameActivity);
+  SwappyGL_init(pstEnv, _pstState->activity->javaGameActivity);
   SwappyGL_setAutoSwapInterval(false);
   SwappyGL_setAutoPipelineMode(false);
-  SwappyGL_enableStats(false);
 
   /* Gets arguments from manifest */
   orxAndroid_JNI_GetArguments();
@@ -641,7 +752,7 @@ void android_main(android_app* state)
   int argc = 0;
 
   char *pc = strtok(sstAndroid.zArguments, " ");
-  while (pc && argc < orxANDROID_KU32_MAX_ARGUMENT_COUNT - 1)
+  while(pc && argc < orxANDROID_KU32_MAX_ARGUMENT_COUNT - 1)
   {
     argv[argc++] = pc;
     pc = strtok(0, " ");
@@ -651,40 +762,40 @@ void android_main(android_app* state)
   /* Run the application code! */
   main(argc, argv);
 
-  if(state->destroyRequested == 0)
+  if(_pstState->destroyRequested == 0)
   {
-    GameActivity_finish(state->activity);
+    GameActivity_finish(_pstState->activity);
 
     /* pumps final events */
     int id;
     int events;
     android_poll_source *source;
 
-    state->onAppCmd = NULL;
+    _pstState->onAppCmd = NULL;
 
-    while((id = ALooper_pollAll(-1, NULL, &events, (void**) &source )) >= 0)
+    while((id = ALooper_pollAll(-1, NULL, &events, (void **)&source)) >= 0)
     {
       /* Process this event. */
       if(source != NULL)
       {
-        source->process(state, source);
+        source->process(_pstState, source);
       }
 
       /* Check if we are exiting. */
-      if(state->destroyRequested != 0)
+      if(_pstState->destroyRequested != 0)
       {
         break;
       }
     }
   }
 
-  Paddleboat_destroy(env);
+  Paddleboat_destroy(pstEnv);
   SwappyGL_destroy();
 }
 
 /* APK orxRESOURCE */
 
-static const orxSTRING orxRESOURCE_KZ_TYPE_TAG_APK = "apk";                           /**< Resource type apk tag */
+static const orxSTRING orxRESOURCE_KZ_TYPE_TAG_APK =  "apk";                          /**< Resource type apk tag */
 #define orxRESOURCE_KZ_DEFAULT_STORAGE                "."                             /**< Default storage */
 #define orxRESOURCE_KU32_BUFFER_SIZE                  256                             /**< Buffer size */
 static orxCHAR s_acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];                  /**< File location buffer size */
@@ -822,7 +933,7 @@ orxSTATUS orxAndroid_RegisterAPKResource()
 
   /* Inits apk type */
   orxMemory_Zero(&stAPKTypeInfo, sizeof(orxRESOURCE_TYPE_INFO));
-  stAPKTypeInfo.zTag       = (orxCHAR*) orxRESOURCE_KZ_TYPE_TAG_APK;
+  stAPKTypeInfo.zTag       = (orxCHAR *)orxRESOURCE_KZ_TYPE_TAG_APK;
   stAPKTypeInfo.pfnLocate  = orxResource_APK_Locate;
   stAPKTypeInfo.pfnOpen    = orxResource_APK_Open;
   stAPKTypeInfo.pfnClose   = orxResource_APK_Close;

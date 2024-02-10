@@ -1,6 +1,6 @@
 /* Scroll
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -499,6 +499,82 @@ void ScrollObject::PushConfigSection(orxBOOL _bPushInstanceSection) const
   orxConfig_PushSection(_bPushInstanceSection ? macName : mzModelName);
 }
 
+ScrollObject *ScrollObject::FindChild(const orxSTRING _zPath) const
+{
+  orxOBJECT    *pstChild;
+  ScrollObject *poResult = orxNULL;
+
+  // Finds child
+  pstChild = orxObject_FindChild(mpstObject, _zPath);
+
+  // Valid?
+  if(pstChild)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstChild);
+  }
+
+  // Done!
+  return poResult;
+}
+
+ScrollObject *ScrollObject::GetChild() const
+{
+  orxOBJECT    *pstChild;
+  ScrollObject *poResult = orxNULL;
+
+  // Gets child
+  pstChild = orxObject_GetChild(mpstObject);
+
+  // Valid?
+  if(pstChild)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstChild);
+  }
+
+  // Done!
+  return poResult;
+}
+
+ScrollObject *ScrollObject::GetSibling() const
+{
+  orxOBJECT    *pstSibling;
+  ScrollObject *poResult = orxNULL;
+
+  // Gets sibling
+  pstSibling = orxObject_GetSibling(mpstObject);
+
+  // Valid?
+  if(pstSibling)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstSibling);
+  }
+
+  // Done!
+  return poResult;
+}
+
+ScrollObject *ScrollObject::FindOwnedChild(const orxSTRING _zPath) const
+{
+  orxOBJECT    *pstChild;
+  ScrollObject *poResult = orxNULL;
+
+  // Finds child
+  pstChild = orxObject_FindOwnedChild(mpstObject, _zPath);
+
+  // Valid?
+  if(pstChild)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstChild);
+  }
+
+  // Done!
+  return poResult;
+}
+
 ScrollObject *ScrollObject::GetOwnedChild() const
 {
   orxOBJECT    *pstChild;
@@ -624,14 +700,12 @@ void ScrollObject::Update(const orxCLOCK_INFO &_rstInfo)
 {
 }
 
-orxBOOL ScrollObject::OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal)
+void ScrollObject::OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal)
 {
-  return orxTRUE;
 }
 
-orxBOOL ScrollObject::OnSeparate(ScrollObject *_poCollider)
+void ScrollObject::OnSeparate(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart)
 {
-  return orxTRUE;
 }
 
 void ScrollObject::OnNewAnim(const orxSTRING _zOldAnim, const orxSTRING _zNewAnim, orxBOOL _bCut)
@@ -643,6 +717,18 @@ void ScrollObject::OnAnimUpdate(const orxSTRING _zAnim)
 }
 
 void ScrollObject::OnAnimEvent(const orxSTRING _zAnim, const orxSTRING _zEvent, orxFLOAT _fTime, orxFLOAT _fValue)
+{
+}
+
+void ScrollObject::OnFXStart(const orxSTRING _zFX, orxFX *_pstFX)
+{
+}
+
+void ScrollObject::OnFXStop(const orxSTRING _zFX, orxFX *_pstFX)
+{
+}
+
+void ScrollObject::OnFXLoop(const orxSTRING _zFX, orxFX *_pstFX)
 {
 }
 

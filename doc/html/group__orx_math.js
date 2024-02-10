@@ -16,6 +16,7 @@ var group__orx_math =
     [ "orxMATH_KF_TINY_EPSILON", "group__orx_math.html#ga4365ce1ca146ac561389bdfce1a70f76", null ],
     [ "orxMAX", "group__orx_math.html#ga2e88c34dedb5604e3c389797548226b2", null ],
     [ "orxMIN", "group__orx_math.html#gae9225444175526724c54a518e649a65f", null ],
+    [ "orxREMAP", "group__orx_math.html#ga721f2082dde10cb4e058a0af08b3b467", null ],
     [ "orxS2F", "group__orx_math.html#ga1607606bcc8f6e8988810b4bf9c40d69", null ],
     [ "orxU2F", "group__orx_math.html#ga63a184942fa48860be144474d8022e3b", null ],
     [ "orxMath_Abs", "group__orx_math.html#ga6cf056f23589d516ccc1362c8d85a779", null ],

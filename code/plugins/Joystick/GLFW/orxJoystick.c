@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -102,15 +102,19 @@ static orxJOYSTICK_STATIC sstJoystick;
  */
 static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
 {
+  const orxU8  *au8Buttons;
+  orxS32        iButtonCount = 0;
+
   /* Checks */
   orxASSERT(_u32ID <= GLFW_JOYSTICK_LAST);
 
-  /* Is connected? */
-  if(glfwJoystickPresent((int)_u32ID) != GLFW_FALSE)
+  /* Gets button values */
+  au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iButtonCount);
+
+  /* Success? */
+  if(au8Buttons != NULL)
   {
-    GLFWgamepadstate  stState;
-    orxS32            iButtonCount = 0;
-    const orxU8      *au8Buttons;
+    GLFWgamepadstate stState;
 
     /* Wasn't connected? */
     if(sstJoystick.astJoyInfoList[_u32ID].bIsConnected == orxFALSE)
@@ -140,7 +144,6 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
     orxMemory_Zero(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList, orxJOYSTICK_BUTTON_SINGLE_NUMBER * sizeof(unsigned char));
 
     /* Gets button values */
-    au8Buttons = glfwGetJoystickButtons((int)_u32ID, (int *)&iButtonCount);
     orxMemory_Copy(sstJoystick.astJoyInfoList[_u32ID].au8ButtonInfoList + orxJOYSTICK_BUTTON_1_1, au8Buttons, orxMIN(iButtonCount, (orxS32)(orxJOYSTICK_BUTTON_SINGLE_NUMBER - orxJOYSTICK_BUTTON_1_1)) * sizeof(unsigned char));
 
     /* Is gamepad and can retrieve its state? */

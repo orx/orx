@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -57,6 +57,8 @@
 #define orxTEXTURE_KZ_SCREEN              "screen"
 #define orxTEXTURE_KZ_PIXEL               "pixel"
 #define orxTEXTURE_KZ_TRANSPARENT         "transparent"
+
+#define orxTEXTURE_KZ_LOGO_NAME           "orx:texture:logo"
 
 
 /** Event enum

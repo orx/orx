@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -56,7 +56,7 @@
 
 /** Defines
  */
-#define orxSTRING_KU32_ID_TABLE_SIZE                      32768
+#define orxSTRING_KU32_ID_TABLE_SIZE                      16384
 
 
 /***************************************************************************
@@ -118,7 +118,7 @@ orxSTATUS orxFASTCALL orxString_Init()
     orxMemory_Zero(&sstString, sizeof(orxSTRING_STATIC));
 
     /* Creates ID table */
-    sstString.pstIDTable = orxHashTable_Create(orxSTRING_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    sstString.pstIDTable = orxHashTable_Create(orxSTRING_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_TEXT);
 
     /* Success? */
     if(sstString.pstIDTable != orxNULL)
@@ -158,14 +158,13 @@ void orxFASTCALL orxString_Exit()
   /* Initialized? */
   if(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY)
   {
-    orxU64    u64Key;
     orxHANDLE hIterator;
     orxSTRING zString;
 
     /* For all string IDs */
-    for(hIterator = orxHashTable_GetNext(sstString.pstIDTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&zString);
+    for(hIterator = orxHashTable_GetNext(sstString.pstIDTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&zString);
         hIterator != orxHANDLE_UNDEFINED;
-        hIterator = orxHashTable_GetNext(sstString.pstIDTable, hIterator, &u64Key, (void **)&zString))
+        hIterator = orxHashTable_GetNext(sstString.pstIDTable, hIterator, orxNULL, (void **)&zString))
     {
       /* Deletes its string */
       orxString_Delete(zString);

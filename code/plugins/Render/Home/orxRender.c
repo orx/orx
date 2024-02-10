@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -63,7 +63,7 @@
  */
 #define orxRENDER_KU32_ORDER_BANK_SIZE              1024
 #define orxRENDER_KST_DEFAULT_COLOR                 orx2RGBA(255, 0, 0, 255)
-#define orxRENDER_KZ_FPS_FORMAT                     "FPS: %d"
+#define orxRENDER_KZ_FPS_FORMAT                     "FPS: %u"
 #define orxRENDER_KF_CONSOLE_BLINK_DELAY            orx2F(0.5f)
 
 #define orxRENDER_KF_PROFILER_BORDER                orx2F(0.01f)
@@ -305,8 +305,11 @@ static orxINLINE void orxRender_Home_RenderFPS()
     /* Clears text transform */
     orxMemory_Zero(&stTextTransform, sizeof(orxDISPLAY_TRANSFORM));
 
-    /* Gets last viewport */
-    pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
+    /* Gets last non-debug viewport */
+    for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
+        (pstViewport != orxNULL) && orxStructure_TestFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG);
+        pstViewport = orxVIEWPORT(orxStructure_GetPrevious(pstViewport)))
+      ;
 
     /* Valid? */
     if(pstViewport != orxNULL)
@@ -322,7 +325,7 @@ static orxINLINE void orxRender_Home_RenderFPS()
       fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
 
       /* Has correction ratio? */
-      if(fCorrectionRatio != orxFLOAT_1)
+      if(orxMath_Abs(fCorrectionRatio - orxFLOAT_1) >= orxMATH_KF_EPSILON)
       {
         /* X axis? */
         if(fCorrectionRatio < orxFLOAT_1)
@@ -910,7 +913,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - u32Depth, " %s [%.2f|%.2fms][%ux]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxColor_ToRGBA(orxColor_FromHSVToRGB(&stLabelColor, &stColor)), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -949,7 +952,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       u32Depth = 1;
 
       /* Draws its label */
-      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - u32Depth, " %s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
+      orxString_NPrint(acLabel + u32Depth, sizeof(acLabel) - u32Depth, " %s [%.2f|%.2fms][%ux]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orx2RGBA(0x66, 0x66, 0x66, 0xCC), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -1074,7 +1077,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws its label */
-      orxString_NPrint(acLabel, sizeof(acLabel), "%s [%.2f|%.2fms][%dx]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
+      orxString_NPrint(acLabel, sizeof(acLabel), "%s [%.2f|%.2fms][%ux]", orxProfiler_GetMarkerName(s32MarkerID), orx2D(1000.0) * dTime, orx2D(1000.0) * orxProfiler_GetMarkerMaxTime(s32MarkerID), orxProfiler_GetMarkerPushCount(s32MarkerID));
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, stColor, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
 
       /* Updates position */
@@ -1197,7 +1200,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
       }
 
       /* Draws it */
-      orxString_NPrint(acLabel, sizeof(acLabel), "%-12s[%d|%dx] [%.2f|%.2f%s] [%d#]", zType, u64Count, u64PeakCount, fSize, fPeakSize, sazUnitList[u32UnitIndex], u64OperationCount);
+      orxString_NPrint(acLabel, sizeof(acLabel), "%-12s[%llu|%llux] [%.2f|%.2f%s] [%llu#]", zType, u64Count, u64PeakCount, fSize, fPeakSize, sazUnitList[u32UnitIndex], u64OperationCount);
       orxDisplay_TransformText(acLabel, pstFontBitmap, orxFont_GetMap(pstFont), &stTransform, orxColor_ToRGBA(&stColor), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_ALPHA);
     }
   }
@@ -1272,7 +1275,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
 
   /* Gets colors */
 #define orxRENDER_GET_COLOR(Name, NAME)                                                                                             \
-  if(orxConfig_GetVector(orxRENDER_KZ_CONFIG_CONSOLE_##NAME##_COLOR, &vColor) != orxNULL)                                           \
+  if(orxConfig_GetColorVector(orxRENDER_KZ_CONFIG_CONSOLE_##NAME##_COLOR, orxCOLORSPACE_COMPONENT, &vColor) != orxNULL)                                           \
   {                                                                                                                                 \
     st##Name##Color = orx2RGBA(orxF2U(vColor.fR), orxF2U(vColor.fG), orxF2U(vColor.fB), orxRENDER_KST_CONSOLE_##NAME##_COLOR.u8A);  \
   }                                                                                                                                 \
@@ -1299,7 +1302,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
 #undef orxRENDER_GET_COLOR
 
   /* Uses color short names as background override */
-  if(orxConfig_GetVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, &vColor) != orxNULL)
+  if(orxConfig_GetColorVector(orxRENDER_KZ_CONFIG_CONSOLE_COLOR, orxCOLORSPACE_COMPONENT, &vColor) != orxNULL)
   {
     stBackgroundColor.u8R = (orxU8)orxF2U(vColor.fR);
     stBackgroundColor.u8G = (orxU8)orxF2U(vColor.fG);
@@ -1565,7 +1568,11 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
         if(pstShaderPointer != orxNULL)
         {
           /* Starts it */
-          orxShaderPointer_Start(pstShaderPointer);
+          if(orxShaderPointer_Start(pstShaderPointer) == orxSTATUS_FAILURE)
+          {
+            /* Cancels it */
+            pstShaderPointer = orxNULL;
+          }
         }
 
         /* Gets graphic's pivot */
@@ -1745,7 +1752,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           fCorrectionRatio = orxViewport_GetCorrectionRatio(_pstViewport);
 
           /* Has correction ratio? */
-          if(fCorrectionRatio != orxFLOAT_1)
+          if(orxMath_Abs(fCorrectionRatio - orxFLOAT_1) >= orxMATH_KF_EPSILON)
           {
             /* X axis? */
             if(fCorrectionRatio < orxFLOAT_1)
@@ -1859,9 +1866,13 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
               for(i = 0, u32Number = orxCamera_GetGroupIDCount(pstCamera); i < u32Number; i++)
               {
                 orxSTRINGID stGroupID;
+                orxBOOL     bSorting;
 
                 /* Gets it */
                 stGroupID = orxCamera_GetGroupID(pstCamera, i);
+
+                /* Gets its sorting status */
+                bSorting = orxCamera_IsGroupIDSortingEnabled(pstCamera, i);
 
                 /* For all objects in this group */
                 for(pstObject = orxObject_GetNextEnabled(orxNULL, stGroupID);
@@ -2072,8 +2083,9 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                             /* Stores its depth coef */
                             pstRenderNode->fDepthCoef = fDepthCoef;
 
-                            /* Empty list? */
-                            if(orxLinkList_GetCount(&(sstRender.stRenderList)) == 0)
+                            /* No sorting or empty list? */
+                            if((bSorting == orxFALSE)
+                            || (orxLinkList_GetCount(&(sstRender.stRenderList)) == 0))
                             {
                               /* Adds node at beginning */
                               orxLinkList_AddStart(&(sstRender.stRenderList), (orxLINKLIST_NODE *)pstRenderNode);
@@ -2091,10 +2103,11 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                                   || ((pstTexture == pstNode->pstTexture)
                                    && ((pstShader < pstNode->pstShader)
                                     || ((pstShader == pstNode->pstShader)
-                                     && (eBlendMode < pstNode->eBlendMode))
+                                     && ((eBlendMode < pstNode->eBlendMode)
                                       || ((eBlendMode == pstNode->eBlendMode)
-                                       && (eSmoothing < pstNode->eSmoothing)))))));
-                                  pstNode = (orxRENDER_NODE *)orxLinkList_GetNext(&(pstNode->stNode)));
+                                       && (eSmoothing < pstNode->eSmoothing)))))))));
+                                  pstNode = (orxRENDER_NODE *)orxLinkList_GetNext(&(pstNode->stNode)))
+                                ;
 
                               /* End of list reached? */
                               if(pstNode == orxNULL)
@@ -2267,13 +2280,14 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           orxDisplay_SetBlendMode(orxViewport_GetBlendMode(_pstViewport));
 
           /* Starts shader */
-          orxShaderPointer_Start(pstShaderPointer);
+          if(orxShaderPointer_Start(pstShaderPointer) != orxSTATUS_FAILURE)
+          {
+            /* Draws render target's content */
+            orxDisplay_TransformBitmap(orxNULL, orxNULL, orx2RGBA(0x00, 0x00, 0x00, 0x00), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_NONE);
 
-          /* Draws render target's content */
-          orxDisplay_TransformBitmap(orxNULL, orxNULL, orx2RGBA(0x00, 0x00, 0x00, 0x00), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_NONE);
-
-          /* Stops shader */
-          orxShaderPointer_Stop(pstShaderPointer);
+            /* Stops shader */
+            orxShaderPointer_Stop(pstShaderPointer);
+          }
         }
       }
     }
@@ -2925,7 +2939,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetScreenPosition(const orxVECTOR *_pvWorl
         fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
 
         /* Has correction ratio? */
-        if(fCorrectionRatio != orxFLOAT_1)
+        if(orxMath_Abs(fCorrectionRatio - orxFLOAT_1) >= orxMATH_KF_EPSILON)
         {
           /* X axis? */
           if(fCorrectionRatio < orxFLOAT_1)

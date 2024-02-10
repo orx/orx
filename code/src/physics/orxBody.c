@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -3169,3 +3169,8 @@ orxU32 orxFASTCALL orxBody_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags
   /* Done! */
   return u32Result;
 }
+
+#undef orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST
+#undef orxBODY_GET_NEXT_JOINT_FROM_SRC_LIST
+#undef orxBODY_GET_FIRST_JOINT_FROM_DST_LIST
+#undef orxBODY_GET_NEXT_JOINT_FROM_DST_LIST

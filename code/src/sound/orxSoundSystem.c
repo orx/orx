@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -399,7 +399,7 @@ orxU32 orxFASTCALL orxSoundSystem_GetListenerCount()
 
 void orxFASTCALL orxSoundSystem_EnableListener(orxU32 _u32ListenerIndex, orxBOOL _bEnable)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_EnableListener)(_u32ListenerIndex, _bEnable);
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxSoundSystem_EnableListener)(_u32ListenerIndex, _bEnable);
 }
 
 orxBOOL orxFASTCALL orxSoundSystem_IsListenerEnabled(orxU32 _u32ListenerIndex)

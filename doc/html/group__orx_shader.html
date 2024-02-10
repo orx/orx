@@ -153,8 +153,8 @@ Functions</h2></td></tr>
 <tr class="separator:gaee59c669a705b28e66cc8ff5f2c0ae48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga82b3b438d904bd790dfb062ae77d31aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga82b3b438d904bd790dfb062ae77d31aa">orxShader_AddTextureParam</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTEXTURE</a> **_apstValueList)</td></tr>
 <tr class="separator:ga82b3b438d904bd790dfb062ae77d31aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4a302c1f77503f9da2376807f7e8edb9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga4a302c1f77503f9da2376807f7e8edb9">orxShader_AddTimeParam</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName)</td></tr>
-<tr class="separator:ga4a302c1f77503f9da2376807f7e8edb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga147e2497de32224715d1da8e62ba8cd0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga147e2497de32224715d1da8e62ba8cd0">orxShader_AddTimeParam</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, orxFLOAT _fWrap, const orxSTRING _zFXName)</td></tr>
+<tr class="separator:ga147e2497de32224715d1da8e62ba8cd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga49da9795481144df82fc146aa777e499"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga49da9795481144df82fc146aa777e499">orxShader_AddVectorParam</a> (<a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_avValueList)</td></tr>
 <tr class="separator:ga49da9795481144df82fc146aa777e499"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga79418ebbcbbac84063f6300860cec6f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_shader.html#ga79418ebbcbbac84063f6300860cec6f2">orxShader_ClearCache</a> ()</td></tr>
@@ -361,7 +361,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga4a302c1f77503f9da2376807f7e8edb9"></a>
+<a class="anchor" id="ga147e2497de32224715d1da8e62ba8cd0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -375,7 +375,19 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zName</em>&#160;</td>
+          <td class="paramname"><em>_zName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&#160;</td>
+          <td class="paramname"><em>_fWrap</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zFXName</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -388,6 +400,8 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstShader</td><td>Concerned Shader </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zName</td><td>Parameter's literal name </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fWrap</td><td>Time will wrap around after that amount of seconds, &lt;= 0 to ignore </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zFXName</td><td>FX to apply as transformation (should be of type FLOAT), orxNULL for none </td></tr>
   </table>
   </dd>
 </dl>

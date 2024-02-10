@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -60,6 +60,11 @@ extern "C"
   Gets Game Activity
   */
 GameActivity *orxAndroid_GetGameActivity();
+
+/**
+  Set key filter callback
+  */
+void orxAndroid_SetKeyFilter(android_key_event_filter filter);
 
 #if defined(__cplusplus)
 }

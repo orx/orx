@@ -1,6 +1,6 @@
 /* Scroll
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -109,8 +109,14 @@ public:
                 orxFLOAT                GetLifeTime() const;
                 void                    SetLifeTime(orxFLOAT _fLifeTime);
 
+                ScrollObject *          FindChild(const orxSTRING _zPath) const;
+                ScrollObject *          GetChild() const;
+                ScrollObject *          GetSibling() const;
+
+                ScrollObject *          FindOwnedChild(const orxSTRING _zPath) const;
                 ScrollObject *          GetOwnedChild() const;
                 ScrollObject *          GetOwnedSibling() const;
+
 
                 void                    PushConfigSection(orxBOOL _bPushInstanceSection = orxFALSE) const;
                 void                    PopConfigSection() const;
@@ -133,12 +139,16 @@ private:
   virtual       orxBOOL                 OnRender(orxRENDER_EVENT_PAYLOAD &_rstPayload);
   virtual       orxBOOL                 OnShader(orxSHADER_EVENT_PAYLOAD &_rstPayload);
 
-  virtual       orxBOOL                 OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal);
-  virtual       orxBOOL                 OnSeparate(ScrollObject *_poCollider);
+  virtual       void                    OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal);
+  virtual       void                    OnSeparate(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart);
 
   virtual       void                    OnNewAnim(const orxSTRING _zOldAnim, const orxSTRING _zNewAnim, orxBOOL _bCut);
   virtual       void                    OnAnimUpdate(const orxSTRING _zAnim);
   virtual       void                    OnAnimEvent(const orxSTRING _zAnim, const orxSTRING _zEvent, orxFLOAT _fTime, orxFLOAT _fValue);
+
+  virtual       void                    OnFXStart(const orxSTRING _zFX, orxFX *_pstFX);
+  virtual       void                    OnFXStop(const orxSTRING _zFX, orxFX *_pstFX);
+  virtual       void                    OnFXLoop(const orxSTRING _zFX, orxFX *_pstFX);
 
                 void                    SetDifferentialMode(orxBOOL _bDifferential = orxTRUE);
 

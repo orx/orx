@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -233,17 +233,6 @@ static orxINLINE orxTIMELINE_TRACK *orxTimeLine_CreateTrack(const orxSTRING _zTr
           /* Updates event count */
           u32EventCount += orxConfig_GetListCount(zKey);
         }
-        else
-        {
-          /* Not keep in cache, immediate nor loop? */
-          if((orxString_Compare(orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE, zKey) != 0)
-          && (orxString_Compare(orxTIMELINE_KZ_CONFIG_IMMEDIATE, zKey) != 0)
-          && (orxString_Compare(orxTIMELINE_KZ_CONFIG_LOOP, zKey) != 0))
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "TimeLine track [%s]: ignoring invalid key (%s).", _zTrackID, zKey);
-          }
-        }
       }
 
       /* Allocates track */
@@ -417,13 +406,12 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
     if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
       orxHANDLE           hIterator;
-      orxU64              u64Key;
       orxTIMELINE_TRACK  *pstTrack;
 
       /* For all tracks */
-      for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstTrack);
+      for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstTrack);
           hIterator != orxHANDLE_UNDEFINED;
-          hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, &u64Key, (void **)&pstTrack))
+          hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, orxNULL, (void **)&pstTrack))
       {
         /* Match origin? */
         if(orxConfig_GetOriginID(pstTrack->zReference) == pstPayload->stNameID)
@@ -916,7 +904,6 @@ orxSTATUS orxFASTCALL orxTimeLine_Delete(orxTIMELINE *_pstTimeLine)
 orxSTATUS orxFASTCALL orxTimeLine_ClearCache()
 {
   orxTIMELINE_TRACK  *pstTrack, *pstNewTrack;
-  orxU64              u64Key;
   orxHANDLE           hIterator, hNextIterator;
   orxSTATUS           eResult = orxSTATUS_SUCCESS;
 
@@ -924,12 +911,12 @@ orxSTATUS orxFASTCALL orxTimeLine_ClearCache()
   orxASSERT(sstTimeLine.u32Flags & orxTIMELINE_KU32_STATIC_FLAG_READY);
 
   /* For all tracks */
-  for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, &u64Key, (void **)&pstTrack);
+  for(hIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstTrack);
       hIterator != orxHANDLE_UNDEFINED;
       hIterator = hNextIterator, pstTrack = pstNewTrack)
   {
     /* Gets next track */
-    hNextIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, &u64Key, (void **)&pstNewTrack);
+    hNextIterator = orxHashTable_GetNext(sstTimeLine.pstTrackTable, hIterator, orxNULL, (void **)&pstNewTrack);
 
     /* Is cached? */
     if(orxFLAG_TEST(pstTrack->u32Flags, orxTIMELINE_TRACK_KU32_FLAG_CACHED))
