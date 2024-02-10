@@ -96,6 +96,7 @@
 #define orxGRAPHIC_KZ_CONFIG_REPEAT           "Repeat"
 #define orxGRAPHIC_KZ_CONFIG_SMOOTHING        "Smoothing"
 #define orxGRAPHIC_KZ_CONFIG_BLEND_MODE       "BlendMode"
+#define orxGRAPHIC_KZ_CONFIG_STASIS           "Stasis"
 #define orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE    "KeepInCache"
 
 

@@ -1128,6 +1128,7 @@ var searchData=
   ['orxgraphic_5fkz_5fconfig_5frepeat',['orxGRAPHIC_KZ_CONFIG_REPEAT',['../group__orx_graphic.html#gaca78cb05897fff45e3d01fd079537292',1,'orxGraphic.h']]],
   ['orxgraphic_5fkz_5fconfig_5frgb',['orxGRAPHIC_KZ_CONFIG_RGB',['../group__orx_graphic.html#ga985b9d83a30813e64363ceaa6a0945e6',1,'orxGraphic.h']]],
   ['orxgraphic_5fkz_5fconfig_5fsmoothing',['orxGRAPHIC_KZ_CONFIG_SMOOTHING',['../group__orx_graphic.html#ga3b6b245b73859dd9fcd3babf0013818d',1,'orxGraphic.h']]],
+  ['orxgraphic_5fkz_5fconfig_5fstasis',['orxGRAPHIC_KZ_CONFIG_STASIS',['../group__orx_graphic.html#ga58e2ab34d5fc53ecd4f871a9ae7135ec',1,'orxGraphic.h']]],
   ['orxgraphic_5fkz_5fconfig_5ftext_5fname',['orxGRAPHIC_KZ_CONFIG_TEXT_NAME',['../group__orx_graphic.html#ga2e68714f020cfea6b1a59932e1ee67e5',1,'orxGraphic.h']]],
   ['orxgraphic_5fkz_5fconfig_5ftexture_5fname',['orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME',['../group__orx_graphic.html#gad0b7848ab955c0b014102bb63a1a1e33',1,'orxGraphic.h']]],
   ['orxgraphic_5fkz_5fconfig_5ftexture_5forigin',['orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN',['../group__orx_graphic.html#gaa535f304af68e558cb7d578038357ece',1,'orxGraphic.h']]],

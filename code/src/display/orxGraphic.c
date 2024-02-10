@@ -32,13 +32,14 @@
 
 #include "display/orxGraphic.h"
 
-#include "debug/orxDebug.h"
-#include "memory/orxMemory.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "core/orxLocale.h"
+#include "debug/orxDebug.h"
 #include "display/orxText.h"
 #include "display/orxTexture.h"
+#include "memory/orxMemory.h"
+#include "object/orxObject.h"
 
 
 /** Module flags
@@ -110,6 +111,7 @@ struct __orxGRAPHIC_t
   orxFLOAT        fRepeatX;                 /**< X-axis repeat count : 76 */
   orxFLOAT        fRepeatY;                 /**< Y-axis repeat count : 80 */
   const orxSTRING zReference;               /**< Reference : 84 */
+  const orxSTRING zDataReference;           /**< Data reference : 88 */
 };
 
 /** Static structure
@@ -252,71 +254,112 @@ static orxINLINE orxSTATUS orxGraphic_SetDataInternal(orxGRAPHIC *_pstGraphic, o
  */
 static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_LOCALE);
+  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_LOCALE) || (_pstEvent->eType == orxEVENT_TYPE_OBJECT));
 
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
+  /* Locale? */
+  if(_pstEvent->eType == orxEVENT_TYPE_LOCALE)
   {
-    /* Select language event */
-    case orxLOCALE_EVENT_SELECT_LANGUAGE:
+    orxLOCALE_EVENT_PAYLOAD  *pstPayload;
+    orxBOOL                   bTextureGroup, bTextGroup;
+
+    /* Checks */
+    orxASSERT(_pstEvent->eID == orxLOCALE_EVENT_SELECT_LANGUAGE);
+
+    /* Gets its payload */
+    pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Updates status */
+    bTextureGroup = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXTURE_KZ_LOCALE_GROUP) == 0)) ? orxTRUE : orxFALSE;
+    bTextGroup    = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXT_KZ_LOCALE_GROUP) == 0))    ? orxTRUE : orxFALSE;
+
+    /* Is it texture or text group? */
+    if((bTextureGroup != orxFALSE) || (bTextGroup != orxFALSE))
     {
-      orxLOCALE_EVENT_PAYLOAD  *pstPayload;
-      orxBOOL                   bTextureGroup, bTextGroup;
+      orxGRAPHIC *pstGraphic;
 
-      /* Gets its payload */
-      pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-      /* Updates status */
-      bTextureGroup = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXTURE_KZ_LOCALE_GROUP) == 0)) ? orxTRUE : orxFALSE;
-      bTextGroup    = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXT_KZ_LOCALE_GROUP) == 0))    ? orxTRUE : orxFALSE;
-
-      /* Is it texture or text group? */
-      if((bTextureGroup != orxFALSE) || (bTextGroup != orxFALSE))
+      /* For all graphics */
+      for(pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
+          pstGraphic != orxNULL;
+          pstGraphic = orxGRAPHIC(orxStructure_GetNext(pstGraphic)))
       {
-        orxGRAPHIC *pstGraphic;
-
-        /* For all graphics */
-        for(pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
-            pstGraphic != orxNULL;
-            pstGraphic = orxGRAPHIC(orxStructure_GetNext(pstGraphic)))
+        /* Text group and text data? */
+        if((bTextGroup != orxFALSE) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)))
         {
-          /* Texture group and 2D data? */
-          if((bTextureGroup != orxFALSE) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D)))
+          /* Updates graphic's size */
+          orxGraphic_UpdateSize(pstGraphic);
+        }
+        /* Texture group (including disabled stasis ones)? */
+        else if(bTextureGroup != orxFALSE)
+        {
+          /* Has locale name ID? */
+          if(pstGraphic->stLocaleNameID != 0)
           {
-            /* Has locale name ID? */
-            if(pstGraphic->stLocaleNameID != 0)
+            const orxSTRING zName;
+            orxTEXTURE     *pstTexture;
+
+            /* Retrieves name */
+            zName = orxLocale_GetString(orxString_GetFromID(pstGraphic->stLocaleNameID), orxTEXTURE_KZ_LOCALE_GROUP);
+
+            /* Valid? */
+            if(*zName != orxCHAR_NULL)
             {
-              orxTEXTURE *pstTexture;
-
-              /* Loads texture */
-              pstTexture = orxTexture_Load(orxLocale_GetString(orxString_GetFromID(pstGraphic->stLocaleNameID), orxTEXTURE_KZ_LOCALE_GROUP), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
-
-              /* Valid? */
-              if(pstTexture != orxNULL)
+              /* Has data reference? */
+              if(pstGraphic->zDataReference != orxNULL)
               {
-                /* Updates data */
-                orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
+                /* Updates it */
+                pstGraphic->zDataReference = orxString_Store(zName);
+              }
+
+              /* Has 2D data? */
+              if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
+              {
+                /* Loads texture */
+                pstTexture = orxTexture_Load(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
+
+                /* Valid? */
+                if(pstTexture != orxNULL)
+                {
+                  /* Updates data */
+                  orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
+                }
               }
             }
           }
-          /* Text group and text data? */
-          else if((bTextGroup != orxFALSE) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)))
-          {
-            /* Updates graphic's size */
-            orxGraphic_UpdateSize(pstGraphic);
-          }
         }
       }
-
-      break;
     }
+  }
+  /* Object */
+  else
+  {
+    /* Gets its graphic */
+    pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), GRAPHIC);
 
-    default:
+    /* Has data reference? */
+    if((pstGraphic != orxNULL) && (pstGraphic->zDataReference != orxNULL))
     {
-      break;
+      /* Enable? */
+      if(_pstEvent->eID == orxOBJECT_EVENT_ENABLE)
+      {
+        /* Checks */
+        orxASSERT(pstGraphic->pstData == orxNULL);
+
+        /* Updates data */
+        orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)orxTexture_Load(pstGraphic->zDataReference, orxFALSE), orxTRUE);
+      }
+      /* Disable */
+      else
+      {
+        /* Checks */
+        orxASSERT(pstGraphic->pstData != orxNULL);
+
+        /* Updates data */
+        orxGraphic_SetDataInternal(pstGraphic, orxNULL, orxTRUE);
+      }
     }
   }
 
@@ -382,12 +425,14 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
 
     /* Registers event handler */
     eResult = orxEvent_AddHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
+    eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxGraphic_EventHandler) : orxSTATUS_FAILURE;
 
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
       /* Filters relevant event IDs */
       orxEvent_SetHandlerIDFlags(orxGraphic_EventHandler, orxEVENT_TYPE_LOCALE, orxNULL, orxEVENT_GET_FLAG(orxLOCALE_EVENT_SELECT_LANGUAGE), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(orxGraphic_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DISABLE), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(GRAPHIC, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxGRAPHIC_KU32_BANK_SIZE, orxNULL);
@@ -402,7 +447,13 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
       {
         /* Removes event handler */
         orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
+        orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxGraphic_EventHandler);
       }
+    }
+    else
+    {
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
     }
   }
   else
@@ -440,6 +491,7 @@ void orxFASTCALL orxGraphic_Exit()
 
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxGraphic_EventHandler);
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_GRAPHIC);
@@ -679,6 +731,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Valid? */
         if(pstTexture != orxNULL)
         {
+          /* Stores its data reference */
+          pstResult->zDataReference = (orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_STASIS) != orxFALSE) ? orxString_Store(zName) : orxNULL;
+
           /* Links it */
           if(orxGraphic_SetDataInternal(pstResult, (orxSTRUCTURE *)pstTexture, orxTRUE) != orxSTATUS_FAILURE)
           {
@@ -1048,6 +1103,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Clone(const orxGRAPHIC *_pstGraphic)
       {
         /* Copies locale name ID */
         pstResult->stLocaleNameID = _pstGraphic->stLocaleNameID;
+
+        /* Copies data reference */
+        pstResult->zDataReference = _pstGraphic->zDataReference;
 
         /* Copies pivot */
         orxVector_Copy(&(pstResult->vPivot), &(_pstGraphic->vPivot));
