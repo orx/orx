@@ -58,6 +58,7 @@
 #define orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT       0x01000000  /**< Relative pivot flag */
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x02000000  /**< Smoothing on flag  */
 #define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x04000000  /**< Smoothing off flag  */
+#define orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE        0x08000000  /**< Keep in cache flag */
 
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE      0x00000000  /**< Blend mode no flags */
 
@@ -318,7 +319,7 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
               if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
               {
                 /* Loads texture */
-                pstTexture = orxTexture_Load(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
+                pstTexture = orxTexture_Load(zName, orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE) ? orxTRUE : orxFALSE);
 
                 /* Valid? */
                 if(pstTexture != orxNULL)
@@ -692,6 +693,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
+    orxU32 u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
+
     /* Creates graphic */
     pstResult = orxGraphic_Create();
 
@@ -725,8 +728,15 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
+        /* Should keep in cache? */
+        if(orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
+        {
+          /* Updates status */
+          u32Flags |= orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE;
+        }
+
         /* Loads texture */
-        pstTexture = orxTexture_Load(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
+        pstTexture = orxTexture_Load(zName, orxFLAG_TEST(u32Flags, orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE) ? orxTRUE : orxFALSE);
 
         /* Valid? */
         if(pstTexture != orxNULL)
@@ -814,7 +824,6 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
       {
         const orxSTRING zFlipping;
         orxVECTOR       vPivot;
-        orxU32          u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
 
         /* Gets pivot value */
         if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_PIVOT, &vPivot) != orxNULL)
