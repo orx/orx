@@ -127,10 +127,11 @@
 #define orxOBJECT_KZ_CONFIG_SPHERICAL_POSITION  "SphericalPosition"
 #define orxOBJECT_KZ_CONFIG_SPEED               "Speed"
 #define orxOBJECT_KZ_CONFIG_PIVOT               "Pivot"
-#define orxOBJECT_KZ_CONFIG_SIZE                "Size"
 #define orxOBJECT_KZ_CONFIG_ROTATION            "Rotation"
 #define orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY    "AngularVelocity"
 #define orxOBJECT_KZ_CONFIG_SCALE               "Scale"
+#define orxOBJECT_KZ_CONFIG_ORIGIN              "Origin"
+#define orxOBJECT_KZ_CONFIG_SIZE                "Size"
 #define orxOBJECT_KZ_CONFIG_FX_LIST             "FXList"
 #define orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST   "FXRecursiveList"
 #define orxOBJECT_KZ_CONFIG_FX_FREQUENCY        "FXFrequency"
@@ -5727,7 +5728,14 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
-        /* *** Size/Pivot *** */
+        /* *** Origin/Size/Pivot *** */
+
+        /* Has origin? */
+        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_ORIGIN, &vValue) != orxNULL)
+        {
+          /* Updates object origin */
+          orxObject_SetOrigin(pstResult, &vValue);
+        }
 
         /* Has size? */
         if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_SIZE, &vValue) != orxNULL)
@@ -5814,53 +5822,37 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
 
         /* Has color? */
-        if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_COLOR) != orxFALSE)
+        if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_COLOR, orxCOLORSPACE_COMPONENT, &(stColor.vRGB)) != orxNULL)
         {
-          /* Gets its value? */
-          if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_COLOR, orxCOLORSPACE_COMPONENT, &(stColor.vRGB)) != orxNULL)
-          {
-            /* Normalizes it */
-            orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
+          /* Normalizes it */
+          orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
 
-            /* Updates status */
-            bHasColor = orxTRUE;
-          }
+          /* Updates status */
+          bHasColor = orxTRUE;
         }
         /* Has RGB values? */
-        else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_RGB) != orxFALSE)
+        else if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_RGB, orxCOLORSPACE_RGB, &(stColor.vRGB)) != orxNULL)
         {
-          /* Gets its value? */
-          if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_RGB, orxCOLORSPACE_RGB, &(stColor.vRGB)) != orxNULL)
-          {
-            /* Updates status */
-            bHasColor = orxTRUE;
-          }
+          /* Updates status */
+          bHasColor = orxTRUE;
         }
         /* Has HSL values? */
-        else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_HSL) != orxFALSE)
+        else if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_HSL, orxCOLORSPACE_HSL, &(stColor.vHSL)) != orxNULL)
         {
-          /* Gets its value? */
-          if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_HSL, orxCOLORSPACE_HSL, &(stColor.vHSL)) != orxNULL)
-          {
-            /* Stores its RGB equivalent */
-            orxColor_FromHSLToRGB(&stColor, &stColor);
+          /* Stores its RGB equivalent */
+          orxColor_FromHSLToRGB(&stColor, &stColor);
 
-            /* Updates status */
-            bHasColor = orxTRUE;
-          }
+          /* Updates status */
+          bHasColor = orxTRUE;
         }
         /* Has HSV values? */
-        else if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_HSV) != orxFALSE)
+        if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_HSV, orxCOLORSPACE_HSV, &(stColor.vHSV)) != orxNULL)
         {
-          /* Gets its value? */
-          if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_HSV, orxCOLORSPACE_HSV, &(stColor.vHSV)) != orxNULL)
-          {
-            /* Stores its RGB equivalent */
-            orxColor_FromHSVToRGB(&stColor, &stColor);
+          /* Stores its RGB equivalent */
+          orxColor_FromHSVToRGB(&stColor, &stColor);
 
-            /* Updates status */
-            bHasColor = orxTRUE;
-          }
+          /* Updates status */
+          bHasColor = orxTRUE;
         }
 
         /* Has alpha? */
@@ -6503,15 +6495,10 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Should repeat? */
-        if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_REPEAT) != orxFALSE)
+        if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_REPEAT, &vValue) != orxNULL)
         {
-          orxVECTOR vRepeat;
-
-          /* Gets its value */
-          orxConfig_GetVector(orxOBJECT_KZ_CONFIG_REPEAT, &vRepeat);
-
           /* Stores it */
-          orxObject_SetRepeat(pstResult, vRepeat.fX, vRepeat.fY);
+          orxObject_SetRepeat(pstResult, vValue.fX, vValue.fY);
         }
 
         /* Has life time? */
