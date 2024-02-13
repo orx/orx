@@ -122,6 +122,7 @@ var group__orx_object =
     [ "orxObject_RemoveTimeLineTrack", "group__orx_object.html#ga6eeac2bcb4f1ea8ad9b960e7ff58201f", null ],
     [ "orxObject_RemoveTimeLineTrackRecursive", "group__orx_object.html#gadf495fda645a83012389a6b877ba82ea", null ],
     [ "orxObject_ResetActiveTime", "group__orx_object.html#gaf70b8e79b6b833ae4041c88aaa2f875d", null ],
+    [ "orxObject_ResetActiveTimeRecursive", "group__orx_object.html#gae9e1a19c33ae956da2a98e94239e3321", null ],
     [ "orxObject_SetAlpha", "group__orx_object.html#ga98b10faefdeda019cdb6e9371fa2a1fd", null ],
     [ "orxObject_SetAlphaRecursive", "group__orx_object.html#ga10a64afcec6cb3427439e18f23070926", null ],
     [ "orxObject_SetAngularVelocity", "group__orx_object.html#ga69f5fe0d7734d4df0c392b858d7faaf0", null ],

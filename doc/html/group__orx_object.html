@@ -531,6 +531,8 @@ Life time / Active time</h2></td></tr>
 <tr class="separator:gaeedb8303518d6456b563726ac18dc6d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf70b8e79b6b833ae4041c88aaa2f875d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaf70b8e79b6b833ae4041c88aaa2f875d">orxObject_ResetActiveTime</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 <tr class="separator:gaf70b8e79b6b833ae4041c88aaa2f875d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae9e1a19c33ae956da2a98e94239e3321"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gae9e1a19c33ae956da2a98e94239e3321">orxObject_ResetActiveTimeRecursive</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:gae9e1a19c33ae956da2a98e94239e3321"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Group</h2></td></tr>
@@ -1590,7 +1592,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object active time, i.e. the amount of time that the object has been alive taking into account the object's clock multiplier and object's periods of pause. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Gets object's active time, i.e. the amount of time that the object has been alive taking into account. the object's clock multiplier and object's periods of pause. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
   </table>
@@ -2071,7 +2073,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Gets object lifetime. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Gets object's lifetime. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
   </table>
@@ -3785,7 +3787,30 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Resets an object active time </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Resets an object's active time. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gae9e1a19c33ae956da2a98e94239e3321"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxObject_ResetActiveTimeRecursive </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Resets an object's and its owned children's active time. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
   </table>
@@ -4672,7 +4697,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object lifetime. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Sets object's lifetime. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_fLifeTime</td><td>Lifetime to set, negative value to disable it </td></tr>
@@ -4740,7 +4765,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Sets object literal lifetime. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Sets object's literal lifetime. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zLifeTime</td><td>Lifetime to set, can be composed of multiple tags, separated by space: anim, child, fx, sound, spawner and track </td></tr>
