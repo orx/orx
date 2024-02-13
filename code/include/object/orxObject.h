@@ -1328,38 +1328,44 @@ extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const 
 
 /** @name Life time / Active time
  * @{ */
-/** Sets object literal lifetime.
+/** Sets object's literal lifetime.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zLifeTime      Lifetime to set, can be composed of multiple tags, separated by space: anim, child, fx, sound, spawner and track
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLiteralLifeTime(orxOBJECT *_pstObject, const orxSTRING _zLifeTime);
 
-/** Sets object lifetime.
+/** Sets object's lifetime.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fLifeTime      Lifetime to set, negative value to disable it
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLifeTime);
 
-/** Gets object lifetime.
+/** Gets object's lifetime.
  * @param[in]   _pstObject      Concerned object
  * @return      Lifetime / negative value if none
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(const orxOBJECT *_pstObject);
 
-/** Gets object active time, i.e. the amount of time that the object has been alive taking into account
+/** Gets object's active time, i.e. the amount of time that the object has been alive taking into account.
  * the object's clock multiplier and object's periods of pause.
  * @param[in]   _pstObject      Concerned object
  * @return      Active time
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetActiveTime(const orxOBJECT *_pstObject);
 
-/** Resets an object active time
+/** Resets an object's active time.
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ResetActiveTime(orxOBJECT *_pstObject);
+
+/** Resets an object's and its owned children's active time.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_ResetActiveTimeRecursive(orxOBJECT *_pstObject);
 /** @} */
 
 /** @name Group

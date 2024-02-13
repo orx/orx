@@ -1331,8 +1331,17 @@ void orxFASTCALL orxObject_CommandResetActiveTime(orxU32 _u32ArgNumber, const or
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Resets its active time */
-    orxObject_ResetActiveTime(pstObject);
+    /* Recursive? */
+    if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
+    {
+      /* Resets its active time recursively */
+      orxObject_ResetActiveTimeRecursive(pstObject);
+    }
+    else
+    {
+      /* Resets its active time */
+      orxObject_ResetActiveTime(pstObject);
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -3707,7 +3716,7 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetActiveTime */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetActiveTime, "ActiveTime", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
   /* Command: ResetActiveTime */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, ResetActiveTime, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, ResetActiveTime, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: SetLifeTime */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetLifeTime, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"LifeTime", orxCOMMAND_VAR_TYPE_STRING});
@@ -11863,7 +11872,7 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const orxOBJECT *_pstOb
   return eResult;
 }
 
-/** Sets object literal lifetime.
+/** Sets object's literal lifetime.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zLifeTime      Lifetime to set, can be composed of multiple tags, separated by space: anim, child, fx, sound, spawner and track
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -11946,7 +11955,7 @@ orxSTATUS orxFASTCALL orxObject_SetLiteralLifeTime(orxOBJECT *_pstObject, const 
   return eResult;
 }
 
-/** Sets object lifetime.
+/** Sets object's lifetime.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fLifeTime      Lifetime to set, negative value to disable it
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -12024,7 +12033,7 @@ orxSTATUS orxFASTCALL orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLi
   return eResult;
 }
 
-/** Gets object lifetime.
+/** Gets object's lifetime.
  * @param[in]   _pstObject      Concerned object
  * @return      Lifetime / negative value if none
  */
@@ -12043,7 +12052,7 @@ orxFLOAT orxFASTCALL orxObject_GetLifeTime(const orxOBJECT *_pstObject)
   return fResult;
 }
 
-/** Gets object active time, i.e. the amount of time that the object has been alive taking into account
+/** Gets object's active time, i.e. the amount of time that the object has been alive taking into account.
  * the object's clock multiplier and object's periods of pause.
  * @param[in]   _pstObject      Concerned object
  * @return      Active time
@@ -12063,7 +12072,7 @@ orxFLOAT orxFASTCALL orxObject_GetActiveTime(const orxOBJECT *_pstObject)
   return fResult;
 }
 
-/** Resets an object active time
+/** Resets an object's active time.
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -12080,6 +12089,34 @@ orxSTATUS orxFASTCALL orxObject_ResetActiveTime(orxOBJECT *_pstObject)
 
   /* Done! */
   return eResult;
+}
+
+/** Resets an object's and its owned children's active time.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+void orxFASTCALL orxObject_ResetActiveTimeRecursive(orxOBJECT *_pstObject)
+{
+  orxOBJECT *pstChild;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates object */
+  orxObject_ResetActiveTime(_pstObject);
+
+  /* For all its owned children */
+  for(pstChild = orxObject_GetOwnedChild(_pstObject);
+      pstChild != orxNULL;
+      pstChild = orxObject_GetOwnedSibling(pstChild))
+  {
+    /* Updates it */
+    orxObject_ResetActiveTimeRecursive(pstChild);
+  }
+
+  /* Done! */
+  return;
 }
 
 /** Gets default group ID.
