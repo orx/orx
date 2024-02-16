@@ -145,6 +145,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga643f4af16e0e79abe462c2b7a1fd0fcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7fec95bc660e4ac981cc1485a9900054"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga7fec95bc660e4ac981cc1485a9900054">orxString_GetCharacterCount</a> (const orxSTRING _zString)</td></tr>
 <tr class="separator:ga7fec95bc660e4ac981cc1485a9900054"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga941d0e8287d4e381fc1b51f26b830bee"><td class="memItemLeft" align="right" valign="top">static orxINLINE orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga941d0e8287d4e381fc1b51f26b830bee">orxString_GetEditDistance</a> (const orxSTRING _zString1, const orxSTRING _zString2)</td></tr>
+<tr class="separator:ga941d0e8287d4e381fc1b51f26b830bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3352602bfc1529ae7c20fc8c665c179d"><td class="memItemLeft" align="right" valign="top">static orxINLINE const orxSTRING&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga3352602bfc1529ae7c20fc8c665c179d">orxString_GetExtension</a> (const orxSTRING _zFileName)</td></tr>
 <tr class="separator:ga3352602bfc1529ae7c20fc8c665c179d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7782e2bf85e3f7d33ad24b29a921f756"><td class="memItemLeft" align="right" valign="top">static orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_string.html#ga7782e2bf85e3f7d33ad24b29a921f756">orxString_GetFirstCharacterCodePoint</a> (const orxSTRING _zString, const orxSTRING *_pzRemaining)</td></tr>
@@ -356,14 +358,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Compare two strings, case sensitive. If the first one is smaller than the second it returns -1, 1 if the second one is bigger than the first, and 0 if they are equals </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Compares two strings (case sensitive) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString1</td><td>First String to compare </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString2</td><td>Second string to compare </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>-1 if _zString1 &lt; _zString2, 0 if _zString1 == _zString2, 1 if _zString1 &gt; _zString2 </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00602">602</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
@@ -396,8 +398,9 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00583">583</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00584">584</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -422,13 +425,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Duplicate a string. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Duplicates a string. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zSrcString</td><td>String to duplicate. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSrcString</td><td>String to duplicate </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Duplicated string. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The duplicated string </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00555">555</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
@@ -484,13 +487,13 @@ Functions</h2></td></tr>
 <p>Extracts the base (2, 8, 10 or 16) from a literal number </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String from which to extract the base </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining literal number, right after the base prefix (0x, 0b or 0) </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining number literal, right after the base prefix (0x, 0b or 0) if any </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Base or the numerical value, defaults to 10 (decimal) when no prefix is found or the literal value couldn't be identified </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The base or the numerical value, defaults to 10 (decimal) when no prefix is found or the literal value couldn't be identified </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00687">687</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00772">772</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -515,15 +518,59 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of valid unicode characters (UTF-8) in the string (for ASCII string, it will be the same result as <a class="el" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength()</a>) </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Gets the number of valid unicode characters (UTF-8) in the string (for ASCII string, it will be the same result as <a class="el" href="group__orx_string.html#ga5dd29b1e41db0845ef80863df67f5670">orxString_GetLength()</a>) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>Concerned string </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Number of valid unicode characters contained in the string, orxU32_UNDEFINED for an invalid UTF-8 string </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The number of valid unicode characters contained in the string, orxU32_UNDEFINED for an invalid UTF-8 string </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00506">506</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga941d0e8287d4e381fc1b51f26b830bee"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static orxINLINE orxU32 orxString_GetEditDistance </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zString1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zString2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Gets the edit distance (Damerau-Levenshtein) between two strings </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zString1</td><td>First string </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zString2</td><td>Second string </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The edit distance between both strings </dd></dl>
+
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00683">683</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -548,15 +595,15 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Gets the extension from a file name </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Gets the extension of a file name </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zFileName</td><td>Concerned file name </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Extension if exists, orxSTRING_EMPTY otherwise </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Extension if present, orxSTRING_EMPTY otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01451">1451</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01538">1538</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -591,14 +638,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the code of the first character of the UTF-8 string </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Gets the unicode code point of the first character of the UTF-8 string </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>Concerned string </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the first UTF-8 character </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the first UTF-8 character </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Code of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid character </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The code of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid character </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00339">339</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
@@ -671,13 +718,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the number of orxCHAR in the string (for non-ASCII UTF-8 string, it won't be the actual number of unicode characters) </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Gets the number of orxCHAR in the string (for non-ASCII UTF-8 string, it won't be the actual number of unicode characters) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String used for length computation </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Length of the string (doesn't count final orxCHAR_NULL) </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The length of the string (doesn't include the final orxCHAR_NULL character) </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00170">170</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
@@ -704,13 +751,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Gets the UTF-8 encoding length of given character </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Gets the UTF-8 encoding length of a given character </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32CharacterCodePoint</td><td>Concerned character code </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Encoding length in UTF-8 for given character if valid, orxU32_UNDEFINED otherwise </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The encoding length in UTF-8 for the given character if valid, orxU32_UNDEFINED otherwise </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00205">205</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
@@ -770,16 +817,16 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Compare two strings, case insensitive. If the first one is smaller than the second, it returns -1, If the second one is bigger than the first, and 0 if they are equals </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Compares two strings (case insensitive) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString1</td><td>First String to compare </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString2</td><td>Second string to compare </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>-1 if _zString1 &lt; _zString2, 0 if _zString1 == _zString2, 1 if _zString1 &gt; _zString2 </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00636">636</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00634">634</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -886,15 +933,15 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Lowercase a string </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to lower case </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The converted string. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The converted string </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01275">1275</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01360">1360</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -935,7 +982,7 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Compare N first character from two strings, case sensitive. If the first one is smaller than the second it returns -1, 1 if the second one is bigger than the first and 0 if they are equals. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Compares the N first characters of two strings (case sensitive) and 0 if they are equals. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString1</td><td>First String to compare </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString2</td><td>Second string to compare </td></tr>
@@ -943,9 +990,9 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>-1 if _zString1 &lt; _zString2, 0 if _zString1 == _zString2, 1 if _zString1 &gt; _zString2 </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00620">620</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00619">619</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -994,7 +1041,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Copied string </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The copied string </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00540">540</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
@@ -1071,7 +1118,7 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Compare N first character from two strings, case insensitive. If the first one is smaller than the second, it returns -1, If the second one is bigger than the first, and 0 if they are equals. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Compare the N first characters of two strings (case insensitive) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString1</td><td>First String to compare </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString2</td><td>Second string to compare </td></tr>
@@ -1079,9 +1126,9 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>-1, 0 or 1 as indicated in the description. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>-1 if _zString1 &lt; _zString2, 0 if _zString1 == _zString2, 1 if _zString1 &gt; _zString2 </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00663">663</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00659">659</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1138,7 +1185,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of written characters, excluding the terminating null character </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01388">1388</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01475">1475</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1187,7 +1234,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Length of the encoded UTF-8 character (1, 2, 3 or 4) if valid, orxU32_UNDEFINED otherwise </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The length of the encoded UTF-8 character (1, 2, 3 or 4) if valid, orxU32_UNDEFINED otherwise </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00246">246</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
@@ -1239,7 +1286,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of scanned items </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01427">1427</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01514">1514</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1274,7 +1321,7 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the first occurrence of _cChar in _zString </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Finds the first occurrence of _cChar in _zString </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String to analyze </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_cChar</td><td>The character to find </td></tr>
@@ -1283,7 +1330,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The pointer of the first occurrence of _cChar, or orxNULL if not found </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01341">1341</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01428">1428</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1324,7 +1371,7 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the first occurrence of _cChar in _zString </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Finds the first occurrence of _cChar in _zString </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String to analyze </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_cChar</td><td>The character to find </td></tr>
@@ -1334,7 +1381,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The index of the next occurrence of requested character, starting at given position / -1 if not found </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01356">1356</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01443">1443</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1369,16 +1416,16 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the first occurrence of _zString2 in _zString1 </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Finds the first occurrence of _zString2 in _zString1 </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString1</td><td>String to analyze </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zString2</td><td>String that must be inside _zString1 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zString2</td><td>The string to find inside _zString1 </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The pointer of the first occurrence of _zString2, or orxNULL if not found </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01326">1326</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01413">1413</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1425,7 +1472,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Sub string located after all non-terminal directory separators </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The sub-string located after all non-terminal directory separators </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00127">127</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
@@ -1458,7 +1505,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Sub string located after all leading white spaces, including EOL characters </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The sub-string located after all leading white spaces, including EOL characters </dd></dl>
 
 <p>Definition at line <a class="el" href="orx_string_8h_source.html#l00095">95</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
@@ -1524,17 +1571,17 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Convert a string to a boolean </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to a boolean </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pbOutValue</td><td>Converted value </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the boolean conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the boolean conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01202">1202</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01287">1287</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1575,17 +1622,17 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Convert a string to a value </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to a value </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pfOutValue</td><td>Converted value </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the number conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the number conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01050">1050</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01135">1135</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1626,17 +1673,17 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Converts a String to a signed int value, guessing the base </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to a signed int value, guessing the base </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_ps32OutValue</td><td>Converted value </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the number conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the number conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00820">820</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00905">905</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1683,18 +1730,18 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Converts a String to a signed int value using the given base </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to a signed int value using the given base </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Base</td><td>Base of the read value (generally 10, but can be 16 to read hexa) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_ps32OutValue</td><td>Converted value </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the number conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the number conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00779">779</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00864">864</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1735,17 +1782,17 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Converts a String to a signed int value, guessing the base </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to a signed int value, guessing the base </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_ps64OutValue</td><td>Converted value </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the number conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the number conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00956">956</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01041">1041</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1792,18 +1839,18 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Converts a String to a signed int value using the given base </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to a signed int value using the given base </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Base</td><td>Base of the read value (generally 10, but can be 16 to read hexa) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_ps64OutValue</td><td>Converted value </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the number conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the number conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00915">915</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01000">1000</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1844,17 +1891,17 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Converts a String to an unsigned int value, guessing the base </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to an unsigned int value, guessing the base </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pu32OutValue</td><td>Converted value </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the number conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the number conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00888">888</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00973">973</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1901,18 +1948,18 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Converts a String to an unsigned int value using the given base </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to an unsigned int value using the given base </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Base</td><td>Base of the read value (generally 10, but can be 16 to read hexa) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pu32OutValue</td><td>Converted value </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the number conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the number conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00847">847</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00932">932</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -1953,17 +2000,17 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Converts a String to an unsigned int value, guessing the base </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to an unsigned int value, guessing the base </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pu64OutValue</td><td>Converted value </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the number conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the number conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01024">1024</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01109">1109</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -2010,18 +2057,18 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Converts a String to an unsigned int value using the given base </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to an unsigned int value using the given base </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Base</td><td>Base of the read value (generally 10, but can be 16 to read hexa) </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pu64OutValue</td><td>Converted value </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the number conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the number conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l00983">983</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01068">1068</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -2062,17 +2109,17 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Convert a string to a vector </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to a vector </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">_pvOutValue</td><td>Converted value. N.B.: if only two components (x, y) are defined, the z component will be set to zero </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, will contain the remaining string after the number conversion </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pzRemaining</td><td>If non null, it will contain the remaining string after the number conversion </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01101">1101</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01186">1186</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
@@ -2097,15 +2144,15 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Uppercase a string </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Converts a string to upper case </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zString</td><td>String To convert </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The converted string. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The converted string </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01300">1300</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_string_8h_source.html#l01386">1386</a> of file <a class="el" href="orx_string_8h_source.html">orxString.h</a>.</p>
 
 </div>
 </div>
