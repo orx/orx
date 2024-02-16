@@ -675,6 +675,95 @@ static orxINLINE orxS32                                   orxString_NICompare(co
 #endif /* __orxWINDOWS__ */
 }
 
+/** Gets the edit distance (Damerau-Levenshtein) between two strings
+ * @param[in]   _zString1               First string
+ * @param[in]   _zString2               Second string
+ * @return      The edit distance between both strings
+ */
+static orxINLINE orxU32                                   orxString_GetEditDistance(const orxSTRING _zString1, const orxSTRING _zString2)
+{
+  orxU32 u32Length1, u32Length2, u32Result;
+
+  /* Checks */
+  orxASSERT(_zString1 != orxNULL);
+  orxASSERT(_zString2 != orxNULL);
+
+  /* Gets string lengths */
+  u32Length1 = orxString_GetLength(_zString1);
+  u32Length2 = orxString_GetLength(_zString2);
+
+  /* Valid? */
+  if((u32Length1 > 0) && (u32Length2 > 0))
+  {
+    orxU32 i, j;
+
+#ifdef __orxMSVC__
+    orxU32 *au32PreviousRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 *au32CurrentRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 *au32NextRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
+#else /* __orxMSVC__ */
+    orxU32 au32PreviousRow[u32Length2 + 1];
+    orxU32 au32CurrentRow[u32Length2 + 1];
+    orxU32 au32NextRow[u32Length2 + 1];
+#endif /* __orxMSVC__ */
+
+    /* Initializes the previous and current rows */
+    orxMemory_Zero(au32PreviousRow, (u32Length2 + 1) * sizeof(orxU32));
+    for(i = 0; i < u32Length2; i++)
+    {
+      au32CurrentRow[i] = i;
+    }
+
+    /* For all characters in the first string */
+    for(i = 0; i < u32Length1; i++)
+    {
+      orxU32 *pu32dummy;
+
+      /* Inits the first value of the next row */
+      au32NextRow[0] = i + 1;
+
+      /* For all characters in the second string */
+      for(j = 0; j < u32Length2; j++)
+      {
+        /* Substitution? */
+        au32NextRow[j + 1] = au32CurrentRow[j] + ((_zString1[i] != _zString2[j]) ? 1 : 0);
+
+        /* Deletion? */
+        au32NextRow[j + 1] = orxMIN(au32NextRow[j + 1], au32CurrentRow[j + 1] + 1);
+
+        /* Insertion? */
+        au32NextRow[j + 1] = orxMIN(au32NextRow[j + 1], au32NextRow[j] + 1);
+
+        /* Swap? */
+        if((i > 0)
+        && (j > 0)
+        && (_zString1[i - 1] == _zString2[j])
+        && (_zString1[i] == _zString2[j - 1]))
+        {
+          au32NextRow[j + 1] = orxMIN(au32NextRow[j + 1], au32PreviousRow[j - 1] + 1);
+        }
+      }
+
+      /* Cycles the rows */
+      pu32dummy       = au32PreviousRow;
+      au32PreviousRow = au32CurrentRow;
+      au32CurrentRow  = au32NextRow;
+      au32NextRow     = pu32dummy;
+    }
+
+    /* Updates result */
+    u32Result = au32CurrentRow[u32Length2];
+  }
+  else
+  {
+    /* Updates result */
+    u32Result = u32Length1 + u32Length2;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
 /** Extracts the base (2, 8, 10 or 16) from a literal number
  * @param[in]   _zString                String from which to extract the base
  * @param[out]  _pzRemaining            If non null, it will contain the remaining number literal, right after the base prefix (0x, 0b or 0) if any
