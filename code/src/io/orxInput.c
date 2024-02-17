@@ -180,6 +180,10 @@ static orxINPUT_STATIC sstInput;
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Semi-private, internal-use only forward declarations
+ */
+orxBOOL orxFASTCALL orxConfig_HasValueNoCheck(const orxSTRING _zKey);
+
 /** Command: Load
  */
 void orxFASTCALL orxInput_CommandLoad(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -660,7 +664,7 @@ static orxINLINE void orxInput_LoadCurrentSet()
           orxCHAR acBuffer[64];
 
           /* Is joystick and not defined? */
-          if((bIsJoystick != orxFALSE) && (orxConfig_HasValue(zBinding) == orxFALSE))
+          if((bIsJoystick != orxFALSE) && (orxConfig_HasValueNoCheck(zBinding) == orxFALSE))
           {
             orxS32 s32Index, s32NextIndex;
             orxU32 u32JoyID;
@@ -687,33 +691,37 @@ static orxINLINE void orxInput_LoadCurrentSet()
             }
           }
 
-          /* For all defined inputs */
-          for(u32Count = orxConfig_GetListCount(zBinding), i = 0; i < u32Count; i++)
+          /* Has binding? */
+          if(orxConfig_HasValueNoCheck(zBinding) != orxFALSE)
           {
-            const orxSTRING zInput;
-
-            /* Gets bound input */
-            zInput = orxConfig_GetListString(zBinding, i);
-
-            /* Valid? */
-            if(zInput != orxSTRING_EMPTY)
+            /* For all defined inputs */
+            for(u32Count = orxConfig_GetListCount(zBinding), i = 0; i < u32Count; i++)
             {
-              orxCHAR acBuffer[128];
+              const orxSTRING zInput;
 
-              /* Binds it */
-              if(orxInput_Bind(zInput, (orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode, -1) != orxSTATUS_FAILURE)
+              /* Gets bound input */
+              zInput = orxConfig_GetListString(zBinding, i);
+
+              /* Valid? */
+              if(zInput != orxSTRING_EMPTY)
               {
-                /* Gets threshold name */
-                orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_THRESHOLD_FORMAT, zInput);
+                orxCHAR acBuffer[128];
 
-                /* Stores threshold */
-                orxInput_SetThreshold(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.pstCurrentSet->fDefaultThreshold);
+                /* Binds it */
+                if(orxInput_Bind(zInput, (orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode, -1) != orxSTATUS_FAILURE)
+                {
+                  /* Gets threshold name */
+                  orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_THRESHOLD_FORMAT, zInput);
 
-                /* Gets multiplier name */
-                orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_MULTIPLIER_FORMAT, zInput);
+                  /* Stores threshold */
+                  orxInput_SetThreshold(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.pstCurrentSet->fDefaultThreshold);
 
-                /* Stores multiplier */
-                orxInput_SetMultiplier(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.pstCurrentSet->fDefaultMultiplier);
+                  /* Gets multiplier name */
+                  orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_MULTIPLIER_FORMAT, zInput);
+
+                  /* Stores multiplier */
+                  orxInput_SetMultiplier(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.pstCurrentSet->fDefaultMultiplier);
+                }
               }
             }
           }

@@ -249,7 +249,7 @@ static orxANIMSET_STATIC sstAnimSet;
 /** Semi-private, internal-use only forward declarations
  */
 orxSTATUS orxFASTCALL orxAnim_SetName(orxANIM *_pstAnim, const orxSTRING _zName);
-orxANIM *orxFASTCALL orxAnim_CreateFromConfig(const orxSTRING _zConfigID);
+orxANIM *orxFASTCALL  orxAnim_CreateFromConfig(const orxSTRING _zConfigID);
 
 /** Link table set flag test accessor
  * @param[in]   _pstLinkTable                 Concerned LinkTable

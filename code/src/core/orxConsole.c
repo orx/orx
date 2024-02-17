@@ -155,7 +155,7 @@ static orxCONSOLE_STATIC sstConsole;
 
 /** Semi-private, internal-use only forward declarations
  */
-orxVECTOR *orxFASTCALL  orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
 
 /** Resets input callback
  */
