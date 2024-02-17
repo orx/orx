@@ -67,6 +67,8 @@ var orx_f_x_8h =
       [ "orxFX_TYPE_SPEED", "group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a12819ca06a34b7235fda4eddcc41dae3", null ],
       [ "orxFX_TYPE_VOLUME", "group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a64f6e41df6609fbf4ff6a1521548f9d7", null ],
       [ "orxFX_TYPE_PITCH", "group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a2d16072ccf6c5b5e687a77d05569d3ff", null ],
+      [ "orxFX_TYPE_SIZE", "group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a6019759c6283d123e3a73a12b35a2fc3", null ],
+      [ "orxFX_TYPE_ORIGIN", "group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170ad54961243a051f947eaaf4d270a1461f", null ],
       [ "orxFX_TYPE_FLOAT_ADD", "group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a34e1263dc50dab51e2553ab9245cad2a", null ],
       [ "orxFX_TYPE_FLOAT_MULTIPLY", "group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170ad8519dbe059c9ab00ac246ca99daa05c", null ],
       [ "orxFX_TYPE_VECTOR_ADD", "group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a1535b1269f88c89edbc25e2509ceb4f9", null ],
