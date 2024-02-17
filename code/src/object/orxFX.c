@@ -171,6 +171,8 @@
 #define orxFX_KZ_SPEED                          "speed"
 #define orxFX_KZ_VOLUME                         "volume"
 #define orxFX_KZ_PITCH                          "pitch"
+#define orxFX_KZ_SIZE                           "size"
+#define orxFX_KZ_ORIGIN                         "origin"
 #define orxFX_KZ_VECTOR                         "vector"
 #define orxFX_KZ_FLOAT                          "float"
 #define orxFX_KZ_MULTIPLY                       "multiply"
@@ -1396,6 +1398,8 @@ orxSTATUS orxFASTCALL orxFX_Init()
           orxFX_REGISTER_TYPE(SPEED);
           orxFX_REGISTER_TYPE(VOLUME);
           orxFX_REGISTER_TYPE(PITCH);
+          orxFX_REGISTER_TYPE(SIZE);
+          orxFX_REGISTER_TYPE(ORIGIN);
 #undef orxFX_REGISTER_TYPE
 
           /* Adds event handler */
@@ -1893,7 +1897,7 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
       orxObject_SetScale(_pstObject, &(stContext.astValueList[orxFX_TYPE_SCALE].vValue));
     }
 
-    /* Update translation? */
+    /* Update position? */
     if(orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_POSITION)))
     {
       /* Non absolute? */
@@ -1969,6 +1973,38 @@ orxSTATUS orxFASTCALL orxFX_Apply(const orxFX *_pstFX, orxOBJECT *_pstObject, or
 
       /* Applies it */
       orxObject_SetPitch(_pstObject, stContext.astValueList[orxFX_TYPE_PITCH].fValue);
+    }
+
+    /* Update size? */
+    if(orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_SIZE)))
+    {
+      /* Non absolute? */
+      if(!orxFLAG_TEST(stContext.u32LockFlags, (1 << orxFX_TYPE_SIZE)))
+      {
+        orxVECTOR vObjectSize;
+
+        /* Updates size with previous one */
+        orxVector_Add(&(stContext.astValueList[orxFX_TYPE_SIZE].vValue), &(stContext.astValueList[orxFX_TYPE_SIZE].vValue), orxObject_GetSize(_pstObject, &vObjectSize));
+      }
+
+      /* Applies it */
+      orxObject_SetSize(_pstObject, &(stContext.astValueList[orxFX_TYPE_SIZE].vValue));
+    }
+
+    /* Update origin? */
+    if(orxFLAG_TEST(stContext.u32UpdateFlags, (1 << orxFX_TYPE_ORIGIN)))
+    {
+      /* Non absolute? */
+      if(!orxFLAG_TEST(stContext.u32LockFlags, (1 << orxFX_TYPE_ORIGIN)))
+      {
+        orxVECTOR vObjectOrigin;
+
+        /* Updates origin with previous one */
+        orxVector_Add(&(stContext.astValueList[orxFX_TYPE_ORIGIN].vValue), &(stContext.astValueList[orxFX_TYPE_ORIGIN].vValue), orxObject_GetOrigin(_pstObject, &vObjectOrigin));
+      }
+
+      /* Applies it */
+      orxObject_SetOrigin(_pstObject, &(stContext.astValueList[orxFX_TYPE_ORIGIN].vValue));
     }
 
     /* Updates result */
@@ -2246,6 +2282,8 @@ orxSTATUS orxFASTCALL orxFX_AddSlot(orxFX *_pstFX, orxFX_TYPE _eType, orxFX_CURV
       case orxFX_TYPE_HSV:
       case orxFX_TYPE_POSITION:
       case orxFX_TYPE_SPEED:
+      case orxFX_TYPE_SIZE:
+      case orxFX_TYPE_ORIGIN:
       case orxFX_TYPE_VECTOR_ADD:
       {
         /* Updates value type */
@@ -2540,6 +2578,8 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
 
         case orxFX_TYPE_POSITION:
         case orxFX_TYPE_SPEED:
+        case orxFX_TYPE_SIZE:
+        case orxFX_TYPE_ORIGIN:
         case orxFX_TYPE_VECTOR_ADD:
         {
           /* Has start value? */

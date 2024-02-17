@@ -71,6 +71,8 @@ typedef enum __orxFX_TYPE_t
   orxFX_TYPE_SPEED,
   orxFX_TYPE_VOLUME,
   orxFX_TYPE_PITCH,
+  orxFX_TYPE_SIZE,
+  orxFX_TYPE_ORIGIN,
 
   orxFX_TYPE_FLOAT_ADD,
   orxFX_TYPE_FLOAT_MULTIPLY,
