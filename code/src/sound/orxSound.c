@@ -3409,7 +3409,7 @@ const orxSTRING orxFASTCALL orxSound_GetName(const orxSOUND *_pstSound)
 /** Gets master bus ID
  * @return      Master bus ID
  */
-extern orxDLLAPI orxSTRINGID orxFASTCALL orxSound_GetMasterBusID()
+orxSTRINGID orxFASTCALL orxSound_GetMasterBusID()
 {
   orxSTRINGID stResult;
 
@@ -3427,7 +3427,7 @@ extern orxDLLAPI orxSTRINGID orxFASTCALL orxSound_GetMasterBusID()
  * @param[in]   _pstSound      Concerned sound
  * @return      Sound's bus ID
  */
-extern orxDLLAPI orxSTRINGID orxFASTCALL orxSound_GetBusID(const orxSOUND *_pstSound)
+orxSTRINGID orxFASTCALL orxSound_GetBusID(const orxSOUND *_pstSound)
 {
   orxSTRINGID stResult;
 
@@ -3447,7 +3447,7 @@ extern orxDLLAPI orxSTRINGID orxFASTCALL orxSound_GetBusID(const orxSOUND *_pstS
  * @param[in]   _stBusID       Bus ID to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusID(orxSOUND *_pstSound, orxSTRINGID _stBusID)
+orxSTATUS orxFASTCALL orxSound_SetBusID(orxSOUND *_pstSound, orxSTRINGID _stBusID)
 {
   orxSOUND_BUS *pstBus;
   orxSTATUS     eResult = orxSTATUS_SUCCESS;
@@ -3484,7 +3484,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusID(orxSOUND *_pstSound, or
  * @param[in]   _stBusID      Bus ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxSOUND / orxNULL
  */
-extern orxDLLAPI orxSOUND *orxFASTCALL orxSound_GetNext(const orxSOUND *_pstSound, orxSTRINGID _stBusID)
+orxSOUND *orxFASTCALL orxSound_GetNext(const orxSOUND *_pstSound, orxSTRINGID _stBusID)
 {
   orxSOUND *pstResult;
 
@@ -3544,7 +3544,7 @@ extern orxDLLAPI orxSOUND *orxFASTCALL orxSound_GetNext(const orxSOUND *_pstSoun
  * @param[in]   _stBusID      Concerned bus ID
  * @return      Parent bus ID / orxSTRINGID_UNDEFINED
  */
-extern orxDLLAPI orxSTRINGID orxFASTCALL orxSound_GetBusParent(orxSTRINGID _stBusID)
+orxSTRINGID orxFASTCALL orxSound_GetBusParent(orxSTRINGID _stBusID)
 {
   orxSOUND_BUS *pstBus;
   orxSTRINGID   stResult = orxSTRINGID_UNDEFINED;
@@ -3580,7 +3580,7 @@ extern orxDLLAPI orxSTRINGID orxFASTCALL orxSound_GetBusParent(orxSTRINGID _stBu
  * @param[in]   _stBusID      Concerned bus ID
  * @return      Child bus ID / orxSTRINGID_UNDEFINED
  */
-extern orxDLLAPI orxSTRINGID orxFASTCALL orxSound_GetBusChild(orxSTRINGID _stBusID)
+orxSTRINGID orxFASTCALL orxSound_GetBusChild(orxSTRINGID _stBusID)
 {
   orxSOUND_BUS *pstBus;
   orxSTRINGID   stResult = orxSTRINGID_UNDEFINED;
@@ -3616,7 +3616,7 @@ extern orxDLLAPI orxSTRINGID orxFASTCALL orxSound_GetBusChild(orxSTRINGID _stBus
  * @param[in]   _stBusID      Concerned bus ID
  * @return      Sibling bus ID / orxSTRINGID_UNDEFINED
  */
-extern orxDLLAPI orxSTRINGID orxFASTCALL orxSound_GetBusSibling(orxSTRINGID _stBusID)
+orxSTRINGID orxFASTCALL orxSound_GetBusSibling(orxSTRINGID _stBusID)
 {
   orxSOUND_BUS *pstBus;
   orxSTRINGID   stResult = orxSTRINGID_UNDEFINED;
@@ -3653,7 +3653,7 @@ extern orxDLLAPI orxSTRINGID orxFASTCALL orxSound_GetBusSibling(orxSTRINGID _stB
  * @param[in]   _u32ParentBusID  ID of the bus to use as parent, will create it if not already existing
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusParent(orxSTRINGID _stBusID, orxSTRINGID _u32ParentBusID)
+orxSTATUS orxFASTCALL orxSound_SetBusParent(orxSTRINGID _stBusID, orxSTRINGID _u32ParentBusID)
 {
   orxSOUND_BUS *pstBus, *pstParentBus;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
@@ -3685,7 +3685,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusParent(orxSTRINGID _stBusI
  * @param[in]   _stBusID      Concerned bus ID
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusVolume(orxSTRINGID _stBusID)
+orxFLOAT orxFASTCALL orxSound_GetBusVolume(orxSTRINGID _stBusID)
 {
   orxSOUND_BUS *pstBus;
   orxFLOAT      fResult = orxFLOAT_1;
@@ -3712,7 +3712,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusVolume(orxSTRINGID _stBusID
  * @param[in]   _stBusID      Concerned bus ID
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusPitch(orxSTRINGID _stBusID)
+orxFLOAT orxFASTCALL orxSound_GetBusPitch(orxSTRINGID _stBusID)
 {
   orxSOUND_BUS *pstBus;
   orxFLOAT      fResult = orxFLOAT_1;
@@ -3740,7 +3740,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusPitch(orxSTRINGID _stBusID)
  * @param[in]   _fVolume      Desired volume (0.0 - 1.0)
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusVolume(orxSTRINGID _stBusID, orxFLOAT _fVolume)
+orxSTATUS orxFASTCALL orxSound_SetBusVolume(orxSTRINGID _stBusID, orxFLOAT _fVolume)
 {
   orxSOUND_BUS *pstBus;
   orxSTATUS     eResult;
@@ -3776,7 +3776,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusVolume(orxSTRINGID _stBusI
  * @param[in]   _fPitch       Desired pitch (< 1.0 => lower pitch, = 1.0 => original pitch, > 1.0 => higher pitch). 0.0 is ignored.
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusPitch(orxSTRINGID _stBusID, orxFLOAT _fPitch)
+orxSTATUS orxFASTCALL orxSound_SetBusPitch(orxSTRINGID _stBusID, orxFLOAT _fPitch)
 {
   orxSOUND_BUS *pstBus;
   orxSTATUS     eResult;
@@ -3811,7 +3811,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL orxSound_SetBusPitch(orxSTRINGID _stBusID
  * @param[in]   _stBusID      Concerned bus ID
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusGlobalVolume(orxSTRINGID _stBusID)
+orxFLOAT orxFASTCALL orxSound_GetBusGlobalVolume(orxSTRINGID _stBusID)
 {
   orxSOUND_BUS *pstBus;
   orxFLOAT      fResult = orxFLOAT_1;
@@ -3838,7 +3838,7 @@ extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusGlobalVolume(orxSTRINGID _s
  * @param[in]   _stBusID      Concerned bus ID
  * @return      orxFLOAT
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL orxSound_GetBusGlobalPitch(orxSTRINGID _stBusID)
+orxFLOAT orxFASTCALL orxSound_GetBusGlobalPitch(orxSTRINGID _stBusID)
 {
   orxSOUND_BUS *pstBus;
   orxFLOAT      fResult = orxFLOAT_1;

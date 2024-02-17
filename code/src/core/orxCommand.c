@@ -4320,7 +4320,7 @@ orxCOMMAND_VAR *orxFASTCALL orxCommand_Evaluate(const orxSTRING _zCommandLine, o
 * @param[out]  _pstResult     Variable that will contain the result
 * @return      Command result if found, orxNULL otherwise
 */
-extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL orxCommand_EvaluateWithGUID(const orxSTRING _zCommandLine, orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult)
+orxCOMMAND_VAR *orxFASTCALL orxCommand_EvaluateWithGUID(const orxSTRING _zCommandLine, orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult)
 {
   orxCOMMAND_VAR *pstResult = orxNULL;
 

@@ -12122,7 +12122,7 @@ void orxFASTCALL orxObject_ResetActiveTimeRecursive(orxOBJECT *_pstObject)
 /** Gets default group ID.
  * @return      Default group ID
  */
-extern orxDLLAPI orxSTRINGID orxFASTCALL orxObject_GetDefaultGroupID()
+orxSTRINGID orxFASTCALL orxObject_GetDefaultGroupID()
 {
   orxSTRINGID stResult;
 
@@ -12140,7 +12140,7 @@ extern orxDLLAPI orxSTRINGID orxFASTCALL orxObject_GetDefaultGroupID()
  * @param[in]   _pstObject      Concerned object
  * @return      Object's group ID. This is the string ID (see orxString_GetFromID()) of the object's group name.
  */
-extern orxDLLAPI orxSTRINGID orxFASTCALL orxObject_GetGroupID(const orxOBJECT *_pstObject)
+orxSTRINGID orxFASTCALL orxObject_GetGroupID(const orxOBJECT *_pstObject)
 {
   orxSTRINGID stResult;
 
@@ -12160,7 +12160,7 @@ extern orxDLLAPI orxSTRINGID orxFASTCALL orxObject_GetGroupID(const orxOBJECT *_
  * @param[in]   _stGroupID      Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObject, orxSTRINGID _stGroupID)
+orxSTATUS orxFASTCALL orxObject_SetGroupID(orxOBJECT *_pstObject, orxSTRINGID _stGroupID)
 {
   orxOBJECT_LISTS **ppstBucket;
   orxOBJECT_LISTS  *pstGroupLists;
@@ -12237,7 +12237,7 @@ orxOBJECT_MAKE_RECURSIVE(SetGroupID, orxSTRINGID);
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL orxObject_GetNext(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID)
+orxOBJECT *orxFASTCALL orxObject_GetNext(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID)
 {
   orxOBJECT *pstResult;
 
