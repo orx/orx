@@ -16,11 +16,22 @@ void orxFASTCALL      orxMod_Exit();
 
 #ifdef orxMOD_IMPL
 
-// #define POCKETMOD_NO_INTERPOLATION // Uncomment this define if you want to deactivate interpolation
-#define POCKETMOD_IMPLEMENTATION
-#include "pocketmod/pocketmod.h"
-#undef POCKETMOD_IMPLEMENTATION
-#undef POCKETMOD_NO_INTERPOLATION
+#ifdef __orxMSVC__
+  #pragma warning(push)
+  #pragma warning(disable : 4996)
+#endif /* __orxMSVC__ */
+
+#define calloc(count, size)               orxMemory_Zero(orxMemory_Allocate(size * orxALIGN(count, 8), orxMEMORY_TYPE_AUDIO), size * orxALIGN(count, 8))
+#define free(mem)                         orxMemory_Free(mem)
+
+#include "ibxm/ibxm.c"
+
+#undef free
+#undef calloc
+
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif // __orxMSVC__
 
 #define orxMOD_KU32_SAMPLE_RATE           48000
 
@@ -29,11 +40,11 @@ void orxFASTCALL      orxMod_Exit();
 
 typedef struct ModData
 {
-  pocketmod_context stContext;
+  struct replay    *pstReplay;
+  int              *piSampleBuffer;
   orxOBJECT        *pstObject;
-  orxS64            s64Size;
-  void             *pBuffer;
-  int               iLoopCount;
+  struct module    *pstModule;
+  orxU32            u32SeqNumber;
   orxBOOL           bFirst;
   volatile orxBOOL  bLock;
 
@@ -46,14 +57,17 @@ static orxBANK *spstModBank = orxNULL;
 
 static orxSTATUS orxFASTCALL orxMod_Delete(ModData *_pstModData)
 {
-  // Wait for locked decoder
-  while(_pstModData->bLock)
-    ;
-
-  // Deletes it
-  orxMemory_Free(_pstModData->pBuffer);
   if(spstModBank)
   {
+    // Wait for locked decoder
+    while(_pstModData->bLock)
+      ;
+
+    // Deletes it
+    _pstModData->pstObject = orxNULL;
+    orxMemory_Free(_pstModData->piSampleBuffer);
+    dispose_replay(_pstModData->pstReplay);
+    dispose_module(_pstModData->pstModule);
     orxBank_Free(spstModBank, _pstModData);
   }
 
@@ -79,8 +93,7 @@ static orxSTATUS orxFASTCALL orxMod_Decode(const orxEVENT *_pstEvent)
     // Valid?
     if(orxObject_IsEnabled(pstModData->pstObject) && !orxObject_IsPaused(pstModData->pstObject))
     {
-      int       iSize, iLoopCount;
-      orxCHAR  *pBuffer;
+      orxU32 u32Written, i, u32SeqNumber;
 
       // Locks decoders
       pstModData->bLock = orxTRUE;
@@ -92,11 +105,9 @@ static orxSTATUS orxFASTCALL orxMod_Decode(const orxEVENT *_pstEvent)
         // Has restarted?
         if(pstPayload->stStream.stPacket.fTime == orxFLOAT_0)
         {
-          int iResult;
-
-          // Reinits context
-          iResult = pocketmod_init(&(pstModData->stContext), pstModData->pBuffer, (int)pstModData->s64Size, orxMOD_KU32_SAMPLE_RATE);
-          orxASSERT(iResult);
+          // Resets replay
+          replay_seek(pstModData->pstReplay, 0);
+          pstModData->u32SeqNumber = 0;
 
           // Updates status
           pstModData->bFirst = orxTRUE;
@@ -108,27 +119,30 @@ static orxSTATUS orxFASTCALL orxMod_Decode(const orxEVENT *_pstEvent)
         pstModData->bFirst = orxFALSE;
       }
 
-      // Gets buffer info
-      iSize   = (int)(pstPayload->stStream.stPacket.u32SampleNumber * sizeof(orxFLOAT));
-      pBuffer = (orxCHAR *)pstPayload->stStream.stPacket.afSampleList;
+      // Inits buffer
+      pstPayload->stStream.stPacket.afSampleList = (orxFLOAT *)pstModData->piSampleBuffer;
 
       // Fills it
-      while(iSize > 0)
+      u32Written = (orxU32)(2 * replay_get_audio(pstModData->pstReplay, pstModData->piSampleBuffer, 0));
+
+      // Converts its samples
+      for(i = 0; i < u32Written; i++)
       {
-        int iWritten;
-        iWritten  = pocketmod_render(&(pstModData->stContext), pBuffer, iSize);
-        iSize    -= iWritten;
-        pBuffer  += iWritten;
+        pstPayload->stStream.stPacket.afSampleList[i] = orxS2F(pstModData->piSampleBuffer[i]) / orx2F(32678.0f);
       }
-      orxASSERT(iSize == 0);
+
+      // Updates buffer info
+      pstPayload->stStream.stPacket.u32SampleNumber = u32Written;
 
       // Looped?
-      if((iLoopCount = pocketmod_loop_count(&(pstModData->stContext))) != pstModData->iLoopCount)
+      if((u32SeqNumber = (orxU32)replay_get_sequence_pos(pstModData->pstReplay)) < pstModData->u32SeqNumber)
       {
         pstPayload->stStream.stPacket.bLast = orxTRUE;
-        pstModData->iLoopCount              = iLoopCount;
         pstModData->bFirst                  = orxTRUE;
       }
+
+      // Updates sequence number
+      pstModData->u32SeqNumber = u32SeqNumber;
 
       // Unlocks decoders
       orxMEMORY_BARRIER();
@@ -175,8 +189,10 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
         orxASSERT(pBuffer);
         if(orxResource_Read(hResource, s64Size, pBuffer, orxNULL, orxNULL) == s64Size)
         {
+          struct data stData;
           ModData    *pstModData;
           orxOBJECT  *pstObject;
+          orxCHAR     acMessage[64];
 
           // Gets object
           pstObject = orxOBJECT(_pstEvent->hSender);
@@ -187,15 +203,18 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
           orxMemory_Zero(pstModData, sizeof(ModData));
 
           // Inits decoder
-          if(pocketmod_init(&(pstModData->stContext), pBuffer, (int)s64Size, orxMOD_KU32_SAMPLE_RATE) != 0)
+          stData.buffer = (char *)pBuffer;
+          stData.length = (int)s64Size;
+          if(((pstModData->pstModule = module_load(&stData, acMessage)))
+          && ((pstModData->pstReplay = new_replay(pstModData->pstModule, orxMOD_KU32_SAMPLE_RATE, 1))))
           {
             orxCHAR acBuffer[256];
 
             // Updates mod data & object
-            pstModData->pstObject = pstObject;
-            pstModData->s64Size   = s64Size;
-            pstModData->pBuffer   = pBuffer;
-            pstModData->bFirst    = orxTRUE;
+            pstModData->pstObject       = pstObject;
+            pstModData->piSampleBuffer  = (int *)orxMemory_Allocate(calculate_mix_buf_len(orxMOD_KU32_SAMPLE_RATE), orxMEMORY_TYPE_AUDIO);
+            orxASSERT(pstModData->piSampleBuffer);
+            pstModData->bFirst          = orxTRUE;
 
             // Adds event handlers
             orxEvent_AddHandlerWithContext(orxEVENT_TYPE_SOUND, orxMod_Decode, pstModData);
@@ -210,18 +229,22 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
           }
           else
           {
+            // Frees module
+            if(pstModData->pstModule)
+            {
+              dispose_module(pstModData->pstModule);
+            }
+
             // Frees mod data
             orxBank_Free(spstModBank, pstModData);
-
-            // Frees buffer
-            orxMemory_Free(pBuffer);
           }
         }
-        else
-        {
-          // Frees buffer
-          orxMemory_Free(pBuffer);
-        }
+
+        // Frees buffer
+        orxMemory_Free(pBuffer);
+
+        // Closes resource
+        orxResource_Close(hResource);
       }
     }
   }
@@ -277,10 +300,16 @@ void orxFASTCALL orxMod_Exit()
   // Was initialized?
   if(spstModBank)
   {
+    ModData *pstModData;
+
     // Unregisters mod handler
     orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxMod_EventHandler);
 
     // Deletes bank
+    while((pstModData = (ModData *)orxBank_GetNext(spstModBank, orxNULL)))
+    {
+      orxMod_Delete(pstModData);
+    }
     orxBank_Delete(spstModBank);
     spstModBank = orxNULL;
   }
