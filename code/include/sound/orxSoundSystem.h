@@ -57,6 +57,21 @@
 typedef struct __orxSOUNDSYSTEM_SOUND_t   orxSOUNDSYSTEM_SOUND;
 typedef struct __orxSOUNDSYSTEM_SAMPLE_t  orxSOUNDSYSTEM_SAMPLE;
 
+/** Sound system stream type enum
+ */
+typedef enum __orxSOUNDSYSTEM_STREAM_TYPE_t
+{
+  orxSOUNDSYSTEM_STREAM_TYPE_EMPTY = 0,
+  orxSOUNDSYSTEM_STREAM_TYPE_WHITE = 0,
+  orxSOUNDSYSTEM_STREAM_TYPE_PINK = 0,
+  orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN = 0,
+
+  orxSOUNDSYSTEM_STREAM_TYPE_NUMBER,
+
+  orxSOUNDSYSTEM_STREAM_TYPE_NONE = orxENUM_NONE
+
+} orxSOUNDSYSTEM_STREAM_TYPE;
+
 /** Sound system status enum
  */
 typedef enum __orxSOUNDSYSTEM_STATUS_t
@@ -262,11 +277,12 @@ extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateFromS
 
 /** Creates an empty stream
  * @param[in]   _hUserData                            User data to associate with this sound
+ * @param[in]   _eType                                Stream type
  * @param[in]   _u32ChannelNumber                     Number of channels for the stream
  * @param[in]   _u32SampleRate                        Sampling rate of the stream (ie. number of frames per second)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
-extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStream(orxHANDLE _hUserData, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate);
+extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStream(orxHANDLE _hUserData, orxSOUNDSYSTEM_STREAM_TYPE _eType, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate);
 
 /** Loads a streamed sound (can be played directly)
  * @param[in]   _hUserData                            User data to associate with this sound

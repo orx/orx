@@ -488,7 +488,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
           }
 
           /* Creates empty stream */
-          _pstSound->pstData    = orxSoundSystem_CreateStream(_pstSound, u32ChannelNumber, u32SampleRate);
+          _pstSound->pstData    = orxSoundSystem_CreateStream(_pstSound, orxSOUNDSYSTEM_STREAM_TYPE_EMPTY, u32ChannelNumber, u32SampleRate);
           _pstSound->stStreamID = orxSTRINGID_UNDEFINED;
         }
         else
@@ -2082,7 +2082,7 @@ orxSOUND *orxFASTCALL orxSound_CreateWithEmptyStream(orxU32 _u32ChannelNumber, o
     if(pstResult != orxNULL)
     {
       /* Creates empty stream */
-      pstResult->pstData = orxSoundSystem_CreateStream(pstResult, _u32ChannelNumber, _u32SampleRate);
+      pstResult->pstData = orxSoundSystem_CreateStream(pstResult, orxSOUNDSYSTEM_STREAM_TYPE_EMPTY, _u32ChannelNumber, _u32SampleRate);
 
       /* Valid? */
       if(pstResult->pstData != orxNULL)
