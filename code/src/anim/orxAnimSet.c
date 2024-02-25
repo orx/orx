@@ -2428,11 +2428,14 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
                   orxGraphic_Delete(pstFrameInfo->pstGraphic);
                 }
               }
-              /* No associated event? */
-              else if(pstFrameInfo->zEventName == orxNULL)
+              else
               {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No valid duration defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", skipping!", zAnimSet, _zConfigID, zName);
+                /* No associated event? */
+                if(pstFrameInfo->zEventName == orxNULL)
+                {
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "No valid duration defined" orxANSI_KZ_COLOR_FG_DEFAULT " for anim:frame " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ":" orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ", skipping!", zAnimSet, _zConfigID, zName);
+                }
 
                 /* Deletes it */
                 orxGraphic_Delete(pstFrameInfo->pstGraphic);
