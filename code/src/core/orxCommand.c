@@ -1460,7 +1460,10 @@ void orxFASTCALL orxCommand_CommandListAliases(orxU32 _u32ArgNumber, const orxCO
 /* Command: Evaluate */
 void orxFASTCALL orxCommand_CommandEvaluate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxBOOL bAreMarkersEnabled;
+
   /* Disables marker operations */
+  bAreMarkersEnabled = orxProfiler_AreMarkerOperationsEnabled();
   orxProfiler_EnableMarkerOperations(orxFALSE);
 
   /* Has GUID? */
@@ -1476,7 +1479,7 @@ void orxFASTCALL orxCommand_CommandEvaluate(orxU32 _u32ArgNumber, const orxCOMMA
   }
 
   /* Re-enables marker operations */
-  orxProfiler_EnableMarkerOperations(orxTRUE);
+  orxProfiler_EnableMarkerOperations(bAreMarkersEnabled);
 
   /* Done! */
   return;
@@ -1485,9 +1488,10 @@ void orxFASTCALL orxCommand_CommandEvaluate(orxU32 _u32ArgNumber, const orxCOMMA
 /* Command: EvaluateIf  */
 void orxFASTCALL orxCommand_CommandEvaluateIf(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxBOOL bTest;
+  orxBOOL bTest, bAreMarkersEnabled;
 
   /* Disables marker operations */
+  bAreMarkersEnabled = orxProfiler_AreMarkerOperationsEnabled();
   orxProfiler_EnableMarkerOperations(orxFALSE);
 
   /* Is true? */
@@ -1512,7 +1516,7 @@ void orxFASTCALL orxCommand_CommandEvaluateIf(orxU32 _u32ArgNumber, const orxCOM
   }
 
   /* Re-enables marker operations */
-  orxProfiler_EnableMarkerOperations(orxTRUE);
+  orxProfiler_EnableMarkerOperations(bAreMarkersEnabled);
 
   /* Done! */
   return;
@@ -1543,9 +1547,11 @@ void orxFASTCALL orxCommand_CommandIf(orxU32 _u32ArgNumber, const orxCOMMAND_VAR
 void orxFASTCALL orxCommand_CommandRepeat(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxS32  s32Count;
+  orxBOOL bAreMarkersEnabled;
   orxCHAR acBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE];
 
   /* Disables marker operations */
+  bAreMarkersEnabled = orxProfiler_AreMarkerOperationsEnabled();
   orxProfiler_EnableMarkerOperations(orxFALSE);
 
   /* Gets count */
@@ -1563,7 +1569,7 @@ void orxFASTCALL orxCommand_CommandRepeat(orxU32 _u32ArgNumber, const orxCOMMAND
   }
 
   /* Re-enables marker operations */
-  orxProfiler_EnableMarkerOperations(orxTRUE);
+  orxProfiler_EnableMarkerOperations(bAreMarkersEnabled);
 
   /* Done! */
   return;
