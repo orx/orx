@@ -101,7 +101,7 @@
 
 #define orxCONFIG_KU32_COMMAND_BUFFER_SIZE        1024        /**< Command buffer size */
 
-#define orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE      2           /**< Key max edit distance */
+#define orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE      2UL         /**< Key max edit distance */
 
 #define orxCONFIG_KC_SECTION_START                '['         /**< Section start character */
 #define orxCONFIG_KC_SECTION_END                  ']'         /**< Section end character */
@@ -1623,7 +1623,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
 
             /* Typo? */
             if((orxString_ICompare(zKey, _zKey) == 0)
-            || (orxString_GetEditDistance(zKey, _zKey) <= orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE))
+            || (orxString_GetEditDistance(zKey, _zKey) <= ((orxString_GetLength(_zKey) <= 4UL) ? 1UL : orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE)))
             {
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "was found instead of requested key" orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_UNDERLINE_OFF " <%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, zKey, _zKey);
