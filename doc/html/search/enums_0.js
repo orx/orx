@@ -48,6 +48,7 @@ var searchData=
   ['orxsound_5ffilter_5ftype',['orxSOUND_FILTER_TYPE',['../group__orx_sound_system.html#ga50b11cf49412fd3ac08513f418528c36',1,'orxSoundSystem.h']]],
   ['orxsound_5fstatus',['orxSOUND_STATUS',['../group__orx_sound.html#ga7e5aec8c210684f5fc8920bd2c13a474',1,'orxSound.h']]],
   ['orxsoundsystem_5fstatus',['orxSOUNDSYSTEM_STATUS',['../group__orx_sound_system.html#ga0692dc88e102ae57833baa65f98af81a',1,'orxSoundSystem.h']]],
+  ['orxsoundsystem_5fstream_5ftype',['orxSOUNDSYSTEM_STREAM_TYPE',['../group__orx_sound_system.html#ga93d8a3a6be4aaaa909f767a79a90fe92',1,'orxSoundSystem.h']]],
   ['orxspawner_5fevent',['orxSPAWNER_EVENT',['../group__orx_spawner.html#ga757d724e3601950fccbb85d625991400',1,'orxSpawner.h']]],
   ['orxstatus',['orxSTATUS',['../group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d',1,'orxType.h']]],
   ['orxstructure_5fid',['orxSTRUCTURE_ID',['../group__orx_structure.html#ga559293f09cd4d21743241cc32350b320',1,'orxStructure.h']]],
