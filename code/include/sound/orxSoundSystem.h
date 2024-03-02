@@ -61,10 +61,22 @@ typedef struct __orxSOUNDSYSTEM_SAMPLE_t  orxSOUNDSYSTEM_SAMPLE;
  */
 typedef enum __orxSOUNDSYSTEM_STREAM_TYPE_t
 {
+  /* Empty */
   orxSOUNDSYSTEM_STREAM_TYPE_EMPTY = 0,
+
+  /* Noises */
   orxSOUNDSYSTEM_STREAM_TYPE_WHITE,
   orxSOUNDSYSTEM_STREAM_TYPE_PINK,
   orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN,
+
+  /* Waves */
+  orxSOUNDSYSTEM_STREAM_TYPE_SINE,
+  orxSOUNDSYSTEM_STREAM_TYPE_SQUARE,
+  orxSOUNDSYSTEM_STREAM_TYPE_TRIANGLE,
+  orxSOUNDSYSTEM_STREAM_TYPE_SAWTOOTH,
+
+  /* External resource */
+  orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE,
 
   orxSOUNDSYSTEM_STREAM_TYPE_NUMBER,
 
@@ -275,9 +287,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleDa
  */
 extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateFromSample(orxHANDLE _hUserData, const orxSOUNDSYSTEM_SAMPLE *_pstSample);
 
-/** Creates an empty/noise stream
+/** Creates an empty/noise/wave stream
  * @param[in]   _hUserData                            User data to associate with this sound
- * @param[in]   _eType                                Stream type
+ * @param[in]   _eType                                Stream type (empty, white/pink/brownian noise, sine/square/triangle/sawtooth wave)
  * @param[in]   _u32ChannelNumber                     Number of channels for the stream
  * @param[in]   _u32SampleRate                        Sampling rate of the stream (ie. number of frames per second)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL

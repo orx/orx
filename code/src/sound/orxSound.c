@@ -126,6 +126,10 @@
 #define orxSOUND_KZ_EMPTY_WHITE                         "white"
 #define orxSOUND_KZ_EMPTY_PINK                          "pink"
 #define orxSOUND_KZ_EMPTY_BROWN                         "brown"
+#define orxSOUND_KZ_EMPTY_SINE                          "sine"
+#define orxSOUND_KZ_EMPTY_SQUARE                        "square"
+#define orxSOUND_KZ_EMPTY_TRIANGLE                      "triangle"
+#define orxSOUND_KZ_EMPTY_SAWTOOTH                      "sawtooth"
 #define orxSOUND_KZ_TYPE_BIQUAD                         "biquad"
 #define orxSOUND_KZ_TYPE_LOW_PASS                       "lowpass"
 #define orxSOUND_KZ_TYPE_HIGH_PASS                      "highpass"
@@ -475,7 +479,15 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
                           ? orxSOUNDSYSTEM_STREAM_TYPE_PINK
                           : (u32TypeLength = orxString_GetLength(orxSOUND_KZ_EMPTY_BROWN), orxString_NICompare(zName, orxSOUND_KZ_EMPTY_BROWN, u32TypeLength) == 0)
                             ? orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN
-                            : orxSOUNDSYSTEM_STREAM_TYPE_NONE;
+                            : (u32TypeLength = orxString_GetLength(orxSOUND_KZ_EMPTY_SINE), orxString_NICompare(zName, orxSOUND_KZ_EMPTY_SINE, u32TypeLength) == 0)
+                              ? orxSOUNDSYSTEM_STREAM_TYPE_SINE
+                              : (u32TypeLength = orxString_GetLength(orxSOUND_KZ_EMPTY_SQUARE), orxString_NICompare(zName, orxSOUND_KZ_EMPTY_SQUARE, u32TypeLength) == 0)
+                                ? orxSOUNDSYSTEM_STREAM_TYPE_SQUARE
+                                : (u32TypeLength = orxString_GetLength(orxSOUND_KZ_EMPTY_TRIANGLE), orxString_NICompare(zName, orxSOUND_KZ_EMPTY_TRIANGLE, u32TypeLength) == 0)
+                                  ? orxSOUNDSYSTEM_STREAM_TYPE_TRIANGLE
+                                  : (u32TypeLength = orxString_GetLength(orxSOUND_KZ_EMPTY_SAWTOOTH), orxString_NICompare(zName, orxSOUND_KZ_EMPTY_SAWTOOTH, u32TypeLength) == 0)
+                                    ? orxSOUNDSYSTEM_STREAM_TYPE_SAWTOOTH
+                                    : orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE;
 
         /* Gets the remainder of the stream name */
         zStream = zName + u32TypeLength;
@@ -496,7 +508,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         if((*zStream != ' ') && (*zStream != '\t') && (*zStream != orxCHAR_NULL))
         {
           /* Updates its type */
-          eStreamType = orxSOUNDSYSTEM_STREAM_TYPE_NONE;
+          eStreamType = orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE;
         }
 
         /* Depending on stream type */
@@ -506,6 +518,10 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
           case orxSOUNDSYSTEM_STREAM_TYPE_WHITE:
           case orxSOUNDSYSTEM_STREAM_TYPE_PINK:
           case orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN:
+          case orxSOUNDSYSTEM_STREAM_TYPE_SINE:
+          case orxSOUNDSYSTEM_STREAM_TYPE_SQUARE:
+          case orxSOUNDSYSTEM_STREAM_TYPE_TRIANGLE:
+          case orxSOUNDSYSTEM_STREAM_TYPE_SAWTOOTH:
           {
             orxU32 u32Value, u32SampleRate, u32ChannelNumber;
 
@@ -535,7 +551,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
             break;
           }
 
-          case orxSOUNDSYSTEM_STREAM_TYPE_NONE:
+          case orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE:
           default:
           {
             /* Loads it */
@@ -974,6 +990,8 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
                 {
                   /* Updates flags */
                   u32BackupFlags = orxSOUND_KU32_FLAG_NONE;
+
+                  break;
                 }
               }
 

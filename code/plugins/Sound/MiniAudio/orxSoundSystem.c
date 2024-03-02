@@ -205,6 +205,7 @@ struct __orxSOUNDSYSTEM_SOUND_t
       {
         ma_resource_manager_data_source stDataSource;
         ma_noise                        stNoise;
+        ma_waveform                     stWave;
       };
       orxSOUNDSYSTEM_STREAM_TYPE  eType;
       orxFLOAT                   *afPendingSampleList;
@@ -1156,7 +1157,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_Seek(ma_data_source *_pstDataSo
   orxASSERT(pstSound->bStream != orxFALSE);
 
   /* Has data source? */
-  if(pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_NONE)
+  if(pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE)
   {
     /* Updates result */
     hResult = ma_data_source_seek_to_pcm_frame(&(pstSound->stStream.stDataSource), _u64FrameIndex);
@@ -1216,7 +1217,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_GetCursor(ma_data_source *_pstD
   orxASSERT(pstSound->bStream != orxFALSE);
 
   /* Has data source? */
-  if(pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_NONE)
+  if(pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE)
   {
     /* Updates result */
     hResult = ma_data_source_get_cursor_in_pcm_frames(&(pstSound->stStream.stDataSource), _pu64Cursor);
@@ -1243,7 +1244,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_GetLength(ma_data_source *_pstD
   orxASSERT(pstSound->bStream != orxFALSE);
 
   /* Has data source? */
-  if(pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_NONE)
+  if(pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE)
   {
     /* Updates result */
     hResult = ma_data_source_get_length_in_pcm_frames(&(pstSound->stStream.stDataSource), _pu64Length);
@@ -1270,7 +1271,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_SetLooping(ma_data_source* _pst
   orxASSERT(pstSound->bStream != orxFALSE);
 
   /* Has data source? */
-  if(pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_NONE)
+  if(pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE)
   {
     /* Updates result */
     hResult = ma_data_source_set_looping(&(pstSound->stStream.stDataSource), _bIsLooping);
@@ -2100,7 +2101,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LoadStreamTask(void *_pCon
       if(hResult == MA_SUCCESS)
       {
         /* Updates its type */
-        pstSound->stStream.eType = orxSOUNDSYSTEM_STREAM_TYPE_NONE;
+        pstSound->stStream.eType = orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE;
 
         /* Stores filter node */
         pstSound->pstFilterNode = (ma_node_base *)&(pstSound->stSound.engineNode);
@@ -2203,17 +2204,45 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_DeleteTask(void *_pContext
     /* Is stream? */
     if(pstSound->bStream != orxFALSE)
     {
-      /* Has resource data source? */
-      if(pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_NONE)
+      /* Depending on type */
+      switch(pstSound->stStream.eType)
       {
-        /* Uninits it */
-        ma_resource_manager_data_source_uninit(&(pstSound->stStream.stDataSource));
-      }
-      /* Is noise? */
-      else if(pstSound->stStream.eType != orxSOUNDSYSTEM_STREAM_TYPE_EMPTY)
-      {
-        /* Uninits it */
-        ma_noise_uninit(&(pstSound->stStream.stNoise), &sstSoundSystem.stResourceManagerConfig.allocationCallbacks);
+        /* Noises */
+        case orxSOUNDSYSTEM_STREAM_TYPE_WHITE:
+        case orxSOUNDSYSTEM_STREAM_TYPE_PINK:
+        case orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN:
+        {
+          /* Uninits it */
+          ma_noise_uninit(&(pstSound->stStream.stNoise), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+
+          break;
+        }
+
+        /* Waves */
+        case orxSOUNDSYSTEM_STREAM_TYPE_SINE:
+        case orxSOUNDSYSTEM_STREAM_TYPE_SQUARE:
+        case orxSOUNDSYSTEM_STREAM_TYPE_TRIANGLE:
+        case orxSOUNDSYSTEM_STREAM_TYPE_SAWTOOTH:
+        {
+          /* Uninits it */
+          ma_waveform_uninit(&(pstSound->stStream.stWave));
+
+          break;
+        }
+
+        /* Resource */
+        case orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE:
+        {
+          /* Uninits it */
+          ma_resource_manager_data_source_uninit(&(pstSound->stStream.stDataSource));
+
+          break;
+        }
+
+        default:
+        {
+          break;
+        }
       }
     }
     else
@@ -3449,7 +3478,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
     /* Valid? */
     if(pstResult != orxNULL)
     {
-      ma_result hResult = MA_SUCCESS;
+      ma_result hResult;
 
       /* Clears it */
       orxMemory_Zero(pstResult, sizeof(orxSOUNDSYSTEM_SOUND));
@@ -3457,36 +3486,99 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
       /* Stores its type */
       pstResult->stStream.eType = _eType;
 
-      /* Not empty? */
-      if(_eType != orxSOUNDSYSTEM_STREAM_TYPE_EMPTY)
+      /* Depending on stream type */
+      switch(_eType)
       {
-        ma_noise_config stNoiseConfig;
-        ma_noise_type   eNoiseType;
-
-        /* Gets its noise type */
-        switch(_eType)
+        /* Empty */
+        default:
+        case orxSOUNDSYSTEM_STREAM_TYPE_EMPTY:
         {
-          default:
-          case orxSOUNDSYSTEM_STREAM_TYPE_WHITE:
-          {
-            eNoiseType = ma_noise_type_white;
-            break;
-          }
-          case orxSOUNDSYSTEM_STREAM_TYPE_PINK:
-          {
-            eNoiseType = ma_noise_type_pink;
-            break;
-          }
-          case orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN:
-          {
-            eNoiseType = ma_noise_type_brownian;
-            break;
-          }
+          /* Enforces type */
+          _eType = orxSOUNDSYSTEM_STREAM_TYPE_EMPTY;
+
+          /* Updates result */
+          hResult = MA_SUCCESS;
+
+          break;
         }
 
-        /* Inits noise */
-        stNoiseConfig = ma_noise_config_init(orxSOUNDSYSTEM_KE_DEFAULT_FORMAT, _u32ChannelNumber, eNoiseType, 0, 1.0);
-        hResult = ma_noise_init(&stNoiseConfig, &sstSoundSystem.stResourceManagerConfig.allocationCallbacks, &(pstResult->stStream.stNoise));
+        /* Noises */
+        case orxSOUNDSYSTEM_STREAM_TYPE_WHITE:
+        case orxSOUNDSYSTEM_STREAM_TYPE_PINK:
+        case orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN:
+        {
+          ma_noise_config stNoiseConfig;
+          ma_noise_type   eNoiseType;
+
+          /* Gets its noise type */
+          switch(_eType)
+          {
+            default:
+            case orxSOUNDSYSTEM_STREAM_TYPE_WHITE:
+            {
+              eNoiseType = ma_noise_type_white;
+              break;
+            }
+            case orxSOUNDSYSTEM_STREAM_TYPE_PINK:
+            {
+              eNoiseType = ma_noise_type_pink;
+              break;
+            }
+            case orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN:
+            {
+              eNoiseType = ma_noise_type_brownian;
+              break;
+            }
+          }
+
+          /* Inits noise */
+          stNoiseConfig = ma_noise_config_init(orxSOUNDSYSTEM_KE_DEFAULT_FORMAT, _u32ChannelNumber, eNoiseType, 0, 1.0);
+          hResult = ma_noise_init(&stNoiseConfig, &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks), &(pstResult->stStream.stNoise));
+
+          break;
+        }
+
+        /* Waves */
+        case orxSOUNDSYSTEM_STREAM_TYPE_SINE:
+        case orxSOUNDSYSTEM_STREAM_TYPE_SQUARE:
+        case orxSOUNDSYSTEM_STREAM_TYPE_TRIANGLE:
+        case orxSOUNDSYSTEM_STREAM_TYPE_SAWTOOTH:
+        {
+          ma_waveform_config stWaveConfig;
+          ma_waveform_type   eWaveType;
+
+          /* Gets its waveform type */
+          switch(_eType)
+          {
+            default:
+            case orxSOUNDSYSTEM_STREAM_TYPE_SINE:
+            {
+              eWaveType = ma_waveform_type_sine;
+              break;
+            }
+            case orxSOUNDSYSTEM_STREAM_TYPE_SQUARE:
+            {
+              eWaveType = ma_waveform_type_square;
+              break;
+            }
+            case orxSOUNDSYSTEM_STREAM_TYPE_TRIANGLE:
+            {
+              eWaveType = ma_waveform_type_triangle;
+              break;
+            }
+            case orxSOUNDSYSTEM_STREAM_TYPE_SAWTOOTH:
+            {
+              eWaveType = ma_waveform_type_sawtooth;
+              break;
+            }
+          }
+
+          /* Inits waveform */
+          stWaveConfig = ma_waveform_config_init(orxSOUNDSYSTEM_KE_DEFAULT_FORMAT, _u32ChannelNumber, _u32SampleRate, eWaveType, 1.0, 440.0);
+          hResult = ma_waveform_init(&stWaveConfig, &(pstResult->stStream.stWave));
+
+          break;
+        }
       }
 
       /* Success? */
@@ -3542,10 +3634,14 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
             /* Uninits base data source */
             ma_data_source_uninit(&(pstResult->stBase));
 
-            /* Uninits noise */
-            if(_eType != orxSOUNDSYSTEM_STREAM_TYPE_EMPTY)
+            /* Uninits source */
+            if((_eType == orxSOUNDSYSTEM_STREAM_TYPE_WHITE) || (_eType == orxSOUNDSYSTEM_STREAM_TYPE_PINK) || (_eType == orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN))
             {
-              ma_noise_uninit(&(pstResult->stStream.stNoise), &sstSoundSystem.stResourceManagerConfig.allocationCallbacks);
+              ma_noise_uninit(&(pstResult->stStream.stNoise), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+            }
+            else if((_eType == orxSOUNDSYSTEM_STREAM_TYPE_SINE) || (_eType == orxSOUNDSYSTEM_STREAM_TYPE_SQUARE) || (_eType == orxSOUNDSYSTEM_STREAM_TYPE_TRIANGLE) || (_eType == orxSOUNDSYSTEM_STREAM_TYPE_SAWTOOTH))
+            {
+              ma_waveform_uninit(&(pstResult->stStream.stWave));
             }
 
             /* Logs message */
@@ -3563,10 +3659,14 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
           /* Logs message */
           orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Can't create sound stream with [%u] channels @ %u Hz: can't initialize internal data source.", _u32ChannelNumber, _u32SampleRate);
 
-          /* Uninits noise */
-          if(_eType != orxSOUNDSYSTEM_STREAM_TYPE_EMPTY)
+          /* Uninits source */
+          if((_eType == orxSOUNDSYSTEM_STREAM_TYPE_WHITE) || (_eType == orxSOUNDSYSTEM_STREAM_TYPE_PINK) || (_eType == orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN))
           {
-            ma_noise_uninit(&(pstResult->stStream.stNoise), &sstSoundSystem.stResourceManagerConfig.allocationCallbacks);
+            ma_noise_uninit(&(pstResult->stStream.stNoise), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
+          }
+          else if((_eType == orxSOUNDSYSTEM_STREAM_TYPE_SINE) || (_eType == orxSOUNDSYSTEM_STREAM_TYPE_SQUARE) || (_eType == orxSOUNDSYSTEM_STREAM_TYPE_TRIANGLE) || (_eType == orxSOUNDSYSTEM_STREAM_TYPE_SAWTOOTH))
+          {
+            ma_waveform_uninit(&(pstResult->stStream.stWave));
           }
 
           /* Deletes sound */
@@ -4994,7 +5094,7 @@ orxFLOAT orxFASTCALL orxSoundSystem_MiniAudio_GetDuration(const orxSOUNDSYSTEM_S
 
   /* Ready & not an empty stream? */
   if((_pstSound->bReady != orxFALSE)
-  && ((_pstSound->bStream == orxFALSE) || (_pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_NONE)))
+  && ((_pstSound->bStream == orxFALSE) || (_pstSound->stStream.eType == orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE)))
   {
     /* Gets length */
     hResult = ma_sound_get_length_in_pcm_frames((ma_sound *)&(_pstSound->stSound), &u64Length);
