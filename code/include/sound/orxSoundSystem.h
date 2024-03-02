@@ -289,7 +289,7 @@ extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateFromS
 
 /** Creates an empty/noise/wave stream
  * @param[in]   _hUserData                            User data to associate with this sound
- * @param[in]   _eType                                Stream type (empty, white/pink/brownian noise, sine/square/triangle/sawtooth wave)
+ * @param[in]   _eType                                Stream type (empty, white/pink/brownian noise, A4 (440Hz) sine/square/triangle/sawtooth wave)
  * @param[in]   _u32ChannelNumber                     Number of channels for the stream
  * @param[in]   _u32SampleRate                        Sampling rate of the stream (ie. number of frames per second)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
