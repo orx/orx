@@ -62,9 +62,9 @@ typedef struct __orxSOUNDSYSTEM_SAMPLE_t  orxSOUNDSYSTEM_SAMPLE;
 typedef enum __orxSOUNDSYSTEM_STREAM_TYPE_t
 {
   orxSOUNDSYSTEM_STREAM_TYPE_EMPTY = 0,
-  orxSOUNDSYSTEM_STREAM_TYPE_WHITE = 0,
-  orxSOUNDSYSTEM_STREAM_TYPE_PINK = 0,
-  orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN = 0,
+  orxSOUNDSYSTEM_STREAM_TYPE_WHITE,
+  orxSOUNDSYSTEM_STREAM_TYPE_PINK,
+  orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN,
 
   orxSOUNDSYSTEM_STREAM_TYPE_NUMBER,
 
@@ -275,7 +275,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleDa
  */
 extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateFromSample(orxHANDLE _hUserData, const orxSOUNDSYSTEM_SAMPLE *_pstSample);
 
-/** Creates an empty stream
+/** Creates an empty/noise stream
  * @param[in]   _hUserData                            User data to associate with this sound
  * @param[in]   _eType                                Stream type
  * @param[in]   _u32ChannelNumber                     Number of channels for the stream
