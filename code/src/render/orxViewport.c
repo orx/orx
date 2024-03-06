@@ -1845,7 +1845,7 @@ void orxFASTCALL orxViewport_SetTextureList(orxVIEWPORT *_pstViewport, orxU32 _u
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstViewport);
-  orxASSERT(_u32TextureNumber < orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER);
+  orxASSERT(_u32TextureNumber <= orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER);
 
   /* For all associated textures */
   for(i = 0; i < _pstViewport->u32TextureCount; i++)
