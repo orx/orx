@@ -702,7 +702,7 @@ static orxINLINE orxU32                                   orxString_GetEditDista
 
     /* Initializes the previous and current rows */
     orxMemory_Zero(au32PreviousRow, (u32Length2 + 1) * sizeof(orxU32));
-    for(i = 0; i < u32Length2; i++)
+    for(i = 0; i <= u32Length2; i++)
     {
       au32CurrentRow[i] = i;
     }
