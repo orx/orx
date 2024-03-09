@@ -86,7 +86,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateFromSample(orxHANDL
   return orxNULL;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateStream(orxHANDLE _hUserData, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateStream(orxHANDLE _hUserData, orxSOUNDSYSTEM_STREAM_TYPE _eType, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate)
 {
   /* Done! */
   return orxNULL;

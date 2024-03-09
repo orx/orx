@@ -1151,7 +1151,7 @@ var searchData=
   ['orxsoundsystem_5fcreatebus',['orxSoundSystem_CreateBus',['../group__orx_sound_system.html#ga9f380d8808bed0e9a0cff64694010999',1,'orxSoundSystem.h']]],
   ['orxsoundsystem_5fcreatefromsample',['orxSoundSystem_CreateFromSample',['../group__orx_sound_system.html#ga7b42a811e4521547b70152b8830fc960',1,'orxSoundSystem.h']]],
   ['orxsoundsystem_5fcreatesample',['orxSoundSystem_CreateSample',['../group__orx_sound_system.html#gaa7f5fb69ce624beb3d84305602ebd383',1,'orxSoundSystem.h']]],
-  ['orxsoundsystem_5fcreatestream',['orxSoundSystem_CreateStream',['../group__orx_sound_system.html#ga94da0c4bedae98e3739f29458823b2d6',1,'orxSoundSystem.h']]],
+  ['orxsoundsystem_5fcreatestream',['orxSoundSystem_CreateStream',['../group__orx_sound_system.html#ga5dedcb7436398a7506acb22b3fdbf62d',1,'orxSoundSystem.h']]],
   ['orxsoundsystem_5fdelete',['orxSoundSystem_Delete',['../group__orx_sound_system.html#ga614d73a798aa537b7a154774ab623dd2',1,'orxSoundSystem.h']]],
   ['orxsoundsystem_5fdeletebus',['orxSoundSystem_DeleteBus',['../group__orx_sound_system.html#gad2566470f4f276af3161315831cd987c',1,'orxSoundSystem.h']]],
   ['orxsoundsystem_5fdeletesample',['orxSoundSystem_DeleteSample',['../group__orx_sound_system.html#ga99a0ec3cf09c49fdeafdc6ee6911e3d7',1,'orxSoundSystem.h']]],
