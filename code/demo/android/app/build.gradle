@@ -3,10 +3,10 @@ apply plugin: 'com.android.application'
 android {
     namespace 'org.orx.demo'
     compileSdk sdkVersion.toInteger()
-    
+
     // Ideally, we want to use the default NDK version for the used AGP version.
     // However, we opt-in to NDK r26 since it comes with many important features/optimizations.
-    ndkVersion '26.1.10909125'
+    ndkVersion '26.2.11394342'
 
     buildFeatures.prefab true
 
@@ -17,7 +17,7 @@ android {
 
         minSdk 21
         targetSdk sdkVersion.toInteger()
-        
+
         vectorDrawables.useSupportLibrary = true
 
         manifestPlaceholders = [ gameArguments: '' ]
