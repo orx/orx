@@ -148,7 +148,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_ShowCursor(orxBOOL _bShow
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxMouse_Grab(orxBOOL _bGrab);
 
 /** Sets mouse (hardware) cursor
- * @param[in] _zName            Cursor's name can be: a standard name (arrow, ibeam, hand, crosshair, hresize or vresize), a file name or orxNULL to reset the hardware cursor to default
+ * @param[in] _zName            Cursor's name can be: a standard name (arrow, ibeam, hand, crosshair, resize_ns, resize_ew, resize_nesw, resize_nwse, resize_all or not_allowed), a file name or orxNULL to reset the hardware cursor to default
  * @param[in] _pvPivot          Cursor's pivot (aka hotspot), orxNULL will default to (0, 0)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
