@@ -717,14 +717,14 @@ static void Run()
           }
 
           // Is ascend bigger than any previous?
-          if ((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxAscend)
+          if((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxAscend)
           {
             // Stores it
             s32MaxAscend = (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top;
           }
 
           // Is descend bigger than any previous?
-          if ((orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxDescend)
+          if((orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxDescend)
           {
             // Stores it
             s32MaxDescend = (orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top;
@@ -736,7 +736,11 @@ static void Run()
 
         // Updates character width and height
         sstFontGen.vCharacterSize.fX = orxS2F(s32LargestWidth);
-        sstFontGen.vCharacterSize.fY = orxS2F(s32MaxAscend + s32MaxDescend + 1);
+
+        if(sstFontGen.vCharacterSize.fY > s32MaxAscend + s32MaxDescend + 1)
+        {
+          sstFontGen.vCharacterSize.fY = orxS2F(s32MaxAscend + s32MaxDescend + 1);
+        }
       }
 
       // Gets width & height
