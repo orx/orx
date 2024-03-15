@@ -693,7 +693,7 @@ static void Run()
         orxS32            s32LargestWidth = 0;
 
         // For all defined glyphs
-        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList);
+        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), s32MaxAscend = 0, s32MaxDescend = 0;
             pstGlyph;
             pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
         {
@@ -716,12 +716,27 @@ static void Run()
             s32CharacterWidth = orxMAX((orxS32)sstFontGen.pstFontFace->glyph->bitmap_left, 0) + (orxS32)sstFontGen.pstFontFace->glyph->bitmap.width;
           }
 
+          // Is ascend bigger than any previous?
+          if ((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxAscend)
+          {
+            // Stores it
+            s32MaxAscend = (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top;
+          }
+
+          // Is descend bigger than any previous?
+          if ((orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxDescend)
+          {
+            // Stores it
+            s32MaxDescend = (orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top;
+          }
+
           // Updates largest character width
           s32LargestWidth = orxMAX(s32LargestWidth, s32CharacterWidth);
         }
 
-        // Updates character width
+        // Updates character width and height
         sstFontGen.vCharacterSize.fX = orxS2F(s32LargestWidth);
+        sstFontGen.vCharacterSize.fY = orxS2F(s32MaxAscend + s32MaxDescend + 1);
       }
 
       // Gets width & height
@@ -737,7 +752,7 @@ static void Run()
         orxFONTGEN_GLYPH *pstGlyph;
 
         // For all defined glyphs
-        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), s32X = 0, s32Y = 0, s32MaxAscend = 0, s32MaxDescend = 0;
+        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), s32X = 0, s32Y = 0;
             pstGlyph;
             pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
         {
@@ -747,20 +762,6 @@ static void Run()
           // Loads rendered glyph
           eError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
           orxASSERT(!eError);
-
-          // Is ascend bigger than any previous?
-          if((orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxAscend)
-          {
-            // Stores it
-            s32MaxAscend = (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top;
-          }
-
-          // Is descend bigger than any previous?
-          if((orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxDescend)
-          {
-            // Stores it
-            s32MaxDescend = (orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - (orxS32)sstFontGen.pstFontFace->glyph->bitmap_top;
-          }
 
           // Use original advance value?
           if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
