@@ -124,6 +124,7 @@ typedef struct __orxFONTGEN_STATIC_t
   orxFLOAT        fPadding;
   orxHASHTABLE   *pstCharacterTable;
   orxBANK        *pstGlyphBank;
+  orxU32          u32Rows;
   orxU32          u32Flags;
   orxLINKLIST     stGlyphList;
   FT_Library      pstFontLibrary;
@@ -421,6 +422,44 @@ static orxSTATUS orxFASTCALL ProcessSizeParams(orxU32 _u32ParamCount, const orxS
   return eResult;
 }
 
+static orxSTATUS orxFASTCALL ProcessRowsParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
+{
+  orxSTATUS eResult;
+
+  // Has a valid rows parameter?
+  if(_u32ParamCount > 1)
+  {
+    orxU32 u32Rows;
+
+    // Gets it
+    if(((eResult = orxString_ToU32(_azParams[1], &u32Rows, orxNULL)) != orxSTATUS_FAILURE)
+    && (u32Rows != 0))
+    {
+      // Stores it
+      sstFontGen.u32Rows = u32Rows;
+
+      // Logs message
+      orxFONTGEN_LOG(SIZE, "Maximum number of rows set to <%u>.", u32Rows);
+    }
+    else
+    {
+      // Logs message
+      orxFONTGEN_LOG(SIZE, "Invalid row number found in '%s', aborting.", _azParams[1]);
+
+      // Updates result
+      eResult = orxSTATUS_FAILURE;
+    }
+  }
+  else
+  {
+    // Updates result
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  // Done!
+  return eResult;
+}
+
 static orxSTATUS orxFASTCALL ProcessPaddingParams(orxU32 _u32ParamCount, const orxSTRING _azParams[])
 {
   orxSTATUS eResult;
@@ -565,6 +604,7 @@ static orxSTATUS orxFASTCALL Init()
   {
     orxFONTGEN_DECLARE_PARAM("o", "output", "Font output name", "Font base output name: .png will be added to the image and .ini will be added to the config file", ProcessOutputParams)
     orxFONTGEN_DECLARE_PARAM("s", "size", "Size (height) of characters", "Height to use for characters defined with this font", ProcessSizeParams)
+    orxFONTGEN_DECLARE_PARAM("r", "rows", "Maximum number of rows", "The maximum number of rows of glyphs that the output texture will have", ProcessRowsParams)
     orxFONTGEN_DECLARE_PARAM("p", "padding", "Character padding", "Extra padding added to all characters on both dimensions (width and height)", ProcessPaddingParams)
     orxFONTGEN_DECLARE_PARAM("f", "font", "Input font file", "TrueType font (usually .ttf) used to generate all the required glyphs", ProcessFontParams)
     orxFONTGEN_DECLARE_PARAM("t", "textlist", "List of input text files", "List of text files containing all the characters that will be displayed using this font", ProcessInputParams)
@@ -744,8 +784,8 @@ static void Run()
       }
 
       // Gets width & height
-      fWidth  = orxMath_Floor(orxMath_Sqrt(orxU2F(u32Counter)));
-      fHeight = orxMath_Ceil(orxU2F(u32Counter) / fWidth);
+      fHeight   = orxMath_Ceil((sstFontGen.u32Rows > 0) ? sstFontGen.u32Rows : orxMath_Sqrt(orxU2F(u32Counter)));
+      fWidth    = orxMath_Ceil(orxU2F(u32Counter) / fHeight);
       s32Width  = orxF2S((fWidth * (sstFontGen.vCharacterSize.fX + sstFontGen.fPadding)) + (sstFontGen.vCharacterSpacing.fX * orxMAX(fWidth - orxFLOAT_1, orxFLOAT_0)));
       s32Height = orxF2S((fHeight * (sstFontGen.vCharacterSize.fY + sstFontGen.fPadding)) + (sstFontGen.vCharacterSpacing.fY * orxMAX(fHeight - orxFLOAT_1, orxFLOAT_0)));
 
