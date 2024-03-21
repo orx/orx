@@ -4689,10 +4689,11 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
       if(_pstObject->fLifeTime <= orxFLOAT_0)
       {
         /* Deletes it */
-        orxObject_DeleteInternal(_pstObject, orxFALSE, &pstResult);
-
-        /* Marks as deleted */
-        bDeleted = orxTRUE;
+        if(orxObject_DeleteInternal(_pstObject, orxFALSE, &pstResult) != orxSTATUS_FAILURE)
+        {
+          /* Marks as deleted */
+          bDeleted = orxTRUE;
+        }
       }
     }
 
