@@ -517,7 +517,7 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
       orxU32 u32AvailableNumber;
 
       /* Gets number of total available objects left */
-      u32AvailableNumber = _pstSpawner->u32TotalObjectLimit - _pstSpawner->u32TotalObjectCount;
+      u32AvailableNumber = _pstSpawner->u32TotalObjectLimit - orxMIN(_pstSpawner->u32TotalObjectLimit, _pstSpawner->u32TotalObjectCount);
 
       /* Gets total spawnable number */
       u32SpawnNumber = orxMIN(_u32Number, u32AvailableNumber);
