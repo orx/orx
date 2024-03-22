@@ -4799,11 +4799,12 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
                     || ((_pstObject->apstStructureList[orxSTRUCTURE_ID_ANIMPOINTER] != orxNULL)
                      && (orxAnimPointer_GetCurrentAnim(orxANIMPOINTER(_pstObject->apstStructureList[orxSTRUCTURE_ID_ANIMPOINTER])) == orxU32_UNDEFINED)))
                     {
-                      /* Schedules object's deletion */
-                      orxObject_SetLifeTime(_pstObject, orxFLOAT_0);
-
-                      /* Disables it */
-                      orxObject_Enable(_pstObject, orxFALSE);
+                      /* Deletes it */
+                      if(orxObject_DeleteInternal(_pstObject, orxFALSE, &pstResult) != orxSTATUS_FAILURE)
+                      {
+                        /* Marks as deleted */
+                        bDeleted = orxTRUE;
+                      }
                     }
                   }
                 }
