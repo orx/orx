@@ -251,10 +251,20 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     }
 
     /* Has a position? */
-    if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_POSITION, &vValue) != orxNULL)
+    if(orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_POSITION) != orxFALSE)
     {
-      /* Updates object position */
-      orxSpawner_SetPosition(_pstSpawner, &vValue);
+      /* Is a vector? */
+      if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_POSITION, &vValue) != orxNULL)
+      {
+        /* Updates spawner position */
+        orxSpawner_SetPosition(_pstSpawner, &vValue);
+      }
+      /* Uses it as Z component */
+      else
+      {
+        /* Updates spawner position */
+        orxSpawner_SetPosition(_pstSpawner, orxVector_Set(&vValue, orxFLOAT_0, orxFLOAT_0, orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_POSITION)));
+      }
     }
 
     /* Updates object rotation */

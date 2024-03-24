@@ -1107,10 +1107,20 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Has a position? */
-        if(orxConfig_GetVector(orxCAMERA_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
+        if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_POSITION) != orxFALSE)
         {
-          /* Updates camera position */
-          orxCamera_SetPosition(pstResult, &vPosition);
+          /* Is a vector? */
+          if(orxConfig_GetVector(orxCAMERA_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
+          {
+            /* Updates camera position */
+            orxCamera_SetPosition(pstResult, &vPosition);
+          }
+          /* Uses it as Z component */
+          else
+          {
+            /* Updates camera position */
+            orxCamera_SetPosition(pstResult, orxVector_Set(&vPosition, orxFLOAT_0, orxFLOAT_0, orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_POSITION)));
+          }
         }
 
         /* Updates object rotation */
