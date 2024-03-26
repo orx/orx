@@ -1482,32 +1482,36 @@ static orxINLINE void orxAnimSet_ReferenceAnim(const orxSTRING _zAnim)
     /* Gets its link name */
     orxString_NPrint(acLinkName, sizeof(acLinkName), "%s%s", _zAnim, orxANIMSET_KZ_LINK_SUFFIX);
 
-    /* For all linked animations */
-    for(i = 0, u32Count = orxConfig_GetListCount(acLinkName);
-        i < u32Count;
-        i++)
+    /* Has link? */
+    if(orxConfig_HasValueNoCheck(acLinkName) != orxFALSE)
     {
-      const orxSTRING zLinkedAnim;
-
-      /* Gets linked anim */
-      zLinkedAnim = orxConfig_GetListString(acLinkName, i);
-
-      /* Valid? */
-      if(*zLinkedAnim != orxCHAR_NULL)
+      /* For all linked animations */
+      for(i = 0, u32Count = orxConfig_GetListCount(acLinkName);
+          i < u32Count;
+          i++)
       {
-        /* Skips all link modifiers */
-        while((*zLinkedAnim == orxANIMSET_KC_IMMEDIATE)
-           || (*zLinkedAnim == orxANIMSET_KC_CLEAR_TARGET)
-           || (*zLinkedAnim == orxANIMSET_KC_HIGH_PRIORITY)
-           || (*zLinkedAnim == orxANIMSET_KC_LOW_PRIORITY)
-           || (*zLinkedAnim == ' ')
-           || (*zLinkedAnim == '\t'))
-        {
-          zLinkedAnim++;
-        }
+        const orxSTRING zLinkedAnim;
 
-        /* References it */
-        orxAnimSet_ReferenceAnim(zLinkedAnim);
+        /* Gets linked anim */
+        zLinkedAnim = orxConfig_GetListString(acLinkName, i);
+
+        /* Valid? */
+        if(*zLinkedAnim != orxCHAR_NULL)
+        {
+          /* Skips all link modifiers */
+          while((*zLinkedAnim == orxANIMSET_KC_IMMEDIATE)
+             || (*zLinkedAnim == orxANIMSET_KC_CLEAR_TARGET)
+             || (*zLinkedAnim == orxANIMSET_KC_HIGH_PRIORITY)
+             || (*zLinkedAnim == orxANIMSET_KC_LOW_PRIORITY)
+             || (*zLinkedAnim == ' ')
+             || (*zLinkedAnim == '\t'))
+          {
+            zLinkedAnim++;
+          }
+
+          /* References it */
+          orxAnimSet_ReferenceAnim(zLinkedAnim);
+        }
       }
     }
   }
@@ -2607,7 +2611,7 @@ static orxANIMSET *orxFASTCALL orxAnimSet_CreateSimpleFromConfig(const orxSTRING
         if(u32AnimID != orxU32_UNDEFINED)
         {
           /* No link defined? */
-          if(orxConfig_HasValue(acLinkName) == orxFALSE)
+          if(orxConfig_HasValueNoCheck(acLinkName) == orxFALSE)
           {
             /* Adds self as link */
             orxAnimSet_AddLink(pstResult, u32AnimID, u32AnimID);

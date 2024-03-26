@@ -91,6 +91,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Init();
 extern orxDLLAPI void orxFASTCALL             orxConfig_Exit();
 
 
+/** Enables/disables config typo check (debug-only)
+ */
+extern orxDLLAPI void orxFASTCALL             orxConfig_EnableTypoCheck(orxBOOL _bEnable);
+
+
 /** Sets encryption key
  * @param[in] _zEncryptionKey  Encryption key to use, orxNULL to clear
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -308,6 +313,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsCommandValue(const orx
  * @return orxTRUE / orxFALSE
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_HasValue(const orxSTRING _zKey);
+
+/** Has specified value for the given key (no check for typos)?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_HasValueNoCheck(const orxSTRING _zKey);
 
 /** Gets a value's source section (ie. the section where the value is explicitly defined), only considering section inheritance, not local one
  * @param[in] _zKey             Key name

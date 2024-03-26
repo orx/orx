@@ -70,7 +70,7 @@
 
 #define orxCONFIG_KU32_STATIC_FLAG_READY          0x00000001  /**< Ready flag */
 #define orxCONFIG_KU32_STATIC_FLAG_HISTORY        0x00000002  /**< Keep history flag */
-#define orxCONFIG_KU32_STATIC_FLAG_NO_CHECK       0x00000004  /**< No check flag */
+#define orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK     0x00000004  /**< Typo check flag */
 
 #define orxCONFIG_KU32_STATIC_MASK_ALL            0xFFFFFFFF  /**< All mask */
 
@@ -1594,7 +1594,7 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
 #ifdef __orxDEBUG__
 
     /* Should check? */
-    if(!orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NO_CHECK))
+    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK))
     {
       /* Not found? */
       if(pstResult == orxNULL)
@@ -1642,27 +1642,6 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
 
   /* Done! */
   return pstResult;
-}
-
-/** Has specified value for the given key (no check for typos)?
- * @param[in] _zKey             Key name
- * @return orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxConfig_HasValueNoCheck(const orxSTRING _zKey)
-{
-  orxBOOL bResult;
-
-  /* Updates flags */
-  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NO_CHECK, orxCONFIG_KU32_STATIC_FLAG_NONE);
-
-  /* Updates result */
-  bResult = orxConfig_HasValue(_zKey);
-
-  /* Updates flags */
-  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_NO_CHECK);
-
-  /* Done! */
-  return bResult;
 }
 
 /** Sets an entry in the current section (adds it if need be)
@@ -3896,7 +3875,7 @@ void orxFASTCALL orxConfig_CommandGetOrigin(orxU32 _u32ArgNumber, const orxCOMMA
 void orxFASTCALL orxConfig_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->zValue = orxConfig_GetParent(_astArgList[0].zValue);
+  _pstResult->zValue = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxConfig_GetParent(_astArgList[0].zValue) : orxConfig_GetParent(orxConfig_GetCurrentSection());
   if(_pstResult->zValue == orxNULL)
   {
     _pstResult->zValue = orxSTRING_EMPTY;
@@ -4047,7 +4026,7 @@ void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAN
   }
 
   /* Updates result */
-  _pstResult->bValue = (orxConfig_HasValue(_astArgList[1].zValue));
+  _pstResult->bValue = ((_u32ArgNumber > 2) && (_astArgList[2].bValue == orxFALSE)) ? orxConfig_HasValueNoCheck(_astArgList[1].zValue) : orxConfig_HasValue(_astArgList[1].zValue);
 
   /* Pops section */
   if(bPush != orxFALSE)
@@ -4417,7 +4396,7 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetCurrentSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
 
   /* Command: HasValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 1, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"TypoCheck = true", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: ClearValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, ClearValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetValue */
@@ -4646,7 +4625,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       sstConfig.stResourceGroupID = orxString_GetID(orxCONFIG_KZ_RESOURCE_GROUP);
 
       /* Inits flags */
-      orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY | orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_MASK_ALL);
+      orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY | orxCONFIG_KU32_STATIC_FLAG_HISTORY | orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK, orxCONFIG_KU32_STATIC_MASK_ALL);
 
       /* Registers commands */
       orxConfig_RegisterCommands();
@@ -4773,6 +4752,30 @@ void orxFASTCALL orxConfig_Exit()
     orxMemory_Zero(&sstConfig, sizeof(orxCONFIG_STATIC));
   }
 
+  /* Done! */
+  return;
+}
+
+/** Enables/disables config typo check (debug-only)
+ */
+void orxFASTCALL orxConfig_EnableTypoCheck(orxBOOL _bEnable)
+{
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Enable? */
+  if(_bEnable != orxFALSE)
+  {
+    /* Updates flags */
+    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK, orxCONFIG_KU32_STATIC_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates flags */
+    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK);
+  }
+
+  /* Done! */
   return;
 }
 
@@ -6623,6 +6626,33 @@ orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
     /* Updates result */
     bResult = (orxConfig_GetValue(_zKey) != orxNULL) ? orxTRUE : orxFALSE;
   }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Has specified value for the given key (no check for typos)?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_HasValueNoCheck(const orxSTRING _zKey)
+{
+  orxU32  u32TypoCheckFlag;
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+
+  /* Updates flags */
+  u32TypoCheckFlag = orxFLAG_GET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK);
+  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK);
+
+  /* Updates result */
+  bResult = orxConfig_HasValue(_zKey);
+
+  /* Updates flags */
+  orxFLAG_SET(sstConfig.u32Flags, u32TypoCheckFlag, orxCONFIG_KU32_STATIC_FLAG_NONE);
 
   /* Done! */
   return bResult;

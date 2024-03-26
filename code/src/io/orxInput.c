@@ -180,10 +180,6 @@ static orxINPUT_STATIC sstInput;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Semi-private, internal-use only forward declarations
- */
-orxBOOL orxFASTCALL orxConfig_HasValueNoCheck(const orxSTRING _zKey);
-
 /** Command: Load
  */
 void orxFASTCALL orxInput_CommandLoad(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
