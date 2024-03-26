@@ -1519,6 +1519,9 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 <li>orxConfig_DuplicateRawValue()
 : <a class="el" href="group__orx_config.html#ga71d5a6dcd9e8c5d835e4b480716a8ac9">orxConfig.h</a>
 </li>
+<li>orxConfig_EnableTypoCheck()
+: <a class="el" href="group__orx_config.html#gafc3530a66bdce91c5d75b71d186876c3">orxConfig.h</a>
+</li>
 <li>orxCONFIG_EVENT
 : <a class="el" href="group__orx_config.html#gad70a5ee64ac35b8fdd9cdaf3e4a1d267">orxConfig.h</a>
 </li>
@@ -1635,6 +1638,9 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 </li>
 <li>orxConfig_HasValue()
 : <a class="el" href="group__orx_config.html#gad57211f9017325df09ecc0fd4414eef3">orxConfig.h</a>
+</li>
+<li>orxConfig_HasValueNoCheck()
+: <a class="el" href="group__orx_config.html#gadcbe673cfa2eb562caea18836204f572">orxConfig.h</a>
 </li>
 <li>orxConfig_Init()
 : <a class="el" href="group__orx_config.html#ga5f188331baaf549aa47f31375cb79016">orxConfig.h</a>
@@ -3623,6 +3629,12 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 </li>
 <li>orxINPUT_MODE_POSITIVE
 : <a class="el" href="group__orx_input.html#gga792a36e293073c41ca434b9d6afd30e5a0df3b4ddf3817c1165a138fecdb39777">orxInput.h</a>
+</li>
+<li>orxInput_PopSet()
+: <a class="el" href="group__orx_input.html#gab9d5970dcea0ddbee0f4c685932490d9">orxInput.h</a>
+</li>
+<li>orxInput_PushSet()
+: <a class="el" href="group__orx_input.html#ga6834cebe611e89f0e06dfe77acaddd79">orxInput.h</a>
 </li>
 <li>orxInput_RemoveSet()
 : <a class="el" href="group__orx_input.html#ga3ed1b079e8917dd7ba05990a44158376">orxInput.h</a>
@@ -7058,8 +7070,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 : <a class="el" href="group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a9124c1e63f03128103809b24937832ba">orxType.h</a>
 </li>
 <li>orxSHADER
-: <a class="el" href="group__orx_structure.html#ga46846f3629aa7afbd9ddbb7654d9787e">orxStructure.h</a>
-, <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
+: <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
+, <a class="el" href="group__orx_structure.html#ga46846f3629aa7afbd9ddbb7654d9787e">orxStructure.h</a>
 </li>
 <li>orxShader_AddFloatParam()
 : <a class="el" href="group__orx_shader.html#gaee59c669a705b28e66cc8ff5f2c0ae48">orxShader.h</a>
@@ -7803,8 +7815,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 : <a class="el" href="group__orx_sound_system.html#gga93d8a3a6be4aaaa909f767a79a90fe92a77d842de4194a0641a6f114a3147b570">orxSoundSystem.h</a>
 </li>
 <li>orxSPAWNER
-: <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
-, <a class="el" href="group__orx_structure.html#ga2f75b29afe14141e718e04b6a484a3d6">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga2f75b29afe14141e718e04b6a484a3d6">orxStructure.h</a>
+, <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
 </li>
 <li>orxSpawner_Create()
 : <a class="el" href="group__orx_spawner.html#ga23d51c61919201df9385c5bac486ecd1">orxSpawner.h</a>
@@ -7989,9 +8001,9 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 <li>orxSpawner_Spawn()
 : <a class="el" href="group__orx_spawner.html#gad08003006dc08bcb3f3916a2c234e9af">orxSpawner.h</a>
 </li>
-<li>orxSTATUS
-: <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
-, <a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxModule.h</a>
+<li>orxSTATUS()
+: <a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxModule.h</a>
+, <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
 </li>
 <li>orxSTATUS_FAILURE
 : <a class="el" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxType.h</a>
@@ -8504,8 +8516,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 : <a class="el" href="group__orx_system.html#ga70faf0fe659b66de0cd0249a14b462c6">orxSystem.h</a>
 </li>
 <li>orxTEXT
-: <a class="el" href="group__orx_structure.html#ga4a3d5904f1be7aa2b909fae7f30310dd">orxStructure.h</a>
-, <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
+: <a class="el" href="group__orx_text.html#gae37a27ec04754279ebab92e7a0875c7d">orxText.h</a>
+, <a class="el" href="group__orx_structure.html#ga4a3d5904f1be7aa2b909fae7f30310dd">orxStructure.h</a>
 </li>
 <li>orxText_Create()
 : <a class="el" href="group__orx_text.html#ga7db9913d83299e4951a308f10a129cd3">orxText.h</a>

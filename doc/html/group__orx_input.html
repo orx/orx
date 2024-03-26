@@ -235,6 +235,10 @@ Functions</h2></td></tr>
 <tr class="separator:ga353743b746e3bece0070e95850a0cbe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad85a555d5e7ee7bd35815a6a52baefbb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gad85a555d5e7ee7bd35815a6a52baefbb">orxInput_Load</a> (const orxSTRING _zFileName)</td></tr>
 <tr class="separator:gad85a555d5e7ee7bd35815a6a52baefbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab9d5970dcea0ddbee0f4c685932490d9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#gab9d5970dcea0ddbee0f4c685932490d9">orxInput_PopSet</a> ()</td></tr>
+<tr class="separator:gab9d5970dcea0ddbee0f4c685932490d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6834cebe611e89f0e06dfe77acaddd79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga6834cebe611e89f0e06dfe77acaddd79">orxInput_PushSet</a> (const orxSTRING _zSetName)</td></tr>
+<tr class="separator:ga6834cebe611e89f0e06dfe77acaddd79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3ed1b079e8917dd7ba05990a44158376"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga3ed1b079e8917dd7ba05990a44158376">orxInput_RemoveSet</a> (const orxSTRING _zSetName)</td></tr>
 <tr class="separator:ga3ed1b079e8917dd7ba05990a44158376"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2a34aa6090226956398b7b1753760f71"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_input.html#ga2a34aa6090226956398b7b1753760f71">orxInput_ResetValue</a> (const orxSTRING _zInputName)</td></tr>
@@ -1273,6 +1277,45 @@ Functions</h2></td></tr>
 <p>Loads inputs from config </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zFileName</td><td>File name to load, will use current loaded config if orxSTRING_EMPTY/orxNULL </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gab9d5970dcea0ddbee0f4c685932490d9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxInput_PopSet </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Pops last set from the stack </p><dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga6834cebe611e89f0e06dfe77acaddd79"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxInput_PushSet </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zSetName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Pushes a set (storing the current one on the stack) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSetName</td><td>Set name to push </td></tr>
   </table>
   </dd>
 </dl>
