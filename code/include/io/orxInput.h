@@ -175,6 +175,17 @@ extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetCurrentSet();
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetNextSet(const orxSTRING _zSetName);
 
+/** Pushes a set (storing the current one on the stack)
+ * @param[in] _zSetName         Set name to push
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_PushSet(const orxSTRING _zSetName);
+
+/** Pops last set from the stack
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_PopSet();
+
 /** Removes a set
  * @param[in] _zSetName         Set name to remove
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

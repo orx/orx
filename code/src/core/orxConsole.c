@@ -129,7 +129,6 @@ typedef struct __orxCONSOLE_STATIC_t
   orxU32                    u32HistoryIndex;                                          /**< History index */
   orxCOMMAND_VAR            stLastResult;                                             /**< Last command result */
   const orxFONT            *pstFont;                                                  /**< Font */
-  const orxSTRING           zPreviousInputSet;                                        /**< Previous input set */
   const orxSTRING           zCompletedCommand;                                        /**< Last completed command */
   orxINPUT_TYPE             eToggleKeyType;                                           /**< Toggle key type */
   orxENUM                   eToggleKeyID;                                             /**< Toggle key ID */
@@ -905,11 +904,8 @@ static void orxFASTCALL orxConsole_Start()
   /* Not already enabled? */
   if(!orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED))
   {
-    /* Stores current input set */
-    sstConsole.zPreviousInputSet = orxInput_GetCurrentSet();
-
-    /* Replaces input set */
-    orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
+    /* Pushes console input set */
+    orxInput_PushSet(orxCONSOLE_KZ_INPUT_SET);
 
     /* Sets insert mode */
     orxFLAG_SET(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_INSERT_MODE, orxCONSOLE_KU32_STATIC_FLAG_NONE);
@@ -929,8 +925,8 @@ static void orxFASTCALL orxConsole_Stop()
   /* Was enabled? */
   if(orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ENABLED))
   {
-    /* Restores previous input set */
-    orxInput_SelectSet(sstConsole.zPreviousInputSet);
+    /* Pops input set */
+    orxInput_PopSet();
   }
 
   /* Done! */
@@ -1227,16 +1223,11 @@ orxSTATUS orxFASTCALL orxConsole_Init()
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      const orxSTRING zPreviousSet;
-
       /* Filters relevant event IDs */
       orxEvent_SetHandlerIDFlags(orxConsole_EventHandler, orxEVENT_TYPE_INPUT, orxNULL, orxEVENT_GET_FLAG(orxINPUT_EVENT_ON), orxEVENT_KU32_MASK_ID_ALL);
 
-      /* Backups previous input set */
-      zPreviousSet = orxInput_GetCurrentSet();
-
-      /* Selects console input set */
-      eResult = orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
+      /* Pushes console input set */
+      eResult = orxInput_PushSet(orxCONSOLE_KZ_INPUT_SET);
 
       /* Success */
       if(eResult != orxSTATUS_FAILURE)
@@ -1268,8 +1259,8 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         /* Enables set */
         orxInput_EnableSet(orxCONSOLE_KZ_INPUT_SET, orxTRUE);
 
-        /* Restores previous set */
-        orxInput_SelectSet(zPreviousSet);
+        /* Pops input set */
+        orxInput_PopSet();
 
         /* Registers update callback */
         eResult = orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxConsole_Update, orxNULL, orxMODULE_ID_CONSOLE, orxCLOCK_PRIORITY_HIGH);

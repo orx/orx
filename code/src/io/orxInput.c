@@ -102,6 +102,7 @@
 #define orxINPUT_KF_DEFAULT_MULTIPLIER                orxFLOAT_1  /**< Default multiplier */
 
 #define orxINPUT_KU32_RESULT_BUFFER_SIZE              64          /**< Result buffer size */
+#define orxINPUT_KU32_STACK_SIZE                      64          /**< Set stack size */
 
 #define orxINPUT_KZ_MODE_FORMAT                       "%c%s"      /**< Mode format */
 
@@ -162,6 +163,8 @@ typedef struct __orxINPUT_STATIC_t
   orxINPUT_SET *pstDefaultSet;                                    /**< Default set */
   orxVECTOR     vMouseMove;                                       /**< Mouse move */
   orxU32        u32Flags;                                         /**< Control flags */
+  orxU32        u32CurrentStackEntry;                             /**< Current stack entry */
+  orxINPUT_SET *apstSetStack[orxINPUT_KU32_STACK_SIZE];           /**< Set stack */
   orxCHAR       acResultBuffer[orxINPUT_KU32_RESULT_BUFFER_SIZE]; /**< Result buffer */
 
 } orxINPUT_STATIC;
@@ -220,6 +223,34 @@ void orxFASTCALL orxInput_CommandSelectSet(orxU32 _u32ArgNumber, const orxCOMMAN
  */
 void orxFASTCALL orxInput_CommandGetCurrentSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  /* Updates result */
+  _pstResult->zValue = (sstInput.pstCurrentSet != orxNULL) ? sstInput.pstCurrentSet->zName : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: PushSet
+ */
+void orxFASTCALL orxInput_CommandPushSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Pushes it */
+  orxInput_PushSet(_astArgList[0].zValue);
+
+  /* Updates result */
+  _pstResult->zValue = (sstInput.pstCurrentSet != orxNULL) ? sstInput.pstCurrentSet->zName : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: PopSet
+ */
+void orxFASTCALL orxInput_CommandPopSet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Pops it */
+  orxInput_PopSet();
+
   /* Updates result */
   _pstResult->zValue = (sstInput.pstCurrentSet != orxNULL) ? sstInput.pstCurrentSet->zName : orxSTRING_EMPTY;
 
@@ -388,6 +419,10 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, SelectSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetCurrentSet */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, GetCurrentSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
+  /* Command: PushSet */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, PushSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: PopSet */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, PopSet, "Set", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
   /* Command: RemoveSet */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, RemoveSet, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Set", orxCOMMAND_VAR_TYPE_STRING});
 
@@ -429,6 +464,10 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, SelectSet);
   /* Command: GetCurrentSet */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, GetCurrentSet);
+  /* Command: PushSet */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, PushSet);
+  /* Command: PopSet */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, PopSet);
   /* Command: GetRemoveSet */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, RemoveSet);
 
@@ -1306,8 +1345,36 @@ static orxINLINE orxSTATUS orxInput_SelectSetInternal(const orxSTRING _zSetName,
  */
 static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
 {
+  orxU32 u32SrcEntry, u32DstEntry;
+
   /* Checks */
   orxASSERT(_pstSet != orxNULL);
+
+  /* For all stack entries */
+  for(u32SrcEntry = 0, u32DstEntry = 0; u32SrcEntry < sstInput.u32CurrentStackEntry; u32SrcEntry++)
+  {
+    /* Should copy? */
+    if(u32SrcEntry != u32DstEntry)
+    {
+      /* Copies it */
+      sstInput.apstSetStack[u32DstEntry] = sstInput.apstSetStack[u32SrcEntry];
+    }
+
+    /* Isn't deleted set? */
+    if(sstInput.apstSetStack[u32SrcEntry] != _pstSet)
+    {
+      /* Updates destination entry */
+      u32DstEntry++;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Warning: deleted set [%s] was previously pushed and has to be removed from stack.", _pstSet->zName);
+    }
+  }
+
+  /* Updates current stack entry */
+  sstInput.u32CurrentStackEntry -= (u32SrcEntry - u32DstEntry);
 
   /* Is the current selected one? */
   if(sstInput.pstCurrentSet == _pstSet)
@@ -1858,7 +1925,7 @@ const orxSTRING orxFASTCALL orxInput_GetCurrentSet()
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
 
-  /* Has selected section? */
+  /* Has selected set? */
   if(sstInput.pstCurrentSet != orxNULL)
   {
     /* Updates result */
@@ -1910,6 +1977,93 @@ const orxSTRING orxFASTCALL orxInput_GetNextSet(const orxSTRING _zSetName)
 
   /* Done! */
   return zResult;
+}
+
+/** Pushes a set (storing the current one on the stack)
+ * @param[in] _zSetName         Set name to push
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxInput_PushSet(const orxSTRING _zSetName)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSetName != orxNULL);
+
+  /* Valid? */
+  if(_zSetName != orxSTRING_EMPTY)
+  {
+    orxINPUT_SET *pstCurrentSet;
+
+    /* Stores current set */
+    pstCurrentSet = sstInput.pstCurrentSet;
+
+    /* Selects requested set */
+    eResult = orxInput_SelectSet(_zSetName);
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Isn't stack full? */
+      if(sstInput.u32CurrentStackEntry < orxINPUT_KU32_STACK_SIZE)
+      {
+        /* Updates stack */
+        sstInput.apstSetStack[sstInput.u32CurrentStackEntry++] = pstCurrentSet;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "[%s]: Failed to push set: stack is full.", _zSetName);
+
+        /* Restores current set */
+        sstInput.pstCurrentSet = pstCurrentSet;
+
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Pops last set from the stack
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxInput_PopSet()
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+
+  /* Has stacked entry? */
+  if(sstInput.u32CurrentStackEntry != 0)
+  {
+    /* Updates current set */
+    sstInput.pstCurrentSet = sstInput.apstSetStack[--sstInput.u32CurrentStackEntry];
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_INPUT, "Failed to pop set: stack is empty.");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Removes a set

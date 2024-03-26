@@ -253,14 +253,10 @@ static void orxFASTCALL orxRender_Home_ResetProfilerMaxima(const orxCLOCK_INFO *
  */
 static void orxFASTCALL orxRender_ResetInput(const orxCLOCK_INFO *_pstInfo, void *_pContext)
 {
-  const orxSTRING zPreviousSet;
-  orxSTRING       zInput;
+  orxSTRING zInput;
 
-  /* Backups previous input set */
-  zPreviousSet = orxInput_GetCurrentSet();
-
-  /* Selects render input set */
-  orxInput_SelectSet(orxRENDER_KZ_INPUT_SET);
+  /* Pushes render input set */
+  orxInput_PushSet(orxRENDER_KZ_INPUT_SET);
 
   /* Gets input */
   zInput = (orxSTRING)_pContext;
@@ -275,8 +271,8 @@ static void orxFASTCALL orxRender_ResetInput(const orxCLOCK_INFO *_pstInfo, void
     orxClock_AddGlobalTimer(orxRender_ResetInput, orxRENDER_KF_INPUT_RESET_DELAY, 1, zInput);
   }
 
-  /* Restores previous input set */
-  orxInput_SelectSet(zPreviousSet);
+  /* Pops input set */
+  orxInput_PopSet();
 }
 
 /** Renders FPS count
@@ -3008,13 +3004,8 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
           {
-            const orxSTRING zPreviousSet;
-
-            /* Backups previous input set */
-            zPreviousSet = orxInput_GetCurrentSet();
-
-            /* Selects render input set */
-            orxInput_SelectSet(orxRENDER_KZ_INPUT_SET);
+            /* Pushes render input set */
+            orxInput_PushSet(orxRENDER_KZ_INPUT_SET);
 
             /* Binds console inputs */
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_TOGGLE_HISTORY, orxINPUT_MODE_FULL, -1);
@@ -3026,8 +3017,8 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_PREVIOUS_THREAD, orxINPUT_MODE_FULL, -1);
             orxInput_Bind(orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD, orxINPUT_TYPE_KEYBOARD_KEY, orxRENDER_KE_KEY_PROFILER_NEXT_THREAD, orxINPUT_MODE_FULL, -1);
 
-            /* Restores previous set */
-            orxInput_SelectSet(zPreviousSet);
+            /* Pops input set */
+            orxInput_PopSet();
 
             /* Inits it */
             orxFrame_SetPosition(sstRender.pstFrame, orxFRAME_SPACE_LOCAL, &orxVECTOR_0);

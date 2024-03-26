@@ -200,7 +200,6 @@ static orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Android_GetKey(orxU32 _eKey)
 static void orxFASTCALL orxKeyboard_Android_UpdateKeyFilterState(const orxCLOCK_INFO* pClockInfo, void* pContext) {
   orxU32 u32BoundKeys;
   const orxSTRING zInputSet = orxNULL;
-  const orxSTRING zPreviousSet;
   const orxSTRING zName;
 
 #define orxKEYBOARD_UPDATE_BOUND_KEY(KEY)                                                                                                       \
@@ -215,21 +214,18 @@ static void orxFASTCALL orxKeyboard_Android_UpdateKeyFilterState(const orxCLOCK_
   /* Unbound keys are handled by system */
   u32BoundKeys = orxKEYBOARD_KU32_BOUND_KEY_NONE;
 
-  /* Gets previous set */
-  zPreviousSet = orxInput_GetCurrentSet();
-
   while((zInputSet = orxInput_GetNextSet(zInputSet)))
   {
     if(orxInput_IsSetEnabled(zInputSet))
     {
-      /* Selects set */
-      orxInput_SelectSet(zInputSet);
+      /* Pushes set */
+      orxInput_PushSet(zInputSet);
 
       orxKEYBOARD_UPDATE_BOUND_KEY(VOLUME_UP);
       orxKEYBOARD_UPDATE_BOUND_KEY(VOLUME_DOWN);
 
-      /* Restores previous set */
-      orxInput_SelectSet(zPreviousSet);
+      /* Pops previous set */
+      orxInput_PopSet();
     }
   }
 
