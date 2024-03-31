@@ -213,7 +213,7 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_GetTime(co
 
 /** Opens the resource at the given location
  * @param[in] _zLocation        Location of the resource to open
- * @param[in] _bEraseMode       If true, the file will be erased if existing or created otherwise, if false, no content will get destroyed when opening
+ * @param[in] _bEraseMode       If true, the resource will be erased if existing or created otherwise, if false, no content will get destroyed when opening
  * @return Handle to the open location, orxHANDLE_UNDEFINED otherwise
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode);
