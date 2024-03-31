@@ -1075,8 +1075,8 @@ static orxINLINE void orxSpawner_DeleteAll()
   return;
 }
 
-/** Updates the spawner (Callback for generic structure update calling)
- * @param[in]   _pstStructure                 Generic Structure or the concerned Body
+/** Updates the Spawner (Callback for generic structure update calling)
+ * @param[in]   _pstStructure                 Generic Structure or the concerned Spawner
  * @param[in]   _pstCaller                    Structure of the caller
  * @param[in]   _pstClockInfo                 Clock info used for time updates
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

@@ -1341,8 +1341,8 @@ static orxINLINE void orxSound_DeleteAllBuses()
   return;
 }
 
-/** Updates the SoundPointer (Callback for generic structure update calling)
- * @param[in]   _pstStructure                 Generic Structure or the concerned Body
+/** Updates the Sound (Callback for generic structure update calling)
+ * @param[in]   _pstStructure                 Generic Structure or the concerned Sound
  * @param[in]   _pstCaller                    Structure of the caller
  * @param[in]   _pstClockInfo                 Clock info used for time updates
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
