@@ -113,6 +113,7 @@ var orx_object_8h =
     [ "orxObject_RemoveAllFilters", "group__orx_object.html#gafd730d2e769bb97def40375704d89674", null ],
     [ "orxObject_RemoveAllFXs", "group__orx_object.html#gaab18368c49758bed26fd6f0a78efac04", null ],
     [ "orxObject_RemoveAllFXsRecursive", "group__orx_object.html#gad7f4cf8a81a7228ff44bc285ed6774b0", null ],
+    [ "orxObject_RemoveAllSounds", "group__orx_object.html#ga68dd0152f5feadd76ad822058af53598", null ],
     [ "orxObject_RemoveFX", "group__orx_object.html#ga43abc9ef140d0b03f10991c3a9fd8dc8", null ],
     [ "orxObject_RemoveFXRecursive", "group__orx_object.html#gae2456d0ec188ec9d1715d1dfd2771c94", null ],
     [ "orxObject_RemoveLastFilter", "group__orx_object.html#ga0aff3d25ef7b6b55d6e7bc7e956080a8", null ],

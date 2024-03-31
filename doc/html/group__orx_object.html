@@ -444,6 +444,8 @@ Sound</h2></td></tr>
 <tr class="separator:gaf787464dae9b7b4ce4dda64ac8b60661"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab166e5f18d9efe2cb4c63a955cc6d4af"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab166e5f18d9efe2cb4c63a955cc6d4af">orxObject_RemoveSound</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zSoundConfigID)</td></tr>
 <tr class="separator:gab166e5f18d9efe2cb4c63a955cc6d4af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga68dd0152f5feadd76ad822058af53598"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga68dd0152f5feadd76ad822058af53598">orxObject_RemoveAllSounds</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:ga68dd0152f5feadd76ad822058af53598"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaad49507bbbad9f7c36a074e823198c34"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87">orxSOUND</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaad49507bbbad9f7c36a074e823198c34">orxObject_GetLastAddedSound</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 <tr class="separator:gaad49507bbbad9f7c36a074e823198c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga877d1f073e80de047eacca6339fd6e3b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga877d1f073e80de047eacca6339fd6e3b">orxObject_SetVolume</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT _fVolume)</td></tr>
@@ -3507,6 +3509,29 @@ Picking</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Removes all FXs from an object and its owned children. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga68dd0152f5feadd76ad822058af53598"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_RemoveAllSounds </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes all sounds. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
   </table>

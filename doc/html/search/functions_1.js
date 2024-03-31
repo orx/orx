@@ -806,6 +806,7 @@ var searchData=
   ['orxobject_5fremoveallfilters',['orxObject_RemoveAllFilters',['../group__orx_object.html#gafd730d2e769bb97def40375704d89674',1,'orxObject.h']]],
   ['orxobject_5fremoveallfxs',['orxObject_RemoveAllFXs',['../group__orx_object.html#gaab18368c49758bed26fd6f0a78efac04',1,'orxObject.h']]],
   ['orxobject_5fremoveallfxsrecursive',['orxObject_RemoveAllFXsRecursive',['../group__orx_object.html#gad7f4cf8a81a7228ff44bc285ed6774b0',1,'orxObject.h']]],
+  ['orxobject_5fremoveallsounds',['orxObject_RemoveAllSounds',['../group__orx_object.html#ga68dd0152f5feadd76ad822058af53598',1,'orxObject.h']]],
   ['orxobject_5fremovefx',['orxObject_RemoveFX',['../group__orx_object.html#ga43abc9ef140d0b03f10991c3a9fd8dc8',1,'orxObject.h']]],
   ['orxobject_5fremovefxrecursive',['orxObject_RemoveFXRecursive',['../group__orx_object.html#gae2456d0ec188ec9d1715d1dfd2771c94',1,'orxObject.h']]],
   ['orxobject_5fremovelastfilter',['orxObject_RemoveLastFilter',['../group__orx_object.html#ga0aff3d25ef7b6b55d6e7bc7e956080a8',1,'orxObject.h']]],
