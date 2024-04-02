@@ -1035,7 +1035,7 @@ static ma_result orxSoundSystem_MiniAudio_Stream_Read(ma_data_source *_pstDataSo
         stPayload.stStream.stPacket.afSampleList    = (orxFLOAT *)_pFramesOut;
         stPayload.stStream.stPacket.u32SampleNumber = ((orxU32)*_pu64FramesRead) * pstSound->u32ChannelNumber;
         stPayload.stStream.stPacket.fTimeStamp      = (orxFLOAT)orxSystem_GetTime();
-        stPayload.stStream.stPacket.fTime           = orxSoundSystem_GetTime(pstSound);;
+        stPayload.stStream.stPacket.fTime           = orxSoundSystem_GetTime(pstSound);
         stPayload.stStream.stPacket.s32ID           = pstSound->stStream.s32PacketID++;
         stPayload.stStream.stPacket.bDiscard        = orxFALSE;
         stPayload.stStream.stPacket.bLast           = (hResult == MA_AT_END) ? orxTRUE : orxFALSE;

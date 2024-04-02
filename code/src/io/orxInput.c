@@ -998,7 +998,7 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
             stPayload.aeType[i]   = pstEntry->astBindingList[i].eType;
             stPayload.aeMode[i]   = pstEntry->astBindingList[i].eMode;
             stPayload.aeID[i]     = pstEntry->astBindingList[i].eID;
-            stPayload.afValue[i]  = orxInput_ScaleValue(pstEntry->astBindingList[i].fValue, pstEntry->fThreshold, pstEntry->fMultiplier);;
+            stPayload.afValue[i]  = orxInput_ScaleValue(pstEntry->astBindingList[i].fValue, pstEntry->fThreshold, pstEntry->fMultiplier);
           }
         }
         else
