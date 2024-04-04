@@ -97,10 +97,11 @@ typedef struct BundleResource
 
 static orxCHAR        sacPrintBuffer[1024];
 static orxHASHTABLE  *sapstResourceTableList[orxTHREAD_KU32_MAX_THREAD_NUMBER];
-static orxHASHTABLE  *spstToCTable        = orxNULL;
-static orxHASHTABLE  *spstDataTable       = orxNULL;
-static orxHANDLE      shResource          = orxHANDLE_UNDEFINED;
-static orxBOOL        sbProcess           = orxFALSE;
+static orxHASHTABLE  *spstToCTable;
+static orxHASHTABLE  *spstDataTable;
+static orxHANDLE      shResource;
+static orxBOOL        sbProcess;
+static orxBOOL        sbInit = orxFALSE;
 
 
 //! Helpers
@@ -1538,79 +1539,87 @@ orxS64 orxFASTCALL orxBundle_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_
 
 orxSTATUS orxFASTCALL orxBundle_Init()
 {
-  orxRESOURCE_TYPE_INFO stInfo;
-  orxSTATUS             eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  // Inits variables
-  orxMemory_Zero(sacPrintBuffer, sizeof(sacPrintBuffer));
-  orxMemory_Zero(sapstResourceTableList, sizeof(sapstResourceTableList));
-  spstToCTable      = orxNULL;
-  spstDataTable     = orxNULL;
-  shResource        = orxHANDLE_UNDEFINED;
-  sbProcess         = orxFALSE;
-
-  // Inits our bundle resource type
-  orxMemory_Zero(&stInfo, sizeof(orxRESOURCE_TYPE_INFO));
-  stInfo.zTag       = orxBUNDLE_KZ_RESOURCE_TAG;
-  stInfo.pfnLocate  = &orxBundle_Locate;
-  stInfo.pfnGetTime = orxNULL;                // No hotload support
-  stInfo.pfnOpen    = &orxBundle_Open;
-  stInfo.pfnClose   = &orxBundle_Close;
-  stInfo.pfnGetSize = &orxBundle_GetSize;
-  stInfo.pfnSeek    = &orxBundle_Seek;
-  stInfo.pfnTell    = &orxBundle_Tell;
-  stInfo.pfnRead    = &orxBundle_Read;
-  stInfo.pfnWrite   = orxNULL;                // No write support
-  stInfo.pfnDelete  = orxNULL;                // No delete support
-
-  // Registers it
-  eResult = orxResource_RegisterType(&stInfo);
-
-  // Success?
-  if(eResult != orxSTATUS_FAILURE)
+  // Is not initialized?
+  if(sbInit == orxFALSE)
   {
-    orxU32 i;
+    orxRESOURCE_TYPE_INFO stInfo;
 
-    // Has data?
-    if(su32DataCount > 0)
+    // Inits variables
+    orxMemory_Zero(sacPrintBuffer, sizeof(sacPrintBuffer));
+    orxMemory_Zero(sapstResourceTableList, sizeof(sapstResourceTableList));
+    spstToCTable      = orxNULL;
+    spstDataTable     = orxNULL;
+    shResource        = orxHANDLE_UNDEFINED;
+    sbProcess         = orxFALSE;
+
+    // Inits our bundle resource type
+    orxMemory_Zero(&stInfo, sizeof(orxRESOURCE_TYPE_INFO));
+    stInfo.zTag       = orxBUNDLE_KZ_RESOURCE_TAG;
+    stInfo.pfnLocate  = &orxBundle_Locate;
+    stInfo.pfnGetTime = orxNULL;                // No hotload support
+    stInfo.pfnOpen    = &orxBundle_Open;
+    stInfo.pfnClose   = &orxBundle_Close;
+    stInfo.pfnGetSize = &orxBundle_GetSize;
+    stInfo.pfnSeek    = &orxBundle_Seek;
+    stInfo.pfnTell    = &orxBundle_Tell;
+    stInfo.pfnRead    = &orxBundle_Read;
+    stInfo.pfnWrite   = orxNULL;                // No write support
+    stInfo.pfnDelete  = orxNULL;                // No delete support
+
+    // Registers it
+    eResult = orxResource_RegisterType(&stInfo);
+
+    // Success?
+    if(eResult != orxSTATUS_FAILURE)
     {
-      // Creates data table
-      spstDataTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-      orxASSERT(spstDataTable != orxNULL);
+      orxU32 i;
 
-      // For all bundled data
-      for(i = 0; i < su32DataCount; i++)
+      // Has data?
+      if(su32DataCount > 0)
       {
-        orxSTATUS eResult;
+        // Creates data table
+        spstDataTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        orxASSERT(spstDataTable != orxNULL);
 
-        // Stores it
-        eResult = orxHashTable_Add(spstDataTable, sastDataList[i].stNameID, (void *)&sastDataList[i]);
+        // For all bundled data
+        for(i = 0; i < su32DataCount; i++)
+        {
+          orxSTATUS eResult;
 
-        // Checks
-        orxASSERT(eResult != orxSTATUS_FAILURE);
+          // Stores it
+          eResult = orxHashTable_Add(spstDataTable, sastDataList[i].stNameID, (void *)&sastDataList[i]);
+
+          // Checks
+          orxASSERT(eResult != orxSTATUS_FAILURE);
+        }
       }
+
+      // Creates ToC table
+      spstToCTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      orxASSERT(spstToCTable != orxNULL);
+
+      // Creates resource tables
+      for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sapstResourceTableList); i++)
+      {
+        sapstResourceTableList[i] = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        orxASSERT(sapstResourceTableList[i] != orxNULL);
+      }
+
+      // Registers commands
+      orxCOMMAND_REGISTER_CORE_COMMAND(Bundle, IsProcessing, "Processing?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
+      orxCOMMAND_REGISTER_CORE_COMMAND(Bundle, GetOutputName, "Name", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
+
+      // Registers event handler
+      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxBundle_EventHandler);
+      orxEvent_SetHandlerIDFlags(orxBundle_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_PARAM_READY) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_GAME_LOOP_START), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxBundle_EventHandler);
+      orxEvent_SetHandlerIDFlags(orxBundle_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_REMOVE), orxEVENT_KU32_MASK_ID_ALL);
+
+      // Updates status
+      sbInit = orxTRUE;
     }
-
-    // Creates ToC table
-    spstToCTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-    orxASSERT(spstToCTable != orxNULL);
-
-    // Creates resource tables
-    for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sapstResourceTableList); i++)
-    {
-      sapstResourceTableList[i] = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-      orxASSERT(sapstResourceTableList[i] != orxNULL);
-    }
-
-    // Registers commands
-    orxCOMMAND_REGISTER_CORE_COMMAND(Bundle, IsProcessing, "Processing?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
-    orxCOMMAND_REGISTER_CORE_COMMAND(Bundle, GetOutputName, "Name", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
-
-    // Registers event handler
-    orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxBundle_EventHandler);
-    orxEvent_SetHandlerIDFlags(orxBundle_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_PARAM_READY) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_GAME_LOOP_START), orxEVENT_KU32_MASK_ID_ALL);
-    orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxBundle_EventHandler);
-    orxEvent_SetHandlerIDFlags(orxBundle_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_REMOVE), orxEVENT_KU32_MASK_ID_ALL);
   }
 
   // Done!
@@ -1619,48 +1628,55 @@ orxSTATUS orxFASTCALL orxBundle_Init()
 
 void orxFASTCALL orxBundle_Exit()
 {
-  orxU32 i;
-
-  // Unregisters event handler
-  orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxBundle_EventHandler);
-  orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxBundle_EventHandler);
-
-  // Unregisters commands
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Bundle, IsProcessing);
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Bundle, GetOutputName);
-
-  // Has pending resource?
-  if(shResource != orxHANDLE_UNDEFINED)
+  // Is initialized?
+  if(sbInit != orxFALSE)
   {
-    // Closes it
-    orxResource_Close(shResource);
-    shResource = orxHANDLE_UNDEFINED;
-  }
+    orxU32 i;
 
-  // Has data table?
-  if(spstDataTable != orxNULL)
-  {
-    // Deletes it
-    orxHashTable_Delete(spstDataTable);
-    spstDataTable = orxNULL;
-  }
+    // Unregisters event handler
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxBundle_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxBundle_EventHandler);
 
-  // Clears ToC table
-  orxBundle_ClearToCTable();
+    // Unregisters commands
+    orxCOMMAND_UNREGISTER_CORE_COMMAND(Bundle, IsProcessing);
+    orxCOMMAND_UNREGISTER_CORE_COMMAND(Bundle, GetOutputName);
 
-  // Deletes ToC table
-  orxHashTable_Delete(spstToCTable);
-  spstToCTable = orxNULL;
+    // Has pending resource?
+    if(shResource != orxHANDLE_UNDEFINED)
+    {
+      // Closes it
+      orxResource_Close(shResource);
+      shResource = orxHANDLE_UNDEFINED;
+    }
 
-  // Clears resource tables
-  orxBundle_ClearResourceTables();
+    // Has data table?
+    if(spstDataTable != orxNULL)
+    {
+      // Deletes it
+      orxHashTable_Delete(spstDataTable);
+      spstDataTable = orxNULL;
+    }
 
-  // For all resource tables
-  for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sapstResourceTableList); i++)
-  {
-    // Deletes it
-    orxHashTable_Delete(sapstResourceTableList[i]);
-    sapstResourceTableList[i] = orxNULL;
+    // Clears ToC table
+    orxBundle_ClearToCTable();
+
+    // Deletes ToC table
+    orxHashTable_Delete(spstToCTable);
+    spstToCTable = orxNULL;
+
+    // Clears resource tables
+    orxBundle_ClearResourceTables();
+
+    // For all resource tables
+    for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sapstResourceTableList); i++)
+    {
+      // Deletes it
+      orxHashTable_Delete(sapstResourceTableList[i]);
+      sapstResourceTableList[i] = orxNULL;
+    }
+
+    // Updates status
+    sbInit = orxFALSE;
   }
 }
 
