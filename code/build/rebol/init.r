@@ -16,6 +16,7 @@ params: compose/deep [
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}                -         []
   remote      {orxRemote support (resources can be stored on a web server, HTTP-only)}        -         []
   scroll      {C++ convenience layer with config-object binding}                              +         [+c++]
+  sndh        {SNDH (Atari ST) decoding support}                                              -         [+c++]
 ]
 platforms:  [
   windows     [config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]

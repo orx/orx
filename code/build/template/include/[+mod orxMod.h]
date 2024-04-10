@@ -83,7 +83,7 @@ static orxSTATUS orxFASTCALL orxMod_Decode(const orxEVENT *_pstEvent)
   pstModData = (ModData *)_pstEvent->pContext;
 
   // Matching object?
-  if(pstModData->pstObject && pstModData->pstObject == orxOBJECT(_pstEvent->hSender))
+  if(pstModData->pstObject && (pstModData->pstObject == orxOBJECT(_pstEvent->hSender)))
   {
     orxSOUND_EVENT_PAYLOAD *pstPayload;
 

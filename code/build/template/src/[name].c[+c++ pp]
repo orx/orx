@@ -40,6 +40,11 @@
 #define orxMOD_IMPL
 #include "orxMod.h"
 #undef orxMOD_IMPL]
+[+sndh
+
+#define orxSNDH_IMPL
+#include "orxSndh.h"
+#undef orxSNDH_IMPL]
 
 #ifdef __orxMSVC__
 
@@ -112,6 +117,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Initialize MOD support
   orxMod_Init();
 ]
+[+sndh
+  // Initialize SNDH support
+  orxSndh_Init();
+]
 [+nuklear
   // Display additional Nuklear hint in console
   orxLOG("\n* This template has support for Nuklear.");
@@ -174,6 +183,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [+mod
   // Exit from MOD support
   orxMod_Exit();
+]
+[+sndh
+  // Exit from SNDH support
+  orxSndh_Exit();
 ]
 [+nuklear
   // Exit from Nuklear
