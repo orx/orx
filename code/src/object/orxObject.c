@@ -370,19 +370,18 @@ orxOBJECT_MAKE_RECURSIVE(SetOwnedClock, orxCLOCK *);
 
 /** Sets body from config for an object
  */
-static orxINLINE orxSTATUS orxObject_SetBodyFromConfig(orxOBJECT *_pstObject, const orxSTRING _zBodyName)
+static orxINLINE orxBODY *orxObject_SetBodyFromConfig(orxOBJECT *_pstObject, const orxSTRING _zBodyName)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-  orxBODY  *pstBody;
+  orxBODY *pstResult = orxNULL;
 
   /* Creates body */
-  pstBody = orxBody_CreateFromConfig(orxSTRUCTURE(_pstObject), _zBodyName);
+  pstResult = orxBody_CreateFromConfig(orxSTRUCTURE(_pstObject), _zBodyName);
 
   /* Valid? */
-  if(pstBody != orxNULL)
+  if(pstResult != orxNULL)
   {
     /* Links it */
-    if(orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstBody)) != orxSTATUS_FAILURE)
+    if(orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstResult)) != orxSTATUS_FAILURE)
     {
       orxU32 u32FrameFlags;
 
@@ -390,7 +389,7 @@ static orxINLINE orxSTATUS orxObject_SetBodyFromConfig(orxOBJECT *_pstObject, co
       orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_BODY, orxOBJECT_KU32_FLAG_NONE);
 
       /* Updates its owner */
-      orxStructure_SetOwner(pstBody, _pstObject);
+      orxStructure_SetOwner(pstResult, _pstObject);
 
       /* Gets frame's flags */
       u32FrameFlags = orxStructure_GetFlags(orxOBJECT_GET_STRUCTURE(_pstObject, FRAME), orxFRAME_KU32_FLAG_DEPTH_SCALE | orxFRAME_KU32_MASK_SCROLL_BOTH);
@@ -403,20 +402,17 @@ static orxINLINE orxSTATUS orxObject_SetBodyFromConfig(orxOBJECT *_pstObject, co
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> is using physics along with either DepthScale or AutoScroll properties. Either all properties or none should be used on this object otherwise this will result in incorrect object rendering.", orxObject_GetName(_pstObject));
       }
-
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
       /* Deletes it */
-      orxBody_Delete(pstBody);
-      pstBody = orxNULL;
+      orxBody_Delete(pstResult);
+      pstResult = orxNULL;
     }
   }
 
   /* Done! */
-  return eResult;
+  return pstResult;
 }
 
 /** Command: Create
@@ -1187,15 +1183,15 @@ void orxFASTCALL orxObject_CommandSetBody(orxU32 _u32ArgNumber, const orxCOMMAND
     /* Should set body? */
     if(_u32ArgNumber > 1)
     {
+      orxBODY *pstBody;
+
       /* Sets body from config */
-      if(orxObject_SetBodyFromConfig(pstObject, _astArgList[1].zValue) != orxSTATUS_FAILURE)
+      if((pstBody = orxObject_SetBodyFromConfig(pstObject, _astArgList[1].zValue)) != orxSTATUS_FAILURE)
       {
         orxVECTOR vTemp;
-        orxBODY  *pstBody;
         orxFRAME *pstFrame;
 
-        /* Gets body & frame */
-        pstBody   = orxOBJECT_GET_STRUCTURE(pstObject, BODY);
+        /* Gets frame */
         pstFrame  = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
 
         /* Updates body's position, rotation & scale */
@@ -6120,17 +6116,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Gets body name */
         zBodyName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_BODY);
 
-        /* Valid? */
-        if((zBodyName != orxNULL) && (*zBodyName != orxCHAR_NULL))
-        {
-          /* Sets body from config */
-          orxObject_SetBodyFromConfig(pstResult, zBodyName);
-        }
-        else
-        {
-          /* Clears body */
-          pstBody = orxNULL;
-        }
+        /* Sets it */
+        pstBody = ((zBodyName != orxNULL) && (*zBodyName != orxCHAR_NULL)) ? orxObject_SetBodyFromConfig(pstResult, zBodyName) : orxNULL;
 
         /* *** Clock *** */
 
@@ -6738,7 +6725,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_AGE))
         {
           orxOBJECT **ppstObject;
-          orxBODY    *pstBody;
 
           /* Adds it to the bank */
           ppstObject = (orxOBJECT **)orxBank_Allocate(sstObject.pstAgeBank);
@@ -6746,7 +6732,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           *ppstObject = pstResult;
 
           /* Has a body? */
-          if((pstBody = orxOBJECT_GET_STRUCTURE(pstResult, BODY)) != orxNULL)
+          if(pstBody != orxNULL)
           {
             orxBODY_PART *pstPart;
 
