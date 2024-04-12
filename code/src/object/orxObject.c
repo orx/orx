@@ -1118,6 +1118,132 @@ void orxFASTCALL orxObject_CommandApplyImpulse(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+/** Command: AddBody
+ */
+void orxFASTCALL orxObject_CommandAddBody(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Add body */
+    orxBody_CreateFromConfig(orxSTRUCTURE(pstObject), _astArgList[1].zValue);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveBody
+ */
+void orxFASTCALL orxObject_CommandRemoveBody(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Remove body */
+    orxObject_UnlinkStructure(pstObject, orxSTRUCTURE_ID_BODY);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: AddBodyPart
+ */
+void orxFASTCALL orxObject_CommandAddBodyPart(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Get object body */
+    orxBODY *pstBody = orxOBJECT_GET_STRUCTURE(pstObject, BODY);
+
+    /* Valid? */
+    if(pstBody != orxNULL)
+    {
+      /* Add body part */
+      orxBody_AddPartFromConfig(pstBody, _astArgList[1].zValue);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveBodyPart
+ */
+void orxFASTCALL orxObject_CommandRemoveBodyPart(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Get object body */
+    orxBODY *pstBody = orxOBJECT_GET_STRUCTURE(pstObject, BODY);
+
+    /* Valid? */
+    if(pstBody != orxNULL)
+    {
+      /* Remove body part */
+      orxBody_RemovePartFromConfig(pstBody, _astArgList[1].zValue);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: SetText
  */
 void orxFASTCALL orxObject_CommandSetText(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -3722,6 +3848,15 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, ApplyForce, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Force", orxCOMMAND_VAR_TYPE_VECTOR}, {"MassCenter = <empty>", orxCOMMAND_VAR_TYPE_VECTOR});
   /* Command: ApplyImpulse */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, ApplyImpulse, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Impulse", orxCOMMAND_VAR_TYPE_VECTOR}, {"MassCenter = <empty>", orxCOMMAND_VAR_TYPE_VECTOR});
+
+  /* Command: AddBody */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddBody, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Body", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: RemoveBody */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveBody, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: AddBodyPart */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddBodyPart, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"BodyPart", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: RemoveBodyPart */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveBodyPart, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"BodyPart", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: SetText */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetText, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Text", orxCOMMAND_VAR_TYPE_STRING});
