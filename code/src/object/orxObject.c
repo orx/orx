@@ -1186,7 +1186,7 @@ void orxFASTCALL orxObject_CommandSetBody(orxU32 _u32ArgNumber, const orxCOMMAND
       orxBODY *pstBody;
 
       /* Sets body from config */
-      if((pstBody = orxObject_SetBodyFromConfig(pstObject, _astArgList[1].zValue)) != orxSTATUS_FAILURE)
+      if((pstBody = orxObject_SetBodyFromConfig(pstObject, _astArgList[1].zValue)) != orxNULL)
       {
         orxVECTOR vTemp;
         orxFRAME *pstFrame;
