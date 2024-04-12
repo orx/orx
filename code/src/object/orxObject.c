@@ -368,6 +368,57 @@ static orxINLINE orxSTATUS orxObject_SetOwnedClock(orxOBJECT *_pstObject, orxCLO
  */
 orxOBJECT_MAKE_RECURSIVE(SetOwnedClock, orxCLOCK *);
 
+/** Sets body from config for an object
+ */
+static orxINLINE orxSTATUS orxObject_SetBodyFromConfig(orxOBJECT *_pstObject, const orxSTRING _zBodyName)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxBODY  *pstBody;
+
+  /* Creates body */
+  pstBody = orxBody_CreateFromConfig(orxSTRUCTURE(_pstObject), _zBodyName);
+
+  /* Valid? */
+  if(pstBody != orxNULL)
+  {
+    /* Links it */
+    if(orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstBody)) != orxSTATUS_FAILURE)
+    {
+      orxU32 u32FrameFlags;
+
+      /* Updates status */
+      orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_BODY, orxOBJECT_KU32_FLAG_NONE);
+
+      /* Updates its owner */
+      orxStructure_SetOwner(pstBody, _pstObject);
+
+      /* Gets frame's flags */
+      u32FrameFlags = orxStructure_GetFlags(orxOBJECT_GET_STRUCTURE(_pstObject, FRAME), orxFRAME_KU32_FLAG_DEPTH_SCALE | orxFRAME_KU32_MASK_SCROLL_BOTH);
+
+      /* Using depth scale xor auto scroll? */
+      if((u32FrameFlags != orxFRAME_KU32_FLAG_NONE)
+      && ((u32FrameFlags == orxFRAME_KU32_FLAG_DEPTH_SCALE)
+       || (orxFLAG_GET(u32FrameFlags, orxFRAME_KU32_MASK_SCROLL_BOTH) == u32FrameFlags)))
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> is using physics along with either DepthScale or AutoScroll properties. Either all properties or none should be used on this object otherwise this will result in incorrect object rendering.", orxObject_GetName(_pstObject));
+      }
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Deletes it */
+      orxBody_Delete(pstBody);
+      pstBody = orxNULL;
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Command: Create
  */
 void orxFASTCALL orxObject_CommandCreate(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1118,9 +1169,9 @@ void orxFASTCALL orxObject_CommandApplyImpulse(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
-/** Command: AddBody
+/** Command: SetBody
  */
-void orxFASTCALL orxObject_CommandAddBody(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+void orxFASTCALL orxObject_CommandSetBody(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxOBJECT *pstObject;
 
@@ -1130,36 +1181,29 @@ void orxFASTCALL orxObject_CommandAddBody(orxU32 _u32ArgNumber, const orxCOMMAND
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Add body */
-    orxBody_CreateFromConfig(orxSTRUCTURE(pstObject), _astArgList[1].zValue);
-
-    /* Updates result */
-    _pstResult->u64Value = _astArgList[0].u64Value;
-  }
-  else
-  {
-    /* Updates result */
-    _pstResult->u64Value = orxU64_UNDEFINED;
-  }
-
-  /* Done! */
-  return;
-}
-
-/** Command: RemoveBody
- */
-void orxFASTCALL orxObject_CommandRemoveBody(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
-{
-  orxOBJECT *pstObject;
-
-  /* Gets object */
-  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
-
-  /* Valid? */
-  if(pstObject != orxNULL)
-  {
-    /* Remove body */
+    /* Unlinks current body */
     orxObject_UnlinkStructure(pstObject, orxSTRUCTURE_ID_BODY);
+
+    /* Should set body? */
+    if(_u32ArgNumber > 1)
+    {
+      /* Sets body from config */
+      if(orxObject_SetBodyFromConfig(pstObject, _astArgList[1].zValue) != orxSTATUS_FAILURE)
+      {
+        orxVECTOR vTemp;
+        orxBODY  *pstBody;
+        orxFRAME *pstFrame;
+
+        /* Gets body & frame */
+        pstBody   = orxOBJECT_GET_STRUCTURE(pstObject, BODY);
+        pstFrame  = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
+
+        /* Updates body's position, rotation & scale */
+        orxBody_SetPosition(pstBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vTemp));
+        orxBody_SetRotation(pstBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
+        orxBody_SetScale(pstBody, orxFrame_GetScale(pstFrame, orxFRAME_SPACE_GLOBAL, &vTemp));
+      }
+    }
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -1186,13 +1230,13 @@ void orxFASTCALL orxObject_CommandAddBodyPart(orxU32 _u32ArgNumber, const orxCOM
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Get object body */
+    /* Gets object body */
     orxBODY *pstBody = orxOBJECT_GET_STRUCTURE(pstObject, BODY);
 
     /* Valid? */
     if(pstBody != orxNULL)
     {
-      /* Add body part */
+      /* Adds body part */
       orxBody_AddPartFromConfig(pstBody, _astArgList[1].zValue);
     }
 
@@ -1221,13 +1265,13 @@ void orxFASTCALL orxObject_CommandRemoveBodyPart(orxU32 _u32ArgNumber, const orx
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Get object body */
+    /* Gets object body */
     orxBODY *pstBody = orxOBJECT_GET_STRUCTURE(pstObject, BODY);
 
     /* Valid? */
     if(pstBody != orxNULL)
     {
-      /* Remove body part */
+      /* Removes body part */
       orxBody_RemovePartFromConfig(pstBody, _astArgList[1].zValue);
     }
 
@@ -3849,10 +3893,8 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: ApplyImpulse */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, ApplyImpulse, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Impulse", orxCOMMAND_VAR_TYPE_VECTOR}, {"MassCenter = <empty>", orxCOMMAND_VAR_TYPE_VECTOR});
 
-  /* Command: AddBody */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddBody, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Body", orxCOMMAND_VAR_TYPE_STRING});
-  /* Command: RemoveBody */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveBody, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetBody */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetBody, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Body = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: AddBodyPart */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddBodyPart, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"BodyPart", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: RemoveBodyPart */
@@ -4092,6 +4134,13 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, ApplyForce);
   /* Command: ApplyImpulse */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, ApplyImpulse);
+
+  /* Command: SetBody */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetBody);
+  /* Command: AddBodyPart */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddBodyPart);
+  /* Command: RemoveBodyPart */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveBodyPart);
 
   /* Command: SetText */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetText);
@@ -4863,9 +4912,6 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
         }
       }
     }
-
-    /* !!! TODO !!! */
-    /* Updates culling info before calling update sub-functions */
 
     /* Wasn't object deleted? */
     if(bDeleted == orxFALSE)
@@ -6077,36 +6123,8 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Valid? */
         if((zBodyName != orxNULL) && (*zBodyName != orxCHAR_NULL))
         {
-          /* Creates body */
-          pstBody = orxBody_CreateFromConfig(orxSTRUCTURE(pstResult), zBodyName);
-
-          /* Valid? */
-          if(pstBody != orxNULL)
-          {
-            /* Links it */
-            if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstBody)) != orxSTATUS_FAILURE)
-            {
-              /* Updates status */
-              orxStructure_SetFlags(pstResult, 1 << orxSTRUCTURE_ID_BODY, orxOBJECT_KU32_FLAG_NONE);
-
-              /* Updates its owner */
-              orxStructure_SetOwner(pstBody, pstResult);
-
-              /* Using depth scale xor auto scroll? */
-              if(orxFLAG_TEST(u32FrameFlags, orxFRAME_KU32_FLAG_DEPTH_SCALE | orxFRAME_KU32_MASK_SCROLL_BOTH)
-              && !orxFLAG_TEST_ALL(u32FrameFlags, orxFRAME_KU32_FLAG_DEPTH_SCALE | orxFRAME_KU32_MASK_SCROLL_BOTH))
-              {
-                /* Logs message */
-                orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> is using physics along with either DepthScale or AutoScroll properties. Either all properties or none should be used on this object otherwise this will result in incorrect object rendering.", _zConfigID);
-              }
-            }
-            else
-            {
-              /* Deletes it */
-              orxBody_Delete(pstBody);
-              pstBody = orxNULL;
-            }
-          }
+          /* Sets body from config */
+          orxObject_SetBodyFromConfig(pstResult, zBodyName);
         }
         else
         {
