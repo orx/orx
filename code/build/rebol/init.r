@@ -11,7 +11,7 @@ params: compose/deep [
   bundle      {orxBundle support (resources can be automatically packaged and encrypted)}     +         []
   c++         {Create a C++ project instead of C}                                             +         []
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                         -         [+c++]
-  mod         {MOD (Proracker), XM (FastTracker 2) & S3M (Scream Tracker 3) decoding support} -         []
+  mod         {MOD (Protracker), XM (FastTracker 2) & S3M (Scream Tracker 3) decoding support} -         []
   movie       {Movie (MPEG-1) decoding support}                                               -         []
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}                -         []
   remote      {orxRemote support (resources can be stored on a web server, HTTP-only)}        -         []
