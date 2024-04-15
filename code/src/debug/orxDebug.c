@@ -52,6 +52,7 @@
 
 #ifdef __orxMSVC__
 
+  #pragma warning(push)
   #pragma warning(disable : 4996)
 
 #endif /* __orxMSVC__ */
@@ -967,6 +968,6 @@ void orxFASTCALL _orxDebug_SetLogCallback(const orxDEBUG_CALLBACK_FUNCTION _pfnL
 
 #ifdef __orxMSVC__
 
-  #pragma warning(default : 4996)
+  #pragma warning(pop)
 
 #endif /* __orxMSVC__ */

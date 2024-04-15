@@ -44,6 +44,7 @@
 
 #ifdef __orxMSVC__
 
+  #pragma warning(push)
   #pragma warning(disable : 4311 4312)
 
 #endif /* __orxMSVC__ */
@@ -3916,7 +3917,7 @@ const orxSTRING orxFASTCALL orxAnimSet_GetName(const orxANIMSET *_pstAnimSet)
 
 #ifdef __orxMSVC__
 
-  #pragma warning(default : 4311 4312)
+  #pragma warning(pop)
 
 #endif /* __orxMSVC__ */
 

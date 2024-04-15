@@ -50,6 +50,7 @@
 
     #include <direct.h>
 
+    #pragma warning(push)
     #pragma warning(disable : 4311 4312 4996)
 
   #endif /* __orxMSVC__ */
@@ -1314,6 +1315,6 @@ orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
 
 #ifdef __orxMSVC__
 
-  #pragma warning(default : 4311 4312 4996)
+  #pragma warning(pop)
 
 #endif /* __orxMSVC__ */

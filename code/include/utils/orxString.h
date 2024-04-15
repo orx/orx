@@ -63,6 +63,7 @@
 
 #ifdef __orxMSVC__
 
+  #pragma warning(push)
   #pragma warning(disable : 4996)
 
   #define strtoll   _strtoi64
@@ -1598,7 +1599,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_Store(const 
 
 #ifdef __orxMSVC__
 
-  #pragma warning(default : 4996)
+  #pragma warning(pop)
 
   #undef strtoll
   #undef strtoull

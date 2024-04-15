@@ -36,6 +36,7 @@
 #include "orxUtils.h"
 
 #ifdef __orxMSVC__
+  #pragma warning(push)
   #pragma warning(disable : 4276)
 #endif /* __orxMSVC__ */
 
@@ -548,5 +549,5 @@ const orxSTRING orxFASTCALL orxModule_GetName(orxMODULE_ID _eModuleID)
 }
 
 #ifdef __orxMSVC__
-  #pragma warning(default : 4276)
+  #pragma warning(pop)
 #endif /* __orxMSVC__ */

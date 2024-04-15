@@ -141,6 +141,7 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
 
 /* *** Definition macro *** */
 #ifdef __orxMSVC__
+  #pragma warning(push)
   #pragma warning(disable : 4113)
 #endif /* __orxMSVC__ */
 
@@ -198,7 +199,7 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
   #endif /* __orxEMBEDDED__ */
 
 #ifdef __orxMSVC__
-  #pragma warning(default : 4113)
+  #pragma warning(pop)
 #endif /* __orxMSVC__ */
 
 #endif /* _orxPLUGIN_CORE_H_ */

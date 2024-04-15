@@ -18,9 +18,7 @@ void orxFASTCALL      orxMovie_Exit();
 
 #ifdef __orxMSVC__
 #pragma warning(push)
-#pragma warning(disable:4996)
-#pragma warning(disable:4267)
-#pragma warning(disable:4244)
+#pragma warning(disable : 4996 4267 4244)
 #endif // __orxMSVC__
 
 #define FILE                              void

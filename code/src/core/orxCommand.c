@@ -47,6 +47,7 @@
 #ifdef __orxMSVC__
 
   #include <malloc.h>
+  #pragma warning(push)
   #pragma warning(disable : 4200)
 
 #endif /* __orxMSVC__ */
@@ -4590,6 +4591,6 @@ orxU32 orxFASTCALL orxCommand_PrintVar(orxSTRING _zDstString, orxU32 _u32Size, c
 
 #ifdef __orxMSVC__
 
-  #pragma warning(default : 4200)
+  #pragma warning(pop)
 
 #endif /* __orxMSVC__ */

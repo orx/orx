@@ -39,6 +39,7 @@
 
 
 #ifdef __orxMSVC__
+  #pragma warning(push)
   #pragma warning(disable : 4244)
 #endif /* __orxMSVC__ */
 
@@ -1430,5 +1431,5 @@ orxU32 orxFASTCALL orxProfiler_GetUniqueMarkerDepth(orxS32 _s32MarkerID)
 }
 
 #ifdef __orxMSVC__
-  #pragma warning(default : 4244)
+  #pragma warning(pop)
 #endif /* __orxMSVC__ */

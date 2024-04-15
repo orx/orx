@@ -53,6 +53,7 @@ typedef struct __orxHASHTABLE_CELL_t
 
 /** Hash Table */
 #ifdef __orxMSVC__
+  #pragma warning(push)
   #pragma warning(disable : 4200)
 #endif /* __orxMSVC__ */
 
@@ -65,7 +66,7 @@ struct __orxHASHTABLE_t
 };
 
 #ifdef __orxMSVC__
-  #pragma warning(default : 4200)
+  #pragma warning(pop)
 #endif /* __orxMSVC__ */
 
 

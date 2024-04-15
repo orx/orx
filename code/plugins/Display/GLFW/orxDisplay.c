@@ -54,7 +54,14 @@
 #else /* __orxDISPLAY_OPENGL_ES__ */
   #define GLFW_INCLUDE_GLEXT
 #endif /* __orxDISPLAY_OPENGL_ES__ */
-  #include "GLFW/glfw3.h"
+#ifdef __orxMSVC__
+  #pragma warning(push)
+  #pragma warning(disable : 4819)
+#endif /* __orxMSVC__ */
+#include "GLFW/glfw3.h"
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif /* __orxMSVC__ */
 #undef GLFW_INCLUDE_ES3
 #undef GLFW_INCLUDE_GLEXT
 
@@ -70,6 +77,7 @@
 #endif /* __orxGCC__ */
 
 #ifdef __orxMSVC__
+  #pragma warning(push)
   #pragma warning(disable : 4312)
 #endif /* __orxMSVC__ */
 #define STBI_NO_STDIO
@@ -94,7 +102,7 @@
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
 #ifdef __orxMSVC__
-  #pragma warning(default : 4312)
+  #pragma warning(pop)
 #endif /* __orxMSVC__ */
 
 #define STBI_WRITE_NO_STDIO

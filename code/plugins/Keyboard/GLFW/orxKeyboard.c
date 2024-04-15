@@ -34,7 +34,14 @@
 
 #include "orxPluginAPI.h"
 
+#ifdef __orxMSVC__
+  #pragma warning(push)
+  #pragma warning(disable : 4819)
+#endif /* __orxMSVC__ */
 #include "GLFW/glfw3.h"
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif /* __orxMSVC__ */
 
 #ifndef __orxEMBEDDED__
   #ifdef __orxMSVC__

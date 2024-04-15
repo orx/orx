@@ -47,6 +47,7 @@
 
 #ifdef __orxMSVC__
 
+  #pragma warning(push)
   #pragma warning(disable : 4200)
 
   #include <malloc.h>
@@ -1185,6 +1186,6 @@ orxFLOAT orxFASTCALL orxTimeLine_GetTrackDuration(const orxSTRING _zTrackID)
 
 #ifdef __orxMSVC__
 
-  #pragma warning(default : 4200)
+  #pragma warning(pop)
 
 #endif /* __orxMSVC__ */
