@@ -271,12 +271,14 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
       else
       {
         const orxSTRING zValue;
+        const orxSTRING zRemainder;
 
         /* Gets its literal value */
         zValue = orxConfig_GetString(zParamName);
 
         /* Is a float? */
-        if(orxString_ToFloat(zValue, (orxFLOAT *)astValueBuffer, orxNULL) != orxSTATUS_FAILURE)
+        if((orxString_ToFloat(zValue, (orxFLOAT *)astValueBuffer, &zRemainder) != orxSTATUS_FAILURE)
+        && (*orxString_SkipWhiteSpaces(zRemainder) == orxCHAR_NULL))
         {
           /* Is a list? */
           if(bIsList != orxFALSE)
