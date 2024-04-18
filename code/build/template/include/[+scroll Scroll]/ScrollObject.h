@@ -61,7 +61,7 @@ public:
                 orxU64                  GetGUID() const                                           {return orxStructure_GetGUID(mpstObject);}
 
                 orxSTRINGID             GetGroupID() const;
-                void                    SetGroupID(orxU32 _u32GroupID, orxBOOL _bRecursive = orxTRUE);
+                void                    SetGroupID(orxSTRINGID _stGroupID, orxBOOL _bRecursive = orxTRUE);
 
                 orxBOOL                 IsEnabled() const;
                 void                    Enable(orxBOOL _bEnable, orxBOOL _bRecursive = orxTRUE);

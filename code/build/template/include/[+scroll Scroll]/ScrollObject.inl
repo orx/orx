@@ -41,18 +41,18 @@ orxSTRINGID ScrollObject::GetGroupID() const
   return orxObject_GetGroupID(mpstObject);
 }
 
-void ScrollObject::SetGroupID(orxU32 _u32GroupID, orxBOOL _bRecursive)
+void ScrollObject::SetGroupID(orxSTRINGID _stGroupID, orxBOOL _bRecursive)
 {
   // Recursive?
   if(_bRecursive)
   {
     // Updates object's group ID
-    orxObject_SetGroupIDRecursive(mpstObject, _u32GroupID);
+    orxObject_SetGroupIDRecursive(mpstObject, _stGroupID);
   }
   else
   {
     // Updates object's group ID
-    orxObject_SetGroupID(mpstObject, _u32GroupID);
+    orxObject_SetGroupID(mpstObject, _stGroupID);
   }
 }
 
