@@ -81,7 +81,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := orx
 LOCAL_SRC_FILES := $(ORX_SRC_FILES)
 LOCAL_C_INCLUDES := $(ORX_INCLUDES)
-LOCAL_CFLAGS := -DNO_MALLINFO=1 -DTARGET_OS_ANDROID
+LOCAL_CFLAGS := -DNO_MALLINFO=1 -DTARGET_OS_ANDROID -Wno-atomic-alignment
 LOCAL_STATIC_LIBRARIES := webpdecoder_static liquidfun_static cpufeatures game-activity_static paddleboat_static swappy_static
 
 LOCAL_ARM_MODE := arm
