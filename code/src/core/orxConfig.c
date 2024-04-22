@@ -4779,6 +4779,23 @@ void orxFASTCALL orxConfig_EnableTypoCheck(orxBOOL _bEnable)
   return;
 }
 
+/** Is typo check enabled?
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_IsTypoCheckEnabled()
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Updates result */
+  bResult = orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK);
+
+  /* Done! */
+  return bResult;
+}
+
 /** Sets encryption key
  * @param[in] _zEncryption key  Encryption key to use, orxNULL to clear
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

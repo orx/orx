@@ -95,6 +95,11 @@ extern orxDLLAPI void orxFASTCALL             orxConfig_Exit();
  */
 extern orxDLLAPI void orxFASTCALL             orxConfig_EnableTypoCheck(orxBOOL _bEnable);
 
+/** Is typo check enabled?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsTypoCheckEnabled();
+
 
 /** Sets encryption key
  * @param[in] _zEncryptionKey  Encryption key to use, orxNULL to clear
