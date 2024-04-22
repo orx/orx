@@ -1531,7 +1531,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
   zAnimSet = orxConfig_GetCurrentSection();
 
   /* Gets associated list size */
-  s32ValueCount = orxConfig_GetListCount(_zConfigID);
+  s32ValueCount = (orxConfig_HasValueNoCheck(_zConfigID) != orxFALSE) ? orxConfig_GetListCount(_zConfigID) : 0;
 
   /* Depending on number of values */
   switch(s32ValueCount)
