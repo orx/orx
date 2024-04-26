@@ -98,8 +98,7 @@ typedef struct __orxDISPLAY_TRANSFORM_t
 {
   orxFLOAT  fSrcX, fSrcY, fDstX, fDstY;
   orxFLOAT  fRepeatX, fRepeatY;
-  orxFLOAT  fScaleX;
-  orxFLOAT  fScaleY;
+  orxFLOAT  fScaleX, fScaleY;
   orxFLOAT  fRotation;
 
 } orxDISPLAY_TRANSFORM;
