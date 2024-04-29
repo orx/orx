@@ -223,6 +223,7 @@ void orxFASTCALL orxBank_Setup()
   orxModule_AddDependency(orxMODULE_ID_BANK, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_BANK, orxMODULE_ID_PROFILER);
 
+  /* Done! */
   return;
 }
 
