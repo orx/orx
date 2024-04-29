@@ -50,14 +50,20 @@ typedef struct ModData
 
 } ModData;
 
-static orxBANK *spstModBank = orxNULL;
+typedef struct __orxMOD_t
+{
+  orxBANK *pstModBank;
+
+} orxMOD;
+
+static orxMOD sstMod;
 
 
 //! Code
 
 static orxSTATUS orxFASTCALL orxMod_Delete(ModData *_pstModData)
 {
-  if(spstModBank)
+  if(sstMod.pstModBank)
   {
     // Wait for locked decoder
     while(_pstModData->bLock)
@@ -68,7 +74,7 @@ static orxSTATUS orxFASTCALL orxMod_Delete(ModData *_pstModData)
     orxMemory_Free(_pstModData->piSampleBuffer);
     dispose_replay(_pstModData->pstReplay);
     dispose_module(_pstModData->pstModule);
-    orxBank_Free(spstModBank, _pstModData);
+    orxBank_Free(sstMod.pstModBank, _pstModData);
   }
 
   // Done!
@@ -198,7 +204,7 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
           pstObject = orxOBJECT(_pstEvent->hSender);
 
           // Creates decoder data
-          pstModData = (ModData *)orxBank_Allocate(spstModBank);
+          pstModData = (ModData *)orxBank_Allocate(sstMod.pstModBank);
           orxASSERT(pstModData);
           orxMemory_Zero(pstModData, sizeof(ModData));
 
@@ -236,7 +242,7 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
             }
 
             // Frees mod data
-            orxBank_Free(spstModBank, pstModData);
+            orxBank_Free(sstMod.pstModBank, pstModData);
           }
         }
 
@@ -277,13 +283,13 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
 orxSTATUS orxFASTCALL orxMod_Init()
 {
   // Not initialized?
-  if(!spstModBank)
+  if(!sstMod.pstModBank)
   {
     // Creates bank
-    spstModBank = orxBank_Create(16, sizeof(ModData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+    sstMod.pstModBank = orxBank_Create(16, sizeof(ModData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
 
     // Success?
-    if(spstModBank)
+    if(sstMod.pstModBank)
     {
       // Registers mod handler
       orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxMod_EventHandler);
@@ -298,7 +304,7 @@ orxSTATUS orxFASTCALL orxMod_Init()
 void orxFASTCALL orxMod_Exit()
 {
   // Was initialized?
-  if(spstModBank)
+  if(sstMod.pstModBank)
   {
     ModData *pstModData;
 
@@ -306,12 +312,12 @@ void orxFASTCALL orxMod_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxMod_EventHandler);
 
     // Deletes bank
-    while((pstModData = (ModData *)orxBank_GetNext(spstModBank, orxNULL)))
+    while((pstModData = (ModData *)orxBank_GetNext(sstMod.pstModBank, orxNULL)))
     {
       orxMod_Delete(pstModData);
     }
-    orxBank_Delete(spstModBank);
-    spstModBank = orxNULL;
+    orxBank_Delete(sstMod.pstModBank);
+    sstMod.pstModBank = orxNULL;
   }
 
   // Done!

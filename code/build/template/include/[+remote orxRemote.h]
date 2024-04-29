@@ -69,8 +69,8 @@ typedef enum __orxREMOTE_QUERY_TYPE_t
 
 typedef struct __orxREMOTE_t
 {
-  orxHASHTABLE        *pstTable;
-  orxTHREAD_SEMAPHORE *pstSemaphore;
+  orxHASHTABLE         *pstTable;
+  orxTHREAD_SEMAPHORE  *pstSemaphore;
 
 } orxREMOTE;
 

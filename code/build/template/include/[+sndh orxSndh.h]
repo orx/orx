@@ -53,33 +53,39 @@ void orxFASTCALL      orxSndh_Exit();
 
 typedef struct SndhData
 {
-  SndhFile          oSndhFile;
-  orxOBJECT        *pstObject;
-  orxU32            u32LoopCount;
-  orxBOOL           bFirst;
+  SndhFile              oSndhFile;
+  orxOBJECT            *pstObject;
+  orxU32                u32LoopCount;
+  orxBOOL               bFirst;
 
 } SndhData;
 
-static orxBANK *spstSndhBank = orxNULL;
-static orxTHREAD_SEMAPHORE *spstSemaphore = orxNULL;
+typedef struct __orxSNDH_t
+{
+  orxBANK              *pstSndhBank;
+  orxTHREAD_SEMAPHORE  *pstSemaphore;
+
+} orxSNDH;
+
+static orxSNDH sstSndh;
 
 
 //! Code
 
 static orxSTATUS orxFASTCALL orxSndh_Delete(SndhData *_pstSndhData)
 {
-  if(spstSndhBank)
+  if(sstSndh.pstSndhBank)
   {
     // Waits for semaphore
-    orxThread_WaitSemaphore(spstSemaphore);
+    orxThread_WaitSemaphore(sstSndh.pstSemaphore);
 
     // Deletes it
     _pstSndhData->pstObject = orxNULL;
     _pstSndhData->oSndhFile.~SndhFile();
-    orxBank_Free(spstSndhBank, _pstSndhData);
+    orxBank_Free(sstSndh.pstSndhBank, _pstSndhData);
 
     // Signals semaphore
-    orxThread_SignalSemaphore(spstSemaphore);
+    orxThread_SignalSemaphore(sstSndh.pstSemaphore);
   }
 
   // Done!
@@ -108,7 +114,7 @@ static orxSTATUS orxFASTCALL orxSndh_Decode(const orxEVENT *_pstEvent)
       orxS32 i;
 
       // Waits for semaphore
-      orxThread_WaitSemaphore(spstSemaphore);
+      orxThread_WaitSemaphore(sstSndh.pstSemaphore);
 
       // Not first packet?
       if(!pstSndhData->bFirst)
@@ -150,7 +156,7 @@ static orxSTATUS orxFASTCALL orxSndh_Decode(const orxEVENT *_pstEvent)
       }
 
       // Signals semaphore
-      orxThread_SignalSemaphore(spstSemaphore);
+      orxThread_SignalSemaphore(sstSndh.pstSemaphore);
     }
     else
     {
@@ -200,10 +206,10 @@ static orxSTATUS orxFASTCALL orxSndh_EventHandler(const orxEVENT *_pstEvent)
           pstObject = orxOBJECT(_pstEvent->hSender);
 
           // Waits for semaphore
-          orxThread_WaitSemaphore(spstSemaphore);
+          orxThread_WaitSemaphore(sstSndh.pstSemaphore);
 
           // Creates decoder data
-          pstSndhData = (SndhData *)orxBank_Allocate(spstSndhBank);
+          pstSndhData = (SndhData *)orxBank_Allocate(sstSndh.pstSndhBank);
           orxASSERT(pstSndhData);
           orxMemory_Zero(pstSndhData, sizeof(SndhData));
           new(&(pstSndhData->oSndhFile)) SndhFile();
@@ -244,11 +250,11 @@ static orxSTATUS orxFASTCALL orxSndh_EventHandler(const orxEVENT *_pstEvent)
           {
             // Frees sndh data
             pstSndhData->oSndhFile.~SndhFile();
-            orxBank_Free(spstSndhBank, pstSndhData);
+            orxBank_Free(sstSndh.pstSndhBank, pstSndhData);
           }
           
           // Signals semaphore
-          orxThread_SignalSemaphore(spstSemaphore);
+          orxThread_SignalSemaphore(sstSndh.pstSemaphore);
         }
 
         // Frees buffer
@@ -288,19 +294,19 @@ static orxSTATUS orxFASTCALL orxSndh_EventHandler(const orxEVENT *_pstEvent)
 orxSTATUS orxFASTCALL orxSndh_Init()
 {
   // Not initialized?
-  if(!spstSndhBank)
+  if(!sstSndh.pstSndhBank)
   {
     // Creates semaphore
-    spstSemaphore = orxThread_CreateSemaphore(1);
+    sstSndh.pstSemaphore = orxThread_CreateSemaphore(1);
 
     // Success?
-    if(spstSemaphore)
+    if(sstSndh.pstSemaphore)
     {
       // Creates bank
-      spstSndhBank = orxBank_Create(16, sizeof(SndhData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+      sstSndh.pstSndhBank = orxBank_Create(16, sizeof(SndhData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
 
       // Success?
-      if(spstSndhBank)
+      if(sstSndh.pstSndhBank)
       {
         // Registers sndh handler
         orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxSndh_EventHandler);
@@ -309,7 +315,8 @@ orxSTATUS orxFASTCALL orxSndh_Init()
       else
       {
         // Deletes semaphore
-        orxThread_DeleteSemaphore(spstSemaphore);
+        orxThread_DeleteSemaphore(sstSndh.pstSemaphore);
+        sstSndh.pstSemaphore = orxNULL;
       }
     }
   }
@@ -321,7 +328,7 @@ orxSTATUS orxFASTCALL orxSndh_Init()
 void orxFASTCALL orxSndh_Exit()
 {
   // Was initialized?
-  if(spstSndhBank)
+  if(sstSndh.pstSndhBank)
   {
     SndhData *pstSndhData;
 
@@ -329,16 +336,16 @@ void orxFASTCALL orxSndh_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxSndh_EventHandler);
 
     // Deletes bank
-    while((pstSndhData = (SndhData *)orxBank_GetNext(spstSndhBank, orxNULL)))
+    while((pstSndhData = (SndhData *)orxBank_GetNext(sstSndh.pstSndhBank, orxNULL)))
     {
       orxSndh_Delete(pstSndhData);
     }
-    orxBank_Delete(spstSndhBank);
-    spstSndhBank = orxNULL;
+    orxBank_Delete(sstSndh.pstSndhBank);
+    sstSndh.pstSndhBank = orxNULL;
 
     // Deletes semaphore
-    orxThread_DeleteSemaphore(spstSemaphore);
-    spstSemaphore = orxNULL;
+    orxThread_DeleteSemaphore(sstSndh.pstSemaphore);
+    sstSndh.pstSemaphore = orxNULL;
   }
 
   // Done!
