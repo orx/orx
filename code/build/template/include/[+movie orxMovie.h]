@@ -82,7 +82,7 @@ static orxMOVIE sstMovie;
 
 //! Code
 
-void orxFASTCALL orxObject_CommandGetMovieDuration(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+static void orxFASTCALL orxObject_CommandGetMovieDuration(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxOBJECT *pstObject;
 

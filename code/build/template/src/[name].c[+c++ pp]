@@ -25,6 +25,11 @@
 #define orxBUNDLE_IMPL
 #include "orxBundle.h"
 #undef orxBUNDLE_IMPL]
+[+cheat
+
+#define orxCHEAT_IMPL
+#include "orxCheat.h"
+#undef orxCHEAT_IMPL]
 [+remote
 
 #define orxREMOTE_IMPL
@@ -109,6 +114,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   "\n* You can play with the config parameters in ../data/config/[name].ini"
   "\n* After changing them, relaunch the executable to see the changes.");
 
+[+cheat
+  // Initialize cheat support
+  orxCheat_Init();
+]
 [+movie
   // Initialize movie support
   orxMovie_Init();
@@ -176,6 +185,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [+scroll void [!name]::Exit()]
 [-scroll void orxFASTCALL Exit()]
 {
+[+cheat
+  // Exit from cheat support
+  orxCheat_Exit();
+]
 [+movie
   // Exit from movie support
   orxMovie_Exit();

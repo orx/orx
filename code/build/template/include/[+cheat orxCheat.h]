@@ -1,0 +1,278 @@
+//! Includes
+
+#ifndef _orxCHEAT_H_
+#define _orxCHEAT_H_
+
+#include "orx.h"
+
+
+//! Prototypes
+
+orxSTATUS orxFASTCALL                       orxCheat_Init();
+void orxFASTCALL                            orxCheat_Exit();
+void orxFASTCALL                            orxCheat_Enable(orxBOOL _bEnable);
+
+
+//! Defines
+
+#define orxCHEAT_KZ_CONFIG_SECTION          "Cheats"
+#define orxCHEAT_KZ_CONFIG_COMMAND          "Command"
+#define orxCHEAT_KZ_CONFIG_ROOT             "Cheat"
+#define orxCHEAT_KZ_CONFIG_PREFIX           (orxCHEAT_KZ_CONFIG_ROOT ":")
+#define orxCHEAT_KZ_INPUT_SET               "orx:input:cheat"
+
+
+#ifdef orxCHEAT_IMPL
+
+
+//! Variables / Structures
+
+typedef struct __orxCHEAT_t
+{
+  const orxSTRING zCurrent;
+  orxBOOL         bInit;
+
+} orxCHEAT;
+
+static orxCHEAT sstCheat;
+
+
+//! Code
+
+static void orxFASTCALL orxCheat_CommandEnable(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Enable? */
+  if((_u32ArgNumber == 0) || (_astArgList[0].bValue != orxFALSE))
+  {
+    /* Enable cheats */
+    orxCheat_Enable(orxTRUE);
+
+    /* Updates result */
+    _pstResult->bValue = orxTRUE;
+  }
+  else
+  {
+    /* Disable cheats */
+    orxCheat_Enable(orxFALSE);
+
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+
+  // Done!
+  return;
+}
+
+static void orxFASTCALL orxCheat_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+{
+  // Push input set
+  orxInput_PushSet(orxCHEAT_KZ_INPUT_SET);
+
+  // Retrieve cheat state
+  const orxSTRING zSection = sstCheat.zCurrent ? sstCheat.zCurrent : orxCHEAT_KZ_CONFIG_ROOT;
+  const orxSTRING azSections[2] = {zSection, orxNULL};
+
+  // Any input?
+  const orxSTRING zInput;
+  orxINPUT_TYPE   eType;
+  orxENUM         eID;
+  orxFLOAT        fValue;
+  orxU32          u32Dummy;
+  if((orxInput_GetActiveBinding(&eType, &eID, &fValue) != orxFALSE)
+  && (orxInput_GetBoundInput(eType, eID, orxINPUT_MODE_FULL, 0, &zInput, &u32Dummy) != orxSTATUS_FAILURE)
+  && orxInput_HasBeenActivated(zInput))
+  {
+    // Default back to square 1
+    azSections[1] = orxCHEAT_KZ_CONFIG_ROOT;
+  }
+
+  // For all sections
+  orxU32 i, iCount, j;
+  for(j = 0, i = 0, iCount = 0; (i == iCount) && (j < orxARRAY_GET_ITEM_COUNT(azSections)) && (azSections[j] != orxNULL); j++)
+  {
+    // Select it
+    zSection = azSections[j];
+    orxConfig_PushSection(zSection);
+
+    // For all possible transitions
+    for(i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
+    {
+      const orxSTRING zKey = orxConfig_GetKey(i);
+
+      // Is input active?
+      if(orxInput_HasBeenActivated(zKey))
+      {
+        zSection = orxConfig_GetString(zKey);
+        orxConfig_PushSection(zSection);
+
+        // Is cheat code complete?
+        if(orxConfig_HasValue(orxCHEAT_KZ_CONFIG_COMMAND))
+        {
+          orxCOMMAND_VAR stResult;
+
+          // Cheat!
+          orxCommand_Evaluate(orxConfig_GetString(orxCHEAT_KZ_CONFIG_COMMAND), &stResult);
+          zSection = orxCHEAT_KZ_CONFIG_ROOT;
+        }
+        orxConfig_PopSection();
+        break;
+      }
+    }
+
+    // Deselect it
+    orxConfig_PopSection();
+  }
+
+  // Update cheat state
+  sstCheat.zCurrent = zSection;
+
+  // Pops input set
+  orxInput_PopSet();
+
+  // Done!
+  return;
+}
+
+orxSTATUS orxCheat_Init()
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  // Not initialized?
+  if(!sstCheat.bInit)
+  {
+    // Init structure
+    orxMemory_Zero(&sstCheat, sizeof(orxCHEAT));
+
+    // Bind all numbers & letters to inputs
+    orxConfig_PushSection(orxCHEAT_KZ_INPUT_SET);
+    for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_0; eKey <= orxKEYBOARD_KEY_Z; eKey = (orxKEYBOARD_KEY)(eKey + 1))
+    {
+      const orxSTRING zName = orxKeyboard_GetKeyName(eKey);
+      orxConfig_SetString(zName, zName + 4);
+    }
+    for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_NUMPAD_0; eKey <= orxKEYBOARD_KEY_NUMPAD_9; eKey = (orxKEYBOARD_KEY)(eKey + 1))
+    {
+      const orxSTRING zName = orxKeyboard_GetKeyName(eKey);
+      orxConfig_SetString(zName, zName + 11);
+    }
+    orxConfig_PopSection();
+
+    // Orphan any previous cheats
+    orxConfig_ClearSection(orxCHEAT_KZ_CONFIG_ROOT);
+
+    // For all cheats
+    orxConfig_PushSection(orxCHEAT_KZ_CONFIG_SECTION);
+    orxU32 i, iCount;
+    for(i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
+    {
+      orxCHAR acState[256], acInput[2], *pcState;
+      const orxSTRING zCheat    = orxConfig_GetKey(i);
+      const orxSTRING zCommand  = orxConfig_GetString(zCheat);
+      const orxCHAR *pcCheat;
+
+      // Build all the transitions/states
+      orxString_NPrint(acState, sizeof(acState), orxCHEAT_KZ_CONFIG_ROOT);
+      for(pcCheat = zCheat, pcState = acState, acInput[1] = orxCHAR_NULL; (*pcCheat != orxCHAR_NULL) && (pcState - acState < sizeof(acState) - 1); pcCheat++)
+      {
+        orxConfig_PushSection(acState);
+        if(orxConfig_HasValue(orxCHEAT_KZ_CONFIG_COMMAND))
+        {
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cheat [%s] is clobbered by [%s], removing!", acState, zCheat);
+          orxConfig_ClearValue(orxCHEAT_KZ_CONFIG_COMMAND);
+        }
+        if(pcState == acState)
+        {
+          pcState = acState + orxString_NPrint(acState, sizeof(acState), orxCHEAT_KZ_CONFIG_PREFIX);
+        }
+        *pcState++ = *acInput = (*pcCheat >= 'a') ? *pcCheat & ~0x20 : *pcCheat;
+        *pcState = orxCHAR_NULL;
+        orxConfig_SetString(acInput, acState);
+        orxConfig_PopSection();
+      }
+
+      // Store the cheat command
+      orxConfig_PushSection(acState);
+      orxConfig_ClearValue(orxCHEAT_KZ_CONFIG_COMMAND);
+      if(orxConfig_GetKeyCount() == 0)
+      {
+        orxConfig_SetString(orxCHEAT_KZ_CONFIG_COMMAND, zCommand);
+      }
+      else
+      {
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cheat [%s] is a sub-sequence of another existing cheat, skipping!", acState);
+      }
+      orxConfig_PopSection();
+    }
+    orxConfig_PopSection();
+
+    // Register commands
+    orxCOMMAND_REGISTER_CORE_COMMAND(Cheat, Enable, "Enabled?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
+
+    // Updates status
+    sstCheat.bInit = orxTRUE;
+
+    // Has cheats?
+    if(iCount > 0)
+    {
+      // Enable cheats
+      orxCheat_Enable(orxTRUE);
+    }
+  }
+
+  // Done!
+  return eResult;
+}
+
+void orxCheat_Exit()
+{
+  // Was initialized?
+  if(sstCheat.bInit)
+  {
+    // Disable cheats
+    orxCheat_Enable(orxFALSE);
+
+    // Unregister commands
+    orxCOMMAND_UNREGISTER_CORE_COMMAND(Cheat, Enable);
+
+    // Updates status
+    sstCheat.bInit = orxFALSE;
+  }
+
+  // Done!
+  return;
+}
+
+void orxFASTCALL orxCheat_Enable(orxBOOL _bEnable)
+{
+  // Is initialized?
+  if(sstCheat.bInit)
+  {
+    // Enable?
+    if(_bEnable)
+    {
+      // Enable input set
+      orxInput_EnableSet(orxCHEAT_KZ_INPUT_SET, orxTRUE);
+
+      // Register update function
+      orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxCheat_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
+      // Update status
+      sstCheat.zCurrent = orxNULL;
+    }
+    else
+    {
+      // Unregister update function
+      orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxCheat_Update);
+
+      // Disable input set
+      orxInput_EnableSet(orxCHEAT_KZ_INPUT_SET, orxFALSE);
+    }
+  }
+
+  // Done!
+  return;
+}
+
+#endif // orxCHEAT_IMPL
+
+#endif // _orxCHEAT_H_

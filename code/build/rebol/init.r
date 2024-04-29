@@ -9,6 +9,7 @@ REBOL [
 params: compose/deep [
   name        {Project name (relative or full path)}                                            (none)    (none)
   bundle      {orxBundle support (resources can be automatically packaged and encrypted)}       +         []
+  cheat       {Secret pass/cheat code support}                                                  -         []
   c++         {Create a C++ project instead of C}                                               +         []
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                           -         [+c++]
   mod         {MOD (Protracker), XM (FastTracker 2) & S3M (Scream Tracker 3) decoding support}  -         []
