@@ -67,8 +67,14 @@ typedef enum __orxREMOTE_QUERY_TYPE_t
 
 } orxREMOTE_QUERY_TYPE;
 
-static orxHASHTABLE        *spstTable     = orxNULL;
-static orxTHREAD_SEMAPHORE *spstSemaphore = orxNULL;
+typedef struct __orxREMOTE_t
+{
+  orxHASHTABLE        *pstTable;
+  orxTHREAD_SEMAPHORE *pstSemaphore;
+
+} orxREMOTE;
+
+static orxREMOTE sstRemote;
 
 
 //! Code
@@ -95,7 +101,7 @@ static Socket orxRemote_Connect(const orxSTRING _zHost, orxU32 _u32Port)
   stKey = orxRemote_GetHash(_zHost, _u32Port);
 
   // Not found?
-  if((stResult = (Socket)(orxUPTR)orxHashTable_Get(spstTable, stKey)) == 0)
+  if((stResult = (Socket)(orxUPTR)orxHashTable_Get(sstRemote.pstTable, stKey)) == 0)
   {
     struct hostent *pstHost;
 
@@ -131,7 +137,7 @@ static Socket orxRemote_Connect(const orxSTRING _zHost, orxU32 _u32Port)
           if(stResult != 0)
           {
             // Stores socket
-            orxHashTable_Set(spstTable, stKey, (void *)(orxUPTR)stResult);
+            orxHashTable_Set(sstRemote.pstTable, stKey, (void *)(orxUPTR)stResult);
           }
         }
         else
@@ -203,7 +209,7 @@ static orxS64 orxFASTCALL orxRemote_ExecuteQuery(const orxSTRING _zHost, orxU32 
   orxS64  s64Result = 0;
 
   // Waits for semaphore
-  orxThread_WaitSemaphore(spstSemaphore);
+  orxThread_WaitSemaphore(sstRemote.pstSemaphore);
 
   // Connects to host
   stSocket = orxRemote_Connect(_zHost, _u32Port);
@@ -370,12 +376,12 @@ static orxS64 orxFASTCALL orxRemote_ExecuteQuery(const orxSTRING _zHost, orxU32 
       close(stSocket);
 
       // Removes it from table
-      orxHashTable_Remove(spstTable, orxRemote_GetHash(_zHost, _u32Port));
+      orxHashTable_Remove(sstRemote.pstTable, orxRemote_GetHash(_zHost, _u32Port));
     }
   }
 
   // Signals semaphore
-  orxThread_SignalSemaphore(spstSemaphore);
+  orxThread_SignalSemaphore(sstRemote.pstSemaphore);
 
   // Done!
   return s64Result;
@@ -622,7 +628,7 @@ orxSTATUS orxFASTCALL orxRemote_Init()
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   // Not initialized?
-  if(!spstTable)
+  if(!sstRemote.pstTable)
   {
     orxRESOURCE_TYPE_INFO stInfo;
 
@@ -635,12 +641,12 @@ orxSTATUS orxFASTCALL orxRemote_Init()
 #endif // __orxWINDOWS__
 
     // Creates semaphore
-    spstSemaphore = orxThread_CreateSemaphore(1);
-    orxASSERT(spstSemaphore != orxNULL);
+    sstRemote.pstSemaphore = orxThread_CreateSemaphore(1);
+    orxASSERT(sstRemote.pstSemaphore != orxNULL);
 
     // Creates table
-    spstTable = orxHashTable_Create(64, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-    orxASSERT(spstTable != orxNULL);
+    sstRemote.pstTable = orxHashTable_Create(64, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    orxASSERT(sstRemote.pstTable != orxNULL);
 
     // Inits our web resource wrapper
     orxMemory_Zero(&stInfo, sizeof(orxRESOURCE_TYPE_INFO));
@@ -670,7 +676,7 @@ orxSTATUS orxFASTCALL orxRemote_Init()
 void orxFASTCALL orxRemote_Exit()
 {
   // Was initialized?
-  if(spstTable)
+  if(sstRemote.pstTable)
   {
 #ifdef __orxWINDOWS__
 
@@ -680,12 +686,12 @@ void orxFASTCALL orxRemote_Exit()
 #endif // __orxWINDOWS__
 
     // Deletes semaphore
-    orxThread_DeleteSemaphore(spstSemaphore);
-    spstSemaphore = orxNULL;
+    orxThread_DeleteSemaphore(sstRemote.pstSemaphore);
+    sstRemote.pstSemaphore = orxNULL;
 
     // Deletes table
-    orxHashTable_Delete(spstTable);
-    spstTable = orxNULL;
+    orxHashTable_Delete(sstRemote.pstTable);
+    sstRemote.pstTable = orxNULL;
   }
 
   // Done!

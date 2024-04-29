@@ -88,20 +88,24 @@ typedef struct BundleResource
   #include orxBUNDLE_KZ_INCLUDE_FILENAME
 #endif // __has_include(orxBUNDLE_KZ_INCLUDE_FILENAME)
 
-#ifdef orxBUNDLE_HAS_DATA
-  static const orxU32       su32DataCount = orxARRAY_GET_ITEM_COUNT(sastDataList);
-#else // orxBUNDLE_HAS_DATA
-  static const BundleData  *sastDataList  = orxNULL;
-  static const orxU32       su32DataCount = 0;
+#ifndef orxBUNDLE_HAS_DATA
+  static const BundleData *sastBundleDataList = orxNULL;
 #endif // !orxBUNDLE_HAS_DATA
 
-static orxCHAR        sacPrintBuffer[1024];
-static orxHASHTABLE  *sapstResourceTableList[orxTHREAD_KU32_MAX_THREAD_NUMBER];
-static orxHASHTABLE  *spstToCTable;
-static orxHASHTABLE  *spstDataTable;
-static orxHANDLE      shResource;
-static orxBOOL        sbProcess;
-static orxBOOL        sbInit = orxFALSE;
+typedef struct __orxBUNDLE_t
+{
+  orxCHAR       acPrintBuffer[1024];
+  orxHASHTABLE *apstResourceTableList[orxTHREAD_KU32_MAX_THREAD_NUMBER];
+  orxHASHTABLE *pstToCTable;
+  orxHASHTABLE *pstDataTable;
+  orxHANDLE     hResource;
+  orxU32        u32DataCount;
+  orxBOOL       bProcess;
+  orxBOOL       bInit;
+
+} orxBUNDLE;
+
+static orxBUNDLE sstBundle;
 
 
 //! Helpers
@@ -111,16 +115,16 @@ static orxBOOL        sbInit = orxFALSE;
     do                                                                                            \
     {                                                                                             \
       orxS32 s32Count;                                                                            \
-      s32Count = orxString_NPrint(sacPrintBuffer, sizeof(sacPrintBuffer), FORMAT, ##__VA_ARGS__); \
-      orxResource_Write(RESOURCE, (orxS64)s32Count, sacPrintBuffer, orxNULL, orxNULL);            \
+      s32Count = orxString_NPrint(sstBundle.acPrintBuffer, sizeof(sstBundle.acPrintBuffer), FORMAT, ##__VA_ARGS__); \
+      orxResource_Write(RESOURCE, (orxS64)s32Count, sstBundle.acPrintBuffer, orxNULL, orxNULL);            \
     } while(orxFALSE)
 #else // __orxGCC__ || __orxLLVM__
   #define orxResource_Print(RESOURCE, FORMAT, ...)                                                \
     do                                                                                            \
     {                                                                                             \
       orxS32 s32Count;                                                                            \
-      s32Count = orxString_NPrint(sacPrintBuffer, sizeof(sacPrintBuffer), FORMAT, __VA_ARGS__);   \
-      orxResource_Write(RESOURCE, (orxS64)s32Count, sacPrintBuffer, orxNULL, orxNULL);            \
+      s32Count = orxString_NPrint(sstBundle.acPrintBuffer, sizeof(sstBundle.acPrintBuffer), FORMAT, __VA_ARGS__);   \
+      orxResource_Write(RESOURCE, (orxS64)s32Count, sstBundle.acPrintBuffer, orxNULL, orxNULL);            \
     } while(orxFALSE)
 #endif // __orxGCC__ || __orxLLVM__
 
@@ -259,10 +263,10 @@ static orxINLINE void orxBundle_ClearResourceTables()
   orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
   // For all resource tables
-  for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sapstResourceTableList); i++)
+  for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sstBundle.apstResourceTableList); i++)
   {
     // Clears it
-    orxBundle_ClearResourceTable(sapstResourceTableList[i]);
+    orxBundle_ClearResourceTable(sstBundle.apstResourceTableList[i]);
   }
 
   // Done!
@@ -278,9 +282,9 @@ static orxINLINE void orxBundle_ClearToCTable()
   orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
   // For all ToCs
-  for(hIterator = orxHashTable_GetNext(spstToCTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstToC);
+  for(hIterator = orxHashTable_GetNext(sstBundle.pstToCTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstToC);
       hIterator != orxHANDLE_UNDEFINED;
-      hIterator = orxHashTable_GetNext(spstToCTable, hIterator, orxNULL, (void **)&pstToC))
+      hIterator = orxHashTable_GetNext(sstBundle.pstToCTable, hIterator, orxNULL, (void **)&pstToC))
   {
     // Valid?
     if(pstToC != orxNULL)
@@ -291,7 +295,7 @@ static orxINLINE void orxBundle_ClearToCTable()
   }
 
   // Clears ToC table
-  orxHashTable_Clear(spstToCTable);
+  orxHashTable_Clear(sstBundle.pstToCTable);
 
   // Done!
   return;
@@ -318,10 +322,10 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
       if(zLocation != orxNULL)
       {
         // Opens resource
-        shResource = orxResource_Open(zLocation, orxTRUE);
+        sstBundle.hResource = orxResource_Open(zLocation, orxTRUE);
 
         // Success?
-        if(shResource != orxHANDLE_UNDEFINED)
+        if(sstBundle.hResource != orxHANDLE_UNDEFINED)
         {
           // Updates result
           eResult = orxSTATUS_SUCCESS;
@@ -341,7 +345,7 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
     case 1:
     {
       // Updates status
-      sbProcess = orxTRUE;
+      sstBundle.bProcess = orxTRUE;
 
       // Updates debug flags
       u32DebugFlags = orxDEBUG_GET_FLAGS();
@@ -421,7 +425,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
   orxDEBUG_SET_FLAGS(orxDEBUG_KU32_STATIC_FLAG_NONE, orxDEBUG_KU32_STATIC_FLAG_TYPE|orxDEBUG_KU32_STATIC_FLAG_TAGGED);
 
   // Opens output resource
-  hOutput = (shResource != orxHANDLE_UNDEFINED) ? shResource : orxResource_Open(orxResource_LocateInStorage(orxBUNDLE_KZ_RESOURCE_GROUP, orxNULL, orxBUNDLE_KZ_INCLUDE_PATH orxBUNDLE_KZ_INCLUDE_FILENAME), orxTRUE);
+  hOutput = (sstBundle.hResource != orxHANDLE_UNDEFINED) ? sstBundle.hResource : orxResource_Open(orxResource_LocateInStorage(orxBUNDLE_KZ_RESOURCE_GROUP, orxNULL, orxBUNDLE_KZ_INCLUDE_PATH orxBUNDLE_KZ_INCLUDE_FILENAME), orxTRUE);
 
   // Success?
   if(hOutput != orxHANDLE_UNDEFINED)
@@ -467,7 +471,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
     orxASSERT(pstDiscoveryTable != orxNULL);
 
     // Updates status
-    bBinary = (hOutput == shResource) ? orxTRUE : orxFALSE;
+    bBinary = (hOutput == sstBundle.hResource) ? orxTRUE : orxFALSE;
 
     // Pushes bundle section
     orxConfig_PushSection(orxBUNDLE_KZ_CONFIG_SECTION);
@@ -875,7 +879,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
         else
         {
           // Outputs table header
-          orxResource_Print(hOutput, "static const BundleData sastDataList[] =\r\n{");
+          orxResource_Print(hOutput, "static const BundleData sastBundleDataList[] =\r\n{");
 
           // For all refs
           for(pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_GetNext(pstResourceBank, orxNULL), u32ResourceIndex = 0;
@@ -922,9 +926,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
 
     // Closes output resource
     orxResource_Close(hOutput);
-    if(hOutput == shResource)
+    if(hOutput == sstBundle.hResource)
     {
-      shResource = orxHANDLE_UNDEFINED;
+      sstBundle.hResource = orxHANDLE_UNDEFINED;
     }
   }
   else
@@ -983,7 +987,7 @@ static orxSTATUS orxFASTCALL orxBundle_EventHandler(const orxEVENT *_pstEvent)
     else
     {
       // Should process?
-      if(sbProcess != orxFALSE)
+      if(sstBundle.bProcess != orxFALSE)
       {
         // Processes
         orxBundle_Process();
@@ -1052,7 +1056,7 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
           stLocationID = orxString_Hash(zLocation);
 
           // Gets its ToC
-          ppstToC = (orxHASHTABLE **)orxHashTable_Retrieve(spstToCTable, stLocationID);
+          ppstToC = (orxHASHTABLE **)orxHashTable_Retrieve(sstBundle.pstToCTable, stLocationID);
 
           // Not found?
           if(*ppstToC == orxNULL)
@@ -1065,7 +1069,7 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
             orxASSERT(u32ThreadID != orxU32_UNDEFINED);
 
             // Gets it from table
-            hResource = orxHashTable_Get(sapstResourceTableList[u32ThreadID], (orxU64)stLocationID);
+            hResource = orxHashTable_Get(sstBundle.apstResourceTableList[u32ThreadID], (orxU64)stLocationID);
 
             // Found?
             if(hResource != orxNULL)
@@ -1087,7 +1091,7 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
                 orxSTATUS eResult;
 
                 // Adds it to table
-                eResult = orxHashTable_Add(sapstResourceTableList[u32ThreadID], (orxU64)stLocationID, hResource);
+                eResult = orxHashTable_Add(sstBundle.apstResourceTableList[u32ThreadID], (orxU64)stLocationID, hResource);
                 orxASSERT(eResult != orxSTATUS_FAILURE);
               }
             }
@@ -1158,7 +1162,7 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
     else
     {
       // Has data?
-      if(spstDataTable != orxNULL)
+      if(sstBundle.pstDataTable != orxNULL)
       {
         orxSTRINGID   stResourceID;
         BundleData   *pstData;
@@ -1167,13 +1171,13 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
         stResourceID = orxString_Hash(_zName);
 
         // Gets resource
-        pstData = (BundleData *)orxHashTable_Get(spstDataTable, stResourceID);
+        pstData = (BundleData *)orxHashTable_Get(sstBundle.pstDataTable, stResourceID);
 
         // Found?
         if(pstData != orxNULL)
         {
           // Creates location string: index of file
-          orxString_NPrint(sacBuffer, sizeof(sacBuffer), "0x%x", (orxU32)(pstData - sastDataList));
+          orxString_NPrint(sacBuffer, sizeof(sacBuffer), "0x%x", (orxU32)(pstData - sastBundleDataList));
 
           // Updates result
           zResult = sacBuffer;
@@ -1223,7 +1227,7 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
       stLocationID = orxString_Hash(sacBuffer);
 
       // Gets it from table
-      hResource = orxHashTable_Get(sapstResourceTableList[u32ThreadID], (orxU64)stLocationID);
+      hResource = orxHashTable_Get(sstBundle.apstResourceTableList[u32ThreadID], (orxU64)stLocationID);
 
       // Found?
       if(hResource != orxNULL)
@@ -1245,7 +1249,7 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
           orxSTATUS eResult;
 
           // Adds it to table
-          eResult = orxHashTable_Add(sapstResourceTableList[u32ThreadID], (orxU64)stLocationID, hResource);
+          eResult = orxHashTable_Add(sstBundle.apstResourceTableList[u32ThreadID], (orxU64)stLocationID, hResource);
           orxASSERT(eResult != orxSTATUS_FAILURE);
         }
       }
@@ -1300,7 +1304,7 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
     {
       // Retrieves resource index
       if((orxString_ToU32(_zLocation, &u32Index, orxNULL) != orxSTATUS_FAILURE)
-      && (u32Index < su32DataCount))
+      && (u32Index < sstBundle.u32DataCount))
       {
         BundleResource *pstResource;
 
@@ -1314,7 +1318,7 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
           orxMemory_Zero(pstResource, sizeof(BundleResource));
 
           // Stores its data
-          orxMemory_Copy(&(pstResource->stData), &sastDataList[u32Index], sizeof(BundleData));
+          orxMemory_Copy(&(pstResource->stData), &sastBundleDataList[u32Index], sizeof(BundleData));
 
           // Updates result
           hResult = (orxHANDLE)pstResource;
@@ -1542,17 +1546,18 @@ orxSTATUS orxFASTCALL orxBundle_Init()
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   // Is not initialized?
-  if(sbInit == orxFALSE)
+  if(sstBundle.bInit == orxFALSE)
   {
     orxRESOURCE_TYPE_INFO stInfo;
 
     // Inits variables
-    orxMemory_Zero(sacPrintBuffer, sizeof(sacPrintBuffer));
-    orxMemory_Zero(sapstResourceTableList, sizeof(sapstResourceTableList));
-    spstToCTable      = orxNULL;
-    spstDataTable     = orxNULL;
-    shResource        = orxHANDLE_UNDEFINED;
-    sbProcess         = orxFALSE;
+    orxMemory_Zero(sstBundle.acPrintBuffer, sizeof(sstBundle.acPrintBuffer));
+    orxMemory_Zero(sstBundle.apstResourceTableList, sizeof(sstBundle.apstResourceTableList));
+    sstBundle.pstToCTable     = orxNULL;
+    sstBundle.pstDataTable    = orxNULL;
+    sstBundle.hResource       = orxHANDLE_UNDEFINED;
+    sstBundle.u32DataCount    = (sastBundleDataList != orxNULL) ? orxARRAY_GET_ITEM_COUNT(sastBundleDataList) : 0;
+    sstBundle.bProcess        = orxFALSE;
 
     // Inits our bundle resource type
     orxMemory_Zero(&stInfo, sizeof(orxRESOURCE_TYPE_INFO));
@@ -1577,19 +1582,19 @@ orxSTATUS orxFASTCALL orxBundle_Init()
       orxU32 i;
 
       // Has data?
-      if(su32DataCount > 0)
+      if(sstBundle.u32DataCount > 0)
       {
         // Creates data table
-        spstDataTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-        orxASSERT(spstDataTable != orxNULL);
+        sstBundle.pstDataTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        orxASSERT(sstBundle.pstDataTable != orxNULL);
 
         // For all bundled data
-        for(i = 0; i < su32DataCount; i++)
+        for(i = 0; i < sstBundle.u32DataCount; i++)
         {
           orxSTATUS eResult;
 
           // Stores it
-          eResult = orxHashTable_Add(spstDataTable, sastDataList[i].stNameID, (void *)&sastDataList[i]);
+          eResult = orxHashTable_Add(sstBundle.pstDataTable, sastBundleDataList[i].stNameID, (void *)&sastBundleDataList[i]);
 
           // Checks
           orxASSERT(eResult != orxSTATUS_FAILURE);
@@ -1597,14 +1602,14 @@ orxSTATUS orxFASTCALL orxBundle_Init()
       }
 
       // Creates ToC table
-      spstToCTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-      orxASSERT(spstToCTable != orxNULL);
+      sstBundle.pstToCTable = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      orxASSERT(sstBundle.pstToCTable != orxNULL);
 
       // Creates resource tables
-      for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sapstResourceTableList); i++)
+      for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sstBundle.apstResourceTableList); i++)
       {
-        sapstResourceTableList[i] = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-        orxASSERT(sapstResourceTableList[i] != orxNULL);
+        sstBundle.apstResourceTableList[i] = orxHashTable_Create(orxBUNDLE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        orxASSERT(sstBundle.apstResourceTableList[i] != orxNULL);
       }
 
       // Registers commands
@@ -1618,7 +1623,7 @@ orxSTATUS orxFASTCALL orxBundle_Init()
       orxEvent_SetHandlerIDFlags(orxBundle_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_REMOVE), orxEVENT_KU32_MASK_ID_ALL);
 
       // Updates status
-      sbInit = orxTRUE;
+      sstBundle.bInit = orxTRUE;
     }
   }
 
@@ -1629,7 +1634,7 @@ orxSTATUS orxFASTCALL orxBundle_Init()
 void orxFASTCALL orxBundle_Exit()
 {
   // Is initialized?
-  if(sbInit != orxFALSE)
+  if(sstBundle.bInit != orxFALSE)
   {
     orxU32 i;
 
@@ -1642,54 +1647,54 @@ void orxFASTCALL orxBundle_Exit()
     orxCOMMAND_UNREGISTER_CORE_COMMAND(Bundle, GetOutputName);
 
     // Has pending resource?
-    if(shResource != orxHANDLE_UNDEFINED)
+    if(sstBundle.hResource != orxHANDLE_UNDEFINED)
     {
       // Closes it
-      orxResource_Close(shResource);
-      shResource = orxHANDLE_UNDEFINED;
+      orxResource_Close(sstBundle.hResource);
+      sstBundle.hResource = orxHANDLE_UNDEFINED;
     }
 
     // Has data table?
-    if(spstDataTable != orxNULL)
+    if(sstBundle.pstDataTable != orxNULL)
     {
       // Deletes it
-      orxHashTable_Delete(spstDataTable);
-      spstDataTable = orxNULL;
+      orxHashTable_Delete(sstBundle.pstDataTable);
+      sstBundle.pstDataTable = orxNULL;
     }
 
     // Clears ToC table
     orxBundle_ClearToCTable();
 
     // Deletes ToC table
-    orxHashTable_Delete(spstToCTable);
-    spstToCTable = orxNULL;
+    orxHashTable_Delete(sstBundle.pstToCTable);
+    sstBundle.pstToCTable = orxNULL;
 
     // Clears resource tables
     orxBundle_ClearResourceTables();
 
     // For all resource tables
-    for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sapstResourceTableList); i++)
+    for(i = 0; i < orxARRAY_GET_ITEM_COUNT(sstBundle.apstResourceTableList); i++)
     {
       // Deletes it
-      orxHashTable_Delete(sapstResourceTableList[i]);
-      sapstResourceTableList[i] = orxNULL;
+      orxHashTable_Delete(sstBundle.apstResourceTableList[i]);
+      sstBundle.apstResourceTableList[i] = orxNULL;
     }
 
     // Updates status
-    sbInit = orxFALSE;
+    sstBundle.bInit = orxFALSE;
   }
 }
 
 orxBOOL orxFASTCALL orxBundle_IsProcessing()
 {
   // Done!
-  return sbProcess;
+  return sstBundle.bProcess;
 }
 
 const orxSTRING orxFASTCALL orxBundle_GetOutputName()
 {
   // Done!
-  return (shResource != orxHANDLE_UNDEFINED) ? orxResource_GetPath(orxResource_GetLocation(shResource)) : orxSTRING_EMPTY;
+  return (sstBundle.hResource != orxHANDLE_UNDEFINED) ? orxResource_GetPath(orxResource_GetLocation(sstBundle.hResource)) : orxSTRING_EMPTY;
 }
 
 #if defined(__orxGCC__)

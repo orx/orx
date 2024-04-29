@@ -71,7 +71,13 @@ typedef struct MovieData
 
 } MovieData;
 
-static orxBANK *spstMovieBank = orxNULL;
+typedef struct __orxMOVIE_t
+{
+  orxBANK *pstMovieBank;
+
+} orxMOVIE;
+
+static orxMOVIE sstMovie;
 
 
 //! Code
@@ -92,9 +98,9 @@ void orxFASTCALL orxObject_CommandGetMovieDuration(orxU32 _u32ArgNumber, const o
     MovieData *pstMovieData;
 
     // For all movies
-    for(pstMovieData = (MovieData *)orxBank_GetNext(spstMovieBank, orxNULL);
+    for(pstMovieData = (MovieData *)orxBank_GetNext(sstMovie.pstMovieBank, orxNULL);
         pstMovieData;
-        pstMovieData = (MovieData *)orxBank_GetNext(spstMovieBank, pstMovieData))
+        pstMovieData = (MovieData *)orxBank_GetNext(sstMovie.pstMovieBank, pstMovieData))
     {
       // Found?
       if(pstMovieData->pstObject == pstObject)
@@ -124,9 +130,9 @@ static orxSTATUS orxFASTCALL orxMovie_Delete(void *_pContext)
   // Deletes decoders
   plm_destroy(pstMovieData->pstAudio);
   plm_destroy(pstMovieData->pstVideo);
-  if(spstMovieBank)
+  if(sstMovie.pstMovieBank)
   {
-    orxBank_Free(spstMovieBank, pstMovieData);
+    orxBank_Free(sstMovie.pstMovieBank, pstMovieData);
   }
 
   // Done!
@@ -373,7 +379,7 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
           pstObject = orxOBJECT(_pstEvent->hSender);
 
           // Creates decoder data
-          pstMovieData = (MovieData *)orxBank_Allocate(spstMovieBank);
+          pstMovieData = (MovieData *)orxBank_Allocate(sstMovie.pstMovieBank);
           orxASSERT(pstMovieData);
           orxMemory_Zero(pstMovieData, sizeof(MovieData));
 
@@ -588,13 +594,13 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
 orxSTATUS orxFASTCALL orxMovie_Init()
 {
   // Not initialized?
-  if(!spstMovieBank)
+  if(!sstMovie.pstMovieBank)
   {
     // Creates bank
-    spstMovieBank = orxBank_Create(16, sizeof(MovieData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+    sstMovie.pstMovieBank = orxBank_Create(16, sizeof(MovieData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
 
     // Success?
-    if(spstMovieBank)
+    if(sstMovie.pstMovieBank)
     {
       // Registers commands
       orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetMovieDuration, "Object", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
@@ -612,7 +618,7 @@ orxSTATUS orxFASTCALL orxMovie_Init()
 void orxFASTCALL orxMovie_Exit()
 {
   // Was initialized?
-  if(spstMovieBank)
+  if(sstMovie.pstMovieBank)
   {
     // Unregisters movie handler
     orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxMovie_EventHandler);
@@ -621,8 +627,8 @@ void orxFASTCALL orxMovie_Exit()
     orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetMovieDuration);
 
     // Deletes bank
-    orxBank_Delete(spstMovieBank);
-    spstMovieBank = orxNULL;
+    orxBank_Delete(sstMovie.pstMovieBank);
+    sstMovie.pstMovieBank = orxNULL;
   }
 
   // Done!
