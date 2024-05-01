@@ -230,10 +230,14 @@ orxSTATUS orxCheat_Init()
     // For all cheats
     for(i = 0, u32CheatCount = orxConfig_GetKeyCount(); i < u32CheatCount; i++)
     {
-      orxCHAR acState[256], acInput[16], *pcState;
-      const orxSTRING zCheat    = orxConfig_GetKey(i);
-      const orxSTRING zCommand  = orxConfig_GetString(zCheat);
-      const orxCHAR *pcCheat;
+      orxCHAR         acState[256], acInput[16], *pcState;
+      const orxSTRING zCheat;
+      const orxSTRING zCommand;
+      const orxCHAR  *pcCheat;
+
+      // Get cheat sequence & command
+      zCheat    = orxConfig_GetKey(i);
+      zCommand  = orxConfig_GetString(zCheat);
 
       // For all defined cheats
       orxString_NPrint(acState, sizeof(acState), orxCHEAT_KZ_CONFIG_ROOT);
