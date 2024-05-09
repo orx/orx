@@ -156,7 +156,8 @@ orxSTATUS orxCheat_Init()
   // Not initialized?
   if(!sstCheat.bInit)
   {
-    orxU32 i, u32CheatCount;
+    orxU32          i, u32CheatCount;
+    const orxSTRING zBumper;
 
     // Init structure
     orxMemory_Zero(&sstCheat, sizeof(orxCHEAT));
@@ -182,6 +183,8 @@ orxSTATUS orxCheat_Init()
     }
     orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_ENTER), "START");
     orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_NUMPAD_ENTER), "START");
+    zBumper = "LBUMPER", orxConfig_AppendListString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_L), &zBumper, 1);
+    zBumper = "RBUMPER", orxConfig_AppendListString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_R), &zBumper, 1);
 
     // Bind all joystick inputs
     for(orxJOYSTICK_BUTTON eButton = orxJOYSTICK_BUTTON_A_1; eButton <= orxJOYSTICK_BUTTON_LEFT_1; eButton = (orxJOYSTICK_BUTTON)(eButton + 1))
