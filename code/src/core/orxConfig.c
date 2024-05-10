@@ -3479,16 +3479,34 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
     }
   }
 
-  /* Has remaining buffer? */
-  if((pcLineStart != _acBuffer) && (pc > pcLineStart))
+  /* Did some processing happen? */
+  if(pcLineStart != _acBuffer)
   {
-    /* Updates result */
-    u32Result = (orxU32)(_acBuffer + _u32Size - pcLineStart);
+    /* Has remaining buffer? */
+    if(pc > pcLineStart)
+    {
+      /* Updates result */
+      u32Result = (orxU32)(_acBuffer + _u32Size - pcLineStart);
+    }
+    else
+    {
+      /* Clears result */
+      u32Result = 0;
+    }
   }
   else
   {
-    /* Clears result */
-    u32Result = 0;
+    /* Cuts the key string */
+    if(pcKeyEnd != orxNULL)
+    {
+      *pcKeyEnd = orxCHAR_NULL;
+    }
+
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Couldn't process key <%s> as its value exceeds internal capacity (%u), skipping the rest of the file!", _zName, pcLineStart, orxCONFIG_KU32_BUFFER_SIZE);
+
+    /* Updates result */
+    u32Result = orxU32_UNDEFINED;
   }
 
   /* Done! */
@@ -5078,8 +5096,14 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
         /* Processes buffer */
         u32Offset = orxConfig_ProcessBuffer(_zFileName, acBuffer, u32Size, u32Offset);
 
+        /* Failure? */
+        if(u32Offset == orxU32_UNDEFINED)
+        {
+          /* Aborts */
+          break;
+        }
         /* Should keep remainder of buffer? */
-        if(u32Offset != 0)
+        else if(u32Offset != 0)
         {
           /* Moves it at the beginning of the buffer */
           orxMemory_Move(acBuffer, acBuffer + u32Size - u32Offset, u32Offset);
