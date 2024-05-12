@@ -21,7 +21,11 @@ void orxFASTCALL      orxSndh_Exit();
 #ifdef __orxMSVC__
   #pragma warning(push)
   #pragma warning(disable : 4244)
-#endif /* __orxMSVC__ */
+#endif // __orxMSVC__
+
+#ifdef __orxWINDOWS__
+  #undef EXCEPTION_ILLEGAL_INSTRUCTION // Potential definition conflict from winsock2.h
+#endif // __orxWINDOWS__
 
 #define malloc(size)                      orxMemory_Allocate(size, orxMEMORY_TYPE_AUDIO)
 #define free(mem)                         orxMemory_Free(mem)
