@@ -373,8 +373,17 @@ void orxFASTCALL orxCheat_Enable(orxBOOL _bEnable)
       // Not already enabled?
       if(!orxInput_IsSetEnabled(orxCHEAT_KZ_INPUT_SET))
       {
+        orxBOOL bDebugLevel;
+
+        // Deactivate input debug logs
+        bDebugLevel = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_INPUT);
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_INPUT, orxFALSE);
+
         // Enable input set
         orxInput_EnableSet(orxCHEAT_KZ_INPUT_SET, orxTRUE);
+
+        // Restore input debug logs
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_INPUT, bDebugLevel);
 
         // Register update function
         orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxCheat_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);

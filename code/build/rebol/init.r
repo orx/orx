@@ -56,7 +56,7 @@ apply-template: function [
     set var append copy [{-=dummy=-}] collect [foreach entry templates [if with context? 'entry condition [keep reduce ['| to-string entry]]]]
   ]
   clean-chars: charset [#"0" - #"9" #"a" - #"z" #"A" - #"Z" #"_"]
-  template-rule: [(sanitize: no) begin-template: {[} opt [{!} (sanitize: yes)] copy value template {]} end-template: (
+  template-rule: [(sanitize: no) begin-template: {[} any [{!} (sanitize: yes) | {=} (override: false)] copy value template {]} end-template: (
       value: copy get load trim value
       if sanitize [parse value [some [clean-chars | char: skip (change char #"_")]]]
       end-template: change/part begin-template value end-template
@@ -68,9 +68,10 @@ apply-template: function [
     begin-extension:
     remove [
       {[} (erase: yes)
+      opt [{=} (override: false)]
       some [
         [ [ {+} -extension | {-} +extension]
-        | [ {+} +extension | {-} -extension] (erase: no)
+        | [ {+} +extension | {-} -extension] (erase: no dynamic: true)
         ]
         [{ } | {^M^/} | {^/}]
       ]
@@ -81,11 +82,11 @@ apply-template: function [
     | remove {]} end-extension: break
     | skip
     ]
-    opt [if (erase) opt [if (full-line) remove opt [{^M^/} | {^/}]] (remove/part begin-extension end-extension)]
+    opt [if (erase) opt [if (full-line) remove opt [{^M^/} | {^/}]] (append dynamic: copy/part content begin-extension to-string take/part begin-extension end-extension)]
     :begin-extension
   ]
   parse content [
-    (full-line: yes)
+    (full-line: yes dynamic: none override: true)
     any
     [ extension-rule
     | template-rule
@@ -93,7 +94,7 @@ apply-template: function [
     | skip (full-line: no)
     ]
   ]
-  content
+  reduce [content dynamic override]
 ]
 
 ; Inits
@@ -268,13 +269,15 @@ unless exists? source-path/:premake-source [
 if dir? name: clean-path to-rebol-file name [clear back tail name]
 
 ; Inits project directory
-either exists? name [
-  log [{[} to-local-file name {] already exists, overwriting!}]
+action: either exists? name [
+  log [{[} to-local-file name {] already exists, updating!}]
+  {Updating}
 ] [
   until [
     attempt [make-dir/deep name]
     exists? name
   ]
+  {Creating}
 ]
 change-dir name/..
 set [path name] split-path name
@@ -292,32 +295,56 @@ log [
 ]
 
 ; Copies all files
-log {Creating files:}
+log reform [action {files:}]
 build: none
 do copy-files: function [
   from [file!]
   to [file!]
+  parent-override [logic!]
 ] [
   foreach file read from [
     src: from/:file
-    if all [
-      not empty? trim dst: to-file apply-template to-string file
-      dst != %/
-    ] [
-      dst: to/:dst
-      if file = %build/ [
-        set 'build dst
-      ]
-      either dir? src [
-        make-dir/deep dst
-        copy-files src dst
+    set [dst stripped allow-override] apply-template to-string file
+    case/all [
+      all [
+        not empty? dst: trim to-file dst
+        dst != %/
       ] [
-        log/only reform [{  +} to-local-file dst]
-        write dst apply-template read src
+        dst: to/:dst
+        if file = %build/ [
+          set 'build dst
+        ]
+        either dir? src [
+          make-dir/deep dst
+          copy-files src dst to-logic all [allow-override not none? stripped]
+        ] [
+          set [content dynamic] apply-template read src
+          if any [
+            not exists? dst
+            all [
+              allow-override
+              any [
+                parent-override
+                not none? stripped
+                not none? dynamic
+              ]
+            ]
+          ] [
+            log/only reform [either exists? dst [{  !}] [{  +}] to-local-file dst]
+            write dst content
+          ]
+        ]
+      ]
+      all [
+        string? stripped
+        exists? stripped: to/(trim to-file stripped)
+      ] [
+        log/only reform [{  -} to-local-file stripped]
+        delete-dir stripped
       ]
     ]
   ]
-] source-path name
+] source-path name false
 
 ; Creates build projects
 if build [
