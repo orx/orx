@@ -1191,7 +1191,7 @@ orxS64 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
     struct _stati64 stStat;
 
     /* Gets file stats */
-    _fstati64(((FILE *)_pstFile)->_file, &stStat);
+    _fstati64(fileno((FILE*)_pstFile), &stStat);
 
 #else /* __orxWINDOWS__ && _MSC_VER < 1900 */
 
