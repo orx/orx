@@ -1186,21 +1186,21 @@ orxS64 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
   /* Valid? */
   if(_pstFile != orxNULL)
   {
-#if defined(__orxWINDOWS__) && (_MSC_VER < 1900)
+#ifdef __orxWINDOWS__
 
     struct _stati64 stStat;
 
     /* Gets file stats */
-    _fstati64(((FILE *)_pstFile)->_file, &stStat);
+    _fstati64(_fileno((FILE *)_pstFile), &stStat);
 
-#else /* __orxWINDOWS__ && _MSC_VER < 1900 */
+#else /* __orxWINDOWS__ */
 
     struct stat stStat;
 
     /* Gets file stats */
     fstat(fileno((FILE *)_pstFile), &stStat);
 
-#endif /* __orxWINDOWS__ && _MSC_VER < 1900 */
+#endif /* __orxWINDOWS__ */
 
     /* Updates result */
     s64Result = (orxS64)stStat.st_size;
@@ -1221,8 +1221,7 @@ orxS64 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
  */
 orxS64 orxFASTCALL orxFile_GetTime(const orxFILE *_pstFile)
 {
-  struct stat stStat;
-  orxS64      s64Result;
+  orxS64 s64Result;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -1230,17 +1229,21 @@ orxS64 orxFASTCALL orxFile_GetTime(const orxFILE *_pstFile)
   /* Valid? */
   if(_pstFile != orxNULL)
   {
-#if defined(__orxMSVC__) && (_MSC_VER < 1900)
+#ifdef __orxWINDOWS__
+
+    struct _stati64 stStat;
 
     /* Gets file stats */
-    fstat(((FILE *)_pstFile)->_file, &stStat);
+    _fstati64(_fileno((FILE *)_pstFile), &stStat);
 
-#else /* __orxMSVC__ && _MSC_VER < 1900 */
+#else /* __orxWINDOWS__ */
+
+    struct stat stStat;
 
     /* Gets file stats */
     fstat(fileno((FILE *)_pstFile), &stStat);
 
-#endif /* __orxMSVC__ && _MSC_VER < 1900 */
+#endif /* __orxWINDOWS__ */
 
     /* Updates result */
     s64Result = (orxS64)stStat.st_mtime;
