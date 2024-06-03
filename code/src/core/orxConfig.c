@@ -5225,12 +5225,20 @@ orxSTATUS orxFASTCALL orxConfig_LoadFromMemory(orxCHAR *_acBuffer, orxU32 _u32Bu
     if((bProcess != orxFALSE)
     && (u32Offset <= _u32BufferSize))
     {
-      /* Loads it */
+      orxCONFIG_SECTION *pstPreviousSection;
+
+      /* Backups current section */
+      pstPreviousSection = sstConfig.pstCurrentSection;
+
+      /* Processes buffer */
       if(orxConfig_ProcessBuffer(orxCONFIG_KZ_CONFIG_MEMORY, _acBuffer, _u32BufferSize, u32Offset) == 0)
       {
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
+
+      /* Restores previous section */
+      sstConfig.pstCurrentSection = pstPreviousSection;
     }
   }
 
