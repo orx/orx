@@ -892,7 +892,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
         }
         /* Has HSL values? */
-        else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_HSL) != orxFALSE)
+        else if(orxConfig_HasValueNoCheck(orxGRAPHIC_KZ_CONFIG_HSL) != orxFALSE)
         {
           /* Gets its value */
           orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_HSL, &(pstResult->stColor.vHSL));

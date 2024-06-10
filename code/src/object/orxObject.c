@@ -5513,7 +5513,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxU32          u32FrameFlags, u32Flags = orxOBJECT_KU32_FLAG_NONE;
         orxS32          s32Count;
         orxCOLOR        stColor;
-        orxBOOL         bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE, bHasPosition = orxFALSE;
+        orxBOOL         bUseParentScale = orxFALSE, bUseParentPosition = orxFALSE, bHasColor = orxFALSE, bUseParentSpace = orxFALSE, bHasPosition = orxFALSE, bTypoCheck;
         orxCHAR         acPositionBuffer[128];
 
         /* Backups current parent */
@@ -6041,6 +6041,10 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Inits color */
         orxColor_Set(&stColor, &orxVECTOR_WHITE, orxFLOAT_1);
 
+        /* Disables config typo check */
+        bTypoCheck = orxConfig_IsTypoCheckEnabled();
+        orxConfig_EnableTypoCheck(orxFALSE);
+
         /* Has color? */
         if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_COLOR, orxCOLORSPACE_COMPONENT, &(stColor.vRGB)) != orxNULL)
         {
@@ -6066,7 +6070,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           bHasColor = orxTRUE;
         }
         /* Has HSV values? */
-        if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_HSV, orxCOLORSPACE_HSV, &(stColor.vHSV)) != orxNULL)
+        else if(orxConfig_GetColorVector(orxOBJECT_KZ_CONFIG_HSV, orxCOLORSPACE_HSV, &(stColor.vHSV)) != orxNULL)
         {
           /* Stores its RGB equivalent */
           orxColor_FromHSVToRGB(&stColor, &stColor);
@@ -6074,6 +6078,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           /* Updates status */
           bHasColor = orxTRUE;
         }
+
+        /* Restores config typo check */
+        orxConfig_EnableTypoCheck(bTypoCheck);
 
         /* Has alpha? */
         if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ALPHA) != orxFALSE)
