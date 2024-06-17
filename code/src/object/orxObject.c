@@ -10171,7 +10171,7 @@ orxSTATUS orxFASTCALL orxObject_SetTextString(orxOBJECT *_pstObject, const orxST
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *_pstObject)
+const orxSTRING orxFASTCALL orxObject_GetTextString(const orxOBJECT *_pstObject)
 {
   orxGRAPHIC     *pstGraphic;
   const orxSTRING zResult = orxSTRING_EMPTY;
