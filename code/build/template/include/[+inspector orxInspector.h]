@@ -1,0 +1,6 @@
+#include "orxImGui.h"
+
+void orxInspector_RegisterObject(const orxOBJECT *object);
+void orxInspector_UnregisterObject(const orxOBJECT *object);
+void orxInspector_Init();
+void orxInspector_Exit();

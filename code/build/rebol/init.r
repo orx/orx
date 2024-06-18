@@ -12,6 +12,7 @@ params: compose/deep [
   cheat       {Secret pass/cheat code support}                                                  -         []
   c++         {Create a C++ project instead of C}                                               +         []
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                           -         [+c++]
+  inspector   {orxInspector support (Runtime object inspector GUI)}                             -         [+imgui]
   mod         {MOD (Protracker), XM (FastTracker 2) & S3M (Scream Tracker 3) decoding support}  -         []
   movie       {Movie (MPEG-1) decoding support}                                                 -         []
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}                  -         []
