@@ -713,6 +713,26 @@ namespace orxinspector
         {
           // Show object graphic
 
+          // Scale of graphic
+          orxVECTOR scale;
+          orxObject_GetScale(object, &scale);
+
+          // Show information on scale
+          ImGui::TableNextColumn();
+          ImGui::TextUnformatted("Scale");
+          ImGui::TableNextColumn();
+          ImGui::Text("(%0.1f, %0.1f)", scale.fX, scale.fY);
+
+          // Flip state of the graphic
+          orxBOOL flipX, flipY;
+          orxObject_GetFlip(object, &flipX, &flipY);
+
+          // Show information on scale
+          ImGui::TableNextColumn();
+          ImGui::TextUnformatted("Flip");
+          ImGui::TableNextColumn();
+          ImGui::Text("(%s, %s)", (flipX ? "Flip X" : "Normal X"), (flipY ? "Flip Y" : "Normal Y"));
+
           // Identify type of graphic
           ImGui::TableNextColumn();
           ImGui::TextUnformatted("Texture");
@@ -737,9 +757,22 @@ namespace orxinspector
           uv1.x = (origin.fX + size.fX) / textureWidth;
           uv1.y = (origin.fY + size.fY) / textureHeight;
 
+          // Flip uv coordinates if the object is flipped
+          ImVec2 uv0Temp{uv0};
+          if (flipX)
+          {
+            uv0.x = uv1.x;
+            uv1.x = uv0Temp.x;
+          }
+          if (flipY)
+          {
+            uv0.y = uv1.y;
+            uv1.y = uv0Temp.y;
+          }
+
           // Get the texture and display the portion that matches the object's graphic
           auto textureID = (ImTextureID)orxTexture_GetBitmap(texture);
-          ImGui::Image(textureID, {size.fX, size.fY}, uv0, uv1);
+          ImGui::Image(textureID, {size.fX * scale.fX, size.fY * scale.fY}, uv0, uv1);
         }
       }
       ImGui::EndTable();
