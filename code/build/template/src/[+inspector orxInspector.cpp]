@@ -132,6 +132,9 @@ namespace orxinspector
   // Configuration key for the shader applied to objects to highlight them
   static const orxSTRING OBJECT_SHADER_KEY = "ObjectShader";
 
+  // Object configuration key listing custom config fields to include in the inspector
+  static const orxSTRING CUSTOM_DEBUG_CONFIG_KEY = "InspectorFields";
+
   // Name of the input used to pick an object under the mouse pointer for inspection
   static const orxSTRING INPUT_NAME_PICK = "Pick";
 
@@ -509,11 +512,10 @@ namespace orxinspector
       }
 
       // Other custom config values to show
-      const auto CUSTOM_DEBUG_CONFIG_KEY = "DebugConfig";
       orxConfig_PushSection(section);
       if (orxConfig_HasValueNoCheck(CUSTOM_DEBUG_CONFIG_KEY) &&
-          ImGui::CollapsingHeader("Debug fields") &&
-          ImGui::BeginTable("Debug fields", 3, TABLE_FLAGS))
+          ImGui::CollapsingHeader("Custom fields") &&
+          ImGui::BeginTable("Custom fields", 3, TABLE_FLAGS))
       {
         ImGui::PushID("Custom");
         // Table header setup
@@ -532,21 +534,13 @@ namespace orxinspector
           }
 
           ImGui::PushID(element);
-          if (path[0] == '@')
-          {
-            // Section is the part after the '@' until the first '.'
-            auto section = path.substr(1, path.find('.') - 1);
-            // Key is the part after the '.' until the end
-            auto key = path.substr(path.find('.') + 1, path.length());
-            orxConfig_PushSection(section.data());
-            ConfigValueTableRow(key.data(), editable, section.data());
-            orxConfig_PopSection();
-          }
-          else
-          {
-            // No leading '@', assume we're looking for a key in the object's config section
-            ConfigValueTableRow(path.data(), editable, "@");
-          }
+          // Section is the substring from the start until before the first '.'
+          auto section = path.substr(0, path.find('.'));
+          // Key is the part after the first '.' until the end
+          auto key = path.substr(path.find('.') + 1, path.length());
+          orxConfig_PushSection(section.data());
+          ConfigValueTableRow(key.data(), editable, section.data());
+          orxConfig_PopSection();
           ImGui::PopID();
         }
         ImGui::PopID();
