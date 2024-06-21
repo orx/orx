@@ -271,8 +271,6 @@ project "[name]"
         "../src/**.cpp",]
         "../src/**.c",
         "../include/**.h",
-[+scroll
-        "../include/**.inl",]
 [+bundle
         "../include/**.inc",]
         "../build/premake4.lua",
@@ -292,8 +290,6 @@ project "[name]"
 
     vpaths
     {
-[+scroll
-        ["inline"] = {"**.inl"},]
 [+bundle
         ["bundle"] = {"**.inc"},]
         ["build"] = {"**premake4.lua"},
