@@ -47,42 +47,6 @@
 #include "orxSndh.h"
 #undef orxSNDH_IMPL]
 
-void orxFASTCALL UpdateExtensions(const orxCLOCK_INFO *_pstClockInfo)
-{
-[+nuklear
-  // Show a small Nuklear demo
-  if(nk_begin(&sstNuklear.stContext, "Demo", nk_rect(50, 50, 200, 200), NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE))
-  {
-    enum {EASY, HARD};
-    static orxS32 Op = EASY;
-    static orxS32 Property = 20;
-
-    nk_layout_row_static(&sstNuklear.stContext, 30, 80, 1);
-    if (nk_button_label(&sstNuklear.stContext, "button"))
-    {
-      orxLOG("Nuklear button pressed.");
-    }
-    nk_layout_row_dynamic(&sstNuklear.stContext, 30, 2);
-    if(nk_option_label(&sstNuklear.stContext, "easy", Op == EASY))
-    {
-      Op = EASY;
-    }
-    if(nk_option_label(&sstNuklear.stContext, "hard", Op == HARD))
-    {
-      Op = HARD;
-    }
-    nk_layout_row_dynamic(&sstNuklear.stContext, 25, 1);
-    nk_property_int(&sstNuklear.stContext, "Compression:", 0, (int *)&Property, 100, 10, 1);
-  }
-  nk_end(&sstNuklear.stContext);
-]
-[+imgui
-  // Show Dear ImGui's demo and stats windows
-  ImGui::ShowDemoWindow();
-  ImGui::ShowMetricsWindow();
-]
-}
-
 void InitExtensions()
 {
 [+cheat
