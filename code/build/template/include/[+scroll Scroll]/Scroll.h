@@ -30,7 +30,9 @@
 #include "ScrollBase.h"
 
 #ifdef __SCROLLED__
-  #include "ScrollEd.h"
+  #if __has_include("ScrollEd.h")
+    #include "ScrollEd.h"
+  #endif // __has_include("ScrollEd.h")
 #endif // __SCROLLED__
 
 
