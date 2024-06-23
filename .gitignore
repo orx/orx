@@ -1,7 +1,8 @@
 **/orxBuild.h
 cache
 code/bin
-code/build
+code/build/*
+!code/build/template
 code/demo/**/build
 code/demo/**/libs
 code/demo/**/obj

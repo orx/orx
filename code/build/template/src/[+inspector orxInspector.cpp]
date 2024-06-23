@@ -1,0 +1,1012 @@
+#include <inttypes.h>
+#include <array>
+#include <set>
+#include <vector>
+
+#include "orxInspector.h"
+
+namespace orxinspector
+{
+  namespace widget
+  {
+    using buf_t = std::array<orxCHAR, 1024>;
+
+    buf_t GetCStringCopy(const orxSTRING src)
+    {
+      buf_t buffer{};
+      auto copyLength = orxMIN(orxString_GetLength(src), buffer.size());
+      std::copy_n(src, copyLength, buffer.begin());
+      return buffer;
+    }
+
+    buf_t GetConfigStringCopy(const orxSTRING key)
+    {
+      return GetCStringCopy(orxConfig_GetString(key));
+    }
+
+    buf_t GetConfigStringCopy(const orxSTRING key, orxS32 index)
+    {
+      return GetCStringCopy(orxConfig_GetListString(key, index));
+    }
+
+    void InputConfigListValue(const orxSTRING key)
+    {
+      ImGui::PushID(key);
+
+      const size_t elements = orxConfig_GetListCount(key);
+      std::vector<buf_t> buffers{};
+      std::set<size_t> removedElements{};
+      bool listElementChanged = false;
+      for (auto i = 0; i < elements; i++)
+      {
+        // Push a unique ID for each input
+        ImGui::PushID(i);
+
+        // Initialize buffer with the current content
+        auto buffer = GetConfigStringCopy(key, i);
+
+        // Input text widget
+        ImGui::InputText("", buffer.data(), buffer.size());
+
+        // Track if the widget has received edits and lost focus
+        auto changed = ImGui::IsItemDeactivated();
+
+        // Input and button on the same line
+        ImGui::SameLine();
+
+        // Button to remove this list entry
+        auto removed = ImGui::Button("Remove");
+
+        // If we're not removing this entry, add it to the buffers defining this list
+        if (!removed)
+        {
+          buffers.push_back(buffer);
+        }
+
+        // Track if anything in the list has changed
+        listElementChanged = listElementChanged || changed || removed;
+        ImGui::PopID();
+      }
+
+      // Widget to add an element to the list
+      auto addedElement = ImGui::Button("Add list element");
+      if (addedElement)
+      {
+        // If we're adding an element then we're changing the list
+        listElementChanged = true;
+
+        // Add an empty string as a placeholder for the new element
+        buffers.push_back({'\0'});
+      }
+
+      if (listElementChanged)
+      {
+        // If any elements in the list have changed, update the list in config
+        std::vector<const orxSTRING> valuePtrs{};
+        for (auto i = 0; i < buffers.size(); i++)
+        {
+          valuePtrs.push_back(buffers[i].data());
+        }
+        const orxCHAR **pp = valuePtrs.data();
+        orxConfig_SetListString(key, pp, valuePtrs.size());
+      }
+
+      ImGui::PopID();
+    }
+
+    void InputConfigSingleValue(const orxSTRING key)
+    {
+      ImGui::PushID(key);
+      auto buf = GetConfigStringCopy(key);
+      if (ImGui::InputText("", buf.data(), buf.size()))
+      {
+        orxConfig_SetString(key, buf.data());
+      }
+      ImGui::PopID();
+    }
+
+    void InputConfigValue(const orxSTRING key)
+    {
+      ImGui::PushID(key);
+      if (orxConfig_IsList(key))
+      {
+        InputConfigListValue(key);
+      }
+      else
+      {
+        InputConfigSingleValue(key);
+      }
+      ImGui::PopID();
+    }
+  }
+
+  // Configuration section for general state tracking
+  static const orxSTRING CONFIG_SECTION = "OrxInspector";
+  // Runtime configuration section for runtime state tracking
+  static const orxSTRING CONFIG_RUNTIME_OBJECTS_SECTION = "OrxInspectorRuntime";
+
+  // Configuration key for the clock driving per-frame callbacks
+  static const orxSTRING CLOCK_KEY = "Clock";
+  // Configuration key for the input section used for the inspector
+  static const orxSTRING INPUT_SECTION_KEY = "Input";
+  // Configuration key for the shader applied to objects to highlight them
+  static const orxSTRING OBJECT_SHADER_KEY = "ObjectShader";
+
+  // Object configuration key listing custom config fields to include in the inspector
+  static const orxSTRING CUSTOM_DEBUG_CONFIG_KEY = "InspectorFields";
+
+  // Name of the input used to pick an object under the mouse pointer for inspection
+  static const orxSTRING INPUT_NAME_PICK = "Pick";
+
+  // Name of the shader parameter used to control the highlight color
+  static const orxSTRING HIGHLIGHT_SHADER_COLOR_PARAM = "highlight";
+
+  // Command to register or unregister an object in the inspector
+  static const orxSTRING REGISTER_OBJECT_COMMAND = "Inspector.RegisterObject";
+
+  // Table configuration
+  const ImGuiTableFlags TABLE_FLAGS = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
+
+  /// @brief GUID formatting
+  /// @param object Object's GUID to format
+  /// @param buf Output buffer
+  /// @param bufLength Length of buffer in bytes
+  void PrintGUID(const orxOBJECT *object, orxCHAR *buf, orxU32 bufLength)
+  {
+    orxString_NPrint(buf, bufLength, "0x%016llX", orxStructure_GetGUID(orxSTRUCTURE(object)));
+  }
+
+  /// @brief Register/unregister object for the inspector
+  /// @param object Object to register or unregister
+  /// @param state Register the object if orxTRUE, unregister if orxFALSE
+  void RegisterObject(const orxOBJECT *object, orxBOOL state)
+  {
+    if (object == orxNULL)
+    {
+      return;
+    }
+
+    orxConfig_PushSection(CONFIG_RUNTIME_OBJECTS_SECTION);
+    orxCHAR buf[32];
+    PrintGUID(object, buf, sizeof(buf));
+    if (state)
+    {
+      orxConfig_SetBool(buf, orxTRUE);
+    }
+    else
+    {
+      orxConfig_ClearValue(buf);
+    }
+    orxConfig_PopSection();
+  }
+
+  /// @brief Push inspector config section
+  void PushSection()
+  {
+    orxConfig_PushSection(CONFIG_SECTION);
+  }
+
+  /// @brief Pop config section - convenience wrapper for orxConfig_PopSection
+  void PopSection()
+  {
+    orxConfig_PopSection();
+  }
+
+  /// @brief Input widget for a config value for a given key
+  /// @param key Config key to read the value from and write updates to
+  void InputConfigValue(const orxSTRING key)
+  {
+    widget::InputConfigValue(key);
+  }
+
+  /// @brief Read-only widget for a config value for a given key
+  /// @param key Config key to read the value from
+  void ConfigValue(const orxSTRING key)
+  {
+    if (orxConfig_IsList(key))
+    {
+      // Show all values from the list
+      if (ImGui::BeginCombo("", orxConfig_GetListString(key, 0)))
+      {
+        for (int i = 1; i < orxConfig_GetListCount(key); i++)
+        {
+          ImGui::Text("%s", orxConfig_GetListString(key, i));
+        }
+        ImGui::EndCombo();
+      }
+    }
+    else
+    {
+      // Show text representation of a single value
+      ImGui::Text("%s", orxConfig_GetString(key));
+    }
+  }
+
+  /// @brief Table row for a single config key and value
+  /// @param key Config key to display
+  /// @param editable The widget will be editable if the value is true, otherwise it will be static
+  /// @param section If a section name is provided, it will be included in the table row
+  void ConfigValueTableRow(const orxSTRING key, bool editable, const orxSTRING section = orxSTRING_EMPTY)
+  {
+    ImGui::TableNextRow();
+
+    // Draw the section column
+    if (section != orxNULL && section != orxSTRING_EMPTY)
+    {
+      ImGui::TableNextColumn();
+      ImGui::Text("%s", section);
+    }
+
+    // Draw the key column
+    ImGui::TableNextColumn();
+    ImGui::Text("%s", key);
+
+    // Draw the value column
+    ImGui::TableNextColumn();
+    if (editable)
+    {
+      InputConfigValue(key);
+    }
+    else
+    {
+      ConfigValue(key);
+    }
+  }
+
+  /// @brief Show object GUID with a copy button
+  /// @param object GUID will be taken from this object
+  void ObjectGUIDWithCopy(const orxOBJECT *object)
+  {
+    // Get object guid
+    orxCHAR guid[20];
+    PrintGUID(object, guid, sizeof(guid));
+    ImGui::TextUnformatted(guid);
+    ImGui::SameLine();
+    // Make the guid easy to copy to the clipboard for use in commands
+    if (ImGui::Button("Copy"))
+    {
+      ImGui::SetClipboardText(guid);
+    }
+  }
+
+  /// @brief Setup header row for an object table
+  void ObjectTableHeadersRow()
+  {
+    // Table header initialization
+    ImGui::TableSetupColumn("Name");
+    ImGui::TableSetupColumn("GUID");
+    ImGui::TableSetupColumn("Inspector");
+    ImGui::TableHeadersRow();
+  }
+
+  /// @brief Object table row, including inspector button
+  /// @param object Object to show in row
+  void ObjectButtonRow(const orxOBJECT *object)
+  {
+    ImGui::TableNextColumn();
+    ImGui::TextUnformatted(orxObject_GetName(object));
+    ImGui::TableNextColumn();
+    ObjectGUIDWithCopy(object);
+    ImGui::TableNextColumn();
+    if (ImGui::Button("Inspect"))
+    {
+      RegisterObject(object, orxTRUE);
+    }
+  }
+
+  /// @brief Parent object inspector. Only shows if object has a parent object.
+  /// @param object Object to retrieve parent from
+  void ParentObject(const orxOBJECT *object)
+  {
+    auto parent = orxOBJECT(orxObject_GetParent(object));
+    if (parent != orxNULL && ImGui::CollapsingHeader("Parent"))
+    {
+      ImGui::PushID(parent);
+      if (ImGui::BeginTable("Parent", 3, TABLE_FLAGS))
+      {
+        ObjectTableHeadersRow();
+        ObjectButtonRow(parent);
+      }
+      ImGui::EndTable();
+      ImGui::PopID();
+    }
+  }
+
+  /// @brief Sibling objects inspector. Only shows if object has one or more sibling objects.
+  /// @param object Object to retrieve siblings from
+  void SiblingObjects(const orxOBJECT *object)
+  {
+    auto parent = orxOBJECT(orxObject_GetParent(object));
+    if (parent != orxNULL)
+    {
+      auto firstSibling = orxObject_GetChild(parent);
+      if (firstSibling != orxNULL && ImGui::CollapsingHeader("Siblings"))
+      {
+        if (ImGui::BeginTable("Siblings", 3, TABLE_FLAGS))
+        {
+          ObjectTableHeadersRow();
+          for (orxOBJECT *sibling = firstSibling; sibling != orxNULL; sibling = orxObject_GetSibling(sibling))
+          {
+            if (sibling != object)
+            {
+              ImGui::PushID(sibling);
+              ObjectButtonRow(sibling);
+              ImGui::PopID();
+            }
+          }
+        }
+        ImGui::EndTable();
+      }
+    }
+  }
+
+  /// @brief Child objects inspector. Only shows if object has one or more child objects.
+  /// @param object Object to retrieve children from
+  void ChildObjects(const orxOBJECT *object)
+  {
+    auto firstChild = orxObject_GetChild(object);
+    if (firstChild != orxNULL && ImGui::CollapsingHeader("Children"))
+    {
+      if (ImGui::BeginTable("Children", 3, TABLE_FLAGS))
+      {
+        ObjectTableHeadersRow();
+        for (orxOBJECT *child = firstChild; child != orxNULL; child = orxObject_GetSibling(child))
+        {
+          ImGui::PushID(child);
+          ObjectButtonRow(child);
+          ImGui::PopID();
+        }
+      }
+      ImGui::EndTable();
+    }
+  }
+
+  /// @brief Object status inspector
+  /// @param object Object to retrieve status data from
+  void Status(const orxOBJECT *object)
+  {
+    // Do nothing if the object is invalid/null
+    if (!object)
+    {
+      return;
+    }
+
+    if (ImGui::CollapsingHeader("Status"))
+    {
+      if (ImGui::BeginTable("Status", 2, TABLE_FLAGS))
+      {
+        // GUID
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("GUID");
+        ImGui::TableNextColumn();
+        ObjectGUIDWithCopy(object);
+
+        // Life time
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Life time");
+        ImGui::TableNextColumn();
+        ImGui::Text("%0.1f", orxObject_GetLifeTime(object));
+
+        // Active time
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Active time");
+        ImGui::TableNextColumn();
+        ImGui::Text("%0.1f", orxObject_GetActiveTime(object));
+
+        // Group
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Group");
+        ImGui::TableNextColumn();
+        ImGui::Text("%s", orxString_GetFromID(orxObject_GetGroupID(object)));
+
+        // Current animation
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Animation");
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted(orxObject_GetCurrentAnim(object));
+
+        // World position
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Position");
+        ImGui::TableNextColumn();
+        orxVECTOR position;
+        orxObject_GetWorldPosition(object, &position);
+        ImGui::Text("(%0.1f, %0.1f, %0.1f)", position.fX, position.fY, position.fZ);
+
+        // Velocity
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Speed");
+        ImGui::TableNextColumn();
+        orxVECTOR speed;
+        orxObject_GetSpeed(object, &speed);
+        ImGui::Text("(%0.1f, %0.1f)", speed.fX, speed.fY);
+
+        // Rotation
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Rotation");
+        ImGui::TableNextColumn();
+        ImGui::Text("%0.1f degrees", orxObject_GetRotation(object) * orxMATH_KF_RAD_TO_DEG);
+
+        // Angular velocity
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Angular velocity");
+        ImGui::TableNextColumn();
+        ImGui::Text("%0.1f degrees/second", orxObject_GetAngularVelocity(object) * orxMATH_KF_RAD_TO_DEG);
+
+        // Scale
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Scale");
+        ImGui::TableNextColumn();
+        orxVECTOR scale;
+        orxObject_GetScale(object, &scale);
+        ImGui::Text("(%0.1f, %0.1f)", scale.fX, scale.fY);
+      }
+      ImGui::EndTable();
+    }
+  }
+
+  /// @brief Object configuration inspector
+  /// @param section Configuration section to render, including inherited sections
+  /// @param editable Configuration is editable if orxTRUE. Configuration is static if orxFALSE.
+  void Config(const orxSTRING section, bool editable)
+  {
+    if (ImGui::CollapsingHeader("Config"))
+    {
+      const auto initialIndent = 5.0f;
+      ImGui::Indent(initialIndent);
+
+      auto ConfigRows = [editable]()
+      {
+        auto keys = orxConfig_GetKeyCount();
+        for (int i = 0; i < keys; i++)
+        {
+          auto key = orxConfig_GetKey(i);
+          ConfigValueTableRow(key, editable);
+        }
+      };
+
+      // Track additional indentation levels from parent config sections
+      auto indentOffset = 2.0f;
+
+      // Object config section and its inheritance hierarchy
+      if (ImGui::CollapsingHeader(section))
+      {
+        // Push the selected config section to make it active
+        orxConfig_PushSection(section);
+
+        // Create a table with one row per key/value pair in the section
+        if (ImGui::BeginTable(section, 2, TABLE_FLAGS))
+        {
+          // Section config
+          ImGui::PushID(section);
+          ConfigRows();
+          ImGui::PopID();
+
+          ImGui::EndTable();
+        }
+
+        orxConfig_PopSection();
+
+        auto parent = orxConfig_GetParent(section);
+        auto tableFlags = ImGuiTreeNodeFlags_DefaultOpen;
+        while (parent != orxNULL && parent != orxSTRING_EMPTY && ImGui::CollapsingHeader(parent, tableFlags) && ImGui::BeginTable(parent, 2, TABLE_FLAGS))
+        {
+          ImGui::Indent(5.0f);
+          indentOffset += 5.0f;
+          // Show the config from the parent section too
+          ImGui::PushID(parent);
+          orxConfig_PushSection(parent);
+          ConfigRows();
+          orxConfig_PopSection();
+          ImGui::PopID();
+          parent = orxConfig_GetParent(parent);
+
+          ImGui::EndTable();
+        }
+      }
+
+      // Reset indentation from config sections if any was added
+      if (indentOffset > 0.0f)
+      {
+        ImGui::Indent(-indentOffset);
+      }
+
+      // Other custom config values to show
+      orxConfig_PushSection(section);
+      if (orxConfig_HasValueNoCheck(CUSTOM_DEBUG_CONFIG_KEY) &&
+          ImGui::CollapsingHeader("Custom fields") &&
+          ImGui::BeginTable("Custom fields", 3, TABLE_FLAGS))
+      {
+        ImGui::PushID("Custom");
+        // Table header setup
+        ImGui::TableSetupColumn("Section");
+        ImGui::TableSetupColumn("Key");
+        ImGui::TableSetupColumn("Value");
+        ImGui::TableHeadersRow();
+        auto elements = orxConfig_GetListCount(CUSTOM_DEBUG_CONFIG_KEY);
+        for (int element = 0; element < elements; ++element)
+        {
+          auto path = std::string(orxConfig_GetListString(CUSTOM_DEBUG_CONFIG_KEY, element));
+          if (path.length() == 0)
+          {
+            // Empty string, nothing to do
+            continue;
+          }
+
+          ImGui::PushID(element);
+          // Section is the substring from the start until before the first '.'
+          auto section = path.substr(0, path.find('.'));
+          // Key is the part after the first '.' until the end
+          auto key = path.substr(path.find('.') + 1, path.length());
+          orxConfig_PushSection(section.data());
+          ConfigValueTableRow(key.data(), editable, section.data());
+          orxConfig_PopSection();
+          ImGui::PopID();
+        }
+        ImGui::PopID();
+
+        ImGui::EndTable();
+      }
+      orxConfig_PopSection();
+
+      ImGui::Indent(-initialIndent);
+    }
+  }
+
+  /// @brief Get the name of the inspector object hightlight shader
+  /// @return Config name of the shader
+  const orxSTRING GetObjectShaderName()
+  {
+    PushSection();
+    auto shaderName = orxConfig_GetString(OBJECT_SHADER_KEY);
+    PopSection();
+    return shaderName;
+  }
+
+  /// @brief Information on the shaders applied to an object
+  struct ObjectShaderSpec
+  {
+    int shaderCount{0};             // Number of shaders applied to an object
+    bool hasHighlightShader{false}; // True if the inspector highlight shader is applied, otherwise false
+  };
+
+  /// @brief Get information on the shaders applied to an object
+  /// @param object Object to check
+  /// @return Shader information for the object
+  ObjectShaderSpec GetObjectShaderSpec(const orxOBJECT *object)
+  {
+    ObjectShaderSpec spec{};
+
+    // Get a reference to the highlighting shader
+    auto shader = orxShader_CreateFromConfig(GetObjectShaderName());
+    orxASSERT(shader != orxNULL);
+    // Get the shader's ID
+    auto highlightShaderID = orxShader_GetID(shader);
+    // Clean up our shader reference
+    orxShader_Delete(shader);
+
+    auto shaderPointer = orxOBJECT_GET_STRUCTURE(object, SHADERPOINTER);
+    if (shaderPointer != orxNULL)
+    {
+      for (int i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
+      {
+        auto objectShader = orxShaderPointer_GetShader(shaderPointer, i);
+        if (objectShader != orxNULL)
+        {
+          spec.shaderCount++;
+          auto objectShaderID = orxShader_GetID(objectShader);
+          if (objectShaderID == highlightShaderID)
+          {
+            spec.hasHighlightShader = true;
+          }
+        }
+      }
+    }
+
+    return spec;
+  }
+
+  /// @brief Inspector shader highlight color for an object
+  /// @param object Object to get the highlight color for
+  /// @return Highlight color in RGB
+  orxVECTOR ObjectHighlightColor(const orxOBJECT *object)
+  {
+    // Pick a color based on the object's GUID
+    auto guid = orxStructure_GetGUID(object);
+    orxFLOAT h = (orxMath_Sin(static_cast<orxFLOAT>(guid & 0xffffffff)) + 1.0f) / 2.0f;
+    orxFLOAT s = 1.0f;
+    orxFLOAT l = 0.7f;
+    orxCOLOR color = {h, s, l, 1.0f};
+    orxColor_FromHSLToRGB(&color, &color);
+    return color.vRGB;
+  }
+
+  /// @brief Show a checkbox to enable/disable a shader on an object to highlight it visually
+  /// @param object Object to apply/remove shader from in response to the checkbox state
+  void HighlightShaderCheckbox(orxOBJECT *object)
+  {
+    if (orxObject_GetWorkingGraphic(object) != orxNULL)
+    {
+      auto shaderSpec = GetObjectShaderSpec(object);
+
+      orxVECTOR highlightColor = ObjectHighlightColor(object);
+      ImVec4 highlightColorIm = {highlightColor.fR, highlightColor.fG, highlightColor.fB, 1.0};
+      ImGui::TextColored(highlightColorIm, "Highlight with shader");
+      ImGui::SameLine();
+
+      // The highlight is active if we have a non-NULL pointer to the highlight shader
+      bool highlight = shaderSpec.hasHighlightShader;
+      if (ImGui::Checkbox("##highlight", &highlight))
+      {
+        if (highlight && !shaderSpec.hasHighlightShader)
+        {
+          // No existing shaders, so we can add the highlight directly to the object
+          orxObject_AddShader(object, GetObjectShaderName());
+        }
+        else if (!highlight && shaderSpec.hasHighlightShader)
+        {
+          // We have the shader set, so remove it
+          orxObject_RemoveShader(object, GetObjectShaderName());
+        }
+      }
+    }
+  }
+
+  /// @brief Object active shader inspector
+  /// @param object Object to retrieve shader information from
+  void Shaders(const orxOBJECT *object)
+  {
+    auto shaderSpec = GetObjectShaderSpec(object);
+
+    if (shaderSpec.shaderCount > 0 && ImGui::CollapsingHeader("Shaders"))
+    {
+      if (ImGui::BeginTable("Shaders", 2, TABLE_FLAGS))
+      {
+        auto shaderPointer = orxOBJECT_GET_STRUCTURE(object, SHADERPOINTER);
+        orxASSERT(shaderPointer != orxNULL);
+        for (int i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
+        {
+          auto shader = orxShaderPointer_GetShader(shaderPointer, i);
+          if (shader != orxNULL)
+          {
+            ImGui::TableNextColumn();
+            ImGui::TextUnformatted("Name");
+            ImGui::TableNextColumn();
+            ImGui::TextUnformatted(orxShader_GetName(shader));
+          }
+        }
+      }
+      ImGui::EndTable();
+    }
+  }
+
+  /// @brief Object graphic inspector, showing currently active graphic for an object. Only shows if the object has a graphic or animation.
+  /// @param object Object to retrieve graphic information from
+  void Graphic(const orxOBJECT *object)
+  {
+    auto graphic = orxObject_GetWorkingGraphic(object);
+    auto texture = orxObject_GetWorkingTexture(object);
+    auto text = orxObject_GetTextString(object);
+    if ((graphic != orxNULL && texture != orxNULL || text != orxSTRING_EMPTY) && ImGui::CollapsingHeader("Graphic"))
+    {
+      // Setup table columns
+      if (ImGui::BeginTable("Graphic", 2, TABLE_FLAGS))
+      {
+        if (text != orxSTRING_EMPTY)
+        {
+          // Show object text
+
+          // Identify type of graphic
+          ImGui::TableNextColumn();
+          ImGui::TextUnformatted("Text");
+          // Show graphic content
+          ImGui::TableNextColumn();
+          ImGui::TextUnformatted(text);
+        }
+        else
+        {
+          // Show object graphic
+
+          // Scale of graphic
+          orxVECTOR scale;
+          orxObject_GetScale(object, &scale);
+
+          // Show information on scale
+          ImGui::TableNextColumn();
+          ImGui::TextUnformatted("Scale");
+          ImGui::TableNextColumn();
+          ImGui::Text("(%0.1f, %0.1f)", scale.fX, scale.fY);
+
+          // Flip state of the graphic
+          orxBOOL flipX, flipY;
+          orxObject_GetFlip(object, &flipX, &flipY);
+
+          // Show information on scale
+          ImGui::TableNextColumn();
+          ImGui::TextUnformatted("Flip");
+          ImGui::TableNextColumn();
+          ImGui::Text("(%s, %s)", (flipX ? "Flip X" : "Normal X"), (flipY ? "Flip Y" : "Normal Y"));
+
+          // Identify type of graphic
+          ImGui::TableNextColumn();
+          ImGui::TextUnformatted("Texture");
+
+          // Show graphic content
+          ImGui::TableNextColumn();
+          // Get overall texture dimensions
+          orxFLOAT textureWidth, textureHeight;
+          orxTexture_GetSize(texture, &textureWidth, &textureHeight);
+
+          // Get the origin and size of the active graphic
+          orxVECTOR origin, size;
+          orxGraphic_GetOrigin(graphic, &origin);
+          orxGraphic_GetSize(graphic, &size);
+
+          // Find the location of the graphic within the overall texture in normalized coordinates
+          ImVec2 uv0, uv1;
+          // Top left of the texture region
+          uv0.x = origin.fX / textureWidth;
+          uv0.y = origin.fY / textureHeight;
+          // Lower right of the texture region
+          uv1.x = (origin.fX + size.fX) / textureWidth;
+          uv1.y = (origin.fY + size.fY) / textureHeight;
+
+          // Flip uv coordinates if the object is flipped
+          ImVec2 uv0Temp{uv0};
+          if (flipX)
+          {
+            uv0.x = uv1.x;
+            uv1.x = uv0Temp.x;
+          }
+          if (flipY)
+          {
+            uv0.y = uv1.y;
+            uv1.y = uv0Temp.y;
+          }
+
+          // Get the texture and display the portion that matches the object's graphic
+          auto textureID = (ImTextureID)orxTexture_GetBitmap(texture);
+          ImGui::Image(textureID, {size.fX * scale.fX, size.fY * scale.fY}, uv0, uv1);
+        }
+      }
+      ImGui::EndTable();
+    }
+  }
+
+  /// @brief Object inspector window
+  /// @param object Object to inspect
+  void ObjectWindow(orxOBJECT *object)
+  {
+    bool registered = true;
+    auto name = orxObject_GetName(object);
+    ImGui::PushID(object);
+    if (ImGui::Begin(name, &registered))
+    {
+      HighlightShaderCheckbox(object);
+      Status(object);
+      Config(name, true);
+      Graphic(object);
+      Shaders(object);
+      ParentObject(object);
+      SiblingObjects(object);
+      ChildObjects(object);
+    }
+    ImGui::End();
+    ImGui::PopID();
+    if (registered == false)
+    {
+      RegisterObject(object, false);
+      orxObject_RemoveShader(object, GetObjectShaderName());
+    }
+  }
+
+  /// @brief Command: REGISTER_OBJECT_COMMAND
+  void CommandRegisterObject(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+  {
+    // Object to add to the GUI set
+    auto object = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+    if (object != orxNULL)
+    {
+      // Return the GUID
+      _pstResult->u64Value = _astArgList[0].u64Value;
+
+      switch (_u32ArgNumber)
+      {
+      case 1ul:
+      {
+        // Register the object for a GUI window
+        RegisterObject(object, orxTRUE);
+        break;
+      }
+      case 2ul:
+      {
+        // Register the object for a GUI window
+        RegisterObject(object, _astArgList[1].bValue);
+        break;
+      }
+      default:
+      {
+        orxASSERT(false);
+        break;
+      }
+      }
+    }
+  }
+
+  /// @brief Get the clock to use for event callbacks. Defaults to the engine's default clock.
+  /// @return Clock to use for event callbacks
+  orxCLOCK *GetClock()
+  {
+    orxCLOCK *clock = orxClock_Get(orxCLOCK_KZ_CORE);
+    PushSection();
+    if (orxConfig_HasValueNoCheck(CLOCK_KEY))
+    {
+      auto customClock = orxClock_Get(orxConfig_GetString(CLOCK_KEY));
+      if (customClock != orxNULL)
+      {
+        clock = customClock;
+      }
+    }
+    PopSection();
+
+    return clock;
+  }
+
+  /// @brief Get the input set name used by the inspector
+  const orxSTRING GetInputSection()
+  {
+    PushSection();
+    auto inputSetName = orxConfig_GetString(INPUT_SECTION_KEY);
+    PopSection();
+    return inputSetName;
+  }
+
+  /// @brief Clock callback for rendering inspector windows
+  void ClockCallback(const orxCLOCK_INFO *clockInfo, void *context)
+  {
+    // Select inspector's input set
+    auto inputSetName = GetInputSection();
+    orxInput_PushSet(inputSetName);
+
+    // Add object with a mouse click
+    if (orxInput_HasBeenActivated(INPUT_NAME_PICK))
+    {
+      orxVECTOR mousePosition;
+      orxMouse_GetPosition(&mousePosition);
+      orxRender_GetWorldPosition(&mousePosition, orxNULL, &mousePosition);
+
+      auto object = orxObject_Pick(&mousePosition, orxSTRINGID_UNDEFINED);
+      if (object != orxNULL)
+      {
+        RegisterObject(object, true);
+      }
+    }
+
+    // Restore previous active input set
+    orxInput_PopSet();
+
+    // Show the inspector windows for each registered object
+    orxConfig_PushSection(CONFIG_RUNTIME_OBJECTS_SECTION);
+    auto keys = orxConfig_GetKeyCount();
+    for (auto keyIndex = 0; keyIndex < keys; ++keyIndex)
+    {
+      // Each key in the config section represents one registered object
+      auto key = orxConfig_GetKey(keyIndex);
+      orxU64 guid = 0;
+      if (orxString_ToU64(key, &guid, orxNULL) == orxSTATUS_SUCCESS)
+      {
+        ObjectWindow(orxOBJECT(orxStructure_Get(guid)));
+      }
+    }
+    orxConfig_PopSection();
+  }
+
+  /// @brief Event callback to clear inspector registration when an object is deleted
+  orxSTATUS ObjectEventCallback(const orxEVENT *_pstEvent)
+  {
+    orxSTATUS eResult = orxSTATUS_SUCCESS;
+    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT && _pstEvent->eID == orxOBJECT_EVENT_DELETE);
+
+    // Get object associated with the event
+    auto object = (orxOBJECT *)_pstEvent->hSender;
+    auto guid = orxStructure_GetGUID(object);
+
+    // Remove the object's GUID from the runtime section, in case it was registered with the inspector
+    orxConfig_PushSection(CONFIG_RUNTIME_OBJECTS_SECTION);
+    orxCHAR buf[20];
+    PrintGUID(object, buf, sizeof(buf));
+    orxConfig_ClearValue(buf);
+    orxConfig_PopSection();
+
+    // Done!
+    return eResult;
+  }
+
+  /// @brief Even callback to set shader parameters for the inspector's highlight shader
+  orxSTATUS ShaderEventCallback(const orxEVENT *_pstEvent)
+  {
+    orxSTATUS eResult = orxSTATUS_SUCCESS;
+    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SHADER && _pstEvent->eID == orxSHADER_EVENT_SET_PARAM);
+
+    // Get the event payload
+    auto payload = (orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    if (orxString_Compare(payload->zParamName, HIGHLIGHT_SHADER_COLOR_PARAM) == 0)
+    {
+      // Set the highlight color for the shader
+      orxVECTOR color = ObjectHighlightColor(orxOBJECT(_pstEvent->hSender));
+      orxVector_Copy(&(payload->vValue), &color);
+    }
+
+    // Done!
+    return eResult;
+  }
+}
+
+/// @brief Register an object with the inspector
+/// @param object Object to register with the inspector
+void orxInspector_RegisterObject(const orxOBJECT *object)
+{
+  orxinspector::RegisterObject(object, true);
+}
+
+/// @brief Unregister an object with the inspector
+/// @param object Object to unregister from the inspector
+void orxInspector_UnregisterObject(const orxOBJECT *object)
+{
+  orxinspector::RegisterObject(object, false);
+}
+
+/// @brief Initialize inspector callbacks, event handlers, and commands. Should be called during engine init.
+void orxInspector_Init()
+{
+  // Register clock callback to render inspector windows on each frame
+  auto clock = orxinspector::GetClock();
+  orxClock_Register(clock, orxinspector::ClockCallback, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWEST);
+
+  // Register event handler for object events
+  orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxinspector::ObjectEventCallback);
+  orxEvent_SetHandlerIDFlags(orxinspector::ObjectEventCallback,
+                             orxEVENT_TYPE_OBJECT,
+                             orxNULL,
+                             orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE),
+                             orxEVENT_KU32_MASK_ID_ALL);
+
+  // Register event handler for shader events
+  orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxinspector::ShaderEventCallback);
+  orxEvent_SetHandlerIDFlags(orxinspector::ShaderEventCallback,
+                             orxEVENT_TYPE_SHADER,
+                             orxNULL,
+                             orxEVENT_GET_FLAG(orxSHADER_EVENT_SET_PARAM),
+                             orxEVENT_KU32_MASK_ID_ALL);
+
+  // Register commands
+  orxCOMMAND_REGISTER(orxinspector::REGISTER_OBJECT_COMMAND, orxinspector::CommandRegisterObject, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Register = true", orxCOMMAND_VAR_TYPE_BOOL});
+
+  // Enable input set
+  orxInput_EnableSet(orxinspector::GetInputSection(), orxTRUE);
+}
+
+/// @brief Remove inspector callbacks, event handlers and commands. Should be called during engine exit.
+void orxInspector_Exit()
+{
+  // Unregister clock callback
+  auto clock = orxinspector::GetClock();
+  orxClock_Unregister(clock, orxinspector::ClockCallback);
+
+  // Remove object event handler
+  orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxinspector::ObjectEventCallback);
+
+  // Remove shader event handler
+  orxEvent_RemoveHandler(orxEVENT_TYPE_SHADER, orxinspector::ShaderEventCallback);
+
+  // Unregister commands
+  orxCOMMAND_UNREGISTER(orxinspector::REGISTER_OBJECT_COMMAND);
+
+  // Disable input set
+  orxInput_EnableSet(orxinspector::GetInputSection(), orxFALSE);
+
+  // Clean runtime config section
+  orxConfig_ClearSection(orxinspector::CONFIG_RUNTIME_OBJECTS_SECTION);
+}

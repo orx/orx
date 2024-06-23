@@ -16,6 +16,9 @@
 #define orxIMGUI_IMPL
 #include "orxImGui.h"
 #undef orxIMGUI_IMPL]
+[+inspector
+
+#include "orxInspector.h"]
 [+bundle
 
 #define orxBUNDLE_IMPL
@@ -73,6 +76,10 @@ void InitExtensions()
   // Initialize Dear ImGui
   orxImGui_Init();
 ]
+[+inspector
+  // Initialize inspector
+  orxInspector_Init();
+]
 }
 
 void ExitExtensions()
@@ -100,6 +107,10 @@ void ExitExtensions()
 [+imgui
   // Exit from Dear ImGui
   orxImGui_Exit();
+]
+[+inspector
+  // Exit from inspector
+  orxInspector_Exit();
 ]
 [+remote
   // Exit from remote support
