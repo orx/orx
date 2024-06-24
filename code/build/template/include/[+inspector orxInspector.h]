@@ -27,7 +27,7 @@ orxBOOL                                     orxInspector_IsObjectRegistered(cons
 #define orxINSPECTOR_KZ_INPUT_INSPECT       "Inspect"
 #define orxINSPECTOR_KZ_PARAM_HIGHLIGHT     "highlight"
 
-#define orxINSPECTOR_KU32_TABLE_FLAGS       (ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable)
+#define orxINSPECTOR_KU32_TABLE_FLAGS       (ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchProp)
 
 
 #ifdef orxINSPECTOR_IMPL
