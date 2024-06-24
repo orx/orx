@@ -12,6 +12,7 @@ void                                        orxInspector_Init();
 void                                        orxInspector_Exit();
 orxSTATUS                                   orxInspector_RegisterObject(const orxOBJECT *_pstObject);
 orxSTATUS                                   orxInspector_UnregisterObject(const orxOBJECT *_pstObject);
+orxBOOL                                     orxInspector_IsObjectRegistered(const orxOBJECT *_pstObject);
 
 
 //! Defines
@@ -69,9 +70,11 @@ orxVECTOR *orxInspector_GetHighlightColor(const orxOBJECT *_pstObject, orxVECTOR
 
 #ifdef orxINSPECTOR_IMPL
 
+//! TODO: COMPLIANCE
 #include <array>
 #include <vector>
 
+//! TODO: COMPLIANCE
 using buf_t = std::array<orxCHAR, 1024>;
 buf_t GetCStringCopy(const orxSTRING src)
 {
@@ -81,20 +84,20 @@ buf_t GetCStringCopy(const orxSTRING src)
   return buffer;
 }
 
+//! TODO: COMPLIANCE
 buf_t GetConfigStringCopy(const orxSTRING key)
 {
   return GetCStringCopy(orxConfig_GetString(key));
 }
 
+//! TODO: COMPLIANCE
 buf_t GetConfigStringCopy(const orxSTRING key, orxS32 index)
 {
   return GetCStringCopy(orxConfig_GetListString(key, index));
 }
 
-/// @brief Table row for a single config key and value
-/// @param key Config key to display
-/// @param editable The widget will be editable if the value is true, otherwise it will be static
-/// @param section If a section name is provided, it will be included in the table row
+
+//! TODO: COMPLIANCE
 void ConfigValueTableRow(const orxSTRING key, bool editable, const orxSTRING section = orxSTRING_EMPTY)
 {
   ImGui::TableNextRow();
@@ -206,40 +209,43 @@ void ConfigValueTableRow(const orxSTRING key, bool editable, const orxSTRING sec
   }
 }
 
-/// @brief Show object GUID with a copy button
-/// @param object GUID will be taken from this object
-void ObjectGUIDWithCopy(const orxOBJECT *_pstObject)
+void orxInspector_InspectObjectGUID(const orxOBJECT *_pstObject)
 {
+  orxCHAR acGUID[20];
+  
   // Get object guid
-  orxCHAR guid[20];
-  orxInspector_PrintGUID(_pstObject, guid, sizeof(guid));
-  ImGui::TextUnformatted(guid);
+  orxInspector_PrintGUID(_pstObject, acGUID, sizeof(acGUID));
+  ImGui::TextUnformatted(acGUID);
   ImGui::SameLine();
+
   // Make the guid easy to copy to the clipboard for use in commands
   if(ImGui::Button("Copy"))
   {
-    ImGui::SetClipboardText(guid);
+    ImGui::SetClipboardText(acGUID);
   }
+  
+  // Done!
+  return;
 }
 
-/// @brief Setup header row for an object table
-void ObjectTableHeadersRow()
+void orxInspector_InspectObjectHeader()
 {
   // Table header initialization
   ImGui::TableSetupColumn("Name");
   ImGui::TableSetupColumn("GUID");
   ImGui::TableSetupColumn("Inspector");
   ImGui::TableHeadersRow();
+  
+  // Done!
+  return;
 }
 
-/// @brief Object table row, including inspector button
-/// @param object Object to show in row
-void ObjectButtonRow(const orxOBJECT *_pstObject)
+void orxInspector_InspectObjectButton(const orxOBJECT *_pstObject)
 {
   ImGui::TableNextColumn();
   ImGui::TextUnformatted(orxObject_GetName(_pstObject));
   ImGui::TableNextColumn();
-  ObjectGUIDWithCopy(_pstObject);
+  orxInspector_InspectObjectGUID(_pstObject);
   ImGui::TableNextColumn();
   if(ImGui::Button("Inspect"))
   {
@@ -247,75 +253,90 @@ void ObjectButtonRow(const orxOBJECT *_pstObject)
   }
 }
 
-/// @brief Parent object inspector. Only shows if object has a parent object.
-/// @param object Object to retrieve parent from
-void ParentObject(const orxOBJECT *_pstObject)
+void orxInspector_InspectParent(const orxOBJECT *_pstObject)
 {
-  auto parent = orxOBJECT(orxObject_GetParent(_pstObject));
-  if(parent != orxNULL && ImGui::CollapsingHeader("Parent"))
+  if(ImGui::CollapsingHeader("Parent"))
   {
-    ImGui::PushID(parent);
-    if(ImGui::BeginTable("Parent", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
+    orxOBJECT *pstParent = orxOBJECT(orxObject_GetParent(_pstObject));
+    if(pstParent != orxNULL)
     {
-      ObjectTableHeadersRow();
-      ObjectButtonRow(parent);
+      ImGui::PushID(pstParent);
+      
+      if(ImGui::BeginTable("Parent", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
+      {
+        orxInspector_InspectObjectHeader();
+        orxInspector_InspectObjectButton(pstParent);
+      }
+      ImGui::EndTable();
+      
+      ImGui::PopID();
     }
-    ImGui::EndTable();
-    ImGui::PopID();
   }
+  
+  // Done!
+  return;
 }
 
-/// @brief Sibling objects inspector. Only shows if object has one or more sibling objects.
-/// @param object Object to retrieve siblings from
-void SiblingObjects(const orxOBJECT *_pstObject)
+void orxInspector_InspectSiblings(const orxOBJECT *_pstObject)
 {
-  auto parent = orxOBJECT(orxObject_GetParent(_pstObject));
-  if(parent != orxNULL)
+  if(ImGui::CollapsingHeader("Siblings"))
   {
-    auto firstSibling = orxObject_GetChild(parent);
-    if(firstSibling != orxNULL && ImGui::CollapsingHeader("Siblings"))
+    orxOBJECT *pstParent = orxOBJECT(orxObject_GetParent(_pstObject));
+    if(pstParent != orxNULL)
     {
-      if(ImGui::BeginTable("Siblings", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
+      orxOBJECT *pstFirstSibling = orxObject_GetChild(pstParent);
+      if(pstFirstSibling != orxNULL)
       {
-        ObjectTableHeadersRow();
-        for(orxOBJECT *sibling = firstSibling; sibling != orxNULL; sibling = orxObject_GetSibling(sibling))
+        if(ImGui::BeginTable("Siblings", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
         {
-          if(sibling != _pstObject)
+          orxInspector_InspectObjectHeader();
+          for(orxOBJECT *pstSibling = pstFirstSibling;
+              pstSibling != orxNULL;
+              pstSibling = orxObject_GetSibling(pstSibling))
           {
-            ImGui::PushID(sibling);
-            ObjectButtonRow(sibling);
-            ImGui::PopID();
+            if(pstSibling != _pstObject)
+            {
+              ImGui::PushID(pstSibling);
+              orxInspector_InspectObjectButton(pstSibling);
+              ImGui::PopID();
+            }
           }
+        }
+        ImGui::EndTable();
+      }
+    }
+  }
+  
+  // Done!
+  return;
+}
+
+void orxInspector_InspectChildren(const orxOBJECT *_pstObject)
+{
+  if(ImGui::CollapsingHeader("Children"))
+  {
+    orxOBJECT *pstChild = orxObject_GetChild(_pstObject);
+    if(pstChild != orxNULL)
+    {
+      if(ImGui::BeginTable("Children", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
+      {
+        orxInspector_InspectObjectHeader();
+        for(; pstChild != orxNULL; pstChild = orxObject_GetSibling(pstChild))
+        {
+          ImGui::PushID(pstChild);
+          orxInspector_InspectObjectButton(pstChild);
+          ImGui::PopID();
         }
       }
       ImGui::EndTable();
     }
   }
+  
+  // Done!
+  return;
 }
 
-/// @brief Child objects inspector. Only shows if object has one or more child objects.
-/// @param object Object to retrieve children from
-void ChildObjects(const orxOBJECT *_pstObject)
-{
-  auto firstChild = orxObject_GetChild(_pstObject);
-  if(firstChild != orxNULL && ImGui::CollapsingHeader("Children"))
-  {
-    if(ImGui::BeginTable("Children", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
-    {
-      ObjectTableHeadersRow();
-      for(orxOBJECT *child = firstChild; child != orxNULL; child = orxObject_GetSibling(child))
-      {
-        ImGui::PushID(child);
-        ObjectButtonRow(child);
-        ImGui::PopID();
-      }
-    }
-    ImGui::EndTable();
-  }
-}
-
-/// @brief Object status inspector
-/// @param object Object to retrieve status data from
+//! TODO: COMPLIANCE
 void Status(const orxOBJECT *_pstObject)
 {
   // Do nothing if the object is invalid/null
@@ -332,7 +353,7 @@ void Status(const orxOBJECT *_pstObject)
       ImGui::TableNextColumn();
       ImGui::TextUnformatted("GUID");
       ImGui::TableNextColumn();
-      ObjectGUIDWithCopy(_pstObject);
+      orxInspector_InspectObjectGUID(_pstObject);
 
       // Life time
       ImGui::TableNextColumn();
@@ -398,9 +419,7 @@ void Status(const orxOBJECT *_pstObject)
   }
 }
 
-/// @brief Object configuration inspector
-/// @param section Configuration section to render, including inherited sections
-/// @param editable Configuration is editable if orxTRUE. Configuration is static if orxFALSE.
+//! TODO: COMPLIANCE
 void Config(const orxSTRING section, bool editable)
 {
   if(ImGui::CollapsingHeader("Config"))
@@ -510,16 +529,14 @@ void Config(const orxSTRING section, bool editable)
   }
 }
 
-/// @brief Information on the shaders applied to an object
+//! TODO: COMPLIANCE
 struct ObjectShaderSpec
 {
   int shaderCount{0};             // Number of shaders applied to an object
   bool hasHighlightShader{false}; // True if the inspector highlight shader is applied, otherwise false
 };
 
-/// @brief Get information on the shaders applied to an object
-/// @param object Object to check
-/// @return Shader information for the object
+//! TODO: COMPLIANCE
 ObjectShaderSpec GetObjectShaderSpec(const orxOBJECT *_pstObject)
 {
   ObjectShaderSpec spec{};
@@ -553,8 +570,7 @@ ObjectShaderSpec GetObjectShaderSpec(const orxOBJECT *_pstObject)
   return spec;
 }
 
-/// @brief Show a checkbox to enable/disable a shader on an object to highlight it visually
-/// @param object Object to apply/remove shader from in response to the checkbox state
+//! TODO: COMPLIANCE
 void HighlightShaderCheckbox(orxOBJECT *_pstObject)
 {
   if(orxObject_GetWorkingGraphic(_pstObject) != orxNULL)
@@ -585,8 +601,7 @@ void HighlightShaderCheckbox(orxOBJECT *_pstObject)
   }
 }
 
-/// @brief Object active shader inspector
-/// @param object Object to retrieve shader information from
+//! TODO: COMPLIANCE
 void Shaders(const orxOBJECT *_pstObject)
 {
   auto shaderSpec = GetObjectShaderSpec(_pstObject);
@@ -613,8 +628,7 @@ void Shaders(const orxOBJECT *_pstObject)
   }
 }
 
-/// @brief Object graphic inspector, showing currently active graphic for an object. Only shows if the object has a graphic or animation.
-/// @param object Object to retrieve graphic information from
+//! TODO: COMPLIANCE
 void Graphic(const orxOBJECT *_pstObject)
 {
   auto graphic = orxObject_GetWorkingGraphic(_pstObject);
@@ -706,31 +720,34 @@ void Graphic(const orxOBJECT *_pstObject)
   }
 }
 
-/// @brief Object inspector window
-/// @param object Object to inspect
 void orxInspector_InspectObject(orxOBJECT *_pstObject)
 {
-  bool registered = true;
-  auto name = orxObject_GetName(_pstObject);
+  bool bRegistered = true;
+  const orxSTRING zName = orxObject_GetName(_pstObject);
+
   ImGui::PushID(_pstObject);
-  if(ImGui::Begin(name, &registered))
+  if(ImGui::Begin(zName, &bRegistered))
   {
     HighlightShaderCheckbox(_pstObject);
     Status(_pstObject);
-    Config(name, true);
+    Config(zName, true);
     Graphic(_pstObject);
     Shaders(_pstObject);
-    ParentObject(_pstObject);
-    SiblingObjects(_pstObject);
-    ChildObjects(_pstObject);
+    orxInspector_InspectParent(_pstObject);
+    orxInspector_InspectSiblings(_pstObject);
+    orxInspector_InspectChildren(_pstObject);
   }
   ImGui::End();
   ImGui::PopID();
-  if(registered == false)
+
+  if(bRegistered == false)
   {
     orxInspector_UnregisterObject(_pstObject);
     orxObject_RemoveShader(_pstObject, sstInspector.zShader);
   }
+
+  // Done!
+  return;
 }
 
 void orxInspector_CommandRegisterObject(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -753,6 +770,9 @@ void orxInspector_CommandRegisterObject(orxU32 _u32ArgNumber, const orxCOMMAND_V
       _pstResult->u64Value = _astArgList[0].u64Value;
     }
   }
+
+  // Done!
+  return;
 }
 
 void orxInspector_CommandUnregisterObject(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -775,6 +795,26 @@ void orxInspector_CommandUnregisterObject(orxU32 _u32ArgNumber, const orxCOMMAND
       _pstResult->u64Value = _astArgList[0].u64Value;
     }
   }
+
+  // Done!
+  return;
+}
+
+void orxInspector_CommandIsObjectRegistered(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  // Update result
+  _pstResult->bValue = orxFALSE;
+
+  // Gets object
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  // Update result
+  _pstResult->bValue = orxInspector_IsObjectRegistered(pstObject);
+
+  // Done!
+  return;
 }
 
 orxSTATUS orxInspector_EventHandler(const orxEVENT *_pstEvent)
@@ -813,8 +853,15 @@ void orxInspector_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
     // Found?
     if(pstObject != orxNULL)
     {
-      // Register it
-      orxInspector_RegisterObject(pstObject);
+      // Toggle its registration
+      if(orxInspector_IsObjectRegistered(pstObject))
+      {
+        orxInspector_UnregisterObject(pstObject);
+      }
+      else
+      {
+        orxInspector_RegisterObject(pstObject);
+      }
     }
   }
 
@@ -873,6 +920,7 @@ void orxInspector_Init()
     // Register commands
     orxCOMMAND_REGISTER_CORE_COMMAND(Inspector, RegisterObject, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
     orxCOMMAND_REGISTER_CORE_COMMAND(Inspector, UnregisterObject, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+    orxCOMMAND_REGISTER_CORE_COMMAND(Inspector, IsObjectRegistered, "Registered?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
     // Enable input set
     orxInput_EnableSet(sstInspector.zInputSet, orxTRUE);
@@ -900,6 +948,7 @@ void orxInspector_Exit()
     // Unregister commands
     orxCOMMAND_UNREGISTER_CORE_COMMAND(Inspector, RegisterObject);
     orxCOMMAND_UNREGISTER_CORE_COMMAND(Inspector, UnregisterObject);
+    orxCOMMAND_UNREGISTER_CORE_COMMAND(Inspector, IsObjectRegistered);
 
     // Remove event handler
     orxEvent_RemoveHandler(orxEVENT_TYPE_SHADER, orxInspector_EventHandler);
@@ -958,6 +1007,24 @@ orxSTATUS orxInspector_UnregisterObject(const orxOBJECT *_pstObject)
 
   // Done!
   return eResult;
+}
+
+orxBOOL orxInspector_IsObjectRegistered(const orxOBJECT *_pstObject)
+{
+  orxBOOL bResult = orxFALSE;
+
+  // Valid?
+  if(_pstObject != orxNULL)
+  {
+    orxCHAR acGUID[32];
+    orxInspector_PrintGUID(_pstObject, acGUID, sizeof(acGUID));
+    orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
+    bResult = orxConfig_GetBool(acGUID);
+    orxConfig_PopSection();
+  }
+
+  // Done!
+  return bResult;
 }
 
 #endif // orxINSPECTOR_IMPL
