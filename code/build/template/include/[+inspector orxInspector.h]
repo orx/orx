@@ -209,7 +209,7 @@ void ConfigValueTableRow(const orxSTRING key, bool editable, const orxSTRING sec
   }
 }
 
-void orxInspector_InspectObjectGUID(const orxOBJECT *_pstObject)
+void orxInspector_ShowObjectGUID(const orxOBJECT *_pstObject)
 {
   orxCHAR acGUID[20];
   
@@ -228,7 +228,7 @@ void orxInspector_InspectObjectGUID(const orxOBJECT *_pstObject)
   return;
 }
 
-void orxInspector_InspectObjectHeader()
+void orxInspector_ShowObjectHeader()
 {
   // Table header initialization
   ImGui::TableSetupColumn("Name");
@@ -240,12 +240,12 @@ void orxInspector_InspectObjectHeader()
   return;
 }
 
-void orxInspector_InspectObjectButton(const orxOBJECT *_pstObject)
+void orxInspector_ShowObjectButton(const orxOBJECT *_pstObject)
 {
   ImGui::TableNextColumn();
   ImGui::TextUnformatted(orxObject_GetName(_pstObject));
   ImGui::TableNextColumn();
-  orxInspector_InspectObjectGUID(_pstObject);
+  orxInspector_ShowObjectGUID(_pstObject);
   ImGui::TableNextColumn();
   if(ImGui::Button("Inspect"))
   {
@@ -253,7 +253,7 @@ void orxInspector_InspectObjectButton(const orxOBJECT *_pstObject)
   }
 }
 
-void orxInspector_InspectParent(const orxOBJECT *_pstObject)
+void orxInspector_ShowParent(const orxOBJECT *_pstObject)
 {
   if(ImGui::CollapsingHeader("Parent"))
   {
@@ -264,8 +264,8 @@ void orxInspector_InspectParent(const orxOBJECT *_pstObject)
       
       if(ImGui::BeginTable("Parent", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
       {
-        orxInspector_InspectObjectHeader();
-        orxInspector_InspectObjectButton(pstParent);
+        orxInspector_ShowObjectHeader();
+        orxInspector_ShowObjectButton(pstParent);
       }
       ImGui::EndTable();
       
@@ -277,7 +277,7 @@ void orxInspector_InspectParent(const orxOBJECT *_pstObject)
   return;
 }
 
-void orxInspector_InspectSiblings(const orxOBJECT *_pstObject)
+void orxInspector_ShowSiblings(const orxOBJECT *_pstObject)
 {
   if(ImGui::CollapsingHeader("Siblings"))
   {
@@ -289,7 +289,7 @@ void orxInspector_InspectSiblings(const orxOBJECT *_pstObject)
       {
         if(ImGui::BeginTable("Siblings", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
         {
-          orxInspector_InspectObjectHeader();
+          orxInspector_ShowObjectHeader();
           for(orxOBJECT *pstSibling = pstFirstSibling;
               pstSibling != orxNULL;
               pstSibling = orxObject_GetSibling(pstSibling))
@@ -297,7 +297,7 @@ void orxInspector_InspectSiblings(const orxOBJECT *_pstObject)
             if(pstSibling != _pstObject)
             {
               ImGui::PushID(pstSibling);
-              orxInspector_InspectObjectButton(pstSibling);
+              orxInspector_ShowObjectButton(pstSibling);
               ImGui::PopID();
             }
           }
@@ -311,7 +311,7 @@ void orxInspector_InspectSiblings(const orxOBJECT *_pstObject)
   return;
 }
 
-void orxInspector_InspectChildren(const orxOBJECT *_pstObject)
+void orxInspector_ShowChildren(const orxOBJECT *_pstObject)
 {
   if(ImGui::CollapsingHeader("Children"))
   {
@@ -320,11 +320,11 @@ void orxInspector_InspectChildren(const orxOBJECT *_pstObject)
     {
       if(ImGui::BeginTable("Children", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
       {
-        orxInspector_InspectObjectHeader();
+        orxInspector_ShowObjectHeader();
         for(; pstChild != orxNULL; pstChild = orxObject_GetSibling(pstChild))
         {
           ImGui::PushID(pstChild);
-          orxInspector_InspectObjectButton(pstChild);
+          orxInspector_ShowObjectButton(pstChild);
           ImGui::PopID();
         }
       }
@@ -336,87 +336,96 @@ void orxInspector_InspectChildren(const orxOBJECT *_pstObject)
   return;
 }
 
-//! TODO: COMPLIANCE
-void Status(const orxOBJECT *_pstObject)
+void orxInspector_ShowStatus(const orxOBJECT *_pstObject)
 {
-  // Do nothing if the object is invalid/null
-  if(!_pstObject)
+  if(_pstObject != orxNULL)
   {
-    return;
-  }
-
-  if(ImGui::CollapsingHeader("Status"))
-  {
-    if(ImGui::BeginTable("Status", 2, orxINSPECTOR_KU32_TABLE_FLAGS))
+    if(ImGui::CollapsingHeader("Status"))
     {
-      // GUID
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted("GUID");
-      ImGui::TableNextColumn();
-      orxInspector_InspectObjectGUID(_pstObject);
+      if(ImGui::BeginTable("Status", 2, orxINSPECTOR_KU32_TABLE_FLAGS))
+      {
+        // GUID
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("GUID");
+        ImGui::TableNextColumn();
+        orxInspector_ShowObjectGUID(_pstObject);
 
-      // Life time
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted("Life time");
-      ImGui::TableNextColumn();
-      ImGui::Text("%0.1f", orxObject_GetLifeTime(_pstObject));
+        // Group
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Group");
+        ImGui::TableNextColumn();
+        ImGui::Text("%s", orxString_GetFromID(orxObject_GetGroupID(_pstObject)));
 
-      // Active time
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted("Active time");
-      ImGui::TableNextColumn();
-      ImGui::Text("%0.1f", orxObject_GetActiveTime(_pstObject));
+        // Life time
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Life time");
+        ImGui::TableNextColumn();
+        ImGui::Text("%0.1f", orxObject_GetLifeTime(_pstObject));
 
-      // Group
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted("Group");
-      ImGui::TableNextColumn();
-      ImGui::Text("%s", orxString_GetFromID(orxObject_GetGroupID(_pstObject)));
+        // Active time
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Active time");
+        ImGui::TableNextColumn();
+        ImGui::Text("%0.1f", orxObject_GetActiveTime(_pstObject));
 
-      // Current animation
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted("Animation");
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted(orxObject_GetCurrentAnim(_pstObject));
+        // Current animation
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Animation");
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted(orxObject_GetCurrentAnim(_pstObject));
 
-      // World position
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted("Position");
-      ImGui::TableNextColumn();
-      orxVECTOR position;
-      orxObject_GetWorldPosition(_pstObject, &position);
-      ImGui::Text("(%0.1f, %0.1f, %0.1f)", position.fX, position.fY, position.fZ);
+        // World position
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Position");
+        ImGui::TableNextColumn();
+        orxVECTOR position;
+        orxObject_GetWorldPosition(_pstObject, &position);
+        ImGui::Text("(%0.1f, %0.1f, %0.1f)", position.fX, position.fY, position.fZ);
 
-      // Velocity
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted("Speed");
-      ImGui::TableNextColumn();
-      orxVECTOR speed;
-      orxObject_GetSpeed(_pstObject, &speed);
-      ImGui::Text("(%0.1f, %0.1f)", speed.fX, speed.fY);
+        // Velocity
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Speed");
+        ImGui::TableNextColumn();
+        orxVECTOR speed;
+        orxObject_GetSpeed(_pstObject, &speed);
+        ImGui::Text("(%0.1f, %0.1f)", speed.fX, speed.fY);
 
-      // Rotation
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted("Rotation");
-      ImGui::TableNextColumn();
-      ImGui::Text("%0.1f degrees", orxObject_GetRotation(_pstObject) * orxMATH_KF_RAD_TO_DEG);
+        // Rotation
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Rotation");
+        ImGui::TableNextColumn();
+        ImGui::Text("%0.1f degrees", orxObject_GetRotation(_pstObject) * orxMATH_KF_RAD_TO_DEG);
 
-      // Angular velocity
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted("Angular velocity");
-      ImGui::TableNextColumn();
-      ImGui::Text("%0.1f degrees/second", orxObject_GetAngularVelocity(_pstObject) * orxMATH_KF_RAD_TO_DEG);
+        // Angular velocity
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Angular velocity");
+        ImGui::TableNextColumn();
+        ImGui::Text("%0.1f degrees/second", orxObject_GetAngularVelocity(_pstObject) * orxMATH_KF_RAD_TO_DEG);
 
-      // Scale
-      ImGui::TableNextColumn();
-      ImGui::TextUnformatted("Scale");
-      ImGui::TableNextColumn();
-      orxVECTOR scale;
-      orxObject_GetScale(_pstObject, &scale);
-      ImGui::Text("(%0.1f, %0.1f)", scale.fX, scale.fY);
+        // Scale
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Scale");
+        ImGui::TableNextColumn();
+        orxVECTOR scale;
+        orxObject_GetScale(_pstObject, &scale);
+        ImGui::Text("(%0.2f, %0.2f)", scale.fX, scale.fY);
+
+        // Flip state of the object
+        orxBOOL bFlipX, bFlipY;
+        orxObject_GetFlip(_pstObject, &bFlipX, &bFlipY);
+
+        // Show information on scale
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Flip");
+        ImGui::TableNextColumn();
+        ImGui::Text("(%s, %s)", (bFlipX ? "Flip X" : "Normal X"), (bFlipY ? "Flip Y" : "Normal Y"));
+      }
+      ImGui::EndTable();
     }
-    ImGui::EndTable();
   }
+  
+  // Done!
+  return;
 }
 
 //! TODO: COMPLIANCE
@@ -580,7 +589,7 @@ void HighlightShaderCheckbox(orxOBJECT *_pstObject)
     orxVECTOR highlightColor;
     orxInspector_GetHighlightColor(_pstObject, &highlightColor);
     ImVec4 highlightColorIm = {highlightColor.fR, highlightColor.fG, highlightColor.fB, 1.0};
-    ImGui::TextColored(highlightColorIm, "Highlight with shader");
+    ImGui::TextColored(highlightColorIm, "Shader Highlight");
     ImGui::SameLine();
 
     // The highlight is active if we have a non-NULL pointer to the highlight shader
@@ -628,99 +637,103 @@ void Shaders(const orxOBJECT *_pstObject)
   }
 }
 
-//! TODO: COMPLIANCE
-void Graphic(const orxOBJECT *_pstObject)
+void orxInspector_ShowGraphic(const orxOBJECT *_pstObject)
 {
-  auto graphic = orxObject_GetWorkingGraphic(_pstObject);
-  auto texture = orxObject_GetWorkingTexture(_pstObject);
-  auto text = orxObject_GetTextString(_pstObject);
-  if((graphic != orxNULL && texture != orxNULL || text != orxSTRING_EMPTY) && ImGui::CollapsingHeader("Graphic"))
+  if(ImGui::CollapsingHeader("Graphic"))
   {
-    // Setup table columns
-    if(ImGui::BeginTable("Graphic", 2, orxINSPECTOR_KU32_TABLE_FLAGS))
+    orxGRAPHIC     *pstGraphic  = orxObject_GetWorkingGraphic(_pstObject);
+    orxTEXTURE     *pstTexture  = orxObject_GetWorkingTexture(_pstObject);
+    const orxSTRING zText       = orxObject_GetTextString(_pstObject);
+    if((pstGraphic != orxNULL)
+    && ((pstTexture != orxNULL)
+     || (zText != orxSTRING_EMPTY)))
     {
-      if(text != orxSTRING_EMPTY)
-      {
-        // Show object text
-
-        // Identify type of graphic
-        ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Text");
-        // Show graphic content
-        ImGui::TableNextColumn();
-        ImGui::TextUnformatted(text);
-      }
-      else
+      // Setup table columns
+      if(ImGui::BeginTable("Graphic", 2, orxINSPECTOR_KU32_TABLE_FLAGS))
       {
         // Show object graphic
 
-        // Scale of graphic
-        orxVECTOR scale;
-        orxObject_GetScale(_pstObject, &scale);
-
-        // Show information on scale
-        ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Scale");
-        ImGui::TableNextColumn();
-        ImGui::Text("(%0.1f, %0.1f)", scale.fX, scale.fY);
-
         // Flip state of the graphic
-        orxBOOL flipX, flipY;
-        orxObject_GetFlip(_pstObject, &flipX, &flipY);
+        orxBOOL bFlipX, bFlipY;
+        orxGraphic_GetFlip(pstGraphic, &bFlipX, &bFlipY);
 
         // Show information on scale
         ImGui::TableNextColumn();
         ImGui::TextUnformatted("Flip");
         ImGui::TableNextColumn();
-        ImGui::Text("(%s, %s)", (flipX ? "Flip X" : "Normal X"), (flipY ? "Flip Y" : "Normal Y"));
+        ImGui::Text("(%s, %s)", (bFlipX ? "Flip X" : "Normal X"), (bFlipY ? "Flip Y" : "Normal Y"));
 
-        // Identify type of graphic
-        ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Texture");
-
-        // Show graphic content
-        ImGui::TableNextColumn();
-        // Get overall texture dimensions
-        orxFLOAT textureWidth, textureHeight;
-        orxTexture_GetSize(texture, &textureWidth, &textureHeight);
-
-        // Get the origin and size of the active graphic
-        orxVECTOR origin, size;
-        orxGraphic_GetOrigin(graphic, &origin);
-        orxGraphic_GetSize(graphic, &size);
-
-        // Find the location of the graphic within the overall texture in normalized coordinates
-        ImVec2 uv0, uv1;
-        // Top left of the texture region
-        uv0.x = origin.fX / textureWidth;
-        uv0.y = origin.fY / textureHeight;
-        // Lower right of the texture region
-        uv1.x = (origin.fX + size.fX) / textureWidth;
-        uv1.y = (origin.fY + size.fY) / textureHeight;
-
-        // Flip uv coordinates if the object is flipped
-        ImVec2 uv0Temp{uv0};
-        if(flipX)
+        if(zText != orxSTRING_EMPTY)
         {
-          uv0.x = uv1.x;
-          uv1.x = uv0Temp.x;
-        }
-        if(flipY)
-        {
-          uv0.y = uv1.y;
-          uv1.y = uv0Temp.y;
-        }
+          // Show object text
 
-        // Get the texture and display the portion that matches the object's graphic
-        auto textureID = (ImTextureID)orxTexture_GetBitmap(texture);
-        ImGui::Image(textureID, {size.fX * scale.fX, size.fY * scale.fY}, uv0, uv1);
+          // Identify type of graphic
+          ImGui::TableNextColumn();
+          ImGui::TextUnformatted("Text");
+
+          // Show graphic content
+          ImGui::TableNextColumn();
+          ImGui::TextUnformatted(zText);
+        }
+        else
+        {
+
+          // Scale of graphic
+          orxVECTOR vScale;
+          orxObject_GetScale(_pstObject, &vScale);
+
+          // Identify type of graphic
+          ImGui::TableNextColumn();
+          ImGui::TextUnformatted("Texture");
+
+          // Show graphic content
+          ImGui::TableNextColumn();
+          // Get overall texture dimensions
+          orxFLOAT fTextureWidth, fTextureHeight;
+          orxTexture_GetSize(pstTexture, &fTextureWidth, &fTextureHeight);
+
+          // Get the origin and size of the active graphic
+          orxVECTOR vOrigin, vSize;
+          orxGraphic_GetOrigin(pstGraphic, &vOrigin);
+          orxGraphic_GetSize(pstGraphic, &vSize);
+
+          // Find the location of the graphic within the overall texture in normalized coordinates
+          ImVec2 avUVs[2];
+          // Top left of the texture region
+          avUVs[0].x = vOrigin.fX / fTextureWidth;
+          avUVs[0].y = vOrigin.fY / fTextureHeight;
+          // Lower right of the texture region
+          avUVs[1].x = (vOrigin.fX + vSize.fX) / fTextureWidth;
+          avUVs[1].y = (vOrigin.fY + vSize.fY) / fTextureHeight;
+
+          // Swap UV coordinates if the object is flipped
+          if(bFlipX)
+          {
+            float fTemp = avUVs[0].x;
+            avUVs[0].x  = avUVs[1].x;
+            avUVs[1].x  = fTemp;
+          }
+          if(bFlipY)
+          {
+            float fTemp = avUVs[0].y;
+            avUVs[0].y  = avUVs[1].y;
+            avUVs[1].y  = fTemp;
+          }
+
+          // Get the texture and display the portion that matches the object's graphic
+          ImTextureID textureID = (ImTextureID)orxTexture_GetBitmap(pstTexture);
+          ImGui::Image(textureID, {vSize.fX * vScale.fX, vSize.fY * vScale.fY}, avUVs[0], avUVs[1]);
+        }
       }
+      ImGui::EndTable();
     }
-    ImGui::EndTable();
   }
+  
+  // Done!
+  return;
 }
 
-void orxInspector_InspectObject(orxOBJECT *_pstObject)
+void orxInspector_ShowObject(orxOBJECT *_pstObject)
 {
   bool bRegistered = true;
   const orxSTRING zName = orxObject_GetName(_pstObject);
@@ -729,13 +742,13 @@ void orxInspector_InspectObject(orxOBJECT *_pstObject)
   if(ImGui::Begin(zName, &bRegistered))
   {
     HighlightShaderCheckbox(_pstObject);
-    Status(_pstObject);
+    orxInspector_ShowStatus(_pstObject);
     Config(zName, true);
-    Graphic(_pstObject);
+    orxInspector_ShowGraphic(_pstObject);
     Shaders(_pstObject);
-    orxInspector_InspectParent(_pstObject);
-    orxInspector_InspectSiblings(_pstObject);
-    orxInspector_InspectChildren(_pstObject);
+    orxInspector_ShowParent(_pstObject);
+    orxInspector_ShowSiblings(_pstObject);
+    orxInspector_ShowChildren(_pstObject);
   }
   ImGui::End();
   ImGui::PopID();
@@ -879,7 +892,7 @@ void orxInspector_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
       orxOBJECT *pstObject = orxOBJECT(orxStructure_Get(u64GUID));
       if(pstObject != orxNULL)
       {
-        orxInspector_InspectObject(pstObject);
+        orxInspector_ShowObject(pstObject);
       }
       else
       {
