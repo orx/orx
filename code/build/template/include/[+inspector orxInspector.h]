@@ -17,7 +17,7 @@ orxSTATUS                                   orxInspector_UnregisterObject(const 
 //! Defines
 
 #define orxINSPECTOR_KZ_CONFIG_SECTION      "Inspector"
-#define orxINSPECTOR_KZ_CONFIG_RUNTIME      "InspectorRuntime" 
+#define orxINSPECTOR_KZ_CONFIG_RUNTIME      "InspectorRuntime"
 
 #define orxINSPECTOR_KZ_CONFIG_INPUT        "Input"
 #define orxINSPECTOR_KZ_CONFIG_SHADER       "Shader"
@@ -53,7 +53,7 @@ orxVECTOR *orxInspector_GetHighlightColor(const orxOBJECT *_pstObject, orxVECTOR
 {
   orxCOLOR  stColor;
   orxU64    u64GUID;
-  
+
   // Pick a color based on the object's GUID
   u64GUID = orxStructure_GetGUID(_pstObject);
   orxVector_Set(&(stColor.vHSL), (orxMath_Sin((orxFLOAT)(u64GUID & 0xFFFFFFFF)) + 1.0f) / 2.0f, orxFLOAT_1, orx2F(0.7f));
@@ -69,10 +69,7 @@ orxVECTOR *orxInspector_GetHighlightColor(const orxOBJECT *_pstObject, orxVECTOR
 
 #ifdef orxINSPECTOR_IMPL
 
-#include <inttypes.h>
 #include <array>
-#include <set>
-#include <string>
 #include <vector>
 
 using buf_t = std::array<orxCHAR, 1024>;
@@ -103,7 +100,7 @@ void ConfigValueTableRow(const orxSTRING key, bool editable, const orxSTRING sec
   ImGui::TableNextRow();
 
   // Draw the section column
-  if(section != orxNULL && section != orxSTRING_EMPTY)
+  if(section != orxSTRING_EMPTY)
   {
     ImGui::TableNextColumn();
     ImGui::Text("%s", section);
@@ -122,7 +119,6 @@ void ConfigValueTableRow(const orxSTRING key, bool editable, const orxSTRING sec
     {
       const size_t elements = orxConfig_GetListCount(key);
       std::vector<buf_t> buffers{};
-      std::set<size_t> removedElements{};
       bool listElementChanged = false;
       for(auto i = 0; i < elements; i++)
       {
@@ -475,30 +471,34 @@ void Config(const orxSTRING section, bool editable)
         ImGui::BeginTable("Custom fields", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
     {
       ImGui::PushID("Custom");
-      // Table header setup
+
       ImGui::TableSetupColumn("Section");
       ImGui::TableSetupColumn("Key");
       ImGui::TableSetupColumn("Value");
       ImGui::TableHeadersRow();
-      auto elements = orxConfig_GetListCount(orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS);
-      for(int element = 0; element < elements; element++)
-      {
-        auto path = std::string(orxConfig_GetListString(orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS, element));
-        if(path.length() == 0)
-        {
-          // Empty string, nothing to do
-          continue;
-        }
 
-        ImGui::PushID(element);
-        // Section is the substring from the start until before the first '.'
-        auto section = path.substr(0, path.find('.'));
-        // Key is the part after the first '.' until the end
-        auto key = path.substr(path.find('.') + 1, path.length());
-        orxConfig_PushSection(section.data());
-        ConfigValueTableRow(key.data(), editable, section.data());
-        orxConfig_PopSection();
-        ImGui::PopID();
+      for(orxU32 u32Element = 0, u32ElementCount = orxConfig_GetListCount(orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS);
+          u32Element < u32ElementCount;
+          u32Element++)
+      {
+        const orxSTRING zPath = orxConfig_GetListString(orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS, u32Element);
+        if(*zPath != orxCHAR_NULL)
+        {
+          orxS32 s32SeparatorIndex = orxString_SearchCharIndex(zPath, '.', 0);
+          if(s32SeparatorIndex > 0)
+          {
+            orxCHAR acSection[1024];
+
+            ImGui::PushID(u32Element);
+
+            orxString_NPrint(acSection, sizeof(acSection), "%.*s", s32SeparatorIndex, zPath);
+            orxConfig_PushSection(acSection);
+            ConfigValueTableRow(zPath + s32SeparatorIndex + 1, editable, acSection);
+            orxConfig_PopSection();
+
+            ImGui::PopID();
+          }
+        }
       }
       ImGui::PopID();
 
@@ -805,11 +805,11 @@ void orxInspector_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
   if(orxInput_HasBeenActivated(orxINSPECTOR_KZ_INPUT_INSPECT))
   {
     orxVECTOR vMousePosition;
-    
+
     // Pick object
     orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePosition), orxNULL, &vMousePosition);
     orxOBJECT *pstObject = orxObject_Pick(&vMousePosition, orxSTRINGID_UNDEFINED);
-    
+
     // Found?
     if(pstObject != orxNULL)
     {
@@ -841,7 +841,7 @@ void orxInspector_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
     }
   }
   orxConfig_PopSection();
-  
+
   // Done!
   return;
 }
@@ -858,7 +858,7 @@ void orxInspector_Init()
     orxMemory_Zero(&(sstInspector), sizeof(orxINSPECTOR));
     sstInspector.zInputSet  = orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_INPUT);
     sstInspector.zShader    = orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_SHADER);
-  
+
     // Register clock callback to render inspector windows on each frame
     orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxInspector_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER);
 
@@ -883,7 +883,7 @@ void orxInspector_Init()
     // Pop config section
     orxConfig_PopSection();
   }
-  
+
   // Done!
   return;
 }
@@ -909,11 +909,11 @@ void orxInspector_Exit()
 
     // Clean runtime config section
     orxConfig_ClearSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
-    
+
     // Update status
     sstInspector.bInit = orxFALSE;
   }
-  
+
   // Done!
   return;
 }
@@ -931,11 +931,11 @@ orxSTATUS orxInspector_RegisterObject(const orxOBJECT *_pstObject)
     orxConfig_SetBool(acGUID, orxTRUE);
     orxConfig_PopSection();
 
-    // Update status    
+    // Update status
     eResult = orxSTATUS_SUCCESS;
   }
 
-  // Done!  
+  // Done!
   return eResult;
 }
 
@@ -952,11 +952,11 @@ orxSTATUS orxInspector_UnregisterObject(const orxOBJECT *_pstObject)
     orxConfig_ClearValue(acGUID);
     orxConfig_PopSection();
 
-    // Update result    
+    // Update result
     eResult = orxSTATUS_SUCCESS;
   }
 
-  // Done!  
+  // Done!
   return eResult;
 }
 
