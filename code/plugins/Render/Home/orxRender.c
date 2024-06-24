@@ -2655,11 +2655,14 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
       if(_pstEvent->eID == orxSYSTEM_EVENT_CLOSE)
       {
         /* Unregisters render & present functions */
-        orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
-        orxClock_Unregister(sstRender.pstClock, orxRender_Home_Present);
+        if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_REGISTERED))
+        {
+          orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
+          orxClock_Unregister(sstRender.pstClock, orxRender_Home_Present);
 
-        /* Updates flags */
-        sstRender.u32Flags &= ~orxRENDER_KU32_STATIC_FLAG_REGISTERED;
+          /* Updates flags */
+          sstRender.u32Flags &= ~orxRENDER_KU32_STATIC_FLAG_REGISTERED;
+        }
       }
 
       break;
