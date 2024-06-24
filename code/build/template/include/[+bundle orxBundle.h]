@@ -65,6 +65,7 @@ const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 
 #endif
 
+
 //! Variables / Structures
 
 typedef struct BundleData
