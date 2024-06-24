@@ -255,10 +255,10 @@ void orxInspector_ShowObjectButton(const orxOBJECT *_pstObject)
 
 void orxInspector_ShowParent(const orxOBJECT *_pstObject)
 {
-  if(ImGui::CollapsingHeader("Parent"))
+  orxOBJECT *pstParent = orxOBJECT(orxObject_GetParent(_pstObject));
+  if(pstParent != orxNULL)
   {
-    orxOBJECT *pstParent = orxOBJECT(orxObject_GetParent(_pstObject));
-    if(pstParent != orxNULL)
+    if(ImGui::CollapsingHeader("Parent"))
     {
       ImGui::PushID(pstParent);
       
@@ -279,13 +279,17 @@ void orxInspector_ShowParent(const orxOBJECT *_pstObject)
 
 void orxInspector_ShowSiblings(const orxOBJECT *_pstObject)
 {
-  if(ImGui::CollapsingHeader("Siblings"))
+  orxOBJECT *pstParent = orxOBJECT(orxObject_GetParent(_pstObject));
+  if(pstParent != orxNULL)
   {
-    orxOBJECT *pstParent = orxOBJECT(orxObject_GetParent(_pstObject));
-    if(pstParent != orxNULL)
+    orxOBJECT *pstFirstSibling = orxObject_GetChild(pstParent);
+    if(pstFirstSibling == _pstObject)
     {
-      orxOBJECT *pstFirstSibling = orxObject_GetChild(pstParent);
-      if(pstFirstSibling != orxNULL)
+      pstFirstSibling = orxObject_GetSibling(pstFirstSibling);
+    }
+    if(pstFirstSibling != orxNULL)
+    {
+      if(ImGui::CollapsingHeader("Siblings"))
       {
         if(ImGui::BeginTable("Siblings", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
         {
@@ -313,10 +317,10 @@ void orxInspector_ShowSiblings(const orxOBJECT *_pstObject)
 
 void orxInspector_ShowChildren(const orxOBJECT *_pstObject)
 {
-  if(ImGui::CollapsingHeader("Children"))
+  orxOBJECT *pstChild = orxObject_GetChild(_pstObject);
+  if(pstChild != orxNULL)
   {
-    orxOBJECT *pstChild = orxObject_GetChild(_pstObject);
-    if(pstChild != orxNULL)
+    if(ImGui::CollapsingHeader("Children"))
     {
       if(ImGui::BeginTable("Children", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
       {
@@ -491,8 +495,8 @@ void orxInspector_ShowConfig(const orxSTRING _zSection)
     orxConfig_PushSection(_zSection);
     orxU32 u32ElementCount = orxConfig_GetListCount(orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS);
     if((u32ElementCount > 0)
-    && ImGui::CollapsingHeader("Custom fields")
-    && ImGui::BeginTable("Custom fields", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
+    && ImGui::CollapsingHeader("Custom Fields")
+    && ImGui::BeginTable("Custom Fields", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
     {
       ImGui::PushID("Custom");
 
@@ -537,115 +541,103 @@ void orxInspector_ShowConfig(const orxSTRING _zSection)
   return;
 }
 
-//! TODO: COMPLIANCE
-struct ObjectShaderSpec
+void orxInspector_ShowHighlightCheckbox(orxOBJECT *_pstObject)
 {
-  int shaderCount{0};             // Number of shaders applied to an object
-  bool hasHighlightShader{false}; // True if the inspector highlight shader is applied, otherwise false
-};
-
-//! TODO: COMPLIANCE
-ObjectShaderSpec GetObjectShaderSpec(const orxOBJECT *_pstObject)
-{
-  ObjectShaderSpec spec{};
-
-  // Get a reference to the highlighting shader
-  auto shader = orxShader_CreateFromConfig(sstInspector.zShader);
-  orxASSERT(shader != orxNULL);
-  // Get the shader's ID
-  auto highlightShaderID = orxShader_GetID(shader);
-  // Clean up our shader reference
-  orxShader_Delete(shader);
-
-  auto shaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
-  if(shaderPointer != orxNULL)
-  {
-    for(int i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
-    {
-      auto objectShader = orxShaderPointer_GetShader(shaderPointer, i);
-      if(objectShader != orxNULL)
-      {
-        spec.shaderCount++;
-        auto objectShaderID = orxShader_GetID(objectShader);
-        if(objectShaderID == highlightShaderID)
-        {
-          spec.hasHighlightShader = true;
-        }
-      }
-    }
-  }
-
-  return spec;
-}
-
-//! TODO: COMPLIANCE
-void HighlightShaderCheckbox(orxOBJECT *_pstObject)
-{
+  // Has a working graphic?
   if(orxObject_GetWorkingGraphic(_pstObject) != orxNULL)
   {
-    auto shaderSpec = GetObjectShaderSpec(_pstObject);
-
-    orxVECTOR highlightColor;
-    orxInspector_GetHighlightColor(_pstObject, &highlightColor);
-    ImVec4 highlightColorIm = {highlightColor.fR, highlightColor.fG, highlightColor.fB, 1.0};
-    ImGui::TextColored(highlightColorIm, "Shader Highlight");
+    orxVECTOR vColor;
+    orxInspector_GetHighlightColor(_pstObject, &vColor);
+    ImVec4 vHighlight = {vColor.fR, vColor.fG, vColor.fB, 1.0f};
+    ImGui::TextColored(vHighlight, "Highlight");
     ImGui::SameLine();
 
-    // The highlight is active if we have a non-NULL pointer to the highlight shader
-    bool highlight = shaderSpec.hasHighlightShader;
-    if(ImGui::Checkbox("##highlight", &highlight))
+    orxSHADERPOINTER *pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
+    orxU32 u32HighlightShaderIndex = orxU32_UNDEFINED;
+    if(pstShaderPointer != orxNULL)
     {
-      if(highlight && !shaderSpec.hasHighlightShader)
+      for(orxU32 i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
       {
-        // No existing shaders, so we can add the highlight directly to the object
-        orxObject_AddShader(_pstObject, sstInspector.zShader);
-      }
-      else if(!highlight && shaderSpec.hasHighlightShader)
-      {
-        // We have the shader set, so remove it
-        orxObject_RemoveShader(_pstObject, sstInspector.zShader);
-      }
-    }
-  }
-}
-
-//! TODO: COMPLIANCE
-void Shaders(const orxOBJECT *_pstObject)
-{
-  auto shaderSpec = GetObjectShaderSpec(_pstObject);
-
-  if(shaderSpec.shaderCount > 0 && ImGui::CollapsingHeader("Shaders"))
-  {
-    if(ImGui::BeginTable("Shaders", 2, orxINSPECTOR_KU32_TABLE_FLAGS))
-    {
-      auto shaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
-      orxASSERT(shaderPointer != orxNULL);
-      for(int i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
-      {
-        auto shader = orxShaderPointer_GetShader(shaderPointer, i);
-        if(shader != orxNULL)
+        const orxSHADER *pstShader = orxShaderPointer_GetShader(pstShaderPointer, i);
+        if((pstShader != orxNULL) && (orxString_Compare(orxShader_GetName(pstShader), sstInspector.zShader) == 0))
         {
-          ImGui::TableNextColumn();
-          ImGui::TextUnformatted("Name");
-          ImGui::TableNextColumn();
-          ImGui::TextUnformatted(orxShader_GetName(shader));
+          u32HighlightShaderIndex = i;
+          break;
         }
       }
     }
-    ImGui::EndTable();
+
+    bool bHighlight = (u32HighlightShaderIndex != orxU32_UNDEFINED) ? true : false;
+    if(ImGui::Checkbox("##highlight", &bHighlight))
+    {
+      if(bHighlight != false)
+      {
+        if(u32HighlightShaderIndex == orxU32_UNDEFINED)
+        {
+          orxObject_AddShader(_pstObject, sstInspector.zShader);
+        }
+      }
+      else
+      {
+        if(u32HighlightShaderIndex != orxU32_UNDEFINED)
+        {
+          orxObject_RemoveShader(_pstObject, sstInspector.zShader);
+        }
+      }
+    }
   }
+  
+  // Done!
+  return;
+}
+
+void orxInspacter_ShowShaders(const orxOBJECT *_pstObject)
+{
+  orxBOOL bTableInitialized = orxFALSE;
+
+  orxSHADERPOINTER *pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
+  if(pstShaderPointer != orxNULL)
+  {
+    for(orxU32 i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
+    {
+      const orxSHADER *pstShader = orxShaderPointer_GetShader(pstShaderPointer, i);
+      if((pstShader != orxNULL) && (orxString_Compare(orxShader_GetName(pstShader), sstInspector.zShader) != 0))
+      {
+        if(bTableInitialized == orxFALSE)
+        {
+          if((!ImGui::CollapsingHeader("Shaders"))
+          || (bTableInitialized = orxTRUE, !ImGui::BeginTable("Shaders", 2, orxINSPECTOR_KU32_TABLE_FLAGS)))
+          {
+            break;
+          }
+        }
+
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted("Name");
+        ImGui::TableNextColumn();
+        ImGui::TextUnformatted(orxShader_GetName(pstShader));
+      }
+    }
+    if(bTableInitialized != orxFALSE)
+    {
+      ImGui::EndTable();
+    }
+  }
+  
+  // Done!
+  return;
 }
 
 void orxInspector_ShowGraphic(const orxOBJECT *_pstObject)
 {
-  if(ImGui::CollapsingHeader("Graphic"))
+  orxGRAPHIC     *pstGraphic  = orxObject_GetWorkingGraphic(_pstObject);
+  orxTEXTURE     *pstTexture  = orxObject_GetWorkingTexture(_pstObject);
+  const orxSTRING zText       = orxObject_GetTextString(_pstObject);
+  if((pstGraphic != orxNULL)
+  && ((pstTexture != orxNULL)
+   || (zText != orxSTRING_EMPTY)))
   {
-    orxGRAPHIC     *pstGraphic  = orxObject_GetWorkingGraphic(_pstObject);
-    orxTEXTURE     *pstTexture  = orxObject_GetWorkingTexture(_pstObject);
-    const orxSTRING zText       = orxObject_GetTextString(_pstObject);
-    if((pstGraphic != orxNULL)
-    && ((pstTexture != orxNULL)
-     || (zText != orxSTRING_EMPTY)))
+    if(ImGui::CollapsingHeader("Graphic"))
     {
       // Setup table columns
       if(ImGui::BeginTable("Graphic", 2, orxINSPECTOR_KU32_TABLE_FLAGS))
@@ -740,11 +732,11 @@ void orxInspector_ShowObject(orxOBJECT *_pstObject)
   ImGui::PushID(_pstObject);
   if(ImGui::Begin(zName, &bRegistered))
   {
-    HighlightShaderCheckbox(_pstObject);
+    orxInspector_ShowHighlightCheckbox(_pstObject);
     orxInspector_ShowStatus(_pstObject);
     orxInspector_ShowConfig(zName);
     orxInspector_ShowGraphic(_pstObject);
-    Shaders(_pstObject);
+    orxInspacter_ShowShaders(_pstObject);
     orxInspector_ShowParent(_pstObject);
     orxInspector_ShowSiblings(_pstObject);
     orxInspector_ShowChildren(_pstObject);
