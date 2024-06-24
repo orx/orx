@@ -98,7 +98,7 @@ buf_t GetConfigStringCopy(const orxSTRING key, orxS32 index)
 
 
 //! TODO: COMPLIANCE
-void ConfigValueTableRow(const orxSTRING key, bool editable, const orxSTRING section = orxSTRING_EMPTY)
+void ConfigValueTableRow(const orxSTRING key, bool editable = true, const orxSTRING section = orxSTRING_EMPTY)
 {
   ImGui::TableNextRow();
 
@@ -428,39 +428,31 @@ void orxInspector_ShowStatus(const orxOBJECT *_pstObject)
   return;
 }
 
-//! TODO: COMPLIANCE
-void Config(const orxSTRING section, bool editable)
+void orxInspector_ShowConfig(const orxSTRING _zSection)
 {
   if(ImGui::CollapsingHeader("Config"))
   {
-    const auto initialIndent = 5.0f;
-    ImGui::Indent(initialIndent);
-
-    auto ConfigRows = [editable]()
-    {
-      auto keys = orxConfig_GetKeyCount();
-      for(orxU32 i = 0; i < keys; i++)
-      {
-        auto key = orxConfig_GetKey(i);
-        ConfigValueTableRow(key, editable);
-      }
-    };
+    float fInitialIndent = 5.0f;
+    ImGui::Indent(fInitialIndent);
 
     // Track additional indentation levels from parent config sections
-    auto indentOffset = 2.0f;
+    float fIndentOffset = 2.0f;
 
     // Object config section and its inheritance hierarchy
-    if(ImGui::CollapsingHeader(section))
+    if(ImGui::CollapsingHeader(_zSection))
     {
       // Push the selected config section to make it active
-      orxConfig_PushSection(section);
+      orxConfig_PushSection(_zSection);
 
       // Create a table with one row per key/value pair in the section
-      if(ImGui::BeginTable(section, 2, orxINSPECTOR_KU32_TABLE_FLAGS))
+      if(ImGui::BeginTable(_zSection, 2, orxINSPECTOR_KU32_TABLE_FLAGS))
       {
         // Section config
-        ImGui::PushID(section);
-        ConfigRows();
+        ImGui::PushID(_zSection);
+        for(orxU32 i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
+        {
+          ConfigValueTableRow(orxConfig_GetKey(i), true);
+        }
         ImGui::PopID();
 
         ImGui::EndTable();
@@ -468,35 +460,39 @@ void Config(const orxSTRING section, bool editable)
 
       orxConfig_PopSection();
 
-      auto parent = orxConfig_GetParent(section);
-      auto tableFlags = ImGuiTreeNodeFlags_DefaultOpen;
-      while(parent != orxNULL && parent != orxSTRING_EMPTY && ImGui::CollapsingHeader(parent, tableFlags) && ImGui::BeginTable(parent, 2, orxINSPECTOR_KU32_TABLE_FLAGS))
+      for(const orxSTRING zParent = orxConfig_GetParent(_zSection);
+          (zParent != orxNULL) && (zParent != orxSTRING_EMPTY) && ImGui::CollapsingHeader(zParent, ImGuiTreeNodeFlags_DefaultOpen) && ImGui::BeginTable(zParent, 2, orxINSPECTOR_KU32_TABLE_FLAGS);
+          zParent = orxConfig_GetParent(zParent))
       {
         ImGui::Indent(5.0f);
-        indentOffset += 5.0f;
+        fIndentOffset += 5.0f;
+
         // Show the config from the parent section too
-        ImGui::PushID(parent);
-        orxConfig_PushSection(parent);
-        ConfigRows();
+        ImGui::PushID(zParent);
+        orxConfig_PushSection(zParent);
+        for(orxU32 i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
+        {
+          ConfigValueTableRow(orxConfig_GetKey(i), true);
+        }
         orxConfig_PopSection();
         ImGui::PopID();
-        parent = orxConfig_GetParent(parent);
 
         ImGui::EndTable();
       }
     }
 
     // Reset indentation from config sections if any was added
-    if(indentOffset > 0.0f)
+    if(fIndentOffset > 0.0f)
     {
-      ImGui::Indent(-indentOffset);
+      ImGui::Indent(-fIndentOffset);
     }
 
     // Other custom config values to show
-    orxConfig_PushSection(section);
-    if(orxConfig_HasValueNoCheck(orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS) &&
-        ImGui::CollapsingHeader("Custom fields") &&
-        ImGui::BeginTable("Custom fields", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
+    orxConfig_PushSection(_zSection);
+    orxU32 u32ElementCount = orxConfig_GetListCount(orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS);
+    if((u32ElementCount > 0)
+    && ImGui::CollapsingHeader("Custom fields")
+    && ImGui::BeginTable("Custom fields", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
     {
       ImGui::PushID("Custom");
 
@@ -505,7 +501,7 @@ void Config(const orxSTRING section, bool editable)
       ImGui::TableSetupColumn("Value");
       ImGui::TableHeadersRow();
 
-      for(orxU32 u32Element = 0, u32ElementCount = orxConfig_GetListCount(orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS);
+      for(orxU32 u32Element = 0;
           u32Element < u32ElementCount;
           u32Element++)
       {
@@ -521,7 +517,7 @@ void Config(const orxSTRING section, bool editable)
 
             orxString_NPrint(acSection, sizeof(acSection), "%.*s", s32SeparatorIndex, zPath);
             orxConfig_PushSection(acSection);
-            ConfigValueTableRow(zPath + s32SeparatorIndex + 1, editable, acSection);
+            ConfigValueTableRow(zPath + s32SeparatorIndex + 1, true, acSection);
             orxConfig_PopSection();
 
             ImGui::PopID();
@@ -534,8 +530,11 @@ void Config(const orxSTRING section, bool editable)
     }
     orxConfig_PopSection();
 
-    ImGui::Indent(-initialIndent);
+    ImGui::Indent(-fInitialIndent);
   }
+
+  // Done!
+  return;
 }
 
 //! TODO: COMPLIANCE
@@ -743,7 +742,7 @@ void orxInspector_ShowObject(orxOBJECT *_pstObject)
   {
     HighlightShaderCheckbox(_pstObject);
     orxInspector_ShowStatus(_pstObject);
-    Config(zName, true);
+    orxInspector_ShowConfig(zName);
     orxInspector_ShowGraphic(_pstObject);
     Shaders(_pstObject);
     orxInspector_ShowParent(_pstObject);
