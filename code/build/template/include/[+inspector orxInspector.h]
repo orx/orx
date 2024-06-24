@@ -30,6 +30,9 @@ orxBOOL                                     orxInspector_IsObjectRegistered(cons
 #define orxINSPECTOR_KU32_TABLE_FLAGS       (ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable)
 
 
+#ifdef orxINSPECTOR_IMPL
+
+
 //! Variables / Structures
 
 typedef struct __orxINSPECTOR_t
@@ -67,8 +70,6 @@ orxVECTOR *orxInspector_GetHighlightColor(const orxOBJECT *_pstObject, orxVECTOR
 
 
 //! Code
-
-#ifdef orxINSPECTOR_IMPL
 
 //! TODO: COMPLIANCE
 #include <array>
