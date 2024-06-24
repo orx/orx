@@ -25,7 +25,7 @@ orxBOOL                                     orxInspector_IsObjectRegistered(cons
 #define orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS "InspectorFields"
 
 #define orxINSPECTOR_KZ_INPUT_INSPECT       "Inspect"
-#define orxINSPECTOR_KZ_SHADER_HIGHLIGHT    "highlight"
+#define orxINSPECTOR_KZ_PARAM_HIGHLIGHT     "highlight"
 
 #define orxINSPECTOR_KU32_TABLE_FLAGS       (ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable)
 
@@ -251,6 +251,9 @@ void orxInspector_ShowObjectButton(const orxOBJECT *_pstObject)
   {
     orxInspector_RegisterObject(_pstObject);
   }
+  
+  // Done!
+  return;
 }
 
 void orxInspector_ShowParent(const orxOBJECT *_pstObject)
@@ -830,7 +833,7 @@ orxSTATUS orxInspector_EventHandler(const orxEVENT *_pstEvent)
 
   // Inspector highlight?
   if((orxString_Compare(pstPayload->zShaderName, sstInspector.zShader) == 0)
-  && (orxString_Compare(pstPayload->zParamName, orxINSPECTOR_KZ_SHADER_HIGHLIGHT) == 0))
+  && (orxString_Compare(pstPayload->zParamName, orxINSPECTOR_KZ_PARAM_HIGHLIGHT) == 0))
   {
     // Set the highlight color for the shader
     orxInspector_GetHighlightColor(orxOBJECT(_pstEvent->hSender), &(pstPayload->vValue));
@@ -907,8 +910,8 @@ void orxInspector_Init()
 
     // Inits variables
     orxMemory_Zero(&(sstInspector), sizeof(orxINSPECTOR));
-    sstInspector.zInputSet  = orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_INPUT);
-    sstInspector.zShader    = orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_SHADER);
+    sstInspector.zInputSet  = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_INPUT) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_INPUT) : orxINSPECTOR_KZ_CONFIG_SECTION;
+    sstInspector.zShader    = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_SHADER) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_SHADER) : orxINSPECTOR_KZ_CONFIG_SECTION;
 
     // Register clock callback to render inspector windows on each frame
     orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxInspector_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER);
