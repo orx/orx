@@ -996,7 +996,7 @@ orxBOOL orxInspector_IsObjectRegistered(const orxOBJECT *_pstObject)
     orxCHAR acGUID[32];
     orxInspector_PrintGUID(_pstObject, acGUID, sizeof(acGUID));
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
-    bResult = orxConfig_GetBool(acGUID);
+    bResult = ((orxConfig_HasValueNoCheck(acGUID) != orxFALSE) && (orxConfig_GetBool(acGUID) != orxFALSE)) ? orxTRUE : orxFALSE;
     orxConfig_PopSection();
   }
 
