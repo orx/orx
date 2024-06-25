@@ -27,6 +27,9 @@ orxBOOL                                     orxInspector_IsObjectRegistered(cons
 #define orxINSPECTOR_KZ_INPUT_INSPECT       "Inspect"
 #define orxINSPECTOR_KZ_PARAM_HIGHLIGHT     "highlight"
 
+#define orxINSPECTOR_KU32_TEXT_BANK_SIZE    256
+#define orxINSPECTOR_KU32_TEXT_BUFFER_SIZE  1024
+
 #define orxINSPECTOR_KU32_TABLE_FLAGS       (ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchProp)
 
 
@@ -39,6 +42,7 @@ typedef struct __orxINSPECTOR_t
 {
   const orxSTRING zInputSet;
   const orxSTRING zShader;
+  orxBANK        *pstTextBank;
   orxBOOL         bInit;
 
 } orxINSPECTOR;
@@ -51,6 +55,9 @@ static orxINSPECTOR sstInspector;
 void orxInspector_PrintGUID(const orxOBJECT *_pstObject, orxCHAR *_acBuffer, orxU32 _u32Size)
 {
   orxString_NPrint(_acBuffer, _u32Size, "0x%016llX", orxStructure_GetGUID(orxSTRUCTURE(_pstObject)));
+  
+  // Done!
+  return;
 }
 
 orxVECTOR *orxInspector_GetHighlightColor(const orxOBJECT *_pstObject, orxVECTOR *_pvColor)
@@ -71,143 +78,110 @@ orxVECTOR *orxInspector_GetHighlightColor(const orxOBJECT *_pstObject, orxVECTOR
 
 //! Code
 
-//! TODO: COMPLIANCE
-#include <array>
-#include <vector>
-
-//! TODO: COMPLIANCE
-using buf_t = std::array<orxCHAR, 1024>;
-buf_t GetCStringCopy(const orxSTRING src)
-{
-  buf_t buffer{};
-  auto copyLength = orxMIN(orxString_GetLength(src), buffer.size());
-  std::copy_n(src, copyLength, buffer.begin());
-  return buffer;
-}
-
-//! TODO: COMPLIANCE
-buf_t GetConfigStringCopy(const orxSTRING key)
-{
-  return GetCStringCopy(orxConfig_GetString(key));
-}
-
-//! TODO: COMPLIANCE
-buf_t GetConfigStringCopy(const orxSTRING key, orxS32 index)
-{
-  return GetCStringCopy(orxConfig_GetListString(key, index));
-}
-
-
-//! TODO: COMPLIANCE
-void ConfigValueTableRow(const orxSTRING key, bool editable = true, const orxSTRING section = orxSTRING_EMPTY)
+void orxInspector_ShowConfigRow(const orxSTRING _zKey, orxBOOL _bForceUpdate = orxFALSE, const orxSTRING _zSection = orxNULL)
 {
   ImGui::TableNextRow();
 
   // Draw the section column
-  if(section != orxSTRING_EMPTY)
+  if(_zSection != orxCHAR_NULL)
   {
     ImGui::TableNextColumn();
-    ImGui::Text("%s", section);
+    ImGui::Text("%s", _zSection);
   }
 
   // Draw the key column
   ImGui::TableNextColumn();
-  ImGui::Text("%s", key);
+  ImGui::Text("%s", _zKey);
 
   // Draw the value column
   ImGui::TableNextColumn();
-  if(editable)
+  ImGui::PushID(_zKey);
+  orxBOOL bHasValue = orxConfig_HasValueNoCheck(_zKey);
+  if((bHasValue != orxFALSE) && (orxConfig_IsList(_zKey) != orxFALSE))
   {
-    ImGui::PushID(key);
-    if(orxConfig_IsList(key))
+    orxBOOL bNeedUpdate = _bForceUpdate;
+    for(orxU32 i = 0, iCount = orxConfig_GetListCount(_zKey); i < iCount; i++)
     {
-      const size_t elements = orxConfig_GetListCount(key);
-      std::vector<buf_t> buffers{};
-      bool listElementChanged = false;
-      for(auto i = 0; i < elements; i++)
+      // Push a unique ID for each input
+      ImGui::PushID(i);
+
+      // Initialize buffer with the current content
+      orxCHAR *acBuffer = (orxCHAR *)orxBank_Allocate(sstInspector.pstTextBank);
+      orxString_NPrint(acBuffer, orxINSPECTOR_KU32_TEXT_BUFFER_SIZE, "%s", orxConfig_GetListString(_zKey, i));
+
+      // Input text widget
+      ImGui::InputText("", acBuffer, orxINSPECTOR_KU32_TEXT_BUFFER_SIZE);
+
+      // Track if the widget has received edits and lost focus
+      if(ImGui::IsItemDeactivated())
       {
-        // Push a unique ID for each input
-        ImGui::PushID(i);
-
-        // Initialize buffer with the current content
-        auto buffer = GetConfigStringCopy(key, i);
-
-        // Input text widget
-        ImGui::InputText("", buffer.data(), buffer.size());
-
-        // Track if the widget has received edits and lost focus
-        auto changed = ImGui::IsItemDeactivated();
-
-        // Input and button on the same line
-        ImGui::SameLine();
-
-        // Button to remove this list entry
-        auto removed = ImGui::Button("Remove");
-
-        // If we're not removing this entry, add it to the buffers defining this list
-        if(!removed)
-        {
-          buffers.push_back(buffer);
-        }
-
-        // Track if anything in the list has changed
-        listElementChanged = listElementChanged || changed || removed;
-        ImGui::PopID();
+        bNeedUpdate = orxTRUE;
       }
 
-      // Widget to add an element to the list
-      auto addedElement = ImGui::Button("Add list element");
-      if(addedElement)
-      {
-        // If we're adding an element then we're changing the list
-        listElementChanged = true;
+      // Input and button on the same line
+      ImGui::SameLine();
 
-        // Add an empty string as a placeholder for the new element
-        buffers.push_back({'\0'});
+      // Button to remove this list entry
+      if(ImGui::Button("Remove"))
+      {
+        orxBank_Free(sstInspector.pstTextBank, acBuffer);
+        bNeedUpdate = orxTRUE;
       }
 
-      if(listElementChanged)
-      {
-        // If any elements in the list have changed, update the list in config
-        std::vector<const orxSTRING> valuePtrs{};
-        for(auto i = 0; i < buffers.size(); i++)
-        {
-          valuePtrs.push_back(buffers[i].data());
-        }
-        const orxCHAR **pp = valuePtrs.data();
-        orxConfig_SetListString(key, pp, (orxU32)valuePtrs.size());
-      }
+      ImGui::PopID();
     }
-    else
+
+    // Widget to add an entry to the list
+    if(ImGui::Button("Add list entry"))
     {
-      auto buf = GetConfigStringCopy(key);
-      if(ImGui::InputText("", buf.data(), buf.size()))
-      {
-        orxConfig_SetString(key, buf.data());
-      }
+      // Request update
+      bNeedUpdate = orxTRUE;
+
+      // Add an empty string as a placeholder for the new entry
+      *(orxCHAR *)orxBank_Allocate(sstInspector.pstTextBank) = orxCHAR_NULL;
     }
-    ImGui::PopID();
+
+    // Need update?
+    if(bNeedUpdate != orxFALSE)
+    {
+      // Update the config list
+      const orxSTRING *azValues = (const orxSTRING *)alloca(orxBank_GetCount(sstInspector.pstTextBank) * sizeof(orxSTRING));
+      orxCHAR *acBuffer;
+      orxU32 u32Index;
+      for(u32Index = 0, acBuffer = (orxCHAR *)orxBank_GetNext(sstInspector.pstTextBank, orxNULL);
+          acBuffer != orxNULL;
+          u32Index++, acBuffer = (orxCHAR *)orxBank_GetNext(sstInspector.pstTextBank, acBuffer))
+      {
+        azValues[u32Index] = acBuffer;
+      }
+      orxConfig_SetListString(_zKey, azValues, orxBank_GetCount(sstInspector.pstTextBank));
+    }
+    
+    // Clear all buffers
+    orxBank_Clear(sstInspector.pstTextBank);
   }
   else
   {
-    if(orxConfig_IsList(key))
+    orxCHAR acBuffer[orxINSPECTOR_KU32_TEXT_BUFFER_SIZE];
+    if(bHasValue != orxFALSE)
     {
-      // Show all values from the list
-      if(ImGui::BeginCombo("", orxConfig_GetListString(key, 0)))
-      {
-        for(int i = 1; i < orxConfig_GetListCount(key); i++)
-        {
-          ImGui::Text("%s", orxConfig_GetListString(key, i));
-        }
-        ImGui::EndCombo();
-      }
+      orxSTRING zValue = orxConfig_DuplicateRawValue(_zKey);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", zValue);
+      orxString_Delete(zValue);
     }
     else
     {
-      // Show text representation of a single value
-      ImGui::Text("%s", orxConfig_GetString(key));
+      *acBuffer = orxCHAR_NULL;
+    }
+    if(ImGui::InputText("", acBuffer, sizeof(acBuffer)))
+    {
+      orxConfig_SetString(_zKey, acBuffer);
     }
   }
+  ImGui::PopID();
+  
+  // Done!
+  return;
 }
 
 void orxInspector_ShowObjectGUID(const orxOBJECT *_pstObject)
@@ -440,67 +414,54 @@ void orxInspector_ShowConfig(const orxSTRING _zSection)
 {
   if(ImGui::CollapsingHeader("Config"))
   {
-    float fInitialIndent = 5.0f;
-    ImGui::Indent(fInitialIndent);
-
     // Track additional indentation levels from parent config sections
-    float fIndentOffset = 2.0f;
+    float fIndentOffset = 5.0f;
+    ImGui::Indent(fIndentOffset);
 
     // Object config section and its inheritance hierarchy
     if(ImGui::CollapsingHeader(_zSection))
     {
-      // Push the selected config section to make it active
-      orxConfig_PushSection(_zSection);
-
       // Create a table with one row per key/value pair in the section
-      if(ImGui::BeginTable(_zSection, 2, orxINSPECTOR_KU32_TABLE_FLAGS))
-      {
-        // Section config
-        ImGui::PushID(_zSection);
-        for(orxU32 i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
-        {
-          ConfigValueTableRow(orxConfig_GetKey(i), true);
-        }
-        ImGui::PopID();
-
-        ImGui::EndTable();
-      }
-
-      orxConfig_PopSection();
-
-      for(const orxSTRING zParent = orxConfig_GetParent(_zSection);
-          (zParent != orxNULL) && (zParent != orxSTRING_EMPTY) && ImGui::CollapsingHeader(zParent, ImGuiTreeNodeFlags_DefaultOpen) && ImGui::BeginTable(zParent, 2, orxINSPECTOR_KU32_TABLE_FLAGS);
+      for(const orxSTRING zParent = _zSection;
+          (zParent != orxNULL) && (*zParent != orxCHAR_NULL);
           zParent = orxConfig_GetParent(zParent))
       {
         ImGui::Indent(5.0f);
         fIndentOffset += 5.0f;
 
-        // Show the config from the parent section too
-        ImGui::PushID(zParent);
-        orxConfig_PushSection(zParent);
-        for(orxU32 i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
+        if((zParent == _zSection)
+        || (ImGui::CollapsingHeader(zParent, ImGuiTreeNodeFlags_DefaultOpen)))
         {
-          ConfigValueTableRow(orxConfig_GetKey(i), true);
-        }
-        orxConfig_PopSection();
-        ImGui::PopID();
+          if(ImGui::BeginTable(zParent, 2, orxINSPECTOR_KU32_TABLE_FLAGS))
+          {
+            // Show the config from the parent section too
+            ImGui::PushID(zParent);
+            orxConfig_PushSection(zParent);
+            for(orxU32 i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
+            {
+              const orxSTRING zKey = orxConfig_GetKey(i);
+              orxInspector_ShowConfigRow(zKey, (orxString_Compare(zKey, orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS) == 0) ? orxTRUE : orxFALSE);
+            }
+            orxConfig_PopSection();
+            ImGui::PopID();
 
-        ImGui::EndTable();
+            ImGui::EndTable();
+          }
+        }
       }
     }
 
-    // Reset indentation from config sections if any was added
-    if(fIndentOffset > 0.0f)
-    {
-      ImGui::Indent(-fIndentOffset);
-    }
+    ImGui::Indent(-fIndentOffset);
+
+    fIndentOffset = 5.0f;
+    ImGui::Indent(fIndentOffset);
 
     // Other custom config values to show
     orxConfig_PushSection(_zSection);
     orxU32 u32ElementCount = orxConfig_GetListCount(orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS);
     if((u32ElementCount > 0)
-    && ImGui::CollapsingHeader("Custom Fields")
-    && ImGui::BeginTable("Custom Fields", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
+    && ImGui::CollapsingHeader("Inspector Fields")
+    && ImGui::BeginTable("Inspector Fields", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
     {
       ImGui::PushID("Custom");
 
@@ -525,7 +486,7 @@ void orxInspector_ShowConfig(const orxSTRING _zSection)
 
             orxString_NPrint(acSection, sizeof(acSection), "%.*s", s32SeparatorIndex, zPath);
             orxConfig_PushSection(acSection);
-            ConfigValueTableRow(zPath + s32SeparatorIndex + 1, true, acSection);
+            orxInspector_ShowConfigRow(zPath + s32SeparatorIndex + 1, orxFALSE, acSection);
             orxConfig_PopSection();
 
             ImGui::PopID();
@@ -538,7 +499,7 @@ void orxInspector_ShowConfig(const orxSTRING _zSection)
     }
     orxConfig_PopSection();
 
-    ImGui::Indent(-fInitialIndent);
+    ImGui::Indent(-fIndentOffset);
   }
 
   // Done!
@@ -639,7 +600,7 @@ void orxInspector_ShowGraphic(const orxOBJECT *_pstObject)
   const orxSTRING zText       = orxObject_GetTextString(_pstObject);
   if((pstGraphic != orxNULL)
   && ((pstTexture != orxNULL)
-   || (zText != orxSTRING_EMPTY)))
+   || (*zText != orxCHAR_NULL)))
   {
     if(ImGui::CollapsingHeader("Graphic"))
     {
@@ -658,7 +619,7 @@ void orxInspector_ShowGraphic(const orxOBJECT *_pstObject)
         ImGui::TableNextColumn();
         ImGui::Text("(%s, %s)", (bFlipX ? "Flip X" : "Normal X"), (bFlipY ? "Flip Y" : "Normal Y"));
 
-        if(zText != orxSTRING_EMPTY)
+        if(*zText != orxCHAR_NULL)
         {
           // Show object text
 
@@ -909,10 +870,14 @@ void orxInspector_Init()
     // Push config section
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_SECTION);
 
-    // Inits variables
+    // Init variables
     orxMemory_Zero(&(sstInspector), sizeof(orxINSPECTOR));
-    sstInspector.zInputSet  = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_INPUT) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_INPUT) : orxINSPECTOR_KZ_CONFIG_SECTION;
-    sstInspector.zShader    = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_SHADER) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_SHADER) : orxINSPECTOR_KZ_CONFIG_SECTION;
+    sstInspector.zInputSet    = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_INPUT) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_INPUT) : orxINSPECTOR_KZ_CONFIG_SECTION;
+    sstInspector.zShader      = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_SHADER) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_SHADER) : orxINSPECTOR_KZ_CONFIG_SECTION;
+
+    // Create text bank
+    sstInspector.pstTextBank  = orxBank_Create(orxINSPECTOR_KU32_TEXT_BANK_SIZE, orxINSPECTOR_KU32_TEXT_BUFFER_SIZE, orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_DEBUG);
+    orxASSERT(sstInspector.pstTextBank != orxNULL);
 
     // Register clock callback to render inspector windows on each frame
     orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxInspector_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER);
@@ -966,6 +931,10 @@ void orxInspector_Exit()
 
     // Clean runtime config section
     orxConfig_ClearSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
+
+    // Delete text bank
+    orxBank_Delete(sstInspector.pstTextBank);
+    sstInspector.pstTextBank = orxNULL;
 
     // Update status
     sstInspector.bInit = orxFALSE;
