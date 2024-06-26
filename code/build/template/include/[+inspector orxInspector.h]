@@ -20,12 +20,24 @@ orxBOOL                                     orxInspector_IsObjectRegistered(cons
 #define orxINSPECTOR_KZ_CONFIG_SECTION      "Inspector"
 #define orxINSPECTOR_KZ_CONFIG_RUNTIME      "InspectorRuntime"
 
-#define orxINSPECTOR_KZ_CONFIG_INPUT        "Input"
 #define orxINSPECTOR_KZ_CONFIG_SHADER       "Shader"
 #define orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS "InspectorFields"
 
+#define orxINSPECTOR_KZ_INPUT_SET           "orx:input:inspector"
 #define orxINSPECTOR_KZ_INPUT_INSPECT       "Inspect"
-#define orxINSPECTOR_KZ_PARAM_HIGHLIGHT     "highlight"
+
+#define orxINSPECTOR_KZ_SHADER_HIGHLIGHT    "highlight"
+#define orxINSPECTOR_KZ_SHADER_CONFIG                                                         \
+"UseCustomParam  = true\n"                                                                    \
+"ParamList       = texture # time # highlight\n"                                              \
+"time            = time 6.28\n"                                                               \
+"highlight       = (1, 1, 1)\n"                                                               \
+"Code            = \""                                                                        \
+"void main() {"                                                                               \
+"  vec2 p = gl_TexCoord[0].xy;"                                                               \
+"  vec4 textureCol = texture2D(texture, p);"                                                  \
+"  gl_FragColor = vec4(mix(textureCol.rgb, highlight, abs(sin(time)) / 2.0), textureCol.a);"  \
+"}\""
 
 #define orxINSPECTOR_KU32_TEXT_BANK_SIZE    256
 #define orxINSPECTOR_KU32_TEXT_BUFFER_SIZE  1024
@@ -40,7 +52,6 @@ orxBOOL                                     orxInspector_IsObjectRegistered(cons
 
 typedef struct __orxINSPECTOR_t
 {
-  const orxSTRING zInputSet;
   const orxSTRING zShader;
   orxBANK        *pstTextBank;
   orxBOOL         bInit;
@@ -55,7 +66,7 @@ static orxINSPECTOR sstInspector;
 void orxInspector_PrintGUID(const orxOBJECT *_pstObject, orxCHAR *_acBuffer, orxU32 _u32Size)
 {
   orxString_NPrint(_acBuffer, _u32Size, "0x%016llX", orxStructure_GetGUID(orxSTRUCTURE(_pstObject)));
-  
+
   // Done!
   return;
 }
@@ -156,7 +167,7 @@ void orxInspector_ShowConfigRow(const orxSTRING _zKey, orxBOOL _bForceUpdate = o
       }
       orxConfig_SetListString(_zKey, azValues, orxBank_GetCount(sstInspector.pstTextBank));
     }
-    
+
     // Clear all buffers
     orxBank_Clear(sstInspector.pstTextBank);
   }
@@ -179,7 +190,7 @@ void orxInspector_ShowConfigRow(const orxSTRING _zKey, orxBOOL _bForceUpdate = o
     }
   }
   ImGui::PopID();
-  
+
   // Done!
   return;
 }
@@ -187,7 +198,7 @@ void orxInspector_ShowConfigRow(const orxSTRING _zKey, orxBOOL _bForceUpdate = o
 void orxInspector_ShowObjectGUID(const orxOBJECT *_pstObject)
 {
   orxCHAR acGUID[20];
-  
+
   // Get object guid
   orxInspector_PrintGUID(_pstObject, acGUID, sizeof(acGUID));
   ImGui::TextUnformatted(acGUID);
@@ -198,7 +209,7 @@ void orxInspector_ShowObjectGUID(const orxOBJECT *_pstObject)
   {
     ImGui::SetClipboardText(acGUID);
   }
-  
+
   // Done!
   return;
 }
@@ -210,7 +221,7 @@ void orxInspector_ShowObjectHeader()
   ImGui::TableSetupColumn("GUID");
   ImGui::TableSetupColumn("Inspector");
   ImGui::TableHeadersRow();
-  
+
   // Done!
   return;
 }
@@ -226,7 +237,7 @@ void orxInspector_ShowObjectButton(const orxOBJECT *_pstObject)
   {
     orxInspector_RegisterObject(_pstObject);
   }
-  
+
   // Done!
   return;
 }
@@ -239,18 +250,18 @@ void orxInspector_ShowParent(const orxOBJECT *_pstObject)
     if(ImGui::CollapsingHeader("Parent"))
     {
       ImGui::PushID(pstParent);
-      
+
       if(ImGui::BeginTable("Parent", 3, orxINSPECTOR_KU32_TABLE_FLAGS))
       {
         orxInspector_ShowObjectHeader();
         orxInspector_ShowObjectButton(pstParent);
       }
       ImGui::EndTable();
-      
+
       ImGui::PopID();
     }
   }
-  
+
   // Done!
   return;
 }
@@ -288,7 +299,7 @@ void orxInspector_ShowSiblings(const orxOBJECT *_pstObject)
       }
     }
   }
-  
+
   // Done!
   return;
 }
@@ -313,7 +324,7 @@ void orxInspector_ShowChildren(const orxOBJECT *_pstObject)
       ImGui::EndTable();
     }
   }
-  
+
   // Done!
   return;
 }
@@ -405,7 +416,7 @@ void orxInspector_ShowStatus(const orxOBJECT *_pstObject)
       ImGui::EndTable();
     }
   }
-  
+
   // Done!
   return;
 }
@@ -551,7 +562,7 @@ void orxInspector_ShowHighlightCheckbox(orxOBJECT *_pstObject)
       }
     }
   }
-  
+
   // Done!
   return;
 }
@@ -588,7 +599,7 @@ void orxInspacter_ShowShaders(const orxOBJECT *_pstObject)
       ImGui::EndTable();
     }
   }
-  
+
   // Done!
   return;
 }
@@ -684,7 +695,7 @@ void orxInspector_ShowGraphic(const orxOBJECT *_pstObject)
       ImGui::EndTable();
     }
   }
-  
+
   // Done!
   return;
 }
@@ -795,7 +806,7 @@ orxSTATUS orxInspector_EventHandler(const orxEVENT *_pstEvent)
 
   // Inspector highlight?
   if((orxString_Compare(pstPayload->zShaderName, sstInspector.zShader) == 0)
-  && (orxString_Compare(pstPayload->zParamName, orxINSPECTOR_KZ_PARAM_HIGHLIGHT) == 0))
+  && (orxString_Compare(pstPayload->zParamName, orxINSPECTOR_KZ_SHADER_HIGHLIGHT) == 0))
   {
     // Set the highlight color for the shader
     orxInspector_GetHighlightColor(orxOBJECT(_pstEvent->hSender), &(pstPayload->vValue));
@@ -808,7 +819,7 @@ orxSTATUS orxInspector_EventHandler(const orxEVENT *_pstEvent)
 void orxInspector_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   // Push input set
-  orxInput_PushSet(sstInspector.zInputSet);
+  orxInput_PushSet(orxINSPECTOR_KZ_INPUT_SET);
 
   // Should inspect object?
   if(orxInput_HasBeenActivated(orxINSPECTOR_KZ_INPUT_INSPECT))
@@ -867,42 +878,55 @@ void orxInspector_Init()
   // Not already initialized?
   if(sstInspector.bInit == orxFALSE)
   {
-    // Push config section
-    orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_SECTION);
+    // Should be activated?
+    if(orxConfig_HasSection(orxINSPECTOR_KZ_CONFIG_SECTION) != orxFALSE)
+    {
+      const orxSTRING zShaderConfig = orxINSPECTOR_KZ_SHADER_CONFIG;
+      orxCHAR acBuffer[1024];
+      
+      // Push config section
+      orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_SECTION);
 
-    // Init variables
-    orxMemory_Zero(&(sstInspector), sizeof(orxINSPECTOR));
-    sstInspector.zInputSet    = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_INPUT) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_INPUT) : orxINSPECTOR_KZ_CONFIG_SECTION;
-    sstInspector.zShader      = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_SHADER) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_SHADER) : orxINSPECTOR_KZ_CONFIG_SECTION;
+      // Load shader config
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", zShaderConfig);
+      orxConfig_LoadFromMemory(acBuffer, sizeof(acBuffer));
+      
+      // Init variables
+      orxMemory_Zero(&(sstInspector), sizeof(orxINSPECTOR));
+      sstInspector.zShader      = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_SHADER) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_SHADER) : orxINSPECTOR_KZ_CONFIG_SECTION;
 
-    // Create text bank
-    sstInspector.pstTextBank  = orxBank_Create(orxINSPECTOR_KU32_TEXT_BANK_SIZE, orxINSPECTOR_KU32_TEXT_BUFFER_SIZE, orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_DEBUG);
-    orxASSERT(sstInspector.pstTextBank != orxNULL);
+      // Create text bank
+      sstInspector.pstTextBank  = orxBank_Create(orxINSPECTOR_KU32_TEXT_BANK_SIZE, orxINSPECTOR_KU32_TEXT_BUFFER_SIZE, orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_DEBUG);
+      orxASSERT(sstInspector.pstTextBank != orxNULL);
 
-    // Register clock callback to render inspector windows on each frame
-    orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxInspector_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER);
+      // Register clock callback to render inspector windows on each frame
+      orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxInspector_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER);
 
-    // Add event handler
-    orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxInspector_EventHandler);
-    orxEvent_SetHandlerIDFlags(orxInspector_EventHandler,
-                               orxEVENT_TYPE_SHADER,
-                               orxNULL,
-                               orxEVENT_GET_FLAG(orxSHADER_EVENT_SET_PARAM),
-                               orxEVENT_KU32_MASK_ID_ALL);
+      // Add event handler
+      orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxInspector_EventHandler);
+      orxEvent_SetHandlerIDFlags(orxInspector_EventHandler,
+                                 orxEVENT_TYPE_SHADER,
+                                 orxNULL,
+                                 orxEVENT_GET_FLAG(orxSHADER_EVENT_SET_PARAM),
+                                 orxEVENT_KU32_MASK_ID_ALL);
 
-    // Register commands
-    orxCOMMAND_REGISTER_CORE_COMMAND(Inspector, RegisterObject, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
-    orxCOMMAND_REGISTER_CORE_COMMAND(Inspector, UnregisterObject, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
-    orxCOMMAND_REGISTER_CORE_COMMAND(Inspector, IsObjectRegistered, "Registered?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+      // Register commands
+      orxCOMMAND_REGISTER_CORE_COMMAND(Inspector, RegisterObject, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+      orxCOMMAND_REGISTER_CORE_COMMAND(Inspector, UnregisterObject, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+      orxCOMMAND_REGISTER_CORE_COMMAND(Inspector, IsObjectRegistered, "Registered?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
-    // Enable input set
-    orxInput_EnableSet(sstInspector.zInputSet, orxTRUE);
+      // Enable input set
+      const orxSTRING zParent = orxConfig_GetParent(orxINSPECTOR_KZ_INPUT_SET);
+      orxConfig_SetParent(orxINSPECTOR_KZ_INPUT_SET, orxINSPECTOR_KZ_CONFIG_SECTION);
+      orxInput_EnableSet(orxINSPECTOR_KZ_INPUT_SET, orxTRUE);
+      orxConfig_SetParent(orxINSPECTOR_KZ_INPUT_SET, zParent);
 
-    // Update status
-    sstInspector.bInit = orxTRUE;
+      // Update status
+      sstInspector.bInit = orxTRUE;
 
-    // Pop config section
-    orxConfig_PopSection();
+      // Pop config section
+      orxConfig_PopSection();
+    }
   }
 
   // Done!
@@ -915,8 +939,8 @@ void orxInspector_Exit()
   if(sstInspector.bInit != orxFALSE)
   {
     // Disable input set
-    orxInput_EnableSet(sstInspector.zInputSet, orxFALSE);
-    orxInput_ClearSet(sstInspector.zInputSet);
+    orxInput_EnableSet(orxINSPECTOR_KZ_INPUT_SET, orxFALSE);
+    orxInput_ClearSet(orxINSPECTOR_KZ_INPUT_SET);
 
     // Unregister commands
     orxCOMMAND_UNREGISTER_CORE_COMMAND(Inspector, RegisterObject);
