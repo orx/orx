@@ -94,7 +94,7 @@ void orxInspector_ShowConfigRow(const orxSTRING _zKey, orxBOOL _bForceUpdate = o
   ImGui::TableNextRow();
 
   // Draw the section column
-  if(_zSection != orxCHAR_NULL)
+  if(_zSection != orxNULL)
   {
     ImGui::TableNextColumn();
     ImGui::Text("%s", _zSection);
