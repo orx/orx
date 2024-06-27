@@ -63,12 +63,16 @@ static orxINSPECTOR sstInspector;
 
 //! Helpers
 
-void orxInspector_PrintGUID(const orxOBJECT *_pstObject, orxCHAR *_acBuffer, orxU32 _u32Size)
+const orxSTRING orxInspector_PrintGUID(const orxOBJECT *_pstObject, const orxSTRING _zPrefix = orxNULL)
 {
-  orxString_NPrint(_acBuffer, _u32Size, "0x%016llX", orxStructure_GetGUID(orxSTRUCTURE(_pstObject)));
+  static orxCHAR sacBuffer[orxINSPECTOR_KU32_TEXT_BUFFER_SIZE];
+  orxString_NPrint(sacBuffer, sizeof(sacBuffer), "%s%s0x%016llX",
+                   (_zPrefix != orxNULL) ? _zPrefix : orxSTRING_EMPTY,
+                   (_zPrefix != orxNULL) ? "##" : orxSTRING_EMPTY,
+                   orxStructure_GetGUID(orxSTRUCTURE(_pstObject)));
 
   // Done!
-  return;
+  return sacBuffer;
 }
 
 orxVECTOR *orxInspector_GetHighlightColor(const orxOBJECT *_pstObject, orxVECTOR *_pvColor)
@@ -197,17 +201,15 @@ void orxInspector_ShowConfigRow(const orxSTRING _zKey, orxBOOL _bForceUpdate = o
 
 void orxInspector_ShowObjectGUID(const orxOBJECT *_pstObject)
 {
-  orxCHAR acGUID[32];
-
   // Get object guid
-  orxInspector_PrintGUID(_pstObject, acGUID, sizeof(acGUID));
-  ImGui::TextUnformatted(acGUID);
+  const orxSTRING zGUID = orxInspector_PrintGUID(_pstObject);
+  ImGui::TextUnformatted(zGUID);
   ImGui::SameLine();
 
   // Make the guid easy to copy to the clipboard for use in commands
   if(ImGui::Button("Copy"))
   {
-    ImGui::SetClipboardText(acGUID);
+    ImGui::SetClipboardText(zGUID);
   }
 
   // Done!
@@ -387,13 +389,13 @@ void orxInspector_ShowStatus(const orxOBJECT *_pstObject)
         ImGui::TableNextColumn();
         ImGui::TextUnformatted("Rotation");
         ImGui::TableNextColumn();
-        ImGui::Text("%0.1f degrees", orxObject_GetRotation(_pstObject) * orxMATH_KF_RAD_TO_DEG);
+        ImGui::Text("%0.1f °", orxObject_GetRotation(_pstObject) * orxMATH_KF_RAD_TO_DEG);
 
         // Angular velocity
         ImGui::TableNextColumn();
         ImGui::TextUnformatted("Angular velocity");
         ImGui::TableNextColumn();
-        ImGui::Text("%0.1f degrees/second", orxObject_GetAngularVelocity(_pstObject) * orxMATH_KF_RAD_TO_DEG);
+        ImGui::Text("%0.1f °/s", orxObject_GetAngularVelocity(_pstObject) * orxMATH_KF_RAD_TO_DEG);
 
         // Scale
         ImGui::TableNextColumn();
@@ -703,13 +705,10 @@ void orxInspector_ShowGraphic(const orxOBJECT *_pstObject)
 void orxInspector_ShowObject(orxOBJECT *_pstObject)
 {
   bool bRegistered = true;
-  const orxSTRING zName = orxObject_GetName(_pstObject);
 
   // Build a window title with the object name GUID to make the window's ID unique. The GUID is hidden.
-  orxCHAR acTitle[orxINSPECTOR_KU32_TEXT_BUFFER_SIZE];
-  orxString_NPrint(acTitle, orxINSPECTOR_KU32_TEXT_BUFFER_SIZE, "%s##0x%016llX", zName, orxStructure_GetGUID(orxSTRUCTURE(_pstObject)));
-
-  if(ImGui::Begin(acTitle, &bRegistered))
+  const orxSTRING zName = orxObject_GetName(_pstObject);
+  if(ImGui::Begin(orxInspector_PrintGUID(_pstObject, zName), &bRegistered))
   {
     orxInspector_ShowHighlightCheckbox(_pstObject);
     orxInspector_ShowStatus(_pstObject);
@@ -977,10 +976,8 @@ orxSTATUS orxInspector_RegisterObject(const orxOBJECT *_pstObject)
   // Valid?
   if(_pstObject != orxNULL)
   {
-    orxCHAR acGUID[32];
-    orxInspector_PrintGUID(_pstObject, acGUID, sizeof(acGUID));
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
-    orxConfig_SetBool(acGUID, orxTRUE);
+    orxConfig_SetBool(orxInspector_PrintGUID(_pstObject), orxTRUE);
     orxConfig_PopSection();
 
     // Update status
@@ -998,10 +995,8 @@ orxSTATUS orxInspector_UnregisterObject(const orxOBJECT *_pstObject)
   // Valid?
   if(_pstObject != orxNULL)
   {
-    orxCHAR acGUID[32];
-    orxInspector_PrintGUID(_pstObject, acGUID, sizeof(acGUID));
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
-    orxConfig_ClearValue(acGUID);
+    orxConfig_ClearValue(orxInspector_PrintGUID(_pstObject));
     orxConfig_PopSection();
 
     // Update result
@@ -1019,10 +1014,9 @@ orxBOOL orxInspector_IsObjectRegistered(const orxOBJECT *_pstObject)
   // Valid?
   if(_pstObject != orxNULL)
   {
-    orxCHAR acGUID[32];
-    orxInspector_PrintGUID(_pstObject, acGUID, sizeof(acGUID));
+    const orxSTRING zGUID = orxInspector_PrintGUID(_pstObject);
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
-    bResult = ((orxConfig_HasValueNoCheck(acGUID) != orxFALSE) && (orxConfig_GetBool(acGUID) != orxFALSE)) ? orxTRUE : orxFALSE;
+    bResult = ((orxConfig_HasValueNoCheck(zGUID) != orxFALSE) && (orxConfig_GetBool(zGUID) != orxFALSE)) ? orxTRUE : orxFALSE;
     orxConfig_PopSection();
   }
 
