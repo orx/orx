@@ -197,7 +197,7 @@ void orxInspector_ShowConfigRow(const orxSTRING _zKey, orxBOOL _bForceUpdate = o
 
 void orxInspector_ShowObjectGUID(const orxOBJECT *_pstObject)
 {
-  orxCHAR acGUID[20];
+  orxCHAR acGUID[32];
 
   // Get object guid
   orxInspector_PrintGUID(_pstObject, acGUID, sizeof(acGUID));
@@ -706,10 +706,8 @@ void orxInspector_ShowObject(orxOBJECT *_pstObject)
   const orxSTRING zName = orxObject_GetName(_pstObject);
 
   // Build a window title with the object name GUID to make the window's ID unique. The GUID is hidden.
-  orxCHAR acGUID[20];
-  orxInspector_PrintGUID(_pstObject, acGUID, sizeof(acGUID));
   orxCHAR acTitle[orxINSPECTOR_KU32_TEXT_BUFFER_SIZE];
-  orxString_NPrint(acTitle, orxINSPECTOR_KU32_TEXT_BUFFER_SIZE, "%s##%s", zName, acGUID);
+  orxString_NPrint(acTitle, orxINSPECTOR_KU32_TEXT_BUFFER_SIZE, "%s##0x%016llX", zName, orxStructure_GetGUID(orxSTRUCTURE(_pstObject)));
 
   if(ImGui::Begin(acTitle, &bRegistered))
   {
