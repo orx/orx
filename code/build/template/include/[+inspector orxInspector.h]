@@ -10,8 +10,8 @@
 
 void                                        orxInspector_Init();
 void                                        orxInspector_Exit();
-orxSTATUS                                   orxInspector_RegisterObject(const orxOBJECT *_pstObject);
-orxSTATUS                                   orxInspector_UnregisterObject(const orxOBJECT *_pstObject);
+orxSTATUS                                   orxInspector_RegisterObject(orxOBJECT *_pstObject);
+orxSTATUS                                   orxInspector_UnregisterObject(orxOBJECT *_pstObject);
 orxBOOL                                     orxInspector_IsObjectRegistered(const orxOBJECT *_pstObject);
 
 
@@ -231,7 +231,7 @@ void orxInspector_ShowObjectHeader()
   return;
 }
 
-void orxInspector_ShowObjectButton(const orxOBJECT *_pstObject)
+void orxInspector_ShowObjectButton(orxOBJECT *_pstObject)
 {
   ImGui::TableNextColumn();
   ImGui::TextUnformatted(orxObject_GetName(_pstObject));
@@ -982,7 +982,7 @@ void orxInspector_Exit()
   return;
 }
 
-orxSTATUS orxInspector_RegisterObject(const orxOBJECT *_pstObject)
+orxSTATUS orxInspector_RegisterObject(orxOBJECT *_pstObject)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -993,6 +993,8 @@ orxSTATUS orxInspector_RegisterObject(const orxOBJECT *_pstObject)
     orxConfig_SetBool(orxInspector_PrintGUID(_pstObject), orxTRUE);
     orxConfig_PopSection();
 
+    orxObject_AddShader(_pstObject, sstInspector.zShader);
+
     // Update status
     eResult = orxSTATUS_SUCCESS;
   }
@@ -1001,7 +1003,7 @@ orxSTATUS orxInspector_RegisterObject(const orxOBJECT *_pstObject)
   return eResult;
 }
 
-orxSTATUS orxInspector_UnregisterObject(const orxOBJECT *_pstObject)
+orxSTATUS orxInspector_UnregisterObject(orxOBJECT *_pstObject)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1011,6 +1013,8 @@ orxSTATUS orxInspector_UnregisterObject(const orxOBJECT *_pstObject)
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
     orxConfig_ClearValue(orxInspector_PrintGUID(_pstObject));
     orxConfig_PopSection();
+
+    orxObject_RemoveShader(_pstObject, sstInspector.zShader);
 
     // Update result
     eResult = orxSTATUS_SUCCESS;
