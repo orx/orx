@@ -22,9 +22,12 @@ orxBOOL                                     orxInspector_IsObjectRegistered(cons
 
 #define orxINSPECTOR_KZ_CONFIG_SHADER       "Shader"
 #define orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS "InspectorFields"
+#define orxINSPECTOR_KZ_CONFIG_WINDOW_SIZE  "WindowSize"
 
 #define orxINSPECTOR_KZ_INPUT_SET           "orx:input:inspector"
 #define orxINSPECTOR_KZ_INPUT_INSPECT       "Inspect"
+
+#define orxINSPECTOR_KV_DEFAULT_WINDOW_SIZE orx2F(500.0f), orx2F(600.0f), orxFLOAT_0
 
 #define orxINSPECTOR_KZ_SHADER_HIGHLIGHT    "highlight"
 #define orxINSPECTOR_KZ_SHADER_CONFIG                                                         \
@@ -705,6 +708,16 @@ void orxInspector_ShowGraphic(const orxOBJECT *_pstObject)
 void orxInspector_ShowObject(orxOBJECT *_pstObject)
 {
   bool bRegistered = true;
+
+  // Set a default size for the window
+  orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_SECTION);
+  orxVECTOR vSize = {orxINSPECTOR_KV_DEFAULT_WINDOW_SIZE};
+  if(orxConfig_HasValueNoCheck(orxINSPECTOR_KZ_CONFIG_WINDOW_SIZE))
+  {
+    orxConfig_GetVector(orxINSPECTOR_KZ_CONFIG_WINDOW_SIZE, &vSize);
+  }
+  orxConfig_PopSection();
+  ImGui::SetNextWindowSize({vSize.fX, vSize.fY}, ImGuiCond_FirstUseEver);
 
   // Build a window title with the object name GUID to make the window's ID unique. The GUID is hidden.
   const orxSTRING zName = orxObject_GetName(_pstObject);
