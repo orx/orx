@@ -710,12 +710,9 @@ void orxInspector_ShowObject(orxOBJECT *_pstObject)
   bool bRegistered = true;
 
   // Set a default size for the window
-  orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_SECTION);
   orxVECTOR vSize = {orxINSPECTOR_KV_DEFAULT_WINDOW_SIZE};
-  if(orxConfig_HasValueNoCheck(orxINSPECTOR_KZ_CONFIG_WINDOW_SIZE))
-  {
-    orxConfig_GetVector(orxINSPECTOR_KZ_CONFIG_WINDOW_SIZE, &vSize);
-  }
+  orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_SECTION);
+  orxConfig_GetVector(orxINSPECTOR_KZ_CONFIG_WINDOW_SIZE, &vSize);
   orxConfig_PopSection();
   ImGui::SetNextWindowSize({vSize.fX, vSize.fY}, ImGuiCond_FirstUseEver);
 
