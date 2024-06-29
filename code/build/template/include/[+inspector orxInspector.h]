@@ -338,7 +338,7 @@ void orxInspector_ShowStatus(const orxOBJECT *_pstObject)
 {
   if(_pstObject != orxNULL)
   {
-    if(ImGui::CollapsingHeader("Status"))
+    if(ImGui::CollapsingHeader("Status", ImGuiTreeNodeFlags_DefaultOpen))
     {
       if(ImGui::BeginTable("Status", 2, orxINSPECTOR_KU32_TABLE_FLAGS))
       {
@@ -897,14 +897,14 @@ void orxInspector_Init()
     {
       const orxSTRING zShaderConfig = orxINSPECTOR_KZ_SHADER_CONFIG;
       orxCHAR acBuffer[1024];
-      
+
       // Push config section
       orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_SECTION);
 
       // Load shader config
       orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", zShaderConfig);
       orxConfig_LoadFromMemory(acBuffer, sizeof(acBuffer));
-      
+
       // Init variables
       orxMemory_Zero(&(sstInspector), sizeof(orxINSPECTOR));
       sstInspector.zShader      = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_SHADER) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_SHADER) : orxINSPECTOR_KZ_CONFIG_SECTION;
