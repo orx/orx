@@ -381,8 +381,6 @@ private:
                 orxBOOL         BaseMapSaveFilter(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption);
                 orxSTRING       GetNewObjectName(orxCHAR _zName[32], orxBOOL bRunTime = orxFALSE);
 
-                orxSTATUS       AddObject(ScrollObject *_poObject);
-                orxSTATUS       RemoveObject(ScrollObject *_poObject);
 
   static  void                  DeleteInstance();
 
