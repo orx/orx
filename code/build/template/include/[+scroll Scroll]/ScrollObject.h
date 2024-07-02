@@ -87,6 +87,9 @@ public:
                 orxCOLOR &              GetColor(orxCOLOR &_rstColor) const;
                 void                    SetColor(const orxCOLOR &_rstColor, orxBOOL _bRecursive = orxTRUE);
 
+                orxFLOAT                GetAlpha() const;
+                void                    SetAlpha(orxFLOAT _fAlpha, orxBOOL _bRecursive = orxTRUE);
+
                 void                    GetFlip(orxBOOL &_rbFlipX, orxBOOL &_rbFlipY) const;
                 void                    SetFlip(orxBOOL _bFlipX, orxBOOL _bFlipY, orxBOOL _bRecursive = orxTRUE);
 
@@ -108,6 +111,12 @@ public:
 
                 orxFLOAT                GetLifeTime() const;
                 void                    SetLifeTime(orxFLOAT _fLifeTime);
+
+                ScrollObject *          GetParent() const;
+                void                    SetParent(ScrollObject *_poParent);
+
+                ScrollObject *          GetOwner() const;
+                void                    SetOwner(ScrollObject *_poOwner);
 
                 ScrollObject *          FindChild(const orxSTRING _zPath) const;
                 ScrollObject *          GetChild() const;
@@ -455,6 +464,32 @@ void ScrollObject::SetColor(const orxCOLOR &_rstColor, orxBOOL _bRecursive)
   }
 }
 
+orxFLOAT ScrollObject::GetAlpha() const
+{
+  orxFLOAT fResult;
+
+  // Updates result
+  fResult = orxObject_GetAlpha(mpstObject);
+
+  // Done!
+  return fResult;
+}
+
+void ScrollObject::SetAlpha(orxFLOAT _fAlpha, orxBOOL _bRecursive)
+{
+  // Recursive?
+  if(_bRecursive)
+  {
+    // Updates object's alpha
+    orxObject_SetAlphaRecursive(mpstObject, _fAlpha);
+  }
+  else
+  {
+    // Updates object's alpha
+    orxObject_SetAlpha(mpstObject, _fAlpha);
+  }
+}
+
 void ScrollObject::GetFlip(orxBOOL &_rbFlipX, orxBOOL &_rbFlipY) const
 {
   // Updates result
@@ -681,6 +716,54 @@ void ScrollObject::PushConfigSection(orxBOOL _bPushInstanceSection) const
 {
   // Pushes its model section
   orxConfig_PushSection(_bPushInstanceSection ? macName : mzModelName);
+}
+
+ScrollObject *ScrollObject::GetParent() const
+{
+  orxOBJECT    *pstParent;
+  ScrollObject *poResult = orxNULL;
+
+  // Gets parent
+  pstParent = orxOBJECT(orxObject_GetParent(mpstObject));
+
+  // Valid?
+  if(pstParent)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstParent);
+  }
+
+  // Done!
+  return poResult;
+}
+
+void ScrollObject::SetParent(ScrollObject *_poParent)
+{
+  orxObject_SetParent(mpstObject, _poParent ? _poParent->mpstObject : orxNULL);
+}
+
+ScrollObject *ScrollObject::GetOwner() const
+{
+  orxOBJECT    *pstOwner;
+  ScrollObject *poResult = orxNULL;
+
+  // Gets Owner
+  pstOwner = orxOBJECT(orxObject_GetOwner(mpstObject));
+
+  // Valid?
+  if(pstOwner)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstOwner);
+  }
+
+  // Done!
+  return poResult;
+}
+
+void ScrollObject::SetOwner(ScrollObject *_poOwner)
+{
+  orxObject_SetOwner(mpstObject, _poOwner ? _poOwner->mpstObject : orxNULL);
 }
 
 ScrollObject *ScrollObject::FindChild(const orxSTRING _zPath) const
