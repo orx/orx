@@ -30,16 +30,59 @@ orxBOOL                                     orxInspector_IsObjectRegistered(cons
 #define orxINSPECTOR_KV_DEFAULT_WINDOW_SIZE orx2F(500.0f), orx2F(600.0f), orxFLOAT_0
 
 #define orxINSPECTOR_KZ_SHADER_HIGHLIGHT    "highlight"
-#define orxINSPECTOR_KZ_SHADER_CONFIG                                                         \
-"UseCustomParam  = true\n"                                                                    \
-"ParamList       = texture # time # highlight\n"                                              \
-"time            = time 6.28\n"                                                               \
-"highlight       = (1, 1, 1)\n"                                                               \
-"Code            = \""                                                                        \
-"void main() {"                                                                               \
-"  vec2 p = gl_TexCoord[0].xy;"                                                               \
-"  vec4 textureCol = texture2D(texture, p);"                                                  \
-"  gl_FragColor = vec4(mix(textureCol.rgb, highlight, abs(sin(time)) / 2.0), textureCol.a);"  \
+#define orxINSPECTOR_KZ_SHADER_CONFIG                                                                 \
+"UseCustomParam  = true\n"                                                                            \
+"ParamList       = texture # time # highlight # width # pixel_size # width_speed\n"                   \
+"time            = time 3.14\n"                                                                       \
+"highlight       = (1, 1, 1)\n"                                                                       \
+"width           = 5.0\n"                                                                             \
+"pixel_size      = 500\n"                                                                             \
+"width_speed     = 1.0\n"                                                                             \
+"Code            = \""                                                                                \
+"void main() {\n"                                                                                     \
+"  // Outline color\n"                                                                                \
+"  vec4 outline_color = vec4(highlight, 1.0);\n"                                                      \
+"\n"                                                                                                  \
+"  // Texture bounds\n"                                                                               \
+"	vec2 texture_min = vec2(texture_left, texture_top);\n"                                              \
+"	vec2 texture_max = vec2(texture_right, texture_bottom);\n"                                          \
+"	vec2 texture_size = texture_max - texture_min;\n"                                                   \
+"\n"                                                                                                  \
+"  // Position and texture color\n"                                                                   \
+"  vec2 pixel_pos = gl_TexCoord[0].xy;\n"                                                             \
+"  vec4 pixel_color = texture2D(texture, pixel_pos);\n"                                               \
+"\n"                                                                                                  \
+"  float _width = width; // + (sin(time*width_speed) + 1.0) * 5.0;\n"                                 \
+"\n"                                                                                                  \
+"  // Unit of sampling in each direction\n"                                                           \
+"  vec2 unit = vec2(1.0/float(pixel_size)) * texture_size;\n"                                         \
+"\n"                                                                                                  \
+"  // Balance between the outline color and texture color\n"                                          \
+"  float balance = 0.0;\n"                                                                            \
+"  if (pixel_color.a != 0.0) {\n"                                                                     \
+"    // Sample in a box around the current texture element\n"                                         \
+"    for (float x = -ceil(_width); x <= ceil(_width); x++) {\n"                                       \
+"      for (float y = -ceil(_width); y <= ceil(_width); y++) {\n"                                     \
+"        vec2 offset_pos = pixel_pos + vec2(x*unit.x, y*unit.y);\n"                                   \
+"        vec4 offset_color = vec4(0.0);\n"                                                            \
+"        if (offset_pos.x >= texture_min.x && offset_pos.x <= texture_max.x &&\n"                     \
+"            offset_pos.y >= texture_min.y && offset_pos.y <= texture_max.y) {\n"                     \
+"          offset_color = texture2D(texture, offset_pos);\n"                                          \
+"        }\n"                                                                                         \
+"        if (offset_color.a != 0.0 && gl_Color.a != 0.0 || (x==0.0 && y==0.0)) {\n"                   \
+"          continue;\n"                                                                               \
+"        }\n"                                                                                         \
+"        balance += outline_color.a / (pow(x,2)+pow(y,2)) * (1.0-pow(2.0, -_width));\n"               \
+"        if (balance > 1.0 || balance < 0.0) {\n"                                                     \
+"          balance = 1.0;\n"                                                                          \
+"        }\n"                                                                                         \
+"      }\n"                                                                                           \
+"    }\n"                                                                                             \
+"  }\n"                                                                                               \
+"  // Use the following line to have the outline color blend at the edges\n"                          \
+"  // gl_FragColor = mix(pixel_color * gl_Color, pixel_color * gl_Color * outline_color, balance);\n" \
+"  // Use the following line to have the outline color only at the edges\n"                           \
+"  gl_FragColor = mix(pixel_color * gl_Color, outline_color, balance);\n"                             \
 "}\""
 
 #define orxINSPECTOR_KU32_TEXT_BANK_SIZE    256
@@ -893,7 +936,7 @@ void orxInspector_Init()
     if(orxConfig_HasSection(orxINSPECTOR_KZ_CONFIG_SECTION) != orxFALSE)
     {
       const orxSTRING zShaderConfig = orxINSPECTOR_KZ_SHADER_CONFIG;
-      orxCHAR acBuffer[1024];
+      orxCHAR acBuffer[2048];
 
       // Push config section
       orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_SECTION);
