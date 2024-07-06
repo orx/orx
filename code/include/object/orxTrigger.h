@@ -119,23 +119,23 @@ extern orxDLLAPI void orxFASTCALL               orxTrigger_Enable(orxTRIGGER *_p
  */
 extern orxDLLAPI orxBOOL orxFASTCALL            orxTrigger_IsEnabled(const orxTRIGGER *_pstTrigger);
 
-/** Adds an events set to a Trigger from config
+/** Adds a set to a Trigger from config
  * @param[in]   _pstTrigger           Concerned Trigger
  * @param[in]   _zConfigID            Config ID of the set to add
  * return       orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxTrigger_AddSetFromConfig(orxTRIGGER *_pstTrigger, const orxSTRING _zConfigID);
 
-/** Removes an events set from a Trigger using its config ID
+/** Removes a set from a Trigger using its config ID
  * @param[in]   _pstTrigger           Concerned Trigger
  * @param[in]   _zConfigID            Config ID of the set to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxTrigger_RemoveSetFromConfig(orxTRIGGER *_pstTrigger, const orxSTRING _zConfigID);
 
-/** Gets how many event sets are defined in the trigger
+/** Gets how many sets are defined in the trigger
  * @param[in]   _pstTrigger           Concerned Trigger
- * @return      Count of event sets defined in the trigger
+ * @return      Count of sets defined in the trigger
  */
 extern orxDLLAPI orxU32 orxFASTCALL             orxTrigger_GetCount(const orxTRIGGER *_pstTrigger);
 

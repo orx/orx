@@ -428,7 +428,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
           u32Flags    = orxFLAG_GET(pstTrack->u32Flags, orxTIMELINE_TRACK_KU32_MASK_BACKUP);
           zReference  = pstTrack->zReference;
 
-          /* Deletes it (but keeps it reference in the hashtable to prevent infinite loop upon table changes) */
+          /* Deletes it (but keeps its reference in the hashtable to prevent infinite loop upon table changes) */
           orxMemory_Free(pstTrack);
 
           /* Creates new track */
@@ -456,7 +456,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_EventHandler(const orxEVENT *_pstEvent)
           {
             orxU32 u32Index;
 
-            /* For all its track */
+            /* For all its tracks */
             for(u32Index = 0; u32Index < orxTIMELINE_KU32_TRACK_NUMBER; u32Index++)
             {
               /* Matches? */
