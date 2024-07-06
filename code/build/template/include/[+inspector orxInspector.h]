@@ -942,7 +942,8 @@ void orxInspector_Init()
       orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_SECTION);
 
       // Load shader config
-      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", zShaderConfig);
+      orxS32 s32Written = orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", zShaderConfig);
+      orxASSERT(s32Written == orxString_GetLength(zShaderConfig));
       orxConfig_LoadFromMemory(acBuffer, sizeof(acBuffer));
 
       // Init variables
