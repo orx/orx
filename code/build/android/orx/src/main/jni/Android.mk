@@ -7,61 +7,62 @@ LOCAL_PATH := $(ORX)/src
 ORX_EXTERN := $(ORX)/../extern
 
 ORX_SRC_FILES := \
-  base/orxType.c            \
-  base/orxModule.c          \
-  io/orxFile.c              \
-  io/orxInput.c             \
-  io/orxKeyboard.c          \
-  io/orxJoystick.c          \
-  io/orxMouse.c             \
-  utils/orxHashTable.c      \
-  utils/orxTree.c           \
-  utils/orxLinkList.c       \
-  utils/orxString.c         \
+  anim/orxAnim.c            \
   anim/orxAnimPointer.c     \
   anim/orxAnimSet.c         \
-  anim/orxAnim.c            \
-  display/orxScreenshot.c   \
-  display/orxGraphic.c      \
-  display/orxDisplay.c      \
-  display/orxFont.c         \
-  display/orxText.c         \
-  display/orxTexture.c      \
-  render/orxCamera.c        \
-  render/orxViewport.c      \
-  render/orxShaderPointer.c \
-  render/orxRender.c        \
-  render/orxShader.c        \
-  math/orxMath.c            \
-  math/orxVector.c          \
+  base/orxModule.c          \
+  base/orxType.c            \
+  core/orxClock.c           \
   core/orxCommand.c         \
   core/orxConfig.c          \
   core/orxConsole.c         \
   core/orxEvent.c           \
+  core/orxLocale.c          \
   core/orxResource.c        \
   core/orxSystem.c          \
   core/orxThread.c          \
-  core/orxClock.c           \
-  core/orxLocale.c          \
+  debug/orxDebug.c          \
+  debug/orxFPS.c            \
+  debug/orxProfiler.c       \
+  display/orxDisplay.c      \
+  display/orxFont.c         \
+  display/orxGraphic.c      \
+  display/orxScreenshot.c   \
+  display/orxText.c         \
+  display/orxTexture.c      \
+  io/orxFile.c              \
+  io/orxInput.c             \
+  io/orxJoystick.c          \
+  io/orxKeyboard.c          \
+  io/orxMouse.c             \
   main/orxParam.c           \
-  physics/orxPhysics.c      \
-  physics/orxBody.c         \
-  object/orxStructure.c     \
-  object/orxTimeLine.c      \
+  math/orxMath.c            \
+  math/orxVector.c          \
+  memory/orxBank.c          \
+  memory/orxMemory.c        \
   object/orxFrame.c         \
   object/orxFX.c            \
   object/orxFXPointer.c     \
   object/orxObject.c        \
   object/orxSpawner.c       \
+  object/orxStructure.c     \
+  object/orxTimeLine.c      \
+  object/orxTrigger.c       \
+  physics/orxBody.c         \
+  physics/orxPhysics.c      \
   plugin/orxPlugin.c        \
+  render/orxCamera.c        \
+  render/orxRender.c        \
+  render/orxShader.c        \
+  render/orxShaderPointer.c \
+  render/orxViewport.c      \
+  sound/orxSound.c          \
   sound/orxSoundPointer.c   \
   sound/orxSoundSystem.c    \
-  sound/orxSound.c          \
-  memory/orxBank.c          \
-  memory/orxMemory.c        \
-  debug/orxFPS.c            \
-  debug/orxDebug.c          \
-  debug/orxProfiler.c       \
+  utils/orxHashTable.c      \
+  utils/orxLinkList.c       \
+  utils/orxString.c         \
+  utils/orxTree.c           \
   main/android/orxAndroidSupport.cpp \
   plugin/orxPlugin_EmbeddedList.cpp
 
