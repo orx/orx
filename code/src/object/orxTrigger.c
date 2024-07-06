@@ -1,0 +1,1162 @@
+/* Orx - Portable Game Engine
+ *
+ * Copyright (c) 2008- Orx-Project
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ *    1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ *    2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ *
+ *    3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+
+/**
+ * @file orxTrigger.c
+ * @date 05/07/2024
+ * @author iarwain@orx-project.org
+ *
+ */
+
+
+#include "object/orxTrigger.h"
+
+#include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
+#include "memory/orxMemory.h"
+#include "memory/orxBank.h"
+#include "core/orxConfig.h"
+#include "core/orxEvent.h"
+#include "core/orxResource.h"
+#include "object/orxObject.h"
+#include "object/orxStructure.h"
+#include "utils/orxHashTable.h"
+#include "utils/orxString.h"
+
+#ifdef __orxMSVC__
+
+  #pragma warning(push)
+  #pragma warning(disable : 4200)
+
+  #include <malloc.h>
+
+#endif /* __orxMSVC__ */
+
+
+/** Module flags
+ */
+#define orxTRIGGER_KU32_STATIC_FLAG_NONE              0x00000000
+
+#define orxTRIGGER_KU32_STATIC_FLAG_READY             0x00000001
+
+#define orxTRIGGER_KU32_STATIC_MASK_ALL               0xFFFFFFFF
+
+
+/** Flags
+ */
+#define orxTRIGGER_KU32_FLAG_NONE                     0x00000000  /**< No flags */
+
+#define orxTRIGGER_KU32_FLAG_ENABLED                  0x10000000  /**< Enabled flag */
+
+#define orxTRIGGER_KU32_MASK_ALL                      0xFFFFFFFF  /**< All mask */
+
+/** Set flags
+ */
+#define orxTRIGGER_SET_KU32_FLAG_NONE                 0x00000000  /**< No flag */
+
+#define orxTRIGGER_SET_KU32_FLAG_CACHED               0x10000000  /**< Cached flag */
+
+#define orxTRIGGER_SET_KU32_FLAG_BACKUP               0x10000000  /**< Backup flag */
+
+#define orxTRIGGER_SET_KU32_MASK_ALL                  0xFFFFFFFF  /**< All mask */
+
+
+/** Misc defines
+ */
+#define orxTRIGGER_KU32_TABLE_SIZE                    256         /**< Table size */
+#define orxTRIGGER_KU32_BANK_SIZE                     256         /**< Bank size */
+
+#define orxTRIGGER_KU32_SET_NUMBER                    16          /**< Set number */
+
+#define orxTRIGGER_KZ_CONFIG_KEEP_IN_CACHE            "KeepInCache"
+
+
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
+
+/** Trigger Set Event
+ */
+typedef struct __orxTRIGGER_SET_EVENT_t
+{
+  orxSTRINGID               stID;                     /**< Event ID : 8 */
+  orxU32                    u32PropagationDepth;      /**< Event propagation depth : 12 */
+
+} orxTRIGGER_SET_EVENT;
+
+/** Trigger Set
+ */
+typedef struct __orxTRIGGER_SET_t
+{
+  orxSTRINGID               stID;                     /**< ID : 8 */
+  const orxSTRING           zReference;               /**< Track reference : 12 / 16 */
+  orxU32                    u32RefCount;              /**< Reference count : 16 / 20 */
+  orxU32                    u32EventCount;            /**< Event count : 20 / 24 */
+  orxU32                    u32Flags;                 /**< Flags: 24 / 28 */
+  orxTRIGGER_SET_EVENT      astEventList[0];          /**< Track event list */
+
+} orxTRIGGER_SET;
+
+/** Trigger structure
+ */
+struct __orxTRIGGER_t
+{
+  orxSTRUCTURE              stStructure;              /**< Public structure, first structure member : 32 / 64 */
+  orxTRIGGER_SET           *pastSetList[orxTRIGGER_KU32_SET_NUMBER]; /**< Trigger set list : 64 / 128 */
+};
+
+/** Static structure
+ */
+typedef struct __orxTRIGGER_STATIC_t
+{
+  orxHASHTABLE             *pstSetTable;              /**< Set hash table */
+  orxU32                    u32Flags;                 /**< Control flags */
+
+} orxTRIGGER_STATIC;
+
+
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
+
+/** Static data
+ */
+static orxTRIGGER_STATIC sstTrigger;
+
+
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
+
+/** Creates a set
+ */
+static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zSetID)
+{
+  orxTRIGGER_SET *pstResult = orxNULL;
+
+//   /* Pushes section */
+//   if((orxConfig_HasSection(_zTrackID) != orxFALSE)
+//   && (orxConfig_PushSection(_zTrackID) != orxSTATUS_FAILURE))
+//   {
+//     orxU32 u32KeyCount;
+
+//     /* Gets number of keys */
+//     u32KeyCount = orxConfig_GetKeyCount();
+
+//     /* Valid? */
+//     if(u32KeyCount > 0)
+//     {
+//       orxU32 u32EventCount = 0, i;
+
+// #ifdef __orxMSVC__
+
+//       orxFLOAT *afTimeList = (orxFLOAT *)alloca(u32KeyCount * sizeof(orxFLOAT));
+
+// #else /* __orxMSVC__ */
+
+//       orxFLOAT afTimeList[u32KeyCount];
+
+// #endif /* __orxMSVC__ */
+
+//       /* For all time entries */
+//       for(i = 0; i < u32KeyCount; i++)
+//       {
+//         /* Inits it */
+//         afTimeList[i] = orxFLOAT_MAX;
+//       }
+
+//       /* For all config keys */
+//       for(i = 0; i < u32KeyCount; i++)
+//       {
+//         const orxSTRING zKey;
+//         orxFLOAT        fTime;
+
+//         /* Gets it */
+//         zKey = orxConfig_GetKey(i);
+
+//         /* Is a valid time stamp? */
+//         if((orxString_ToFloat(zKey, &fTime, orxNULL) != orxSTATUS_FAILURE)
+//         && (fTime >= orxFLOAT_0))
+//         {
+//           /* Stores it */
+//           afTimeList[i] = fTime;
+
+//           /* Updates event count */
+//           u32EventCount += orxConfig_GetListCount(zKey);
+//         }
+//       }
+
+//       /* Allocates track */
+//       pstResult = (orxTIMELINE_TRACK *)orxMemory_Allocate(sizeof(orxTIMELINE_TRACK) + (u32EventCount * sizeof(orxTIMELINE_TRACK_EVENT)), orxMEMORY_TYPE_MAIN);
+
+//       /* Valid? */
+//       if(pstResult != orxNULL)
+//       {
+//         /* Stores its ID */
+//         pstResult->stID = orxString_GetID(orxConfig_GetCurrentSection());
+
+//         /* Adds it to reference table */
+//         if(orxHashTable_Set(sstTrigger.pstSetTable, pstResult->stID, pstResult) != orxSTATUS_FAILURE)
+//         {
+//           orxU32 u32EventIndex, u32Flags = orxTIMELINE_TRACK_KU32_FLAG_NONE;
+
+//           /* For all events */
+//           for(u32EventIndex = 0; u32EventIndex < u32EventCount;)
+//           {
+//             const orxSTRING zKey;
+//             orxFLOAT        fTime;
+//             orxU32          u32KeyIndex, u32ListCount;
+
+//             /* Finds time to add next */
+//             for(fTime = orxFLOAT_MAX, u32KeyIndex = orxU32_UNDEFINED, i = 0; i < u32KeyCount; i++)
+//             {
+//               /* Is sooner? */
+//               if(afTimeList[i] < fTime)
+//               {
+//                 /* Stores it */
+//                 fTime       = afTimeList[i];
+//                 u32KeyIndex = i;
+//               }
+//             }
+
+//             /* Checks */
+//             orxASSERT(u32KeyIndex != orxU32_UNDEFINED);
+
+//             /* Gets corresponding key */
+//             zKey = orxConfig_GetKey(u32KeyIndex);
+
+//             /* For all events */
+//             for(i = 0, u32ListCount = orxConfig_GetListCount(zKey);
+//                 i < u32ListCount;
+//                 i++, u32EventIndex++)
+//             {
+//               /* Checks */
+//               orxASSERT(u32EventIndex < u32EventCount);
+
+//               /* Stores event */
+//               pstResult->astEventList[u32EventIndex].fTimeStamp = fTime;
+//               pstResult->astEventList[u32EventIndex].zEventText = orxString_Store(orxConfig_GetListString(zKey, i));
+//             }
+
+//             /* Clears time entry */
+//             afTimeList[u32KeyIndex] = orxFLOAT_MAX;
+//           }
+
+//           /* Stores its reference */
+//           pstResult->zReference = orxString_GetFromID(pstResult->stID);
+
+//           /* Updates track counts */
+//           pstResult->u32RefCount    = 1;
+//           pstResult->u32EventCount  = u32EventCount;
+
+//           /* Should keep in cache? */
+//           if(orxConfig_GetBool(orxTIMELINE_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
+//           {
+//             /* Increases its reference count to keep it in cache table */
+//             pstResult->u32RefCount++;
+
+//             /* Updates flags */
+//             u32Flags |= orxTIMELINE_TRACK_KU32_FLAG_CACHED;
+//           }
+
+//           /* Should loop? */
+//           if(orxConfig_GetBool(orxTIMELINE_KZ_CONFIG_LOOP) != orxFALSE)
+//           {
+//             /* Updates flags */
+//             u32Flags |= orxTIMELINE_TRACK_KU32_FLAG_LOOP;
+//           }
+
+//           /* Is immediate? */
+//           if(orxConfig_GetBool(orxTIMELINE_KZ_CONFIG_IMMEDIATE) != orxFALSE)
+//           {
+//             /* Updates flags */
+//             u32Flags |= orxTIMELINE_TRACK_KU32_FLAG_IMMEDIATE;
+//           }
+
+//           /* Stores flags */
+//           pstResult->u32Flags = u32Flags;
+//         }
+//         else
+//         {
+//           /* Logs message */
+//           orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add track to hashtable.");
+
+//           /* Deletes it */
+//           orxMemory_Free(pstResult);
+
+//           /* Updates result */
+//           pstResult = orxNULL;
+//         }
+//       }
+//       else
+//       {
+//         /* Logs message */
+//         orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: memory allocation failure.", _zTrackID);
+//       }
+//     }
+//     else
+//     {
+//       /* Logs message */
+//       orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: config section is empty.", _zTrackID);
+//     }
+
+//     /* Pops previous section */
+//     orxConfig_PopSection();
+//   }
+//   else
+//   {
+//     /* Logs message */
+//     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Couldn't create TimeLine track [%s]: config section not found.", _zTrackID);
+//   }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Deletes a set
+ */
+static orxINLINE void orxTrigger_DeleteSet(orxTRIGGER_SET *_pstSet)
+{
+  /* Decreases count */
+  _pstSet->u32RefCount--;
+
+  /* Not referenced? */
+  if(_pstSet->u32RefCount == 0)
+  {
+    /* Has an ID? */
+    if((_pstSet->zReference != orxNULL)
+    && (_pstSet->zReference != orxSTRING_EMPTY))
+    {
+      /* Removes it from the table */
+      orxHashTable_Remove(sstTrigger.pstSetTable, _pstSet->stID);
+    }
+
+    /* Deletes it */
+    orxMemory_Free(_pstSet);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxTrigger_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Add or update? */
+  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  {
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Is config group? */
+    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
+    {
+      orxHANDLE             hIterator;
+      orxTRIGGER_SET *pstEventSet;
+
+      /* For all sets */
+      for(hIterator = orxHashTable_GetNext(sstTrigger.pstSetTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstEventSet);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(sstTrigger.pstSetTable, hIterator, orxNULL, (void **)&pstEventSet))
+      {
+        /* Match origin? */
+        if(orxConfig_GetOriginID(pstEventSet->zReference) == pstPayload->stNameID)
+        {
+          orxTRIGGER           *pstTrigger;
+          orxTRIGGER_SET *pstNewEventSet;
+          orxSTRINGID           stID;
+          orxU32                u32Count, u32Flags;
+          const orxSTRING       zReference;
+
+          /* Backups count, ID, flags & reference */
+          u32Count    = pstEventSet->u32RefCount;
+          stID        = pstEventSet->stID;
+          u32Flags    = orxFLAG_GET(pstEventSet->u32Flags, orxTRIGGER_SET_KU32_FLAG_BACKUP);
+          zReference  = pstEventSet->zReference;
+
+          /* Deletes it (but keeps its reference in the hashtable to prevent infinite loop upon table changes) */
+          orxMemory_Free(pstEventSet);
+
+          /* Creates new set */
+          pstNewEventSet = orxTrigger_CreateSet(zReference);
+
+          /* Success? */
+          if(pstNewEventSet != orxNULL)
+          {
+            /* Restores its count */
+            pstNewEventSet->u32RefCount = u32Count;
+
+            /* Restores its flags */
+            orxFLAG_SET(pstNewEventSet->u32Flags, u32Flags, orxTRIGGER_SET_KU32_FLAG_BACKUP);
+          }
+          else
+          {
+            /* Removes old reference from the table */
+            orxHashTable_Remove(sstTrigger.pstSetTable, stID);
+          }
+
+          /* For all triggers */
+          for(pstTrigger = orxTRIGGER(orxStructure_GetFirst(orxSTRUCTURE_ID_TRIGGER));
+              pstTrigger != orxNULL;
+              pstTrigger = orxTRIGGER(orxStructure_GetNext(pstTrigger)))
+          {
+            orxU32 u32Index;
+
+            /* For all its track */
+            for(u32Index = 0; u32Index < orxTRIGGER_KU32_SET_NUMBER; u32Index++)
+            {
+              /* Matches? */
+              if(pstTrigger->pastSetList[u32Index] == pstEventSet)
+              {
+                /* Updates its data */
+                pstTrigger->pastSetList[u32Index] = pstNewEventSet;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Deletes all the Triggers
+ */
+static orxINLINE void orxTrigger_DeleteAll()
+{
+  orxTRIGGER *pstTrigger;
+
+  /* Gets first Trigger */
+  pstTrigger = orxTRIGGER(orxStructure_GetFirst(orxSTRUCTURE_ID_TRIGGER));
+
+  /* Non empty? */
+  while(pstTrigger != orxNULL)
+  {
+    /* Deletes it */
+    orxTrigger_Delete(pstTrigger);
+
+    /* Gets first Trigger */
+    pstTrigger = orxTRIGGER(orxStructure_GetFirst(orxSTRUCTURE_ID_TRIGGER));
+  }
+
+  /* Done! */
+  return;
+}
+
+// /** Updates the TimeLine (Callback for generic structure update calling)
+//  * @param[in]   _pstStructure                 Generic Structure or the concerned TimeLine
+//  * @param[in]   _pstCaller                    Structure of the caller
+//  * @param[in]   _pstClockInfo                 Clock info used for time updates
+//  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+//  */
+// static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, const orxSTRUCTURE *_pstCaller, const orxCLOCK_INFO *_pstClockInfo)
+// {
+//   orxTIMELINE  *pstTimeLine;
+//   orxSTATUS     eResult = orxSTATUS_SUCCESS;
+
+//   /* Profiles */
+//   orxPROFILER_PUSH_MARKER("orxTimeLine_Update");
+
+//   /* Checks */
+//   orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
+//   orxSTRUCTURE_ASSERT(_pstStructure);
+//   orxSTRUCTURE_ASSERT(_pstCaller);
+
+//   /* Gets TimeLine */
+//   pstTimeLine = orxTIMELINE(_pstStructure);
+
+//   /* Is enabled? */
+//   if(orxTimeLine_IsEnabled(pstTimeLine) != orxFALSE)
+//   {
+//     orxU32 i;
+
+//     /* Cleans its flags */
+//     orxStructure_SetFlags(pstTimeLine, orxTIMELINE_KU32_FLAG_NONE, orxTIMELINE_KU32_FLAG_DIRTY);
+
+//     /* Has clock info? */
+//     if(_pstClockInfo != orxNULL)
+//     {
+//       /* Computes its new time cursor */
+//       pstTimeLine->fTime += _pstClockInfo->fDT;
+//     }
+
+//     /* For all tracks */
+//     for(i = 0; i < orxTIMELINE_KU32_TRACK_NUMBER; i++)
+//     {
+//       orxTIMELINE_TRACK *pstTrack;
+
+//       /* Is timeline dirty? */
+//       if(orxStructure_TestFlags(pstTimeLine, orxTIMELINE_KU32_FLAG_DIRTY))
+//       {
+//         orxU32 j;
+
+//         /* For all previous tracks */
+//         for(j = 0; j < i; j++)
+//         {
+//           /* Is defined? */
+//           if(pstTimeLine->astTrackList[j].pstTrack != orxNULL)
+//           {
+//             /* Hasn't been updated? */
+//             if(!orxFLAG_TEST(pstTimeLine->astTrackList[j].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_UPDATED))
+//             {
+//               /* Selects it */
+//               i = j;
+
+//               break;
+//             }
+//           }
+//         }
+//       }
+
+//       /* Gets track */
+//       pstTrack = pstTimeLine->astTrackList[i].pstTrack;
+
+//       /* Valid and not already updated? */
+//       if((pstTrack != orxNULL) && (!orxFLAG_TEST(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_UPDATED)))
+//       {
+//         orxFLOAT fTrackLocalTime;
+
+//         /* Gets track local time */
+//         fTrackLocalTime = pstTimeLine->fTime - pstTimeLine->astTrackList[i].fStartTime;
+
+//         /* Has time come? */
+//         if(fTrackLocalTime >= orxFLOAT_0)
+//         {
+//           orxTIMELINE_EVENT_PAYLOAD stPayload;
+//           orxU32                    u32EventIndex;
+
+//           /* Is the first time? */
+//           if(!orxFLAG_TEST(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED))
+//           {
+//             /* Inits event payload */
+//             orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
+//             stPayload.pstTimeLine = pstTimeLine;
+//             stPayload.zTrackName  = pstTrack->zReference;
+
+//             /* Sends event */
+//             orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_START, _pstCaller, _pstCaller, &stPayload);
+//           }
+
+//           /* Updates its status */
+//           orxFLAG_SET(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED | orxTIMELINE_HOLDER_KU32_FLAG_UPDATED, orxTIMELINE_HOLDER_KU32_FLAG_NONE);
+
+//           /* Inits event payload */
+//           orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
+//           stPayload.pstTimeLine = pstTimeLine;
+//           stPayload.zTrackName  = pstTrack->zReference;
+
+//           /* For all recently past events */
+//           for(u32EventIndex = pstTimeLine->astTrackList[i].u32NextEventIndex;
+//               (u32EventIndex < pstTrack->u32EventCount) && (fTrackLocalTime >= pstTrack->astEventList[u32EventIndex].fTimeStamp);
+//               u32EventIndex++)
+//           {
+//             /* Updates payload */
+//             stPayload.zEvent      = pstTrack->astEventList[u32EventIndex].zEventText;
+//             stPayload.fTimeStamp  = pstTrack->astEventList[u32EventIndex].fTimeStamp;
+
+//             /* Sends event */
+//             orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRIGGER, _pstCaller, _pstCaller, &stPayload);
+//           }
+
+//           /* Is over? */
+//           if(u32EventIndex >= pstTrack->u32EventCount)
+//           {
+//             orxTIMELINE_TRACK *pstTrack;
+
+//             /* Gets track */
+//             pstTrack = pstTimeLine->astTrackList[i].pstTrack;
+
+//             /* Inits event payload */
+//             orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
+//             stPayload.pstTimeLine = pstTimeLine;
+//             stPayload.zTrackName  = pstTrack->zReference;
+
+//             /* Is a looping track? */
+//             if(orxFLAG_TEST(pstTrack->u32Flags, orxTIMELINE_TRACK_KU32_FLAG_LOOP))
+//             {
+//               /* Sends event */
+//               orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_LOOP, _pstCaller, _pstCaller, &stPayload);
+
+//               /* Resets track */
+//               pstTimeLine->astTrackList[i].u32NextEventIndex  = 0;
+//               pstTimeLine->astTrackList[i].fStartTime         = pstTimeLine->fTime;
+//             }
+//             else
+//             {
+//               /* Sends event */
+//               orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, _pstCaller, _pstCaller, &stPayload);
+
+//               /* Removes its reference */
+//               pstTimeLine->astTrackList[i].pstTrack = orxNULL;
+
+//               /* Sends event */
+//               orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, _pstCaller, _pstCaller, &stPayload);
+
+//               /* Deletes it */
+//               orxTimeLine_DeleteTrack(pstTrack);
+//             }
+//           }
+//           else
+//           {
+//             /* Updates next event index */
+//             pstTimeLine->astTrackList[i].u32NextEventIndex = u32EventIndex;
+//           }
+//         }
+//       }
+//     }
+
+//     /* For all tracks */
+//     for(i = 0; i < orxTIMELINE_KU32_TRACK_NUMBER; i++)
+//     {
+//       /* Clears its update flag */
+//       orxFLAG_SET(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_NONE, orxTIMELINE_HOLDER_KU32_FLAG_UPDATED);
+//     }
+//   }
+
+//   /* Profiles */
+//   orxPROFILER_POP_MARKER();
+
+//   /* Done! */
+//   return eResult;
+// }
+
+
+// /***************************************************************************
+//  * Public functions                                                        *
+//  ***************************************************************************/
+
+/** Trigger module setup
+ */
+void orxFASTCALL orxTrigger_Setup()
+{
+  /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_BANK);
+  orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_STRING);
+  orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_PROFILER);
+  orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_EVENT);
+
+  /* Done! */
+  return;
+}
+
+/** Inits the Trigger module
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxTrigger_Init()
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Not already Initialized? */
+  if(!(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY))
+  {
+    /* Cleans static controller */
+    orxMemory_Zero(&sstTrigger, sizeof(orxTRIGGER_STATIC));
+
+    /* Creates set table */
+    sstTrigger.pstSetTable = orxHashTable_Create(orxTRIGGER_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+    /* Valid? */
+    if(sstTrigger.pstSetTable != orxNULL)
+    {
+      /* Registers structure type */
+      eResult = orxSTRUCTURE_REGISTER(TRIGGER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxTRIGGER_KU32_BANK_SIZE, orxNULL);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create Trigger set table.");
+    }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to initialize the Trigger module when it was already initialized.");
+
+    /* Already initialized */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Initialized? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Inits Flags */
+    orxFLAG_SET(sstTrigger.u32Flags, orxTRIGGER_KU32_STATIC_FLAG_READY, orxTRIGGER_KU32_STATIC_FLAG_NONE);
+
+    /* Adds event handler */
+    orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxTrigger_EventHandler);
+    orxEvent_SetHandlerIDFlags(orxTrigger_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
+  }
+  else
+  {
+    /* Deletes set table if needed */
+    if(sstTrigger.pstSetTable != orxNULL)
+    {
+      orxHashTable_Delete(sstTrigger.pstSetTable);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Exits from the Trigger module
+ */
+void orxFASTCALL orxTrigger_Exit()
+{
+  /* Initialized? */
+  if(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY)
+  {
+    orxTRIGGER_SET *pstEventSet;
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxTrigger_EventHandler);
+
+    /* Deletes Trigger list */
+    orxTrigger_DeleteAll();
+
+    /* Unregisters structure type */
+    orxStructure_Unregister(orxSTRUCTURE_ID_TRIGGER);
+
+    /* For all remaining sets */
+    while(orxHashTable_GetNext(sstTrigger.pstSetTable, orxNULL, orxNULL, (void **)&pstEventSet) != orxHANDLE_UNDEFINED)
+    {
+      /* Deletes it */
+      orxTrigger_DeleteSet(pstEventSet);
+    }
+
+    /* Deletes set table */
+    orxHashTable_Delete(sstTrigger.pstSetTable);
+
+    /* Updates flags */
+    sstTrigger.u32Flags &= ~orxTRIGGER_KU32_STATIC_FLAG_READY;
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Tried to exit from the Trigger module when it wasn't initialized.");
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Creates an empty Trigger
+ * @return orxTrigger / orxNULL
+ */
+orxTRIGGER *orxFASTCALL orxTrigger_Create()
+{
+  orxTRIGGER *pstResult;
+
+  /* Checks */
+  orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
+
+  /* Creates TimeLine */
+  pstResult = orxTRIGGER(orxStructure_Create(orxSTRUCTURE_ID_TRIGGER));
+
+  /* Created? */
+  if(pstResult != orxNULL)
+  {
+    /* Inits flags */
+    orxStructure_SetFlags(pstResult, orxTRIGGER_KU32_FLAG_ENABLED, orxTRIGGER_KU32_MASK_ALL);
+
+    /* Increases count */
+    orxStructure_IncreaseCount(pstResult);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to create Trigger structure.");
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Deletes a Trigger
+ * @param[in] _pstTrigger             Concerned Trigger
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxTrigger_Delete(orxTRIGGER *_pstTrigger)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstTrigger);
+
+  /* Decreases count */
+  orxStructure_DecreaseCount(_pstTrigger);
+
+  /* Not referenced? */
+  if(orxStructure_GetRefCount(_pstTrigger) == 0)
+  {
+    orxTRIGGER_EVENT_PAYLOAD stPayload;
+    orxSTRUCTURE             *pstOwner;
+    orxU32                    i;
+
+    /* Gets owner */
+    pstOwner = orxStructure_GetOwner(_pstTrigger);
+
+    /* Inits event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxTRIGGER_EVENT_PAYLOAD));
+    stPayload.pstTrigger = _pstTrigger;
+
+    /* For all sets */
+    for(i = 0; i < orxTRIGGER_KU32_SET_NUMBER; i++)
+    {
+      /* Valid? */
+      if(_pstTrigger->pastSetList[i] != orxNULL)
+      {
+        orxTRIGGER_SET *pstSet;
+
+        /* Gets set */
+        pstSet = _pstTrigger->pastSetList[i];
+
+        /* Removes its reference */
+        _pstTrigger->pastSetList[i] = orxNULL;
+
+        /* Updates payload */
+        stPayload.zSetName = pstSet->zReference;
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_TRIGGER, orxTRIGGER_EVENT_SET_REMOVE, pstOwner, pstOwner, &stPayload);
+
+        /* Deletes it */
+        orxTrigger_DeleteSet(pstSet);
+      }
+    }
+
+    /* Deletes structure */
+    orxStructure_Delete(_pstTrigger);
+  }
+  else
+  {
+    /* Referenced by others */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+// /** Clears cache (if any TimeLine track is still in active use, it'll remain in memory until not referenced anymore)
+//  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+//  */
+// orxSTATUS orxFASTCALL orxTimeLine_ClearCache()
+// {
+//   orxTIMELINE_TRACK  *pstTrack, *pstNewTrack;
+//   orxHANDLE           hIterator, hNextIterator;
+//   orxSTATUS           eResult = orxSTATUS_SUCCESS;
+
+//   /* Checks */
+//   orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
+
+//   /* For all tracks */
+//   for(hIterator = orxHashTable_GetNext(sstTrigger.pstSetTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstTrack);
+//       hIterator != orxHANDLE_UNDEFINED;
+//       hIterator = hNextIterator, pstTrack = pstNewTrack)
+//   {
+//     /* Gets next track */
+//     hNextIterator = orxHashTable_GetNext(sstTrigger.pstSetTable, hIterator, orxNULL, (void **)&pstNewTrack);
+
+//     /* Is cached? */
+//     if(orxFLAG_TEST(pstTrack->u32Flags, orxTIMELINE_TRACK_KU32_FLAG_CACHED))
+//     {
+//       /* Updates its flags */
+//       orxFLAG_SET(pstTrack->u32Flags, orxTIMELINE_TRACK_KU32_FLAG_NONE, orxTIMELINE_TRACK_KU32_FLAG_CACHED);
+
+//       /* Deletes its extra reference */
+//       orxTimeLine_DeleteTrack(pstTrack);
+//     }
+//   }
+
+//   /* Done! */
+//   return eResult;
+// }
+
+// /** Enables/disables a TimeLine
+//  * @param[in]   _pstTimeLine        Concerned TimeLine
+//  * @param[in]   _bEnable      enable / disable
+//  */
+// void orxFASTCALL orxTimeLine_Enable(orxTIMELINE *_pstTimeLine, orxBOOL _bEnable)
+// {
+//   /* Checks */
+//   orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
+//   orxSTRUCTURE_ASSERT(_pstTimeLine);
+
+//   /* Enable? */
+//   if(_bEnable != orxFALSE)
+//   {
+//     /* Updates status flags */
+//     orxStructure_SetFlags(_pstTimeLine, orxTIMELINE_KU32_FLAG_ENABLED, orxTIMELINE_KU32_FLAG_NONE);
+//   }
+//   else
+//   {
+//     /* Updates status flags */
+//     orxStructure_SetFlags(_pstTimeLine, orxTIMELINE_KU32_FLAG_NONE, orxTIMELINE_KU32_FLAG_ENABLED);
+//   }
+
+//   /* Done! */
+//   return;
+// }
+
+// /** Is TimeLine enabled?
+//  * @param[in]   _pstTimeLine        Concerned TimeLine
+//  * @return      orxTRUE if enabled, orxFALSE otherwise
+//  */
+// orxBOOL orxFASTCALL orxTimeLine_IsEnabled(const orxTIMELINE *_pstTimeLine)
+// {
+//   /* Checks */
+//   orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
+//   orxSTRUCTURE_ASSERT(_pstTimeLine);
+
+//   /* Done! */
+//   return(orxStructure_TestFlags(_pstTimeLine, orxTIMELINE_KU32_FLAG_ENABLED));
+// }
+
+// /** Adds a track to a TimeLine from config
+//  * @param[in]   _pstTimeLine          Concerned TimeLine
+//  * @param[in]   _zTrackID             Config ID
+//  * return       orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+//  */
+// orxSTATUS orxFASTCALL orxTimeLine_AddTrackFromConfig(orxTIMELINE *_pstTimeLine, const orxSTRING _zTrackID)
+// {
+//   orxU32    u32Index;
+//   orxSTATUS eResult = orxSTATUS_FAILURE;
+
+//   /* Checks */
+//   orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
+//   orxSTRUCTURE_ASSERT(_pstTimeLine);
+//   orxASSERT((_zTrackID != orxNULL) && (_zTrackID != orxSTRING_EMPTY));
+
+//   /* Finds an empty track */
+//   for(u32Index = 0; (u32Index < orxTIMELINE_KU32_TRACK_NUMBER) && (_pstTimeLine->astTrackList[u32Index].pstTrack != orxNULL); u32Index++);
+
+//   /* Found? */
+//   if(u32Index < orxTIMELINE_KU32_TRACK_NUMBER)
+//   {
+//     orxTIMELINE_TRACK  *pstTrack;
+//     orxSTRINGID         stID;
+
+//     /* Gets track ID */
+//     stID = orxString_Hash(_zTrackID);
+
+//     /* Search for reference */
+//     pstTrack = (orxTIMELINE_TRACK *)orxHashTable_Get(sstTrigger.pstSetTable, stID);
+
+//     /* Found? */
+//     if(pstTrack != orxNULL)
+//     {
+//       /* Increases count */
+//       pstTrack->u32RefCount++;
+//     }
+//     else
+//     {
+//       /* Creates track */
+//       pstTrack = orxTimeLine_CreateTrack(_zTrackID);
+//     }
+
+//     /* Valid? */
+//     if(pstTrack != orxNULL)
+//     {
+//       orxTIMELINE_EVENT_PAYLOAD stPayload;
+//       orxSTRUCTURE             *pstOwner;
+
+//       /* Gets owner */
+//       pstOwner = orxStructure_GetOwner(_pstTimeLine);
+
+//       /* Updates track holder */
+//       _pstTimeLine->astTrackList[u32Index].pstTrack           = pstTrack;
+//       _pstTimeLine->astTrackList[u32Index].fStartTime         = _pstTimeLine->fTime;
+//       _pstTimeLine->astTrackList[u32Index].u32NextEventIndex  = 0;
+//       _pstTimeLine->astTrackList[u32Index].u32Flags           = orxTIMELINE_HOLDER_KU32_FLAG_NONE;
+
+//       /* Inits event payload */
+//       orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
+//       stPayload.pstTimeLine = _pstTimeLine;
+//       stPayload.zTrackName  = pstTrack->zReference;
+
+//       /* Sends event */
+//       orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_ADD, pstOwner, pstOwner, &stPayload);
+
+//       /* Updates timeline flags */
+//       orxStructure_SetFlags(_pstTimeLine, orxTIMELINE_KU32_FLAG_DIRTY, orxTIMELINE_KU32_FLAG_NONE);
+
+//       /* Is immediate? */
+//       if(orxFLAG_TEST(pstTrack->u32Flags, orxTIMELINE_TRACK_KU32_FLAG_IMMEDIATE))
+//       {
+//         /* Updates it */
+//         orxTimeLine_Update(orxSTRUCTURE(_pstTimeLine), pstOwner, orxNULL);
+//       }
+
+//       /* Updates result */
+//       eResult = orxSTATUS_SUCCESS;
+//     }
+//   }
+//   else
+//   {
+//     /* Logs message */
+//     orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "No room for a new track in TimeLine, can't add track <%s>.", _zTrackID);
+//   }
+
+//   /* Done! */
+//   return eResult;
+// }
+
+// /** Removes a track using its config ID
+//  * @param[in]   _pstTimeLine          Concerned TimeLine
+//  * @param[in]   _zTrackID             Config ID of the track to remove
+//  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+//  */
+// orxSTATUS orxFASTCALL orxTimeLine_RemoveTrackFromConfig(orxTIMELINE *_pstTimeLine, const orxSTRING _zTrackID)
+// {
+//   orxSTRINGID   stTrackID;
+//   orxU32        u32Index;
+//   orxSTRUCTURE *pstOwner;
+//   orxSTATUS     eResult = orxSTATUS_FAILURE;
+
+//   /* Checks */
+//   orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
+//   orxSTRUCTURE_ASSERT(_pstTimeLine);
+//   orxASSERT((_zTrackID != orxNULL) && (_zTrackID != orxSTRING_EMPTY));
+
+//   /* Gets owner */
+//   pstOwner = orxStructure_GetOwner(_pstTimeLine);
+
+//   /* Gets track ID */
+//   stTrackID = orxString_Hash(_zTrackID);
+
+//   /* For all tracks */
+//   for(u32Index = 0; u32Index < orxTIMELINE_KU32_TRACK_NUMBER; u32Index++)
+//   {
+//     /* Is defined? */
+//     if(_pstTimeLine->astTrackList[u32Index].pstTrack != orxNULL)
+//     {
+//       /* Do IDs match? */
+//       if(_pstTimeLine->astTrackList[u32Index].pstTrack->stID == stTrackID)
+//       {
+//         orxTIMELINE_EVENT_PAYLOAD stPayload;
+//         orxTIMELINE_TRACK        *pstTrack;
+
+//         /* Gets track */
+//         pstTrack = _pstTimeLine->astTrackList[u32Index].pstTrack;
+
+//         /* Removes its reference */
+//         _pstTimeLine->astTrackList[u32Index].pstTrack = orxNULL;
+
+//         /* Inits event payload */
+//         orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
+//         stPayload.pstTimeLine = _pstTimeLine;
+//         stPayload.zTrackName  = pstTrack->zReference;
+
+//         /* Sends event */
+//         orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, pstOwner, pstOwner, &stPayload);
+
+//         /* Deletes it */
+//         orxTimeLine_DeleteTrack(pstTrack);
+
+//         break;
+//       }
+//     }
+//   }
+
+//   /* Done! */
+//   return eResult;
+// }
+
+// /** Gets how many tracks are currently in use
+//  * @param[in]   _pstTimeLine          Concerned TimeLine
+//  * @return      orxU32
+//  */
+// orxU32 orxFASTCALL orxTimeLine_GetCount(const orxTIMELINE *_pstTimeLine)
+// {
+//   orxU32 i, u32Result = 0;
+
+//   /* Checks */
+//   orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
+//   orxSTRUCTURE_ASSERT(_pstTimeLine);
+
+//   /* For all tracks */
+//   for(i = 0; i < orxTIMELINE_KU32_TRACK_NUMBER; i++)
+//   {
+//     /* Is valid? */
+//     if(_pstTimeLine->astTrackList[i].pstTrack != orxNULL)
+//     {
+//       /* Updates result */
+//       u32Result++;
+//     }
+//   }
+
+//   /* Done! */
+//   return u32Result;
+// }
+
+// /** Gets a track duration using its config ID
+//  * @param[in]   _zTrackID             Config ID of the concerned track
+//  * @return      Duration if found, -orxFLOAT_1 otherwise
+//  */
+// orxFLOAT orxFASTCALL orxTimeLine_GetTrackDuration(const orxSTRING _zTrackID)
+// {
+//   orxTIMELINE_TRACK  *pstTrack;
+//   orxSTRINGID         stTrackID;
+//   orxFLOAT            fResult;
+
+//   /* Checks */
+//   orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
+//   orxASSERT((_zTrackID != orxNULL) && (_zTrackID != orxSTRING_EMPTY));
+
+//   /* Gets track CRC */
+//   stTrackID = orxString_Hash(_zTrackID);
+
+//   /* Gets it */
+//   if((pstTrack = (orxTIMELINE_TRACK *)orxHashTable_Get(sstTrigger.pstSetTable, stTrackID)) != orxNULL)
+//   {
+//     /* Updates result */
+//     fResult = pstTrack->astEventList[pstTrack->u32EventCount - 1].fTimeStamp;
+//   }
+//   else
+//   {
+//     /* Updates result */
+//     fResult = -orxFLOAT_1;
+//   }
+
+//   /* Done! */
+//   return fResult;
+// }
+
+#ifdef __orxMSVC__
+
+  #pragma warning(pop)
+
+#endif /* __orxMSVC__ */

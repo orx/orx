@@ -92,6 +92,7 @@ static orxINLINE void orxModule_RegisterAll()
   orxMODULE_REGISTER(TEXTURE, orxTexture);
   orxMODULE_REGISTER(THREAD, orxThread);
   orxMODULE_REGISTER(TIMELINE, orxTimeLine);
+  orxMODULE_REGISTER(TRIGGER, orxTrigger);
   orxMODULE_REGISTER(VIEWPORT, orxViewport);
 
   /* Done! */
