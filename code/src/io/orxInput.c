@@ -2275,6 +2275,62 @@ orxSTATUS orxFASTCALL orxInput_SetTypeFlags(orxU32 _u32AddTypeFlags, orxU32 _u32
   return eResult;
 }
 
+/** Gets next input in current set
+ * @param[in] _zInputName       Concerned input, orxNULL to get the first one
+ * @return Input name / orxNULL
+ */
+const orxSTRING orxFASTCALL orxInput_GetNext(const orxSTRING _zInputName)
+{
+  const orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+
+  /* Valid? */
+  if(sstInput.pstCurrentSet != orxNULL)
+  {
+    orxINPUT_ENTRY *pstEntry;
+
+    /* First input requested? */
+    if(_zInputName == orxNULL)
+    {
+      /* Gets it */
+      pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
+    }
+    else
+    {
+      orxSTRINGID stEntryID;
+
+      /* Gets its ID */
+      stEntryID = orxString_Hash(_zInputName);
+
+      /* For all entries */
+      for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
+          pstEntry != orxNULL;
+          pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+      {
+        /* Found? */
+        if(pstEntry->stID == stEntryID)
+        {
+          /* Gets next one */
+          pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode));
+          break;
+        }
+      }
+    }
+
+    /* Valid? */
+    if(pstEntry != orxNULL)
+    {
+      /* Updates result */
+      zResult = pstEntry->zName;
+    }
+  }
+
+  /* Done! */
+  return zResult;
+}
+
 /** Is input active?
  * @param[in] _zInputName       Concerned input name
  * @return orxTRUE if active, orxFALSE otherwise

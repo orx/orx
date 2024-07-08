@@ -222,6 +222,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_ClearSet(const orxSTR
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetTypeFlags(orxU32 _u32AddTypeFlags, orxU32 _u32RemoveTypeFlags);
 
 
+/** Gets next input in current set
+ * @param[in] _zInputName       Concerned input, orxNULL to get the first one
+ * @return Input name / orxNULL
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetNext(const orxSTRING _zInputName);
+
 /** Is input active?
  * @param[in] _zInputName       Concerned input name
  * @return orxTRUE if active, orxFALSE otherwise
