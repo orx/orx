@@ -1643,6 +1643,9 @@ void orxFASTCALL orxBundle_Exit()
   {
     orxU32 i;
 
+    // Unregisters type
+    orxResource_UnregisterType(orxBUNDLE_KZ_RESOURCE_TAG);
+
     // Unregisters event handler
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxBundle_EventHandler);
     orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxBundle_EventHandler);
