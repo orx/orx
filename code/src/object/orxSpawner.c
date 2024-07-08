@@ -1008,33 +1008,29 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
 
     case orxEVENT_TYPE_RESOURCE:
     {
-      /* Add or update? */
-      if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+      orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
+      /* Gets payload */
+      pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Is config group? */
+      if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
       {
-        orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+        orxSPAWNER *pstSpawner;
 
-        /* Gets payload */
-        pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-        /* Is config group? */
-        if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
+        /* For all spawners */
+        for(pstSpawner = orxSPAWNER(orxStructure_GetFirst(orxSTRUCTURE_ID_SPAWNER));
+            pstSpawner != orxNULL;
+            pstSpawner = orxSPAWNER(orxStructure_GetNext(pstSpawner)))
         {
-          orxSPAWNER *pstSpawner;
-
-          /* For all spawners */
-          for(pstSpawner = orxSPAWNER(orxStructure_GetFirst(orxSTRUCTURE_ID_SPAWNER));
-              pstSpawner != orxNULL;
-              pstSpawner = orxSPAWNER(orxStructure_GetNext(pstSpawner)))
+          /* Has reference? */
+          if((pstSpawner->zReference != orxNULL) && (pstSpawner->zReference != orxSTRING_EMPTY))
           {
-            /* Has reference? */
-            if((pstSpawner->zReference != orxNULL) && (pstSpawner->zReference != orxSTRING_EMPTY))
+            /* Match origin? */
+            if(orxConfig_GetOriginID(pstSpawner->zReference) == pstPayload->stNameID)
             {
-              /* Match origin? */
-              if(orxConfig_GetOriginID(pstSpawner->zReference) == pstPayload->stNameID)
-              {
-                /* Re-processes its config data */
-                orxSpawner_ProcessConfigData(pstSpawner, orxFALSE);
-              }
+              /* Re-processes its config data */
+              orxSpawner_ProcessConfigData(pstSpawner, orxFALSE);
             }
           }
         }

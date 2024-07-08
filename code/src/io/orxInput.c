@@ -1400,22 +1400,20 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
  */
 static orxSTATUS orxFASTCALL orxInput_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                   eResult = orxSTATUS_SUCCESS;
 
-  /* Add or update? */
-  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RESOURCE);
+
+  /* Gets payload */
+  pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  /* Is config group? */
+  if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
   {
-    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
-
-    /* Gets payload */
-    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Is config group? */
-    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
-    {
-      /* Reloads input */
-      orxInput_Load(orxNULL);
-    }
+    /* Reloads input */
+    orxInput_Load(orxNULL);
   }
 
   /* Done! */

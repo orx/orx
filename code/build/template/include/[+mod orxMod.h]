@@ -170,6 +170,9 @@ static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  // Checks
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
+
   // New object?
   if(_pstEvent->eID == orxOBJECT_EVENT_PREPARE)
   {

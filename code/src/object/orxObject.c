@@ -11298,8 +11298,7 @@ void orxFASTCALL orxObject_EnableTimeLine(orxOBJECT *_pstObject, orxBOOL _bEnabl
     orxTimeLine_Enable(pstTimeLine, _bEnable);
   }
 
-
-    /* Done! *//* Done! */
+  /* Done! */
   return;
 }
 

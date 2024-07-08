@@ -78,6 +78,9 @@ static orxSTATUS orxFASTCALL orxMouse_iOS_EventHandler(const orxEVENT *_pstEvent
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+
   /* Depending on ID */
   switch(_pstEvent->eID)
   {

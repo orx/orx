@@ -126,6 +126,9 @@ static orxSTATUS orxFASTCALL orxSoundPointer_EventHandler(const orxEVENT *_pstEv
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
+
   /* Depending on event ID */
   switch(_pstEvent->eID)
   {

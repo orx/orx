@@ -77,6 +77,9 @@ static orxSTATUS orxFASTCALL orxJoystick_iOS_EventHandler(const orxEVENT *_pstEv
   orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
   orxSTATUS                 eResult = orxSTATUS_SUCCESS;
 
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+
   /* Accelerate event? */
   if(_pstEvent->eID == orxSYSTEM_EVENT_ACCELERATE)
   {

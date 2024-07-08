@@ -962,6 +962,9 @@ static orxSTATUS orxFASTCALL orxBundle_EventHandler(const orxEVENT *_pstEvent)
   // System
   else
   {
+    // Checks
+    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+    
     // Param ready?
     if(_pstEvent->eID == orxSYSTEM_EVENT_PARAM_READY)
     {

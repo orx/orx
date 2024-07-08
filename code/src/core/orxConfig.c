@@ -691,48 +691,46 @@ static orxINLINE void orxConfig_DeleteEntry(orxCONFIG_ENTRY *_pstEntry)
  */
 static orxSTATUS orxFASTCALL orxConfig_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                   eResult = orxSTATUS_SUCCESS;
 
-  /* Add or update? */
-  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RESOURCE);
+
+  /* Gets payload */
+  pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  /* Is config group? */
+  if(pstPayload->stGroupID == sstConfig.stResourceGroupID)
   {
-    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+    orxCONFIG_SECTION *pstSection;
 
-    /* Gets payload */
-    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Is config group? */
-    if(pstPayload->stGroupID == sstConfig.stResourceGroupID)
+    /* For all sections */
+    for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
+        pstSection != orxNULL;
+        pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))
     {
-      orxCONFIG_SECTION *pstSection;
+      orxCONFIG_ENTRY *pstEntry, *pstNextEntry;
 
-      /* For all sections */
-      for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
-          pstSection != orxNULL;
-          pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))
+      /* For all entries */
+      for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
+          pstEntry != orxNULL;
+          pstEntry = pstNextEntry)
       {
-        orxCONFIG_ENTRY *pstEntry, *pstNextEntry;
+        /* Gets next entry */
+        pstNextEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode));
 
-        /* For all entries */
-        for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
-            pstEntry != orxNULL;
-            pstEntry = pstNextEntry)
+        /* Should get cleaned? */
+        if(pstEntry->stOriginID == pstPayload->stNameID)
         {
-          /* Gets next entry */
-          pstNextEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode));
-
-          /* Should get cleaned? */
-          if(pstEntry->stOriginID == pstPayload->stNameID)
-          {
-            /* Deletes it */
-            orxConfig_DeleteEntry(pstEntry);
-          }
+          /* Deletes it */
+          orxConfig_DeleteEntry(pstEntry);
         }
       }
-
-      /* Reloads file */
-      orxConfig_Load(orxString_GetFromID(pstPayload->stNameID));
     }
+
+    /* Reloads file */
+    orxConfig_Load(orxString_GetFromID(pstPayload->stNameID));
   }
 
   /* Done! */
