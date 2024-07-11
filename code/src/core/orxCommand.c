@@ -41,6 +41,7 @@
 #include "memory/orxMemory.h"
 #include "memory/orxBank.h"
 #include "object/orxTimeLine.h"
+#include "object/orxTrigger.h"
 #include "utils/orxString.h"
 #include "utils/orxTree.h"
 
@@ -1168,60 +1169,44 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
   /* Depends on event type */
   switch(_pstEvent->eType)
   {
-    case orxEVENT_TYPE_TIMELINE:
+    case orxEVENT_TYPE_ANIM:
     {
-      /* Depending on event ID */
-      switch(_pstEvent->eID)
-      {
-        /* Timeline Trigger */
-        case orxTIMELINE_EVENT_TRIGGER:
-        {
-          orxCOMMAND_VAR              stResult;
-          orxTIMELINE_EVENT_PAYLOAD  *pstPayload;
+      orxCOMMAND_VAR          stResult;
+      orxANIM_EVENT_PAYLOAD  *pstPayload;
 
-          /* Gets payload */
-          pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+      /* Gets payload */
+      pstPayload = (orxANIM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-          /* Processes command */
-          orxCommand_Process(pstPayload->zEvent, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
-
-          break;
-        }
-
-        default:
-        {
-          break;
-        }
-      }
+      /* Processes command */
+      orxCommand_Process(pstPayload->stCustom.zName, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
 
       break;
     }
 
-    case orxEVENT_TYPE_ANIM:
+    case orxEVENT_TYPE_TIMELINE:
     {
-      /* Depending on event ID */
-      switch(_pstEvent->eID)
-      {
-        /* Anim Custom Event */
-        case orxANIM_EVENT_CUSTOM_EVENT:
-        {
-          orxCOMMAND_VAR          stResult;
-          orxANIM_EVENT_PAYLOAD  *pstPayload;
+      orxCOMMAND_VAR              stResult;
+      orxTIMELINE_EVENT_PAYLOAD  *pstPayload;
 
-          /* Gets payload */
-          pstPayload = (orxANIM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+      /* Gets payload */
+      pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-          /* Processes command */
-          orxCommand_Process(pstPayload->stCustom.zName, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
+      /* Processes command */
+      orxCommand_Process(pstPayload->zEvent, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
 
-          break;
-        }
+      break;
+    }
 
-        default:
-        {
-          break;
-        }
-      }
+    case orxEVENT_TYPE_TRIGGER:
+    {
+      orxCOMMAND_VAR            stResult;
+      orxTRIGGER_EVENT_PAYLOAD *pstPayload;
+
+      /* Gets payload */
+      pstPayload = (orxTRIGGER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Processes command */
+      orxCommand_Process(pstPayload->zEvent, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
 
       break;
     }
@@ -3523,10 +3508,12 @@ orxSTATUS orxFASTCALL orxCommand_Init()
 
     /* Registers event handler */
     if((orxEvent_AddHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler) != orxSTATUS_FAILURE)
+    && (orxEvent_AddHandler(orxEVENT_TYPE_TRIGGER, orxCommand_EventHandler) != orxSTATUS_FAILURE)
     && (orxEvent_AddHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler) != orxSTATUS_FAILURE))
     {
       /* Filters relevant event IDs */
       orxEvent_SetHandlerIDFlags(orxCommand_EventHandler, orxEVENT_TYPE_TIMELINE, orxNULL, orxEVENT_GET_FLAG(orxTIMELINE_EVENT_TRIGGER), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(orxCommand_EventHandler, orxEVENT_TYPE_TRIGGER, orxNULL, orxEVENT_GET_FLAG(orxTRIGGER_EVENT_FIRE), orxEVENT_KU32_MASK_ID_ALL);
       orxEvent_SetHandlerIDFlags(orxCommand_EventHandler, orxEVENT_TYPE_ANIM, orxNULL, orxEVENT_GET_FLAG(orxANIM_EVENT_CUSTOM_EVENT), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Creates banks */
@@ -3574,8 +3561,9 @@ orxSTATUS orxFASTCALL orxCommand_Init()
         /* Failure? */
         if(eResult == orxSTATUS_FAILURE)
         {
-          /* Removes event handler */
+          /* Removes event handlers */
           orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
+          orxEvent_RemoveHandler(orxEVENT_TYPE_TRIGGER, orxCommand_EventHandler);
           orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler);
 
           /* Deletes banks */
@@ -3603,8 +3591,9 @@ orxSTATUS orxFASTCALL orxCommand_Init()
           orxBank_Delete(sstCommand.pstBank);
         }
 
-        /* Removes event handler */
+        /* Removes event handlers */
         orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
+        orxEvent_RemoveHandler(orxEVENT_TYPE_TRIGGER, orxCommand_EventHandler);
         orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler);
 
         /* Logs message */
@@ -3613,8 +3602,9 @@ orxSTATUS orxFASTCALL orxCommand_Init()
     }
     else
     {
-      /* Removes event handler */
+      /* Removes events handler */
       orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_TRIGGER, orxCommand_EventHandler);
       orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler);
 
       /* Logs message */
@@ -3680,8 +3670,9 @@ void orxFASTCALL orxCommand_Exit()
     orxBank_Delete(sstCommand.pstTrieBank);
     orxBank_Delete(sstCommand.pstResultBank);
 
-    /* Removes event handler */
+    /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxCommand_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_TRIGGER, orxCommand_EventHandler);
     orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, orxCommand_EventHandler);
 
     /* Updates flags */

@@ -94,7 +94,7 @@
 #define orxTRIGGER_KZ_CONFIG_KEEP_IN_CACHE            "KeepInCache"
 
 #define orxTRIGGER_KC_SEPARATOR                       ':'
-#define orxTRIGGER_KC_STOP_PROPAGATION_MARKER         '!'
+#define orxTRIGGER_KC_STOP_MARKER                     '!'
 
 
 /***************************************************************************
@@ -107,7 +107,7 @@ typedef struct __orxTRIGGER_SET_EVENT_t
 {
   orxSTRINGID               stID;                     /**< Event ID : 8 */
   const orxSTRING           zValue;                   /**< Event value : 12 / 16 */
-  orxU32                    u32PropagationDepth;      /**< Event propagation depth : 16 / 20 */
+  orxU32                    u32StopDepth;             /**< Event stop depth : 16 / 20 */
 
 } orxTRIGGER_SET_EVENT;
 
@@ -202,29 +202,29 @@ static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID
             const orxCHAR  *pcSrc;
             orxCHAR        *pcDst;
             orxCHAR         acBuffer[orxTRIGGER_KU32_BUFFER_SIZE];
-            orxU32          u32ListCount, u32PropagationDepth, u32Depth;
+            orxU32          u32ListCount, u32StopDepth, u32Depth;
 
             /* Gets corresponding key */
             zKey = orxConfig_GetKey(u32KeyIndex);
 
             /* For all characters */
-            for(pcSrc = zKey, pcDst = acBuffer, u32PropagationDepth = orxU32_UNDEFINED, u32Depth = 0;
+            for(pcSrc = zKey, pcDst = acBuffer, u32StopDepth = 0, u32Depth = 0;
                 (*pcSrc != orxCHAR_NULL) && (pcDst - acBuffer < sizeof(acBuffer) - 1);
                 pcSrc++)
             {
               /* Depending on character */
               switch(*pcSrc)
               {
-                case orxTRIGGER_KC_STOP_PROPAGATION_MARKER:
+                case orxTRIGGER_KC_STOP_MARKER:
                 {
                   /* Checks */
-                  if(u32PropagationDepth != orxU32_UNDEFINED)
+                  if((u32StopDepth != 0) || (u32Depth == 0))
                   {
-                    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s] Incorrect event declaration <%s>: multiple propagation markers were found!", _zConfigID, zKey);
+                    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s] Invalid stop markers found for event <%s>.", _zConfigID, zKey);
                   }
 
-                  /* Updates propagation depth */
-                  u32PropagationDepth = u32Depth;
+                  /* Updates stop depth */
+                  u32StopDepth = u32Depth;
 
                   break;
                 }
@@ -262,9 +262,9 @@ static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID
               orxASSERT(u32EventIndex < u32EventCount);
 
               /* Stores it */
-              pstResult->astEventList[u32EventIndex].stID                 = stEventID;
-              pstResult->astEventList[u32EventIndex].zValue               = orxString_Store(orxConfig_GetListString(zKey, i));
-              pstResult->astEventList[u32EventIndex].u32PropagationDepth  = u32PropagationDepth;
+              pstResult->astEventList[u32EventIndex].stID         = stEventID;
+              pstResult->astEventList[u32EventIndex].zValue       = orxString_Store(orxConfig_GetListString(zKey, i));
+              pstResult->astEventList[u32EventIndex].u32StopDepth = u32StopDepth;
             }
           }
 
@@ -451,8 +451,7 @@ static orxSTATUS orxFASTCALL orxTrigger_EventHandler(const orxEVENT *_pstEvent)
       /* Depending on event ID */
       switch(_pstEvent->eID)
       {
-        /* Pause / disable */
-        case orxOBJECT_EVENT_PAUSE:
+        /* Disable */
         case orxOBJECT_EVENT_DISABLE:
         {
           /* Disables it */
@@ -461,8 +460,7 @@ static orxSTATUS orxFASTCALL orxTrigger_EventHandler(const orxEVENT *_pstEvent)
           break;
         }
 
-        /* Unpause / enable */
-        case orxOBJECT_EVENT_UNPAUSE:
+        /* Enable */
         case orxOBJECT_EVENT_ENABLE:
         {
           /* Enables it */
@@ -599,8 +597,9 @@ void orxFASTCALL orxTrigger_Exit()
   {
     orxTRIGGER_SET *pstEventSet;
 
-    /* Removes event handler */
+    /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxTrigger_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxTrigger_EventHandler);
 
     /* Deletes Trigger list */
     orxTrigger_DeleteAll();
@@ -933,6 +932,9 @@ orxSTATUS orxFASTCALL orxTrigger_RemoveSetFromConfig(orxTRIGGER *_pstTrigger, co
         /* Deletes it */
         orxTrigger_DeleteSet(pstSet);
 
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+
         break;
       }
     }
@@ -976,7 +978,7 @@ orxU32 orxFASTCALL orxTrigger_GetCount(const orxTRIGGER *_pstTrigger)
  * @param[in]   _u32Size              Size of the refinement list
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxTrigger_Fire(const orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
+orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -989,8 +991,10 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(const orxTRIGGER *_pstTrigger, const orxST
   /* Is enabled? */
   if(orxStructure_TestFlags(_pstTrigger, orxTRIGGER_KU32_FLAG_ENABLED))
   {
-    orxU32  i;
-    orxCHAR acBuffer[orxTRIGGER_KU32_BUFFER_SIZE], *pc = acBuffer;
+    orxTRIGGER_EVENT_PAYLOAD  stPayload;
+    orxSTRUCTURE             *pstOwner;
+    orxCHAR                   acBuffer[orxTRIGGER_KU32_BUFFER_SIZE], *pc = acBuffer;
+    orxS32                    i, s32StopDepth;
 
   #ifdef __orxMSVC__
     orxSTRINGID *astEventIDList = (orxSTRINGID *)_malloca((_u32Size + 1) * sizeof(orxSTRINGID));
@@ -1002,18 +1006,66 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(const orxTRIGGER *_pstTrigger, const orxST
     pc += orxString_NPrint(pc, sizeof(acBuffer), "%s", _zEvent);
     astEventIDList[0] = orxString_Hash(acBuffer);
 
+    /* Inits event payload */
+    orxMemory_Zero(&stPayload, sizeof(orxTRIGGER_EVENT_PAYLOAD));
+    stPayload.pstTrigger  = _pstTrigger;
+
+    /* Gets owner */
+    pstOwner = orxStructure_GetOwner(_pstTrigger);
+
     /* For all refinements */
-    for(i = 0; i < _u32Size; i++)
+    for(i = 0; i < (orxS32)_u32Size; i++)
     {
       /* Stores its ID */
       pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "%s", _azRefinementList[i]);
       astEventIDList[i + 1] = orxString_Hash(acBuffer);
     }
 
-    //! TODO
+    /* For all refinements, in reverse order */
+    for(i = (orxS32)_u32Size, s32StopDepth = 0; (i >= 0) && (i >= s32StopDepth); i--)
+    {
+      orxSTRINGID stEventID;
+      orxU32      u32SetIndex;
 
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+      /* Gets its ID */
+      stEventID = astEventIDList[i];
+
+      /* For all sets */
+      for(u32SetIndex = 0; u32SetIndex < orxTRIGGER_KU32_SET_NUMBER; u32SetIndex++)
+      {
+        const orxTRIGGER_SET *pstSet;
+
+        /* Gets it */
+        pstSet = _pstTrigger->pastSetList[u32SetIndex];
+
+        /* Valid? */
+        if(pstSet != orxNULL)
+        {
+          orxU32 u32EventIndex;
+
+          /* For all its events */
+          for(u32EventIndex = 0; u32EventIndex < pstSet->u32EventCount; u32EventIndex++)
+          {
+            /* Match? */
+            if(pstSet->astEventList[u32EventIndex].stID == stEventID)
+            {
+              /* Updates payload */
+              stPayload.zSetName  = pstSet->zReference;
+              stPayload.zEvent    = pstSet->astEventList[u32EventIndex].zValue;
+
+              /* Sends event */
+              orxEVENT_SEND(orxEVENT_TYPE_TRIGGER, orxTRIGGER_EVENT_FIRE, pstOwner, pstOwner, &stPayload);
+
+              /* Updates stop depth */
+              s32StopDepth = orxMAX(s32StopDepth, (orxS32)pstSet->astEventList[u32EventIndex].u32StopDepth);
+
+              /* Updates result */
+              eResult = orxSTATUS_SUCCESS;
+            }
+          }
+        }
+      }
+    }
   }
 
   /* Done! */
