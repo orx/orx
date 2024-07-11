@@ -234,7 +234,7 @@ static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID
                   /* Updates depth */
                   u32Depth++;
 
-                  break;
+                  /* Fall through */
                 }
 
                 default:
@@ -1017,7 +1017,7 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
     for(i = 0; i < (orxS32)_u32Size; i++)
     {
       /* Stores its ID */
-      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "%s", _azRefinementList[i]);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "%c%s", orxTRIGGER_KC_SEPARATOR, _azRefinementList[i]);
       astEventIDList[i + 1] = orxString_Hash(acBuffer);
     }
 
