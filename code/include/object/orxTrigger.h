@@ -48,6 +48,12 @@
 #include "object/orxStructure.h"
 
 
+/** Misc defines
+ */
+#define orxTRIGGER_KC_SEPARATOR                 ':'
+#define orxTRIGGER_KC_STOP_MARKER               '!'
+
+
 /** Internal Trigger structure
  */
 typedef struct __orxTRIGGER_t                   orxTRIGGER;

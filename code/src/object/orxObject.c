@@ -2950,6 +2950,83 @@ void orxFASTCALL orxObject_CommandRemoveTrigger(orxU32 _u32ArgNumber, const orxC
   return;
 }
 
+/** Command: FireTrigger
+ */
+void orxFASTCALL orxObject_CommandFireTrigger(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCHAR         acBuffer[1024], *pcDst;
+    const orxCHAR  *pcSrc;
+    orxSTRING       azRefinementList[32];
+    orxU32          u32RefinementCount;
+
+    /* For all characters in event */
+    for(pcSrc = _astArgList[1].zValue, pcDst = acBuffer, u32RefinementCount = 0;
+        (*pcSrc != orxCHAR_NULL) && (pcDst - acBuffer < sizeof(acBuffer) - 1);
+        pcSrc++, pcDst++)
+    {
+      /* Depending on character */
+      switch(*pcSrc)
+      {
+        case orxTRIGGER_KC_SEPARATOR:
+        {
+          /* Checks */
+          orxASSERT(u32RefinementCount < sizeof(azRefinementList));
+
+          /* Cuts string */
+          *pcDst = orxCHAR_NULL;
+
+          /* Stores refinement */
+          azRefinementList[u32RefinementCount++] = pcDst + 1;
+
+          break;
+        }
+
+        default:
+        {
+          /* Copies it */
+          *pcDst = *pcSrc;
+
+          break;
+        }
+      }
+    }
+
+    /* Terminates buffer */
+    *pcDst = orxCHAR_NULL;
+
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Fires Trigger */
+      orxObject_FireTriggerRecursive(pstObject, acBuffer, (const orxSTRING *)azRefinementList, u32RefinementCount);
+    }
+    else
+    {
+      /* Fires Trigger */
+      orxObject_FireTrigger(pstObject, acBuffer, (const orxSTRING *)azRefinementList, u32RefinementCount);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: AddFX
  */
 void orxFASTCALL orxObject_CommandAddFX(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -4084,6 +4161,8 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrigger, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Trigger", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveTrigger */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrigger, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Trigger", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: FireTrigger */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, FireTrigger, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Trigger", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: AddFX */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Unique = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
@@ -4331,6 +4410,8 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddTrigger);
   /* Command: RemoveTrigger */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveTrigger);
+  /* Command: FireTrigger */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, FireTrigger);
 
   /* Command: AddFX */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddFX);

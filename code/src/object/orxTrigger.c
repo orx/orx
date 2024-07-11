@@ -93,9 +93,6 @@
 
 #define orxTRIGGER_KZ_CONFIG_KEEP_IN_CACHE            "KeepInCache"
 
-#define orxTRIGGER_KC_SEPARATOR                       ':'
-#define orxTRIGGER_KC_STOP_MARKER                     '!'
-
 
 /***************************************************************************
  * Structure declaration                                                   *
