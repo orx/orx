@@ -45,6 +45,7 @@
 #include "object/orxFXPointer.h"
 #include "object/orxSpawner.h"
 #include "object/orxTimeLine.h"
+#include "object/orxTrigger.h"
 #include "render/orxCamera.h"
 #include "render/orxShaderPointer.h"
 #include "sound/orxSoundPointer.h"
@@ -5106,6 +5107,7 @@ void orxFASTCALL orxObject_Setup()
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SOUNDPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SPAWNER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TIMELINE);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TRIGGER);
 
   /* Done! */
   return;

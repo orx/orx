@@ -148,14 +148,6 @@ extern orxDLLAPI orxU32 orxFASTCALL             orxTrigger_GetCount(const orxTRI
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxTrigger_Fire(const orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
 
-/** Fire an event for all triggers
- * @param[in]   _zEvent               Event to fire
- * @param[in]   _azRefinementList     List of refinements for this event
- * @param[in]   _u32Size              Size of the refinement list
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxTrigger_FireAll(const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
-
 #endif /* _orxTRIGGER_H_ */
 
 /** @} */
