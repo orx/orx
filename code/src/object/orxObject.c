@@ -169,6 +169,8 @@
 #define orxOBJECT_KZ_SOUND                      "sound"
 #define orxOBJECT_KZ_SPAWN                      "spawn"
 #define orxOBJECT_KZ_TRACK                      "track"
+#define orxOBJECT_KZ_ON_COLLIDE                 "OnCollide"
+#define orxOBJECT_KZ_ON_SEPARATE                "OnSeparate"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -4967,18 +4969,53 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
-  orxASSERT(_pstEvent->eID == orxOBJECT_EVENT_PREPARE);
-
-  /* Has current parent? */
-  if(sstObject.pstCurrentParent != orxNULL)
+  /* Object event? */
+  if(_pstEvent->eType == orxEVENT_TYPE_OBJECT)
   {
-    /* Stores current parent as temporary parent in payload */
-    *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentParent;
+    /* Has current parent? */
+    if(sstObject.pstCurrentParent != orxNULL)
+    {
+      /* Stores current parent as temporary parent in payload */
+      *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentParent;
 
-    /* Sets it as owner */
-    orxObject_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentParent);
+      /* Sets it as owner */
+      orxObject_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentParent);
+    }
+  }
+  /* Physics event */
+  else
+  {
+    orxPHYSICS_EVENT_PAYLOAD *pstPayload;
+    const orxSTRING           azRefinementList[2];
+    const orxSTRING           zEvent;
+    orxOBJECT                *pstSender, *pstRecipient;
+
+    /* Checks */
+    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_PHYSICS);
+
+    /* Gets payload */
+    pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Gets sender & recipient objects */
+    pstSender     = orxOBJECT(_pstEvent->hSender);
+    pstRecipient  = orxOBJECT(_pstEvent->hRecipient);
+
+    /* Selects event */
+    zEvent = (_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD) ? orxOBJECT_KZ_ON_COLLIDE : orxOBJECT_KZ_ON_SEPARATE;
+
+    /* Fires triggers on sender */
+    azRefinementList[0] = orxBody_GetPartName(pstPayload->pstSenderPart);
+    azRefinementList[1] = orxBody_GetPartName(pstPayload->pstRecipientPart);
+    orxObject_FireTrigger(pstSender, zEvent, azRefinementList, 2);
+    azRefinementList[0] = orxObject_GetName(pstRecipient);
+    orxObject_FireTrigger(pstSender, zEvent, azRefinementList, 1);
+
+    /* Fires triggers on recipient */
+    azRefinementList[0] = orxBody_GetPartName(pstPayload->pstRecipientPart);
+    azRefinementList[1] = orxBody_GetPartName(pstPayload->pstSenderPart);
+    orxObject_FireTrigger(pstRecipient, zEvent, azRefinementList, 2);
+    azRefinementList[0] = orxObject_GetName(pstSender);
+    orxObject_FireTrigger(pstRecipient, zEvent, azRefinementList, 1);
   }
 
   /* Done! */
@@ -5307,14 +5344,16 @@ orxSTATUS orxFASTCALL orxObject_Init()
       /* Valid? */
       if(sstObject.pstClock != orxNULL)
       {
-        /* Adds event handler */
+        /* Adds event handlers */
         eResult = orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+        eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler) : orxSTATUS_FAILURE;
 
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
         {
           /* Filters relevant event IDs */
           orxEvent_SetHandlerIDFlags(orxObject_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE), orxEVENT_KU32_MASK_ID_ALL);
+          orxEvent_SetHandlerIDFlags(orxObject_EventHandler, orxEVENT_TYPE_PHYSICS, orxNULL, orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_ADD) | orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_REMOVE), orxEVENT_KU32_MASK_ID_ALL);
 
           /* Registers object update function to clock */
           eResult = orxClock_Register(sstObject.pstClock, orxObject_UpdateAll, orxNULL, orxMODULE_ID_OBJECT, orxCLOCK_PRIORITY_LOW);
@@ -5356,8 +5395,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
                   /* Updates result */
                   eResult = orxSTATUS_FAILURE;
 
-                  /* Removes event handler */
+                  /* Removes event handlers */
                   orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+                  orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
                   /* Deletes banks */
                   orxBank_Delete(sstObject.pstGroupBank);
@@ -5378,8 +5418,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
                 /* Updates result */
                 eResult = orxSTATUS_FAILURE;
 
-                /* Removes event handler */
+                /* Removes event handlers */
                 orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+                orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
                 /* Deletes banks */
                 orxBank_Delete(sstObject.pstGroupBank);
@@ -5410,8 +5451,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
               /* Unregisters from clock */
               orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
 
-              /* Removes event handler */
+              /* Removes event handlers */
               orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+              orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
               /* Unregisters structure type */
               orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
@@ -5419,8 +5461,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
           }
           else
           {
-            /* Removes event handler */
+            /* Removes event handlers */
             orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+            orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
             /* Unregisters structure type */
             orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
@@ -5428,6 +5471,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
         }
         else
         {
+          /* Removes event handler */
+          orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+
           /* Unregisters structure type */
           orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
         }
@@ -5464,8 +5510,9 @@ void orxFASTCALL orxObject_Exit()
   /* Initialized? */
   if(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY)
   {
-    /* Removes event handler */
+    /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
     /* Unregisters commands */
     orxObject_UnregisterCommands();
