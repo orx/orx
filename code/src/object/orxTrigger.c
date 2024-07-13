@@ -979,6 +979,9 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxTrigger_Fire");
+
   /* Checks */
   orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstTrigger);
@@ -1064,6 +1067,9 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
       }
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return eResult;
