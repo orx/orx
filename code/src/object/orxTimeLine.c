@@ -97,12 +97,11 @@
 
 /** Misc defines
  */
-#define orxTIMELINE_KU32_TRACK_TABLE_SIZE             256
-#define orxTIMELINE_KU32_TRACK_BANK_SIZE              128
+#define orxTIMELINE_KU32_TRACK_TABLE_SIZE             256         /**< Track table size */
 
 #define orxTIMELINE_KU32_BANK_SIZE                    256         /**< Bank size */
 
-#define orxTIMELINE_KU32_TRACK_NUMBER                 8
+#define orxTIMELINE_KU32_TRACK_NUMBER                 8           /**< Track number */
 
 #define orxTIMELINE_KZ_CONFIG_LOOP                    "Loop"
 #define orxTIMELINE_KZ_CONFIG_IMMEDIATE               "Immediate"
@@ -696,6 +695,7 @@ void orxFASTCALL orxTimeLine_Setup()
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_TIMELINE, orxMODULE_ID_EVENT);
 
+  /* Done! */
   return;
 }
 

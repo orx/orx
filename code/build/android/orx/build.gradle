@@ -94,9 +94,15 @@ dependencies {
     api 'androidx.core:core:1.13.1'
     api 'androidx.appcompat:appcompat:1.7.0'
 
+<<<<<<< HEAD
     api 'androidx.games:games-activity:3.0.4'
     api 'androidx.games:games-controller:2.0.2'
     api 'androidx.games:games-frame-pacing:2.1.1'
+=======
+    api 'androidx.games:games-activity:3.0.3'
+    api 'androidx.games:games-controller:2.0.2'
+    api 'androidx.games:games-frame-pacing:2.1.0'
+>>>>>>> master
 }
 
 afterEvaluate {

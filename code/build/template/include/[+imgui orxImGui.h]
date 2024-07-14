@@ -192,6 +192,20 @@ static orxSTATUS orxFASTCALL orxImGui_EndFrame(const orxEVENT *_pstEvent)
     }
     orxInput_SetTypeFlags(orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_BUTTON) | orxINPUT_GET_FLAG(orxINPUT_TYPE_MOUSE_AXIS), orxINPUT_KU32_FLAG_TYPE_NONE);
     orxInput_SetTypeFlags(orxINPUT_GET_FLAG(orxINPUT_TYPE_KEYBOARD_KEY), orxINPUT_KU32_FLAG_TYPE_NONE);
+
+    // Should quit?
+    if(ImGui::GetIO().WantCaptureKeyboard)
+    {
+      orxINPUT_TYPE eType; orxENUM eID; orxINPUT_MODE eMode;
+      if((((orxInput_GetBinding("Quit", 0, &eType, &eID, &eMode) != orxSTATUS_FAILURE)
+        && (eType == orxINPUT_TYPE_KEYBOARD_KEY))
+       || (eType = orxINPUT_TYPE_KEYBOARD_KEY, eID = orxKEYBOARD_KEY_ESCAPE, orxTRUE))
+      && (orxKeyboard_IsKeyPressed((orxKEYBOARD_KEY)eID) != orxFALSE))
+      {
+        // Send close event
+        orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+      }
+    }
   }
 
   return orxSTATUS_SUCCESS;

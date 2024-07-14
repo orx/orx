@@ -844,7 +844,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTextString(orxOBJECT *_
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *_pstObject);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTextString(const orxOBJECT *_pstObject);
 /** @} */
 
 

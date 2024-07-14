@@ -55,11 +55,13 @@ const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wtautological-compare"
+  #pragma GCC diagnostic ignored "-Wsizeof-pointer-div"
 
 #elif defined(__orxLLVM__)
 
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wtautological-compare"
+  #pragma clang diagnostic ignored "-Wsizeof-pointer-div"
 
 #endif
 
