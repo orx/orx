@@ -171,6 +171,8 @@
 #define orxOBJECT_KZ_TRACK                      "track"
 #define orxOBJECT_KZ_ON_COLLIDE                 "OnCollide"
 #define orxOBJECT_KZ_ON_SEPARATE                "OnSeparate"
+#define orxOBJECT_KZ_ON_CREATE                  "OnCreate"
+#define orxOBJECT_KZ_ON_DELETE                  "OnDelete"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -3007,12 +3009,12 @@ void orxFASTCALL orxObject_CommandFireTrigger(orxU32 _u32ArgNumber, const orxCOM
     /* Recursive? */
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
-      /* Fires Trigger */
+      /* Fires trigger */
       orxObject_FireTriggerRecursive(pstObject, acBuffer, (const orxSTRING *)azRefinementList, u32RefinementCount);
     }
     else
     {
-      /* Fires Trigger */
+      /* Fires trigger */
       orxObject_FireTrigger(pstObject, acBuffer, (const orxSTRING *)azRefinementList, u32RefinementCount);
     }
 
@@ -4853,6 +4855,13 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
       if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
         orxU32 i;
+
+        /* Has trigger? */
+        if(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
+        {
+          /* Fires it */
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_ON_DELETE, orxNULL, 0);
+        }
 
         /* Has frame? */
         if(_pstObject->apstStructureList[orxSTRUCTURE_ID_FRAME] != orxNULL)
@@ -6966,6 +6975,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstResult, orxNULL, orxNULL);
+
+        /* Has trigger? */
+        if(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
+        {
+          /* Fires it */
+          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_ON_CREATE, orxNULL, 0);
+        }
 
         /* Should age? */
         if(orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_AGE))
