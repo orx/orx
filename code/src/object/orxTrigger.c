@@ -570,7 +570,7 @@ orxSTATUS orxFASTCALL orxTrigger_Init()
     orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxTrigger_EventHandler);
     orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxTrigger_EventHandler);
     orxEvent_SetHandlerIDFlags(orxTrigger_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
-    orxEvent_SetHandlerIDFlags(orxTrigger_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DISABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_PAUSE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_UNPAUSE), orxEVENT_KU32_MASK_ID_ALL);
+    orxEvent_SetHandlerIDFlags(orxTrigger_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DISABLE), orxEVENT_KU32_MASK_ID_ALL);
   }
   else
   {

@@ -509,8 +509,8 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     /* Found? */
     if(pstObject)
     {
-      /* Adds FX */
-      orxObject_AddUniqueFX(pstObject, "Pick");
+      /* Fires trigger */
+      orxObject_FireTrigger(pstObject, "Pick", orxNULL, 0);
     }
   }
   /* Raycasting? */
