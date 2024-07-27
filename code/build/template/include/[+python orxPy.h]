@@ -1166,6 +1166,95 @@ namespace pythonwrapper
     return pyVec;
   }
 
+#define BIND_VECTOR_OP(name, func)  \
+  BIND(name)                        \
+  {                                 \
+    ARG_VALUE(orxVECTOR, vSelf, 0); \
+    ARG_VALUE(orxVECTOR, vOp, 1);   \
+    orxVECTOR vRes = orxVECTOR_0;   \
+    func(&vRes, &vSelf, &vOp);      \
+    RETURN_VALUE(vRes);             \
+  }
+
+#define BIND_VECTOR_MOP(name, func)                 \
+  BIND(name)                                        \
+  {                                                 \
+    ARG_VALUE(orxVECTOR, vSelf, 0);                 \
+    pkpy::PyVar pyOp = args[1];                     \
+    orxVECTOR vRes = orxVECTOR_0;                   \
+    if (pkpy::is_float(pyOp) || pkpy::is_int(pyOp)) \
+    {                                               \
+      ARG_VALUE(orxFLOAT, fOp, 1);                  \
+      func##f(&vRes, &vSelf, fOp);                  \
+    }                                               \
+    else                                            \
+    {                                               \
+      ARG_VALUE(orxVECTOR, vOp, 0);                 \
+      func(&vRes, &vSelf, &vOp);                    \
+    }                                               \
+    RETURN_VALUE(vRes);                             \
+  }
+
+  BIND_VECTOR_OP(vector_add, orxVector_Add)
+  BIND_VECTOR_OP(vector_sub, orxVector_Sub)
+  BIND_VECTOR_MOP(vector_mul, orxVector_Mul)
+  BIND_VECTOR_MOP(vector_div, orxVector_Div)
+
+  BIND(vector_size)
+  {
+    ARG_VALUE(orxVECTOR &, vOp, 0);
+    RETURN_VALUE(orxVector_GetSize(&vOp));
+  }
+
+  BIND(vector_distance)
+  {
+    ARG_VALUE(orxVECTOR &, vOp1, 0);
+    ARG_VALUE(orxVECTOR &, vOp2, 1);
+    RETURN_VALUE(orxVector_GetDistance(&vOp1, &vOp2));
+  }
+
+  BIND(vector_lerp)
+  {
+    ARG_VALUE(orxVECTOR &, vOp1, 0);
+    ARG_VALUE(orxVECTOR &, vOp2, 1);
+    ARG_VALUE(orxFLOAT, fOp, 2);
+    orxVECTOR vRes = orxVECTOR_0;
+    orxVector_Lerp(&vRes, &vOp1, &vOp2, fOp);
+    RETURN_VALUE(vRes);
+  }
+
+  BIND(vector_rotate_self)
+  {
+    ARG_VALUE(orxVECTOR &, vSelf, 0);
+    ARG_VALUE(orxFLOAT, fAngle, 1);
+    orxVector_2DRotate(&vSelf, &vSelf, fAngle);
+    RETURN_NONE;
+  }
+
+  BIND(vector_rotate)
+  {
+    ARG_VALUE(orxVECTOR &, vOp, 0);
+    ARG_VALUE(orxFLOAT, fAngle, 1);
+    orxVECTOR vRes = orxVECTOR_0;
+    orxVector_2DRotate(&vRes, &vOp, fAngle);
+    RETURN_VALUE(vRes);
+  }
+
+  BIND(vector_normalize_self)
+  {
+    ARG_VALUE(orxVECTOR &, vSelf, 0);
+    orxVector_Normalize(&vSelf, &vSelf);
+    RETURN_NONE;
+  }
+
+  BIND(vector_normalize)
+  {
+    ARG_VALUE(orxVECTOR &, vOp, 0);
+    orxVECTOR vRes = orxVECTOR_0;
+    orxVector_Normalize(&vRes, &vOp);
+    RETURN_VALUE(vRes);
+  }
+
   void vector(pkpy::VM *vm, pkpy::PyVar mod, pkpy::PyVar type)
   {
     // Fields
@@ -1174,7 +1263,23 @@ namespace pythonwrapper
     vm->bind_field(type, "z", &orxVECTOR::fZ);
 
     // __init__ method
-    vm->bind(type, "__new__(cls, x, y, z)", vector_new);
+    vm->bind(type, "__new__(cls, x: float, y: float, z: float)", vector_new);
+
+    // Basic arithmetic-style operations
+    vm->bind(type, "__add__(self, v: Vector) -> Vector", vector_add);
+    vm->bind(type, "__sub__(self, v: Vector) -> Vector", vector_sub);
+    vm->bind(type, "__mul__(self, v: Vector | float) -> Vector", vector_mul);
+    vm->bind(type, "__div__(self, v: Vector | float) -> Vector", vector_div);
+
+    vm->bind(mod, "size(v: Vector) -> float", vector_size);
+    vm->bind(mod, "distance(v1: Vector, v2: Vector) -> float", vector_distance);
+    vm->bind(mod, "lerp(v1: Vector, v2: Vector, f: float) -> Vector", vector_lerp);
+
+    // Vector manipulation
+    vm->bind(type, "rotate(self, radians: float) -> None", vector_rotate_self);
+    vm->bind(mod, "rotate(v: Vector, radians: float) -> Vector", vector_rotate);
+    vm->bind(type, "normalize(self) -> None", vector_normalize_self);
+    vm->bind(mod, "normalize(v: Vector) -> Vector", vector_normalize);
   }
 
   void object(pkpy::VM *vm, pkpy::PyVar mod, pkpy::PyVar type) {}
