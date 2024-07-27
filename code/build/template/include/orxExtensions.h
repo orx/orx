@@ -51,6 +51,11 @@
 #define orxBUNDLE_IMPL
 #include "orxBundle.h"
 #undef orxBUNDLE_IMPL]
+[+python
+
+#define orxPY_IMPL
+#include "orxPy.h"
+#undef orxPY_IMPL]
 
 void InitExtensions()
 {
@@ -82,6 +87,10 @@ void InitExtensions()
   // Initialize inspector
   orxInspector_Init();
 ]
+[+python
+  // Initialize Python support
+  orxPy_Init();
+]
 }
 
 void ExitExtensions()
@@ -89,6 +98,14 @@ void ExitExtensions()
 [+inspector
   // Exit from inspector
   orxInspector_Exit();
+]
+[+python
+  // Exit from Python support
+  orxPy_Exit();
+]
+[+cheat
+  // Exit from cheat support
+  orxCheat_Exit();
 ]
 [+imgui
   // Exit from Dear ImGui

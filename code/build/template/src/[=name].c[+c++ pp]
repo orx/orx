@@ -57,6 +57,11 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   ImGui::ShowDemoWindow();
   ImGui::ShowMetricsWindow();
 ]
+[+python
+  // Call Python update
+  [-scroll orxPy_Update(_pstClockInfo, orxNULL);]
+  [+scroll orxPy_Update(&_rstClockInfo, orxNULL);]
+]
   // Should quit?
   if(orxInput_IsActive("Quit"))
   {
@@ -78,16 +83,19 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Init extensions
   InitExtensions();
 
+[-python
 [+scroll
   // Create the [-movie scene][+movie logo]
   CreateObject("[-movie Scene][+movie Logo]");
 ]
+]
 [-scroll
   // Register the Update function to the core clock
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
-
+[-python
   // Create the [-movie scene][+movie logo]
   orxObject_CreateFromConfig("[-movie Scene][+movie Logo]");
+]
 
 [+bundle
   // Is processing a new bundle?

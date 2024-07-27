@@ -1,0 +1,2 @@
+[tool.pyright]
+reportMissingModuleSource = false

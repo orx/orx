@@ -98,7 +98,8 @@ solution "[name]"
         "NoManifest",
         "FloatFast",
         "NoNativeWChar",
-        "NoExceptions",
+[-python
+        "NoExceptions",]
         "NoIncrementalLink",
         "NoEditAndContinue",
         "NoMinimalRebuild",
@@ -128,16 +129,16 @@ solution "[name]"
     configuration {"*Profile*"}
         targetsuffix ("p")
         defines {"__orxPROFILER__"}
-        flags {"Optimize", "NoRTTI"}
+        flags {"Optimize"[-python , "NoRTTI"]}
         links {"orxp"}
 
     configuration {"*Release*"}
-        flags {"Optimize", "NoRTTI"}
+        flags {"Optimize"[-python , "NoRTTI"]}
         links {"orx"}
 [+bundle
 
     configuration {"*Bundle*"}
-        flags {"Optimize", "NoRTTI"}
+        flags {"Optimize"[-python , "NoRTTI"]}
         links {"orx"}]
 
     configuration {"windows", "*Release*"}
@@ -149,8 +150,10 @@ solution "[name]"
     configuration {"linux"}
         buildoptions
         {
-[+imgui +sndh
-            "-std=c++11",]
+[+python
+            "-std=c++17",]
+[-python [+imgui +sndh
+            "-std=c++11",]]
 [+sndh
             "-Wno-write-strings",
             "-Wno-multichar",]
@@ -175,8 +178,10 @@ solution "[name]"
         buildoptions
         {
             "-stdlib=libc++",
-[+imgui +sndh
-            "-std=c++11",]
+[+python
+            "-std=c++17",]
+[-python [+imgui +sndh
+            "-std=c++11",]]
 [+sndh
             "-Wno-multichar",]
             "-gdwarf-2",
@@ -222,6 +227,8 @@ solution "[name]"
     configuration {"windows", "vs*"}
         buildoptions
         {
+[+python
+            "/std:c++17",]
             "/MP",
             "/EHsc"
         }
