@@ -180,6 +180,38 @@ orxSTATUS orxPy_Call1(pkpy::VM *vm, pkpy::PyVar pyCallable, pkpy::PyVar pyArg)
   return eResult;
 }
 
+orxSTATUS orxPy_CallN(pkpy::VM *vm, pkpy::PyVar pyCallable, pkpy::List &pyArgs)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  if (pyCallable != nullptr && vm != nullptr)
+  {
+    try
+    {
+      // Push callable value and self value onto call stack (null in this case)
+      vm->s_data.push(pyCallable);
+      vm->s_data.push(pkpy::PY_NULL);
+
+      // Push arguments onto call stack
+      for (pkpy::PyVar pyArg : pyArgs)
+      {
+        vm->s_data.push(pyArg);
+      }
+
+      // Make function call based on call stack
+      vm->vectorcall(pyArgs.size());
+
+      eResult = orxSTATUS_SUCCESS;
+    }
+    catch (pkpy::Exception &py_exc)
+    {
+      orxLOG("%s", py_exc.summary().data);
+    }
+  }
+
+  return eResult;
+}
+
 void orxPy_CommandPyExec(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Execute source */
@@ -1315,7 +1347,29 @@ namespace pythonwrapper
     vm->bind(mod, "normalize(v: Vector) -> Vector", vector_normalize);
   }
 
-  void object(pkpy::VM *vm, pkpy::PyVar mod, pkpy::PyVar type) {}
+  pkpy::i64 object_hash(pkpy::VM *vm, pkpy::PyVar pyObj)
+  {
+    orxPyObject &stObject = pkpy::py_cast<PyPtr<orxOBJECT> &>(vm, pyObj);
+    return reinterpret_cast<i64>(stObject.ptr);
+  }
+
+  pkpy::PyVar object_eq(pkpy::VM *vm, pkpy::PyVar pyLHS, pkpy::PyVar pyRHS)
+  {
+    orxPyObject &stObject = pkpy::py_cast<orxPyObject &>(vm, pyLHS);
+    if (!vm->is_user_type<orxPyObject>(pyRHS))
+    {
+      return vm->NotImplemented;
+    }
+    orxPyObject &stOther = pkpy::py_cast<orxPyObject &>(vm, pyRHS);
+    RETURN_VALUE(stObject.ptr == stOther.ptr);
+  }
+
+  void object(pkpy::VM *vm, pkpy::PyVar mod, pkpy::PyVar type)
+  {
+    // __hash__ and __eq__ to make equality and hashing possible
+    vm->bind__hash__(PK_OBJ_GET(Type, type), object_hash);
+    vm->bind__eq__(PK_OBJ_GET(Type, type), object_eq);
+  }
 
 #undef BIND
 #undef ARG
@@ -1568,7 +1622,7 @@ orxSTATUS orxPy_EventHandler(const orxEVENT *_pstEvent)
       if (sstPy.pyOnCreate != nullptr)
       {
         // Call handler
-        sstPy.pVM->call(sstPy.pyOnCreate, pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)));
+        orxPy_Call1(sstPy.pVM, sstPy.pyOnCreate, pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)));
       }
       break;
     }
@@ -1577,7 +1631,7 @@ orxSTATUS orxPy_EventHandler(const orxEVENT *_pstEvent)
       if (sstPy.pyOnDelete != nullptr)
       {
         // Call handler
-        sstPy.pVM->call(sstPy.pyOnDelete, pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)));
+        orxPy_Call1(sstPy.pVM, sstPy.pyOnDelete, pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)));
       }
       break;
     }
@@ -1599,19 +1653,18 @@ orxSTATUS orxPy_EventHandler(const orxEVENT *_pstEvent)
       if (sstPy.pyOnCollide != nullptr)
       {
         orxPHYSICS_EVENT_PAYLOAD *pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-        // Call handler using stack-based calling API because of large number of arguments
-        // Push caller and self object (a null value in this case)
-        sstPy.pVM->s_data.push(sstPy.pyOnCollide);
-        sstPy.pVM->s_data.push(pkpy::PY_NULL);
-        // Push arguments
-        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)));
-        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstSenderPart)));
-        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hRecipient)));
-        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstRecipientPart)));
-        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, pstPayload->vPosition));
-        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, pstPayload->vNormal));
-        // Call
-        sstPy.pVM->vectorcall(6);
+
+        // Build argument list
+        pkpy::List pyArgs{
+            pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)),
+            pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstSenderPart)),
+            pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hRecipient)),
+            pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstRecipientPart)),
+            pkpy::py_var(sstPy.pVM, pstPayload->vPosition),
+            pkpy::py_var(sstPy.pVM, pstPayload->vNormal)};
+
+        // Call handler
+        orxPy_CallN(sstPy.pVM, sstPy.pyOnCollide, pyArgs);
       }
       break;
     }
@@ -1620,12 +1673,16 @@ orxSTATUS orxPy_EventHandler(const orxEVENT *_pstEvent)
       if (sstPy.pyOnSeparate != nullptr)
       {
         orxPHYSICS_EVENT_PAYLOAD *pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        // Build argument list
+        pkpy::List pyArgs{
+            pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)),
+            pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstSenderPart)),
+            pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hRecipient)),
+            pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstRecipientPart))};
+
         // Call handler
-        sstPy.pVM->call(sstPy.pyOnSeparate,
-                        pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)),
-                        pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstSenderPart)),
-                        pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hRecipient)),
-                        pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstRecipientPart)));
+        orxPy_CallN(sstPy.pVM, sstPy.pyOnSeparate, pyArgs);
       }
       break;
     }
