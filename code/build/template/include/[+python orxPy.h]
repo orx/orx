@@ -24,6 +24,11 @@
 #define orxPY_KZ_DEFAULT_UPDATE "orx_update"
 #define orxPY_KZ_DEFAULT_EXIT "orx_exit"
 
+#define orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER "orx_on_create"
+#define orxPY_KZ_DEFAULT_OBJECT_DELETE_EVENT_HANDLER "orx_on_delete"
+#define orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER "orx_on_collide"
+#define orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER "orx_on_separate"
+
 #ifdef orxPY_IMPL
 
 //! Variables / Structures
@@ -35,6 +40,10 @@ typedef struct __orxPY_t
   pkpy::PyVar pyInit;
   pkpy::PyVar pyUpdate;
   pkpy::PyVar pyExit;
+  pkpy::PyVar pyOnCreate;
+  pkpy::PyVar pyOnDelete;
+  pkpy::PyVar pyOnCollide;
+  pkpy::PyVar pyOnSeparate;
 } orxPY;
 
 static orxPY sstPy;
@@ -102,6 +111,30 @@ void orxPy_InitCallbacks()
   if (dAttrs.contains(zName))
   {
     sstPy.pyExit = dAttrs[zName];
+  }
+
+  zName = orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER;
+  if (dAttrs.contains(zName))
+  {
+    sstPy.pyOnCreate = dAttrs[zName];
+  }
+
+  zName = orxPY_KZ_DEFAULT_OBJECT_DELETE_EVENT_HANDLER;
+  if (dAttrs.contains(zName))
+  {
+    sstPy.pyOnDelete = dAttrs[zName];
+  }
+
+  zName = orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER;
+  if (dAttrs.contains(zName))
+  {
+    sstPy.pyOnCollide = dAttrs[zName];
+  }
+
+  zName = orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER;
+  if (dAttrs.contains(zName))
+  {
+    sstPy.pyOnSeparate = dAttrs[zName];
   }
 
   orxConfig_PopSection();
@@ -1262,7 +1295,7 @@ namespace pythonwrapper
     vm->bind_field(type, "y", &orxVECTOR::fY);
     vm->bind_field(type, "z", &orxVECTOR::fZ);
 
-    // __init__ method
+    // __new__ method
     vm->bind(type, "__new__(cls, x: float, y: float, z: float)", vector_new);
 
     // Basic arithmetic-style operations
@@ -1520,6 +1553,103 @@ void orxPy_AddModules(pkpy::VM *vm)
   orxPy_AddObjectModule(vm);
 }
 
+orxSTATUS orxPy_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  switch (_pstEvent->eType)
+  {
+  case orxEVENT_TYPE_OBJECT:
+  {
+    switch (_pstEvent->eID)
+    {
+    case orxOBJECT_EVENT_CREATE:
+    {
+      if (sstPy.pyOnCreate != nullptr)
+      {
+        // Call handler
+        sstPy.pVM->call(sstPy.pyOnCreate, pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)));
+      }
+      break;
+    }
+    case orxOBJECT_EVENT_DELETE:
+    {
+      if (sstPy.pyOnDelete != nullptr)
+      {
+        // Call handler
+        sstPy.pVM->call(sstPy.pyOnDelete, pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)));
+      }
+      break;
+    }
+    default:
+    {
+      orxLOG("orxPy_EventHandler: Unsupported object event %d", _pstEvent->eID);
+      orxASSERT(orxFALSE);
+      break;
+    }
+    }
+    break;
+  }
+  case orxEVENT_TYPE_PHYSICS:
+  {
+    switch (_pstEvent->eID)
+    {
+    case orxPHYSICS_EVENT_CONTACT_ADD:
+    {
+      if (sstPy.pyOnCollide != nullptr)
+      {
+        orxPHYSICS_EVENT_PAYLOAD *pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+        // Call handler using stack-based calling API because of large number of arguments
+        // Push caller and self object (a null value in this case)
+        sstPy.pVM->s_data.push(sstPy.pyOnCollide);
+        sstPy.pVM->s_data.push(pkpy::PY_NULL);
+        // Push arguments
+        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)));
+        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstSenderPart)));
+        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hRecipient)));
+        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstRecipientPart)));
+        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, pstPayload->vPosition));
+        sstPy.pVM->s_data.push(pkpy::py_var(sstPy.pVM, pstPayload->vNormal));
+        // Call
+        sstPy.pVM->vectorcall(6);
+      }
+      break;
+    }
+    case orxPHYSICS_EVENT_CONTACT_REMOVE:
+    {
+      if (sstPy.pyOnSeparate != nullptr)
+      {
+        orxPHYSICS_EVENT_PAYLOAD *pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+        // Call handler
+        sstPy.pVM->call(sstPy.pyOnSeparate,
+                        pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)),
+                        pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstSenderPart)),
+                        pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hRecipient)),
+                        pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstRecipientPart)));
+      }
+      break;
+    }
+    default:
+    {
+      orxLOG("orxPy_EventHandler: Unsupported physics event %d", _pstEvent->eID);
+      orxASSERT(orxFALSE);
+      break;
+    }
+    }
+    break;
+  }
+  default:
+  {
+    orxLOG("orxPy_EventHandler: Unsupported event (%d, %d)", _pstEvent->eType, _pstEvent->eID);
+    orxASSERT(orxFALSE);
+    break;
+  }
+  }
+
+  // Done!
+  return eResult;
+}
+
 orxSTATUS orxPy_InitVM(pkpy::VM *&vm)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
@@ -1568,6 +1698,14 @@ void orxPy_Exit()
     sstPy.pyInit = nullptr;
     sstPy.pyUpdate = nullptr;
     sstPy.pyExit = nullptr;
+    sstPy.pyOnCreate = nullptr;
+    sstPy.pyOnDelete = nullptr;
+    sstPy.pyOnCollide = nullptr;
+    sstPy.pyOnDelete = nullptr;
+
+    // Remove event handler
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxPy_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxPy_EventHandler);
 
     // Update status
     sstPy.bInitialized = orxFALSE;
@@ -1587,6 +1725,10 @@ void orxPy_Init()
     sstPy.pyInit = nullptr;
     sstPy.pyUpdate = nullptr;
     sstPy.pyExit = nullptr;
+    sstPy.pyOnCreate = nullptr;
+    sstPy.pyOnDelete = nullptr;
+    sstPy.pyOnCollide = nullptr;
+    sstPy.pyOnDelete = nullptr;
 
     // Initialize the Python VM
     orxSTATUS eResult = orxPy_InitVM(sstPy.pVM);
@@ -1597,7 +1739,25 @@ void orxPy_Init()
       orxPy_InitCallbacks();
 
       // Register commands
-      orxCOMMAND_REGISTER(orxPY_KZ_COMMAND_EXEC, orxPy_CommandPyExec, "Result", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Source", orxCOMMAND_VAR_TYPE_STRING});
+      orxCOMMAND_REGISTER(orxPY_KZ_COMMAND_EXEC, orxPy_CommandPyExec, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Source", orxCOMMAND_VAR_TYPE_STRING});
+
+      // Register event handler for events with handlers
+      orxU32 u32ObjectAddFlags = orxEVENT_KU32_FLAG_ID_NONE;
+      u32ObjectAddFlags |= sstPy.pyOnCreate != nullptr ? orxEVENT_GET_FLAG(orxOBJECT_EVENT_CREATE) : orxEVENT_KU32_FLAG_ID_NONE;
+      u32ObjectAddFlags |= sstPy.pyOnDelete != nullptr ? orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE) : orxEVENT_KU32_FLAG_ID_NONE;
+      if (u32ObjectAddFlags != orxEVENT_KU32_FLAG_ID_NONE)
+      {
+        orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxPy_EventHandler);
+        orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, u32ObjectAddFlags, orxEVENT_KU32_MASK_ID_ALL);
+      }
+      orxU32 u32PhysicsAddFlags = orxEVENT_KU32_FLAG_ID_NONE;
+      u32PhysicsAddFlags |= sstPy.pyOnCollide != nullptr ? orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_ADD) : orxEVENT_KU32_FLAG_ID_NONE;
+      u32PhysicsAddFlags |= sstPy.pyOnSeparate != nullptr ? orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_REMOVE) : orxEVENT_KU32_FLAG_ID_NONE;
+      if (u32PhysicsAddFlags != orxEVENT_KU32_FLAG_ID_NONE)
+      {
+        orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxPy_EventHandler);
+        orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_PHYSICS, orxNULL, u32PhysicsAddFlags, orxEVENT_KU32_MASK_ID_ALL);
+      }
 
       // Call Python init function
       orxPy_Call(sstPy.pVM, sstPy.pyInit);
