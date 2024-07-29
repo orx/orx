@@ -2625,14 +2625,24 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstOrxObject, con
       // Stores it
       poResult->mzInputSet = orxConfig_GetString(ScrollBase::szConfigScrollObjectInput);
 
-      // Enables it
-      orxInput_EnableSet(poResult->mzInputSet, orxTRUE);
-
-      // No defined input?
-      if(!orxInput_GetNext(orxNULL))
+      // Enables it & pushes it
+      if((orxInput_EnableSet(poResult->mzInputSet, orxTRUE) != orxSTATUS_FAILURE)
+      && (orxInput_PushSet(poResult->mzInputSet) != orxSTATUS_FAILURE))
       {
-        // Updates its type
-        orxInput_SetTypeFlags(orxINPUT_KU32_FLAG_TYPE_NONE, orxINPUT_KU32_MASK_TYPE_ALL);
+        // No defined input?
+        if(!orxInput_GetNext(orxNULL))
+        {
+          // Updates its type
+          orxInput_SetTypeFlags(orxINPUT_KU32_FLAG_TYPE_NONE, orxINPUT_KU32_MASK_TYPE_ALL);
+        }
+
+        // Pops set
+        orxInput_PopSet();
+      }
+      else
+      {
+        // Clears set
+        poResult->mzInputSet = orxNULL;
       }
     }
 
