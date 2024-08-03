@@ -145,7 +145,7 @@ static orxINLINE orxPARAM_INFO *orxParam_Get(orxSTRINGID _stParamName)
 {
   orxPARAM_INFO *pstParamInfo; /* Parameters info extracted from the Hash Table */
 
-  /* Module initialized ? */
+  /* Module initialized? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
   /* Get the parameter pointer */
@@ -164,12 +164,12 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
 {
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
-  /* Correct parameters ? */
+  /* Correct parameters? */
   orxASSERT(_u32NbParam > 0);
 
   orxPARAM_LOG("Options:");
 
-  /* Extra parameters ? */
+  /* Extra parameters? */
   if(_u32NbParam == 1)
   {
     orxPARAM_INFO *pstParamInfo = orxNULL;
@@ -201,7 +201,7 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
       /* Get the parameter info */
       pstParamInfo = (orxPARAM_INFO *)orxParam_Get(stName);
 
-      /* Valid info ? */
+      /* Valid info? */
       if(pstParamInfo != orxNULL)
       {
         /* Display its help */
@@ -279,7 +279,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
   orxCHAR           acFirstParamBuffer[256];
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
-  /* Module initialized ? */
+  /* Module initialized? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
   orxASSERT(_pstParamInfo != orxNULL);
 
@@ -465,7 +465,7 @@ orxSTATUS orxFASTCALL orxParam_Init()
                                       orxBANK_KU32_FLAG_NONE,
                                       orxMEMORY_TYPE_MAIN);
 
-    /* Bank successfully created ? */
+    /* Bank successfully created? */
     if(sstParam.pstBank != orxNULL)
     {
       /* Now create the hash table */
@@ -473,7 +473,7 @@ orxSTATUS orxFASTCALL orxParam_Init()
                                                   orxHASHTABLE_KU32_FLAG_NONE,
                                                   orxMEMORY_TYPE_MAIN);
 
-      /* HashTable Created ? */
+      /* HashTable Created? */
       if(sstParam.pstHashTable != orxNULL)
       {
         orxPARAM stParams;
@@ -604,7 +604,7 @@ orxSTATUS orxFASTCALL orxParam_Init()
  */
 void orxFASTCALL orxParam_Exit()
 {
-  /* Module initialized ? */
+  /* Module initialized? */
   if((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY)
   {
     /* Clears params */
@@ -630,12 +630,12 @@ void orxFASTCALL orxParam_Exit()
  */
 orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE; /* Result of the operation */
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Module initialized ? */
+  /* Module initialized? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
-  /* Correct parameters ? */
+  /* Correct parameters? */
   orxASSERT(_pstParam != orxNULL);
 
   /* Short parameters and callbacks are compulsory */
@@ -663,7 +663,7 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
         /* Create CRC For the long name */
         stLongName = orxString_Hash(_pstParam->zLongName);
 
-        /* Found ? */
+        /* Found? */
         if(orxParam_Get(stLongName) == orxNULL)
         {
           /* No Params have been found, we can store it */
@@ -671,15 +671,15 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
         }
       }
 
-      /* Can we store the parameter ? */
-      if(bStoreParam)
+      /* Can we store the parameter? */
+      if(bStoreParam != orxFALSE)
       {
         orxPARAM_INFO *pstParamInfo;
 
         /* Allocate a new cell in the bank */
         pstParamInfo = (orxPARAM_INFO *)orxBank_Allocate(sstParam.pstBank);
 
-        /* Allocation success ? */
+        /* Allocation success? */
         if(pstParamInfo != orxNULL)
         {
           /* Cleans it */
@@ -701,6 +701,11 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
           /* Process params */
           eResult = orxParam_Process(pstParamInfo);
         }
+        else
+        {
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
       }
       else
       {
@@ -721,6 +726,9 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
   else
   {
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PARAM, "Invalid registered parameter... Forgets it");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done */
@@ -828,7 +836,7 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   orxBOOL   bDebugLevelBackup;
   orxSTATUS eResult;
 
-  /* Module initialized ? */
+  /* Module initialized? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
   /* Disables param logs */

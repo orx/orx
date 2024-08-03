@@ -1,0 +1,3 @@
+# Treat all files as non-text when doing line-ending-normalization, disabling it completely.
+# Other text-specific git commands are unaffected. Only line ending normalization is changed.
+* -text

@@ -331,6 +331,11 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
               break;
             }
           }
+          else
+          {
+            /* Updates flags */
+            sstModule.astModuleInfo[u32Index].u64ParentFlags |= (orxU64)1 << _eModuleID;
+          }
         }
       }
 
@@ -354,6 +359,19 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
                 /* Updates flags */
                 sstModule.astModuleInfo[u32Index].u64ParentFlags |= (orxU64)1 << _eModuleID;
               }
+              else
+              {
+                /* Updates temp flag */
+                sstModule.astModuleInfo[u32Index].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_PENDING;
+
+                /* Exits from module */
+                orxModule_Exit((orxMODULE_ID)u32Index);
+              }
+            }
+            else
+            {
+              /* Updates flags */
+              sstModule.astModuleInfo[u32Index].u64ParentFlags |= (orxU64)1 << _eModuleID;
             }
           }
         }
@@ -418,16 +436,16 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         eResult = orxSTATUS_FAILURE;
       }
     }
+  }
 
-    /* Failure? */
-    if(eResult == orxSTATUS_FAILURE)
-    {
-      /* Updates temp flag */
-      sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_PENDING;
+  /* Failure? */
+  if(eResult == orxSTATUS_FAILURE)
+  {
+    /* Updates temp flag */
+    sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_PENDING;
 
-      /* Exits from module */
-      orxModule_Exit(_eModuleID);
-    }
+    /* Exits from module */
+    orxModule_Exit(_eModuleID);
   }
 
   /* Done! */
@@ -447,10 +465,6 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
     orxU64 u64Depend;
     orxU32 u32Index;
 
-    /* Cleans flags */
-    sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING);
-    sstModule.astModuleInfo[_eModuleID].u64ParentFlags  = 0;
-
     /* Computes dependency flag */
     u64Depend = (orxU64)1 << _eModuleID;
 
@@ -460,6 +474,9 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
       /* Is module dependent? */
       if(sstModule.astModuleInfo[u32Index].u64DependFlags & u64Depend)
       {
+        /* Removes parent */
+        sstModule.astModuleInfo[_eModuleID].u64ParentFlags &= ~((orxU64)1 << u32Index);
+
         /* Exits from it */
         orxModule_Exit((orxMODULE_ID)u32Index);
       }
@@ -471,36 +488,40 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
       /* Is module dependent? */
       if(sstModule.astModuleInfo[u32Index].u64OptionalDependFlags & u64Depend)
       {
-        /* Exits from it */
-        orxModule_Exit((orxMODULE_ID)u32Index);
+        /* Removes parent */
+        sstModule.astModuleInfo[_eModuleID].u64ParentFlags &= ~((orxU64)1 << u32Index);
       }
     }
 
-    /* Has module exit function? */
-    if(sstModule.astModuleInfo[_eModuleID].pfnExit != orxNULL)
+    /* Was initialized? */
+    if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED)
     {
-      /* Calls it */
-      sstModule.astModuleInfo[_eModuleID].pfnExit();
+      /* Has module exit function? */
+      if(sstModule.astModuleInfo[_eModuleID].pfnExit != orxNULL)
+      {
+        /* Calls it */
+        sstModule.astModuleInfo[_eModuleID].pfnExit();
+      }
     }
+
+    /* Cleans flags */
+    sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING);
+    sstModule.astModuleInfo[_eModuleID].u64ParentFlags  = 0;
 
     /* For all modules */
     for(u32Index = 0; u32Index < orxMODULE_ID_TOTAL_NUMBER; u32Index++)
     {
-      /* Has parents? */
-      if(sstModule.astModuleInfo[u32Index].u64ParentFlags != 0)
+      /* Was this module one of its parents? */
+      if(sstModule.astModuleInfo[u32Index].u64ParentFlags & u64Depend)
       {
-        /* Was this module one of its parents? */
-        if(sstModule.astModuleInfo[u32Index].u64ParentFlags & u64Depend)
-        {
-          /* Removes self as parent */
-          sstModule.astModuleInfo[u32Index].u64ParentFlags &= ~u64Depend;
+        /* Removes self as parent */
+        sstModule.astModuleInfo[u32Index].u64ParentFlags &= ~u64Depend;
 
-          /* No more parents? */
-          if(sstModule.astModuleInfo[u32Index].u64ParentFlags == 0)
-          {
-            /* Exits from it */
-            orxModule_Exit((orxMODULE_ID)u32Index);
-          }
+        /* No more parents? */
+        if(sstModule.astModuleInfo[u32Index].u64ParentFlags == 0)
+        {
+          /* Exits from it */
+          orxModule_Exit((orxMODULE_ID)u32Index);
         }
       }
     }

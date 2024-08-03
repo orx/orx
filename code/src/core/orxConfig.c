@@ -3776,8 +3776,9 @@ static void orxFASTCALL orxConfig_ToPascalCase(orxSTRING _zDst, const orxSTRING 
  */
 static void orxFASTCALL orxConfig_SetDefaultColorList()
 {
-  orxCHAR acParentBuffer[64];
+  orxCHAR acParentBuffer[128];
   orxS32  s32Offset;
+  orxU32  i, iCount;
 
 #define orxCOLOR_DECLARE(NAME, R, G, B) {#NAME, &orxVECTOR_##NAME},
 
@@ -3795,34 +3796,59 @@ static void orxFASTCALL orxConfig_SetDefaultColorList()
   /* Pushes color config section */
   orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
 
+  /* For all colors */
+  for(i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astColorList); i < iCount; i++)
+  {
+    orxVECTOR vColor;
+
+    /* Checks */
+    orxASSERT(orxString_GetLength(astColorList[i].zName) < sizeof(acParentBuffer));
+
+    /* Gets PascalCase name with spaces */
+    orxConfig_ToPascalCase(acParentBuffer, astColorList[i].zName);
+
+    /* Stores color values under PascalCase name with spaces */
+    if(orxConfig_GetEntry(orxString_Hash(acParentBuffer)) == orxNULL)
+    {
+      orxConfig_SetVector(acParentBuffer, orxVector_Mulf(&vColor, astColorList[i].pvColor, orxCOLOR_DENORMALIZER));
+    }
+  }
+
   /* Inits parent buffer */
   s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer), "@.");
 
-  /* For all colors */
-  for(orxU32 i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astColorList); i < iCount; i++)
+  /* For all keys */
+  for(i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
   {
-    orxVECTOR vColor;
-    orxCHAR   acBuffer[sizeof(acParentBuffer)];
+    orxCHAR         acBuffer[sizeof(acParentBuffer)];
+    const orxSTRING zKey;
+
+    /* Gets it */
+    zKey = orxConfig_GetKey(i);
 
     /* Checks */
-    orxASSERT(orxString_GetLength(astColorList[i].zName) < sizeof(acParentBuffer) - s32Offset);
+    orxASSERT(orxString_GetLength(zKey) < sizeof(acParentBuffer) - s32Offset);
 
-    /* Gets PascalCase name with spaces */
-    orxConfig_ToPascalCase(acBuffer, astColorList[i].zName);
+    /* Sets PascalCase name with spaces as parent */
+    orxString_NPrint(acParentBuffer + s32Offset, sizeof(acParentBuffer) - s32Offset, "%s", zKey);
 
-    /* Sets PascalCase name without spaces as parent */
-    orxConfig_ToPascalCase(acParentBuffer + s32Offset, acBuffer);
-
-    /* Inherits from the no-space PascalCase for all the variations (Pascal case with spaces, lower case with and without spaces) */
-    orxConfig_SetString(acBuffer, acParentBuffer);
+    /* Inherits from the PascalCase for all the variations (PascalCase without spaces, lower case with and without spaces) */
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", acParentBuffer + s32Offset);
     orxString_LowerCase(acBuffer);
-    orxConfig_SetString(acBuffer, acParentBuffer);
-    orxConfig_ToPascalCase(acBuffer, acBuffer);
+    if(orxConfig_GetEntry(orxString_Hash(acBuffer)) == orxNULL)
+    {
+      orxConfig_SetString(acBuffer, acParentBuffer);
+    }
+    orxConfig_ToPascalCase(acBuffer, acParentBuffer + s32Offset);
+    if(orxConfig_GetEntry(orxString_Hash(acBuffer)) == orxNULL)
+    {
+      orxConfig_SetString(acBuffer, acParentBuffer);
+    }
     orxString_LowerCase(acBuffer);
-    orxConfig_SetString(acBuffer, acParentBuffer);
-
-    /* Stores color values under PascalCase name without spaces */
-    orxConfig_SetVector(acParentBuffer + s32Offset, orxVector_Mulf(&vColor, astColorList[i].pvColor, orxCOLOR_DENORMALIZER));
+    if(orxConfig_GetEntry(orxString_Hash(acBuffer)) == orxNULL)
+    {
+      orxConfig_SetString(acBuffer, acParentBuffer);
+    }
   }
 
   /* Pops config section */

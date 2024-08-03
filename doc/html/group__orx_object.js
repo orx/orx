@@ -87,7 +87,7 @@ var group__orx_object =
     [ "orxObject_GetSmoothing", "group__orx_object.html#gab08d846f3d0dfad0ff5ec1dddfc45e98", null ],
     [ "orxObject_GetSpeed", "group__orx_object.html#ga98fb27718a387312368073241f7de424", null ],
     [ "orxObject_GetTargetAnim", "group__orx_object.html#ga3f15e013543948dd15acb5a051ec1d55", null ],
-    [ "orxObject_GetTextString", "group__orx_object.html#ga72185092787846d790ebb9e2d91daffc", null ],
+    [ "orxObject_GetTextString", "group__orx_object.html#ga76f733c93485a47520beb1be94338098", null ],
     [ "orxObject_GetUserData", "group__orx_object.html#ga06c9691b77444ab8dcb70fc809405a02", null ],
     [ "orxObject_GetWorkingGraphic", "group__orx_object.html#gaf71f917729e3e311a59b4cd3ef5a54bd", null ],
     [ "orxObject_GetWorkingTexture", "group__orx_object.html#ga3ae56cd449d690621f6062d044dbd9de", null ],
