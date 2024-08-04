@@ -171,6 +171,8 @@
 #define orxOBJECT_KZ_TRACK                      "track"
 #define orxOBJECT_KZ_ON_COLLIDE                 "OnCollide"
 #define orxOBJECT_KZ_ON_SEPARATE                "OnSeparate"
+#define orxOBJECT_KZ_ON_PART_COLLIDE            "OnPartCollide"
+#define orxOBJECT_KZ_ON_PART_SEPARATE           "OnPartSeparate"
 #define orxOBJECT_KZ_ON_CREATE                  "OnCreate"
 #define orxOBJECT_KZ_ON_DELETE                  "OnDelete"
 
@@ -4997,6 +4999,7 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
     orxPHYSICS_EVENT_PAYLOAD *pstPayload;
     const orxSTRING           azRefinementList[2];
     const orxSTRING           zEvent;
+    const orxSTRING           zPartEvent;
     orxOBJECT                *pstSender, *pstRecipient;
 
     /* Checks */
@@ -5009,22 +5012,31 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
     pstSender     = orxOBJECT(_pstEvent->hSender);
     pstRecipient  = orxOBJECT(_pstEvent->hRecipient);
 
-    /* Selects event */
-    zEvent = (_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD) ? orxOBJECT_KZ_ON_COLLIDE : orxOBJECT_KZ_ON_SEPARATE;
+    /* Selects events */
+    if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+    {
+      zEvent      = orxOBJECT_KZ_ON_COLLIDE;
+      zPartEvent  = orxOBJECT_KZ_ON_PART_COLLIDE;
+    }
+    else
+    {
+      zEvent      = orxOBJECT_KZ_ON_SEPARATE;
+      zPartEvent  = orxOBJECT_KZ_ON_PART_SEPARATE;
+    }
 
     /* Fires triggers on sender */
-    azRefinementList[0] = orxBody_GetPartName(pstPayload->pstSenderPart);
-    azRefinementList[1] = orxBody_GetPartName(pstPayload->pstRecipientPart);
-    orxObject_FireTrigger(pstSender, zEvent, azRefinementList, 2);
     azRefinementList[0] = orxObject_GetName(pstRecipient);
     orxObject_FireTrigger(pstSender, zEvent, azRefinementList, 1);
+    azRefinementList[0] = orxBody_GetPartName(pstPayload->pstSenderPart);
+    azRefinementList[1] = orxBody_GetPartName(pstPayload->pstRecipientPart);
+    orxObject_FireTrigger(pstSender, zPartEvent, azRefinementList, 2);
 
     /* Fires triggers on recipient */
-    azRefinementList[0] = orxBody_GetPartName(pstPayload->pstRecipientPart);
-    azRefinementList[1] = orxBody_GetPartName(pstPayload->pstSenderPart);
-    orxObject_FireTrigger(pstRecipient, zEvent, azRefinementList, 2);
     azRefinementList[0] = orxObject_GetName(pstSender);
     orxObject_FireTrigger(pstRecipient, zEvent, azRefinementList, 1);
+    azRefinementList[0] = orxBody_GetPartName(pstPayload->pstRecipientPart);
+    azRefinementList[1] = orxBody_GetPartName(pstPayload->pstSenderPart);
+    orxObject_FireTrigger(pstRecipient, zPartEvent, azRefinementList, 2);
   }
 
   /* Done! */
@@ -11703,8 +11715,8 @@ orxOBJECT_MAKE_RECURSIVE(RemoveTrigger, const orxSTRING);
 /** Fire an object's trigger.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event
- * @param[in]   _u32Size          Size of the refinement list
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
+ * @param[in]   _u32Size          Size of the refinement list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
@@ -11740,8 +11752,8 @@ orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRI
 /** Fire a trigger on an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event
- * @param[in]   _u32Size          Size of the refinement list
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
+ * @param[in]   _u32Size          Size of the refinement list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
