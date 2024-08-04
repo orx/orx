@@ -7,17 +7,17 @@
   "type": "shell",
   "linux": {
     "options": {
-      "cwd": "code/build/linux/gmake/"
+      "cwd": "build/linux/gmake/"
     }
   },
   "osx": {
     "options": {
-      "cwd": "code/build/mac/gmake/"
+      "cwd": "build/mac/gmake/"
     }
   },
   "windows": {
     "options": {
-      "cwd": "code/build/windows/gmake/",
+      "cwd": "build/windows/gmake/",
       "shell": {
         "executable": "cmd.exe",
         "args": [
@@ -29,40 +29,28 @@
   },
   "tasks": [
     {
-      "label": "Setup orx",
+      "label": "Update premake",
       "group": "build",
       "type": "shell",
-      "command": "./setup.sh",
+      "command": "./premake4",
       "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "windows": {
-        "command": ".\\setup.bat",
-        "options": {
-          "shell": {
-            "executable": "cmd.exe",
-            "args": [
-              "/d",
-              "/c"
-            ]
-          }
-        }
+        "cwd": "${workspaceFolder}/build/"
       }
     },
     {
-      "label": "Build orx (debug, profile, release)",
+      "label": "Build [name] (debug, profile, release)",
       "dependsOrder": "sequence",
       "dependsOn": [
-        "Build orx (debug)",
-        "Build orx (profile)",
-        "Build orx (release)"
+        "Build [name] (debug)",
+        "Build [name] (profile)",
+        "Build [name] (release)"
       ],
       "problemMatcher": [
         "$gcc"
       ]
     },
     {
-      "label": "Build orx (debug)",
+      "label": "Build [name] (debug)",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -81,7 +69,7 @@
       ]
     },
     {
-      "label": "Build orx (profile)",
+      "label": "Build [name] (profile)",
       "group": "build",
       "type": "shell",
       "linux": {
@@ -98,7 +86,7 @@
       ]
     },
     {
-      "label": "Build orx (release)",
+      "label": "Build [name] (release)",
       "group": "build",
       "type": "shell",
       "linux": {
@@ -113,6 +101,51 @@
       "problemMatcher": [
         "$gcc"
       ]
+    },
+    {
+      "label": "Run [name] (debug)",
+      "dependsOn": [
+        "Build [name] (debug)"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "type": "process",
+      "command": "[name]d",
+      "options": {
+        "cwd": "bin/"
+      }
+    },
+    {
+      "label": "Run [name] (release)",
+      "dependsOn": [
+        "Build [name] (release)"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "type": "process",
+      "command": "[name]",
+      "options": {
+        "cwd": "bin/"
+      }
+    },
+    {
+      "label": "Run [name] (profile)",
+      "dependsOn": [
+        "Build [name] (profile)"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "type": "process",
+      "command": "[name]p",
+      "options": {
+        "cwd": "bin/"
+      }
     }
   ]
 }
