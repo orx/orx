@@ -32,7 +32,7 @@
       "label": "Update premake",
       "group": "build",
       "type": "shell",
-      "command": "./premake",
+      "command": "./premake4",
       "options": {
         "cwd": "${workspaceFolder}/build/"
       }
