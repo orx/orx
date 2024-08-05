@@ -2,7 +2,7 @@ var searchData=
 [
   ['zanimname',['zAnimName',['../structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html#a28f4e3c82eadb6774ec63b8226ed992e',1,'orxANIM_EVENT_PAYLOAD']]],
   ['zdstjointname',['zDstJointName',['../structorx_b_o_d_y___j_o_i_n_t___d_e_f.html#a96554962704aa32db7d429830397ffb3',1,'orxBODY_JOINT_DEF']]],
-  ['zevent',['zEvent',['../structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d.html#af4cbe6f6dd6c6df41caf8babfe32a1a5',1,'orxTIMELINE_EVENT_PAYLOAD']]],
+  ['zevent',['zEvent',['../structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d.html#af4cbe6f6dd6c6df41caf8babfe32a1a5',1,'orxTIMELINE_EVENT_PAYLOAD::zEvent()'],['../structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a7f3acf3e6ba8ec7a05ee8642f3904551',1,'orxTRIGGER_EVENT_PAYLOAD::zEvent()']]],
   ['zfullname',['zFullName',['../structorx_f_i_l_e___i_n_f_o.html#a57d4f6f0b89259e57065481e0458e717',1,'orxFILE_INFO']]],
   ['zfunctionargs',['zFunctionArgs',['../structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html#a30691d79169267aa2f18ca6091197a47',1,'orxPLUGIN_USER_FUNCTION_INFO']]],
   ['zfunctionname',['zFunctionName',['../structorx_p_l_u_g_i_n___u_s_e_r___f_u_n_c_t_i_o_n___i_n_f_o.html#abeecc4d94570afbb4583dc46a6d44b21',1,'orxPLUGIN_USER_FUNCTION_INFO']]],
@@ -18,7 +18,7 @@ var searchData=
   ['zpath',['zPath',['../structorx_f_i_l_e___i_n_f_o.html#aa77264223f3348edc8c235bf46db22f8',1,'orxFILE_INFO']]],
   ['zpattern',['zPattern',['../structorx_f_i_l_e___i_n_f_o.html#aa977df232302a0884d1efad4d0be5ed4',1,'orxFILE_INFO']]],
   ['zrelease',['zRelease',['../structorx_v_e_r_s_i_o_n.html#a5712c9c731cee0a96c120c25e402ca9f',1,'orxVERSION']]],
-  ['zsetname',['zSetName',['../structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html#a532745a46c44d576c975c80d9a5a8af0',1,'orxINPUT_EVENT_PAYLOAD']]],
+  ['zsetname',['zSetName',['../structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html#a532745a46c44d576c975c80d9a5a8af0',1,'orxINPUT_EVENT_PAYLOAD::zSetName()'],['../structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a3e6a0832b892f360b79f39baf8f5a409',1,'orxTRIGGER_EVENT_PAYLOAD::zSetName()']]],
   ['zshadername',['zShaderName',['../structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a0018d430445ca045b1befecaf981a998',1,'orxSHADER_EVENT_PAYLOAD']]],
   ['zshortdesc',['zShortDesc',['../structorx_p_a_r_a_m.html#aa1b45cdea20f5ff95ef411d29205d4bc',1,'orxPARAM']]],
   ['zshortname',['zShortName',['../structorx_p_a_r_a_m.html#ad5652addfda9c8ca2962f87d606e802d',1,'orxPARAM']]],

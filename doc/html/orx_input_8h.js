@@ -50,6 +50,7 @@ var orx_input_8h =
     [ "orxInput_GetBoundInputCount", "group__orx_input.html#ga973eb666a9e7d89bfc025dc392cdcce4", null ],
     [ "orxInput_GetCurrentSet", "group__orx_input.html#gabf638c2d7b0cf7488050b390caf26b21", null ],
     [ "orxInput_GetMultiplier", "group__orx_input.html#gad5ce976ebe2764d10279161e4f92636d", null ],
+    [ "orxInput_GetNext", "group__orx_input.html#ga0deef8acce4364b31bbc9c09a7a3ce17", null ],
     [ "orxInput_GetNextSet", "group__orx_input.html#ga4d21e12b81c390e709a0dae68f0c6340", null ],
     [ "orxInput_GetThreshold", "group__orx_input.html#ga7d736a44b91fcc908e506a3f9af813ac", null ],
     [ "orxInput_GetValue", "group__orx_input.html#gadaa46efcffa6a0267862228ca01f9131", null ],

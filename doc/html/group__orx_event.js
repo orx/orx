@@ -32,6 +32,7 @@ var group__orx_event =
       [ "orxEVENT_TYPE_SYSTEM", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8", null ],
       [ "orxEVENT_TYPE_TEXTURE", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a714cfbf6f8d48e92dfc8215baf29c46a", null ],
       [ "orxEVENT_TYPE_TIMELINE", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a3ca8f5d8375a2f12794d2fd1fd2fd0f5", null ],
+      [ "orxEVENT_TYPE_TRIGGER", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a568cde3a4de539035b8b969fd6ff51ee", null ],
       [ "orxEVENT_TYPE_VIEWPORT", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8aada1929d75c2a6af273873ee8a4021b7", null ],
       [ "orxEVENT_TYPE_CORE_NUMBER", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a392c55af75cd4dc15dc9d5c875ad7216", null ],
       [ "orxEVENT_TYPE_FIRST_RESERVED", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b", null ],
