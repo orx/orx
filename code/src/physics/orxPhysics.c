@@ -54,8 +54,11 @@
  */
 static orxSTATUS orxFASTCALL orxPhysics_EventHandler(const orxEVENT *_pstEvent)
 {
-  static orxSTRING szCollisionFlagList = orxNULL;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  static orxSTRING  szCollisionFlagList = orxNULL;
+  orxSTATUS         eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_CONFIG);
 
   /* Reload start? */
   if(_pstEvent->eID == orxCONFIG_EVENT_RELOAD_START)
@@ -73,8 +76,8 @@ static orxSTATUS orxFASTCALL orxPhysics_EventHandler(const orxEVENT *_pstEvent)
       orxConfig_PopSection();
     }
   }
-  /* Reload stop? */
-  else if(_pstEvent->eID == orxCONFIG_EVENT_RELOAD_STOP)
+  /* Reload stop */
+  else
   {
     /* Has stored collision flag list? */
     if(szCollisionFlagList != orxNULL)

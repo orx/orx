@@ -435,35 +435,33 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
  */
 static orxSTATUS orxFASTCALL orxShader_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                   eResult = orxSTATUS_SUCCESS;
 
-  /* Add or update? */
-  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RESOURCE);
+
+  /* Gets payload */
+  pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  /* Is config group? */
+  if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
   {
-    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+    orxSHADER *pstShader;
 
-    /* Gets payload */
-    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Is config group? */
-    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
+    /* For all shaders */
+    for(pstShader = orxSHADER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADER));
+        pstShader != orxNULL;
+        pstShader = orxSHADER(orxStructure_GetNext(pstShader)))
     {
-      orxSHADER *pstShader;
-
-      /* For all shaders */
-      for(pstShader = orxSHADER(orxStructure_GetFirst(orxSTRUCTURE_ID_SHADER));
-          pstShader != orxNULL;
-          pstShader = orxSHADER(orxStructure_GetNext(pstShader)))
+      /* Has reference? */
+      if((pstShader->zReference != orxNULL) && (pstShader->zReference != orxSTRING_EMPTY))
       {
-        /* Has reference? */
-        if((pstShader->zReference != orxNULL) && (pstShader->zReference != orxSTRING_EMPTY))
+        /* Match origin? */
+        if(orxConfig_GetOriginID(pstShader->zReference) == pstPayload->stNameID)
         {
-          /* Match origin? */
-          if(orxConfig_GetOriginID(pstShader->zReference) == pstPayload->stNameID)
-          {
-            /* Re-processes its config data */
-            orxShader_ProcessConfigData(pstShader);
-          }
+          /* Re-processes its config data */
+          orxShader_ProcessConfigData(pstShader);
         }
       }
     }

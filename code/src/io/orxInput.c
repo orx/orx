@@ -813,78 +813,82 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
       orxFLAG_SET(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_RESET_EXTERNAL, orxINPUT_KU32_ENTRY_FLAG_NONE);
     }
 
-    /* For all bindings */
-    for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
+    /* Has some types defined? */
+    if(orxFLAG_TEST(_pstSet->u32Flags, orxINPUT_KU32_MASK_TYPE_ALL))
     {
-      /* Valid? */
-      if(pstEntry->astBindingList[i].eType != orxINPUT_TYPE_NONE)
+      /* For all bindings */
+      for(i = 0; i < orxINPUT_KU32_BINDING_NUMBER; i++)
       {
-        orxFLOAT fValue, fTestValue;
-
-        /* Updates binding status */
-        bHasBinding = orxTRUE;
-
-        /* Gets raw value */
-        fValue = orxInput_GetBindingValue(_pstSet, pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID);
-
-        /* Depending on mode */
-        switch(pstEntry->astBindingList[i].eMode)
+        /* Valid? */
+        if(pstEntry->astBindingList[i].eType != orxINPUT_TYPE_NONE)
         {
-          default:
-          case orxINPUT_MODE_FULL:
-          {
-            /* Uses raw value */
-            pstEntry->astBindingList[i].fValue = fValue;
+          orxFLOAT fValue, fTestValue;
 
-            break;
+          /* Updates binding status */
+          bHasBinding = orxTRUE;
+
+          /* Gets raw value */
+          fValue = orxInput_GetBindingValue(_pstSet, pstEntry->astBindingList[i].eType, pstEntry->astBindingList[i].eID);
+
+          /* Depending on mode */
+          switch(pstEntry->astBindingList[i].eMode)
+          {
+            default:
+            case orxINPUT_MODE_FULL:
+            {
+              /* Uses raw value */
+              pstEntry->astBindingList[i].fValue = fValue;
+
+              break;
+            }
+
+            case orxINPUT_MODE_POSITIVE:
+            {
+              /* Stores it if positive */
+              pstEntry->astBindingList[i].fValue = (fValue > orxFLOAT_0) ? fValue : orxFLOAT_0;
+
+              break;
+            }
+
+            case orxINPUT_MODE_NEGATIVE:
+            {
+              /* Stores it if negative */
+              pstEntry->astBindingList[i].fValue = (fValue < orxFLOAT_0) ? -fValue : orxFLOAT_0;
+
+              break;
+            }
           }
 
-          case orxINPUT_MODE_POSITIVE:
-          {
-            /* Stores it if positive */
-            pstEntry->astBindingList[i].fValue = (fValue > orxFLOAT_0) ? fValue : orxFLOAT_0;
+          /* Gets test value */
+          fTestValue = (orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_EXTERNAL)) ? pstEntry->fExternalValue : pstEntry->astBindingList[i].fValue;
 
-            break;
+          /* Active? */
+          if(orxMath_Abs(fTestValue) > pstEntry->fThreshold)
+          {
+            /* First one? */
+            if(bStatusSet == orxFALSE)
+            {
+              /* Stores active index value */
+              u32ActiveIndex = i;
+
+              /* Updates status */
+              bActive = orxTRUE;
+
+              /* Updates set status */
+              bStatusSet = orxTRUE;
+            }
           }
-
-          case orxINPUT_MODE_NEGATIVE:
+          else
           {
-            /* Stores it if negative */
-            pstEntry->astBindingList[i].fValue = (fValue < orxFLOAT_0) ? -fValue : orxFLOAT_0;
+            /* Is in combine mode? */
+            if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINE))
+            {
+              /* Updates status */
+              bActive = orxFALSE;
 
-            break;
-          }
-        }
-
-        /* Gets test value */
-        fTestValue = (orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_EXTERNAL)) ? pstEntry->fExternalValue : pstEntry->astBindingList[i].fValue;
-
-        /* Active? */
-        if(orxMath_Abs(fTestValue) > pstEntry->fThreshold)
-        {
-          /* First one? */
-          if(bStatusSet == orxFALSE)
-          {
-            /* Stores active index value */
-            u32ActiveIndex = i;
-
-            /* Updates status */
-            bActive = orxTRUE;
-
-            /* Updates set status */
-            bStatusSet = orxTRUE;
-          }
-        }
-        else
-        {
-          /* Is in combine mode? */
-          if(orxFLAG_TEST(pstEntry->u32Status, orxINPUT_KU32_ENTRY_FLAG_COMBINE))
-          {
-            /* Updates status */
-            bActive = orxFALSE;
-
-            /* Updates set status */
-            bStatusSet = orxTRUE;
+              /* Updates set status */
+              bStatusSet = orxTRUE;
+            }
           }
         }
       }
@@ -1400,22 +1404,20 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
  */
 static orxSTATUS orxFASTCALL orxInput_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                   eResult = orxSTATUS_SUCCESS;
 
-  /* Add or update? */
-  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RESOURCE);
+
+  /* Gets payload */
+  pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  /* Is config group? */
+  if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
   {
-    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
-
-    /* Gets payload */
-    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Is config group? */
-    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
-    {
-      /* Reloads input */
-      orxInput_Load(orxNULL);
-    }
+    /* Reloads input */
+    orxInput_Load(orxNULL);
   }
 
   /* Done! */
@@ -2275,6 +2277,62 @@ orxSTATUS orxFASTCALL orxInput_SetTypeFlags(orxU32 _u32AddTypeFlags, orxU32 _u32
 
   /* Done! */
   return eResult;
+}
+
+/** Gets next input in current set
+ * @param[in] _zInputName       Concerned input, orxNULL to get the first one
+ * @return Input name / orxNULL
+ */
+const orxSTRING orxFASTCALL orxInput_GetNext(const orxSTRING _zInputName)
+{
+  const orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
+
+  /* Valid? */
+  if(sstInput.pstCurrentSet != orxNULL)
+  {
+    orxINPUT_ENTRY *pstEntry;
+
+    /* First input requested? */
+    if(_zInputName == orxNULL)
+    {
+      /* Gets it */
+      pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
+    }
+    else
+    {
+      orxSTRINGID stEntryID;
+
+      /* Gets its ID */
+      stEntryID = orxString_Hash(_zInputName);
+
+      /* For all entries */
+      for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(sstInput.pstCurrentSet->stEntryList));
+          pstEntry != orxNULL;
+          pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+      {
+        /* Found? */
+        if(pstEntry->stID == stEntryID)
+        {
+          /* Gets next one */
+          pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode));
+          break;
+        }
+      }
+    }
+
+    /* Valid? */
+    if(pstEntry != orxNULL)
+    {
+      /* Updates result */
+      zResult = pstEntry->zName;
+    }
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 /** Is input active?

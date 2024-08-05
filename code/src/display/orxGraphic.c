@@ -258,9 +258,6 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
   orxGRAPHIC *pstGraphic;
   orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
-  /* Checks */
-  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_LOCALE) || (_pstEvent->eType == orxEVENT_TYPE_OBJECT));
-
   /* Locale? */
   if(_pstEvent->eType == orxEVENT_TYPE_LOCALE)
   {
@@ -337,6 +334,9 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
   /* Object */
   else
   {
+    /* Checks */
+    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
+
     /* Gets its graphic */
     pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), GRAPHIC);
 

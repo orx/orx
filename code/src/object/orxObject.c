@@ -45,6 +45,7 @@
 #include "object/orxFXPointer.h"
 #include "object/orxSpawner.h"
 #include "object/orxTimeLine.h"
+#include "object/orxTrigger.h"
 #include "render/orxCamera.h"
 #include "render/orxShaderPointer.h"
 #include "sound/orxSoundPointer.h"
@@ -138,6 +139,7 @@
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
 #define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
 #define orxOBJECT_KZ_CONFIG_TRACK_LIST          "TrackList"
+#define orxOBJECT_KZ_CONFIG_TRIGGER_LIST        "TriggerList"
 #define orxOBJECT_KZ_CONFIG_CHILD_LIST          "ChildList"
 #define orxOBJECT_KZ_CONFIG_CHILD_JOINT_LIST    "ChildJointList"
 #define orxOBJECT_KZ_CONFIG_SMOOTHING           "Smoothing"
@@ -167,6 +169,12 @@
 #define orxOBJECT_KZ_SOUND                      "sound"
 #define orxOBJECT_KZ_SPAWN                      "spawn"
 #define orxOBJECT_KZ_TRACK                      "track"
+#define orxOBJECT_KZ_ON_COLLIDE                 "OnCollide"
+#define orxOBJECT_KZ_ON_SEPARATE                "OnSeparate"
+#define orxOBJECT_KZ_ON_PART_COLLIDE            "OnPartCollide"
+#define orxOBJECT_KZ_ON_PART_SEPARATE           "OnPartSeparate"
+#define orxOBJECT_KZ_ON_CREATE                  "OnCreate"
+#define orxOBJECT_KZ_ON_DELETE                  "OnDelete"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -2874,6 +2882,157 @@ void orxFASTCALL orxObject_CommandRemoveTrack(orxU32 _u32ArgNumber, const orxCOM
   return;
 }
 
+/** Command: AddTrigger
+ */
+void orxFASTCALL orxObject_CommandAddTrigger(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Adds Trigger */
+      orxObject_AddTriggerRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Adds Trigger */
+      orxObject_AddTrigger(pstObject, _astArgList[1].zValue);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveTrigger
+ */
+void orxFASTCALL orxObject_CommandRemoveTrigger(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Removes Trigger */
+      orxObject_RemoveTriggerRecursive(pstObject, _astArgList[1].zValue);
+    }
+    else
+    {
+      /* Removes Trigger */
+      orxObject_RemoveTrigger(pstObject, _astArgList[1].zValue);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: FireTrigger
+ */
+void orxFASTCALL orxObject_CommandFireTrigger(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    orxCHAR         acBuffer[1024], *pcDst;
+    const orxCHAR  *pcSrc;
+    orxSTRING       azRefinementList[32];
+    orxU32          u32RefinementCount;
+
+    /* For all characters in event */
+    for(pcSrc = _astArgList[1].zValue, pcDst = acBuffer, u32RefinementCount = 0;
+        (*pcSrc != orxCHAR_NULL) && (pcDst - acBuffer < sizeof(acBuffer) - 1);
+        pcSrc++, pcDst++)
+    {
+      /* Depending on character */
+      switch(*pcSrc)
+      {
+        case orxTRIGGER_KC_SEPARATOR:
+        {
+          /* Checks */
+          orxASSERT(u32RefinementCount < sizeof(azRefinementList));
+
+          /* Cuts string */
+          *pcDst = orxCHAR_NULL;
+
+          /* Stores refinement */
+          azRefinementList[u32RefinementCount++] = pcDst + 1;
+
+          break;
+        }
+
+        default:
+        {
+          /* Copies it */
+          *pcDst = *pcSrc;
+
+          break;
+        }
+      }
+    }
+
+    /* Terminates buffer */
+    *pcDst = orxCHAR_NULL;
+
+    /* Recursive? */
+    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
+    {
+      /* Fires trigger */
+      orxObject_FireTriggerRecursive(pstObject, acBuffer, (const orxSTRING *)azRefinementList, u32RefinementCount);
+    }
+    else
+    {
+      /* Fires trigger */
+      orxObject_FireTrigger(pstObject, acBuffer, (const orxSTRING *)azRefinementList, u32RefinementCount);
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Command: AddFX
  */
 void orxFASTCALL orxObject_CommandAddFX(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -4000,9 +4159,16 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetClock, "Clock", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: AddTrack */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Track", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: RemoveTrack */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"TimeLine", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrack, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Track", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+
+  /* Command: AddTrigger */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddTrigger, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Trigger", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: RemoveTrigger */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveTrigger, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Trigger", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: FireTrigger */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, FireTrigger, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Trigger", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: AddFX */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddFX, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"FX", orxCOMMAND_VAR_TYPE_STRING}, {"Unique = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
@@ -4245,6 +4411,13 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddTrack);
   /* Command: RemoveTrack */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveTrack);
+
+  /* Command: AddTrigger */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddTrigger);
+  /* Command: RemoveTrigger */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveTrigger);
+  /* Command: FireTrigger */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, FireTrigger);
 
   /* Command: AddFX */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddFX);
@@ -4685,6 +4858,13 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
       {
         orxU32 i;
 
+        /* Has trigger? */
+        if(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
+        {
+          /* Fires it */
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_ON_DELETE, orxNULL, 0);
+        }
+
         /* Has frame? */
         if(_pstObject->apstStructureList[orxSTRUCTURE_ID_FRAME] != orxNULL)
         {
@@ -4800,18 +4980,63 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
-  orxASSERT(_pstEvent->eID == orxOBJECT_EVENT_PREPARE);
-
-  /* Has current parent? */
-  if(sstObject.pstCurrentParent != orxNULL)
+  /* Object event? */
+  if(_pstEvent->eType == orxEVENT_TYPE_OBJECT)
   {
-    /* Stores current parent as temporary parent in payload */
-    *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentParent;
+    /* Has current parent? */
+    if(sstObject.pstCurrentParent != orxNULL)
+    {
+      /* Stores current parent as temporary parent in payload */
+      *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentParent;
 
-    /* Sets it as owner */
-    orxObject_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentParent);
+      /* Sets it as owner */
+      orxObject_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentParent);
+    }
+  }
+  /* Physics event */
+  else
+  {
+    orxPHYSICS_EVENT_PAYLOAD *pstPayload;
+    const orxSTRING           azRefinementList[2];
+    const orxSTRING           zEvent;
+    const orxSTRING           zPartEvent;
+    orxOBJECT                *pstSender, *pstRecipient;
+
+    /* Checks */
+    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_PHYSICS);
+
+    /* Gets payload */
+    pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Gets sender & recipient objects */
+    pstSender     = orxOBJECT(_pstEvent->hSender);
+    pstRecipient  = orxOBJECT(_pstEvent->hRecipient);
+
+    /* Selects events */
+    if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+    {
+      zEvent      = orxOBJECT_KZ_ON_COLLIDE;
+      zPartEvent  = orxOBJECT_KZ_ON_PART_COLLIDE;
+    }
+    else
+    {
+      zEvent      = orxOBJECT_KZ_ON_SEPARATE;
+      zPartEvent  = orxOBJECT_KZ_ON_PART_SEPARATE;
+    }
+
+    /* Fires triggers on sender */
+    azRefinementList[0] = orxObject_GetName(pstRecipient);
+    orxObject_FireTrigger(pstSender, zEvent, azRefinementList, 1);
+    azRefinementList[0] = orxBody_GetPartName(pstPayload->pstSenderPart);
+    azRefinementList[1] = orxBody_GetPartName(pstPayload->pstRecipientPart);
+    orxObject_FireTrigger(pstSender, zPartEvent, azRefinementList, 2);
+
+    /* Fires triggers on recipient */
+    azRefinementList[0] = orxObject_GetName(pstSender);
+    orxObject_FireTrigger(pstRecipient, zEvent, azRefinementList, 1);
+    azRefinementList[0] = orxBody_GetPartName(pstPayload->pstRecipientPart);
+    azRefinementList[1] = orxBody_GetPartName(pstPayload->pstSenderPart);
+    orxObject_FireTrigger(pstRecipient, zPartEvent, azRefinementList, 2);
   }
 
   /* Done! */
@@ -5106,6 +5331,7 @@ void orxFASTCALL orxObject_Setup()
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SOUNDPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SPAWNER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TIMELINE);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TRIGGER);
 
   /* Done! */
   return;
@@ -5139,14 +5365,16 @@ orxSTATUS orxFASTCALL orxObject_Init()
       /* Valid? */
       if(sstObject.pstClock != orxNULL)
       {
-        /* Adds event handler */
+        /* Adds event handlers */
         eResult = orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+        eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler) : orxSTATUS_FAILURE;
 
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
         {
           /* Filters relevant event IDs */
           orxEvent_SetHandlerIDFlags(orxObject_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE), orxEVENT_KU32_MASK_ID_ALL);
+          orxEvent_SetHandlerIDFlags(orxObject_EventHandler, orxEVENT_TYPE_PHYSICS, orxNULL, orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_ADD) | orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_REMOVE), orxEVENT_KU32_MASK_ID_ALL);
 
           /* Registers object update function to clock */
           eResult = orxClock_Register(sstObject.pstClock, orxObject_UpdateAll, orxNULL, orxMODULE_ID_OBJECT, orxCLOCK_PRIORITY_LOW);
@@ -5188,8 +5416,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
                   /* Updates result */
                   eResult = orxSTATUS_FAILURE;
 
-                  /* Removes event handler */
+                  /* Removes event handlers */
                   orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+                  orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
                   /* Deletes banks */
                   orxBank_Delete(sstObject.pstGroupBank);
@@ -5210,8 +5439,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
                 /* Updates result */
                 eResult = orxSTATUS_FAILURE;
 
-                /* Removes event handler */
+                /* Removes event handlers */
                 orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+                orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
                 /* Deletes banks */
                 orxBank_Delete(sstObject.pstGroupBank);
@@ -5242,8 +5472,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
               /* Unregisters from clock */
               orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
 
-              /* Removes event handler */
+              /* Removes event handlers */
               orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+              orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
               /* Unregisters structure type */
               orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
@@ -5251,8 +5482,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
           }
           else
           {
-            /* Removes event handler */
+            /* Removes event handlers */
             orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+            orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
             /* Unregisters structure type */
             orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
@@ -5260,6 +5492,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
         }
         else
         {
+          /* Removes event handler */
+          orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+
           /* Unregisters structure type */
           orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
         }
@@ -5296,8 +5531,9 @@ void orxFASTCALL orxObject_Exit()
   /* Initialized? */
   if(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY)
   {
-    /* Removes event handler */
+    /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
     /* Unregisters commands */
     orxObject_UnregisterCommands();
@@ -6663,6 +6899,30 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
+        /* *** Trigger *** */
+
+        /* Has triggers? */
+        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_TRIGGER_LIST)) > 0)
+        {
+          orxS32 i;
+
+          /* For all defined triggers */
+          for(i = 0; i < s32Count; i++)
+          {
+            const orxSTRING zTrigger;
+
+            /* Gets its name */
+            zTrigger = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_TRIGGER_LIST, i);
+
+            /* Valid? */
+            if(*zTrigger != orxCHAR_NULL)
+            {
+              /* Adds it */
+              orxObject_AddTrigger(pstResult, zTrigger);
+            }
+          }
+        }
+
         /* *** Misc *** */
 
         /* Has smoothing value? */
@@ -6727,6 +6987,13 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_CREATE, pstResult, orxNULL, orxNULL);
+
+        /* Has trigger? */
+        if(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
+        {
+          /* Fires it */
+          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_ON_CREATE, orxNULL, 0);
+        }
 
         /* Should age? */
         if(orxFLAG_TEST(sstObject.u32Flags, orxOBJECT_KU32_STATIC_FLAG_AGE))
@@ -7008,6 +7275,12 @@ void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_I
         case orxSTRUCTURE_ID_TIMELINE:
         {
           orxTimeLine_Delete(orxTIMELINE(pstStructure));
+          break;
+        }
+
+        case orxSTRUCTURE_ID_TRIGGER:
+        {
+          orxTrigger_Delete(orxTRIGGER(pstStructure));
           break;
         }
 
@@ -11298,8 +11571,7 @@ void orxFASTCALL orxObject_EnableTimeLine(orxOBJECT *_pstObject, orxBOOL _bEnabl
     orxTimeLine_Enable(pstTimeLine, _bEnable);
   }
 
-
-    /* Done! *//* Done! */
+  /* Done! */
   return;
 }
 
@@ -11333,6 +11605,181 @@ orxBOOL orxFASTCALL orxObject_IsTimeLineEnabled(const orxOBJECT *_pstObject)
 
   /* Done! */
   return bResult;
+}
+
+/** Adds a trigger to an object using its config ID.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_AddTrigger(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zTriggerConfigID != orxNULL) && (*_zTriggerConfigID != orxCHAR_NULL));
+
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  {
+    orxTRIGGER *pstTrigger;
+
+    /* Gets its Trigger */
+    pstTrigger = orxOBJECT_GET_STRUCTURE(_pstObject, TRIGGER);
+
+    /* Doesn't exist? */
+    if(pstTrigger == orxNULL)
+    {
+      /* Creates one */
+      pstTrigger = orxTrigger_Create();
+
+      /* Valid? */
+      if(pstTrigger != orxNULL)
+      {
+        /* Links it */
+        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstTrigger));
+
+        /* Valid? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates status */
+          orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_TRIGGER, orxOBJECT_KU32_FLAG_NONE);
+
+          /* Updates its owner */
+          orxStructure_SetOwner(pstTrigger, _pstObject);
+
+          /* Adds trigger from config */
+          eResult = orxTrigger_AddSetFromConfig(pstTrigger, _zTriggerConfigID);
+        }
+        else
+        {
+          /* Deletes it */
+          orxTrigger_Delete(pstTrigger);
+        }
+      }
+    }
+    else
+    {
+      /* Adds trigger from config */
+      eResult = orxTrigger_AddSetFromConfig(pstTrigger, _zTriggerConfigID);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a trigger to an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxOBJECT_MAKE_RECURSIVE(AddTrigger, const orxSTRING);
+
+/** Removes a trigger using its config ID
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_RemoveTrigger(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID)
+{
+  orxTRIGGER *pstTrigger;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets its Trigger */
+  pstTrigger = orxOBJECT_GET_STRUCTURE(_pstObject, TRIGGER);
+
+  /* Valid? */
+  if(pstTrigger != orxNULL)
+  {
+    /* Removes trigger from config */
+    eResult = orxTrigger_RemoveSetFromConfig(pstTrigger, _zTriggerConfigID);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes a trigger from an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to remove
+ */
+orxOBJECT_MAKE_RECURSIVE(RemoveTrigger, const orxSTRING);
+
+/** Fire an object's trigger.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zEvent           Event to fire
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
+ * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zEvent != orxNULL) && (_zEvent != orxSTRING_EMPTY));
+  orxASSERT((_u32Size == 0) || (_azRefinementList != orxNULL));
+
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  {
+    orxTRIGGER *pstTrigger;
+
+    /* Gets its Trigger */
+    pstTrigger = orxOBJECT_GET_STRUCTURE(_pstObject, TRIGGER);
+
+    /* Found? */
+    if(pstTrigger != orxNULL)
+    {
+      /* Fires it */
+      eResult = orxTrigger_Fire(pstTrigger, _zEvent, _azRefinementList, _u32Size);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Fire a trigger on an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zEvent           Event to fire
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
+ * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
+{
+  orxOBJECT *pstChild;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT((_zEvent != orxNULL) && (_zEvent != orxSTRING_EMPTY));
+  orxASSERT((_u32Size == 0) || (_azRefinementList != orxNULL));
+
+  /* Fires trigger */
+  orxObject_FireTrigger(_pstObject, _zEvent, _azRefinementList, _u32Size);
+
+  /* For all its owned children */
+  for(pstChild = orxObject_GetOwnedChild(_pstObject);
+      pstChild != orxNULL;
+      pstChild = orxObject_GetOwnedSibling(pstChild))
+  {
+    /* Fires its trigger */
+    orxObject_FireTrigger(pstChild, _zEvent, _azRefinementList, _u32Size);
+  }
+
+  /* Done! */
+  return;
 }
 
 /** Gets object config name.

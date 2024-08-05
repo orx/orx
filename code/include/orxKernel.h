@@ -94,6 +94,7 @@
 #include "object/orxSpawner.h"
 #include "object/orxStructure.h"
 #include "object/orxTimeLine.h"
+#include "object/orxTrigger.h"
 
 #include "plugin/orxPlugin.h"
 #include "plugin/orxPluginCore.h"

@@ -187,8 +187,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
   orxPROFILER_PUSH_MARKER("Bounce_EventHandler");
 
   /* Checks */
-  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS)
-         || (_pstEvent->eType == orxEVENT_TYPE_INPUT)
+  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_INPUT)
          || (_pstEvent->eType == orxEVENT_TYPE_SHADER)
          || (_pstEvent->eType == orxEVENT_TYPE_SOUND)
          || (_pstEvent->eType == orxEVENT_TYPE_DISPLAY)
@@ -220,20 +219,6 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
           /* Logs info */
           orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s::%s]" orxANSI_KZ_COLOR_FG_DEFAULT " is %s (" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_FG_DEFAULT ":%g)", pstPayload->zSetName, pstPayload->zInputName, (_pstEvent->eID == orxINPUT_EVENT_ON) ? orxANSI_KZ_COLOR_FG_GREEN  "ON " orxANSI_KZ_COLOR_FG_DEFAULT : orxANSI_KZ_COLOR_FG_RED "OFF" orxANSI_KZ_COLOR_FG_DEFAULT, orxInput_GetBindingName(pstPayload->aeType[0], pstPayload->aeID[0], pstPayload->aeMode[0]), pstPayload->afValue[0]);
         }
-      }
-
-      break;
-    }
-
-    /* Physics */
-    case orxEVENT_TYPE_PHYSICS:
-    {
-      /* Colliding? */
-      if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
-      {
-        /* Adds bump FX on both objects */
-        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
-        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
       }
 
       break;
@@ -524,8 +509,8 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     /* Found? */
     if(pstObject)
     {
-      /* Adds FX */
-      orxObject_AddUniqueFX(pstObject, "Pick");
+      /* Fires trigger */
+      orxObject_FireTrigger(pstObject, "Pick", orxNULL, 0);
     }
   }
   /* Raycasting? */
@@ -631,7 +616,6 @@ static orxSTATUS orxBounce_Init()
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxClock_Register(pstClock, &orxBounce_UpdateTrail, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
     /* Registers event handler */
-    eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) : orxSTATUS_FAILURE;
     eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) : orxSTATUS_FAILURE;
     eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) : orxSTATUS_FAILURE;
     eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_SOUND, orxBounce_EventHandler) : orxSTATUS_FAILURE;

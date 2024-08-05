@@ -962,6 +962,9 @@ static orxSTATUS orxFASTCALL orxBundle_EventHandler(const orxEVENT *_pstEvent)
   // System
   else
   {
+    // Checks
+    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+    
     // Param ready?
     if(_pstEvent->eID == orxSYSTEM_EVENT_PARAM_READY)
     {
@@ -1639,6 +1642,9 @@ void orxFASTCALL orxBundle_Exit()
   if(sstBundle.bInit != orxFALSE)
   {
     orxU32 i;
+
+    // Unregisters type
+    orxResource_UnregisterType(orxBUNDLE_KZ_RESOURCE_TAG);
 
     // Unregisters event handler
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxBundle_EventHandler);

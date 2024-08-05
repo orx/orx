@@ -575,6 +575,9 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
   {
     MovieData *pstMovieData;
 
+    // Checks
+    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SOUND);
+
     // Gets movie data
     pstMovieData = (MovieData *)_pstEvent->pContext;
 

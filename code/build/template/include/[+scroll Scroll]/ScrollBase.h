@@ -349,6 +349,10 @@ protected:
   static  const orxSTRING       szConfigScrollObjectSmoothing;
   static  const orxSTRING       szConfigScrollObjectTiling;
   static  const orxSTRING       szConfigScrollObjectPausable;
+  static  const orxSTRING       szConfigScrollObjectInput;
+  static  const orxSTRING       szConfigScrollObjectOnInput;
+  static  const orxCHAR         scConfigScrollObjectInstantMarker   = '.';
+  static  const orxCHAR         scConfigScrollObjectNegativeMarker  = '-';
 
 
 private:
@@ -515,6 +519,8 @@ const orxSTRING ScrollBase::szConfigScrollObjectAlpha         = "Alpha";
 const orxSTRING ScrollBase::szConfigScrollObjectSmoothing     = "Smoothing";
 const orxSTRING ScrollBase::szConfigScrollObjectTiling        = "Tiling";
 const orxSTRING ScrollBase::szConfigScrollObjectPausable      = "Pausable";
+const orxSTRING ScrollBase::szConfigScrollObjectInput         = "Input";
+const orxSTRING ScrollBase::szConfigScrollObjectOnInput       = "OnInput";
 
 
 //! Static variables
@@ -1789,6 +1795,55 @@ void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
         {
           orxCLOCK *pstClock;
 
+          // Has input set?
+          if(poObject->mzInputSet != orxNULL)
+          {
+            // Pushes input set
+            orxInput_PushSet(poObject->mzInputSet);
+
+            // Has trigger?
+            if(orxOBJECT_GET_STRUCTURE(pstObject, TRIGGER))
+            {
+              // For all inputs
+              for(const orxSTRING zInput = orxInput_GetNext(orxNULL); zInput; zInput = orxInput_GetNext(zInput))
+              {
+                orxCHAR acBuffer[256], *pc = acBuffer;
+                orxBOOL bInstant = orxFALSE;
+
+                // Has new status?
+                if(orxInput_HasNewStatus(zInput))
+                {
+                  // Adds instant marker
+                  *pc++ = scConfigScrollObjectInstantMarker;
+
+                  // Updates status
+                  bInstant = orxTRUE;
+                }
+
+                // Is inactive?
+                if(!orxInput_IsActive(zInput))
+                {
+                  // Adds negative marker
+                  *pc++ = scConfigScrollObjectNegativeMarker;
+                }
+
+                // Adds input name
+                orxString_NPrint(pc, sizeof(acBuffer) - (orxU32)(pc - acBuffer), "%s", zInput);
+                pc = acBuffer;
+
+                // Fires trigger
+                if((orxObject_FireTrigger(pstObject, szConfigScrollObjectOnInput, (const orxSTRING *)&pc, 1) == orxSTATUS_FAILURE) && (bInstant != orxFALSE))
+                {
+                  // Gets non-instant trigger event
+                  pc++;
+
+                  // Fires it
+                  orxObject_FireTrigger(pstObject, szConfigScrollObjectOnInput, (const orxSTRING *)&pc, 1);
+                }
+              }
+            }
+          }
+
           // Gets its clock
           pstClock = orxObject_GetClock(pstObject);
 
@@ -1806,6 +1861,13 @@ void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
           {
             // Updates object
             poObject->Update(_rstInfo);
+          }
+
+          // Has input set?
+          if(poObject->mzInputSet != orxNULL)
+          {
+            // Pops input set
+            orxInput_PopSet();
           }
         }
       }
@@ -2556,6 +2618,33 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstOrxObject, con
 
     // Stores flags
     poResult->SetFlags(xFlags, ScrollObject::MaskAll);
+
+    // Has input set?
+    if(orxConfig_HasValue(ScrollBase::szConfigScrollObjectInput))
+    {
+      // Stores it
+      poResult->mzInputSet = orxConfig_GetString(ScrollBase::szConfigScrollObjectInput);
+
+      // Enables it & pushes it
+      if((orxInput_EnableSet(poResult->mzInputSet, orxTRUE) != orxSTATUS_FAILURE)
+      && (orxInput_PushSet(poResult->mzInputSet) != orxSTATUS_FAILURE))
+      {
+        // No defined input?
+        if(!orxInput_GetNext(orxNULL))
+        {
+          // Updates its type
+          orxInput_SetTypeFlags(orxINPUT_KU32_FLAG_TYPE_NONE, orxINPUT_KU32_MASK_TYPE_ALL);
+        }
+
+        // Pops set
+        orxInput_PopSet();
+      }
+      else
+      {
+        // Clears set
+        poResult->mzInputSet = orxNULL;
+      }
+    }
 
     // Should use callback?
     if(poResult->TestFlags(ScrollObject::FlagSave | ScrollObject::FlagRunTime))

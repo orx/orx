@@ -939,35 +939,20 @@ static void orxFASTCALL orxConsole_Stop()
  */
 static orxSTATUS orxFASTCALL orxConsole_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxINPUT_EVENT_PAYLOAD *pstPayload;
+  orxSTATUS               eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_INPUT);
 
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
+  /* Gets payload */
+  pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  /* Toggle? */
+  if(!orxString_Compare(pstPayload->zInputName, orxCONSOLE_KZ_INPUT_TOGGLE))
   {
-    case orxINPUT_EVENT_ON:
-    {
-      orxINPUT_EVENT_PAYLOAD *pstPayload;
-
-      /* Gets payload */
-      pstPayload = (orxINPUT_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-      /* Toggle? */
-      if(!orxString_Compare(pstPayload->zInputName, orxCONSOLE_KZ_INPUT_TOGGLE))
-      {
-        /* Toggles it */
-        orxConsole_Enable(!orxConsole_IsEnabled());
-      }
-
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
+    /* Toggles it */
+    orxConsole_Enable(!orxConsole_IsEnabled());
   }
 
   /* Done! */
