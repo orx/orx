@@ -1168,6 +1168,9 @@ int main(int argc, char **argv)
       // Exits from engine
       orxModule_Exit(orxMODULE_ID_MAIN);
     }
+
+    // Clears params
+    orxParam_SetArgs(0, orxNULL);
   }
 
   // Exits from the Debug system

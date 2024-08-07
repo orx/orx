@@ -91,9 +91,12 @@ static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 static void orxFASTCALL orx_MainSetup()
 {
   /* Adds module dependencies */
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_INPUT);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_LOCALE);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_OBJECT);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_RENDER);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
 
+  orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_RENDER);
   orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_SCREENSHOT);
 
   /* Done! */
@@ -159,6 +162,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
     /* Releases memory pool */
     [poPool release];
+
+    /* Clears params */
+    orxParam_SetArgs(0, orxNULL);
   }
 
   /* Done! */
@@ -238,6 +244,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
       /* Exits from the engine */
       orxModule_Exit(orxMODULE_ID_MAIN);
     }
+
+    /* Clears params */
+    orxParam_SetArgs(0, orxNULL);
   }
 
   /* Exits from the Debug system */
@@ -269,6 +278,12 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Sends the command line arguments to orxParam module */
   if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
+#ifdef __orxSTATIC__
+    /* Silences param & plugin warnings */
+    orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PLUGIN, orxFALSE);
+    orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, orxFALSE);
+#endif /* __orxSTATIC */
+
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
     {
@@ -310,6 +325,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
       /* Exits from the engine */
       orxModule_Exit(orxMODULE_ID_MAIN);
     }
+
+    /* Clears params */
+    orxParam_SetArgs(0, orxNULL);
   }
 
   /* Exits from the Debug system */

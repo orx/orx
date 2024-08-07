@@ -922,7 +922,7 @@ void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, 
                     |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
                     |orxDEBUG_KU32_STATIC_FLAG_TYPE,
                      orxDEBUG_KU32_STATIC_MASK_USER_ALL);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, "The function <%s() @ %s:%d> has been called before being loaded!%sPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line, orxSTRING_EOL);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "The function <%s() @ %s:%d> has been called before being loaded!%sPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line, orxSTRING_EOL);
   orxDEBUG_SET_FLAGS(u32DebugFlags,
                      orxDEBUG_KU32_STATIC_MASK_USER_ALL);
 

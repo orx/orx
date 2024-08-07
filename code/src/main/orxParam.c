@@ -481,9 +481,6 @@ orxSTATUS orxFASTCALL orxParam_Init()
         /* Set module as ready */
         sstParam.u32Flags   = orxPARAM_KU32_MODULE_FLAG_READY;
 
-        /* Enables param debug level */
-        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, orxTRUE);
-
         /* Inits the param structure */
         orxMemory_Zero(&stParams, sizeof(orxPARAM));
         stParams.pfnParser  = orxParam_ProcessConfigParams;
@@ -607,9 +604,6 @@ void orxFASTCALL orxParam_Exit()
   /* Module initialized? */
   if((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY)
   {
-    /* Clears params */
-    orxParam_SetArgs(0, orxNULL);
-
     /* Deletes table */
     orxHashTable_Delete(sstParam.pstHashTable);
 
@@ -639,9 +633,9 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
   orxASSERT(_pstParam != orxNULL);
 
   /* Short parameters and callbacks are compulsory */
-  if(_pstParam->zShortName != orxNULL &&
-      _pstParam->zShortDesc != orxNULL &&
-      _pstParam->pfnParser  != orxNULL)
+  if((_pstParam->zShortName != orxNULL)
+  && (_pstParam->zShortDesc != orxNULL)
+  && (_pstParam->pfnParser  != orxNULL))
   {
     orxSTRINGID stShortName;
 

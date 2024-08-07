@@ -122,7 +122,6 @@ void orxFASTCALL orxRender_Setup()
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_VIEWPORT);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_DISPLAY);
-  orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_SHADERPOINTER);
 
   orxModule_AddOptionalDependency(orxMODULE_ID_RENDER, orxMODULE_ID_CONSOLE);
 

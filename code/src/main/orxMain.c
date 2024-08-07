@@ -136,7 +136,7 @@ orxSTATUS orxFASTCALL orxMain_Init()
         zGameFileName = orxConfig_GetString(orxMAIN_KZ_CONFIG_GAME_FILE);
 
         /* Loads it */
-        eResult = (orxPlugin_LoadUsingExt(zGameFileName, zGameFileName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        eResult = ((orxModule_IsInitialized(orxMODULE_ID_PLUGIN) != orxFALSE) && (orxPlugin_LoadUsingExt(zGameFileName, zGameFileName) != orxHANDLE_UNDEFINED)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       }
 
       /* Successful? */
