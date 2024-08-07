@@ -57,6 +57,7 @@ var searchData=
   ['orxthread',['OrxThread',['../group__orx_thread.html',1,'']]],
   ['orxtimeline',['OrxTimeLine',['../group__orx_time_line.html',1,'']]],
   ['orxtree',['OrxTree',['../group__orx_tree.html',1,'']]],
+  ['orxtrigger',['OrxTrigger',['../group__orx_trigger.html',1,'']]],
   ['orxtype',['OrxType',['../group__orx_type.html',1,'']]],
   ['orxvector',['OrxVector',['../group__orx_vector.html',1,'']]],
   ['orxversion',['OrxVersion',['../group__orx_version.html',1,'']]],

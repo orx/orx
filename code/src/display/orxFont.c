@@ -529,35 +529,33 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
  */
 static orxSTATUS orxFASTCALL orxFont_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                   eResult = orxSTATUS_SUCCESS;
 
-  /* Add or update? */
-  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RESOURCE);
+
+  /* Gets payload */
+  pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  /* Is config group? */
+  if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
   {
-    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+    orxFONT *pstFont;
 
-    /* Gets payload */
-    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Is config group? */
-    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
+    /* For all fonts */
+    for(pstFont = orxFONT(orxStructure_GetFirst(orxSTRUCTURE_ID_FONT));
+        pstFont != orxNULL;
+        pstFont = orxFONT(orxStructure_GetNext(pstFont)))
     {
-      orxFONT *pstFont;
-
-      /* For all fonts */
-      for(pstFont = orxFONT(orxStructure_GetFirst(orxSTRUCTURE_ID_FONT));
-          pstFont != orxNULL;
-          pstFont = orxFONT(orxStructure_GetNext(pstFont)))
+      /* Not default one and has reference? */
+      if((pstFont != sstFont.pstDefaultFont) && (pstFont->zReference != orxNULL) && (pstFont->zReference != orxSTRING_EMPTY))
       {
-        /* Not default one and has reference? */
-        if((pstFont != sstFont.pstDefaultFont) && (pstFont->zReference != orxNULL) && (pstFont->zReference != orxSTRING_EMPTY))
+        /* Match origin? */
+        if(orxConfig_GetOriginID(pstFont->zReference) == pstPayload->stNameID)
         {
-          /* Match origin? */
-          if(orxConfig_GetOriginID(pstFont->zReference) == pstPayload->stNameID)
-          {
-            /* Re-processes its config data */
-            orxFont_ProcessConfigData(pstFont);
-          }
+          /* Re-processes its config data */
+          orxFont_ProcessConfigData(pstFont);
         }
       }
     }

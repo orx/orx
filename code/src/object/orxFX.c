@@ -1212,51 +1212,49 @@ static void orxFASTCALL orxFX_ComputeSlot(const orxFX_SLOT *_pstFXSlot, orxFX_CO
  */
 static orxSTATUS orxFASTCALL orxFX_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                   eResult = orxSTATUS_SUCCESS;
 
-  /* Add or update? */
-  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RESOURCE);
+
+  /* Gets payload */
+  pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  /* Is config group? */
+  if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
   {
-    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+    orxFX *pstFX;
 
-    /* Gets payload */
-    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Is config group? */
-    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
+    /* For all FXs */
+    for(pstFX = orxFX(orxStructure_GetFirst(orxSTRUCTURE_ID_FX));
+        pstFX != orxNULL;
+        pstFX = orxFX(orxStructure_GetNext(pstFX)))
     {
-      orxFX *pstFX;
-
-      /* For all FXs */
-      for(pstFX = orxFX(orxStructure_GetFirst(orxSTRUCTURE_ID_FX));
-          pstFX != orxNULL;
-          pstFX = orxFX(orxStructure_GetNext(pstFX)))
+      /* Has reference? */
+      if((pstFX->zReference != orxNULL) && (pstFX->zReference != orxSTRING_EMPTY))
       {
-        /* Has reference? */
-        if((pstFX->zReference != orxNULL) && (pstFX->zReference != orxSTRING_EMPTY))
+        /* Matches? */
+        if(orxConfig_GetOriginID(pstFX->zReference) == pstPayload->stNameID)
         {
-          /* Matches? */
-          if(orxConfig_GetOriginID(pstFX->zReference) == pstPayload->stNameID)
+          orxU32 i;
+
+          /* For all slots */
+          for(i = 0; i < orxFX_KU32_SLOT_NUMBER; i++)
           {
-            orxU32 i;
-
-            /* For all slots */
-            for(i = 0; i < orxFX_KU32_SLOT_NUMBER; i++)
-            {
-              /* Clears it */
-              orxFLAG_SET(pstFX->astFXSlotList[i].u32Flags, orxFX_SLOT_KU32_FLAG_NONE, orxFX_SLOT_KU32_FLAG_DEFINED);
-            }
-
-            /* Resets duration & offset */
-            pstFX->fDuration  = orxFLOAT_0;
-            pstFX->fOffset    = orxFLOAT_0;
-
-            /* Clears status */
-            orxStructure_SetFlags(pstFX, orxFX_KU32_FLAG_NONE, orxFX_KU32_FLAG_LOOP | orxFX_KU32_FLAG_STAGGERED);
-
-            /* Re-processes its data */
-            orxFX_ProcessData(pstFX);
+            /* Clears it */
+            orxFLAG_SET(pstFX->astFXSlotList[i].u32Flags, orxFX_SLOT_KU32_FLAG_NONE, orxFX_SLOT_KU32_FLAG_DEFINED);
           }
+
+          /* Resets duration & offset */
+          pstFX->fDuration  = orxFLOAT_0;
+          pstFX->fOffset    = orxFLOAT_0;
+
+          /* Clears status */
+          orxStructure_SetFlags(pstFX, orxFX_KU32_FLAG_NONE, orxFX_KU32_FLAG_LOOP | orxFX_KU32_FLAG_STAGGERED);
+
+          /* Re-processes its data */
+          orxFX_ProcessData(pstFX);
         }
       }
     }

@@ -382,6 +382,9 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_EventHandler(const orxEVEN
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+
   /* Entering background? */
   if(_pstEvent->eID == orxSYSTEM_EVENT_BACKGROUND)
   {
@@ -405,6 +408,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_EventHandler(const orxEVEN
     /* Pops config section */
     orxConfig_PopSection();
   }
+  /* Entering foreground */
   else
   {
     /* Was muted? */

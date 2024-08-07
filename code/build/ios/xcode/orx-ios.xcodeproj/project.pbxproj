@@ -11,6 +11,7 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		E00545D92C3915BF00D9B772 /* orxTrigger.c in Sources */ = {isa = PBXBuildFile; fileRef = E00545D82C3915BF00D9B772 /* orxTrigger.c */; };
 		E022D39314CC47BD00B81F6B /* orxFX.c in Sources */ = {isa = PBXBuildFile; fileRef = E022D39114CC47BD00B81F6B /* orxFX.c */; };
 		E022D39414CC47BD00B81F6B /* orxFXPointer.c in Sources */ = {isa = PBXBuildFile; fileRef = E022D39214CC47BD00B81F6B /* orxFXPointer.c */; };
 		E02F77C62737F44E00C2B002 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02F77C52737F44E00C2B002 /* CoreAudio.framework */; };
@@ -106,6 +107,7 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E00545D82C3915BF00D9B772 /* orxTrigger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = orxTrigger.c; sourceTree = "<group>"; };
 		E022D38D14CC47AE00B81F6B /* orxFX.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxFX.h; sourceTree = "<group>"; };
 		E022D38E14CC47AE00B81F6B /* orxFXPointer.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxFXPointer.h; sourceTree = "<group>"; };
 		E022D39114CC47BD00B81F6B /* orxFX.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxFX.c; sourceTree = "<group>"; };
@@ -553,6 +555,7 @@
 		E059C51C1116B8E70086879B /* object */ = {
 			isa = PBXGroup;
 			children = (
+				E00545D82C3915BF00D9B772 /* orxTrigger.c */,
 				E0FDF07A15466EE000E94747 /* orxTimeLine.c */,
 				E022D39114CC47BD00B81F6B /* orxFX.c */,
 				E022D39214CC47BD00B81F6B /* orxFXPointer.c */,
@@ -1001,6 +1004,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E00545D92C3915BF00D9B772 /* orxTrigger.c in Sources */,
 				E05455AE15172B9500917458 /* orxTest.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

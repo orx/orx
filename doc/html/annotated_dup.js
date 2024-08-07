@@ -47,6 +47,7 @@ var annotated_dup =
     [ "orxTIMELINE_EVENT_PAYLOAD", "structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d" ],
     [ "orxTREE", "structorx_t_r_e_e.html", "structorx_t_r_e_e" ],
     [ "orxTREE_NODE", "structorx_t_r_e_e___n_o_d_e.html", "structorx_t_r_e_e___n_o_d_e" ],
+    [ "orxTRIGGER_EVENT_PAYLOAD", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d" ],
     [ "orxVECTOR", "structorx_v_e_c_t_o_r.html", "structorx_v_e_c_t_o_r" ],
     [ "orxVERSION", "structorx_v_e_r_s_i_o_n.html", "structorx_v_e_r_s_i_o_n" ]
 ];

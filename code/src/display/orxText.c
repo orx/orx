@@ -224,65 +224,61 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
   /* Locale? */
   if(_pstEvent->eType == orxEVENT_TYPE_LOCALE)
   {
-    /* Select language event? */
-    if(_pstEvent->eID == orxLOCALE_EVENT_SELECT_LANGUAGE)
+    orxLOCALE_EVENT_PAYLOAD *pstPayload;
+
+    /* Gets its payload */
+    pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Text group? */
+    if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXT_KZ_LOCALE_GROUP) == 0))
     {
-      orxLOCALE_EVENT_PAYLOAD *pstPayload;
+      orxTEXT *pstText;
 
-      /* Gets its payload */
-      pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-      /* Text group? */
-      if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXT_KZ_LOCALE_GROUP) == 0))
+      /* For all texts */
+      for(pstText = orxTEXT(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXT));
+          pstText != orxNULL;
+          pstText = orxTEXT(orxStructure_GetNext(pstText)))
       {
-        orxTEXT *pstText;
-
-        /* For all texts */
-        for(pstText = orxTEXT(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXT));
-            pstText != orxNULL;
-            pstText = orxTEXT(orxStructure_GetNext(pstText)))
+        /* Has locale string ID? */
+        if(pstText->stLocaleStringID != 0)
         {
-          /* Has locale string ID? */
-          if(pstText->stLocaleStringID != 0)
+          const orxSTRING zText;
+
+          /* Gets its localized value */
+          zText = orxLocale_GetString(orxString_GetFromID(pstText->stLocaleStringID), orxTEXT_KZ_LOCALE_GROUP);
+
+          /* Valid? */
+          if(*zText != orxCHAR_NULL)
           {
-            const orxSTRING zText;
-
-            /* Gets its localized value */
-            zText = orxLocale_GetString(orxString_GetFromID(pstText->stLocaleStringID), orxTEXT_KZ_LOCALE_GROUP);
-
-            /* Valid? */
-            if(*zText != orxCHAR_NULL)
-            {
-              /* Updates text */
-              orxText_SetString(pstText, zText);
-            }
+            /* Updates text */
+            orxText_SetString(pstText, zText);
           }
+        }
 
-          /* Has locale font ID? */
-          if(pstText->stLocaleFontID != 0)
+        /* Has locale font ID? */
+        if(pstText->stLocaleFontID != 0)
+        {
+          orxFONT *pstFont;
+
+          /* Creates font */
+          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(orxString_GetFromID(pstText->stLocaleFontID), orxTEXT_KZ_LOCALE_GROUP));
+
+          /* Valid? */
+          if(pstFont != orxNULL)
           {
-            orxFONT *pstFont;
-
-            /* Creates font */
-            pstFont = orxFont_CreateFromConfig(orxLocale_GetString(orxString_GetFromID(pstText->stLocaleFontID), orxTEXT_KZ_LOCALE_GROUP));
-
-            /* Valid? */
-            if(pstFont != orxNULL)
+            /* Updates text */
+            if(orxText_SetFont(pstText, pstFont) != orxSTATUS_FAILURE)
             {
-              /* Updates text */
-              if(orxText_SetFont(pstText, pstFont) != orxSTATUS_FAILURE)
-              {
-                /* Sets its owner */
-                orxStructure_SetOwner(pstFont, pstText);
+              /* Sets its owner */
+              orxStructure_SetOwner(pstFont, pstText);
 
-                /* Updates flags */
-                orxStructure_SetFlags(pstText, orxTEXT_KU32_FLAG_INTERNAL, orxTEXT_KU32_FLAG_NONE);
-              }
-              else
-              {
-                /* Sets default font */
-                orxText_SetFont(pstText, orxFONT(orxFont_GetDefaultFont()));
-              }
+              /* Updates flags */
+              orxStructure_SetFlags(pstText, orxTEXT_KU32_FLAG_INTERNAL, orxTEXT_KU32_FLAG_NONE);
+            }
+            else
+            {
+              /* Sets default font */
+              orxText_SetFont(pstText, orxFONT(orxFont_GetDefaultFont()));
             }
           }
         }
@@ -292,36 +288,32 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
   /* Resource */
   else
   {
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
     /* Checks */
     orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RESOURCE);
 
-    /* Add or update? */
-    if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Is config group? */
+    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
-      orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+      orxTEXT *pstText;
 
-      /* Gets payload */
-      pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-      /* Is config group? */
-      if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
+      /* For all texts */
+      for(pstText = orxTEXT(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXT));
+          pstText != orxNULL;
+          pstText = orxTEXT(orxStructure_GetNext(pstText)))
       {
-        orxTEXT *pstText;
-
-        /* For all texts */
-        for(pstText = orxTEXT(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXT));
-            pstText != orxNULL;
-            pstText = orxTEXT(orxStructure_GetNext(pstText)))
+        /* Has reference? */
+        if((pstText->zReference != orxNULL) && (pstText->zReference != orxSTRING_EMPTY))
         {
-          /* Has reference? */
-          if((pstText->zReference != orxNULL) && (pstText->zReference != orxSTRING_EMPTY))
+          /* Match origin? */
+          if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->stNameID)
           {
-            /* Match origin? */
-            if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->stNameID)
-            {
-              /* Re-processes its config data */
-              orxText_ProcessConfigData(pstText);
-            }
+            /* Re-processes its config data */
+            orxText_ProcessConfigData(pstText);
           }
         }
       }

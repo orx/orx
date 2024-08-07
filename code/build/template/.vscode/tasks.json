@@ -1,0 +1,151 @@
+{
+  "version": "2.0.0",
+  "presentation": {
+    "reveal": "silent",
+    "revealProblems": "onProblem"
+  },
+  "type": "shell",
+  "linux": {
+    "options": {
+      "cwd": "build/linux/gmake/"
+    }
+  },
+  "osx": {
+    "options": {
+      "cwd": "build/mac/gmake/"
+    }
+  },
+  "windows": {
+    "options": {
+      "cwd": "build/windows/gmake/",
+      "shell": {
+        "executable": "cmd.exe",
+        "args": [
+          "/d",
+          "/c"
+        ]
+      }
+    }
+  },
+  "tasks": [
+    {
+      "label": "Update premake",
+      "group": "build",
+      "type": "shell",
+      "command": "./premake4",
+      "options": {
+        "cwd": "${workspaceFolder}/build/"
+      }
+    },
+    {
+      "label": "Build [name] (debug, profile, release)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Build [name] (debug)",
+        "Build [name] (profile)",
+        "Build [name] (release)"
+      ],
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Build [name] (debug)",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "linux": {
+        "command": "make -j config=debug64",
+      },
+      "osx": {
+        "command": "make -j config=debuguniv64"
+      },
+      "windows": {
+        "command": "mingw32-make.exe -j config=debug64"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Build [name] (profile)",
+      "group": "build",
+      "type": "shell",
+      "linux": {
+        "command": "make -j config=profile64"
+      },
+      "osx": {
+        "command": "make -j config=profileuniv64"
+      },
+      "windows": {
+        "command": "mingw32-make.exe -j config=profile64"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Build [name] (release)",
+      "group": "build",
+      "type": "shell",
+      "linux": {
+        "command": "make -j config=release64"
+      },
+      "osx": {
+        "command": "make -j config=releaseuniv64"
+      },
+      "windows": {
+        "command": "mingw32-make.exe -j config=release64"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "Run [name] (debug)",
+      "dependsOn": [
+        "Build [name] (debug)"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "type": "process",
+      "command": "[name]d",
+      "options": {
+        "cwd": "bin/"
+      }
+    },
+    {
+      "label": "Run [name] (release)",
+      "dependsOn": [
+        "Build [name] (release)"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "type": "process",
+      "command": "[name]",
+      "options": {
+        "cwd": "bin/"
+      }
+    },
+    {
+      "label": "Run [name] (profile)",
+      "dependsOn": [
+        "Build [name] (profile)"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "type": "process",
+      "command": "[name]p",
+      "options": {
+        "cwd": "bin/"
+      }
+    }
+  ]
+}

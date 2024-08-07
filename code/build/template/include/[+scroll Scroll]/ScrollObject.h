@@ -169,9 +169,10 @@ private:
 
                 orxOBJECT *             mpstObject;
                 const orxSTRING         mzModelName;
-                Flag                    mxFlags;
                 orxLINKLIST_NODE        mstNode;
                 orxLINKLIST_NODE        mstChronoNode;
+                const orxSTRING         mzInputSet;
+                Flag                    mxFlags;
                 orxCHAR                 macName[16];
 };
 
@@ -216,7 +217,7 @@ inline ScrollObject::Flag operator~(ScrollObject::Flag _x1)
 #ifdef __SCROLL_IMPL__
 
 //! Code
-ScrollObject::ScrollObject() : mpstObject(orxNULL), mzModelName(orxNULL), mxFlags(FlagNone)
+ScrollObject::ScrollObject() : mpstObject(orxNULL), mzModelName(orxNULL), mzInputSet(orxNULL), mxFlags(FlagNone)
 {
   // Clears nodes
   orxMemory_Zero(&mstNode, sizeof(orxLINKLIST_NODE));

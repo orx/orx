@@ -1131,6 +1131,55 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTimeLineEnabled(const or
 /** @} */
 
 
+/** @name Trigger
+ * @{ */
+/** Adds a trigger to an object using its config ID.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddTrigger(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Adds a trigger to an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Removes a trigger using its config ID
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveTrigger(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Removes a trigger from an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to remove
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_RemoveTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Fires an object's trigger.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zEvent           Event to fire
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
+ * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+
+/** Fires a trigger on an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zEvent           Event to fire
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
+ * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+/** @} */
+
+
 /** @name Name
  * @{ */
 /** Gets object config name.

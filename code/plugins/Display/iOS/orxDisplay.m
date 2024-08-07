@@ -2652,6 +2652,9 @@ static orxINLINE GLenum orxDisplay_iOS_GetOpenGLPrimitive(orxDISPLAY_PRIMITIVE _
  */
 static orxSTATUS orxFASTCALL orxDisplay_iOS_EventHandler(const orxEVENT *_pstEvent)
 {
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RENDER);
+
   /* Render stop? */
   if(_pstEvent->eID == orxRENDER_EVENT_STOP)
   {
