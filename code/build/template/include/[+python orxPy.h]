@@ -930,6 +930,54 @@ namespace pythonwrapper
     RETURN_VALUE(orxObject_IsTimeLineEnabled(pstObject));
   }
 
+  BIND(add_trigger)
+  {
+    OBJECT;
+    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(bool, bRecursive, 2);
+    if (bRecursive)
+    {
+      orxObject_AddTriggerRecursive(pstObject, zName);
+    }
+    else
+    {
+      orxObject_AddTrigger(pstObject, zName);
+    }
+    RETURN_NONE;
+  }
+
+  BIND(remove_trigger)
+  {
+    OBJECT;
+    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(bool, bRecursive, 2);
+    if (bRecursive)
+    {
+      orxObject_RemoveTriggerRecursive(pstObject, zName);
+    }
+    else
+    {
+      orxObject_RemoveTrigger(pstObject, zName);
+    }
+    RETURN_NONE;
+  }
+
+  BIND(fire_trigger)
+  {
+    OBJECT;
+    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(bool, bRecursive, 2);
+    if (bRecursive)
+    {
+      orxObject_FireTriggerRecursive(pstObject, zName, orxNULL, 0l);
+    }
+    else
+    {
+      orxObject_FireTrigger(pstObject, zName, orxNULL, 0l);
+    }
+    RETURN_NONE;
+  }
+
   BIND(get_name)
   {
     OBJECT;
@@ -1518,6 +1566,10 @@ void orxPy_AddObjectModule(pkpy::VM *vm)
   vm->bind(mod, "remove_time_line_track(o: Object, name: str, recursive: bool = False) -> None", remove_time_line_track);
   vm->bind(mod, "enable_time_line(o: Object, enabled: bool = True) -> None", enable_time_line);
   vm->bind(mod, "is_time_line_enabled(o: Object) -> bool", is_time_line_enabled);
+
+  vm->bind(mod, "add_trigger(o: Object, name: str, recursive: bool = False) -> None", add_trigger);
+  vm->bind(mod, "remove_trigger(o: Object, name: str, recursive: bool = False) -> None", remove_trigger);
+  vm->bind(mod, "fire_trigger(o: Object, name: str, recursive: bool = False) -> None", fire_trigger);
 
   vm->bind(mod, "get_name(o: Object) -> str", get_name);
 
