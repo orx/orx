@@ -50,51 +50,32 @@
 
 orxSTATUS orxFASTCALL orxMouse_Dummy_ShowCursor(orxBOOL _bShow)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_FAILURE;
 }
 
 orxSTATUS orxFASTCALL orxMouse_Dummy_Grab(orxBOOL _bGrab)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_FAILURE;
 }
 
 orxSTATUS orxFASTCALL orxMouse_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_SUCCESS;
 }
 
 void orxFASTCALL orxMouse_Dummy_Exit()
 {
+  /* Done! */
   return;
 }
 
 orxSTATUS orxFASTCALL orxMouse_Dummy_SetPosition(const orxVECTOR *_pvPosition)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_FAILURE;
 }
 
 orxVECTOR *orxFASTCALL orxMouse_Dummy_GetPosition(orxVECTOR *_pvPosition)
@@ -103,9 +84,6 @@ orxVECTOR *orxFASTCALL orxMouse_Dummy_GetPosition(orxVECTOR *_pvPosition)
 
   orxVector_Copy(pvResult, &orxVECTOR_0);
 
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
   /* Done! */
   return pvResult;
 }
@@ -113,9 +91,6 @@ orxVECTOR *orxFASTCALL orxMouse_Dummy_GetPosition(orxVECTOR *_pvPosition)
 orxBOOL orxFASTCALL orxMouse_Dummy_IsButtonPressed(orxMOUSE_BUTTON _eButton)
 {
   orxBOOL bResult = orxFALSE;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
 
   /* Done! */
   return bResult;
@@ -134,9 +109,6 @@ orxVECTOR *orxFASTCALL orxMouse_Dummy_GetMoveDelta(orxVECTOR *_pvMoveDelta)
 orxFLOAT orxFASTCALL orxMouse_Dummy_GetWheelDelta()
 {
   orxFLOAT fResult = orxFLOAT_0;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
 
   /* Done! */
   return fResult;

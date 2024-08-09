@@ -36,12 +36,8 @@
 
 orxSTATUS orxFASTCALL orxSoundSystem_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Not available on this platform!");
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_SUCCESS;
 }
 
 void orxFASTCALL orxSoundSystem_Dummy_Exit()

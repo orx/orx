@@ -52,10 +52,8 @@
 
 orxSTATUS orxFASTCALL orxJoystick_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_SUCCESS;
 }
 
 void orxFASTCALL orxJoystick_Dummy_Exit()

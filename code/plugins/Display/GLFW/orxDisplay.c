@@ -6293,6 +6293,7 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
   }
 
+  /* Done! */
   return;
 }
 
@@ -6606,6 +6607,7 @@ void orxFASTCALL orxDisplay_GLFW_DeleteShader(orxHANDLE _hShader)
   /* Frees it */
   orxBank_Free(sstDisplay.pstShaderBank, pstShader);
 
+  /* Done! */
   return;
 }
 

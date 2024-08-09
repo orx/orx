@@ -36,13 +36,8 @@
 
 orxSTATUS orxFASTCALL orxPhysics_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Not available on this platform!");
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_SUCCESS;
 }
 
 void orxFASTCALL orxPhysics_Dummy_Exit()

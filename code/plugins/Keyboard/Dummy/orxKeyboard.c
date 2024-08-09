@@ -51,10 +51,8 @@
 
 orxSTATUS orxFASTCALL orxKeyboard_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_SUCCESS;
 }
 
 void orxFASTCALL orxKeyboard_Dummy_Exit()
