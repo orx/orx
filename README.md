@@ -110,6 +110,9 @@ The embedded versions currently use:
 - Touch/MultiTouch-based mouse plugin for iOS and Android
 - Accelerometer-based joystick plugin for iOS and Android
 
+If the headless variants of the embedded versions are requested, dummy plugins will be used for the display, joystick, mouse, keyboard and soundsystem plugins.
+The render & physics plugins will be the same as the ones used for the non-headless versions.
+
 All the 11 basic and advanced official tutorials are shipped with the dev packages, including precompiled release binaries.
 
 Some tools (precompiled binaries only) are also shipped with the dev packages:
@@ -212,6 +215,10 @@ Here's a quick list of the available compile preprocessor flags:
 - `__orxEMBEDDED__` : used to compile the embedded versions of orx library.  
                     NB: this flag is *ONLY* needed when compiling orx library, not when linking
                     against it.
+
+- `__orxHEADLESS__` : used to embed plugins that are compatible with a headless mode.  
+                    NB: this flag is *ONLY* used when compiling orx library
+                    and when `__orxEMBEDDED__` is also defined!
 
 
 There are other preprocessor flags used when compiling the orx library,

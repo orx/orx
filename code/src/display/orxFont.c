@@ -255,6 +255,7 @@ static orxINLINE void orxFont_CreateDefaultFont()
           orxVECTOR vSpacing;
           orxFLOAT *afCharacterWidthList;
           orxU32    u32CharacterCount, i;
+          orxBOOL   bDebugLevelBackup;
 
           /* Gets character count */
           u32CharacterCount = orxString_GetCharacterCount(sstDefaultFont.zCharacterList);
@@ -269,11 +270,18 @@ static orxINLINE void orxFont_CreateDefaultFont()
             afCharacterWidthList[i] = sstDefaultFont.fCharacterWidth;
           }
 
+          /* Disables display logs */
+          bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
+
           /* Inits font */
           orxFont_SetCharacterList(sstFont.pstDefaultFont, sstDefaultFont.zCharacterList);
           orxFont_SetCharacterHeight(sstFont.pstDefaultFont, sstDefaultFont.fCharacterHeight);
           orxFont_SetCharacterWidthList(sstFont.pstDefaultFont, u32CharacterCount, afCharacterWidthList);
           orxFont_SetCharacterSpacing(sstFont.pstDefaultFont, orxVector_Set(&vSpacing, sstDefaultFont.fCharacterSpacingX, sstDefaultFont.fCharacterSpacingY, orxFLOAT_0));
+
+          /* Reenables display logs */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDebugLevelBackup);
 
           /* Stores its reference key */
           sstFont.pstDefaultFont->zReference = orxFONT_KZ_DEFAULT_FONT_NAME;

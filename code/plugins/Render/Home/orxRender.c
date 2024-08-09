@@ -200,8 +200,12 @@ static orxINLINE void orxRender_Home_UpdateConsole(orxFLOAT _fScreenWidth, orxFL
   /* Gets console font */
   pstFont = orxConsole_GetFont();
 
-  /* Updates console log line length */
-  orxConsole_SetLogLineLength(orxF2U(fConsoleWidth / (orxFont_GetCharacterWidth(pstFont, (orxU32)' ') * sstRender.fConsoleFontScale)));
+  /* Valid? */
+  if(pstFont != orxNULL)
+  {
+    /* Updates console log line length */
+    orxConsole_SetLogLineLength(orxF2U(fConsoleWidth / (orxFont_GetCharacterWidth(pstFont, (orxU32)' ') * sstRender.fConsoleFontScale)));
+  }
 
   /* Sets default console offset */
   sstRender.fDefaultConsoleOffset = -_fScreenHeight;
@@ -1890,6 +1894,8 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                       orxFRAME     *pstFrame;
                       orxSTRUCTURE *pstData;
                       orxTEXTURE   *pstTexture;
+                      orxTEXT      *pstText;
+                      orxFONT      *pstFont;
 
                       /* Gets object's frame */
                       pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
@@ -1900,16 +1906,11 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                       /* Valid and has text/texture data? */
                       if((pstFrame != orxNULL)
                       && (((pstTexture = orxTEXTURE(pstData)) != orxNULL)
-                       || (orxTEXT(pstData) != orxNULL)))
+                       || (((pstText = orxTEXT(pstData)) != orxNULL)
+                        && ((pstFont = orxText_GetFont(pstText)) != orxNULL)
+                        && ((pstTexture = orxFont_GetTexture(pstFont)) != orxNULL))))
                       {
                         orxVECTOR vObjectPos;
-
-                        /* Not a texture? */
-                        if(pstTexture == orxNULL)
-                        {
-                          /* Gets texture from text */
-                          pstTexture = orxFont_GetTexture(orxText_GetFont(orxTEXT(pstData)));
-                        }
 
                         /* Gets its position */
                         orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vObjectPos);
