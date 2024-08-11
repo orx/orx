@@ -520,7 +520,7 @@ namespace pythonwrapper
   BIND(set_current_anim)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     if (bRecursive)
     {
@@ -542,7 +542,7 @@ namespace pythonwrapper
   BIND(set_target_anim)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     if (bRecursive)
     {
@@ -686,7 +686,7 @@ namespace pythonwrapper
   BIND(set_text_string)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zString, 1);
+    ARG_VALUE(const orxSTRING, zString, 1);
     orxObject_SetTextString(pstObject, zString);
     RETURN_NONE;
   }
@@ -700,7 +700,7 @@ namespace pythonwrapper
   BIND(add_fx)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     ARG_VALUE(bool, bUnique, 3);
     ARG_VALUE(orxFLOAT, fPropagationDelay, 4);
@@ -726,7 +726,7 @@ namespace pythonwrapper
   BIND(remove_fx)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     if (bRecursive)
     {
@@ -757,7 +757,7 @@ namespace pythonwrapper
   BIND(add_sound)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     orxObject_AddSound(pstObject, zName);
     RETURN_NONE;
   }
@@ -765,7 +765,7 @@ namespace pythonwrapper
   BIND(remove_sound)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     orxObject_RemoveSound(pstObject, zName);
     RETURN_NONE;
   }
@@ -819,7 +819,7 @@ namespace pythonwrapper
   BIND(add_filter)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     orxObject_AddFilter(pstObject, zName);
     RETURN_NONE;
   }
@@ -841,7 +841,7 @@ namespace pythonwrapper
   BIND(add_shader)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     if (bRecursive)
     {
@@ -857,7 +857,7 @@ namespace pythonwrapper
   BIND(remove_shader)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     if (bRecursive)
     {
@@ -887,7 +887,7 @@ namespace pythonwrapper
   BIND(add_time_line_track)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     if (bRecursive)
     {
@@ -903,7 +903,7 @@ namespace pythonwrapper
   BIND(remove_time_line_track)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     if (bRecursive)
     {
@@ -933,7 +933,7 @@ namespace pythonwrapper
   BIND(add_trigger)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     if (bRecursive)
     {
@@ -949,7 +949,7 @@ namespace pythonwrapper
   BIND(remove_trigger)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     if (bRecursive)
     {
@@ -965,7 +965,7 @@ namespace pythonwrapper
   BIND(fire_trigger)
   {
     OBJECT;
-    ARG_VALUE(orxSTRING, zName, 1);
+    ARG_VALUE(const orxSTRING, zName, 1);
     ARG_VALUE(bool, bRecursive, 2);
     if (bRecursive)
     {
@@ -1045,7 +1045,7 @@ namespace pythonwrapper
     }
     else
     {
-      ARG_VALUE(orxSTRING, zLifeTime, 1);
+      ARG_VALUE(const orxSTRING, zLifeTime, 1);
       orxObject_SetLiteralLifeTime(pstObject, zLifeTime);
     }
     RETURN_NONE;
@@ -1090,7 +1090,7 @@ namespace pythonwrapper
 
   BIND(push_section)
   {
-    ARG_VALUE(orxSTRING, zSection, 0);
+    ARG_VALUE(const orxSTRING, zSection, 0);
     orxConfig_PushSection(zSection);
     RETURN_NONE;
   }
@@ -1101,29 +1101,38 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-#define BIND_CONFIG_SET_GET(type, orxtype, name) \
-  BIND(set_##type)                               \
-  {                                              \
-    ARG_VALUE(orxSTRING, zKey, 0);               \
-    ARG_VALUE(orxtype, name, 1);                 \
-    orxConfig_Set##name(zKey, name);             \
-    RETURN_NONE;                                 \
-  }                                              \
-  BIND(get_##type)                               \
-  {                                              \
-    ARG_VALUE(orxSTRING, zKey, 0);               \
-    RETURN_VALUE(orxConfig_Get##name);           \
+#define BIND_CONFIG_SET_GET(type, orxtype, name)             \
+  BIND(set_##type)                                           \
+  {                                                          \
+    ARG_VALUE(const orxSTRING, zKey, 0);                     \
+    ARG_VALUE(orxtype, name, 1);                             \
+    orxConfig_Set##name(zKey, name);                         \
+    RETURN_NONE;                                             \
+  }                                                          \
+  BIND(get_##type)                                           \
+  {                                                          \
+    ARG_VALUE(const orxSTRING, zKey, 0);                     \
+    pkpy::PyVar pyIndex = args[1];                           \
+    if (pyIndex == vm->None)                                 \
+    {                                                        \
+      RETURN_VALUE(orxConfig_Get##name(zKey));               \
+    }                                                        \
+    else                                                     \
+    {                                                        \
+      ARG_VALUE(orxS32, s32Index, 1);                        \
+      RETURN_VALUE(orxConfig_GetList##name(zKey, s32Index)); \
+    }                                                        \
   }
 
   BIND_CONFIG_SET_GET(bool, orxBOOL, Bool)
   BIND_CONFIG_SET_GET(int, orxS64, S64)
   BIND_CONFIG_SET_GET(uint, orxU64, U64)
   BIND_CONFIG_SET_GET(float, orxFLOAT, Float)
-  BIND_CONFIG_SET_GET(string, orxSTRING, String)
+  BIND_CONFIG_SET_GET(string, const orxSTRING, String)
 
   BIND(set_vector)
   {
-    ARG_VALUE(orxSTRING, zKey, 0);
+    ARG_VALUE(const orxSTRING, zKey, 0);
     ARG_VALUE(orxVECTOR, vValue, 1);
     orxConfig_SetVector(zKey, &vValue);
     RETURN_NONE;
@@ -1131,7 +1140,7 @@ namespace pythonwrapper
 
   BIND(get_vector)
   {
-    ARG_VALUE(orxSTRING, zKey, 0);
+    ARG_VALUE(const orxSTRING, zKey, 0);
     orxVECTOR vValue = orxVECTOR_0;
     orxConfig_GetVector(zKey, &vValue);
     RETURN_VALUE(vValue);
@@ -1141,13 +1150,13 @@ namespace pythonwrapper
 
   BIND(has_section)
   {
-    ARG_VALUE(orxSTRING, zSection, 0);
+    ARG_VALUE(const orxSTRING, zSection, 0);
     RETURN_VALUE(orxConfig_HasSection(zSection));
   }
 
   BIND(has_value)
   {
-    ARG_VALUE(orxSTRING, zKey, 0);
+    ARG_VALUE(const orxSTRING, zKey, 0);
     ARG_VALUE(bool, bCheckSpelling, 1);
     if (bCheckSpelling)
     {
@@ -1162,14 +1171,14 @@ namespace pythonwrapper
 
   BIND(clear_section)
   {
-    ARG_VALUE(orxSTRING, zSection, 0);
+    ARG_VALUE(const orxSTRING, zSection, 0);
     orxConfig_ClearSection(zSection);
     RETURN_NONE;
   }
 
   BIND(clear_value)
   {
-    ARG_VALUE(orxSTRING, zKey, 0);
+    ARG_VALUE(const orxSTRING, zKey, 0);
     orxConfig_ClearValue(zKey);
     RETURN_NONE;
   }
@@ -1178,7 +1187,7 @@ namespace pythonwrapper
 
   BIND(evaluate)
   {
-    ARG_VALUE(orxSTRING, zCommand, 0);
+    ARG_VALUE(const orxSTRING, zCommand, 0);
     orxCOMMAND_VAR stResult;
     if (args[0] == vm->None)
     {
@@ -1210,7 +1219,7 @@ namespace pythonwrapper
   BIND(enable_set)
   {
     ARG_VALUE(const orxSTRING, zName, 0);
-    ARG_VALUE(orxBOOL, bEnable, 1);
+    ARG_VALUE(bool, bEnable, 1);
     orxInput_EnableSet(zName, bEnable);
     RETURN_NONE;
   }
