@@ -662,7 +662,6 @@ extern "C" void orxAndroid_PumpEvents()
 {
   /* Read all pending events. */
   int id;
-  int events;
   android_poll_source *source;
 
   /* Check if we are exiting. */
@@ -675,7 +674,7 @@ extern "C" void orxAndroid_PumpEvents()
    * If animating, we loop until all events are read, then continue
    * to draw the next frame of animation.
    */
-  while((id = ALooper_pollAll(orxAndroid_IsInteractible() ? 0 : -1, NULL, &events, (void **) &source)) >= 0)
+  while((id = ALooper_pollOnce(orxAndroid_IsInteractible() ? 0 : -1, NULL, NULL, (void **) &source)) >= 0)
   {
     /* Process this event. */
     if(source != NULL)
@@ -768,12 +767,11 @@ void android_main(android_app *_pstState)
 
     /* pumps final events */
     int id;
-    int events;
     android_poll_source *source;
 
     _pstState->onAppCmd = NULL;
 
-    while((id = ALooper_pollAll(-1, NULL, &events, (void **)&source)) >= 0)
+    while((id = ALooper_pollOnce(-1, NULL, NULL, (void **)&source)) >= 0)
     {
       /* Process this event. */
       if(source != NULL)
