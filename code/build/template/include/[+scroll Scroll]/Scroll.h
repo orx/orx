@@ -1,6 +1,6 @@
 /* Scroll
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -29,9 +29,11 @@
 //! Includes
 #include "ScrollBase.h"
 
-#ifndef __NO_SCROLLED__
-  #include "ScrollEd.h"
-#endif // __NO_SCROLLED__
+#ifdef __SCROLLED__
+  #if __has_include("ScrollEd.h")
+    #include "ScrollEd.h"
+  #endif // __has_include("ScrollEd.h")
+#endif // __SCROLLED__
 
 
 //! Scroll template class
@@ -103,8 +105,113 @@ G &Scroll<G>::GetInstance()
 
 #ifdef __SCROLL_IMPL__
 
-//! Inline include
-#include "Scroll.inl"
+//! Constants
+#ifdef __SCROLLED__
+static const orxSTRING szParamEditor = "-editor";
+#endif // __SCROLLED__
+
+//! Code
+template<class G>
+orxSTATUS Scroll<G>::SetMapName(const orxSTRING _zMapName)
+{
+  orxSTATUS eResult;
+
+  // Not in editor mode?
+  if(!IsEditorMode())
+  {
+    // Calls base method
+    eResult = ScrollBase::SetMapName(_zMapName);
+  }
+  else
+  {
+    // Updates result
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  // Done!
+  return eResult;
+}
+
+template<class G>
+const orxSTRING Scroll<G>::GetMapName() const
+{
+  // Calls base method
+  return ScrollBase::GetMapName();
+}
+
+template<class G>
+const orxSTRING Scroll<G>::GetMapShortName() const
+{
+  // Calls base method
+  return ScrollBase::GetMapShortName();
+}
+
+template<class G>
+orxSTATUS Scroll<G>::LoadMap()
+{
+  orxSTATUS eResult;
+
+  // Not in editor mode?
+  if(!IsEditorMode())
+  {
+    // Calls base method
+    eResult = ScrollBase::LoadMap();
+  }
+  else
+  {
+    // Updates result
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  // Done!
+  return eResult;
+}
+
+template<class G>
+const orxSTRING Scroll<G>::GetEncryptionKey() const
+{
+  return "This is Scroll's default encryption key!";
+}
+
+template<class G>
+orxSTATUS Scroll<G>::Bootstrap() const
+{
+  return orxSTATUS_SUCCESS;
+}
+
+template<class G>
+void Scroll<G>::Execute(int argc, char **argv)
+{
+#ifdef __SCROLLED__
+  orxBOOL bEditor = orxFALSE;
+
+  // For all params
+  for(int i = 0; !bEditor && (i < argc); i++)
+  {
+    // Is editor switch?
+    if(!orxString_ICompare(argv[i], szParamEditor))
+    {
+      // Updates editor status
+      bEditor = true;
+      break;
+    }
+  }
+
+  // Editor mode?
+  if(bEditor)
+  {
+    // Executes editor
+    ScrollEd::GetInstance().Execute(argc, argv);
+  }
+  else
+  {
+#endif // __SCROLLED__
+  // Executes game
+  ScrollBase::GetInstance().Execute(argc, argv);
+#ifdef __SCROLLED__
+  }
+#endif // __SCROLLED__
+}
 
 #endif // __SCROLL_IMPL__
 

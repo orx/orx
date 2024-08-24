@@ -59,5 +59,6 @@ var searchData=
   ['orxthread_5ffunction',['orxTHREAD_FUNCTION',['../group__orx_thread.html#ga0e34a49c30485f324a39cd0321cdf00e',1,'orxThread.h']]],
   ['orxthread_5fsemaphore',['orxTHREAD_SEMAPHORE',['../group__orx_thread.html#ga2cd157a0a33f4ac0308d3141e7730a9e',1,'orxThread.h']]],
   ['orxtimeline',['orxTIMELINE',['../group__orx_time_line.html#gac2c4221766f0911011ba09609fddac32',1,'orxTimeLine.h']]],
+  ['orxtrigger',['orxTRIGGER',['../group__orx_trigger.html#ga89aa931d53dafadd4935af41e72cbdc2',1,'orxTrigger.h']]],
   ['orxviewport',['orxVIEWPORT',['../group__orx_viewport.html#ga75b5cb6cbb6a2156cf382a50c65ee71a',1,'orxViewport.h']]]
 ];

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -76,6 +76,9 @@ static orxSTATUS orxFASTCALL orxJoystick_iOS_EventHandler(const orxEVENT *_pstEv
 {
   orxSYSTEM_EVENT_PAYLOAD  *pstPayload;
   orxSTATUS                 eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
 
   /* Accelerate event? */
   if(_pstEvent->eID == orxSYSTEM_EVENT_ACCELERATE)

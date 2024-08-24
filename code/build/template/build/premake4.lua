@@ -35,6 +35,7 @@ function initplatforms ()
     elseif os.is ("macosx") then
         return
         {
+            "universal64",
             "x64"
         }
     end
@@ -146,7 +147,15 @@ solution "[name]"
 -- Linux
 
     configuration {"linux"}
-        buildoptions {"-Wno-unused-function"}
+        buildoptions
+        {
+[+imgui +sndh
+            "-std=c++11",]
+[+sndh
+            "-Wno-write-strings",
+            "-Wno-multichar",]
+            "-Wno-unused-function"
+        }
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
         links
         {
@@ -166,6 +175,10 @@ solution "[name]"
         buildoptions
         {
             "-stdlib=libc++",
+[+imgui +sndh
+            "-std=c++11",]
+[+sndh
+            "-Wno-multichar",]
             "-gdwarf-2",
             "-Wno-unused-function",
             "-Wno-write-strings"
@@ -258,8 +271,6 @@ project "[name]"
         "../src/**.cpp",]
         "../src/**.c",
         "../include/**.h",
-[+scroll
-        "../include/**.inl",]
 [+bundle
         "../include/**.inc",]
         "../build/premake4.lua",
@@ -279,8 +290,6 @@ project "[name]"
 
     vpaths
     {
-[+scroll
-        ["inline"] = {"**.inl"},]
 [+bundle
         ["bundle"] = {"**.inc"},]
         ["build"] = {"**premake4.lua"},

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -50,6 +50,7 @@
 
 #define orxRESOURCE_KZ_DEFAULT_STORAGE                    "."
 #define orxRESOURCE_KZ_TYPE_TAG_FILE                      "file"
+#define orxRESOURCE_KZ_TYPE_TAG_MEMORY                    "mem"
 
 
 /** Resource asynchronous operation callback function
@@ -212,7 +213,7 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_GetTime(co
 
 /** Opens the resource at the given location
  * @param[in] _zLocation        Location of the resource to open
- * @param[in] _bEraseMode       If true, the file will be erased if existing or created otherwise, if false, no content will get destroyed when opening
+ * @param[in] _bEraseMode       If true, the resource will be erased if existing or created otherwise, if false, no content will get destroyed when opening
  * @return Handle to the open location, orxHANDLE_UNDEFINED otherwise
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode);
@@ -339,6 +340,14 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetCacheCo
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCachedLocation(const orxSTRING _zGroup, orxHANDLE _hIterator, const orxSTRING *_pzLocation, const orxSTRING *_pzStorage, const orxSTRING *_pzName);
 
+/** Sets an internal memory resource
+ * !IMPORTANT! The content of _pBuffer is *required* to remain valid until this resource has been successfully unset (by passing _s64Size=0 or _pBuffer=orxNULL), no internal copies will be made!
+ * @param[in] _zName            Name of the resource to set/unset
+ * @param[in] _s64Size          Size of the resource's data (0 to unset)
+ * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer);
 
 #endif /* _orxRESOURCE_H_ */
 

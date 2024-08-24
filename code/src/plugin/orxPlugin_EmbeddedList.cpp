@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -35,8 +35,19 @@
 
 #ifdef __orxEMBEDDED__
 
+/* Headless? */
+#if defined(__orxHEADLESS__)
+
+#include "../plugins/Display/Dummy/orxDisplay.c"
+#include "../plugins/Joystick/Dummy/orxJoystick.c"
+#include "../plugins/Keyboard/Dummy/orxKeyboard.c"
+#include "../plugins/Mouse/Dummy/orxMouse.c"
+#include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
+#include "../plugins/Render/Home/orxRender.c"
+#include "../plugins/Sound/Dummy/orxSoundSystem.c"
+
 /* iOS? */
-#if defined(__orxIOS__)
+#elif defined(__orxIOS__)
 
 #pragma GCC visibility push(hidden)
 

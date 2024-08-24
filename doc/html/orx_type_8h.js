@@ -13,6 +13,14 @@ var orx_type_8h =
     [ "orxSTRINGIFY", "group__orx_type.html#ga29d78aacc5af864dfee06981362b770e", null ],
     [ "orxTRUE", "group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a", null ],
     [ "orxHANDLE", "group__orx_type.html#ga10ad864319a9d9f12196e133707cae8a", null ],
+    [ "orxCOLORSPACE", "group__orx_type.html#ga994f10d91e120b5122aad209216cbfc5", [
+      [ "orxCOLORSPACE_COMPONENT", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5aa2e2d03c3baeb06360888719955a84a5", null ],
+      [ "orxCOLORSPACE_HSL", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5aae118c4eaab73f42fa87a26df8713825", null ],
+      [ "orxCOLORSPACE_HSV", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5ad83da711caab6a9ecf54254d39b53ea8", null ],
+      [ "orxCOLORSPACE_RGB", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5a41de1760f7089586895a30386d71cc05", null ],
+      [ "orxCOLORSPACE_NUMBER", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5a0cb438721b1b0cc4dadc59d28c7eea31", null ],
+      [ "orxCOLORSPACE_NONE", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5a1760777d116183858ed58bb966e4a26c", null ]
+    ] ],
     [ "orxSEEK_OFFSET_WHENCE", "group__orx_type.html#ga08815b27cb2e29018e06e3d847116915", [
       [ "orxSEEK_OFFSET_WHENCE_START", "group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a9124c1e63f03128103809b24937832ba", null ],
       [ "orxSEEK_OFFSET_WHENCE_CURRENT", "group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a1c0f897b0c87e29f069b2b3f42d32f29", null ],

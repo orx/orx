@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -36,12 +36,8 @@
 
 orxSTATUS orxFASTCALL orxSoundSystem_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Not available on this platform!");
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_SUCCESS;
 }
 
 void orxFASTCALL orxSoundSystem_Dummy_Exit()
@@ -86,7 +82,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateFromSample(orxHANDL
   return orxNULL;
 }
 
-orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateStream(orxHANDLE _hUserData, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate)
+orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_Dummy_CreateStream(orxHANDLE _hUserData, orxSOUNDSYSTEM_STREAM_TYPE _eType, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate)
 {
   /* Done! */
   return orxNULL;

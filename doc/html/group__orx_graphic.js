@@ -27,6 +27,7 @@ var group__orx_graphic =
     [ "orxGRAPHIC_KZ_CONFIG_REPEAT", "group__orx_graphic.html#gaca78cb05897fff45e3d01fd079537292", null ],
     [ "orxGRAPHIC_KZ_CONFIG_RGB", "group__orx_graphic.html#ga985b9d83a30813e64363ceaa6a0945e6", null ],
     [ "orxGRAPHIC_KZ_CONFIG_SMOOTHING", "group__orx_graphic.html#ga3b6b245b73859dd9fcd3babf0013818d", null ],
+    [ "orxGRAPHIC_KZ_CONFIG_STASIS", "group__orx_graphic.html#ga58e2ab34d5fc53ecd4f871a9ae7135ec", null ],
     [ "orxGRAPHIC_KZ_CONFIG_TEXT_NAME", "group__orx_graphic.html#ga2e68714f020cfea6b1a59932e1ee67e5", null ],
     [ "orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME", "group__orx_graphic.html#gad0b7848ab955c0b014102bb63a1a1e33", null ],
     [ "orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN", "group__orx_graphic.html#gaa535f304af68e558cb7d578038357ece", null ],

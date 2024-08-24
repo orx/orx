@@ -1,0 +1,364 @@
+//! Includes
+
+#ifndef _orxSNDH_H_
+#define _orxSNDH_H_
+
+#include "orx.h"
+
+
+//! Prototypes
+
+orxSTATUS orxFASTCALL orxSndh_Init();
+void orxFASTCALL      orxSndh_Exit();
+
+
+//! Implementation
+
+#ifdef orxSNDH_IMPL
+
+#include <new>
+
+#ifdef __orxMSVC__
+  #pragma warning(push)
+  #pragma warning(disable : 4244)
+#endif // __orxMSVC__
+
+#ifdef __orxWINDOWS__
+  #undef EXCEPTION_ILLEGAL_INSTRUCTION // Potential definition conflict from winsock2.h
+#endif // __orxWINDOWS__
+
+#define malloc(size)                      orxMemory_Allocate(size, orxMEMORY_TYPE_AUDIO)
+#define free(mem)                         orxMemory_Free(mem)
+#define strdup(string)                    orxString_Duplicate(string)
+#define _strdup(string)                   orxString_Duplicate(string)
+
+#include "AtariAudio/AtariMachine.cpp"
+#include "AtariAudio/Mk68901.cpp"
+#include "AtariAudio/SndhFile.cpp"
+#include "AtariAudio/SteDac.cpp"
+#include "AtariAudio/ym2149c.cpp"
+#include "AtariAudio/external/ice_24.c"
+#include "AtariAudio/external/Musashi/m68kcpu.c"
+#include "AtariAudio/external/Musashi/m68kops.c"
+
+#undef free
+#undef malloc
+#undef strdup
+#undef _strdup
+
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif // __orxMSVC__
+
+#define orxSNDH_KU32_SAMPLE_RATE          48000
+
+
+//! Variables / Structures
+
+typedef struct SndhData
+{
+  SndhFile              oSndhFile;
+  orxOBJECT            *pstObject;
+  orxU32                u32LoopCount;
+  orxBOOL               bFirst;
+
+} SndhData;
+
+typedef struct __orxSNDH_t
+{
+  orxBANK              *pstSndhBank;
+  orxTHREAD_SEMAPHORE  *pstSemaphore;
+
+} orxSNDH;
+
+static orxSNDH sstSndh;
+
+
+//! Code
+
+static orxSTATUS orxFASTCALL orxSndh_Delete(SndhData *_pstSndhData)
+{
+  if(sstSndh.pstSndhBank)
+  {
+    // Waits for semaphore
+    orxThread_WaitSemaphore(sstSndh.pstSemaphore);
+
+    // Deletes it
+    _pstSndhData->pstObject = orxNULL;
+    _pstSndhData->oSndhFile.~SndhFile();
+    orxBank_Free(sstSndh.pstSndhBank, _pstSndhData);
+
+    // Signals semaphore
+    orxThread_SignalSemaphore(sstSndh.pstSemaphore);
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxSndh_Decode(const orxEVENT *_pstEvent)
+{
+  SndhData *pstSndhData;
+
+  // Gets sndh data
+  pstSndhData = (SndhData *)_pstEvent->pContext;
+
+  // Matching object?
+  if(pstSndhData->pstObject && (pstSndhData->pstObject == orxOBJECT(_pstEvent->hSender)))
+  {
+    orxSOUND_EVENT_PAYLOAD *pstPayload;
+
+    // Gets payload
+    pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    // Valid?
+    if(orxObject_IsEnabled(pstSndhData->pstObject) && !orxObject_IsPaused(pstSndhData->pstObject))
+    {
+      orxU32 u32LoopCount;
+      orxS32 i;
+
+      // Waits for semaphore
+      orxThread_WaitSemaphore(sstSndh.pstSemaphore);
+
+      // Not first packet?
+      if(!pstSndhData->bFirst)
+      {
+        // Has restarted?
+        if(pstPayload->stStream.stPacket.fTime == orxFLOAT_0)
+        {
+          // Resets replay
+          pstSndhData->oSndhFile.InitSubSong(pstSndhData->oSndhFile.GetDefaultSubsong());
+          pstSndhData->u32LoopCount = 0;
+
+          // Updates status
+          pstSndhData->bFirst = orxTRUE;
+        }
+      }
+      else
+      {
+        // Updates status
+        pstSndhData->bFirst = orxFALSE;
+      }
+
+      // Fills it
+      u32LoopCount = (orxU32)pstSndhData->oSndhFile.AudioRender((int16_t *)pstPayload->stStream.stPacket.afSampleList, (int)pstPayload->stStream.stPacket.u32SampleNumber);
+
+      // Converts all samples
+      for(i = (orxS32)pstPayload->stStream.stPacket.u32SampleNumber - 1; i >= 0; i--)
+      {
+        pstPayload->stStream.stPacket.afSampleList[i] = orxS2F(((int16_t *)pstPayload->stStream.stPacket.afSampleList)[i]) / orx2F(32678.0f);
+      }
+
+      // Looped?
+      if(u32LoopCount != pstSndhData->u32LoopCount)
+      {
+        pstPayload->stStream.stPacket.bLast = orxTRUE;
+        pstSndhData->bFirst                 = orxTRUE;
+
+        // Updates loop count
+        pstSndhData->u32LoopCount = u32LoopCount;
+      }
+
+      // Signals semaphore
+      orxThread_SignalSemaphore(sstSndh.pstSemaphore);
+    }
+    else
+    {
+      // Updates packet
+      pstPayload->stStream.stPacket.bDiscard  = orxTRUE;
+      pstPayload->stStream.stPacket.bLast     = orxFALSE;
+    }
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxSndh_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  // Checks
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
+
+  // New object?
+  if(_pstEvent->eID == orxOBJECT_EVENT_PREPARE)
+  {
+    // Is a sndh?
+    if(orxConfig_HasValue("Sndh"))
+    {
+      const orxSTRING zSndh;
+      orxHANDLE       hResource;
+
+      // Has valid resource?
+      if((zSndh = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, orxConfig_GetListString("Sndh", 0)))
+      && ((hResource = orxResource_Open(zSndh, orxFALSE)) != orxHANDLE_UNDEFINED))
+      {
+        orxS64  s64Size;
+        void   *pBuffer;
+
+        // Gets its size
+        s64Size = orxResource_GetSize(hResource);
+        orxASSERT(s64Size);
+
+        // Loads its content
+        pBuffer = orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_AUDIO);
+        orxASSERT(pBuffer);
+        if(orxResource_Read(hResource, s64Size, pBuffer, orxNULL, orxNULL) == s64Size)
+        {
+          SndhData   *pstSndhData;
+          orxOBJECT  *pstObject;
+
+          // Gets object
+          pstObject = orxOBJECT(_pstEvent->hSender);
+
+          // Waits for semaphore
+          orxThread_WaitSemaphore(sstSndh.pstSemaphore);
+
+          // Creates decoder data
+          pstSndhData = (SndhData *)orxBank_Allocate(sstSndh.pstSndhBank);
+          orxASSERT(pstSndhData);
+          orxMemory_Zero(pstSndhData, sizeof(SndhData));
+          new(&(pstSndhData->oSndhFile)) SndhFile();
+
+          // Inits decode
+          if(pstSndhData->oSndhFile.Load(pBuffer, (int)s64Size, orxSNDH_KU32_SAMPLE_RATE))
+          {
+            orxCHAR acBuffer[256];
+
+            // Updates sndh data & object
+            pstSndhData->pstObject  = pstObject;
+            pstSndhData->bFirst     = orxTRUE;
+
+            // Inits subsong
+            int iSubsong;
+            if(orxConfig_GetListCount("Sndh") > 1)
+            {
+              iSubsong = orxCLAMP((int)orxConfig_GetListS32("Sndh", 1), 1, pstSndhData->oSndhFile.GetSubsongCount());
+            }
+            else
+            {
+              iSubsong = pstSndhData->oSndhFile.GetDefaultSubsong();
+            }
+            pstSndhData->oSndhFile.InitSubSong(iSubsong);
+
+            // Adds event handlers
+            orxEvent_AddHandlerWithContext(orxEVENT_TYPE_SOUND, orxSndh_Decode, pstSndhData);
+            orxEvent_SetHandlerIDFlags(orxSndh_Decode, orxEVENT_TYPE_SOUND, pstSndhData, orxEVENT_GET_FLAG(orxSOUND_EVENT_PACKET), orxEVENT_KU32_MASK_ID_ALL);
+            orxEvent_AddHandlerWithContext(orxEVENT_TYPE_OBJECT, orxSndh_EventHandler, pstSndhData);
+            orxEvent_SetHandlerIDFlags(orxSndh_EventHandler, orxEVENT_TYPE_OBJECT, pstSndhData, orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE), orxEVENT_KU32_MASK_ID_ALL);
+
+            // Creates music stream
+            orxString_NPrint(acBuffer, sizeof(acBuffer), "empty 1 %u", orxSNDH_KU32_SAMPLE_RATE);
+            orxConfig_SetString("SoundList", orxObject_GetName(pstObject));
+            orxConfig_SetString("Music", acBuffer);
+          }
+          else
+          {
+            // Frees sndh data
+            pstSndhData->oSndhFile.~SndhFile();
+            orxBank_Free(sstSndh.pstSndhBank, pstSndhData);
+          }
+          
+          // Signals semaphore
+          orxThread_SignalSemaphore(sstSndh.pstSemaphore);
+        }
+
+        // Frees buffer
+        orxMemory_Free(pBuffer);
+
+        // Closes resource
+        orxResource_Close(hResource);
+      }
+    }
+  }
+  else
+  {
+    SndhData *pstSndhData;
+
+    // Gets sndh data
+    pstSndhData = (SndhData *)_pstEvent->pContext;
+
+    // Valid deleted object?
+    if(pstSndhData->pstObject == orxOBJECT(_pstEvent->hSender))
+    {
+      // Stops music
+      orxObject_Stop(pstSndhData->pstObject);
+
+      // Removes event handlers
+      orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_SOUND, orxSndh_Decode, _pstEvent->pContext);
+      orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_OBJECT, orxSndh_EventHandler, _pstEvent->pContext);
+
+      // Deletes it
+      orxSndh_Delete(pstSndhData);
+    }
+  }
+
+  // Done!
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxSndh_Init()
+{
+  // Not initialized?
+  if(!sstSndh.pstSndhBank)
+  {
+    // Creates semaphore
+    sstSndh.pstSemaphore = orxThread_CreateSemaphore(1);
+
+    // Success?
+    if(sstSndh.pstSemaphore)
+    {
+      // Creates bank
+      sstSndh.pstSndhBank = orxBank_Create(16, sizeof(SndhData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+
+      // Success?
+      if(sstSndh.pstSndhBank)
+      {
+        // Registers sndh handler
+        orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxSndh_EventHandler);
+        orxEvent_SetHandlerIDFlags(orxSndh_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE), orxEVENT_KU32_MASK_ID_ALL);
+      }
+      else
+      {
+        // Deletes semaphore
+        orxThread_DeleteSemaphore(sstSndh.pstSemaphore);
+        sstSndh.pstSemaphore = orxNULL;
+      }
+    }
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+void orxFASTCALL orxSndh_Exit()
+{
+  // Was initialized?
+  if(sstSndh.pstSndhBank)
+  {
+    SndhData *pstSndhData;
+
+    // Unregisters sndh handler
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxSndh_EventHandler);
+
+    // Deletes bank
+    while((pstSndhData = (SndhData *)orxBank_GetNext(sstSndh.pstSndhBank, orxNULL)))
+    {
+      orxSndh_Delete(pstSndhData);
+    }
+    orxBank_Delete(sstSndh.pstSndhBank);
+    sstSndh.pstSndhBank = orxNULL;
+
+    // Deletes semaphore
+    orxThread_DeleteSemaphore(sstSndh.pstSemaphore);
+    sstSndh.pstSemaphore = orxNULL;
+  }
+
+  // Done!
+  return;
+}
+
+#endif // orxSNDH_IMPL
+
+#endif // _orxSNDH_H_

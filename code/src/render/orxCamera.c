@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1046,6 +1046,11 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
             }
           }
         }
+        else
+        {
+          /* Updates its sorting status */
+          orxCamera_EnableGroupIDSorting(pstResult, 0, ((orxConfig_HasValue(orxOBJECT_KZ_DEFAULT_GROUP) == orxFALSE) || (orxString_ICompare(orxConfig_GetString(orxOBJECT_KZ_DEFAULT_GROUP), orxCAMERA_KZ_RAW) != 0)) ? orxTRUE : orxFALSE);
+        }
 
         /* Gets frustum info */
         fNear   = orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_FRUSTUM_NEAR);
@@ -1102,10 +1107,20 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Has a position? */
-        if(orxConfig_GetVector(orxCAMERA_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
+        if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_POSITION) != orxFALSE)
         {
-          /* Updates camera position */
-          orxCamera_SetPosition(pstResult, &vPosition);
+          /* Is a vector? */
+          if(orxConfig_GetVector(orxCAMERA_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
+          {
+            /* Updates camera position */
+            orxCamera_SetPosition(pstResult, &vPosition);
+          }
+          /* Uses it as Z component */
+          else
+          {
+            /* Updates camera position */
+            orxCamera_SetPosition(pstResult, orxVector_Set(&vPosition, orxFLOAT_0, orxFLOAT_0, orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_POSITION)));
+          }
         }
 
         /* Updates object rotation */

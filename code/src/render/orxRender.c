@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -35,6 +35,7 @@
 #include "plugin/orxPluginCore.h"
 
 #include "core/orxCommand.h"
+#include "render/orxViewport.h"
 
 
 /***************************************************************************
@@ -45,8 +46,17 @@
  */
 void orxFASTCALL orxRender_CommandGetWorldPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxVIEWPORT *pstViewport = orxNULL;
+
+  /* Has viewport? */
+  if(_u32ArgNumber > 1)
+  {
+    /* Retrieves it */
+    pstViewport = orxViewport_Get(_astArgList[1].zValue);
+  }
+
   /* Gets world position */
-  orxRender_GetWorldPosition(&(_astArgList[0].vValue), orxNULL, &(_pstResult->vValue));
+  orxRender_GetWorldPosition(&(_astArgList[0].vValue), pstViewport, &(_pstResult->vValue));
 
   /* Done! */
   return;
@@ -56,8 +66,17 @@ void orxFASTCALL orxRender_CommandGetWorldPosition(orxU32 _u32ArgNumber, const o
  */
 void orxFASTCALL orxRender_CommandGetScreenPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxVIEWPORT *pstViewport = orxNULL;
+
+  /* Has viewport? */
+  if(_u32ArgNumber > 1)
+  {
+    /* Retrieves it */
+    pstViewport = orxViewport_Get(_astArgList[1].zValue);
+  }
+
   /* Gets screen position */
-  orxRender_GetScreenPosition(&(_astArgList[0].vValue), orxNULL, &(_pstResult->vValue));
+  orxRender_GetScreenPosition(&(_astArgList[0].vValue), pstViewport, &(_pstResult->vValue));
 
   /* Done! */
   return;
@@ -68,9 +87,9 @@ void orxFASTCALL orxRender_CommandGetScreenPosition(orxU32 _u32ArgNumber, const 
 static orxINLINE void orxRender_RegisterCommands()
 {
   /* Command: GetWorldPosition */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Render, GetWorldPosition, "WorldPos", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"ScreenPos", orxCOMMAND_VAR_TYPE_VECTOR});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Render, GetWorldPosition, "WorldPos", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"ScreenPos", orxCOMMAND_VAR_TYPE_VECTOR}, {"Viewport = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetScreenPosition */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Render, GetScreenPosition, "ScreenPos", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"WorldPos", orxCOMMAND_VAR_TYPE_VECTOR});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Render, GetScreenPosition, "ScreenPos", orxCOMMAND_VAR_TYPE_VECTOR, 1, 1, {"WorldPos", orxCOMMAND_VAR_TYPE_VECTOR}, {"Viewport = <void>", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the render commands
@@ -103,7 +122,6 @@ void orxFASTCALL orxRender_Setup()
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_VIEWPORT);
   orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_DISPLAY);
-  orxModule_AddDependency(orxMODULE_ID_RENDER, orxMODULE_ID_SHADERPOINTER);
 
   orxModule_AddOptionalDependency(orxMODULE_ID_RENDER, orxMODULE_ID_CONSOLE);
 

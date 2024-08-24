@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -191,6 +191,19 @@ typedef enum __orxSEEK_OFFSET_WHENCE_t
   orxSEEK_OFFSET_WHENCE_NONE = orxENUM_NONE
 
 } orxSEEK_OFFSET_WHENCE;
+
+typedef enum __orxCOLORSPACE_t
+{
+  orxCOLORSPACE_COMPONENT = 0,
+  orxCOLORSPACE_HSL,
+  orxCOLORSPACE_HSV,
+  orxCOLORSPACE_RGB,
+
+  orxCOLORSPACE_NUMBER,
+
+  orxCOLORSPACE_NONE = orxENUM_NONE
+
+} orxCOLORSPACE;
 
 
 /* *** Boolean constants *** */

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -315,7 +315,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointe
  */
 orxSTATUS orxFASTCALL orxShaderPointer_Start(const orxSHADERPOINTER *_pstShaderPointer)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
@@ -340,8 +340,12 @@ orxSTATUS orxFASTCALL orxShaderPointer_Start(const orxSHADERPOINTER *_pstShaderP
           pstOwner = orxStructure_GetOwner(_pstShaderPointer);
         }
 
-        /* Renders it */
-        eResult = orxShader_Start(_pstShaderPointer->astShaderList[i].pstShader, pstOwner);
+        /* Starts it */
+        if(orxShader_Start(_pstShaderPointer->astShaderList[i].pstShader, pstOwner) != orxSTATUS_FAILURE)
+        {
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
       }
     }
   }
@@ -361,7 +365,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_Start(const orxSHADERPOINTER *_pstShaderP
  */
 orxSTATUS orxFASTCALL orxShaderPointer_Stop(const orxSHADERPOINTER *_pstShaderPointer)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
@@ -378,8 +382,12 @@ orxSTATUS orxFASTCALL orxShaderPointer_Stop(const orxSHADERPOINTER *_pstShaderPo
       /* Valid? */
       if(_pstShaderPointer->astShaderList[i].pstShader != orxNULL)
       {
-        /* Renders it */
-        eResult = orxShader_Stop(_pstShaderPointer->astShaderList[i].pstShader);
+        /* Stops it */
+        if(orxShader_Stop(_pstShaderPointer->astShaderList[i].pstShader) != orxSTATUS_FAILURE)
+        {
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
       }
     }
   }

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -126,6 +126,9 @@ static orxSTATUS orxFASTCALL orxSoundPointer_EventHandler(const orxEVENT *_pstEv
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
+
   /* Depending on event ID */
   switch(_pstEvent->eID)
   {
@@ -241,7 +244,7 @@ static orxINLINE void orxSoundPointer_DeleteAll()
 }
 
 /** Updates the SoundPointer (Callback for generic structure update calling)
- * @param[in]   _pstStructure                 Generic Structure or the concerned Body
+ * @param[in]   _pstStructure                 Generic Structure or the concerned SoundPointer
  * @param[in]   _pstCaller                    Structure of the caller
  * @param[in]   _pstClockInfo                 Clock info used for time updates
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -565,7 +568,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_SetVolume(orxSOUNDPOINTER *_pstSoundPointe
 
 /** Sets pitch of all related sounds
  * @param[in] _pstSoundPointer      Concerned SoundPointer
- * @param[in] _fPitch         Desired pitch
+ * @param[in] _fPitch         Desired pitch (< 1.0 => lower pitch, = 1.0 => original pitch, > 1.0 => higher pitch). 0.0 is ignored.
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxSoundPointer_SetPitch(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fPitch)

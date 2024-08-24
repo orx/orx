@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,7 +34,14 @@
 
 #include "orxPluginAPI.h"
 
+#ifdef __orxMSVC__
+  #pragma warning(push)
+  #pragma warning(disable : 4819)
+#endif /* __orxMSVC__ */
 #include "GLFW/glfw3.h"
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif /* __orxMSVC__ */
 
 #ifndef __orxEMBEDDED__
   #ifdef __orxMSVC__

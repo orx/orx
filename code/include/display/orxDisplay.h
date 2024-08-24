@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -98,8 +98,7 @@ typedef struct __orxDISPLAY_TRANSFORM_t
 {
   orxFLOAT  fSrcX, fSrcY, fDstX, fDstY;
   orxFLOAT  fRepeatX, fRepeatY;
-  orxFLOAT  fScaleX;
-  orxFLOAT  fScaleY;
+  orxFLOAT  fScaleX, fScaleY;
   orxFLOAT  fRotation;
 
 } orxDISPLAY_TRANSFORM;

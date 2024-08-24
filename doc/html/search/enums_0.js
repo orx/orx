@@ -4,6 +4,7 @@ var searchData=
   ['orxclock_5fevent',['orxCLOCK_EVENT',['../group__orx_clock.html#ga5d61e2fc9dcad950bc23ff7a5525791d',1,'orxClock.h']]],
   ['orxclock_5fmodifier',['orxCLOCK_MODIFIER',['../group__orx_clock.html#ga4ec0bce152b97b492d6308eba27428a3',1,'orxClock.h']]],
   ['orxclock_5fpriority',['orxCLOCK_PRIORITY',['../group__orx_clock.html#gae63cc0f7b3f765aaccb21184bee35bb9',1,'orxClock.h']]],
+  ['orxcolorspace',['orxCOLORSPACE',['../group__orx_type.html#ga994f10d91e120b5122aad209216cbfc5',1,'orxType.h']]],
   ['orxcommand_5fvar_5ftype',['orxCOMMAND_VAR_TYPE',['../group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa',1,'orxCommand.h']]],
   ['orxconfig_5fevent',['orxCONFIG_EVENT',['../group__orx_config.html#gad70a5ee64ac35b8fdd9cdaf3e4a1d267',1,'orxConfig.h']]],
   ['orxdebug_5flevel',['orxDEBUG_LEVEL',['../group__orx_debug.html#gaeb4ae42be59a5cb6239cee52d62e28bb',1,'orxDebug.h']]],
@@ -15,6 +16,7 @@ var searchData=
   ['orxframe_5fspace',['orxFRAME_SPACE',['../group__orx_frame.html#ga2d4e31dbaf34ca37925cdb474f5c02a7',1,'orxFrame.h']]],
   ['orxfx_5fcurve',['orxFX_CURVE',['../group__orx_f_x.html#gae8f2811c408370bc68644656b1806654',1,'orxFX.h']]],
   ['orxfx_5fevent',['orxFX_EVENT',['../group__orx_f_x.html#ga441cf7ac90620ea72e8a285745011b24',1,'orxFX.h']]],
+  ['orxfx_5ftype',['orxFX_TYPE',['../group__orx_f_x.html#ga779d23887ec711c0553c9b7bd426d170',1,'orxFX.h']]],
   ['orxinput_5fevent',['orxINPUT_EVENT',['../group__orx_input.html#gaad778a6cb60c4e8b47e35f8a9216f108',1,'orxInput.h']]],
   ['orxinput_5fmode',['orxINPUT_MODE',['../group__orx_input.html#ga792a36e293073c41ca434b9d6afd30e5',1,'orxInput.h']]],
   ['orxinput_5ftype',['orxINPUT_TYPE',['../group__orx_input.html#ga13d8a7334d0c18530536658991628659',1,'orxInput.h']]],
@@ -46,6 +48,7 @@ var searchData=
   ['orxsound_5ffilter_5ftype',['orxSOUND_FILTER_TYPE',['../group__orx_sound_system.html#ga50b11cf49412fd3ac08513f418528c36',1,'orxSoundSystem.h']]],
   ['orxsound_5fstatus',['orxSOUND_STATUS',['../group__orx_sound.html#ga7e5aec8c210684f5fc8920bd2c13a474',1,'orxSound.h']]],
   ['orxsoundsystem_5fstatus',['orxSOUNDSYSTEM_STATUS',['../group__orx_sound_system.html#ga0692dc88e102ae57833baa65f98af81a',1,'orxSoundSystem.h']]],
+  ['orxsoundsystem_5fstream_5ftype',['orxSOUNDSYSTEM_STREAM_TYPE',['../group__orx_sound_system.html#ga93d8a3a6be4aaaa909f767a79a90fe92',1,'orxSoundSystem.h']]],
   ['orxspawner_5fevent',['orxSPAWNER_EVENT',['../group__orx_spawner.html#ga757d724e3601950fccbb85d625991400',1,'orxSpawner.h']]],
   ['orxstatus',['orxSTATUS',['../group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d',1,'orxType.h']]],
   ['orxstructure_5fid',['orxSTRUCTURE_ID',['../group__orx_structure.html#ga559293f09cd4d21743241cc32350b320',1,'orxStructure.h']]],
@@ -53,5 +56,6 @@ var searchData=
   ['orxsystem_5fevent',['orxSYSTEM_EVENT',['../group__orx_system.html#ga064bb4565c24e8324d940ff70964afee',1,'orxSystem.h']]],
   ['orxtexture_5fevent',['orxTEXTURE_EVENT',['../group__orx_texture.html#gaf4b625f49855b667995b2ed8b9887a75',1,'orxTexture.h']]],
   ['orxtimeline_5fevent',['orxTIMELINE_EVENT',['../group__orx_time_line.html#ga0ec2c070cd57becb98a40507688ef0ac',1,'orxTimeLine.h']]],
+  ['orxtrigger_5fevent',['orxTRIGGER_EVENT',['../group__orx_trigger.html#ga307b3e65b8ea9a43bb4689a6b118e785',1,'orxTrigger.h']]],
   ['orxviewport_5fevent',['orxVIEWPORT_EVENT',['../group__orx_viewport.html#gac676aca97feb0f2591e9b7b1fa793c7b',1,'orxViewport.h']]]
 ];

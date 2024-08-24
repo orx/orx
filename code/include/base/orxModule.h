@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -99,6 +99,7 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_TEXTURE,
   orxMODULE_ID_THREAD,
   orxMODULE_ID_TIMELINE,
+  orxMODULE_ID_TRIGGER,
   orxMODULE_ID_VIEWPORT,
 
   orxMODULE_ID_CORE_NUMBER,

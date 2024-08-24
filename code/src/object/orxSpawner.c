@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -251,10 +251,20 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
     }
 
     /* Has a position? */
-    if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_POSITION, &vValue) != orxNULL)
+    if(orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_POSITION) != orxFALSE)
     {
-      /* Updates object position */
-      orxSpawner_SetPosition(_pstSpawner, &vValue);
+      /* Is a vector? */
+      if(orxConfig_GetVector(orxSPAWNER_KZ_CONFIG_POSITION, &vValue) != orxNULL)
+      {
+        /* Updates spawner position */
+        orxSpawner_SetPosition(_pstSpawner, &vValue);
+      }
+      /* Uses it as Z component */
+      else
+      {
+        /* Updates spawner position */
+        orxSpawner_SetPosition(_pstSpawner, orxVector_Set(&vValue, orxFLOAT_0, orxFLOAT_0, orxConfig_GetFloat(orxSPAWNER_KZ_CONFIG_POSITION)));
+      }
     }
 
     /* Updates object rotation */
@@ -517,7 +527,7 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
       orxU32 u32AvailableNumber;
 
       /* Gets number of total available objects left */
-      u32AvailableNumber = _pstSpawner->u32TotalObjectLimit - _pstSpawner->u32TotalObjectCount;
+      u32AvailableNumber = _pstSpawner->u32TotalObjectLimit - orxMIN(_pstSpawner->u32TotalObjectLimit, _pstSpawner->u32TotalObjectCount);
 
       /* Gets total spawnable number */
       u32SpawnNumber = orxMIN(_u32Number, u32AvailableNumber);
@@ -998,33 +1008,29 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
 
     case orxEVENT_TYPE_RESOURCE:
     {
-      /* Add or update? */
-      if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+      orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
+      /* Gets payload */
+      pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Is config group? */
+      if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
       {
-        orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+        orxSPAWNER *pstSpawner;
 
-        /* Gets payload */
-        pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-        /* Is config group? */
-        if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
+        /* For all spawners */
+        for(pstSpawner = orxSPAWNER(orxStructure_GetFirst(orxSTRUCTURE_ID_SPAWNER));
+            pstSpawner != orxNULL;
+            pstSpawner = orxSPAWNER(orxStructure_GetNext(pstSpawner)))
         {
-          orxSPAWNER *pstSpawner;
-
-          /* For all spawners */
-          for(pstSpawner = orxSPAWNER(orxStructure_GetFirst(orxSTRUCTURE_ID_SPAWNER));
-              pstSpawner != orxNULL;
-              pstSpawner = orxSPAWNER(orxStructure_GetNext(pstSpawner)))
+          /* Has reference? */
+          if((pstSpawner->zReference != orxNULL) && (pstSpawner->zReference != orxSTRING_EMPTY))
           {
-            /* Has reference? */
-            if((pstSpawner->zReference != orxNULL) && (pstSpawner->zReference != orxSTRING_EMPTY))
+            /* Match origin? */
+            if(orxConfig_GetOriginID(pstSpawner->zReference) == pstPayload->stNameID)
             {
-              /* Match origin? */
-              if(orxConfig_GetOriginID(pstSpawner->zReference) == pstPayload->stNameID)
-              {
-                /* Re-processes its config data */
-                orxSpawner_ProcessConfigData(pstSpawner, orxFALSE);
-              }
+              /* Re-processes its config data */
+              orxSpawner_ProcessConfigData(pstSpawner, orxFALSE);
             }
           }
         }
@@ -1065,8 +1071,8 @@ static orxINLINE void orxSpawner_DeleteAll()
   return;
 }
 
-/** Updates the spawner (Callback for generic structure update calling)
- * @param[in]   _pstStructure                 Generic Structure or the concerned Body
+/** Updates the Spawner (Callback for generic structure update calling)
+ * @param[in]   _pstStructure                 Generic Structure or the concerned Spawner
  * @param[in]   _pstCaller                    Structure of the caller
  * @param[in]   _pstClockInfo                 Clock info used for time updates
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE

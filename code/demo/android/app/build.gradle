@@ -4,18 +4,23 @@ android {
     namespace 'org.orx.demo'
     compileSdk sdkVersion.toInteger()
 
+    // Ideally, we want to use the default NDK version for the used AGP version.
+    // However, we opt-in to NDK r27 since it comes with many important features/optimizations.
+    ndkVersion '27.0.12077973'
+
     buildFeatures.prefab true
 
     defaultConfig {
         applicationId 'org.orx.demo'
-        targetSdkVersion sdkVersion.toInteger()
         versionCode 1
         versionName '1.0'
 
-        minSdkVersion 19
+        minSdk 21
+        targetSdk sdkVersion.toInteger()
+
         vectorDrawables.useSupportLibrary = true
 
-        manifestPlaceholders = [ gameArguments: '' ]
+        manifestPlaceholders['gameArguments'] = ''
     }
     compileOptions {
         targetCompatibility JavaVersion.VERSION_11
@@ -42,7 +47,7 @@ android {
             externalNativeBuild.ndkBuild {
                 arguments 'NDK_DEBUG=0', '-j'
             }
-            manifestPlaceholders = [ gameArguments: 'orxDemo' ]
+            manifestPlaceholders['gameArguments'] = 'orxDemo'
         }
         debug {
             debuggable true
@@ -51,7 +56,7 @@ android {
                 arguments 'NDK_DEBUG=1', '-j'
                 cFlags '-D__orxDEBUG__'
             }
-            manifestPlaceholders = [ gameArguments: 'orxDemoDebug' ]
+            manifestPlaceholders['gameArguments'] = 'orxDemoDebug'
         }
         profile {
             debuggable true
@@ -60,15 +65,18 @@ android {
                 arguments 'NDK_DEBUG=0', '-j'
                 cFlags '-D__orxPROFILER__'
             }
-            manifestPlaceholders = [ gameArguments: 'orxDemoProfile' ]
+            manifestPlaceholders['gameArguments'] = 'orxDemoProfile'
         }
     }
     lint {
         abortOnError true
     }
+    androidResources {
+        noCompress = [ '.obr', '.ktx2' ]
+    }
 }
 dependencies {
-    releaseImplementation 'org.orx-project:orx:1.14'
-    debugImplementation 'org.orx-project:orxd:1.14'
-    profileImplementation 'org.orx-project:orxp:1.14'
+    releaseImplementation 'org.orx-project:orx:1.15'
+    debugImplementation 'org.orx-project:orxd:1.15'
+    profileImplementation 'org.orx-project:orxp:1.15'
 }

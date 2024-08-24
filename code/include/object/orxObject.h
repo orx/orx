@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -203,8 +203,8 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetOwner(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetOwner(const orxOBJECT *_pstObject);
 
-/** Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner)
- * see orxObject_SetOwner() and orxObject_SetParent() for a comparison of ownership and parenthood in Orx.
+/** Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner).
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of ownership and parenthood in Orx.
  *
  * This function is typically used to iterate over the owned children of an object. For example;
  * @code
@@ -225,6 +225,26 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedChild(const orxOBJ
  * @return      Next sibling object / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedSibling(const orxOBJECT *_pstObject);
+
+/** Finds the child inside an object's owner hierarchy that matches the given path.
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
+ * Paths are composed by object names separated by '.'.
+ * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
+ * For example:
+ * @code
+ * orxObject_FindOwnedChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
+ * orxObject_FindOwnedChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zPath          Path defining which object to find in the hierarchy (cf. notes above)
+ * @return      Object matching path / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_FindOwnedChild(const orxOBJECT *_pstObject, const orxSTRING _zPath);
 /** @} */
 
 
@@ -523,6 +543,26 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetNextChild(const orxOBJECT *_pstObject, void *_pChild, orxSTRUCTURE_ID _eStructureID);
 
+/** Finds the child inside an object's frame hierarchy that matches the given path.
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
+ * Paths are composed by object names separated by '.'.
+ * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
+ * For example:
+ * @code
+ * orxObject_FindChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
+ * orxObject_FindChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
+ * orxObject_FindChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zPath          Path defining which object to find in the hierarchy (cf. notes above)
+ * @return      Object matching path / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_FindChild(const orxOBJECT *_pstObject, const orxSTRING _zPath);
+
 
 /** Attaches an object to a parent while maintaining the object's world position.
  * @param[in]   _pstObject      Concerned object
@@ -804,7 +844,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTextString(orxOBJECT *_
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *_pstObject);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTextString(const orxOBJECT *_pstObject);
 /** @} */
 
 
@@ -894,6 +934,26 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetFXFrequencyRecursive(or
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetFXFrequency(const orxOBJECT *_pstObject);
 
+/** Sets an object's FX time.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetFXTime(orxOBJECT *_pstObject, orxFLOAT _fTime);
+
+/** Sets the FX time for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetFXTimeRecursive(orxOBJECT *_pstObject, orxFLOAT _fTime);
+
+/** Gets an object's FX time.
+ * @param[in]   _pstObject      Concerned object
+ * @return FX time / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetFXTime(const orxOBJECT *_pstObject);
+
 /** Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined).
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstModel       Model object on which to synchronize FXs
@@ -919,6 +979,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddSound(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveSound(orxOBJECT *_pstObject, const orxSTRING _zSoundConfigID);
 
+/** Removes all sounds.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllSounds(orxOBJECT *_pstObject);
+
 /** Gets last added sound (Do *NOT* destroy it directly before removing it!!!).
  * @param[in]   _pstObject      Concerned object
  * @return      orxSOUND / orxNULL
@@ -934,7 +1000,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetVolume(orxOBJECT *_pstO
 
 /** Sets pitch for all sounds of an object.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _fPitch         Desired pitch (0.0 - 1.0)
+ * @param[in]   _fPitch         Desired pitch (< 1.0 => lower pitch, = 1.0 => original pitch, > 1.0 => higher pitch). 0.0 is ignored.
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch);
@@ -1062,6 +1128,55 @@ extern orxDLLAPI void orxFASTCALL           orxObject_EnableTimeLine(orxOBJECT *
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTimeLineEnabled(const orxOBJECT *_pstObject);
+/** @} */
+
+
+/** @name Trigger
+ * @{ */
+/** Adds a trigger to an object using its config ID.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddTrigger(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Adds a trigger to an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Removes a trigger using its config ID
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveTrigger(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Removes a trigger from an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to remove
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_RemoveTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Fires an object's trigger.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zEvent           Event to fire
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
+ * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+
+/** Fires a trigger on an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zEvent           Event to fire
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
+ * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
 /** @} */
 
 
@@ -1194,6 +1309,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRGB(orxOBJECT *_pstObje
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetRGBRecursive(orxOBJECT *_pstObject, const orxVECTOR *_pvRGB);
 
+/** Gets object RGB values.
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvRGB          Object's RGB values
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetRGB(const orxOBJECT *_pstObject, orxVECTOR *_pvRGB);
+
 /** Sets object alpha.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fAlpha         Alpha value to set
@@ -1206,6 +1328,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAlpha(orxOBJECT *_pstOb
  * @param[in]   _fAlpha         Alpha value to set
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetAlphaRecursive(orxOBJECT *_pstObject, orxFLOAT _fAlpha);
+
+/** Gets object alpha.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxFLOAT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAlpha(const orxOBJECT *_pstObject);
 
 
 /** Sets object repeat (wrap) values.
@@ -1255,32 +1383,44 @@ extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const 
 
 /** @name Life time / Active time
  * @{ */
-/** Sets object literal lifetime.
+/** Sets object's literal lifetime.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zLifeTime      Lifetime to set, can be composed of multiple tags, separated by space: anim, child, fx, sound, spawner and track
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLiteralLifeTime(orxOBJECT *_pstObject, const orxSTRING _zLifeTime);
 
-/** Sets object lifetime.
+/** Sets object's lifetime.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fLifeTime      Lifetime to set, negative value to disable it
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLifeTime);
 
-/** Gets object lifetime.
+/** Gets object's lifetime.
  * @param[in]   _pstObject      Concerned object
  * @return      Lifetime / negative value if none
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(const orxOBJECT *_pstObject);
 
-/** Gets object active time, i.e. the amount of time that the object has been alive taking into account
+/** Gets object's active time, i.e. the amount of time that the object has been alive taking into account.
  * the object's clock multiplier and object's periods of pause.
  * @param[in]   _pstObject      Concerned object
  * @return      Active time
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetActiveTime(const orxOBJECT *_pstObject);
+
+/** Resets an object's active time.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ResetActiveTime(orxOBJECT *_pstObject);
+
+/** Resets an object's and its owned children's active time.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_ResetActiveTimeRecursive(orxOBJECT *_pstObject);
 /** @} */
 
 /** @name Group

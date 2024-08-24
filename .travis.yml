@@ -79,10 +79,10 @@ jobs:
     #   name: OSX / XCode 14
 
     - language: android
-      jdk: openjdk11
+      jdk: openjdk17
       android:
         components:
-          - build-tools-29.0.3
+          - build-tools-34.0.0
       before_install:
         - sudo mkdir -p /usr/local/android-sdk/licenses/
         - sudo touch /usr/local/android-sdk/licenses/android-sdk-license
@@ -93,7 +93,7 @@ jobs:
         - export ORX=$TRAVIS_BUILD_DIR/code
       script:
         - ./code/build/travis/android.sh
-      name: Android / OpenJDK 11
+      name: Android / OpenJDK 17
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then

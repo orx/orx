@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -223,6 +223,7 @@ void orxFASTCALL orxBank_Setup()
   orxModule_AddDependency(orxMODULE_ID_BANK, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_BANK, orxMODULE_ID_PROFILER);
 
+  /* Done! */
   return;
 }
 

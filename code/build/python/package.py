@@ -198,7 +198,7 @@ tutorialfolderinfolist = [
 iosfolderinfolist = docfolderinfolist + [
     {'src': 'build/ios/xcode/orx-ios.xcodeproj',                        'dst': None},
     {'src': 'demo/iOS',                                                 'dst': None},
-    {'src': '../extern/libwebp/include',                                'dst': None},
+    {'src': '../extern/libwebp/src',                                    'dst': None},
     {'src': '../extern/libwebp/lib/ios',                                'dst': None},
     {'src': '../extern/LiquidFun-1.1.0/src/liquidfun/Box2D/build/Xcode/Box2D-ios.xcodeproj','dst': None},
     {'src': '../extern/LiquidFun-1.1.0/include',                        'dst': None},

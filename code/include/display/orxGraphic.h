@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -96,6 +96,7 @@
 #define orxGRAPHIC_KZ_CONFIG_REPEAT           "Repeat"
 #define orxGRAPHIC_KZ_CONFIG_SMOOTHING        "Smoothing"
 #define orxGRAPHIC_KZ_CONFIG_BLEND_MODE       "BlendMode"
+#define orxGRAPHIC_KZ_CONFIG_STASIS           "Stasis"
 #define orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE    "KeepInCache"
 
 

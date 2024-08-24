@@ -119,16 +119,20 @@ $(document).ready(function(){initNavTree('group__orx_f_x.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_x___c_u_r_v_e___p_a_r_a_m.html">orxFX_CURVE_PARAM</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_f_x___e_v_e_n_t___p_a_y_l_o_a_d.html">orxFX_EVENT_PAYLOAD</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga32294488997cf908fe614ca3bd3af5f4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga32294488997cf908fe614ca3bd3af5f4">orxFX_SLOT_KU32_FLAG_ABSOLUTE</a>&#160;&#160;&#160;0x00000100</td></tr>
+<tr class="memitem:ga32294488997cf908fe614ca3bd3af5f4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga32294488997cf908fe614ca3bd3af5f4">orxFX_SLOT_KU32_FLAG_ABSOLUTE</a>&#160;&#160;&#160;0x00010000</td></tr>
 <tr class="separator:ga32294488997cf908fe614ca3bd3af5f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8bc4d5d117cdbfc4d9f50f7bca8f0ce7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga8bc4d5d117cdbfc4d9f50f7bca8f0ce7">orxFX_SLOT_KU32_FLAG_USE_ROTATION</a>&#160;&#160;&#160;0x00000200</td></tr>
+<tr class="memitem:ga03f68cf2134140c6020e558fec6a836a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga03f68cf2134140c6020e558fec6a836a">orxFX_SLOT_KU32_FLAG_STAGGER</a>&#160;&#160;&#160;0x00020000</td></tr>
+<tr class="separator:ga03f68cf2134140c6020e558fec6a836a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8bc4d5d117cdbfc4d9f50f7bca8f0ce7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga8bc4d5d117cdbfc4d9f50f7bca8f0ce7">orxFX_SLOT_KU32_FLAG_USE_ROTATION</a>&#160;&#160;&#160;0x00040000</td></tr>
 <tr class="separator:ga8bc4d5d117cdbfc4d9f50f7bca8f0ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6b4ea171f798ef2b5342d4f32dbeb8ac"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga6b4ea171f798ef2b5342d4f32dbeb8ac">orxFX_SLOT_KU32_FLAG_USE_SCALE</a>&#160;&#160;&#160;0x00000400</td></tr>
+<tr class="memitem:ga6b4ea171f798ef2b5342d4f32dbeb8ac"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga6b4ea171f798ef2b5342d4f32dbeb8ac">orxFX_SLOT_KU32_FLAG_USE_SCALE</a>&#160;&#160;&#160;0x00080000</td></tr>
 <tr class="separator:ga6b4ea171f798ef2b5342d4f32dbeb8ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -139,13 +143,53 @@ Typedefs</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:gae8f2811c408370bc68644656b1806654"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> { <br />
-&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a5ab587297d5674d8549e96009571716c">orxFX_CURVE_LINEAR</a> = 0, 
+&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a5ecf55a98f7d6195596c8d050378271b">orxFX_CURVE_SINE</a> = 0, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654af4dc5c20505c0d3323a8b4f46b0421b1">orxFX_CURVE_SQUARE</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a0c2264dd32d4ee1fdea56c13c2a8c780">orxFX_CURVE_TRIANGLE</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a7f52c2088bd1d7295e6802546cecb075">orxFX_CURVE_SYMMETRIC_NUMBER</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654adaccba6dadf770d93c16e9f531339e4d">orxFX_CURVE_BEZIER</a> = orxFX_CURVE_SYMMETRIC_NUMBER, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a5ab587297d5674d8549e96009571716c">orxFX_CURVE_LINEAR</a>, 
 <a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654ada374142bbfeee2c5e5ae84df708ae4e">orxFX_CURVE_SMOOTH</a>, 
 <a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a2601e7aaf0cdf28963a1c42c55d82a9e">orxFX_CURVE_SMOOTHER</a>, 
-<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a0c2264dd32d4ee1fdea56c13c2a8c780">orxFX_CURVE_TRIANGLE</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a5ecf55a98f7d6195596c8d050378271b">orxFX_CURVE_SINE</a>, 
-<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654af4dc5c20505c0d3323a8b4f46b0421b1">orxFX_CURVE_SQUARE</a>, 
+&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654ad6a285a3b99a359095de80954f444f3d">orxFX_CURVE_EASE_IN_SINE</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a82f4346b2d98b248166ee496732764cd">orxFX_CURVE_EASE_OUT_SINE</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654ad476fcac7379834af3340c9187bff48f">orxFX_CURVE_EASE_IN_OUT_SINE</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a830384cb8fb3e3b5fea2a7d298435010">orxFX_CURVE_EASE_IN_QUAD</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a60dab199214feb512fa3fa2d9a1c3a64">orxFX_CURVE_EASE_OUT_QUAD</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a9d2b4bdb1774dfa67722a88b686c07c1">orxFX_CURVE_EASE_IN_OUT_QUAD</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a26169a60adf0873f5f9768c541b1d587">orxFX_CURVE_EASE_IN_CUBIC</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a87bfa4ce9c677361a677026f7bddd9fd">orxFX_CURVE_EASE_OUT_CUBIC</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a48ac20f76d816bae02ba48cb77b41ebf">orxFX_CURVE_EASE_IN_OUT_CUBIC</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a834e17032176bd7f33a68425e822b375">orxFX_CURVE_EASE_IN_QUART</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654afdc1e227fabc43847b2641e932d0f550">orxFX_CURVE_EASE_OUT_QUART</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654acd7065cd87519b14c8c3c608fafe819c">orxFX_CURVE_EASE_IN_OUT_QUART</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a157e23cf77b5cf1b77db48e9a0b6bbd6">orxFX_CURVE_EASE_IN_QUINT</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a8645a0d4a154b334706cba752d43bbac">orxFX_CURVE_EASE_OUT_QUINT</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654acc3dd37360c99bde083e8301401cddc0">orxFX_CURVE_EASE_IN_OUT_QUINT</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654ac1c077af091b6a1947b9b010c7a9b4a1">orxFX_CURVE_EASE_IN_EXPO</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a2d9413ee26ebe184c34ee14acefa1abf">orxFX_CURVE_EASE_OUT_EXPO</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654ae57cbd15a630b4a85946273d00619b0d">orxFX_CURVE_EASE_IN_OUT_EXPO</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a9fd5d84bef6ee8179ee9bf7b9759e029">orxFX_CURVE_EASE_IN_CIRC</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654adbe7cfa99f45311ffe9cdece5e1f0007">orxFX_CURVE_EASE_OUT_CIRC</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a879e0f9e2632c08090fc9aa6736e9846">orxFX_CURVE_EASE_IN_OUT_CIRC</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654af81cd28eba8eefc738bba9a26a1dde5b">orxFX_CURVE_EASE_IN_BACK</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a04197036f0bcd3b0514bfdb496fabb01">orxFX_CURVE_EASE_OUT_BACK</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a8818abea4dddee4f5b06ce32585db683">orxFX_CURVE_EASE_IN_OUT_BACK</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654ac3bbf4466953621129bc5c85866c00e1">orxFX_CURVE_EASE_IN_ELASTIC</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a730e1b23df0edc387a8aeb03d0d1823a">orxFX_CURVE_EASE_OUT_ELASTIC</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a013ea0031d84c31d6d2ba5a84f95b409">orxFX_CURVE_EASE_IN_OUT_ELASTIC</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a38216445e52d8e4bdd13b217fabd233b">orxFX_CURVE_EASE_IN_BOUNCE</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a489e67e6258fe7854c202dd4a908666a">orxFX_CURVE_EASE_OUT_BOUNCE</a>, 
+<a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654aff5a40f8ffe4e85abd760dc78e142728">orxFX_CURVE_EASE_IN_OUT_BOUNCE</a>, 
 <a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a58d5b18aeca1876edaf13ecb9d4cb3ae">orxFX_CURVE_NUMBER</a>, 
 <a class="el" href="group__orx_f_x.html#ggae8f2811c408370bc68644656b1806654a6dd4ca4b1233e65fa7a41920d6da9627">orxFX_CURVE_NONE</a> = orxENUM_NONE
 <br />
@@ -163,33 +207,42 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:ga441cf7ac90620ea72e8a285745011b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga779d23887ec711c0553c9b7bd426d170"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga779d23887ec711c0553c9b7bd426d170">orxFX_TYPE</a> { <br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170aee546ed0b25f3a2e9524bc13a9bcb6ab">orxFX_TYPE_ALPHA</a> = 0, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a288065fe85ee94c5fb2ce940504df221">orxFX_TYPE_RGB</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a2c81c2d413cfb2dba0acbeccf7f9ed26">orxFX_TYPE_HSL</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a8079ec5697f3282d87cfb8f078d4a487">orxFX_TYPE_HSV</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a75bac104a002145bad03487a081ba461">orxFX_TYPE_POSITION</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a124f95faa894a52e21daffbd1f2d5d08">orxFX_TYPE_ROTATION</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a25da4d71702d7d8541c75dbf1d73947b">orxFX_TYPE_SCALE</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a12819ca06a34b7235fda4eddcc41dae3">orxFX_TYPE_SPEED</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a64f6e41df6609fbf4ff6a1521548f9d7">orxFX_TYPE_VOLUME</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a2d16072ccf6c5b5e687a77d05569d3ff">orxFX_TYPE_PITCH</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a6019759c6283d123e3a73a12b35a2fc3">orxFX_TYPE_SIZE</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170ad54961243a051f947eaaf4d270a1461f">orxFX_TYPE_ORIGIN</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a34e1263dc50dab51e2553ab9245cad2a">orxFX_TYPE_FLOAT_ADD</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170ad8519dbe059c9ab00ac246ca99daa05c">orxFX_TYPE_FLOAT_MULTIPLY</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a1535b1269f88c89edbc25e2509ceb4f9">orxFX_TYPE_VECTOR_ADD</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170aa76933f7064099d3869fbeca235df405">orxFX_TYPE_VECTOR_MULTIPLY</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170aad0f7f3007073f345977ccbb3cf02e1e">orxFX_TYPE_NUMBER</a>, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a8cc98fa41c04da6991f5e47fa5ed22bf">orxFX_TYPE_MAX_NUMBER</a> = 16, 
+<a class="el" href="group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a01d6419633d8e7e92c037177205b11f2">orxFX_TYPE_NONE</a> = orxENUM_NONE
+<br />
+ }</td></tr>
+<tr class="separator:ga779d23887ec711c0553c9b7bd426d170"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga16b22b94114a1e51932f434af8273380"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga16b22b94114a1e51932f434af8273380">orxFX_AddAlpha</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartAlpha, orxFLOAT _fEndAlpha, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
-<tr class="separator:ga16b22b94114a1e51932f434af8273380"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga417a42f99bf6a1469aae714972ad929a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga417a42f99bf6a1469aae714972ad929a">orxFX_AddHSL</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartColor, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndColor, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
-<tr class="separator:ga417a42f99bf6a1469aae714972ad929a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5bccca6e51a39dc4b97bdcd6220d6eb9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga5bccca6e51a39dc4b97bdcd6220d6eb9">orxFX_AddHSV</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartColor, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndColor, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
-<tr class="separator:ga5bccca6e51a39dc4b97bdcd6220d6eb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga390794340d1293ec30270a77dd804985"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga390794340d1293ec30270a77dd804985">orxFX_AddPitch</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartPitch, orxFLOAT _fEndPitch, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
-<tr class="separator:ga390794340d1293ec30270a77dd804985"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga67b1465f3df7d42cf36786bc135f3615"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga67b1465f3df7d42cf36786bc135f3615">orxFX_AddPosition</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartTranslation, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndTranslation, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
-<tr class="separator:ga67b1465f3df7d42cf36786bc135f3615"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga28a53271d81317a8bb2253a8dee871ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga28a53271d81317a8bb2253a8dee871ea">orxFX_AddRGB</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartColor, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndColor, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
-<tr class="separator:ga28a53271d81317a8bb2253a8dee871ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad863d8cafd82984aa02a2193eb6409c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gad863d8cafd82984aa02a2193eb6409c1">orxFX_AddRotation</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartRotation, orxFLOAT _fEndRotation, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
-<tr class="separator:gad863d8cafd82984aa02a2193eb6409c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab78fd8e3d8daddf6989627e319130fa2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gab78fd8e3d8daddf6989627e319130fa2">orxFX_AddScale</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartScale, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndScale, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
-<tr class="separator:gab78fd8e3d8daddf6989627e319130fa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae48371bb26830ec74a114325bd5833c4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gae48371bb26830ec74a114325bd5833c4">orxFX_AddSlot</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, <a class="el" href="group__orx_f_x.html#ga779d23887ec711c0553c9b7bd426d170">orxFX_TYPE</a> _eType, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, const <a class="el" href="structorx_f_x___c_u_r_v_e___p_a_r_a_m.html">orxFX_CURVE_PARAM</a> *_pstCurveParam, orxU32 _u32Flags)</td></tr>
+<tr class="separator:gae48371bb26830ec74a114325bd5833c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga85801f8711012806c8833f73ba22dc15"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga85801f8711012806c8833f73ba22dc15">orxFX_AddSlotFromConfig</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, const orxSTRING _zSlotID)</td></tr>
 <tr class="separator:ga85801f8711012806c8833f73ba22dc15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac0e2e42237710d2415674ad3fdb694ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gac0e2e42237710d2415674ad3fdb694ac">orxFX_AddSpeed</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvStartSpeed, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvEndSpeed, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
-<tr class="separator:gac0e2e42237710d2415674ad3fdb694ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga36a72c7b6f823bc478005138faafa0fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga36a72c7b6f823bc478005138faafa0fc">orxFX_AddVolume</a> (<a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fStartTime, orxFLOAT _fEndTime, orxFLOAT _fCyclePeriod, orxFLOAT _fCyclePhase, orxFLOAT _fAmplification, orxFLOAT _fAcceleration, orxFLOAT _fStartVolume, orxFLOAT _fEndVolume, <a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a> _eCurve, orxFLOAT _fPow, orxU32 _u32Flags)</td></tr>
-<tr class="separator:ga36a72c7b6f823bc478005138faafa0fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0ca775d35b31f3aaf213b97bb5da3a54"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga0ca775d35b31f3aaf213b97bb5da3a54">orxFX_Apply</a> (const <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT _fStartTime, orxFLOAT _fEndTime)</td></tr>
-<tr class="separator:ga0ca775d35b31f3aaf213b97bb5da3a54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga14ec9dffd3dc1659717c34b00ad7236c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga14ec9dffd3dc1659717c34b00ad7236c">orxFX_Apply</a> (const <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxFLOAT _fPreviousTime, orxFLOAT _fTime)</td></tr>
+<tr class="separator:ga14ec9dffd3dc1659717c34b00ad7236c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga186536083b1a7c2d83d088bddb33e118"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga186536083b1a7c2d83d088bddb33e118">orxFX_ClearCache</a> ()</td></tr>
 <tr class="separator:ga186536083b1a7c2d83d088bddb33e118"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaee18582f78a97610b4e29e38ca13679d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gaee18582f78a97610b4e29e38ca13679d">orxFX_Create</a> ()</td></tr>
@@ -204,10 +257,14 @@ Functions</h2></td></tr>
 <tr class="separator:ga6ca67fd00535dd66486ab940fed45462"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab8c45b4c3ebd69db45c3edf7fd12e6f9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gab8c45b4c3ebd69db45c3edf7fd12e6f9">orxFX_GetDuration</a> (const <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX)</td></tr>
 <tr class="separator:gab8c45b4c3ebd69db45c3edf7fd12e6f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga90dacdb01ebde55d284d5058f1aa703f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga90dacdb01ebde55d284d5058f1aa703f">orxFX_GetFloat</a> (const <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime)</td></tr>
+<tr class="separator:ga90dacdb01ebde55d284d5058f1aa703f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2023118f60de4fab06bb2f491478b1fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga2023118f60de4fab06bb2f491478b1fc">orxFX_GetName</a> (const <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX)</td></tr>
 <tr class="separator:ga2023118f60de4fab06bb2f491478b1fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad9c4a336a77f668b9d2197972d1d1e33"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#gad9c4a336a77f668b9d2197972d1d1e33">orxFX_GetStagger</a> (const <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT *_pfOffset)</td></tr>
 <tr class="separator:gad9c4a336a77f668b9d2197972d1d1e33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4a65999ad7da7d6d452236d3fd50894b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga4a65999ad7da7d6d452236d3fd50894b">orxFX_GetVector</a> (const <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX, orxFLOAT _fPreviousTime, orxFLOAT _fTime, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvVector)</td></tr>
+<tr class="separator:ga4a65999ad7da7d6d452236d3fd50894b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0c85c0ff962156d958d021b90e5898cc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga0c85c0ff962156d958d021b90e5898cc">orxFX_Init</a> ()</td></tr>
 <tr class="separator:ga0c85c0ff962156d958d021b90e5898cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga590442b61ec61a35ccffedc561fa2b55"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_f_x.html#ga590442b61ec61a35ccffedc561fa2b55">orxFX_IsEnabled</a> (const <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *_pstFX)</td></tr>
@@ -229,7 +286,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxFX_SLOT_KU32_FLAG_ABSOLUTE&#160;&#160;&#160;0x00000100</td>
+          <td class="memname">#define orxFX_SLOT_KU32_FLAG_ABSOLUTE&#160;&#160;&#160;0x00010000</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -239,18 +296,33 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga03f68cf2134140c6020e558fec6a836a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxFX_SLOT_KU32_FLAG_STAGGER&#160;&#160;&#160;0x00020000</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Stagger flag </p>
+
+<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00055">55</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ga8bc4d5d117cdbfc4d9f50f7bca8f0ce7"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxFX_SLOT_KU32_FLAG_USE_ROTATION&#160;&#160;&#160;0x00000200</td>
+          <td class="memname">#define orxFX_SLOT_KU32_FLAG_USE_ROTATION&#160;&#160;&#160;0x00040000</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Use rotation flag </p>
 
-<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00055">55</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00056">56</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
 
 </div>
 </div>
@@ -259,13 +331,13 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxFX_SLOT_KU32_FLAG_USE_SCALE&#160;&#160;&#160;0x00000400</td>
+          <td class="memname">#define orxFX_SLOT_KU32_FLAG_USE_SCALE&#160;&#160;&#160;0x00080000</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Use scale flag </p>
 
-<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00056">56</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00057">57</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
 
 </div>
 </div>
@@ -281,7 +353,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Internal FX structure </p>
 
-<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00079">79</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00181">181</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
 
 </div>
 </div>
@@ -297,17 +369,81 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>FX curve enum </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a5ab587297d5674d8549e96009571716c"></a>orxFX_CURVE_LINEAR&#160;</td><td class="fielddoc">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a5ecf55a98f7d6195596c8d050378271b"></a>orxFX_CURVE_SINE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654af4dc5c20505c0d3323a8b4f46b0421b1"></a>orxFX_CURVE_SQUARE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a0c2264dd32d4ee1fdea56c13c2a8c780"></a>orxFX_CURVE_TRIANGLE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a7f52c2088bd1d7295e6802546cecb075"></a>orxFX_CURVE_SYMMETRIC_NUMBER&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654adaccba6dadf770d93c16e9f531339e4d"></a>orxFX_CURVE_BEZIER&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a5ab587297d5674d8549e96009571716c"></a>orxFX_CURVE_LINEAR&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654ada374142bbfeee2c5e5ae84df708ae4e"></a>orxFX_CURVE_SMOOTH&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a2601e7aaf0cdf28963a1c42c55d82a9e"></a>orxFX_CURVE_SMOOTHER&#160;</td><td class="fielddoc">
 </td></tr>
-<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a0c2264dd32d4ee1fdea56c13c2a8c780"></a>orxFX_CURVE_TRIANGLE&#160;</td><td class="fielddoc">
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654ad6a285a3b99a359095de80954f444f3d"></a>orxFX_CURVE_EASE_IN_SINE&#160;</td><td class="fielddoc">
 </td></tr>
-<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a5ecf55a98f7d6195596c8d050378271b"></a>orxFX_CURVE_SINE&#160;</td><td class="fielddoc">
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a82f4346b2d98b248166ee496732764cd"></a>orxFX_CURVE_EASE_OUT_SINE&#160;</td><td class="fielddoc">
 </td></tr>
-<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654af4dc5c20505c0d3323a8b4f46b0421b1"></a>orxFX_CURVE_SQUARE&#160;</td><td class="fielddoc">
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654ad476fcac7379834af3340c9187bff48f"></a>orxFX_CURVE_EASE_IN_OUT_SINE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a830384cb8fb3e3b5fea2a7d298435010"></a>orxFX_CURVE_EASE_IN_QUAD&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a60dab199214feb512fa3fa2d9a1c3a64"></a>orxFX_CURVE_EASE_OUT_QUAD&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a9d2b4bdb1774dfa67722a88b686c07c1"></a>orxFX_CURVE_EASE_IN_OUT_QUAD&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a26169a60adf0873f5f9768c541b1d587"></a>orxFX_CURVE_EASE_IN_CUBIC&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a87bfa4ce9c677361a677026f7bddd9fd"></a>orxFX_CURVE_EASE_OUT_CUBIC&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a48ac20f76d816bae02ba48cb77b41ebf"></a>orxFX_CURVE_EASE_IN_OUT_CUBIC&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a834e17032176bd7f33a68425e822b375"></a>orxFX_CURVE_EASE_IN_QUART&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654afdc1e227fabc43847b2641e932d0f550"></a>orxFX_CURVE_EASE_OUT_QUART&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654acd7065cd87519b14c8c3c608fafe819c"></a>orxFX_CURVE_EASE_IN_OUT_QUART&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a157e23cf77b5cf1b77db48e9a0b6bbd6"></a>orxFX_CURVE_EASE_IN_QUINT&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a8645a0d4a154b334706cba752d43bbac"></a>orxFX_CURVE_EASE_OUT_QUINT&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654acc3dd37360c99bde083e8301401cddc0"></a>orxFX_CURVE_EASE_IN_OUT_QUINT&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654ac1c077af091b6a1947b9b010c7a9b4a1"></a>orxFX_CURVE_EASE_IN_EXPO&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a2d9413ee26ebe184c34ee14acefa1abf"></a>orxFX_CURVE_EASE_OUT_EXPO&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654ae57cbd15a630b4a85946273d00619b0d"></a>orxFX_CURVE_EASE_IN_OUT_EXPO&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a9fd5d84bef6ee8179ee9bf7b9759e029"></a>orxFX_CURVE_EASE_IN_CIRC&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654adbe7cfa99f45311ffe9cdece5e1f0007"></a>orxFX_CURVE_EASE_OUT_CIRC&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a879e0f9e2632c08090fc9aa6736e9846"></a>orxFX_CURVE_EASE_IN_OUT_CIRC&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654af81cd28eba8eefc738bba9a26a1dde5b"></a>orxFX_CURVE_EASE_IN_BACK&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a04197036f0bcd3b0514bfdb496fabb01"></a>orxFX_CURVE_EASE_OUT_BACK&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a8818abea4dddee4f5b06ce32585db683"></a>orxFX_CURVE_EASE_IN_OUT_BACK&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654ac3bbf4466953621129bc5c85866c00e1"></a>orxFX_CURVE_EASE_IN_ELASTIC&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a730e1b23df0edc387a8aeb03d0d1823a"></a>orxFX_CURVE_EASE_OUT_ELASTIC&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a013ea0031d84c31d6d2ba5a84f95b409"></a>orxFX_CURVE_EASE_IN_OUT_ELASTIC&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a38216445e52d8e4bdd13b217fabd233b"></a>orxFX_CURVE_EASE_IN_BOUNCE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a489e67e6258fe7854c202dd4a908666a"></a>orxFX_CURVE_EASE_OUT_BOUNCE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654aff5a40f8ffe4e85abd760dc78e142728"></a>orxFX_CURVE_EASE_IN_OUT_BOUNCE&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="ggae8f2811c408370bc68644656b1806654a58d5b18aeca1876edaf13ecb9d4cb3ae"></a>orxFX_CURVE_NUMBER&#160;</td><td class="fielddoc">
 </td></tr>
@@ -315,7 +451,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00061">61</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00093">93</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
 
 </div>
 </div>
@@ -351,17 +487,72 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00084">84</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00186">186</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga779d23887ec711c0553c9b7bd426d170"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__orx_f_x.html#ga779d23887ec711c0553c9b7bd426d170">orxFX_TYPE</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>FX type enum </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170aee546ed0b25f3a2e9524bc13a9bcb6ab"></a>orxFX_TYPE_ALPHA&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a288065fe85ee94c5fb2ce940504df221"></a>orxFX_TYPE_RGB&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a2c81c2d413cfb2dba0acbeccf7f9ed26"></a>orxFX_TYPE_HSL&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a8079ec5697f3282d87cfb8f078d4a487"></a>orxFX_TYPE_HSV&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a75bac104a002145bad03487a081ba461"></a>orxFX_TYPE_POSITION&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a124f95faa894a52e21daffbd1f2d5d08"></a>orxFX_TYPE_ROTATION&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a25da4d71702d7d8541c75dbf1d73947b"></a>orxFX_TYPE_SCALE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a12819ca06a34b7235fda4eddcc41dae3"></a>orxFX_TYPE_SPEED&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a64f6e41df6609fbf4ff6a1521548f9d7"></a>orxFX_TYPE_VOLUME&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a2d16072ccf6c5b5e687a77d05569d3ff"></a>orxFX_TYPE_PITCH&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a6019759c6283d123e3a73a12b35a2fc3"></a>orxFX_TYPE_SIZE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170ad54961243a051f947eaaf4d270a1461f"></a>orxFX_TYPE_ORIGIN&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a34e1263dc50dab51e2553ab9245cad2a"></a>orxFX_TYPE_FLOAT_ADD&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170ad8519dbe059c9ab00ac246ca99daa05c"></a>orxFX_TYPE_FLOAT_MULTIPLY&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a1535b1269f88c89edbc25e2509ceb4f9"></a>orxFX_TYPE_VECTOR_ADD&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170aa76933f7064099d3869fbeca235df405"></a>orxFX_TYPE_VECTOR_MULTIPLY&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170aad0f7f3007073f345977ccbb3cf02e1e"></a>orxFX_TYPE_NUMBER&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a8cc98fa41c04da6991f5e47fa5ed22bf"></a>orxFX_TYPE_MAX_NUMBER&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga779d23887ec711c0553c9b7bd426d170a01d6419633d8e7e92c037177205b11f2"></a>orxFX_TYPE_NONE&#160;</td><td class="fielddoc">
+</td></tr>
+</table>
+
+<p>Definition at line <a class="el" href="orx_f_x_8h_source.html#l00062">62</a> of file <a class="el" href="orx_f_x_8h_source.html">orxFX.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="ga16b22b94114a1e51932f434af8273380"></a>
+<a class="anchor" id="gae48371bb26830ec74a114325bd5833c4"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddAlpha </td>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddSlot </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
           <td class="paramname"><em>_pstFX</em>, </td>
@@ -369,50 +560,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePeriod</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePhase</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAmplification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAcceleration</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartAlpha</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndAlpha</em>, </td>
+          <td class="paramtype"><a class="el" href="group__orx_f_x.html#ga779d23887ec711c0553c9b7bd426d170">orxFX_TYPE</a>&#160;</td>
+          <td class="paramname"><em>_eType</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -423,8 +572,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fPow</em>, </td>
+          <td class="paramtype">const <a class="el" href="structorx_f_x___c_u_r_v_e___p_a_r_a_m.html">orxFX_CURVE_PARAM</a> *&#160;</td>
+          <td class="paramname"><em>_pstCurveParam</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -439,748 +588,13 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Adds alpha to an FX </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Adds a slot to an FX </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>Time start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>Time end </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePeriod</td><td>Cycle period </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePhase</td><td>Cycle phase (at start) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAmplification</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAcceleration</td><td>Curve linear acceleration over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartAlpha</td><td>Starting alpha value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndAlpha</td><td>Ending alpha value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Blending curve type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPow</td><td>Blending curve exponent </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Param flags </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ga417a42f99bf6a1469aae714972ad929a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddHSL </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
-          <td class="paramname"><em>_pstFX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePeriod</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePhase</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAmplification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAcceleration</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvStartColor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvEndColor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&#160;</td>
-          <td class="paramname"><em>_eCurve</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fPow</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds HSL color to an FX </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>Time start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>Time end </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePeriod</td><td>Cycle period </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePhase</td><td>Cycle phase (at start) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAmplification</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAcceleration</td><td>Curve linear acceleration over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvStartColor</td><td>Starting color value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvEndColor</td><td>Ending color value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Blending curve type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPow</td><td>Blending curve exponent </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Param flags </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ga5bccca6e51a39dc4b97bdcd6220d6eb9"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddHSV </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
-          <td class="paramname"><em>_pstFX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePeriod</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePhase</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAmplification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAcceleration</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvStartColor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvEndColor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&#160;</td>
-          <td class="paramname"><em>_eCurve</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fPow</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds HSV color to an FX </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>Time start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>Time end </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePeriod</td><td>Cycle period </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePhase</td><td>Cycle phase (at start) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAmplification</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAcceleration</td><td>Curve linear acceleration over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvStartColor</td><td>Starting color value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvEndColor</td><td>Ending color value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Blending curve type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPow</td><td>Blending curve exponent </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Param flags </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ga390794340d1293ec30270a77dd804985"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddPitch </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
-          <td class="paramname"><em>_pstFX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePeriod</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePhase</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAmplification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAcceleration</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartPitch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndPitch</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&#160;</td>
-          <td class="paramname"><em>_eCurve</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fPow</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds pitch to an FX </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>Time start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>Time end </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePeriod</td><td>Cycle period </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePhase</td><td>Cycle phase (at start) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAmplification</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAcceleration</td><td>Curve linear acceleration over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartPitch</td><td>Starting pitch value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndPitch</td><td>Ending pitch value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Blending curve type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPow</td><td>Blending curve exponent </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Param flags </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ga67b1465f3df7d42cf36786bc135f3615"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddPosition </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
-          <td class="paramname"><em>_pstFX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePeriod</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePhase</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAmplification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAcceleration</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvStartTranslation</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvEndTranslation</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&#160;</td>
-          <td class="paramname"><em>_eCurve</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fPow</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds position to an FX </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>Time start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>Time end </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePeriod</td><td>Cycle period </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePhase</td><td>Cycle phase (at start) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAmplification</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAcceleration</td><td>Curve linear acceleration over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvStartTranslation</td><td>Starting position value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvEndTranslation</td><td>Ending position value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Blending curve type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPow</td><td>Blending curve exponent </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Param flags </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ga28a53271d81317a8bb2253a8dee871ea"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddRGB </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
-          <td class="paramname"><em>_pstFX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePeriod</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePhase</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAmplification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAcceleration</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvStartColor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvEndColor</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&#160;</td>
-          <td class="paramname"><em>_eCurve</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fPow</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds RGB color to an FX </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>Time start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>Time end </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePeriod</td><td>Cycle period </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePhase</td><td>Cycle phase (at start) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAmplification</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAcceleration</td><td>Curve linear acceleration over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvStartColor</td><td>Starting color value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvEndColor</td><td>Ending color value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Blending curve type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPow</td><td>Blending curve exponent </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Param flags </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gad863d8cafd82984aa02a2193eb6409c1"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddRotation </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
-          <td class="paramname"><em>_pstFX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePeriod</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePhase</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAmplification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAcceleration</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartRotation</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndRotation</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&#160;</td>
-          <td class="paramname"><em>_eCurve</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fPow</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds rotation to an FX </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>Time start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>Time end </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePeriod</td><td>Cycle period </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePhase</td><td>Cycle phase (at start) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAmplification</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAcceleration</td><td>Curve linear acceleration over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartRotation</td><td>Starting rotation value (radians) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndRotation</td><td>Ending rotation value (radians) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Blending curve type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPow</td><td>Blending curve exponent </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Param flags </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gab78fd8e3d8daddf6989627e319130fa2"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddScale </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
-          <td class="paramname"><em>_pstFX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePeriod</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePhase</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAmplification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAcceleration</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvStartScale</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvEndScale</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&#160;</td>
-          <td class="paramname"><em>_eCurve</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fPow</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds scale to an FX </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>Time start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>Time end </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePeriod</td><td>Cycle period </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePhase</td><td>Cycle phase (at start) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAmplification</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAcceleration</td><td>Curve linear acceleration over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvStartScale</td><td>Starting scale value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvEndScale</td><td>Ending scale value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Blending curve type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPow</td><td>Blending curve exponent </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Param flags </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eType</td><td>Type </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Curve </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCurveParam</td><td>Curve parameters </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Additional flags (Absolute, Stagger, UseRotation/UseScale for position/speed types only) </td></tr>
   </table>
   </dd>
 </dl>
@@ -1221,215 +635,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gac0e2e42237710d2415674ad3fdb694ac"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddSpeed </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
-          <td class="paramname"><em>_pstFX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePeriod</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePhase</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAmplification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAcceleration</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvStartSpeed</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
-          <td class="paramname"><em>_pvEndSpeed</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&#160;</td>
-          <td class="paramname"><em>_eCurve</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fPow</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds speed to an FX </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>Time start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>Time end </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePeriod</td><td>Cycle period </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePhase</td><td>Cycle phase (at start) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAmplification</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAcceleration</td><td>Curve linear acceleration over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvStartSpeed</td><td>Starting speed value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pvEndSpeed</td><td>Ending speed value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Blending curve type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPow</td><td>Blending curve exponent </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Param flags </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ga36a72c7b6f823bc478005138faafa0fc"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxFX_AddVolume </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
-          <td class="paramname"><em>_pstFX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePeriod</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fCyclePhase</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAmplification</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fAcceleration</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartVolume</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndVolume</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__orx_f_x.html#gae8f2811c408370bc68644656b1806654">orxFX_CURVE</a>&#160;</td>
-          <td class="paramname"><em>_eCurve</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fPow</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Flags</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds volume to an FX </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>Time start </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>Time end </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePeriod</td><td>Cycle period </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fCyclePhase</td><td>Cycle phase (at start) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAmplification</td><td>Curve linear amplification over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fAcceleration</td><td>Curve linear acceleration over time (1.0 for none) </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartVolume</td><td>Starting volume value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndVolume</td><td>Ending volume value </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_eCurve</td><td>Blending curve type </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fPow</td><td>Blending curve exponent </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Flags</td><td>Param flags </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ga0ca775d35b31f3aaf213b97bb5da3a54"></a>
+<a class="anchor" id="ga14ec9dffd3dc1659717c34b00ad7236c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1449,13 +655,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fStartTime</em>, </td>
+          <td class="paramname"><em>_fPreviousTime</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxFLOAT&#160;</td>
-          <td class="paramname"><em>_fEndTime</em>&#160;</td>
+          <td class="paramname"><em>_fTime</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1468,8 +674,8 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>FX to apply </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Object on which to apply the FX </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fStartTime</td><td>FX local application start time </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_fEndTime</td><td>FX local application end time </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fPreviousTime</td><td>Previous time </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fTime</td><td>Current time </td></tr>
   </table>
   </dd>
 </dl>
@@ -1626,6 +832,47 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga90dacdb01ebde55d284d5058f1aa703f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL orxFX_GetFloat </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
+          <td class="paramname"><em>_pstFX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&#160;</td>
+          <td class="paramname"><em>_fPreviousTime</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&#160;</td>
+          <td class="paramname"><em>_fTime</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets FX user float value between two timestamps </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fPreviousTime</td><td>Previous time, ignored for Absolute slots. If &lt;= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fTime</td><td>Current time </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Float value </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga2023118f60de4fab06bb2f491478b1fc"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1680,6 +927,54 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxTRUE if staggered, orxFALSE otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga4a65999ad7da7d6d452236d3fd50894b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a>* orxFASTCALL orxFX_GetVector </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_f_x.html#gab26eaece32fb2cab451daa7c9a5fdfe4">orxFX</a> *&#160;</td>
+          <td class="paramname"><em>_pstFX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&#160;</td>
+          <td class="paramname"><em>_fPreviousTime</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&#160;</td>
+          <td class="paramname"><em>_fTime</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvVector</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets FX user vector value between two timestamps </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstFX</td><td>Concerned FX </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fPreviousTime</td><td>Previous time, ignored for Absolute slots. If &lt;= orxFLOAT_0, the value at the current time will be returned, otherwise the value delta between both times will be returned </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fTime</td><td>Current time </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_pvVector</td><td>Storage for vector value </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Vector value if valid, orxNULL otherwise </dd></dl>
 
 </div>
 </div>

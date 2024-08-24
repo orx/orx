@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -56,9 +56,21 @@ static orxSTATUS orxFASTCALL EventHandler(const orxEVENT* _pstEvent)
   return eResult;
 }
 
+/** Update function, it has been registered to be called every tick of the core clock
+ */
 static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   orxVECTOR vMousePos, vGravity;
+
+  /* Is quit action active? */
+  if (orxInput_HasBeenActivated("Quit"))
+  {
+    /* Logs */
+    orxLOG("Quit action triggered, exiting!");
+
+    /* Sends system close event */
+    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+  }
 
   /* Updates generator's status */
   orxObject_Enable(spstGenerator, orxInput_IsActive("Spawn"));
@@ -85,7 +97,7 @@ static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstCon
                 orxFLOAT_0);
 
   /* Significant enough? */
-  if (orxVector_GetSquareSize(&vGravity)>orx2F(0.5f))
+  if (orxVector_GetSquareSize(&vGravity) > orx2F(0.5f))
   {
     static orxVECTOR svSmoothedGravity =
     {
@@ -101,6 +113,8 @@ static void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstCon
   }
 }
 
+/** Init function, it is called when all orx's modules have been initialized
+ */
 static orxSTATUS orxFASTCALL Init()
 {
   /* Creates viewport */
@@ -127,27 +141,24 @@ static orxSTATUS orxFASTCALL Init()
   return (spstViewport && spstGenerator) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 }
 
+/** Run function, it should not contain any game logic
+ */
 static orxSTATUS orxFASTCALL Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  // Is quit action active?
-  if (orxInput_IsActive("Quit"))
-  {
-    // Logs
-    orxLOG("Quit action triggered, exiting!");
-
-    // Sets return value to orxSTATUS_FAILURE, meaning we want to exit
-    eResult = orxSTATUS_FAILURE;
-  }
-
   return eResult;
 }
 
+/** Exit function, it is called before exiting from orx
+ */
 static void orxFASTCALL Exit()
 {
   /* Deletes texture table */
-  orxHashTable_Delete(pstTextureTable);
+  if (pstTextureTable != orxNULL)
+  {
+    orxHashTable_Delete(pstTextureTable);
+  }
 }
 
 /** Bootstrap function, it is called before config is initialized, allowing for early resource storage definitions
@@ -160,11 +171,16 @@ orxSTATUS orxFASTCALL Bootstrap()
   return orxSTATUS_SUCCESS;
 }
 
+/** Main function
+ */
 int main(int argc, char* argv[])
 {
-  // Set the bootstrap function to provide at least one resource storage before loading any config files
+  /* Set the bootstrap function to provide at least one resource storage before loading any config files */
   orxConfig_SetBootstrap(Bootstrap);
 
+  /* Execute our game */
   orx_Execute(argc, argv, Init, Run, Exit);
+
+  /* Done! */
   return 0;
 }

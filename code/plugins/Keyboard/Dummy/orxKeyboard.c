@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,10 +51,8 @@
 
 orxSTATUS orxFASTCALL orxKeyboard_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_SUCCESS;
 }
 
 void orxFASTCALL orxKeyboard_Dummy_Exit()

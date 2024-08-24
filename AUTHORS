@@ -9,19 +9,16 @@ Orx authors:
   Tools:
     Romain Killian
 
-  Premake/IDE project files (CodeLite, Visual Studio, XCode, Android, Premake) and external dependencies:
-    Lydesik
+  Init extensions:
+    Romain Killian
+    Hezekiah 'hcarty' Carty
+
+  Windows, MacOS X, Linux & iOS:
     Romain Killian
 
-  Windows, MacOS X & Linux versions:
-    Romain Killian
-
-  iOS (iPhone/iPod Touch/iPad) version:
-    Romain Killian
-
-  Android versions:
+  Android:
     Philippe 'Lydesik' Simons
-    Gilles 'faistoiplaisir' Zucchini
+    Kristoffer 'Znakeye'
 
   Launcher, demos and tutorials:
     Romain Killian
@@ -33,38 +30,20 @@ Orx authors:
     Wayne Johnson
     Romain Killian
 
-  Community tutorials:
-    Acksys
-    Enobayram
-    Grey
-    Iarwain
-    Katarak
-    Lydesik
-    Sausage
-    TDomhan
-
-  OpenAL sound recording:
-    TDomhan
-
-  Compressed texture support:
-    Lydesik
-    TDomhan
-
   Many error and warning messages:
-    M1SF17
+    'M1SF17'
 
-  Logo, tutorial graphics and music:
+  Logo, tutorial graphics and musics:
     Matthieu 'Pixoshiru' Gallais
 
   Demo graphics:
-    Ebe
     Matthieu 'Pixoshiru' Gallais
     Treb
 
   Default font (dina):
     Jørgen 'Jibs' Ibsen
 
-  Additional contributors:
+  Community tutorials & additional contributors:
     4babce
     Andrew 'danvd'
     Cai 'laschweinski' Huaxu
@@ -73,14 +52,20 @@ Orx authors:
     Enis 'enobayram' Bayramoğlu
     Eric Poulsen
     Fritz 'acksys' Mahnke
+    Gilles 'faistoiplaisir' Zucchini
     Grey
     Hezekiah 'hcarty' Carty
+    Iarwain
     Jonas Ohrn
+    Katarak
     Kevin Watters
     Konrad 'Graag' Klimaszewski
     Kristoffer 'Znakeye'
     OneArb
     Orson Bushnell
+    Philippe 'Lydesik' Simons
     Ray Yee
+    Sausage
     Sergei Gnezdov
+    TDomhan
     Wayne 'Sausage' Johnson

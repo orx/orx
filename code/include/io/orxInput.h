@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -175,6 +175,17 @@ extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetCurrentSet();
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetNextSet(const orxSTRING _zSetName);
 
+/** Pushes a set (storing the current one on the stack)
+ * @param[in] _zSetName         Set name to push
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_PushSet(const orxSTRING _zSetName);
+
+/** Pops last set from the stack
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_PopSet();
+
 /** Removes a set
  * @param[in] _zSetName         Set name to remove
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -196,6 +207,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_EnableSet(const orxST
 extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsSetEnabled(const orxSTRING _zSetName);
 
 
+/** Clears all input values of a set
+ * @param[in] _zSetName         Set name to clear, will use current set if orxSTRING_EMPTY/orxNULL
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_ClearSet(const orxSTRING _zSetName);
+
+
 /** Sets current set's type flags, only set types will be polled when updating the set (use orxINPUT_GET_FLAG(TYPE) in order to get the flag that matches a type)
  * @param[in] _u32AddTypeFlags      Type flags to add
  * @param[in] _u32RemoveTypeFlags   Type flags to remove
@@ -203,6 +221,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsSetEnabled(const or
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetTypeFlags(orxU32 _u32AddTypeFlags, orxU32 _u32RemoveTypeFlags);
 
+
+/** Gets next input in current set
+ * @param[in] _zInputName       Concerned input, orxNULL to get the first one
+ * @return Input name / orxNULL
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetNext(const orxSTRING _zInputName);
 
 /** Is input active?
  * @param[in] _zInputName       Concerned input name
@@ -234,14 +258,14 @@ extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_HasNewStatus(const or
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL             orxInput_GetValue(const orxSTRING _zInputName);
 
-/** Sets input value (will prevail on peripheral inputs only once)
+/** Sets input value (will take precedence over peripheral inputs only once)
  * @param[in] _zInputName       Concerned input name
  * @param[in] _fValue           Value to set, orxFLOAT_0 to deactivate
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _fValue);
 
-/** Sets permanent input value (will prevail on peripheral inputs till reset)
+/** Sets permanent input value (will take precedence over peripheral inputs until reset)
  * @param[in] _zInputName       Concerned input name
  * @param[in] _fValue           Value to set, orxFLOAT_0 to deactivate
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -122,7 +122,8 @@ struct
   orxSTRUCTURE_DECLARE_STRUCTURE_INFO(SPAWNER,   orxSpawner_GetName),
   orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TEXT,      orxText_GetName),
   orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TEXTURE,   orxTexture_GetName),
-  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TIMELINE,  orxNULL)
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TIMELINE,  orxNULL),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TRIGGER,   orxNULL)
 };
 #undef orxSTRUCTURE_DECLARE_STRUCTURE_INFO
 

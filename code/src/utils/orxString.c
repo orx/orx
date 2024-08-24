@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -56,7 +56,7 @@
 
 /** Defines
  */
-#define orxSTRING_KU32_ID_TABLE_SIZE                      32768
+#define orxSTRING_KU32_ID_TABLE_SIZE                      16384
 
 
 /***************************************************************************
@@ -118,7 +118,7 @@ orxSTATUS orxFASTCALL orxString_Init()
     orxMemory_Zero(&sstString, sizeof(orxSTRING_STATIC));
 
     /* Creates ID table */
-    sstString.pstIDTable = orxHashTable_Create(orxSTRING_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+    sstString.pstIDTable = orxHashTable_Create(orxSTRING_KU32_ID_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_TEXT);
 
     /* Success? */
     if(sstString.pstIDTable != orxNULL)

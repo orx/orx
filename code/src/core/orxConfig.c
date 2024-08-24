@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,7 +51,7 @@
 
 #else /* __orxMSVC__ */
 
-  #include <unistd.h>
+#include <unistd.h>
 
 #endif /* __orxMSVC__ */
 
@@ -70,6 +70,7 @@
 
 #define orxCONFIG_KU32_STATIC_FLAG_READY          0x00000001  /**< Ready flag */
 #define orxCONFIG_KU32_STATIC_FLAG_HISTORY        0x00000002  /**< Keep history flag */
+#define orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK     0x00000004  /**< Typo check flag */
 
 #define orxCONFIG_KU32_STATIC_MASK_ALL            0xFFFFFFFF  /**< All mask */
 
@@ -83,6 +84,7 @@
 #define orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE      0x0008      /**< Block mode flag */
 #define orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE      0x0010      /**< Self value flag */
 #define orxCONFIG_VALUE_KU16_FLAG_COMMAND         0x0020      /**< Command flag */
+#define orxCONFIG_VALUE_KU16_FLAG_ALLOCATION      0x0040      /**< Allocation flag */
 
 #define orxCONFIG_VALUE_KU16_MASK_ALL             0xFFFF      /**< All mask */
 
@@ -98,6 +100,8 @@
 #define orxCONFIG_KU32_LARGE_BUFFER_SIZE          524288      /**< Large buffer size */
 
 #define orxCONFIG_KU32_COMMAND_BUFFER_SIZE        1024        /**< Command buffer size */
+
+#define orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE      2UL         /**< Key max edit distance */
 
 #define orxCONFIG_KC_SECTION_START                '['         /**< Section start character */
 #define orxCONFIG_KC_SECTION_END                  ']'         /**< Section end character */
@@ -387,12 +391,69 @@ static struct __orxCONFIG_BOM_DEFINITION_t
  * Private functions                                                       *
  ***************************************************************************/
 
+/** Converts color values to color space
+ */
+static orxINLINE void orxConfig_ToColorSpace(orxCOLORSPACE _eColorSpace, orxVECTOR *_pvValue)
+{
+  orxCOLOR stColor;
+
+  /* Depending on color space */
+  switch(_eColorSpace)
+  {
+    case orxCOLORSPACE_COMPONENT:
+    default:
+    {
+      break;
+    }
+
+    case orxCOLORSPACE_HSL:
+    {
+      /* Normalizes it */
+      orxVector_Mulf(&(stColor.vRGB), _pvValue, orxCOLOR_NORMALIZER);
+
+      /* Converts it */
+      orxColor_FromRGBToHSL(&stColor, &stColor);
+
+      /* Updates result */
+      orxVector_Copy(_pvValue, &(stColor.vHSL));
+
+      break;
+    }
+
+    case orxCOLORSPACE_HSV:
+    {
+      /* Normalizes it */
+      orxVector_Mulf(&(stColor.vRGB), _pvValue, orxCOLOR_NORMALIZER);
+
+      /* Converts it */
+      orxColor_FromRGBToHSV(&stColor, &stColor);
+
+      /* Updates result */
+      orxVector_Copy(_pvValue, &(stColor.vHSV));
+
+      break;
+    }
+
+    case orxCOLORSPACE_RGB:
+    {
+      /* Normalizes it */
+      orxVector_Mulf(_pvValue, _pvValue, orxCOLOR_NORMALIZER);
+
+      break;
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Converts a string to a vector (with support for stepped/regular randomness)
  * @param[in]   _zValue           Concerned literal value
+ * @param[in]   _eColorSpace      Color space to use when translating color literals (NONE: no literal, COMPONENT: 0-255 RGB values, all others: normalized spaces)
  * @param[out]  _pvVector         Storage for vector value
  * @return The value if valid, orxNULL otherwise
  */
-orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_pvVector)
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector)
 {
   const orxSTRING zRemainder;
   orxVECTOR      *pvResult = orxNULL;
@@ -400,63 +461,169 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_zValue != orxNULL);
+  orxASSERT((_eColorSpace < orxCOLORSPACE_NUMBER) || (_eColorSpace == orxCOLORSPACE_NONE));
   orxASSERT(_pvVector != orxNULL);
 
-  /* Gets value */
-  if(orxString_ToVector(_zValue, _pvVector, &zRemainder) != orxSTATUS_FAILURE)
+  /* Not empty? */
+  if(*_zValue != orxCHAR_NULL)
   {
-    orxS32 s32RandomSeparatorIndex;
+    orxCONFIG_SECTION  *pstPreviousSection;
+    orxSTATUS           eResult;
+    orxS32              s32RandomSeparatorIndex;
 
-    /* Random? */
-    if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+    /* Gets random separator index */
+    s32RandomSeparatorIndex = orxString_SearchCharIndex(_zValue, orxCONFIG_KC_RANDOM_SEPARATOR, 0);
+
+    /* Backups current section */
+    pstPreviousSection = sstConfig.pstCurrentSection;
+
+    /* Gets value */
+    if(((eResult = orxString_ToVector(_zValue, _pvVector, &zRemainder)) == orxSTATUS_FAILURE)
+    && (_eColorSpace != orxCOLORSPACE_NONE))
     {
-      orxVECTOR vOtherValue, vStepValue;
-      orxBOOL   bRandom = orxFALSE;
+#ifdef __orxMSVC__
+        orxCHAR        *acBuffer = (orxCHAR *)alloca((s32RandomSeparatorIndex + 1) * sizeof(orxCHAR));
+#else /* __orxMSVC__ */
+        orxCHAR         acBuffer[s32RandomSeparatorIndex + 1];
+#endif /* __orxMSVC__ */
+        const orxSTRING zValue = _zValue;
 
-      /* Clears step */
-      orxVector_SetAll(&vStepValue, orxFLOAT_0);
-
-      /* Has another value? */
-      if(orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, &zRemainder) != orxSTATUS_FAILURE)
+      /* Random? */
+      if(s32RandomSeparatorIndex > 0)
       {
-        /* Was step? */
-        if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
-        {
-          /* Stores it */
-          vStepValue = vOtherValue;
+        const orxCHAR *pc;
 
-          /* Can get other value? */
-          if((vStepValue.fX >= orxFLOAT_0)
-          && (vStepValue.fY >= orxFLOAT_0)
-          && (vStepValue.fZ >= orxFLOAT_0)
-          && (orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE))
+        /* Skips all white spaces */
+        for(pc = _zValue + s32RandomSeparatorIndex;
+            (pc > _zValue) && ((*pc == orxCONFIG_KC_RANDOM_SEPARATOR) || (*pc == ' ') || (*pc == '\t'));
+            pc--)
+          ;
+
+        /* Stores it */
+        orxString_NCopy(acBuffer, _zValue, (orxU32)(pc - _zValue + 1));
+        *(acBuffer + (pc - _zValue + 1)) = orxCHAR_NULL;
+        zValue = (orxSTRING)acBuffer;
+      }
+
+      /* Selects color section */
+      orxConfig_SelectSection(orxCOLOR_KZ_CONFIG_SECTION);
+
+      /* Retrieves its value */
+      if(orxConfig_GetVector(zValue, _pvVector) != orxNULL)
+      {
+        /* Converts it to color space */
+        orxConfig_ToColorSpace(_eColorSpace, _pvVector);
+
+        /* Updates status */
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        /* Updates status */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Random? */
+      if(s32RandomSeparatorIndex > 0)
+      {
+        orxVECTOR vOtherValue, vStepValue;
+        orxBOOL   bRandom = orxFALSE;
+
+        /* Clears step */
+        orxVector_SetAll(&vStepValue, orxFLOAT_0);
+
+        /* Has another value? */
+        if(orxString_ToVector(_zValue + s32RandomSeparatorIndex + 1, &vOtherValue, &zRemainder) != orxSTATUS_FAILURE)
+        {
+          /* Was step? */
+          if((s32RandomSeparatorIndex = orxString_SearchCharIndex(zRemainder, orxCONFIG_KC_RANDOM_SEPARATOR, 0)) >= 0)
+          {
+            /* Stores it */
+            orxVector_Copy(&vStepValue, &vOtherValue);
+
+            /* Can get other value? */
+            if((vStepValue.fX >= orxFLOAT_0)
+            && (vStepValue.fY >= orxFLOAT_0)
+            && (vStepValue.fZ >= orxFLOAT_0))
+            {
+              /* Gets other value */
+              if(orxString_ToVector(zRemainder + s32RandomSeparatorIndex + 1, &vOtherValue, orxNULL) != orxSTATUS_FAILURE)
+              {
+                /* Updates status */
+                bRandom = orxTRUE;
+              }
+              /* Has colorspace? */
+              else if(_eColorSpace != orxCOLORSPACE_NONE)
+              {
+                /* Should select color section? */
+                if(pstPreviousSection == sstConfig.pstCurrentSection)
+                {
+                  /* Selects it */
+                  orxConfig_SelectSection(orxCOLOR_KZ_CONFIG_SECTION);
+                }
+
+                /* Retrieves its value */
+                if(orxConfig_GetVector(orxString_SkipWhiteSpaces(zRemainder + s32RandomSeparatorIndex + 1), &vOtherValue) != orxNULL)
+                {
+                  /* Converts it to color space */
+                  orxConfig_ToColorSpace(_eColorSpace, &vOtherValue);
+
+                  /* Updates status */
+                  bRandom = orxTRUE;
+                }
+              }
+            }
+          }
+          else
           {
             /* Updates status */
             bRandom = orxTRUE;
           }
         }
-        else
+        /* Has color space? */
+        else if(_eColorSpace != orxCOLORSPACE_NONE)
         {
-          /* Updates status */
-          bRandom = orxTRUE;
+          /* Should select color section? */
+          if(pstPreviousSection == sstConfig.pstCurrentSection)
+          {
+            /* Selects it */
+            orxConfig_SelectSection(orxCOLOR_KZ_CONFIG_SECTION);
+          }
+
+          /* Retrieves its value */
+          if(orxConfig_GetVector(orxString_SkipWhiteSpaces(_zValue + s32RandomSeparatorIndex + 1), &vOtherValue) != orxNULL)
+          {
+            /* Converts it to color space */
+            orxConfig_ToColorSpace(_eColorSpace, &vOtherValue);
+
+            /* Updates status */
+            bRandom = orxTRUE;
+          }
+        }
+
+        /* Valid? */
+        if(bRandom != orxFALSE)
+        {
+          /* Updates result */
+          pvResult = _pvVector;
+          pvResult->fX = (vStepValue.fX != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fX, vOtherValue.fX, vStepValue.fX) : orxMath_GetRandomFloat(pvResult->fX, vOtherValue.fX);
+          pvResult->fY = (vStepValue.fY != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fY, vOtherValue.fY, vStepValue.fY) : orxMath_GetRandomFloat(pvResult->fY, vOtherValue.fY);
+          pvResult->fZ = (vStepValue.fZ != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fZ, vOtherValue.fZ, vStepValue.fZ) : orxMath_GetRandomFloat(pvResult->fZ, vOtherValue.fZ);
         }
       }
-
-      /* Valid? */
-      if(bRandom != orxFALSE)
+      else
       {
         /* Updates result */
         pvResult = _pvVector;
-        pvResult->fX = (vStepValue.fX != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fX, vOtherValue.fX, vStepValue.fX) : orxMath_GetRandomFloat(pvResult->fX, vOtherValue.fX);
-        pvResult->fY = (vStepValue.fY != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fY, vOtherValue.fY, vStepValue.fY) : orxMath_GetRandomFloat(pvResult->fY, vOtherValue.fY);
-        pvResult->fZ = (vStepValue.fZ != orxFLOAT_0) ? orxMath_GetSteppedRandomFloat(pvResult->fZ, vOtherValue.fZ, vStepValue.fZ) : orxMath_GetRandomFloat(pvResult->fZ, vOtherValue.fZ);
       }
     }
-    else
-    {
-      /* Updates result */
-      pvResult = _pvVector;
-    }
+
+    /* Restores current section */
+    sstConfig.pstCurrentSection = pstPreviousSection;
   }
 
   /* Done! */
@@ -468,15 +635,23 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxVECTOR *_p
  */
 static orxINLINE void orxConfig_CleanValue(orxCONFIG_VALUE *_pstValue)
 {
+  /* Is a duplicate? */
+  if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_ALLOCATION))
+  {
+    /* Deletes string */
+    orxString_Delete(_pstValue->zValue);
+    _pstValue->zValue = orxNULL;
+
+    /* Updates status */
+    _pstValue->u16Flags &= ~orxCONFIG_VALUE_KU16_FLAG_ALLOCATION;
+  }
+
   /* Not in block mode? */
   if(!orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
   {
     /* Is a list? */
     if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
     {
-      /* Deletes string */
-      orxString_Delete(_pstValue->zValue);
-
       /* Deletes index table */
       orxMemory_Free(_pstValue->au32ListIndexTable);
       _pstValue->au32ListIndexTable = orxNULL;
@@ -516,48 +691,46 @@ static orxINLINE void orxConfig_DeleteEntry(orxCONFIG_ENTRY *_pstEntry)
  */
 static orxSTATUS orxFASTCALL orxConfig_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                   eResult = orxSTATUS_SUCCESS;
 
-  /* Add or update? */
-  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RESOURCE);
+
+  /* Gets payload */
+  pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  /* Is config group? */
+  if(pstPayload->stGroupID == sstConfig.stResourceGroupID)
   {
-    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+    orxCONFIG_SECTION *pstSection;
 
-    /* Gets payload */
-    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Is config group? */
-    if(pstPayload->stGroupID == sstConfig.stResourceGroupID)
+    /* For all sections */
+    for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
+        pstSection != orxNULL;
+        pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))
     {
-      orxCONFIG_SECTION *pstSection;
+      orxCONFIG_ENTRY *pstEntry, *pstNextEntry;
 
-      /* For all sections */
-      for(pstSection = (orxCONFIG_SECTION *)orxLinkList_GetFirst(&(sstConfig.stSectionList));
-          pstSection != orxNULL;
-          pstSection = (orxCONFIG_SECTION *)orxLinkList_GetNext(&(pstSection->stNode)))
+      /* For all entries */
+      for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
+          pstEntry != orxNULL;
+          pstEntry = pstNextEntry)
       {
-        orxCONFIG_ENTRY *pstEntry, *pstNextEntry;
+        /* Gets next entry */
+        pstNextEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode));
 
-        /* For all entries */
-        for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
-            pstEntry != orxNULL;
-            pstEntry = pstNextEntry)
+        /* Should get cleaned? */
+        if(pstEntry->stOriginID == pstPayload->stNameID)
         {
-          /* Gets next entry */
-          pstNextEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode));
-
-          /* Should get cleaned? */
-          if(pstEntry->stOriginID == pstPayload->stNameID)
-          {
-            /* Deletes it */
-            orxConfig_DeleteEntry(pstEntry);
-          }
+          /* Deletes it */
+          orxConfig_DeleteEntry(pstEntry);
         }
       }
-
-      /* Reloads file */
-      orxConfig_Load(orxString_GetFromID(pstPayload->stNameID));
     }
+
+    /* Reloads file */
+    orxConfig_Load(orxString_GetFromID(pstPayload->stNameID));
   }
 
   /* Done! */
@@ -675,7 +848,7 @@ static void orxFASTCALL orxConfig_ComputeWorkingValue(orxCONFIG_VALUE *_pstValue
   }
 
   /* Updates value flags */
-  _pstValue->u16Flags = u16Flags;
+  _pstValue->u16Flags = u16Flags | (_pstValue->u16Flags & ~(orxCONFIG_VALUE_KU16_FLAG_LIST | orxCONFIG_VALUE_KU16_FLAG_RANDOM | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE | orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_COMMAND));
 
   /* Updates list count */
   _pstValue->u16ListCount = (orxU16)u32Count;
@@ -733,6 +906,9 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
   {
     orxU32  u32Size;
     orxBOOL bNeedDuplication = orxFALSE;
+
+    /* Inits status */
+    _pstValue->u16Flags = orxCONFIG_VALUE_KU16_FLAG_NONE;
 
     /* Buffer not already prepared? */
     if(sstConfig.acValueBuffer[0] == orxCHAR_NULL)
@@ -811,6 +987,9 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
       /* Valid? */
       if(_pstValue->zValue != orxNULL)
       {
+        /* Updates status */
+        _pstValue->u16Flags |= orxCONFIG_VALUE_KU16_FLAG_ALLOCATION;
+
         /* Computes working value */
         orxConfig_ComputeWorkingValue(_pstValue, u32Size);
       }
@@ -987,12 +1166,24 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
     /* Reallocates index table */
     _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Reallocate(_pstValue->au32ListIndexTable, (u32Size + (orxU32)_pstValue->u16ListCount - 1) * sizeof(orxU32), orxMEMORY_TYPE_CONFIG);
 
-    /* Checks */
-    orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
-
     /* Computes buffer size */
     u32BufferSize = _pstValue->au32ListIndexTable[_pstValue->u16ListCount - 2] + orxString_GetLength(_pstValue->zValue + _pstValue->au32ListIndexTable[_pstValue->u16ListCount - 2]) + 1;
+  }
+  else
+  {
+    /* Allocates index table */
+    _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Allocate(u32Size * sizeof(orxU32), orxMEMORY_TYPE_CONFIG);
 
+    /* Computes buffer size */
+    u32BufferSize = orxString_GetLength(_pstValue->zValue) + 1;
+  }
+
+  /* Checks */
+  orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
+
+  /* Has current allocation? */
+  if(orxFLAG_TEST(_pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_ALLOCATION))
+  {
     /* Reallocates buffer */
     _pstValue->zValue = (orxSTRING)orxMemory_Reallocate(_pstValue->zValue, u32BufferSize + (orxU32)(pcOutput - sstConfig.acValueBuffer), orxMEMORY_TYPE_TEXT);
 
@@ -1003,18 +1194,11 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
   {
     orxSTRING zNewValue;
 
-    /* Allocates index table */
-    _pstValue->au32ListIndexTable = (orxU32 *)orxMemory_Allocate(u32Size * sizeof(orxU32), orxMEMORY_TYPE_CONFIG);
-
-    /* Computes buffer size */
-    u32BufferSize = orxString_GetLength(_pstValue->zValue) + 1;
-
     /* Allocates new buffer */
     zNewValue = (orxSTRING)orxMemory_Allocate(u32BufferSize + (orxU32)(pcOutput - sstConfig.acValueBuffer), orxMEMORY_TYPE_TEXT);
 
     /* Checks */
-    orxASSERT(_pstValue->au32ListIndexTable != orxNULL);
-    orxASSERT(_pstValue->zValue != orxNULL);
+    orxASSERT(zNewValue != orxNULL);
 
     /* Copies original content */
     orxMemory_Copy(zNewValue, _pstValue->zValue, u32BufferSize);
@@ -1037,7 +1221,7 @@ static orxSTATUS orxFASTCALL orxConfig_AppendValue(orxCONFIG_VALUE *_pstValue, c
 
   /* Updates value */
   _pstValue->u16ListCount  += (orxU16)u32Size;
-  _pstValue->u16Flags      |= orxCONFIG_VALUE_KU16_FLAG_LIST;
+  _pstValue->u16Flags      |= orxCONFIG_VALUE_KU16_FLAG_LIST | orxCONFIG_VALUE_KU16_FLAG_ALLOCATION;
 
   /* Clears value buffer */
   sstConfig.u32BufferListSize = 0;
@@ -1407,38 +1591,41 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
 
 #ifdef __orxDEBUG__
 
-    /* Not found? */
-    if(pstResult == orxNULL)
+    /* Should check? */
+    if(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK))
     {
-      orxCONFIG_ENTRY *pstEntry;
-
-      /* For all entries in section */
-      for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(sstConfig.pstCurrentSection->stEntryList));
-          pstEntry != orxNULL;
-          pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+      /* Not found? */
+      if(pstResult == orxNULL)
       {
-        /* Identical? */
-        if(pstEntry->stID == stID)
+        orxCONFIG_ENTRY *pstEntry;
+
+        /* For all entries in section */
+        for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(sstConfig.pstCurrentSection->stEntryList));
+            pstEntry != orxNULL;
+            pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s>" orxANSI_KZ_COLOR_FG_DEFAULT " inherits from " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "however one of its ancestors was not found" orxANSI_KZ_COLOR_UNDERLINE_OFF ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKey, pstEntry->stValue.zValue);
-
-          break;
-        }
-        else
-        {
-          const orxSTRING zKey;
-
-          /* Gets its key */
-          zKey = orxString_GetFromID(pstEntry->stID);
-
-          /* Case-only difference? */
-          if(orxString_ICompare(zKey, _zKey) == 0)
+          /* Identical? */
+          if(pstEntry->stID == stID)
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s>" orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON " was found instead of requested key" orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_UNDERLINE_OFF " <%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, zKey, _zKey);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT "inherits from" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "however one of its ancestors was not found" orxANSI_KZ_COLOR_UNDERLINE_OFF ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKey, pstEntry->stValue.zValue);
 
             break;
+          }
+          else
+          {
+            const orxSTRING zKey;
+
+            /* Gets its key */
+            zKey = orxString_GetFromID(pstEntry->stID);
+
+            /* Typo? */
+            if((orxString_ICompare(zKey, _zKey) == 0)
+            || (orxString_GetEditDistance(zKey, _zKey) <= ((orxString_GetLength(_zKey) <= 4UL) ? 1UL : orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE)))
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "was found instead of requested key" orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_UNDERLINE_OFF " <%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, zKey, _zKey);
+            }
           }
         }
       }
@@ -2914,24 +3101,11 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
         /* Inheritance marker? */
         case orxCONFIG_KC_INHERITANCE_MARKER:
         {
-          /* Updates pointer */
-          pc++;
-
           /* Finds end marker */
-          while((pc < _acBuffer + _u32Size) && (*pc != orxCONFIG_KC_INHERITANCE_MARKER))
-          {
-            /* End of line? */
-            if((*pc == orxCHAR_CR) || (*pc == orxCHAR_LF))
-            {
-              /* Updates new line start */
-              pcLineStart = pc + 1;
-
-              break;
-            }
-
-            /* Updates pointer */
-            pc++;
-          }
+          for(pc++;
+              (pc < _acBuffer + _u32Size) && (*pc != orxCONFIG_KC_INHERITANCE_MARKER) && (*pc != orxCHAR_CR) && (*pc != orxCHAR_LF);
+              pc++)
+            ;
 
           /* Valid? */
           if((pc < _acBuffer + _u32Size) && (*pc == orxCONFIG_KC_INHERITANCE_MARKER))
@@ -3004,10 +3178,10 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
 
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Begin include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
-  
+
               /* Loads file */
               orxConfig_Load(pcLineStart + 1);
-  
+
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: End include %c%s%c", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
@@ -3039,7 +3213,10 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete name <%.*s> for included file, '%c' terminator not found, skipping!", _zName, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete include name %c%.*s: '%c' terminator not found, skipping!", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+
+            /* Updates new line start */
+            pcLineStart = pc + 1;
           }
 
           break;
@@ -3300,16 +3477,34 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
     }
   }
 
-  /* Has remaining buffer? */
-  if((pcLineStart != _acBuffer) && (pc > pcLineStart))
+  /* Did some processing happen? */
+  if(pcLineStart != _acBuffer)
   {
-    /* Updates result */
-    u32Result = (orxU32)(_acBuffer + _u32Size - pcLineStart);
+    /* Has remaining buffer? */
+    if(pc > pcLineStart)
+    {
+      /* Updates result */
+      u32Result = (orxU32)(_acBuffer + _u32Size - pcLineStart);
+    }
+    else
+    {
+      /* Clears result */
+      u32Result = 0;
+    }
   }
   else
   {
-    /* Clears result */
-    u32Result = 0;
+    /* Cuts the key string */
+    if(pcKeyEnd != orxNULL)
+    {
+      *pcKeyEnd = orxCHAR_NULL;
+    }
+
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Couldn't process key <%s> as its value exceeds internal capacity (%u), skipping the rest of the file!", _zName, pcLineStart, orxCONFIG_KU32_BUFFER_SIZE);
+
+    /* Updates result */
+    u32Result = orxU32_UNDEFINED;
   }
 
   /* Done! */
@@ -3581,8 +3776,9 @@ static void orxFASTCALL orxConfig_ToPascalCase(orxSTRING _zDst, const orxSTRING 
  */
 static void orxFASTCALL orxConfig_SetDefaultColorList()
 {
-  orxCHAR acParentBuffer[64];
+  orxCHAR acParentBuffer[128];
   orxS32  s32Offset;
+  orxU32  i, iCount;
 
 #define orxCOLOR_DECLARE(NAME, R, G, B) {#NAME, &orxVECTOR_##NAME},
 
@@ -3600,34 +3796,59 @@ static void orxFASTCALL orxConfig_SetDefaultColorList()
   /* Pushes color config section */
   orxConfig_PushSection(orxCOLOR_KZ_CONFIG_SECTION);
 
+  /* For all colors */
+  for(i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astColorList); i < iCount; i++)
+  {
+    orxVECTOR vColor;
+
+    /* Checks */
+    orxASSERT(orxString_GetLength(astColorList[i].zName) < sizeof(acParentBuffer));
+
+    /* Gets PascalCase name with spaces */
+    orxConfig_ToPascalCase(acParentBuffer, astColorList[i].zName);
+
+    /* Stores color values under PascalCase name with spaces */
+    if(orxConfig_GetEntry(orxString_Hash(acParentBuffer)) == orxNULL)
+    {
+      orxConfig_SetVector(acParentBuffer, orxVector_Mulf(&vColor, astColorList[i].pvColor, orxCOLOR_DENORMALIZER));
+    }
+  }
+
   /* Inits parent buffer */
   s32Offset = orxString_NPrint(acParentBuffer, sizeof(acParentBuffer), "@.");
 
-  /* For all colors */
-  for(orxU32 i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astColorList); i < iCount; i++)
+  /* For all keys */
+  for(i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
   {
-    orxVECTOR vColor;
-    orxCHAR   acBuffer[sizeof(acParentBuffer)];
+    orxCHAR         acBuffer[sizeof(acParentBuffer)];
+    const orxSTRING zKey;
+
+    /* Gets it */
+    zKey = orxConfig_GetKey(i);
 
     /* Checks */
-    orxASSERT(orxString_GetLength(astColorList[i].zName) < sizeof(acParentBuffer) - s32Offset);
+    orxASSERT(orxString_GetLength(zKey) < sizeof(acParentBuffer) - s32Offset);
 
-    /* Gets PascalCase name with spaces */
-    orxConfig_ToPascalCase(acBuffer, astColorList[i].zName);
+    /* Sets PascalCase name with spaces as parent */
+    orxString_NPrint(acParentBuffer + s32Offset, sizeof(acParentBuffer) - s32Offset, "%s", zKey);
 
-    /* Sets PascalCase name without spaces as parent */
-    orxConfig_ToPascalCase(acParentBuffer + s32Offset, acBuffer);
-
-    /* Inherits from the no-space PascalCase for all the variations (Pascal case with spaces, lower case with and without spaces) */
-    orxConfig_SetString(acBuffer, acParentBuffer);
+    /* Inherits from the PascalCase for all the variations (PascalCase without spaces, lower case with and without spaces) */
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", acParentBuffer + s32Offset);
     orxString_LowerCase(acBuffer);
-    orxConfig_SetString(acBuffer, acParentBuffer);
-    orxConfig_ToPascalCase(acBuffer, acBuffer);
+    if(orxConfig_GetEntry(orxString_Hash(acBuffer)) == orxNULL)
+    {
+      orxConfig_SetString(acBuffer, acParentBuffer);
+    }
+    orxConfig_ToPascalCase(acBuffer, acParentBuffer + s32Offset);
+    if(orxConfig_GetEntry(orxString_Hash(acBuffer)) == orxNULL)
+    {
+      orxConfig_SetString(acBuffer, acParentBuffer);
+    }
     orxString_LowerCase(acBuffer);
-    orxConfig_SetString(acBuffer, acParentBuffer);
-
-    /* Stores color values under PascalCase name without spaces */
-    orxConfig_SetVector(acParentBuffer + s32Offset, orxVector_Mulf(&vColor, astColorList[i].pvColor, orxCOLOR_DENORMALIZER));
+    if(orxConfig_GetEntry(orxString_Hash(acBuffer)) == orxNULL)
+    {
+      orxConfig_SetString(acBuffer, acParentBuffer);
+    }
   }
 
   /* Pops config section */
@@ -3686,7 +3907,7 @@ void orxFASTCALL orxConfig_CommandGetOrigin(orxU32 _u32ArgNumber, const orxCOMMA
 void orxFASTCALL orxConfig_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->zValue = orxConfig_GetParent(_astArgList[0].zValue);
+  _pstResult->zValue = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxConfig_GetParent(_astArgList[0].zValue) : orxConfig_GetParent(orxConfig_GetCurrentSection());
   if(_pstResult->zValue == orxNULL)
   {
     _pstResult->zValue = orxSTRING_EMPTY;
@@ -3702,6 +3923,32 @@ void orxFASTCALL orxConfig_CommandSetParent(orxU32 _u32ArgNumber, const orxCOMMA
 {
   /* Updates result */
   _pstResult->zValue = (orxConfig_SetParent(_astArgList[0].zValue, (_u32ArgNumber > 1) ? ((_astArgList[1].zValue[0] != orxCONFIG_KC_INHERITANCE_MARKER) ? _astArgList[1].zValue : orxSTRING_EMPTY) : orxNULL) != orxSTATUS_FAILURE) ? _astArgList[0].zValue : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetDefaultParent
+ */
+void orxFASTCALL orxConfig_CommandSetDefaultParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = (orxConfig_SetDefaultParent((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL) != orxSTATUS_FAILURE) ? ((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxSTRING_EMPTY) : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetDefaultParent
+ */
+void orxFASTCALL orxConfig_CommandGetDefaultParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = orxConfig_GetDefaultParent();
+  if(_pstResult->zValue == orxNULL)
+  {
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
 
   /* Done! */
   return;
@@ -3811,7 +4058,7 @@ void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAN
   }
 
   /* Updates result */
-  _pstResult->bValue = (orxConfig_HasValue(_astArgList[1].zValue));
+  _pstResult->bValue = ((_u32ArgNumber > 2) && (_astArgList[2].bValue == orxFALSE)) ? orxConfig_HasValueNoCheck(_astArgList[1].zValue) : orxConfig_HasValue(_astArgList[1].zValue);
 
   /* Pops section */
   if(bPush != orxFALSE)
@@ -4165,6 +4412,10 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetParent, "Parent", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: SetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetParent, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: SetDefaultParent */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetDefaultParent, "Section", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"DefaultParent = <void>", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetDefaultParent */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetDefaultParent, "DefaultParent", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
   /* Command: CreateSection */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, CreateSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasSection */
@@ -4177,7 +4428,7 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetCurrentSection, "Section", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
 
   /* Command: HasValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, HasValue, "Value?", orxCOMMAND_VAR_TYPE_BOOL, 2, 1, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"TypoCheck = true", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: ClearValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, ClearValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetValue */
@@ -4256,6 +4507,10 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetParent);
   /* Command: SetParent */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetParent);
+  /* Command: SetDefaultParent */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetDefaultParent);
+  /* Command: GetDefaultParent */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetDefaultParent);
   /* Command: CreateSection */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, CreateSection);
   /* Command: HasSection */
@@ -4402,7 +4657,7 @@ orxSTATUS orxFASTCALL orxConfig_Init()
       sstConfig.stResourceGroupID = orxString_GetID(orxCONFIG_KZ_RESOURCE_GROUP);
 
       /* Inits flags */
-      orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY | orxCONFIG_KU32_STATIC_FLAG_HISTORY, orxCONFIG_KU32_STATIC_MASK_ALL);
+      orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY | orxCONFIG_KU32_STATIC_FLAG_HISTORY | orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK, orxCONFIG_KU32_STATIC_MASK_ALL);
 
       /* Registers commands */
       orxConfig_RegisterCommands();
@@ -4529,7 +4784,48 @@ void orxFASTCALL orxConfig_Exit()
     orxMemory_Zero(&sstConfig, sizeof(orxCONFIG_STATIC));
   }
 
+  /* Done! */
   return;
+}
+
+/** Enables/disables config typo check (debug-only)
+ */
+void orxFASTCALL orxConfig_EnableTypoCheck(orxBOOL _bEnable)
+{
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Enable? */
+  if(_bEnable != orxFALSE)
+  {
+    /* Updates flags */
+    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK, orxCONFIG_KU32_STATIC_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates flags */
+    orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Is typo check enabled?
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_IsTypoCheckEnabled()
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Updates result */
+  bResult = orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK);
+
+  /* Done! */
+  return bResult;
 }
 
 /** Sets encryption key
@@ -4824,8 +5120,14 @@ orxSTATUS orxFASTCALL orxConfig_Load(const orxSTRING _zFileName)
         /* Processes buffer */
         u32Offset = orxConfig_ProcessBuffer(_zFileName, acBuffer, u32Size, u32Offset);
 
+        /* Failure? */
+        if(u32Offset == orxU32_UNDEFINED)
+        {
+          /* Aborts */
+          break;
+        }
         /* Should keep remainder of buffer? */
-        if(u32Offset != 0)
+        else if(u32Offset != 0)
         {
           /* Moves it at the beginning of the buffer */
           orxMemory_Move(acBuffer, acBuffer + u32Size - u32Offset, u32Offset);
@@ -4947,12 +5249,20 @@ orxSTATUS orxFASTCALL orxConfig_LoadFromMemory(orxCHAR *_acBuffer, orxU32 _u32Bu
     if((bProcess != orxFALSE)
     && (u32Offset <= _u32BufferSize))
     {
-      /* Loads it */
+      orxCONFIG_SECTION *pstPreviousSection;
+
+      /* Backups current section */
+      pstPreviousSection = sstConfig.pstCurrentSection;
+
+      /* Processes buffer */
       if(orxConfig_ProcessBuffer(orxCONFIG_KZ_CONFIG_MEMORY, _acBuffer, _u32BufferSize, u32Offset) == 0)
       {
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
       }
+
+      /* Restores previous section */
+      sstConfig.pstCurrentSection = pstPreviousSection;
     }
   }
 
@@ -5664,7 +5974,7 @@ orxSTATUS orxFASTCALL orxConfig_SetParent(const orxSTRING _zSectionName, const o
 
 /** Gets a section's parent
  * @param[in] _zSectionName     Concerned section
- * @return Section's parent name if set or orxSTRING_EMPTY if no parent has been forced, orxNULL otherwise
+ * @return Section's parent name if set, orxSTRING_EMPTY if no parent has been forced or orxNULL otherwise
  */
 const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)
 {
@@ -5755,6 +6065,27 @@ orxSTATUS orxFASTCALL orxConfig_SetDefaultParent(const orxSTRING _zSectionName)
 
   /* Done! */
   return eResult;
+}
+
+/** Gets default parent for all sections
+ * @return Default parent name if set, orxNULL otherwise
+ */
+const orxSTRING orxFASTCALL orxConfig_GetDefaultParent()
+{
+  const orxSTRING zResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+
+  /* Has default section? */
+  if(sstConfig.pstDefaultSection != orxNULL)
+  {
+    /* Updates result */
+    zResult = sstConfig.pstDefaultSection->zName;
+  }
+
+  /* Done! */
+  return zResult;
 }
 
 /** Gets current working section
@@ -6363,6 +6694,33 @@ orxBOOL orxFASTCALL orxConfig_HasValue(const orxSTRING _zKey)
   return bResult;
 }
 
+/** Has specified value for the given key (no check for typos)?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxConfig_HasValueNoCheck(const orxSTRING _zKey)
+{
+  orxU32  u32TypoCheckFlag;
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+
+  /* Updates flags */
+  u32TypoCheckFlag = orxFLAG_GET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK);
+  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK);
+
+  /* Updates result */
+  bResult = orxConfig_HasValue(_zKey);
+
+  /* Updates flags */
+  orxFLAG_SET(sstConfig.u32Flags, u32TypoCheckFlag, orxCONFIG_KU32_STATIC_FLAG_NONE);
+
+  /* Done! */
+  return bResult;
+}
+
 /** Gets a value's source section (ie. the section where the value is explicitly defined), only considering section inheritance, not local one
  * @param[in] _zKey             Key name
  * @return Name of the section that explicitly contains the value, orxSTRING_EMPTY if not found
@@ -6630,6 +6988,56 @@ orxVECTOR *orxFASTCALL orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pv
     {
       pvResult = _pvVector;
     }
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Reads a vector value from config and interpret any color literals in the given color space (will take a random value if a list is provided for this key)
+ * @param[in]   _zKey             Key name
+ * @param[in]   _eColorSpace      Color space to use when translating color literals (NONE: no literal, COMPONENT: 0-255 RGB values, all others: normalized spaces)
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+orxVECTOR *orxFASTCALL orxConfig_GetColorVector(const orxSTRING _zKey, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxVECTOR        *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT((_eColorSpace < orxCOLORSPACE_NUMBER) || (_eColorSpace == orxCOLORSPACE_NONE));
+  orxASSERT(_pvVector != orxNULL);
+
+  /* Gets corresponding value */
+  pstValue = orxConfig_GetValue(_zKey);
+
+  /* Found? */
+  if(pstValue != orxNULL)
+  {
+    const orxSTRING zValue;
+    orxS32          s32ListIndex;
+
+    /* Not a list? */
+    if(!orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST))
+    {
+      /* Updates real index */
+      s32ListIndex = 0;
+    }
+    else
+    {
+      /* Updates real index */
+      s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)pstValue->u16ListCount - 1);
+    }
+
+    /* Gets its value */
+    zValue = orxConfig_GetListValue(pstValue, s32ListIndex, orxFALSE);
+
+    /* Converts it */
+    pvResult = orxConfig_ToVector(zValue, _eColorSpace, _pvVector);
   }
 
   /* Done! */
@@ -7265,7 +7673,54 @@ orxVECTOR *orxFASTCALL orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s3
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get U32 list item config value <%s.%s>, invalid index: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCount);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get VECTOR list item config value <%s.%s>, invalid index: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCount);
+    }
+  }
+
+  /* Done! */
+  return pvResult;
+}
+
+/** Reads a vector value from config list and interpret any color literals in the given color space
+ * @param[in]   _zKey             Key name
+ * @param[in]   _s32ListIndex     Index of desired item in list / -1 for random
+ * @param[in]   _eColorSpace      Color space to use when translating color literals (NONE: no literal, COMPONENT: 0-255 RGB values, all others: normalized spaces)
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+orxVECTOR *orxFASTCALL orxConfig_GetListColorVector(const orxSTRING _zKey, orxS32 _s32ListIndex, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector)
+{
+  orxCONFIG_VALUE  *pstValue;
+  orxVECTOR        *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zKey != orxNULL);
+  orxASSERT(_zKey != orxSTRING_EMPTY);
+  orxASSERT((_eColorSpace < orxCOLORSPACE_NUMBER) || (_eColorSpace == orxCOLORSPACE_NONE));
+  orxASSERT(_pvVector != orxNULL);
+
+  /* Gets corresponding value */
+  pstValue = orxConfig_GetValue(_zKey);
+
+  /* Valid? */
+  if(pstValue != orxNULL)
+  {
+    /* Is index valid? */
+    if(_s32ListIndex < (orxS32)pstValue->u16ListCount)
+    {
+      const orxSTRING zValue;
+
+      /* Gets its value */
+      zValue = orxConfig_GetListValue(pstValue, _s32ListIndex, orxFALSE);
+
+      /* Converts it */
+      pvResult = orxConfig_ToVector(zValue, _eColorSpace, _pvVector);
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to get VECTOR list item config value <%s.%s>, invalid index: %d out of %d item(s).", _zKey, pstValue->zValue, _s32ListIndex, (orxS32)pstValue->u16ListCount);
     }
   }
 

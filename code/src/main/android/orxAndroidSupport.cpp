@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -36,7 +36,6 @@
 #if defined(TARGET_OS_ANDROID)
 
 #include <android/log.h>
-#include <sys/system_properties.h>
 
 #ifdef __orxDEBUG__
 
@@ -145,17 +144,7 @@ static void orxAndroid_JNI_ThreadDestroyed(void *_pVvalue)
 
 static orxS32 orxAndroid_GetSdkVersion()
 {
-  orxS32 s32Version;
-
-  char sdkVersion[PROP_VALUE_MAX + 1];
-  int bufferLen = __system_property_get("ro.build.version.sdk", sdkVersion);
-
-  if((bufferLen > 0) && (orxString_ToS32Base(sdkVersion, 10, &s32Version, orxNULL) != orxSTATUS_FAILURE))
-  {
-    return s32Version;
-  }
-
-  return 0;
+  return sstAndroid.app->activity->sdkVersion;
 }
 
 static jobject orxAndroid_JNI_getDisplay(JNIEnv *_pstEnv)
@@ -517,20 +506,18 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
           }
           case AMOTION_EVENT_ACTION_DOWN:
           {
-            iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
-            stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+            stPayload.stTouch.u32ID = event->pointers[0].id;
+            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, 0);
+            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, 0);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
             break;
           }
           case AMOTION_EVENT_ACTION_UP:
           case AMOTION_EVENT_ACTION_CANCEL:
           {
-            iIndex = orxANDROID_GET_ACTION_INDEX(event->action);
-            stPayload.stTouch.u32ID = event->pointers[iIndex].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+            stPayload.stTouch.u32ID = event->pointers[0].id;
+            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, 0);
+            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, 0);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
             break;
           }
@@ -675,19 +662,24 @@ extern "C" void orxAndroid_PumpEvents()
 {
   /* Read all pending events. */
   int id;
-  int events;
   android_poll_source *source;
+
+  /* Check if we are exiting. */
+  if(sstAndroid.app->destroyRequested != 0)
+  {
+    return;
+  }
 
   /* If not animating, we will block forever waiting for events.
    * If animating, we loop until all events are read, then continue
    * to draw the next frame of animation.
    */
-  while( (id = ALooper_pollAll(orxAndroid_IsInteractible() ? 0 : -1, NULL, &events, (void **) &source)) >= 0 )
+  while((id = ALooper_pollOnce(orxAndroid_IsInteractible() ? 0 : -1, NULL, NULL, (void **) &source)) >= 0)
   {
     /* Process this event. */
     if(source != NULL)
     {
-      source->process( sstAndroid.app, source );
+      source->process(sstAndroid.app, source);
     }
 
     if(id == LOOPER_ID_SENSOR)
@@ -735,7 +727,8 @@ void android_main(android_app *_pstState)
    */
   if(pthread_key_create(&sThreadKey, orxAndroid_JNI_ThreadDestroyed))
   {
-    __android_log_print(ANDROID_LOG_ERROR, "Orx", "Error initializing pthread key");
+    sThreadKey = 0;
+    LOGE("Error initializing pthread key");
   }
   else
   {
@@ -774,12 +767,11 @@ void android_main(android_app *_pstState)
 
     /* pumps final events */
     int id;
-    int events;
     android_poll_source *source;
 
     _pstState->onAppCmd = NULL;
 
-    while((id = ALooper_pollAll(-1, NULL, &events, (void **) &source )) >= 0)
+    while((id = ALooper_pollOnce(-1, NULL, NULL, (void **)&source)) >= 0)
     {
       /* Process this event. */
       if(source != NULL)
@@ -939,7 +931,7 @@ orxSTATUS orxAndroid_RegisterAPKResource()
 
   /* Inits apk type */
   orxMemory_Zero(&stAPKTypeInfo, sizeof(orxRESOURCE_TYPE_INFO));
-  stAPKTypeInfo.zTag       = (orxCHAR *) orxRESOURCE_KZ_TYPE_TAG_APK;
+  stAPKTypeInfo.zTag       = (orxCHAR *)orxRESOURCE_KZ_TYPE_TAG_APK;
   stAPKTypeInfo.pfnLocate  = orxResource_APK_Locate;
   stAPKTypeInfo.pfnOpen    = orxResource_APK_Open;
   stAPKTypeInfo.pfnClose   = orxResource_APK_Close;

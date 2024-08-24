@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -1537,7 +1537,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_SPRING;
 
       /* Stores length */
-      stBodyJointDef.stSpring.fLength     = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));;
+      stBodyJointDef.stSpring.fLength     = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));
 
       /* Stores frequency */
       stBodyJointDef.stSpring.fFrequency  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
@@ -1554,7 +1554,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_ROPE;
 
       /* Stores length */
-      stBodyJointDef.stRope.fLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));;
+      stBodyJointDef.stRope.fLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));
     }
     /* Pulley? */
     else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_PULLEY) == 0)
@@ -3169,3 +3169,8 @@ orxU32 orxFASTCALL orxBody_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags
   /* Done! */
   return u32Result;
 }
+
+#undef orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST
+#undef orxBODY_GET_NEXT_JOINT_FROM_SRC_LIST
+#undef orxBODY_GET_FIRST_JOINT_FROM_DST_LIST
+#undef orxBODY_GET_NEXT_JOINT_FROM_DST_LIST

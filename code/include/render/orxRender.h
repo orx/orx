@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -78,16 +78,16 @@
 
 /** Inputs
  */
-#define orxRENDER_KZ_INPUT_SET                        "-=RenderSet=-"
+#define orxRENDER_KZ_INPUT_SET                        "orx:input:profiler"
 
-#define orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY    "ProfilerToggleHistory"
-#define orxRENDER_KZ_INPUT_PROFILER_PAUSE             "ProfilerPause"
-#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME    "ProfilerPreviousFrame"
-#define orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME        "ProfilerNextFrame"
-#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH    "ProfilerPreviousDepth"
-#define orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH        "ProfilerNextDepth"
-#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD   "ProfilerPreviousThread"
-#define orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD       "ProfilerNextThread"
+#define orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY    "ToggleHistory"
+#define orxRENDER_KZ_INPUT_PROFILER_PAUSE             "Pause"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_FRAME    "PreviousFrame"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_FRAME        "NextFrame"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_DEPTH    "PreviousDepth"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_DEPTH        "NextDepth"
+#define orxRENDER_KZ_INPUT_PROFILER_PREVIOUS_THREAD   "PreviousThread"
+#define orxRENDER_KZ_INPUT_PROFILER_NEXT_THREAD       "NextThread"
 
 
 /** Event enum

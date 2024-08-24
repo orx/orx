@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -40,7 +40,6 @@ static orxU32       su32VideoModeIndex                    = 0;
 static orxBOOL      sbShaderEnabled                       = orxFALSE;
 static orxSPAWNER  *spoBallSpawner                        = orxNULL;
 static orxOBJECT   *spstWalls                             = orxNULL;
-static orxFLOAT     sfShaderPhase                         = orx2F(0.0f);
 static orxFLOAT     sfShaderAmplitude                     = orx2F(0.0f);
 static orxFLOAT     sfShaderFrequency                     = orx2F(1.0f);
 static orxVECTOR    svColor                               = {0};
@@ -188,8 +187,7 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
   orxPROFILER_PUSH_MARKER("Bounce_EventHandler");
 
   /* Checks */
-  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_PHYSICS)
-         || (_pstEvent->eType == orxEVENT_TYPE_INPUT)
+  orxASSERT((_pstEvent->eType == orxEVENT_TYPE_INPUT)
          || (_pstEvent->eType == orxEVENT_TYPE_SHADER)
          || (_pstEvent->eType == orxEVENT_TYPE_SOUND)
          || (_pstEvent->eType == orxEVENT_TYPE_DISPLAY)
@@ -226,20 +224,6 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       break;
     }
 
-    /* Physics */
-    case orxEVENT_TYPE_PHYSICS:
-    {
-      /* Colliding? */
-      if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
-      {
-        /* Adds bump FX on both objects */
-        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hSender), "Bump");
-        orxObject_AddUniqueFX(orxOBJECT(_pstEvent->hRecipient), "Bump");
-      }
-
-      break;
-    }
-
     /* Shader */
     case orxEVENT_TYPE_SHADER:
     {
@@ -259,12 +243,6 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       {
         /* Updates its value */
         pstPayload->fValue = (sbShaderEnabled != orxFALSE) ? orxFLOAT_1 : orxFLOAT_0;
-      }
-      /* Phase? */
-      else if(!orxString_Compare(pstPayload->zParamName, "phase"))
-      {
-        /* Updates its value */
-        pstPayload->fValue = sfShaderPhase;
       }
       else if(!orxString_Compare(pstPayload->zParamName, "color"))
       {
@@ -479,7 +457,6 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   orxConfig_PushSection("Bounce");
 
   /* Updates shader values */
-  sfShaderPhase    += orxConfig_GetFloat("ShaderPhaseSpeed") * _pstClockInfo->fDT;
   sfShaderFrequency = orxConfig_GetFloat("ShaderMaxFrequency") * orxMath_Sin(orxConfig_GetFloat("ShaderFrequencySpeed") * _pstClockInfo->fTime);
   sfShaderAmplitude = orxConfig_GetFloat("ShaderMaxAmplitude") * orxMath_Sin(orxConfig_GetFloat("ShaderAmplitudeSpeed") * _pstClockInfo->fTime);
 
@@ -532,8 +509,8 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     /* Found? */
     if(pstObject)
     {
-      /* Adds FX */
-      orxObject_AddUniqueFX(pstObject, "Pick");
+      /* Fires trigger */
+      orxObject_FireTrigger(pstObject, "Pick", orxNULL, 0);
     }
   }
   /* Raycasting? */
@@ -639,7 +616,6 @@ static orxSTATUS orxBounce_Init()
     eResult = ((eResult != orxSTATUS_FAILURE) && (orxClock_Register(pstClock, &orxBounce_UpdateTrail, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOW) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
     /* Registers event handler */
-    eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxBounce_EventHandler) : orxSTATUS_FAILURE;
     eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler) : orxSTATUS_FAILURE;
     eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxBounce_EventHandler) : orxSTATUS_FAILURE;
     eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_SOUND, orxBounce_EventHandler) : orxSTATUS_FAILURE;

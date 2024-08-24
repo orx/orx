@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -155,7 +155,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Update();
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize);
 
 /** Creates a clock from config
- * @param[in]   _zConfigID    Config ID
+ * @param[in]   _zConfigID                            Config ID
  * @ return orxCLOCK / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_CreateFromConfig(const orxSTRING _zConfigID);
@@ -184,15 +184,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Restart(orxCLOCK 
 
 /** Pauses a clock
  * @param[in]   _pstClock                             Concerned clock
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _bPause                               Pause / unpause
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Pause(orxCLOCK *_pstClock);
-
-/** Unpauses a clock
- * @param[in]   _pstClock                             Concerned clock
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unpause(orxCLOCK *_pstClock);
+extern orxDLLAPI void orxFASTCALL                     orxClock_Pause(orxCLOCK *_pstClock, orxBOOL _bPause);
 
 /** Is a clock paused?
  * @param[in]   _pstClock                             Concerned clock
@@ -269,14 +263,8 @@ extern orxDLLAPI void *orxFASTCALL                    orxClock_GetContext(const 
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pContext);
 
 
-/** Gets next existing clock in list (can be used to parse all existing clocks)
- * @param[in]   _pstClock                             Concerned clock
- * @return      orxCLOCK / orxNULL
- */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(const orxCLOCK *_pstClock);
-
 /** Gets clock given its name
- * @param[in]   _zName          Clock name
+ * @param[in]   _zName                                Clock name, orxCLOCK_KZ_CORE for core clock
  * @return      orxCLOCK / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Get(const orxSTRING _zName);

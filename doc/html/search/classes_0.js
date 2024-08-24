@@ -21,6 +21,7 @@ var searchData=
   ['orxdisplay_5fvideo_5fmode',['orxDISPLAY_VIDEO_MODE',['../structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html',1,'']]],
   ['orxevent',['orxEVENT',['../structorx_e_v_e_n_t.html',1,'']]],
   ['orxfile_5finfo',['orxFILE_INFO',['../structorx_f_i_l_e___i_n_f_o.html',1,'']]],
+  ['orxfx_5fcurve_5fparam',['orxFX_CURVE_PARAM',['../structorx_f_x___c_u_r_v_e___p_a_r_a_m.html',1,'']]],
   ['orxfx_5fevent_5fpayload',['orxFX_EVENT_PAYLOAD',['../structorx_f_x___e_v_e_n_t___p_a_y_l_o_a_d.html',1,'']]],
   ['orxinput_5fevent_5fpayload',['orxINPUT_EVENT_PAYLOAD',['../structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html',1,'']]],
   ['orxlinklist',['orxLINKLIST',['../structorx_l_i_n_k_l_i_s_t.html',1,'']]],
@@ -46,6 +47,7 @@ var searchData=
   ['orxtimeline_5fevent_5fpayload',['orxTIMELINE_EVENT_PAYLOAD',['../structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d.html',1,'']]],
   ['orxtree',['orxTREE',['../structorx_t_r_e_e.html',1,'']]],
   ['orxtree_5fnode',['orxTREE_NODE',['../structorx_t_r_e_e___n_o_d_e.html',1,'']]],
+  ['orxtrigger_5fevent_5fpayload',['orxTRIGGER_EVENT_PAYLOAD',['../structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html',1,'']]],
   ['orxvector',['orxVECTOR',['../structorx_v_e_c_t_o_r.html',1,'']]],
   ['orxversion',['orxVERSION',['../structorx_v_e_r_s_i_o_n.html',1,'']]]
 ];

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -96,24 +96,10 @@ static orxSTATUS orxFASTCALL orxMain_EventHandler(const orxEVENT *_pstEvent)
 
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+  orxASSERT(_pstEvent->eID == orxSYSTEM_EVENT_CLOSE);
 
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
-  {
-    /* Close event */
-    case orxSYSTEM_EVENT_CLOSE:
-    {
-      /* Updates status */
-      orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_EXIT, orxMAIN_KU32_STATIC_FLAG_NONE);
-
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-  }
+  /* Updates status */
+  orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_EXIT, orxMAIN_KU32_STATIC_FLAG_NONE);
 
   /* Done! */
   return eResult;
@@ -150,7 +136,7 @@ orxSTATUS orxFASTCALL orxMain_Init()
         zGameFileName = orxConfig_GetString(orxMAIN_KZ_CONFIG_GAME_FILE);
 
         /* Loads it */
-        eResult = (orxPlugin_LoadUsingExt(zGameFileName, zGameFileName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        eResult = ((orxModule_IsInitialized(orxMODULE_ID_PLUGIN) != orxFALSE) && (orxPlugin_LoadUsingExt(zGameFileName, zGameFileName) != orxHANDLE_UNDEFINED)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       }
 
       /* Successful? */

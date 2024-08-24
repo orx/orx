@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -50,6 +50,7 @@
 
   #define WIN32_LEAN_AND_MEAN
   #include <windows.h>
+  #undef WIN32_LEAN_AND_MEAN
 
   typedef HINSTANCE                                         orxSYSPLUGIN;
 
@@ -921,7 +922,7 @@ void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, 
                     |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
                     |orxDEBUG_KU32_STATIC_FLAG_TYPE,
                      orxDEBUG_KU32_STATIC_MASK_USER_ALL);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, "The function <%s() @ %s:%d> has been called before being loaded!%sPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line, orxSTRING_EOL);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "The function <%s() @ %s:%d> has been called before being loaded!%sPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line, orxSTRING_EOL);
   orxDEBUG_SET_FLAGS(u32DebugFlags,
                      orxDEBUG_KU32_STATIC_MASK_USER_ALL);
 
@@ -1263,3 +1264,7 @@ const orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
   /* Done! */
   return zPluginName;
 }
+
+#undef orxPLUGIN_OPEN
+#undef orxPLUGIN_GET_SYMBOL_ADDRESS
+#undef orxPLUGIN_CLOSE

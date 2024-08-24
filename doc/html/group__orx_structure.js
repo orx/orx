@@ -2,7 +2,7 @@ var group__orx_structure =
 [
     [ "orxSTRUCTURE", "structorx_s_t_r_u_c_t_u_r_e.html", [
       [ "stLinkListNode", "structorx_s_t_r_u_c_t_u_r_e.html#aba362d7edbcd10cc38cf779ffc011d40", null ],
-      [ "stStorage", "structorx_s_t_r_u_c_t_u_r_e.html#abf8185cd3a21ba21923ca9e27ee38544", null ],
+      [ "stStorage", "structorx_s_t_r_u_c_t_u_r_e.html#aaf01e376249a4190c45b7d053c3cdfde", null ],
       [ "stTreeNode", "structorx_s_t_r_u_c_t_u_r_e.html#a58dd3768243ac8325fa4a267512f4317", null ],
       [ "u32Flags", "structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef", null ],
       [ "u32RefCount", "structorx_s_t_r_u_c_t_u_r_e.html#acf225787d2879ff880c6adae8c622a11", null ],
@@ -40,6 +40,7 @@ var group__orx_structure =
     [ "orxTEXT", "group__orx_structure.html#ga4a3d5904f1be7aa2b909fae7f30310dd", null ],
     [ "orxTEXTURE", "group__orx_structure.html#gab685dba592726aeaf3d56698935df449", null ],
     [ "orxTIMELINE", "group__orx_structure.html#gaef389b9623f5550ce4f2c55304d0c9e5", null ],
+    [ "orxTRIGGER", "group__orx_structure.html#ga225910e71e80d5d48c2465e26dfeea74", null ],
     [ "orxVIEWPORT", "group__orx_structure.html#gaaac0eac9abddde85d2660378d4f44f86", null ],
     [ "orxSTRUCTURE_UPDATE_FUNCTION", "group__orx_structure.html#ga7648d4b9d2a689fb22c8ff6d903e36e5", null ],
     [ "orxSTRUCTURE_ID", "group__orx_structure.html#ga559293f09cd4d21743241cc32350b320", [
@@ -53,6 +54,7 @@ var group__orx_structure =
       [ "orxSTRUCTURE_ID_SOUNDPOINTER", "group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a554ee7e66ada830afda6e98c1745acee", null ],
       [ "orxSTRUCTURE_ID_SPAWNER", "group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a72b4f2d0c5c830bc42126cd2ee998d35", null ],
       [ "orxSTRUCTURE_ID_TIMELINE", "group__orx_structure.html#gga559293f09cd4d21743241cc32350b320ad846fa1d638eff2491e3b2721915b9da", null ],
+      [ "orxSTRUCTURE_ID_TRIGGER", "group__orx_structure.html#gga559293f09cd4d21743241cc32350b320aaab85d245d6f9d2025a6b75b3610e87b", null ],
       [ "orxSTRUCTURE_ID_LINKABLE_NUMBER", "group__orx_structure.html#gga559293f09cd4d21743241cc32350b320aa63d4ded8137b23e0e0c4e2de8ea172f", null ],
       [ "orxSTRUCTURE_ID_ANIM", "group__orx_structure.html#gga559293f09cd4d21743241cc32350b320aabae8c1918db82057a7faa0cf10a314c", null ],
       [ "orxSTRUCTURE_ID_ANIMSET", "group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a8e26d5803fc825cfe4c3195098af6d16", null ],

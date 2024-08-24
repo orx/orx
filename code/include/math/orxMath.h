@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -65,6 +65,15 @@
  */
 #define orxLERP(A, B, T)          ((A) + ((T) * ((B) - (A))))
 
+/** Remaps a value from one interval to another one
+ * @param[in]   A1                              First interval's low boundary
+ * @param[in]   B1                              First interval's high boundary
+ * @param[in]   A2                              Second interval's low boundary
+ * @param[in]   B2                              Second interval's high boundary
+ * @param[in]   V                               Value to remap from the first interval to the second one
+ * @return      Remaped value
+ */
+#define orxREMAP(A1, B1, A2, B2, V) (((V) - (A1)) / ((B1) - (A1)) * ((B2) - (A2)) + (A2))
 
 /** Gets minimum between two values
  * @param[in]   A                               First value

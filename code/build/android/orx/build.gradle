@@ -7,16 +7,20 @@ android {
     namespace 'org.orx.lib'
     compileSdk sdkVersion.toInteger()
 
+    // Ideally, we want to use the default NDK version for the used AGP version.
+    // However, we opt-in to NDK r27 since it comes with many important features/optimizations.
+    ndkVersion '27.0.12077973'
+
     buildFeatures {
         prefab true
         prefabPublishing true
     }
 
     defaultConfig {
-        minSdk 19
+        minSdk 21
         targetSdk sdkVersion.toInteger()
-        versionCode 114
-        versionName '1.14'
+        versionCode 115
+        versionName '1.15'
     }
     externalNativeBuild {
         ndkBuild {
@@ -32,12 +36,10 @@ android {
             headers "${System.env.ORX}/include"
         }
         webpdecoder_static {
-            headers "${System.env.ORX}/../extern/libwebp/include"
+            headers "${System.env.ORX}/../extern/libwebp/src"
         }
         liquidfun_static {
             headers "${System.env.ORX}/../extern/LiquidFun-1.1.0/include"
-        }
-        cpufeatures {
         }
     }
     packagingOptions {
@@ -70,39 +72,53 @@ android {
             }
         }
     }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+        singleVariant('debug') {
+            withSourcesJar()
+        }
+        singleVariant('profile') {
+            withSourcesJar()
+        }
+    }
     lint {
         abortOnError true
     }
 }
 dependencies {
-    api 'androidx.core:core:1.9.0'
-    api 'androidx.appcompat:appcompat:1.6.1'
+    // Align versions of all Kotlin components
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
 
-    api 'androidx.games:games-activity:2.0.2'
-    api 'androidx.games:games-controller:2.0.0'
-    api 'androidx.games:games-frame-pacing:2.1.0-beta01'
+    api 'androidx.core:core:1.13.1'
+    api 'androidx.appcompat:appcompat:1.7.0'
+
+    api 'androidx.games:games-activity:3.0.5'
+    api 'androidx.games:games-controller:2.0.2'
+    api 'androidx.games:games-frame-pacing:2.1.2'
 }
 
 afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
+                from components.release
                 groupId 'org.orx-project'
                 artifactId 'orx'
                 version android.defaultConfig.versionName
-                from components.release
             }
             debug(MavenPublication) {
+                from components.debug
                 groupId 'org.orx-project'
                 artifactId 'orxd'
                 version android.defaultConfig.versionName
-                from components.debug
             }
             profile(MavenPublication) {
+                from components.profile
                 groupId 'org.orx-project'
                 artifactId 'orxp'
                 version android.defaultConfig.versionName
-                from components.profile
             }
         }
         repositories {

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -56,6 +56,33 @@
  */
 typedef struct __orxSOUNDSYSTEM_SOUND_t   orxSOUNDSYSTEM_SOUND;
 typedef struct __orxSOUNDSYSTEM_SAMPLE_t  orxSOUNDSYSTEM_SAMPLE;
+
+/** Sound system stream type enum
+ */
+typedef enum __orxSOUNDSYSTEM_STREAM_TYPE_t
+{
+  /* Empty */
+  orxSOUNDSYSTEM_STREAM_TYPE_EMPTY = 0,
+
+  /* Noises */
+  orxSOUNDSYSTEM_STREAM_TYPE_WHITE,
+  orxSOUNDSYSTEM_STREAM_TYPE_PINK,
+  orxSOUNDSYSTEM_STREAM_TYPE_BROWNIAN,
+
+  /* Waves */
+  orxSOUNDSYSTEM_STREAM_TYPE_SINE,
+  orxSOUNDSYSTEM_STREAM_TYPE_SQUARE,
+  orxSOUNDSYSTEM_STREAM_TYPE_TRIANGLE,
+  orxSOUNDSYSTEM_STREAM_TYPE_SAWTOOTH,
+
+  /* External resource */
+  orxSOUNDSYSTEM_STREAM_TYPE_RESOURCE,
+
+  orxSOUNDSYSTEM_STREAM_TYPE_NUMBER,
+
+  orxSOUNDSYSTEM_STREAM_TYPE_NONE = orxENUM_NONE
+
+} orxSOUNDSYSTEM_STREAM_TYPE;
 
 /** Sound system status enum
  */
@@ -260,13 +287,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxSoundSystem_SetSampleDa
  */
 extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateFromSample(orxHANDLE _hUserData, const orxSOUNDSYSTEM_SAMPLE *_pstSample);
 
-/** Creates an empty stream
+/** Creates an empty/noise/wave stream
  * @param[in]   _hUserData                            User data to associate with this sound
+ * @param[in]   _eType                                Stream type (empty, white/pink/brownian noise, A4 (440Hz) sine/square/triangle/sawtooth wave)
  * @param[in]   _u32ChannelNumber                     Number of channels for the stream
  * @param[in]   _u32SampleRate                        Sampling rate of the stream (ie. number of frames per second)
  * @return orxSOUNDSYSTEM_SOUND / orxNULL
  */
-extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStream(orxHANDLE _hUserData, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate);
+extern orxDLLAPI orxSOUNDSYSTEM_SOUND *orxFASTCALL    orxSoundSystem_CreateStream(orxHANDLE _hUserData, orxSOUNDSYSTEM_STREAM_TYPE _eType, orxU32 _u32ChannelNumber, orxU32 _u32SampleRate);
 
 /** Loads a streamed sound (can be played directly)
  * @param[in]   _hUserData                            User data to associate with this sound

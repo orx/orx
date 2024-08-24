@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -39,6 +39,7 @@
 
 
 #ifdef __orxMSVC__
+  #pragma warning(push)
   #pragma warning(disable : 4244)
 #endif /* __orxMSVC__ */
 
@@ -1430,5 +1431,5 @@ orxU32 orxFASTCALL orxProfiler_GetUniqueMarkerDepth(orxS32 _s32MarkerID)
 }
 
 #ifdef __orxMSVC__
-  #pragma warning(default : 4244)
+  #pragma warning(pop)
 #endif /* __orxMSVC__ */

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2022 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -36,13 +36,8 @@
 
 orxSTATUS orxFASTCALL orxPhysics_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Not available on this platform!");
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_SUCCESS;
 }
 
 void orxFASTCALL orxPhysics_Dummy_Exit()
