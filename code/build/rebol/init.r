@@ -8,14 +8,15 @@ REBOL [
 ; Variables
 params: compose/deep [
   name        {Project name (relative or full path)}                                            (none)    (none)
-  bundle      {orxBundle support (resources can be automatically packaged and encrypted)}       +         []
+  bundle      {Bundle support (resources can be automatically packaged and encrypted)}          +         []
   cheat       {Secret pass/cheat code support}                                                  -         []
   c++         {Create a C++ project instead of C}                                               +         []
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                           -         [+c++]
+  inspector   {Object debug GUI inspector support (requires the imgui extension)}               -         [+imgui]
   mod         {MOD (Protracker), XM (FastTracker 2) & S3M (Scream Tracker 3) decoding support}  -         []
   movie       {Movie (MPEG-1) decoding support}                                                 -         []
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}                  -         []
-  remote      {orxRemote support (resources can be stored on a web server, HTTP-only)}          -         []
+  remote      {Remote support (resources can be stored on a web server, HTTP-only, PoC)}        -         []
   scroll      {C++ convenience layer with config-object binding}                                +         [+c++]
   sndh        {SNDH (Atari ST) decoding support}                                                -         [+c++]
 ]

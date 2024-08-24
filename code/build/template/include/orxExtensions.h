@@ -6,31 +6,11 @@
 
 #ifndef _orxEXTENSIONS_H_
 #define _orxEXTENSIONS_H_
-[+nuklear
-
-#define orxNUKLEAR_IMPL
-#include "orxNuklear.h"
-#undef orxNUKLEAR_IMPL]
-[+imgui
-
-#define orxIMGUI_IMPL
-#include "orxImGui.h"
-#undef orxIMGUI_IMPL]
-[+bundle
-
-#define orxBUNDLE_IMPL
-#include "orxBundle.h"
-#undef orxBUNDLE_IMPL]
 [+cheat
 
 #define orxCHEAT_IMPL
 #include "orxCheat.h"
 #undef orxCHEAT_IMPL]
-[+remote
-
-#define orxREMOTE_IMPL
-#include "orxRemote.h"
-#undef orxREMOTE_IMPL]
 [+movie
 
 #define orxMOVIE_IMPL
@@ -46,6 +26,31 @@
 #define orxSNDH_IMPL
 #include "orxSndh.h"
 #undef orxSNDH_IMPL]
+[+nuklear
+
+#define orxNUKLEAR_IMPL
+#include "orxNuklear.h"
+#undef orxNUKLEAR_IMPL]
+[+imgui
+
+#define orxIMGUI_IMPL
+#include "orxImGui.h"
+#undef orxIMGUI_IMPL]
+[+inspector
+
+#define orxINSPECTOR_IMPL
+#include "orxInspector.h"
+#undef orxINSPECTOR_IMPL]
+[+remote
+
+#define orxREMOTE_IMPL
+#include "orxRemote.h"
+#undef orxREMOTE_IMPL]
+[+bundle
+
+#define orxBUNDLE_IMPL
+#include "orxBundle.h"
+#undef orxBUNDLE_IMPL]
 
 void InitExtensions()
 {
@@ -66,40 +71,48 @@ void InitExtensions()
   orxSndh_Init();
 ]
 [+nuklear
-  // Initialize Dear ImGui
+  // Initialize Nuklear
   orxNuklear_Init();
 ]
 [+imgui
   // Initialize Dear ImGui
   orxImGui_Init();
 ]
+[+inspector
+  // Initialize inspector
+  orxInspector_Init();
+]
 }
 
 void ExitExtensions()
 {
-[+cheat
-  // Exit from cheat support
-  orxCheat_Exit();
+[+inspector
+  // Exit from inspector
+  orxInspector_Exit();
 ]
-[+movie
-  // Exit from movie support
-  orxMovie_Exit();
-]
-[+mod
-  // Exit from MOD support
-  orxMod_Exit();
-]
-[+sndh
-  // Exit from SNDH support
-  orxSndh_Exit();
+[+imgui
+  // Exit from Dear ImGui
+  orxImGui_Exit();
 ]
 [+nuklear
   // Exit from Nuklear
   orxNuklear_Exit();
 ]
-[+imgui
-  // Exit from Dear ImGui
-  orxImGui_Exit();
+[+sndh
+  // Exit from SNDH support
+  orxSndh_Exit();
+]
+[+mod
+  // Exit from MOD support
+  orxMod_Exit();
+]
+[+movie
+  // Exit from movie support
+  orxMovie_Exit();
+]
+[+cheat
+  // Exit from cheat support
+  orxCheat_Exit();
 ]
 [+remote
   // Exit from remote support
