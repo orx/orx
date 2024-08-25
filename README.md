@@ -6,14 +6,10 @@
 Orx - Portable Game Engine (Version 1.15)
 ========================================
 
-
-Email iarwain [at] orx-project.org to contact the author; or, better,
-check [orx's homepage](https://orx-project.org) for the most up-to-date contact information.
-You can also come [chat with us](https://orx-project.org/discord)
-if you have any questions or comments.
-
-This engine is licensed under the very permissive [zlib license](https://en.wikipedia.org/wiki/Zlib_License),
+This engine is licensed under the very permissive [zlib license](https://en.wikipedia.org/wiki/Zlib_License) (i.e. it's free for any commercial or non-commercial use),
 see the [LICENSE](https://github.com/orx/orx/blob/master/LICENSE) file for details.
+
+Email iarwain [at] orx-project.org to contact the author or come [chat with us on Discord](https://orx-project.org/discord) if you have any questions, feedback or comments.
 
 
 Summary
@@ -253,9 +249,6 @@ for which you're compiling. Here's a quick list of these flags:
 Comments
 --------
 
-If you have any questions, comments, ideas or reviews, feel free to either
-post them on [orx's forum](https://forum.orx-project.org),
-come [chat with us](https://orx-project.org/discord)
-or send them directly by email to iarwain [at] orx-project.org
+If you have any questions, comments, ideas or feedback, feel free to come [chat with us on Discord](https://orx-project.org/discord).
 
 Enjoy!
