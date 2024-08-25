@@ -51,8 +51,7 @@ orx 1.15
 * Added orxObject_SetFXTime[Recursive]()/_GetFXTime() (+ associated commands)
 * Added orxObject_ResetActiveTime[Recursive]() & command Object.ResetActiveTime
 * Updated to latest Scroll (headers-only, OnFX* methods, ScrollObject::Find[Owned]Child/Get[Owned]Child, ScrollObject inputs & triggers support, etc.)
-
-
+* *Many* misc fixes, optimizations and additions
 
 orx 1.14
 -----
