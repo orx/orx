@@ -1,7 +1,7 @@
-import object
+import orx
 
 def orx_init():
-  object.create_object("[-movie Scene][+movie Logo]")
+  orx.object.create_from_config("Scene")
 
 def orx_update(_dt: float):
   pass

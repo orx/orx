@@ -98,8 +98,7 @@ solution "[name]"
         "NoManifest",
         "FloatFast",
         "NoNativeWChar",
-[-python
-        "NoExceptions",]
+        "NoExceptions",
         "NoIncrementalLink",
         "NoEditAndContinue",
         "NoMinimalRebuild",
@@ -129,16 +128,18 @@ solution "[name]"
     configuration {"*Profile*"}
         targetsuffix ("p")
         defines {"__orxPROFILER__"}
-        flags {"Optimize"[-python , "NoRTTI"]}
+        flags {"Optimize", "NoRTTI"}
         links {"orxp"}
 
     configuration {"*Release*"}
-        flags {"Optimize"[-python , "NoRTTI"]}
+[+python
+        defines {"NDEBUG"}]
+        flags {"Optimize", "NoRTTI"}
         links {"orx"}
 [+bundle
 
     configuration {"*Bundle*"}
-        flags {"Optimize"[-python , "NoRTTI"]}
+        flags {"Optimize", "NoRTTI"}
         links {"orx"}]
 
     configuration {"windows", "*Release*"}
@@ -150,10 +151,10 @@ solution "[name]"
     configuration {"linux"}
         buildoptions
         {
-[+python
-            "-std=c++17",]
-[-python [+imgui +sndh
-            "-std=c++11",]]
+[-c++ [+python
+            "-std=c11",]]
+[+imgui +sndh
+            "-std=c++11",]
 [+sndh
             "-Wno-write-strings",
             "-Wno-multichar",]
@@ -177,11 +178,12 @@ solution "[name]"
     configuration {"macosx"}
         buildoptions
         {
-            "-stdlib=libc++",
-[+python
-            "-std=c++17",]
-[-python [+imgui +sndh
-            "-std=c++11",]]
+[+c++
+            "-stdlib=libc++",]
+[+imgui +sndh
+            "-std=c++11",]
+[-c++ [+python
+            "-std=c11",]]
 [+sndh
             "-Wno-multichar",]
             "-gdwarf-2",
@@ -190,7 +192,8 @@ solution "[name]"
         }
         linkoptions
         {
-            "-stdlib=libc++",
+[+c++
+            "-stdlib=libc++",]
             "-dead_strip"
         }
 
@@ -228,7 +231,7 @@ solution "[name]"
         buildoptions
         {
 [+python
-            "/std:c++17",]
+            "/utf-8",]
             "/MP",
             "/EHsc"
         }

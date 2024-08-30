@@ -1,18 +1,22 @@
 //! Includes
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif /* __cplusplus */
+
 #ifndef _orxPY_H_
 #define _orxPY_H_
 
 #include "orx.h"
 #include "pocketpy.h"
 
-//! Defines
+  //! Defines
 
 #define orxPY_KZ_RESOURCE "Python"
 
 #define orxPY_KZ_CONFIG_SECTION "Python"
 #define orxPY_KZ_CONFIG_MAIN "Main"
-#define orxPY_KZ_CONFIG_ENABLE_OS "EnableOS"
 
 #define orxPY_KZ_CONFIG_INIT "Init"
 #define orxPY_KZ_CONFIG_UPDATE "Update"
@@ -29,291 +33,325 @@
 #define orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER "orx_on_collide"
 #define orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER "orx_on_separate"
 
+  //! Custom Python types
+
+  static py_Type tp_orxvector;
+  static py_Type tp_orxobject;
+
 #ifdef orxPY_IMPL
 
-//! Variables / Structures
+  //! Variables / Structures
 
-typedef struct __orxPY_t
-{
-  orxBOOL bInitialized;
-  pkpy::VM *pVM;
-  pkpy::PyVar pyInit;
-  pkpy::PyVar pyUpdate;
-  pkpy::PyVar pyExit;
-  pkpy::PyVar pyOnCreate;
-  pkpy::PyVar pyOnDelete;
-  pkpy::PyVar pyOnCollide;
-  pkpy::PyVar pyOnSeparate;
-} orxPY;
-
-static orxPY sstPy;
-
-//! Code
-
-orxCHAR *orxPy_ReadSource(const orxSTRING zPath, int *pSize)
-{
-  orxASSERT(pSize != orxNULL);
-  *pSize = 0;
-
-  orxCHAR *pBuffer = orxNULL;
-
-  // Load map resource
-  const orxCHAR *resourceLocation = orxResource_Locate(orxPY_KZ_RESOURCE, zPath);
-  if (resourceLocation != orxNULL)
+  typedef struct __orxPY_t
   {
-    orxHANDLE hResource = orxResource_Open(resourceLocation, orxFALSE);
-    orxASSERT(hResource != orxHANDLE_UNDEFINED);
+    orxBOOL bInitialized; // Initialized state
+    py_Name pyInit;       // Engine init callback
+    py_Name pyUpdate;     // Engine update callback
+    py_Name pyExit;       // Engine exit callback
+    py_Name pyOnCreate;   // Object creation callback
+    py_Name pyOnDelete;   // Object deletion callback
+    py_Name pyOnCollide;  // Object collision callback
+    py_Name pyOnSeparate; // Object separation callback
+  } orxPY;
 
-    orxS64 s64Size = orxResource_GetSize(hResource);
-    // pBuffer = (orxCHAR *)orxMemory_Allocate(s64Size, orxMEMORY_TYPE_MAIN);
-    pBuffer = (orxCHAR *)malloc(s64Size);
-    orxASSERT(pBuffer != orxNULL);
+  static orxPY sstPy;
 
-    orxS64 s64Read = orxResource_Read(hResource, s64Size, pBuffer, orxNULL, orxNULL);
-    orxResource_Close(hResource);
-    orxASSERT(s64Size == s64Read);
+  //! Code
 
-    *pSize = s64Read;
-  }
+#define orxPY_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_YELLOW "[PYTHON] " orxANSI_KZ_COLOR_RESET
 
-  return pBuffer;
-}
-
-unsigned char *orxPy_ImportHandler(const char *zName, int *size)
-{
-  orxCHAR *pBuffer = orxPy_ReadSource(zName, size);
-
-  return (unsigned char *)pBuffer;
-}
-
-void orxPy_InitCallbacks()
-{
-  // Values defined in the main module referenced by name
-  pkpy::NameDict &dAttrs = sstPy.pVM->_main->attr();
-
-  // Get functions by name
-  orxConfig_PushSection(orxPY_KZ_CONFIG_SECTION);
-  const orxSTRING zName = orxSTRING_EMPTY;
-
-  zName = orxConfig_HasValue(orxPY_KZ_CONFIG_INIT) ? orxConfig_GetString(orxPY_KZ_CONFIG_INIT) : orxPY_KZ_DEFAULT_INIT;
-  if (dAttrs.contains(zName))
+  orxCHAR *orxPy_ReadSource(const orxSTRING zPath)
   {
-    sstPy.pyInit = dAttrs[zName];
-  }
+    orxCHAR *pBuffer = orxNULL;
 
-  zName = orxConfig_HasValue(orxPY_KZ_CONFIG_UPDATE) ? orxConfig_GetString(orxPY_KZ_CONFIG_UPDATE) : orxPY_KZ_DEFAULT_UPDATE;
-  if (dAttrs.contains(zName))
-  {
-    sstPy.pyUpdate = dAttrs[zName];
-  }
-
-  zName = orxConfig_HasValue(orxPY_KZ_CONFIG_EXIT) ? orxConfig_GetString(orxPY_KZ_CONFIG_EXIT) : orxPY_KZ_DEFAULT_EXIT;
-  if (dAttrs.contains(zName))
-  {
-    sstPy.pyExit = dAttrs[zName];
-  }
-
-  zName = orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER;
-  if (dAttrs.contains(zName))
-  {
-    sstPy.pyOnCreate = dAttrs[zName];
-  }
-
-  zName = orxPY_KZ_DEFAULT_OBJECT_DELETE_EVENT_HANDLER;
-  if (dAttrs.contains(zName))
-  {
-    sstPy.pyOnDelete = dAttrs[zName];
-  }
-
-  zName = orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER;
-  if (dAttrs.contains(zName))
-  {
-    sstPy.pyOnCollide = dAttrs[zName];
-  }
-
-  zName = orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER;
-  if (dAttrs.contains(zName))
-  {
-    sstPy.pyOnSeparate = dAttrs[zName];
-  }
-
-  orxConfig_PopSection();
-}
-
-orxSTATUS orxPy_Call(pkpy::VM *vm, pkpy::PyVar pyCallable)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  if (pyCallable != nullptr && vm != nullptr)
-  {
-    try
+    // Load map resource
+    const orxCHAR *zResourceLocation = orxResource_Locate(orxPY_KZ_RESOURCE, zPath);
+    if (zResourceLocation != orxNULL)
     {
-      vm->call(pyCallable);
-      eResult = orxSTATUS_SUCCESS;
+      orxLOG(orxPY_KZ_LOG_TAG "Loading %s from %s", zPath, zResourceLocation);
+      orxHANDLE hResource = orxResource_Open(zResourceLocation, orxFALSE);
+      orxASSERT(hResource != orxHANDLE_UNDEFINED);
+
+      orxS64 s64Size = orxResource_GetSize(hResource) + 1;
+      pBuffer = (orxCHAR *)orxMemory_Allocate(s64Size, orxMEMORY_TYPE_TEMP);
+      orxASSERT(pBuffer != orxNULL);
+
+      orxS64 s64Read = orxResource_Read(hResource, s64Size, pBuffer, orxNULL, orxNULL);
+      orxResource_Close(hResource);
+      orxASSERT(s64Read == s64Size - 1);
+      pBuffer[s64Read] = orxCHAR_NULL;
     }
-    catch (pkpy::Exception &py_exc)
-    {
-      orxLOG("%s", py_exc.summary().data);
-    }
+
+    return pBuffer;
   }
 
-  return eResult;
-}
-
-orxSTATUS orxPy_Call1(pkpy::VM *vm, pkpy::PyVar pyCallable, pkpy::PyVar pyArg)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  if (pyCallable != nullptr && vm != nullptr)
+  orxSTATUS orxPy_Call(py_ItemRef pyCallable)
   {
-    try
+    orxSTATUS eResult = orxSTATUS_FAILURE;
+
+    if (pyCallable != orxNULL)
     {
-      vm->call(pyCallable, pyArg);
-      eResult = orxSTATUS_SUCCESS;
-    }
-    catch (pkpy::Exception &py_exc)
-    {
-      orxLOG("%s", py_exc.summary().data);
-    }
-  }
-
-  return eResult;
-}
-
-orxSTATUS orxPy_CallN(pkpy::VM *vm, pkpy::PyVar pyCallable, pkpy::List &pyArgs)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  if (pyCallable != nullptr && vm != nullptr)
-  {
-    try
-    {
-      // Push callable value and self value onto call stack (null in this case)
-      vm->s_data.push(pyCallable);
-      vm->s_data.push(pkpy::PY_NULL);
-
-      // Push arguments onto call stack
-      for (pkpy::PyVar pyArg : pyArgs)
+      if (py_call(pyCallable, 0, orxNULL))
       {
-        vm->s_data.push(pyArg);
+        eResult = orxSTATUS_SUCCESS;
       }
-
-      // Make function call based on call stack
-      vm->vectorcall(pyArgs.size());
-
-      eResult = orxSTATUS_SUCCESS;
+      else
+      {
+        py_printexc();
+      }
     }
-    catch (pkpy::Exception &py_exc)
-    {
-      orxLOG("%s", py_exc.summary().data);
-    }
+
+    return eResult;
   }
 
-  return eResult;
-}
-
-void orxPy_CommandPyExec(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
-{
-  /* Execute source */
-  pkpy::PyVar pyResult = sstPy.pVM->exec(_astArgList[0].zValue);
-
-  /* Set result */
-  _pstResult->bValue = pyResult == nullptr ? orxFALSE : orxTRUE;
-
-  /* Done! */
-  return;
-}
-
-void orxPy_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
-{
-  orxPy_Call1(sstPy.pVM, sstPy.pyUpdate, pkpy::py_var(sstPy.pVM, _pstClockInfo->fDT));
-}
-
-namespace pythonwrapper
-{
-  template <typename T>
-  struct PyPtr
+  orxSTATUS orxPy_Call1(py_ItemRef pyCallable, py_Ref pyArg)
   {
-    T *ptr;
+    orxSTATUS eResult = orxSTATUS_FAILURE;
 
-    PyPtr() = delete;
-    PyPtr(T *p) : ptr(p) {}
-  };
+    if (pyCallable != orxNULL)
+    {
+      py_push(pyCallable);
+      py_pushnil();
+      py_push(pyArg);
+      if (py_vectorcall(1, 0))
+      {
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        py_printexc();
+      }
+    }
 
-  using orxPyObject = PyPtr<orxOBJECT>;
-
-#define BIND(NAME) pkpy::PyVar NAME(pkpy::VM *vm, pkpy::ArgsView args)
-#define ARG_VALUE(type, name, index) type name = pkpy::py_cast<type>(vm, args[index])
-#define ARG_PTR(type, name, index) type *name = (pkpy::py_cast<PyPtr<type>>(vm, args[index])).ptr
-#define OBJECT ARG_PTR(orxOBJECT, pstObject, 0)
-#define ARG_PTR_OR_NONE(type, name, index)                    \
-  type *name;                                                 \
-  if (args[index] == vm->None)                                \
-  {                                                           \
-    name = orxNULL;                                           \
-  }                                                           \
-  else                                                        \
-  {                                                           \
-    name = (pkpy::py_cast<PyPtr<type>>(vm, args[index])).ptr; \
+    return eResult;
   }
-#define RETURN_VALUE(RET) return pkpy::py_var(vm, RET)
-#define RETURN_PTR(RET) return pkpy::py_var(vm, PyPtr(RET))
-#define RETURN_NONE return vm->None
-#define RETURN_VALUE_OR_NONE(RET) \
-  if (RET != orxNULL)             \
-  {                               \
-    RETURN_VALUE(RET);            \
-  }                               \
-  else                            \
-  {                               \
-    RETURN_NONE;                  \
+
+  orxSTATUS orxPy_CallN(py_Ref pyCallable, orxS32 s32Argc, py_Ref pyArgv)
+  {
+    orxSTATUS eResult = orxSTATUS_FAILURE;
+
+    if (pyCallable != orxNULL)
+    {
+      if (py_call(pyCallable, s32Argc, pyArgv))
+      {
+        eResult = orxSTATUS_SUCCESS;
+      }
+      else
+      {
+        py_printexc();
+      }
+    }
+
+    return eResult;
   }
-#define RETURN_PTR_OR_NONE(RET) \
-  if (RET != orxNULL)           \
+
+  void orxPy_CommandPyExec(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+  {
+    /* Execute source */
+    bool bResult = py_exec(_astArgList[0].zValue, "<command>", EXEC_MODE, orxNULL);
+
+    if (!bResult && _u32ArgNumber > 1 && _astArgList[1].bValue == orxFALSE)
+    {
+      py_printexc();
+    }
+
+    /* Set result */
+    _pstResult->bValue = bResult;
+
+    /* Done! */
+    return;
+  }
+
+  void orxPy_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+  {
+    py_Ref pyArg = py_r0();
+    py_newfloat(pyArg, _pstClockInfo->fDT);
+    orxPy_Call1(py_getglobal(sstPy.pyUpdate), pyArg);
+  }
+
+// Binding naming
+#define BINDING_NAME(PREFIX, NAME) orxPyBind_##PREFIX##_##NAME
+#define BIND(PREFIX, NAME) bool BINDING_NAME(PREFIX, NAME)(int argc, py_Ref argv)
+
+// Binding argument handling
+#define ARG_VALUE(ret_type, py_type, name, index) \
+  PY_CHECK_ARG_TYPE(index, tp_##py_type);         \
+  ret_type name = py_to##py_type(py_arg(index))
+#define ARG_STR(name, index) ARG_VALUE(const orxSTRING, str, name, index)
+// #define ARG_FLOAT(name, index) ARG_VALUE(orxFLOAT, float, name, index)
+#define ARG_FLOAT(name, index)                \
+  orxFLOAT name;                              \
+  do                                          \
+  {                                           \
+    py_f64 fCast;                             \
+    if (!py_castfloat(py_arg(index), &fCast)) \
+      return false;                           \
+    name = fCast;                             \
+  } while (0)
+#define ARG_INT(name, index) ARG_VALUE(orxS64, int, name, index)
+#define ARG_BOOL(name, index) ARG_VALUE(orxBOOL, bool, name, index)
+#define ARG_PTR(type, name, index) type *name = (type *)py_touserdata(py_arg(index))
+#define ARG_OBJECT(name, index)             \
+  orxOBJECT *name;                          \
+  do                                        \
+  {                                         \
+    PY_CHECK_ARG_TYPE(index, tp_orxobject); \
+    ARG_PTR(orxOBJECT *, p##name, index);   \
+    name = *p##name;                        \
+  } while (0)
+#define OBJECT ARG_OBJECT(pstObject, 0)
+#define ARG_VECTOR(name, index)                \
+  orxVECTOR *name;                             \
+  do                                           \
+  {                                            \
+    ARG_PTR(orxVECTOR, pVector##index, index); \
+    name = pVector##index;                     \
+  } while (0)
+#define ARG_OBJECT_OR_NONE(name, index)       \
+  orxOBJECT *name;                            \
+  do                                          \
+  {                                           \
+    if (py_isnone(py_arg(index)))             \
+    {                                         \
+      name = orxNULL;                         \
+    }                                         \
+    else                                      \
+    {                                         \
+      PY_CHECK_ARG_TYPE(index, tp_orxobject); \
+      ARG_PTR(orxOBJECT *, p##name, index);   \
+      name = *p##name;                        \
+    }                                         \
+  } while (0)
+
+// Binding return value handling
+#define RETURN_VALUE(CONV, RET) \
+  do                            \
   {                             \
-    RETURN_PTR(RET);            \
-  }                             \
-  else                          \
-  {                             \
-    RETURN_NONE;                \
-  }
+    CONV(py_retval(), RET);     \
+    return true;                \
+  } while (0)
+#define RETURN_STR(RET) RETURN_VALUE(py_newstr, RET)
+#define RETURN_FLOAT(RET) RETURN_VALUE(py_newfloat, RET)
+#define RETURN_INT(RET) RETURN_VALUE(py_newint, RET)
+#define RETURN_BOOL(RET) RETURN_VALUE(py_newbool, RET)
+#define RETURN_NONE          \
+  do                         \
+  {                          \
+    py_newnone(py_retval()); \
+    return true;             \
+  } while (0)
+#define RETURN_OBJECT_OR_NONE(OBJ)       \
+  do                                     \
+  {                                      \
+    if (OBJ == orxNULL)                  \
+    {                                    \
+      RETURN_NONE;                       \
+    }                                    \
+    else                                 \
+    {                                    \
+      py_neworxobject(py_retval(), OBJ); \
+      return true;                       \
+    }                                    \
+  } while (0)
+#define RETURN_VECTOR(VEC)             \
+  do                                   \
+  {                                    \
+    py_neworxvector(py_retval(), VEC); \
+    return true;                       \
+  } while (0)
 
   // Function wrappers
 
-  // Object functions
+  // Helpers
 
-  BIND(create_object)
+  void py_neworxobject(py_OutRef pyOut, orxOBJECT *_pstObject)
   {
-    ARG_VALUE(const orxSTRING, zName, 0);
-    orxOBJECT *pstObject = orxObject_CreateFromConfig(zName);
-    RETURN_PTR_OR_NONE(pstObject);
+    orxOBJECT **ppstObject = (orxOBJECT **)py_newobject(pyOut, tp_orxobject, 0, sizeof(orxOBJECT *));
+    *ppstObject = _pstObject;
   }
 
-  BIND(delete_object)
+  void py_neworxvector(py_OutRef pyOut, orxVECTOR *_pvVector)
   {
+    orxVECTOR *pvVector = (orxVECTOR *)py_newobject(pyOut, tp_orxvector, 0, sizeof(orxVECTOR));
+    orxVector_Copy(pvVector, _pvVector);
+  }
+
+  // Object functions
+
+  BIND(Object, __new__)
+  {
+    if (argc != 1 && argc != 2)
+    {
+      return TypeError("expected %d arguments, got %d", 1, argc);
+    }
+
+    orxU16 u16ArgIndex = argc - 1;
+
+    if (py_istype(py_arg(u16ArgIndex), tp_str))
+    {
+      // Create from a config section name
+      ARG_STR(zName, u16ArgIndex);
+      orxOBJECT *pstObject = orxObject_CreateFromConfig(zName);
+      if (pstObject == orxNULL)
+      {
+        return ValueError("Unable to create object from config section %s", zName);
+      }
+      py_neworxobject(py_retval(), pstObject);
+    }
+    else if (py_istype(py_arg(u16ArgIndex), tp_int))
+    {
+      // Retrieve from a GUID
+      ARG_INT(s64GUID, u16ArgIndex);
+      orxOBJECT *pstObject = orxOBJECT(orxStructure_Get(s64GUID));
+      if (pstObject == orxNULL)
+      {
+        return ValueError("Unable to create object from GUID 0x%016llX", s64GUID);
+      }
+      py_neworxobject(py_retval(), pstObject);
+    }
+    else
+    {
+      return ValueError("An orx object can only be constructed from a config section name or GUID");
+    }
+    return true;
+  }
+
+  BIND(Object, __eq__)
+  {
+    PY_CHECK_ARGC(2);
+    OBJECT;
+    ARG_OBJECT(pstComp, 1);
+    RETURN_BOOL(pstObject == pstComp);
+  }
+
+  BIND(Object, __hash__)
+  {
+    PY_CHECK_ARGC(1);
+    OBJECT;
+    RETURN_INT((py_i64)pstObject);
+  }
+
+  BIND(Object, delete)
+  {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxObject_Delete(pstObject);
     RETURN_NONE;
   }
 
-  BIND(get_guid)
+  BIND(Object, get_guid)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxStructure_GetGUID(orxSTRUCTURE(pstObject)));
+    RETURN_INT(orxStructure_GetGUID(orxSTRUCTURE(pstObject)));
   }
 
-  BIND(from_guid)
+  BIND(Object, enable)
   {
-    ARG_VALUE(orxU64, u64GUID, 0);
-    orxOBJECT *pstObject = orxOBJECT(orxStructure_Get(u64GUID));
-    RETURN_PTR_OR_NONE(pstObject);
-  }
-
-  BIND(enable_object)
-  {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(bool, bState, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_BOOL(bState, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_EnableRecursive(pstObject, bState);
@@ -325,17 +363,19 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(is_enabled)
+  BIND(Object, is_enabled)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_IsEnabled(pstObject));
+    RETURN_BOOL(orxObject_IsEnabled(pstObject));
   }
 
-  BIND(pause)
+  BIND(Object, pause)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(bool, bState, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_BOOL(bState, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_PauseRecursive(pstObject, bState);
@@ -347,75 +387,85 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(is_paused)
+  BIND(Object, is_paused)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_IsPaused(pstObject));
+    RETURN_BOOL(orxObject_IsPaused(pstObject));
   }
 
-  BIND(set_owner)
+  BIND(Object, set_owner)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_PTR_OR_NONE(orxOBJECT, pstOwner, 1);
+    ARG_OBJECT(pstOwner, 1);
     orxObject_SetParent(pstObject, (void *)pstOwner);
     RETURN_NONE;
   }
 
-  BIND(get_owner)
+  BIND(Object, get_owner)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxOBJECT *pstOwner = orxOBJECT(orxObject_GetOwner(pstObject));
-    RETURN_PTR_OR_NONE(pstOwner);
+    RETURN_OBJECT_OR_NONE(pstOwner);
   }
 
-  BIND(find_owned_child)
+  BIND(Object, find_owned_child)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zPath, 1);
+    ARG_STR(zPath, 1);
     orxOBJECT *pstChild = orxObject_FindOwnedChild(pstObject, zPath);
-    RETURN_PTR_OR_NONE(pstChild);
+    RETURN_OBJECT_OR_NONE(pstChild);
   }
 
-  BIND(set_flip)
+  BIND(Object, set_flip)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(bool, bFlipX, 1);
-    ARG_VALUE(bool, bFlipY, 2);
+    ARG_BOOL(bFlipX, 1);
+    ARG_BOOL(bFlipY, 2);
     orxObject_SetFlip(pstObject, bFlipX, bFlipY);
     RETURN_NONE;
   }
 
-  BIND(get_flip)
+  BIND(Object, get_flip)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxBOOL bFlipX, bFlipY;
     orxObject_GetFlip(pstObject, &bFlipX, &bFlipY);
-    pkpy::Tuple pyResult(2);
-    pyResult[0] = VAR(bFlipX);
-    pyResult[1] = VAR(bFlipY);
-    RETURN_VALUE(pyResult);
+    py_newtuple(py_retval(), 2);
+    py_newbool(py_r0(), bFlipX);
+    py_newbool(py_r1(), bFlipY);
+    py_tuple_setitem(py_retval(), 0, py_r0());
+    py_tuple_setitem(py_retval(), 1, py_r1());
+    return true;
   }
 
-  BIND(set_position)
+  BIND(Object, set_position)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(orxVECTOR, vPosition, 1);
-    ARG_VALUE(bool, bWorld, 2);
+    ARG_VECTOR(pvPosition, 1);
+    ARG_BOOL(bWorld, 2);
     if (bWorld)
     {
-      orxObject_SetWorldPosition(pstObject, &vPosition);
+      orxObject_SetWorldPosition(pstObject, pvPosition);
     }
     else
     {
-      orxObject_SetPosition(pstObject, &vPosition);
+      orxObject_SetPosition(pstObject, pvPosition);
     }
     RETURN_NONE;
   }
 
-  BIND(get_position)
+  BIND(Object, get_position)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(bool, bWorld, 1);
+    ARG_BOOL(bWorld, 1);
     orxVECTOR vPosition;
     if (bWorld)
     {
@@ -425,59 +475,66 @@ namespace pythonwrapper
     {
       orxObject_GetPosition(pstObject, &vPosition);
     }
-    RETURN_VALUE(vPosition);
+    RETURN_VECTOR(&vPosition);
   }
 
-  BIND(set_parent)
+  BIND(Object, set_parent)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_PTR_OR_NONE(orxOBJECT, pstParent, 1);
+    ARG_OBJECT_OR_NONE(pstParent, 1);
     orxObject_SetParent(pstObject, pstParent);
     RETURN_NONE;
   }
 
-  BIND(get_parent)
+  BIND(Object, get_parent)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxOBJECT *pstParent = orxOBJECT(orxObject_GetParent(pstObject));
-    RETURN_PTR_OR_NONE(pstParent);
+    RETURN_OBJECT_OR_NONE(pstParent);
   }
 
-  BIND(find_child)
+  BIND(Object, find_child)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zPath, 1);
+    ARG_STR(zPath, 1);
     orxOBJECT *pstChild = orxObject_FindChild(pstObject, zPath);
-    RETURN_PTR_OR_NONE(pstChild);
+    RETURN_OBJECT_OR_NONE(pstChild);
   }
 
-  BIND(attach)
+  BIND(Object, attach)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
     ARG_PTR(orxOBJECT, pstParent, 1);
     orxObject_Attach(pstObject, (void *)pstParent);
     RETURN_NONE;
   }
 
-  BIND(detach)
+  BIND(Object, detach)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxObject_Detach(pstObject);
     RETURN_NONE;
   }
 
-  BIND(log_parents)
+  BIND(Object, log_parents)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxObject_LogParents(pstObject);
     RETURN_NONE;
   }
 
-  BIND(set_anim_frequency)
+  BIND(Object, set_anim_frequency)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(orxFLOAT, fFrequency, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_FLOAT(fFrequency, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_SetAnimFrequencyRecursive(pstObject, fFrequency);
@@ -489,17 +546,19 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(get_anim_frequency)
+  BIND(Object, get_anim_frequency)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_GetAnimFrequency(pstObject));
+    RETURN_FLOAT(orxObject_GetAnimFrequency(pstObject));
   }
 
-  BIND(set_anim_time)
+  BIND(Object, set_anim_time)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(orxFLOAT, fTime, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_FLOAT(fTime, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_SetAnimTimeRecursive(pstObject, fTime);
@@ -511,17 +570,19 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(get_anim_time)
+  BIND(Object, get_anim_time)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_GetAnimTime(pstObject));
+    RETURN_FLOAT(orxObject_GetAnimTime(pstObject));
   }
 
-  BIND(set_current_anim)
+  BIND(Object, set_current_anim)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_SetCurrentAnimRecursive(pstObject, zName);
@@ -533,17 +594,19 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(get_current_anim)
+  BIND(Object, get_current_anim)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_GetCurrentAnim(pstObject));
+    RETURN_STR(orxObject_GetCurrentAnim(pstObject));
   }
 
-  BIND(set_target_anim)
+  BIND(Object, set_target_anim)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_SetTargetAnimRecursive(pstObject, zName);
@@ -555,32 +618,35 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(get_target_anim)
+  BIND(Object, get_target_anim)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_GetTargetAnim(pstObject));
+    RETURN_STR(orxObject_GetTargetAnim(pstObject));
   }
 
-  BIND(set_speed)
+  BIND(Object, set_speed)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(orxVECTOR, vSpeed, 1);
-    ARG_VALUE(bool, bRelative, 2);
+    ARG_VECTOR(pvSpeed, 1);
+    ARG_BOOL(bRelative, 2);
     if (bRelative)
     {
-      orxObject_SetRelativeSpeed(pstObject, &vSpeed);
+      orxObject_SetRelativeSpeed(pstObject, pvSpeed);
     }
     else
     {
-      orxObject_SetSpeed(pstObject, &vSpeed);
+      orxObject_SetSpeed(pstObject, pvSpeed);
     }
     RETURN_NONE;
   }
 
-  BIND(get_speed)
+  BIND(Object, get_speed)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(bool, bRelative, 1);
+    ARG_BOOL(bRelative, 1);
     orxVECTOR vSpeed = orxVECTOR_0;
     if (bRelative)
     {
@@ -590,92 +656,109 @@ namespace pythonwrapper
     {
       orxObject_GetSpeed(pstObject, &vSpeed);
     }
-    RETURN_VALUE(vSpeed);
+    RETURN_VECTOR(&vSpeed);
   }
 
-  BIND(set_angular_velocity)
+  BIND(Object, set_angular_velocity)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(orxFLOAT, fVelocity, 1);
+    ARG_FLOAT(fVelocity, 1);
     orxObject_SetAngularVelocity(pstObject, fVelocity);
     RETURN_NONE;
   }
 
-  BIND(get_angular_velocity)
+  BIND(Object, get_angular_velocity)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_GetAngularVelocity(pstObject));
+    RETURN_FLOAT(orxObject_GetAngularVelocity(pstObject));
   }
 
-  BIND(set_custom_gravity)
+  BIND(Object, set_custom_gravity)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(orxVECTOR, vGravity, 1);
-    orxObject_SetCustomGravity(pstObject, &vGravity);
+    ARG_VECTOR(vGravity, 1);
+    orxObject_SetCustomGravity(pstObject, vGravity);
     RETURN_NONE;
   }
 
-  BIND(get_custom_gravity)
+  BIND(Object, get_custom_gravity)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxVECTOR vGravity = orxVECTOR_0;
     orxObject_GetCustomGravity(pstObject, &vGravity);
-    RETURN_VALUE(vGravity);
+    RETURN_VECTOR(&vGravity);
   }
 
-  BIND(get_mass)
+  BIND(Object, get_mass)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_GetMass(pstObject));
+    RETURN_FLOAT(orxObject_GetMass(pstObject));
   }
 
-  BIND(get_mass_center)
+  BIND(Object, get_mass_center)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxVECTOR vCenter = orxVECTOR_0;
     orxObject_GetMassCenter(pstObject, &vCenter);
-    RETURN_VALUE(vCenter);
+    RETURN_VECTOR(&vCenter);
   }
 
-  BIND(apply_torque)
+  BIND(Object, apply_torque)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(orxFLOAT, fTorque, 1);
+    ARG_FLOAT(fTorque, 1);
     orxObject_ApplyTorque(pstObject, fTorque);
     RETURN_NONE;
   }
 
-  BIND(apply_force)
+  BIND(Object, apply_force)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(orxVECTOR, vForce, 1);
-    ARG_VALUE(orxVECTOR, vPoint, 2);
-    orxObject_ApplyForce(pstObject, &vForce, &vPoint);
+    ARG_VECTOR(vForce, 1);
+    ARG_VECTOR(vPoint, 2);
+    orxObject_ApplyForce(pstObject, vForce, vPoint);
     RETURN_NONE;
   }
 
-  BIND(apply_impulse)
+  BIND(Object, apply_impulse)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(orxVECTOR, vImpulse, 1);
-    ARG_VALUE(orxVECTOR, vPoint, 2);
-    orxObject_ApplyImpulse(pstObject, &vImpulse, &vPoint);
+    ARG_VECTOR(vImpulse, 1);
+    ARG_VECTOR(vPoint, 2);
+    orxObject_ApplyImpulse(pstObject, vImpulse, vPoint);
     RETURN_NONE;
   }
 
-  BIND(raycast)
+  BIND(Object, raycast)
   {
-    ARG_VALUE(orxVECTOR, vBegin, 0);
-    ARG_VALUE(orxVECTOR, vEnd, 1);
-    ARG_VALUE(orxU16, u16SelfFlags, 2);
-    ARG_VALUE(orxU16, u16CheckMask, 3);
-    ARG_VALUE(orxBOOL, bEarlyExit, 4);
+    PY_CHECK_ARGC(5);
+    ARG_VECTOR(vBegin, 0);
+    ARG_VECTOR(vEnd, 1);
+    ARG_INT(u16SelfFlags, 2);
+    ARG_INT(u16CheckMask, 3);
+    ARG_BOOL(bEarlyExit, 4);
     orxVECTOR vContact;
     orxVECTOR vNormal;
-    orxOBJECT *pstDetected = orxObject_Raycast(&vBegin, &vEnd, u16SelfFlags, u16CheckMask, bEarlyExit, &vContact, &vNormal);
+    orxOBJECT *pstDetected = orxObject_Raycast(vBegin, vEnd, u16SelfFlags, u16CheckMask, bEarlyExit, &vContact, &vNormal);
     if (pstDetected != orxNULL)
     {
-      RETURN_VALUE(pkpy::Tuple(pkpy::py_var(vm, pstDetected), pkpy::py_var(vm, vContact), pkpy::py_var(vm, vNormal)));
+      py_newtuple(py_retval(), 3);
+      py_neworxobject(py_r0(), pstDetected);
+      py_neworxvector(py_r1(), &vContact);
+      py_neworxvector(py_r2(), &vNormal);
+      py_tuple_setitem(py_retval(), 0, py_r0());
+      py_tuple_setitem(py_retval(), 1, py_r1());
+      py_tuple_setitem(py_retval(), 2, py_r2());
+      return true;
     }
     else
     {
@@ -683,27 +766,30 @@ namespace pythonwrapper
     }
   }
 
-  BIND(set_text_string)
+  BIND(Object, set_text_string)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zString, 1);
+    ARG_STR(zString, 1);
     orxObject_SetTextString(pstObject, zString);
     RETURN_NONE;
   }
 
-  BIND(get_text_string)
+  BIND(Object, get_text_string)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_GetTextString(pstObject));
+    RETURN_STR(orxObject_GetTextString(pstObject));
   }
 
-  BIND(add_fx)
+  BIND(Object, add_fx)
   {
+    PY_CHECK_ARGC(5);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
-    ARG_VALUE(bool, bUnique, 3);
-    ARG_VALUE(orxFLOAT, fPropagationDelay, 4);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
+    ARG_BOOL(bUnique, 3);
+    ARG_FLOAT(fPropagationDelay, 4);
     if (bRecursive && bUnique)
     {
       orxObject_AddUniqueFXRecursive(pstObject, zName, fPropagationDelay);
@@ -723,11 +809,12 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(remove_fx)
+  BIND(Object, remove_fx)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_RemoveFXRecursive(pstObject, zName);
@@ -739,10 +826,11 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(remove_all_fxs)
+  BIND(Object, remove_all_fxs)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(bool, bRecursive, 1);
+    ARG_BOOL(bRecursive, 1);
     if (bRecursive)
     {
       orxObject_RemoveAllFXsRecursive(pstObject);
@@ -754,95 +842,107 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(add_sound)
+  BIND(Object, add_sound)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
+    ARG_STR(zName, 1);
     orxObject_AddSound(pstObject, zName);
     RETURN_NONE;
   }
 
-  BIND(remove_sound)
+  BIND(Object, remove_sound)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
+    ARG_STR(zName, 1);
     orxObject_RemoveSound(pstObject, zName);
     RETURN_NONE;
   }
 
-  BIND(remove_all_sounds)
+  BIND(Object, remove_all_sounds)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxObject_RemoveAllSounds(pstObject);
     RETURN_NONE;
   }
 
-  BIND(set_volume)
+  BIND(Object, set_volume)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(orxFLOAT, fVolume, 1);
+    ARG_FLOAT(fVolume, 1);
     orxObject_SetVolume(pstObject, fVolume);
     RETURN_NONE;
   }
 
-  BIND(set_pitch)
+  BIND(Object, set_pitch)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(orxFLOAT, fPitch, 1);
+    ARG_FLOAT(fPitch, 1);
     orxObject_SetPitch(pstObject, fPitch);
     RETURN_NONE;
   }
 
-  BIND(set_panning)
+  BIND(Object, set_panning)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(orxFLOAT, fPanning, 1);
-    ARG_VALUE(orxBOOL, bMix, 2);
+    ARG_FLOAT(fPanning, 1);
+    ARG_BOOL(bMix, 2);
     orxObject_SetPanning(pstObject, fPanning, bMix);
     RETURN_NONE;
   }
 
-  BIND(play)
+  BIND(Object, play)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxObject_Play(pstObject);
     RETURN_NONE;
   }
 
-  BIND(stop)
+  BIND(Object, stop)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxObject_Stop(pstObject);
     RETURN_NONE;
   }
 
-  BIND(add_filter)
+  BIND(Object, add_filter)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
+    ARG_STR(zName, 1);
     orxObject_AddFilter(pstObject, zName);
     RETURN_NONE;
   }
 
-  BIND(remove_last_filter)
+  BIND(Object, remove_last_filter)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxObject_RemoveLastFilter(pstObject);
     RETURN_NONE;
   }
 
-  BIND(remove_all_filters)
+  BIND(Object, remove_all_filters)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxObject_RemoveAllFilters(pstObject);
     RETURN_NONE;
   }
 
-  BIND(add_shader)
+  BIND(Object, add_shader)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_AddShaderRecursive(pstObject, zName);
@@ -854,11 +954,12 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(remove_shader)
+  BIND(Object, remove_shader)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_RemoveShaderRecursive(pstObject, zName);
@@ -870,25 +971,28 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(enable_shader)
+  BIND(Object, enable_shader)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(orxBOOL, bEnabled, 1);
+    ARG_BOOL(bEnabled, 1);
     orxObject_EnableShader(pstObject, bEnabled);
     RETURN_NONE;
   }
 
-  BIND(is_shader_enabled)
+  BIND(Object, is_shader_enabled)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_IsShaderEnabled(pstObject));
+    RETURN_BOOL(orxObject_IsShaderEnabled(pstObject));
   }
 
-  BIND(add_time_line_track)
+  BIND(Object, add_time_line_track)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_AddTimeLineTrackRecursive(pstObject, zName);
@@ -900,11 +1004,12 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(remove_time_line_track)
+  BIND(Object, remove_time_line_track)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_RemoveTimeLineTrackRecursive(pstObject, zName);
@@ -916,25 +1021,28 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(enable_time_line)
+  BIND(Object, enable_time_line)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(orxBOOL, bEnable, 1);
+    ARG_BOOL(bEnable, 1);
     orxObject_EnableTimeLine(pstObject, bEnable);
     RETURN_NONE;
   }
 
-  BIND(is_time_line_enabled)
+  BIND(Object, is_time_line_enabled)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_IsTimeLineEnabled(pstObject));
+    RETURN_BOOL(orxObject_IsTimeLineEnabled(pstObject));
   }
 
-  BIND(add_trigger)
+  BIND(Object, add_trigger)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_AddTriggerRecursive(pstObject, zName);
@@ -946,11 +1054,12 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(remove_trigger)
+  BIND(Object, remove_trigger)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_RemoveTriggerRecursive(pstObject, zName);
@@ -962,11 +1071,12 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(fire_trigger)
+  BIND(Object, fire_trigger)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(const orxSTRING, zName, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_STR(zName, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_FireTriggerRecursive(pstObject, zName, orxNULL, 0l);
@@ -978,41 +1088,45 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(get_name)
+  BIND(Object, get_name)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_GetName(pstObject));
+    RETURN_STR(orxObject_GetName(pstObject));
   }
 
-  BIND(set_rgb)
+  BIND(Object, set_rgb)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(orxVECTOR, vRGB, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_VECTOR(pvRGB, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
-      orxObject_SetRGBRecursive(pstObject, &vRGB);
+      orxObject_SetRGBRecursive(pstObject, pvRGB);
     }
     else
     {
-      orxObject_SetRGB(pstObject, &vRGB);
+      orxObject_SetRGB(pstObject, pvRGB);
     }
     RETURN_NONE;
   }
 
-  BIND(get_rgb)
+  BIND(Object, get_rgb)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxVECTOR vRGB = orxVECTOR_0;
     orxObject_GetRGB(pstObject, &vRGB);
-    RETURN_VALUE(vRGB);
+    RETURN_VECTOR(&vRGB);
   }
 
-  BIND(set_alpha)
+  BIND(Object, set_alpha)
   {
+    PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_VALUE(orxFLOAT, fAlpha, 1);
-    ARG_VALUE(bool, bRecursive, 2);
+    ARG_FLOAT(fAlpha, 1);
+    ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
       orxObject_SetAlphaRecursive(pstObject, fAlpha);
@@ -1024,35 +1138,43 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(get_alpha)
+  BIND(Object, get_alpha)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_GetAlpha(pstObject));
+    RETURN_FLOAT(orxObject_GetAlpha(pstObject));
   }
 
-  BIND(set_life_time)
+  BIND(Object, set_life_time)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    pkpy::PyVar pyLifeTime = args[1];
-    if (pkpy::is_float(pyLifeTime) || pkpy::is_int(pyLifeTime))
+    py_Ref pyLifeTime = py_arg(1);
+    if (py_isfloat(pyLifeTime) || py_isint(pyLifeTime))
     {
-      ARG_VALUE(orxFLOAT, fLifeTime, 1);
-      orxObject_SetLifeTime(pstObject, fLifeTime);
+      py_f64 fLifeTime;
+      py_castfloat(pyLifeTime, &fLifeTime);
+      orxObject_SetLifeTime(pstObject, (orxFLOAT)fLifeTime);
     }
-    else if (pyLifeTime == vm->None)
+    else if (py_isnone(pyLifeTime))
     {
       orxObject_SetLifeTime(pstObject, -orxFLOAT_1);
     }
+    else if (py_isstr(pyLifeTime))
+    {
+      ARG_STR(zLifeTime, 1);
+      orxObject_SetLiteralLifeTime(pstObject, zLifeTime);
+    }
     else
     {
-      ARG_VALUE(const orxSTRING, zLifeTime, 1);
-      orxObject_SetLiteralLifeTime(pstObject, zLifeTime);
+      return ValueError("Object life time can be one of None, int, float, or str. Got %s.", py_tpname(py_typeof(pyLifeTime)));
     }
     RETURN_NONE;
   }
 
-  BIND(get_life_time)
+  BIND(Object, get_life_time)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
     orxFLOAT fLifeTime = orxObject_GetLifeTime(pstObject);
     if (fLifeTime < orxFLOAT_0)
@@ -1061,20 +1183,22 @@ namespace pythonwrapper
     }
     else
     {
-      RETURN_VALUE(fLifeTime);
+      RETURN_FLOAT(fLifeTime);
     }
   }
 
-  BIND(get_active_time)
+  BIND(Object, get_active_time)
   {
+    PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_VALUE(orxObject_GetActiveTime(pstObject));
+    RETURN_FLOAT(orxObject_GetActiveTime(pstObject));
   }
 
-  BIND(reset_active_time)
+  BIND(Object, reset_active_time)
   {
+    PY_CHECK_ARGC(2);
     OBJECT;
-    ARG_VALUE(bool, bRecursive, 1);
+    ARG_BOOL(bRecursive, 1);
     if (bRecursive)
     {
       orxObject_ResetActiveTimeRecursive(pstObject);
@@ -1088,114 +1212,124 @@ namespace pythonwrapper
 
   // Config functions
 
-  BIND(push_section)
+  BIND(Config, push_section)
   {
-    ARG_VALUE(const orxSTRING, zSection, 0);
+    PY_CHECK_ARGC(1);
+    ARG_STR(zSection, 0);
     orxConfig_PushSection(zSection);
     RETURN_NONE;
   }
 
-  BIND(pop_section)
+  BIND(Config, pop_section)
   {
+    PY_CHECK_ARGC(1);
     orxConfig_PopSection();
     RETURN_NONE;
   }
 
-#define BIND_CONFIG_SET_GET(type, orxtype, name)             \
-  BIND(set_##type)                                           \
-  {                                                          \
-    ARG_VALUE(const orxSTRING, zKey, 0);                     \
-    ARG_VALUE(orxtype, name, 1);                             \
-    orxConfig_Set##name(zKey, name);                         \
-    RETURN_NONE;                                             \
-  }                                                          \
-  BIND(get_##type)                                           \
-  {                                                          \
-    ARG_VALUE(const orxSTRING, zKey, 0);                     \
-    pkpy::PyVar pyIndex = args[1];                           \
-    if (pyIndex == vm->None)                                 \
-    {                                                        \
-      RETURN_VALUE(orxConfig_Get##name(zKey));               \
-    }                                                        \
-    else                                                     \
-    {                                                        \
-      ARG_VALUE(orxS32, s32Index, 1);                        \
-      RETURN_VALUE(orxConfig_GetList##name(zKey, s32Index)); \
-    }                                                        \
+#define BIND_CONFIG_SET_GET(type, argtype, name)                         \
+  BIND(Config, set_##type)                                               \
+  {                                                                      \
+    PY_CHECK_ARGC(2);                                                    \
+    ARG_STR(zKey, 0);                                                    \
+    ARG_##argtype(name, 1);                                              \
+    orxConfig_Set##name(zKey, name);                                     \
+    RETURN_NONE;                                                         \
+  }                                                                      \
+  BIND(Config, get_##type)                                               \
+  {                                                                      \
+    PY_CHECK_ARGC(2);                                                    \
+    ARG_STR(zKey, 0);                                                    \
+    py_Ref pyIndex = py_arg(1);                                          \
+    if (py_isnone(pyIndex))                                              \
+    {                                                                    \
+      RETURN_##argtype(orxConfig_Get##name(zKey));                       \
+    }                                                                    \
+    else                                                                 \
+    {                                                                    \
+      ARG_INT(s32Index, 1);                                              \
+      RETURN_##argtype(orxConfig_GetList##name(zKey, (orxS32)s32Index)); \
+    }                                                                    \
   }
 
-  BIND_CONFIG_SET_GET(bool, orxBOOL, Bool)
-  BIND_CONFIG_SET_GET(int, orxS64, S64)
-  BIND_CONFIG_SET_GET(uint, orxU64, U64)
-  BIND_CONFIG_SET_GET(float, orxFLOAT, Float)
-  BIND_CONFIG_SET_GET(string, const orxSTRING, String)
+  BIND_CONFIG_SET_GET(bool, BOOL, Bool)
+  BIND_CONFIG_SET_GET(int, INT, S64)
+  BIND_CONFIG_SET_GET(uint, INT, U64)
+  BIND_CONFIG_SET_GET(float, FLOAT, Float)
+  BIND_CONFIG_SET_GET(string, STR, String)
 
-  BIND(set_vector)
+  BIND(Config, set_vector)
   {
-    ARG_VALUE(const orxSTRING, zKey, 0);
-    ARG_VALUE(orxVECTOR, vValue, 1);
-    orxConfig_SetVector(zKey, &vValue);
+    PY_CHECK_ARGC(2);
+    ARG_STR(zKey, 0);
+    ARG_VECTOR(pvValue, 1);
+    orxConfig_SetVector(zKey, pvValue);
     RETURN_NONE;
   }
 
-  BIND(get_vector)
+  BIND(Config, get_vector)
   {
-    ARG_VALUE(const orxSTRING, zKey, 0);
+    PY_CHECK_ARGC(1);
+    ARG_STR(zKey, 0);
     orxVECTOR vValue = orxVECTOR_0;
     orxConfig_GetVector(zKey, &vValue);
-    RETURN_VALUE(vValue);
+    RETURN_VECTOR(&vValue);
   }
 
-#undef BIND_SET_GET
+#undef BIND_CONFIG_SET_GET
 
-  BIND(has_section)
+  BIND(Config, has_section)
   {
-    ARG_VALUE(const orxSTRING, zSection, 0);
-    RETURN_VALUE(orxConfig_HasSection(zSection));
+    PY_CHECK_ARGC(1);
+    ARG_STR(zSection, 0);
+    RETURN_BOOL(orxConfig_HasSection(zSection));
   }
 
-  BIND(has_value)
+  BIND(Config, has_value)
   {
-    ARG_VALUE(const orxSTRING, zKey, 0);
-    ARG_VALUE(bool, bCheckSpelling, 1);
+    PY_CHECK_ARGC(2);
+    ARG_STR(zKey, 0);
+    ARG_BOOL(bCheckSpelling, 1);
     if (bCheckSpelling)
     {
-      RETURN_VALUE(orxConfig_HasValue(zKey));
+      RETURN_BOOL(orxConfig_HasValue(zKey));
     }
     else
     {
-      RETURN_VALUE(orxConfig_HasValueNoCheck(zKey));
+      RETURN_BOOL(orxConfig_HasValueNoCheck(zKey));
     }
-    orxASSERT(orxFALSE);
+    return py_exception(tp_AssertionError, "Impossible situation");
   }
 
-  BIND(clear_section)
+  BIND(Config, clear_section)
   {
-    ARG_VALUE(const orxSTRING, zSection, 0);
+    PY_CHECK_ARGC(1);
+    ARG_STR(zSection, 0);
     orxConfig_ClearSection(zSection);
     RETURN_NONE;
   }
 
-  BIND(clear_value)
+  BIND(Config, clear_value)
   {
-    ARG_VALUE(const orxSTRING, zKey, 0);
+    PY_CHECK_ARGC(1);
+    ARG_STR(zKey, 0);
     orxConfig_ClearValue(zKey);
     RETURN_NONE;
   }
 
   // Command functions
 
-  BIND(evaluate)
+  BIND(Command, evaluate)
   {
-    ARG_VALUE(const orxSTRING, zCommand, 0);
+    ARG_STR(zCommand, 0);
     orxCOMMAND_VAR stResult;
-    if (args[0] == vm->None)
+    if (py_isnone(py_arg(1)))
     {
       orxCommand_Evaluate(zCommand, &stResult);
     }
     else
     {
-      ARG_VALUE(orxU64, u64GUID, 1);
+      ARG_INT(u64GUID, 1);
       orxCommand_EvaluateWithGUID(zCommand, u64GUID, &stResult);
     }
     RETURN_NONE;
@@ -1203,62 +1337,71 @@ namespace pythonwrapper
 
   // Input functions
 
-  BIND(push_set)
+  BIND(Input, push_set)
   {
-    ARG_VALUE(const orxSTRING, zName, 0);
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
     orxInput_PushSet(zName);
     RETURN_NONE;
   }
 
-  BIND(pop_set)
+  BIND(Input, pop_set)
   {
+    PY_CHECK_ARGC(0);
     orxInput_PopSet();
     RETURN_NONE;
   }
 
-  BIND(enable_set)
+  BIND(Input, enable_set)
   {
-    ARG_VALUE(const orxSTRING, zName, 0);
-    ARG_VALUE(bool, bEnable, 1);
+    PY_CHECK_ARGC(2);
+    ARG_STR(zName, 0);
+    ARG_BOOL(bEnable, 1);
     orxInput_EnableSet(zName, bEnable);
     RETURN_NONE;
   }
 
-  BIND(is_set_enabled)
+  BIND(Input, is_set_enabled)
   {
-    ARG_VALUE(const orxSTRING, zName, 0);
-    RETURN_VALUE(orxInput_IsSetEnabled(zName));
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
+    RETURN_BOOL(orxInput_IsSetEnabled(zName));
   }
 
-  BIND(is_active)
+  BIND(Input, is_active)
   {
-    ARG_VALUE(const orxSTRING, zName, 0);
-    RETURN_VALUE(orxInput_IsActive(zName));
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
+    RETURN_BOOL(orxInput_IsActive(zName));
   }
 
-  BIND(has_been_activated)
+  BIND(Input, has_been_activated)
   {
-    ARG_VALUE(const orxSTRING, zName, 0);
-    RETURN_VALUE(orxInput_HasBeenActivated(zName));
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
+    RETURN_BOOL(orxInput_HasBeenActivated(zName));
   }
 
-  BIND(has_been_deactivated)
+  BIND(Input, has_been_deactivated)
   {
-    ARG_VALUE(const orxSTRING, zName, 0);
-    RETURN_VALUE(orxInput_HasBeenDeactivated(zName));
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
+    RETURN_BOOL(orxInput_HasBeenDeactivated(zName));
   }
 
-  BIND(get_value)
+  BIND(Input, get_value)
   {
-    ARG_VALUE(const orxSTRING, zName, 0);
-    RETURN_VALUE(orxInput_GetValue(zName));
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
+    RETURN_FLOAT(orxInput_GetValue(zName));
   }
 
-  BIND(set_value)
+  BIND(Input, set_value)
   {
-    ARG_VALUE(const orxSTRING, zName, 0);
-    ARG_VALUE(orxFLOAT, fValue, 1);
-    ARG_VALUE(bool, bPermanent, 2);
+    PY_CHECK_ARGC(3);
+    ARG_STR(zName, 0);
+    ARG_FLOAT(fValue, 1);
+    ARG_BOOL(bPermanent, 2);
     if (bPermanent)
     {
       orxInput_SetPermanentValue(zName, fValue);
@@ -1270,522 +1413,598 @@ namespace pythonwrapper
     RETURN_NONE;
   }
 
-  BIND(reset_value)
+  BIND(Input, reset_value)
   {
-    ARG_VALUE(const orxSTRING, zName, 0);
-    RETURN_VALUE(orxInput_ResetValue(zName));
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
+    orxInput_ResetValue(zName);
+    RETURN_NONE;
   }
 
   // Type wrappers
 
-  pkpy::PyVar vector_new(pkpy::VM *vm, pkpy::ArgsView args)
+  BIND(Vector, __new__)
   {
-    pkpy::PyVar pyVec = vm->new_user_object<orxVECTOR>();
-    orxVECTOR &vNew = py_cast<orxVECTOR &>(vm, pyVec);
-    vNew.fX = py_cast<orxFLOAT>(vm, args[1]);
-    vNew.fY = py_cast<orxFLOAT>(vm, args[2]);
-    vNew.fZ = py_cast<orxFLOAT>(vm, args[3]);
-    return pyVec;
+    PY_CHECK_ARGC(4);
+    ARG_FLOAT(fX, 1);
+    ARG_FLOAT(fY, 2);
+    ARG_FLOAT(fZ, 3);
+    orxVECTOR *pvVector = (orxVECTOR *)py_newobject(py_retval(), tp_orxvector, 0, sizeof(orxVECTOR));
+    pvVector->fX = fX;
+    pvVector->fY = fY;
+    pvVector->fZ = fZ;
+    return true;
   }
 
-#define BIND_VECTOR_OP(name, func)  \
-  BIND(name)                        \
-  {                                 \
-    ARG_VALUE(orxVECTOR, vSelf, 0); \
-    ARG_VALUE(orxVECTOR, vOp, 1);   \
-    orxVECTOR vRes = orxVECTOR_0;   \
-    func(&vRes, &vSelf, &vOp);      \
-    RETURN_VALUE(vRes);             \
-  }
-
-#define BIND_VECTOR_MOP(name, func)                 \
-  BIND(name)                                        \
-  {                                                 \
-    ARG_VALUE(orxVECTOR, vSelf, 0);                 \
-    pkpy::PyVar pyOp = args[1];                     \
-    orxVECTOR vRes = orxVECTOR_0;                   \
-    if (pkpy::is_float(pyOp) || pkpy::is_int(pyOp)) \
-    {                                               \
-      ARG_VALUE(orxFLOAT, fOp, 1);                  \
-      func##f(&vRes, &vSelf, fOp);                  \
-    }                                               \
-    else                                            \
-    {                                               \
-      ARG_VALUE(orxVECTOR, vOp, 0);                 \
-      func(&vRes, &vSelf, &vOp);                    \
-    }                                               \
-    RETURN_VALUE(vRes);                             \
-  }
-
-  BIND_VECTOR_OP(vector_add, orxVector_Add)
-  BIND_VECTOR_OP(vector_sub, orxVector_Sub)
-  BIND_VECTOR_MOP(vector_mul, orxVector_Mul)
-  BIND_VECTOR_MOP(vector_div, orxVector_Div)
-
-  BIND(vector_size)
+  BIND(Vector, __eq__)
   {
-    ARG_VALUE(orxVECTOR &, vOp, 0);
-    RETURN_VALUE(orxVector_GetSize(&vOp));
+    PY_CHECK_ARGC(2);
+    ARG_VECTOR(pvSelf, 0);
+    ARG_VECTOR(pvOther, 1);
+    RETURN_BOOL(orxVector_AreEqual(pvSelf, pvOther));
   }
 
-  BIND(vector_distance)
+  BIND(Vector, __neg__)
   {
-    ARG_VALUE(orxVECTOR &, vOp1, 0);
-    ARG_VALUE(orxVECTOR &, vOp2, 1);
-    RETURN_VALUE(orxVector_GetDistance(&vOp1, &vOp2));
+    PY_CHECK_ARGC(1);
+    ARG_VECTOR(pvSelf, 0);
+    orxVECTOR vResult;
+    orxVector_Neg(&vResult, pvSelf);
+    RETURN_VECTOR(&vResult);
   }
 
-  BIND(vector_lerp)
+  BIND(Vector, copy)
   {
-    ARG_VALUE(orxVECTOR &, vOp1, 0);
-    ARG_VALUE(orxVECTOR &, vOp2, 1);
-    ARG_VALUE(orxFLOAT, fOp, 2);
+    PY_CHECK_ARGC(1);
+    ARG_VECTOR(pvSelf, 0);
+    orxVECTOR vCopy;
+    orxVector_Copy(&vCopy, pvSelf);
+    RETURN_VECTOR(&vCopy);
+  }
+
+#define BIND_VECTOR_OP(name, func) \
+  BIND(Vector, name)               \
+  {                                \
+    PY_CHECK_ARGC(2);              \
+    ARG_VECTOR(vSelf, 0);          \
+    ARG_VECTOR(vOp, 1);            \
+    orxVECTOR vRes = orxVECTOR_0;  \
+    func(&vRes, vSelf, vOp);       \
+    RETURN_VECTOR(&vRes);          \
+  }
+
+#define BIND_VECTOR_MOP(name, func)         \
+  BIND(Vector, name)                        \
+  {                                         \
+    PY_CHECK_ARGC(2);                       \
+    ARG_VECTOR(vSelf, 0);                   \
+    py_Ref pyOp = py_arg(1);                \
+    orxVECTOR vRes = orxVECTOR_0;           \
+    if (py_isfloat(pyOp) || py_isint(pyOp)) \
+    {                                       \
+      ARG_FLOAT(fOp, 1);                    \
+      func##f(&vRes, vSelf, fOp);           \
+    }                                       \
+    else                                    \
+    {                                       \
+      ARG_VECTOR(vOp, 1);                   \
+      func(&vRes, vSelf, vOp);              \
+    }                                       \
+    RETURN_VECTOR(&vRes);                   \
+  }
+
+  BIND_VECTOR_OP(__add__, orxVector_Add)
+  BIND_VECTOR_OP(__sub__, orxVector_Sub)
+  BIND_VECTOR_MOP(__mul__, orxVector_Mul)
+  BIND_VECTOR_MOP(__truediv__, orxVector_Div)
+
+#undef BIND_VECTOR_OP
+#undef BIND_VECTOR_MOP
+
+#define BIND_VECTOR_PROPERTY(property) \
+  BIND(Vector, get_##property)         \
+  {                                    \
+    PY_CHECK_ARGC(1);                  \
+    ARG_VECTOR(pvSelf, 0);             \
+    RETURN_FLOAT(pvSelf->f##property); \
+  }                                    \
+  BIND(Vector, set_##property)         \
+  {                                    \
+    PY_CHECK_ARGC(2);                  \
+    ARG_VECTOR(pvSelf, 0);             \
+    ARG_FLOAT(f##property, 1);         \
+    pvSelf->f##property = f##property; \
+    RETURN_NONE;                       \
+  }
+
+  BIND_VECTOR_PROPERTY(X)
+  BIND_VECTOR_PROPERTY(Y)
+  BIND_VECTOR_PROPERTY(Z)
+
+#undef BIND_VECTOR_PROPERTY
+
+  BIND(Vector, size)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_VECTOR(vOp, 0);
+    RETURN_FLOAT(orxVector_GetSize(vOp));
+  }
+
+  BIND(Vector, distance)
+  {
+    PY_CHECK_ARGC(2);
+    ARG_VECTOR(vOp1, 0);
+    ARG_VECTOR(vOp2, 1);
+    RETURN_FLOAT(orxVector_GetDistance(vOp1, vOp2));
+  }
+
+  BIND(Vector, lerp)
+  {
+    PY_CHECK_ARGC(3);
+    ARG_VECTOR(vOp1, 0);
+    ARG_VECTOR(vOp2, 1);
+    ARG_FLOAT(fOp, 2);
     orxVECTOR vRes = orxVECTOR_0;
-    orxVector_Lerp(&vRes, &vOp1, &vOp2, fOp);
-    RETURN_VALUE(vRes);
+    orxVector_Lerp(&vRes, vOp1, vOp2, fOp);
+    RETURN_VECTOR(&vRes);
   }
 
-  BIND(vector_rotate_self)
+  BIND(Vector, rotate_in_place)
   {
-    ARG_VALUE(orxVECTOR &, vSelf, 0);
-    ARG_VALUE(orxFLOAT, fAngle, 1);
-    orxVector_2DRotate(&vSelf, &vSelf, fAngle);
+    PY_CHECK_ARGC(2);
+    ARG_VECTOR(vSelf, 0);
+    ARG_FLOAT(fAngle, 1);
+    orxVector_2DRotate(vSelf, vSelf, fAngle);
     RETURN_NONE;
   }
 
-  BIND(vector_rotate)
+  BIND(Vector, rotate)
   {
-    ARG_VALUE(orxVECTOR &, vOp, 0);
-    ARG_VALUE(orxFLOAT, fAngle, 1);
+    PY_CHECK_ARGC(2);
+    ARG_VECTOR(vOp, 0);
+    ARG_FLOAT(fAngle, 1);
     orxVECTOR vRes = orxVECTOR_0;
-    orxVector_2DRotate(&vRes, &vOp, fAngle);
-    RETURN_VALUE(vRes);
+    orxVector_2DRotate(&vRes, vOp, fAngle);
+    RETURN_VECTOR(&vRes);
   }
 
-  BIND(vector_normalize_self)
+  BIND(Vector, normalize_in_place)
   {
-    ARG_VALUE(orxVECTOR &, vSelf, 0);
-    orxVector_Normalize(&vSelf, &vSelf);
+    PY_CHECK_ARGC(1);
+    ARG_VECTOR(vSelf, 0);
+    orxVector_Normalize(vSelf, vSelf);
     RETURN_NONE;
   }
 
-  BIND(vector_normalize)
+  BIND(Vector, normalize)
   {
-    ARG_VALUE(orxVECTOR &, vOp, 0);
+    PY_CHECK_ARGC(1);
+    ARG_VECTOR(vOp, 0);
     orxVECTOR vRes = orxVECTOR_0;
-    orxVector_Normalize(&vRes, &vOp);
-    RETURN_VALUE(vRes);
+    orxVector_Normalize(&vRes, vOp);
+    RETURN_VECTOR(&vRes);
   }
 
-  void vector(pkpy::VM *vm, pkpy::PyVar mod, pkpy::PyVar type)
+  void orxPy_AddModuleVector()
   {
-    // Fields
-    vm->bind_field(type, "x", &orxVECTOR::fX);
-    vm->bind_field(type, "y", &orxVECTOR::fY);
-    vm->bind_field(type, "z", &orxVECTOR::fZ);
+    py_Ref pyMod = py_newmodule("orx.vector");
+    py_Type pyType = py_newtype("Vector", tp_object, pyMod, orxNULL);
 
-    // __new__ method
-    vm->bind(type, "__new__(cls, x: float, y: float, z: float)", vector_new);
+    tp_orxvector = pyType;
 
-    // Basic arithmetic-style operations
-    vm->bind(type, "__add__(self, v: Vector) -> Vector", vector_add);
-    vm->bind(type, "__sub__(self, v: Vector) -> Vector", vector_sub);
-    vm->bind(type, "__mul__(self, v: Vector | float) -> Vector", vector_mul);
-    vm->bind(type, "__div__(self, v: Vector | float) -> Vector", vector_div);
+    py_bindmagic(pyType, __new__, BINDING_NAME(Vector, __new__));
+    py_bindmagic(pyType, __eq__, BINDING_NAME(Vector, __eq__));
+    py_bindmagic(pyType, __neg__, BINDING_NAME(Vector, __neg__));
+    py_bindmagic(pyType, __add__, BINDING_NAME(Vector, __add__));
+    py_bindmagic(pyType, __sub__, BINDING_NAME(Vector, __sub__));
+    py_bindmagic(pyType, __mul__, BINDING_NAME(Vector, __mul__));
+    py_bindmagic(pyType, __truediv__, BINDING_NAME(Vector, __truediv__));
 
-    vm->bind(mod, "size(v: Vector) -> float", vector_size);
-    vm->bind(mod, "distance(v1: Vector, v2: Vector) -> float", vector_distance);
-    vm->bind(mod, "lerp(v1: Vector, v2: Vector, f: float) -> Vector", vector_lerp);
+    py_bindproperty(pyType, "x", BINDING_NAME(Vector, get_X), BINDING_NAME(Vector, set_X));
+    py_bindproperty(pyType, "y", BINDING_NAME(Vector, get_Y), BINDING_NAME(Vector, set_Y));
+    py_bindproperty(pyType, "z", BINDING_NAME(Vector, get_Z), BINDING_NAME(Vector, set_Z));
 
-    // Vector manipulation
-    vm->bind(type, "rotate(self, radians: float) -> None", vector_rotate_self);
-    vm->bind(mod, "rotate(v: Vector, radians: float) -> Vector", vector_rotate);
-    vm->bind(type, "normalize(self) -> None", vector_normalize_self);
-    vm->bind(mod, "normalize(v: Vector) -> Vector", vector_normalize);
+    py_bindmethod(pyType, "copy", BINDING_NAME(Vector, copy));
+
+    py_bindmethod(pyType, "size", BINDING_NAME(Vector, size));
+    py_bindmethod(pyType, "rotate", BINDING_NAME(Vector, rotate_in_place));
+    py_bindmethod(pyType, "normalize", BINDING_NAME(Vector, normalize_in_place));
+
+    py_bindfunc(pyMod, "rotate", BINDING_NAME(Vector, rotate));
+    py_bindfunc(pyMod, "normalize", BINDING_NAME(Vector, normalize));
+    py_bindfunc(pyMod, "distance", BINDING_NAME(Vector, distance));
+    py_bindfunc(pyMod, "lerp", BINDING_NAME(Vector, lerp));
   }
 
-  pkpy::i64 object_hash(pkpy::VM *vm, pkpy::PyVar pyObj)
+  void orxPy_AddModuleObject()
   {
-    orxPyObject &stObject = pkpy::py_cast<PyPtr<orxOBJECT> &>(vm, pyObj);
-    return reinterpret_cast<i64>(stObject.ptr);
+    py_Ref pyMod = py_newmodule("orx.object");
+    py_Type pyType = py_newtype("Object", tp_object, pyMod, orxNULL);
+
+    tp_orxobject = pyType;
+
+    py_bindmagic(pyType, __new__, BINDING_NAME(Object, __new__));
+    py_bindmagic(pyType, __eq__, BINDING_NAME(Object, __eq__));
+    py_bindmagic(pyType, __hash__, BINDING_NAME(Object, __hash__));
+
+#define BIND_METHOD(sig, name) py_bind(py_tpobject(pyType), sig, BINDING_NAME(Object, name))
+
+    BIND_METHOD("delete(self) -> None", delete);
+    BIND_METHOD("get_guid(self) -> int", get_guid);
+
+    BIND_METHOD("enable(self, state: bool, recursive: bool = False) -> None", enable);
+    BIND_METHOD("is_enabled(self) -> bool", is_enabled);
+
+    BIND_METHOD("pause(self, state: bool, recursive: bool = False) -> None", pause);
+    BIND_METHOD("is_paused(self) -> bool", is_paused);
+
+    BIND_METHOD("set_owner(self, owner: Object | None) -> None", set_owner);
+    BIND_METHOD("get_owner(self) -> Object | None", get_owner);
+
+    BIND_METHOD("find_owned_child(self, path: str) -> Object | None", find_owned_child);
+
+    BIND_METHOD("set_flip(self, flip_x: bool, flip_y: bool) -> None", set_flip);
+    BIND_METHOD("get_flip(self) -> tuple[bool, bool]", get_flip);
+
+    BIND_METHOD("set_position(self, position: Vector, world: bool = False) -> None", set_position);
+    BIND_METHOD("get_position(self, world: bool = False) -> Vector", get_position);
+
+    BIND_METHOD("set_parent(self, parent: Object | None) -> None", set_parent);
+    BIND_METHOD("get_parent(self) -> Object | None", get_parent);
+
+    BIND_METHOD("find_child(self, path: str) -> Object | None", find_child);
+
+    BIND_METHOD("attach(self, parent: Object) -> None", attach);
+    BIND_METHOD("detach(self) -> None", detach);
+
+    BIND_METHOD("log_parents(self) -> None", log_parents);
+
+    BIND_METHOD("set_anim_frequency(self, frequency: float, recursive: bool = False) -> None", set_anim_frequency);
+    BIND_METHOD("get_anim_frequency(self) -> float", get_anim_frequency);
+
+    BIND_METHOD("set_anim_time(self, time: float, recursive: bool = False) -> None", set_anim_time);
+    BIND_METHOD("get_anim_time(self) -> float", get_anim_time);
+
+    BIND_METHOD("set_current_anim(self, name: str, recursive: bool = False) -> None", set_current_anim);
+    BIND_METHOD("get_current_anim(self) -> str", get_current_anim);
+
+    BIND_METHOD("set_target_anim(self, name: str, recursive: bool = False) -> None", set_target_anim);
+    BIND_METHOD("get_target_anim(self) -> str", get_target_anim);
+
+    BIND_METHOD("set_speed(self, speed: Vector, relative = False) -> None", set_speed);
+    BIND_METHOD("get_speed(self, relative: bool = False) -> Vector", get_speed);
+
+    BIND_METHOD("set_angular_velocity(self, velocity: float) -> None", set_angular_velocity);
+    BIND_METHOD("get_angular_velocity(self) -> float", get_angular_velocity);
+
+    BIND_METHOD("set_custom_gravity(self, dir: Vector) -> None", set_custom_gravity);
+    BIND_METHOD("get_custom_gravity(self) -> Vector", get_custom_gravity);
+
+    BIND_METHOD("get_mass(self) -> float", get_mass);
+    BIND_METHOD("get_mass_center(self) -> Vector", get_mass_center);
+
+    BIND_METHOD("apply_torque(self, torque: float) -> None", apply_torque);
+    BIND_METHOD("apply_force(self, force: Vector, point: Vector) -> None", apply_force);
+    BIND_METHOD("apply_impulse(self, impulse: Vector, point: Vector) -> None", apply_impulse);
+
+    BIND_METHOD("set_text_string(self, s: str) -> None", set_text_string);
+    BIND_METHOD("get_text_string(self) -> str", get_text_string);
+
+    BIND_METHOD("add_fx(self, name: str, recursive: bool = False, unique: bool = True, propagation_delay: float = 0) -> None", add_fx);
+    BIND_METHOD("remove_fx(self, name: str, recursive: bool = False) -> None", remove_fx);
+    BIND_METHOD("remove_all_fxs(self, recursive: bool = False) -> None", remove_all_fxs);
+
+    BIND_METHOD("add_sound(self, name: str) -> None", add_sound);
+    BIND_METHOD("remove_sound(self, name: str) -> None", remove_sound);
+    BIND_METHOD("remove_all_sounds(self) -> None", remove_all_sounds);
+
+    BIND_METHOD("set_volume(self, volume: float) -> None", set_volume);
+    BIND_METHOD("set_pitch(self, pitch: float) -> None", set_pitch);
+    BIND_METHOD("set_panning(self, panning: float, mix: bool) -> None", set_panning);
+
+    BIND_METHOD("play(self) -> None", play);
+    BIND_METHOD("stop(self) -> None", stop);
+
+    BIND_METHOD("add_filter(self, name: str) -> None", add_filter);
+    BIND_METHOD("remove_last_filter(self) -> None", remove_last_filter);
+    BIND_METHOD("remove_all_filters(self) -> None", remove_all_filters);
+
+    BIND_METHOD("add_shader(self, name: str, recursive: bool = False) -> None", add_shader);
+    BIND_METHOD("remove_shader(self, name: str, recursive: bool = False) -> None", remove_shader);
+    BIND_METHOD("enable_shader(self, enabled: bool = True) -> None", enable_shader);
+    BIND_METHOD("is_shader_enabled(self) -> bool", is_shader_enabled);
+
+    BIND_METHOD("add_time_line_track(self, name: str, recusive: bool = False) -> None", add_time_line_track);
+    BIND_METHOD("remove_time_line_track(self, name: str, recursive: bool = False) -> None", remove_time_line_track);
+    BIND_METHOD("enable_time_line(self, enabled: bool = True) -> None", enable_time_line);
+    BIND_METHOD("is_time_line_enabled(self) -> bool", is_time_line_enabled);
+
+    BIND_METHOD("add_trigger(self, name: str, recursive: bool = False) -> None", add_trigger);
+    BIND_METHOD("remove_trigger(self, name: str, recursive: bool = False) -> None", remove_trigger);
+    BIND_METHOD("fire_trigger(self, name: str, recursive: bool = False) -> None", fire_trigger);
+
+    BIND_METHOD("get_name(self) -> str", get_name);
+
+    BIND_METHOD("set_rgb(self, rgb: Vector, recursive: bool = False) -> None", set_rgb);
+    BIND_METHOD("get_rgb(self) -> Vector", get_rgb);
+
+    BIND_METHOD("set_alpha(self, alpha: float, recursive: bool = False) -> None", set_alpha);
+    BIND_METHOD("get_alpha(self) -> float", get_alpha);
+
+    BIND_METHOD("set_life_time(self, life_time: float | str | None) -> None", set_life_time);
+    BIND_METHOD("get_life_time(self) -> float | None", get_life_time);
+
+    BIND_METHOD("get_active_time(self) -> float", get_active_time);
+    BIND_METHOD("reset_active_time(self, recursive: bool = False) -> None", reset_active_time);
+
+#undef BIND_METHOD
+
+    // Bind object functions
+    py_bind(pyMod, "create_from_config(section_name: str) -> Object | None", BINDING_NAME(Object, __new__));
+    py_bind(pyMod, "from_guid(guid: int) -> Object | None", BINDING_NAME(Object, __new__));
+    py_bind(pyMod, "raycast(begin: Vector, end: Vector, self_flags: int, check_mask: int, early_exit: bool = False) -> tuple[Object, Vector, Vector] | None", BINDING_NAME(Object, raycast));
   }
 
-  pkpy::PyVar object_eq(pkpy::VM *vm, pkpy::PyVar pyLHS, pkpy::PyVar pyRHS)
+  BIND(Orx, log)
   {
-    orxPyObject &stObject = pkpy::py_cast<orxPyObject &>(vm, pyLHS);
-    if (!vm->is_user_type<orxPyObject>(pyRHS))
-    {
-      return vm->NotImplemented;
-    }
-    orxPyObject &stOther = pkpy::py_cast<orxPyObject &>(vm, pyRHS);
-    RETURN_VALUE(stObject.ptr == stOther.ptr);
-  }
-
-  void object(pkpy::VM *vm, pkpy::PyVar mod, pkpy::PyVar type)
-  {
-    // __hash__ and __eq__ to make equality and hashing possible
-    vm->bind__hash__(PK_OBJ_GET(Type, type), object_hash);
-    vm->bind__eq__(PK_OBJ_GET(Type, type), object_eq);
+    PY_CHECK_ARGC(1);
+    ARG_STR(zMessage, 0);
+    orxLOG("%s", zMessage);
+    RETURN_NONE;
   }
 
 #undef BIND
 #undef ARG
 #undef ARG_OR_NONE
+#undef ARG_STR
+#undef ARG_INT
+#undef ARG_BOOL
+#undef ARG_PTR
+#undef ARG_OBJECT
+#undef ARG_VECTOR
 #undef OBJECT
 #undef RETURN
 #undef RETURN_NONE
 #undef RETURN_OR_NONE
-}
+#undef RETURN_STR
+#undef RETURN_FLOAT
+#undef RETURN_INT
+#undef RETURN_BOOL
 
-orxSTATUS orxPy_ExecSource(pkpy::VM *vm, const orxSTRING zPath)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  // Load source
-  int iSize;
-  orxCHAR *pBuffer = orxPy_ReadSource(zPath, &iSize);
-
-  if (pBuffer != orxNULL)
+  orxSTATUS orxPy_ExecSource(const orxSTRING zPath)
   {
-    pkpy::PyVar pExecResult = vm->exec(pBuffer, zPath, pkpy::EXEC_MODE);
-    if (pExecResult != nullptr)
+    orxSTATUS eResult = orxSTATUS_FAILURE;
+
+    // Load source
+    orxCHAR *pBuffer = orxPy_ReadSource(zPath);
+
+    if (pBuffer != orxNULL)
     {
-      eResult = orxSTATUS_SUCCESS;
+      if (py_exec(pBuffer, zPath, EXEC_MODE, orxNULL))
+      {
+        eResult = orxSTATUS_SUCCESS;
+      }
+
+      orxMemory_Free(pBuffer);
     }
 
-    free(pBuffer);
+    if (eResult != orxSTATUS_SUCCESS)
+    {
+      py_printexc();
+    }
+
+    return eResult;
   }
 
-  return eResult;
-}
-
-void orxPy_AddVectorModule(pkpy::VM *vm)
-{
-  // Register command module
-  pkpy::PyVar mod = vm->new_module("vector");
-
-  using namespace pythonwrapper;
-
-  // Bind types
-  vm->register_user_class<orxVECTOR>(mod, "Vector", vector);
-}
-
-void orxPy_AddObjectModule(pkpy::VM *vm)
-{
-  // Register object module
-  pkpy::PyVar mod = vm->new_module("object");
-
-  using namespace pythonwrapper;
-
-  // Register object type
-  vm->register_user_class<orxPyObject>(mod, "Object", object);
-
-  // Bind object functions
-  vm->bind(mod, "create_object(name: str) -> Object | None", create_object);
-  vm->bind(mod, "delete_object(o: Object) -> None", delete_object);
-
-  vm->bind(mod, "get_guid(o: Object) -> int", get_guid);
-  vm->bind(mod, "from_guid(guid: int) -> Object | None", from_guid);
-
-  vm->bind(mod, "enable(o: Object, state: bool, recursive: bool = False) -> None", enable_object);
-  vm->bind(mod, "is_enabled(o: Object) -> bool", is_enabled);
-
-  vm->bind(mod, "pause(o: Object, state: bool, recursive: bool = False) -> None", pause);
-  vm->bind(mod, "is_paused(o: Object) -> bool", is_paused);
-
-  vm->bind(mod, "set_owner(o: Object, owner: Object | None) -> None", set_owner);
-  vm->bind(mod, "get_owner(o: Object) -> Object | None", get_owner);
-
-  vm->bind(mod, "find_owned_child(o: Object, path: str) -> Object | None", find_owned_child);
-
-  vm->bind(mod, "set_flip(o: Object, flip_x: bool, flip_y: bool) -> None", set_flip);
-  vm->bind(mod, "get_flip(o: Object) -> tuple[bool, bool]", get_flip);
-
-  vm->bind(mod, "set_position(o: Object, position: Vector, world: bool = False) -> None", set_position);
-  vm->bind(mod, "get_position(o: Object, world: bool = False) -> Vector", get_position);
-
-  vm->bind(mod, "set_parent(o: Object, parent: Object | None) -> None", set_parent);
-  vm->bind(mod, "get_parent(o: Object) -> Object | None", get_parent);
-
-  vm->bind(mod, "find_child(o: Object, path: str) -> Object | None", find_child);
-
-  vm->bind(mod, "attach(o: Object, parent: Object) -> None", attach);
-  vm->bind(mod, "detach(o: Object) -> None", detach);
-
-  vm->bind(mod, "log_parents(o: Object) -> None", log_parents);
-
-  vm->bind(mod, "set_anim_frequency(o: Object, frequency: float, recursive: bool = False) -> None", set_anim_frequency);
-  vm->bind(mod, "get_anim_frequency(o: Object) -> float", get_anim_frequency);
-
-  vm->bind(mod, "set_anim_time(o: Object, time: float, recursive: bool = False) -> None", set_anim_time);
-  vm->bind(mod, "get_anim_time(o: Object) -> float", get_anim_time);
-
-  vm->bind(mod, "set_current_anim(o: Object, name: str, recursive: bool = False) -> None", set_current_anim);
-  vm->bind(mod, "get_current_anim(o: Object) -> str", get_current_anim);
-
-  vm->bind(mod, "set_target_anim(o: Object, name: str, recursive: bool = False) -> None", set_target_anim);
-  vm->bind(mod, "get_target_anim(o: Object) -> str", get_target_anim);
-
-  vm->bind(mod, "set_speed(o: Object, speed: Vector, relative = False) -> None", set_speed);
-  vm->bind(mod, "get_speed(o: Object, relative: bool = False) -> Vector", get_speed);
-
-  vm->bind(mod, "set_angular_velocity(o: Object, velocity: float) -> None", set_angular_velocity);
-  vm->bind(mod, "get_angular_velocity(o: Object) -> float", get_angular_velocity);
-
-  vm->bind(mod, "set_custom_gravity(o: Object, dir: Vector) -> None", set_custom_gravity);
-  vm->bind(mod, "get_custom_gravity(o: Object) -> Vector", get_custom_gravity);
-
-  vm->bind(mod, "get_mass(o: Object) -> float", get_mass);
-  vm->bind(mod, "get_mass_center(o: Object) -> Vector", get_mass_center);
-
-  vm->bind(mod, "apply_torque(o: Object, torque: float) -> None", apply_torque);
-  vm->bind(mod, "apply_force(o: Object, force: Vector, point: Vector) -> None", apply_force);
-  vm->bind(mod, "apply_impulse(o: Object, impulse: Vector, point: Vector) -> None", apply_impulse);
-
-  vm->bind(mod, "raycast(begin: Vector, end: Vector, self_flags: int, check_mask: int, early_exit: bool = False) -> tuple[Object, Vector, Vector] | None", raycast);
-
-  vm->bind(mod, "set_text_string(o: Object, s: str) -> None", set_text_string);
-  vm->bind(mod, "get_text_string(o: Object) -> str", get_text_string);
-
-  vm->bind(mod, "add_fx(o: Object, name: str, recursive: bool = False, unique: bool = True, propagation_delay: float = 0) -> None", add_fx);
-  vm->bind(mod, "remove_fx(o: Object, name: str, recursive: bool = False) -> None", remove_fx);
-  vm->bind(mod, "remove_all_fxs(o: Object, recursive: bool = False) -> None", remove_all_fxs);
-
-  vm->bind(mod, "add_sound(o: Object, name: str) -> None", add_sound);
-  vm->bind(mod, "remove_sound(o: Object, name: str) -> None", remove_sound);
-  vm->bind(mod, "remove_all_sounds(o: Object) -> None", remove_all_sounds);
-
-  vm->bind(mod, "set_volume(o: Object, volume: float) -> None", set_volume);
-  vm->bind(mod, "set_pitch(o: Object, pitch: float) -> None", set_pitch);
-  vm->bind(mod, "set_panning(o: Object, panning: float, mix: bool) -> None", set_panning);
-
-  vm->bind(mod, "play(o: Object) -> None", play);
-  vm->bind(mod, "stop(o: Object) -> None", stop);
-
-  vm->bind(mod, "add_filter(o: Object, name: str) -> None", add_filter);
-  vm->bind(mod, "remove_last_filter(o: Object) -> None", remove_last_filter);
-  vm->bind(mod, "remove_all_filters(o: Object) -> None", remove_all_filters);
-
-  vm->bind(mod, "add_shader(o: Object, name: str, recursive: bool = False) -> None", add_shader);
-  vm->bind(mod, "remove_shader(o: Object, name: str, recursive: bool = False) -> None", remove_shader);
-  vm->bind(mod, "enable_shader(o: Object, enabled: bool = True) -> None", enable_shader);
-  vm->bind(mod, "is_shader_enabled(o: Object) -> bool", is_shader_enabled);
-
-  vm->bind(mod, "add_time_line_track(o: Object, name: str, recusive: bool = False) -> None", add_time_line_track);
-  vm->bind(mod, "remove_time_line_track(o: Object, name: str, recursive: bool = False) -> None", remove_time_line_track);
-  vm->bind(mod, "enable_time_line(o: Object, enabled: bool = True) -> None", enable_time_line);
-  vm->bind(mod, "is_time_line_enabled(o: Object) -> bool", is_time_line_enabled);
-
-  vm->bind(mod, "add_trigger(o: Object, name: str, recursive: bool = False) -> None", add_trigger);
-  vm->bind(mod, "remove_trigger(o: Object, name: str, recursive: bool = False) -> None", remove_trigger);
-  vm->bind(mod, "fire_trigger(o: Object, name: str, recursive: bool = False) -> None", fire_trigger);
-
-  vm->bind(mod, "get_name(o: Object) -> str", get_name);
-
-  vm->bind(mod, "set_rgb(o: Object, rgb: Vector, recursive: bool = False) -> None", set_rgb);
-  vm->bind(mod, "get_rgb(o: Object) -> Vector", get_rgb);
-
-  vm->bind(mod, "set_alpha(o: Object, alpha: float, recursive: bool = False) -> None", set_alpha);
-  vm->bind(mod, "get_alpha(o: Object) -> float", get_alpha);
-
-  vm->bind(mod, "set_life_time(o: Object, life_time: float | str | None) -> None", set_life_time);
-  vm->bind(mod, "get_life_time(o: Object) -> float | None", get_life_time);
-
-  vm->bind(mod, "get_active_time(o: Object) -> float", get_active_time);
-  vm->bind(mod, "reset_active_time(o: Object, recursive: bool = False) -> None", reset_active_time);
-}
-
-void orxPy_AddConfigModule(pkpy::VM *vm)
-{
-  // Register config module
-  pkpy::PyVar mod = vm->new_module("config");
-
-  using namespace pythonwrapper;
-
-  // Bind config functions
-  vm->bind(mod, "push_section(name: str) -> None", push_section);
-  vm->bind(mod, "pop_section() -> None", pop_section);
-
-  vm->bind(mod, "set_bool(key: str, value: bool) -> None", set_bool);
-  vm->bind(mod, "get_bool(key: str, index: int | None = None) -> bool", get_bool);
-  vm->bind(mod, "set_int(key: str, value: int) -> None", set_int);
-  vm->bind(mod, "get_int(key: str, index: int | None = None) -> int", get_int);
-  vm->bind(mod, "set_uint(key: str, value: int) -> None", set_uint);
-  vm->bind(mod, "get_uint(key: str, index: int | None = None) -> int", get_uint);
-  vm->bind(mod, "set_float(key: str, value: float) -> None", set_float);
-  vm->bind(mod, "get_float(key: str, index: int | None = None) -> float", get_float);
-  vm->bind(mod, "set_string(key: str, value: str) -> None", set_string);
-  vm->bind(mod, "get_string(key: str, index: int | None = None) -> str", get_string);
-  vm->bind(mod, "set_vector(key: str, value: Vector) -> None", set_vector);
-  vm->bind(mod, "get_vector(key: str, index: int | None = None) -> Vector", get_vector);
-
-  vm->bind(mod, "has_section(name: str) -> bool", has_section);
-  vm->bind(mod, "has_value(key: str, check_spelling: bool = True) -> bool", has_value);
-
-  vm->bind(mod, "clear_section(name: str) -> None", clear_section);
-  vm->bind(mod, "clear_value(key: str) -> None", clear_value);
-}
-
-void orxPy_AddCommandModule(pkpy::VM *vm)
-{
-  // Register command module
-  pkpy::PyVar mod = vm->new_module("command");
-
-  using namespace pythonwrapper;
-
-  // Bind command functions
-  vm->bind(mod, "evaluate(command: str, guid: int | None = None) -> None", evaluate);
-}
-
-void orxPy_AddInputModule(pkpy::VM *vm)
-{
-  // Register command module
-  pkpy::PyVar mod = vm->new_module("input");
-
-  using namespace pythonwrapper;
-
-  // Bind input functions
-  vm->bind(mod, "push_set(name: str) -> None", push_set);
-  vm->bind(mod, "pop_set() -> None", pop_set);
-  vm->bind(mod, "enable_set(name: str, enable: bool = True) -> None", enable_set);
-  vm->bind(mod, "is_set_enabled(name: str) -> bool", is_set_enabled);
-
-  vm->bind(mod, "is_active(name: str) -> bool", is_active);
-  vm->bind(mod, "has_been_activated(name: str) -> bool", has_been_activated);
-  vm->bind(mod, "has_been_deactivated(name: str) -> bool", has_been_deactivated);
-
-  vm->bind(mod, "get_value(name: str) -> float", get_value);
-  vm->bind(mod, "set_value(name: str, value: float, permanent: bool = False) -> None", set_value);
-  vm->bind(mod, "reset_value(name: str) -> None", reset_value);
-}
-
-void orxPy_AddModules(pkpy::VM *vm)
-{
-  orxPy_AddVectorModule(vm);
-  orxPy_AddConfigModule(vm);
-  orxPy_AddCommandModule(vm);
-  orxPy_AddInputModule(vm);
-  orxPy_AddObjectModule(vm);
-}
-
-orxSTATUS orxPy_EventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  switch (_pstEvent->eType)
+  void orxPy_AddModuleOrx()
   {
-  case orxEVENT_TYPE_OBJECT:
+    py_Ref pyMod = py_newmodule("orx");
+
+    py_bind(pyMod, "log(message: str) -> None", BINDING_NAME(Orx, log));
+  }
+
+  void orxPy_AddModuleConfig()
   {
-    switch (_pstEvent->eID)
+    // Register config module
+    py_Ref pyMod = py_newmodule("orx.config");
+
+#define BIND_FUNC(sig, name) py_bind(pyMod, sig, BINDING_NAME(Config, name))
+
+    // Bind config functions
+    BIND_FUNC("push_section(name: str) -> None", push_section);
+    BIND_FUNC("pop_section() -> None", pop_section);
+
+    BIND_FUNC("set_bool(key: str, value: bool) -> None", set_bool);
+    BIND_FUNC("get_bool(key: str, index: int | None = None) -> bool", get_bool);
+    BIND_FUNC("set_int(key: str, value: int) -> None", set_int);
+    BIND_FUNC("get_int(key: str, index: int | None = None) -> int", get_int);
+    BIND_FUNC("set_uint(key: str, value: int) -> None", set_uint);
+    BIND_FUNC("get_uint(key: str, index: int | None = None) -> int", get_uint);
+    BIND_FUNC("set_float(key: str, value: float) -> None", set_float);
+    BIND_FUNC("get_float(key: str, index: int | None = None) -> float", get_float);
+    BIND_FUNC("set_string(key: str, value: str) -> None", set_string);
+    BIND_FUNC("get_string(key: str, index: int | None = None) -> str", get_string);
+    BIND_FUNC("set_vector(key: str, value: Vector) -> None", set_vector);
+    BIND_FUNC("get_vector(key: str, index: int | None = None) -> Vector", get_vector);
+
+    BIND_FUNC("has_section(name: str) -> bool", has_section);
+    BIND_FUNC("has_value(key: str, check_spelling: bool = True) -> bool", has_value);
+
+    BIND_FUNC("clear_section(name: str) -> None", clear_section);
+    BIND_FUNC("clear_value(key: str) -> None", clear_value);
+
+#undef BIND_FUNC
+  }
+
+  void orxPy_AddModuleCommand()
+  {
+    // Register command module
+    py_Ref pyMod = py_newmodule("orx.command");
+
+#define BIND_FUNC(sig, name) py_bind(pyMod, sig, BINDING_NAME(Command, name))
+
+    // Bind command functions
+    BIND_FUNC("evaluate(command: str, guid: int | None = None) -> None", evaluate);
+
+#undef BIND_FUNC
+  }
+
+  void orxPy_AddModuleInput()
+  {
+    // Register command module
+    py_Ref pyMod = py_newmodule("orx.input");
+
+#define BIND_FUNC(sig, name) py_bind(pyMod, sig, BINDING_NAME(Input, name))
+
+    // Bind input functions
+    BIND_FUNC("push_set(name: str) -> None", push_set);
+    BIND_FUNC("pop_set() -> None", pop_set);
+    BIND_FUNC("enable_set(name: str, enable: bool = True) -> None", enable_set);
+    BIND_FUNC("is_set_enabled(name: str) -> bool", is_set_enabled);
+
+    BIND_FUNC("is_active(name: str) -> bool", is_active);
+    BIND_FUNC("has_been_activated(name: str) -> bool", has_been_activated);
+    BIND_FUNC("has_been_deactivated(name: str) -> bool", has_been_deactivated);
+
+    BIND_FUNC("get_value(name: str) -> float", get_value);
+    BIND_FUNC("set_value(name: str, value: float, permanent: bool = False) -> None", set_value);
+    BIND_FUNC("reset_value(name: str) -> None", reset_value);
+
+#undef BIND_FUNC
+  }
+
+#undef BINDING_NAME
+
+  void orxPy_AddModules()
+  {
+    orxPy_AddModuleOrx();
+    orxPy_AddModuleVector();
+    orxPy_AddModuleConfig();
+    orxPy_AddModuleCommand();
+    orxPy_AddModuleInput();
+    orxPy_AddModuleObject();
+  }
+
+  orxSTATUS orxPy_EventHandler(const orxEVENT *_pstEvent)
+  {
+    orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+    switch (_pstEvent->eType)
     {
-    case orxOBJECT_EVENT_CREATE:
+    case orxEVENT_TYPE_OBJECT:
     {
-      if (sstPy.pyOnCreate != nullptr)
+      switch (_pstEvent->eID)
       {
-        // Call handler
-        orxPy_Call1(sstPy.pVM, sstPy.pyOnCreate, pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)));
+      case orxOBJECT_EVENT_CREATE:
+      {
+        if (sstPy.pyOnCreate != 0)
+        {
+          py_neworxobject(py_r0(), (orxOBJECT *)_pstEvent->hSender);
+          // Call handler
+          orxPy_Call1(py_getglobal(sstPy.pyOnCreate), py_r0());
+        }
+        break;
+      }
+      case orxOBJECT_EVENT_DELETE:
+      {
+        if (sstPy.pyOnDelete != 0)
+        {
+          py_neworxobject(py_r0(), (orxOBJECT *)_pstEvent->hSender);
+          // Call handler
+          orxPy_Call1(py_getglobal(sstPy.pyOnDelete), py_r0());
+        }
+        break;
+      }
+      default:
+      {
+        orxLOG(orxPY_KZ_LOG_TAG "orxPy_EventHandler: Unsupported object event %d", _pstEvent->eID);
+        orxASSERT(orxFALSE);
+        break;
+      }
       }
       break;
     }
-    case orxOBJECT_EVENT_DELETE:
+    case orxEVENT_TYPE_PHYSICS:
     {
-      if (sstPy.pyOnDelete != nullptr)
+      switch (_pstEvent->eID)
       {
-        // Call handler
-        orxPy_Call1(sstPy.pVM, sstPy.pyOnDelete, pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)));
+      case orxPHYSICS_EVENT_CONTACT_ADD:
+      {
+        if (sstPy.pyOnCollide != 0)
+        {
+          orxPHYSICS_EVENT_PAYLOAD *pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+          // Build argument list
+          orxS32 s32Argc = 6;
+          py_Ref pyArgv;
+          py_newtuple(pyArgv, s32Argc);
+          py_neworxobject(py_tuple_getitem(pyArgv, 0), (orxOBJECT *)_pstEvent->hSender);
+          py_newstr(py_tuple_getitem(pyArgv, 1), orxBody_GetPartName(pstPayload->pstSenderPart));
+          py_neworxobject(py_tuple_getitem(pyArgv, 2), (orxOBJECT *)_pstEvent->hRecipient);
+          py_newstr(py_tuple_getitem(pyArgv, 3), orxBody_GetPartName(pstPayload->pstRecipientPart));
+          py_neworxvector(py_tuple_getitem(pyArgv, 4), &pstPayload->vPosition);
+          py_neworxvector(py_tuple_getitem(pyArgv, 5), &pstPayload->vNormal);
+
+          // Call handler
+          orxPy_CallN(py_getglobal(sstPy.pyOnCollide), s32Argc, pyArgv);
+        }
+        break;
+      }
+      case orxPHYSICS_EVENT_CONTACT_REMOVE:
+      {
+        if (sstPy.pyOnSeparate != 0)
+        {
+          orxPHYSICS_EVENT_PAYLOAD *pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+          // Build argument list
+          orxS32 s32Argc = 4;
+          py_Ref pyArgv;
+          py_newtuple(pyArgv, s32Argc);
+          py_neworxobject(py_tuple_getitem(pyArgv, 0), (orxOBJECT *)_pstEvent->hSender);
+          py_newstr(py_tuple_getitem(pyArgv, 1), orxBody_GetPartName(pstPayload->pstSenderPart));
+          py_neworxobject(py_tuple_getitem(pyArgv, 2), (orxOBJECT *)_pstEvent->hRecipient);
+          py_newstr(py_tuple_getitem(pyArgv, 3), orxBody_GetPartName(pstPayload->pstRecipientPart));
+          // Call handler
+          orxPy_CallN(py_getglobal(sstPy.pyOnCollide), s32Argc, pyArgv);
+        }
+        break;
+      }
+      default:
+      {
+        orxLOG(orxPY_KZ_LOG_TAG "orxPy_EventHandler: Unsupported physics event %d", _pstEvent->eID);
+        orxASSERT(orxFALSE);
+        break;
+      }
       }
       break;
     }
     default:
     {
-      orxLOG("orxPy_EventHandler: Unsupported object event %d", _pstEvent->eID);
+      orxLOG(orxPY_KZ_LOG_TAG "orxPy_EventHandler: Unsupported event (%d, %d)", _pstEvent->eType, _pstEvent->eID);
       orxASSERT(orxFALSE);
       break;
     }
     }
-    break;
+
+    // Done!
+    return eResult;
   }
-  case orxEVENT_TYPE_PHYSICS:
+
+  orxSTATUS orxPy_InitVM()
   {
-    switch (_pstEvent->eID)
-    {
-    case orxPHYSICS_EVENT_CONTACT_ADD:
-    {
-      if (sstPy.pyOnCollide != nullptr)
-      {
-        orxPHYSICS_EVENT_PAYLOAD *pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+    orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-        // Build argument list
-        pkpy::List pyArgs{
-            pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)),
-            pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstSenderPart)),
-            pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hRecipient)),
-            pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstRecipientPart)),
-            pkpy::py_var(sstPy.pVM, pstPayload->vPosition),
-            pkpy::py_var(sstPy.pVM, pstPayload->vNormal)};
+    orxConfig_PushSection(orxPY_KZ_CONFIG_SECTION);
 
-        // Call handler
-        orxPy_CallN(sstPy.pVM, sstPy.pyOnCollide, pyArgs);
-      }
-      break;
-    }
-    case orxPHYSICS_EVENT_CONTACT_REMOVE:
-    {
-      if (sstPy.pyOnSeparate != nullptr)
-      {
-        orxPHYSICS_EVENT_PAYLOAD *pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-        // Build argument list
-        pkpy::List pyArgs{
-            pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hSender)),
-            pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstSenderPart)),
-            pkpy::py_var(sstPy.pVM, pythonwrapper::PyPtr((orxOBJECT *)_pstEvent->hRecipient)),
-            pkpy::py_var(sstPy.pVM, orxBody_GetPartName(pstPayload->pstRecipientPart))};
-
-        // Call handler
-        orxPy_CallN(sstPy.pVM, sstPy.pyOnSeparate, pyArgs);
-      }
-      break;
-    }
-    default:
-    {
-      orxLOG("orxPy_EventHandler: Unsupported physics event %d", _pstEvent->eID);
-      orxASSERT(orxFALSE);
-      break;
-    }
-    }
-    break;
-  }
-  default:
-  {
-    orxLOG("orxPy_EventHandler: Unsupported event (%d, %d)", _pstEvent->eType, _pstEvent->eID);
-    orxASSERT(orxFALSE);
-    break;
-  }
-  }
-
-  // Done!
-  return eResult;
-}
-
-orxSTATUS orxPy_InitVM(pkpy::VM *&vm)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  orxConfig_PushSection(orxPY_KZ_CONFIG_SECTION);
-
-  // Initialize VM, with or without os support enabled
-  vm = new (std::nothrow) pkpy::VM(orxConfig_GetBool(orxPY_KZ_CONFIG_ENABLE_OS));
-
-  if (vm != nullptr)
-  {
-    eResult = orxSTATUS_SUCCESS;
+    // Initialize VM, with or without os support enabled
+    py_initialize();
 
     // Setup hooks for imports
-    vm->_import_handler = orxPy_ImportHandler;
+    py_Callbacks *pstCallbacks = py_callbacks();
+    pstCallbacks->importfile = orxPy_ReadSource;
 
     // Add core orx modules to the VM
-    orxPy_AddModules(vm);
+    orxPy_AddModules();
 
     if (orxConfig_HasValue(orxPY_KZ_CONFIG_MAIN))
     {
@@ -1793,106 +2012,168 @@ orxSTATUS orxPy_InitVM(pkpy::VM *&vm)
       const orxSTRING zSource = orxConfig_GetString(orxPY_KZ_CONFIG_MAIN);
 
       // Read and compile main Python source
-      eResult = orxPy_ExecSource(vm, zSource);
+      eResult = orxPy_ExecSource(zSource);
     }
+
+    orxConfig_PopSection();
+
+    return eResult;
   }
 
-  orxConfig_PopSection();
-
-  return eResult;
-}
-
-void orxPy_Exit()
-{
-  if (sstPy.bInitialized == orxTRUE)
+  void orxPy_InitCallbacks()
   {
-    // Call Python exit function if it's registered
-    orxPy_Call(sstPy.pVM, sstPy.pyExit);
+    // Get functions by name
+    orxConfig_PushSection(orxPY_KZ_CONFIG_SECTION);
+    const orxSTRING zName = orxSTRING_EMPTY;
+    py_Name pyName;
 
-    // Free Python VM memory
-    delete sstPy.pVM;
-
-    // Reset callback pointers
-    sstPy.pyInit = nullptr;
-    sstPy.pyUpdate = nullptr;
-    sstPy.pyExit = nullptr;
-    sstPy.pyOnCreate = nullptr;
-    sstPy.pyOnDelete = nullptr;
-    sstPy.pyOnCollide = nullptr;
-    sstPy.pyOnDelete = nullptr;
-
-    // Remove event handler
-    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxPy_EventHandler);
-    orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxPy_EventHandler);
-
-    // Update status
-    sstPy.bInitialized = orxFALSE;
-
-    // Unregister Python commands
-    orxCOMMAND_UNREGISTER(orxPY_KZ_COMMAND_EXEC);
-  }
-}
-
-void orxPy_Init()
-{
-  // Not already initialized?
-  if (sstPy.bInitialized == orxFALSE)
-  {
-    // Init variables
-    orxMemory_Zero(&(sstPy), sizeof(orxPY));
-    sstPy.pyInit = nullptr;
-    sstPy.pyUpdate = nullptr;
-    sstPy.pyExit = nullptr;
-    sstPy.pyOnCreate = nullptr;
-    sstPy.pyOnDelete = nullptr;
-    sstPy.pyOnCollide = nullptr;
-    sstPy.pyOnDelete = nullptr;
-
-    // Initialize the Python VM
-    orxSTATUS eResult = orxPy_InitVM(sstPy.pVM);
-
-    if (eResult == orxSTATUS_SUCCESS)
+    zName = orxConfig_HasValue(orxPY_KZ_CONFIG_INIT) ? orxConfig_GetString(orxPY_KZ_CONFIG_INIT) : orxPY_KZ_DEFAULT_INIT;
+    pyName = py_name(zName);
+    if (py_getglobal(pyName))
     {
-      // Initialize main engine callbacks from Python
-      orxPy_InitCallbacks();
+      sstPy.pyInit = pyName;
+    }
 
-      // Register commands
-      orxCOMMAND_REGISTER(orxPY_KZ_COMMAND_EXEC, orxPy_CommandPyExec, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Source", orxCOMMAND_VAR_TYPE_STRING});
+    zName = orxConfig_HasValue(orxPY_KZ_CONFIG_UPDATE) ? orxConfig_GetString(orxPY_KZ_CONFIG_UPDATE) : orxPY_KZ_DEFAULT_UPDATE;
+    pyName = py_name(zName);
+    if (py_getglobal(pyName))
+    {
+      sstPy.pyUpdate = pyName;
+    }
 
-      // Register event handler for events with handlers
-      orxU32 u32ObjectAddFlags = orxEVENT_KU32_FLAG_ID_NONE;
-      u32ObjectAddFlags |= sstPy.pyOnCreate != nullptr ? orxEVENT_GET_FLAG(orxOBJECT_EVENT_CREATE) : orxEVENT_KU32_FLAG_ID_NONE;
-      u32ObjectAddFlags |= sstPy.pyOnDelete != nullptr ? orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE) : orxEVENT_KU32_FLAG_ID_NONE;
-      if (u32ObjectAddFlags != orxEVENT_KU32_FLAG_ID_NONE)
+    zName = orxConfig_HasValue(orxPY_KZ_CONFIG_EXIT) ? orxConfig_GetString(orxPY_KZ_CONFIG_EXIT) : orxPY_KZ_DEFAULT_EXIT;
+    pyName = py_name(zName);
+    if (py_getglobal(pyName))
+    {
+      sstPy.pyExit = pyName;
+    }
+
+    zName = orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER;
+    pyName = py_name(zName);
+    if (py_getglobal(pyName))
+    {
+      sstPy.pyOnCreate = pyName;
+    }
+
+    zName = orxPY_KZ_DEFAULT_OBJECT_DELETE_EVENT_HANDLER;
+    pyName = py_name(zName);
+    if (py_getglobal(pyName))
+    {
+      sstPy.pyOnDelete = pyName;
+    }
+
+    zName = orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER;
+    pyName = py_name(zName);
+    if (py_getglobal(pyName))
+    {
+      sstPy.pyOnCollide = pyName;
+    }
+
+    zName = orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER;
+    pyName = py_name(zName);
+    if (py_getglobal(pyName))
+    {
+      sstPy.pyOnSeparate = pyName;
+    }
+
+    orxConfig_PopSection();
+  }
+
+  void orxPy_Init()
+  {
+    // Not already initialized?
+    if (sstPy.bInitialized == orxFALSE)
+    {
+      // Init variables
+      orxMemory_Zero(&(sstPy), sizeof(orxPY));
+      sstPy.pyInit = 0;
+      sstPy.pyUpdate = 0;
+      sstPy.pyExit = 0;
+      sstPy.pyOnCreate = 0;
+      sstPy.pyOnDelete = 0;
+      sstPy.pyOnCollide = 0;
+      sstPy.pyOnDelete = 0;
+
+      // Initialize the Python VM
+      orxSTATUS eResult = orxPy_InitVM();
+
+      if (eResult == orxSTATUS_SUCCESS)
       {
-        orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxPy_EventHandler);
-        orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, u32ObjectAddFlags, orxEVENT_KU32_MASK_ID_ALL);
-      }
-      orxU32 u32PhysicsAddFlags = orxEVENT_KU32_FLAG_ID_NONE;
-      u32PhysicsAddFlags |= sstPy.pyOnCollide != nullptr ? orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_ADD) : orxEVENT_KU32_FLAG_ID_NONE;
-      u32PhysicsAddFlags |= sstPy.pyOnSeparate != nullptr ? orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_REMOVE) : orxEVENT_KU32_FLAG_ID_NONE;
-      if (u32PhysicsAddFlags != orxEVENT_KU32_FLAG_ID_NONE)
-      {
-        orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxPy_EventHandler);
-        orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_PHYSICS, orxNULL, u32PhysicsAddFlags, orxEVENT_KU32_MASK_ID_ALL);
-      }
+        // Initialize main engine callbacks from Python
+        orxPy_InitCallbacks();
 
-      // Call Python init function
-      orxPy_Call(sstPy.pVM, sstPy.pyInit);
+        // Register commands
+        orxCOMMAND_REGISTER(orxPY_KZ_COMMAND_EXEC, orxPy_CommandPyExec, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Source", orxCOMMAND_VAR_TYPE_STRING}, {"HideException? = true", orxCOMMAND_VAR_TYPE_BOOL});
+
+        // Register event handler for events with handlers
+        orxU32 u32ObjectAddFlags = orxEVENT_KU32_FLAG_ID_NONE;
+        u32ObjectAddFlags |= sstPy.pyOnCreate != 0 ? orxEVENT_GET_FLAG(orxOBJECT_EVENT_CREATE) : orxEVENT_KU32_FLAG_ID_NONE;
+        u32ObjectAddFlags |= sstPy.pyOnDelete != 0 ? orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE) : orxEVENT_KU32_FLAG_ID_NONE;
+        if (u32ObjectAddFlags != orxEVENT_KU32_FLAG_ID_NONE)
+        {
+          orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxPy_EventHandler);
+          orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, u32ObjectAddFlags, orxEVENT_KU32_MASK_ID_ALL);
+        }
+        orxU32 u32PhysicsAddFlags = orxEVENT_KU32_FLAG_ID_NONE;
+        u32PhysicsAddFlags |= sstPy.pyOnCollide != 0 ? orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_ADD) : orxEVENT_KU32_FLAG_ID_NONE;
+        u32PhysicsAddFlags |= sstPy.pyOnSeparate != 0 ? orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_REMOVE) : orxEVENT_KU32_FLAG_ID_NONE;
+        if (u32PhysicsAddFlags != orxEVENT_KU32_FLAG_ID_NONE)
+        {
+          orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxPy_EventHandler);
+          orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_PHYSICS, orxNULL, u32PhysicsAddFlags, orxEVENT_KU32_MASK_ID_ALL);
+        }
+
+        // Call Python init function
+        orxPy_Call(py_getglobal(sstPy.pyInit));
+
+        // Update status
+        sstPy.bInitialized = orxTRUE;
+      }
+      else
+      {
+        orxLOG(orxPY_KZ_LOG_TAG "Failed to initialize Python VM");
+      }
+    }
+
+    // Done!
+    return;
+  }
+
+  void orxPy_Exit()
+  {
+    if (sstPy.bInitialized == orxTRUE)
+    {
+      // Call Python exit function if it's registered
+      orxPy_Call(py_getglobal(sstPy.pyExit));
+
+      // Free Python VM memory
+      py_finalize();
+
+      // Reset callback references
+      sstPy.pyInit = 0;
+      sstPy.pyUpdate = 0;
+      sstPy.pyExit = 0;
+      sstPy.pyOnCreate = 0;
+      sstPy.pyOnDelete = 0;
+      sstPy.pyOnCollide = 0;
+      sstPy.pyOnDelete = 0;
+
+      // Remove event handler
+      orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxPy_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxPy_EventHandler);
 
       // Update status
-      sstPy.bInitialized = orxTRUE;
-    }
-    else
-    {
-      orxLOG("Failed to initialize Python VM");
+      sstPy.bInitialized = orxFALSE;
+
+      // Unregister Python commands
+      orxCOMMAND_UNREGISTER(orxPY_KZ_COMMAND_EXEC);
     }
   }
-
-  // Done!
-  return;
-}
 
 #endif // orxPY_IMPL
 
 #endif // _orxPY_H_
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
