@@ -73,7 +73,7 @@ extern "C"
       orxASSERT(hResource != orxHANDLE_UNDEFINED);
 
       orxS64 s64Size = orxResource_GetSize(hResource) + 1;
-      pBuffer = (orxCHAR *)orxMemory_Allocate(s64Size, orxMEMORY_TYPE_TEMP);
+      pBuffer = (orxCHAR *)malloc(s64Size);
       orxASSERT(pBuffer != orxNULL);
 
       orxS64 s64Read = orxResource_Read(hResource, s64Size, pBuffer, orxNULL, orxNULL);
@@ -1785,7 +1785,7 @@ extern "C"
         eResult = orxSTATUS_SUCCESS;
       }
 
-      orxMemory_Free(pBuffer);
+      free(pBuffer);
     }
 
     if (eResult != orxSTATUS_SUCCESS)
