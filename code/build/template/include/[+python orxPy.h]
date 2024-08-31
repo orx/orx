@@ -30,6 +30,7 @@ extern "C"
 
 #define orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER "orx_on_create"
 #define orxPY_KZ_DEFAULT_OBJECT_DELETE_EVENT_HANDLER "orx_on_delete"
+#define orxPY_KZ_DEFAULT_TRIGGER_EVENT_HANDLER "orx_on_trigger"
 #define orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER "orx_on_collide"
 #define orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER "orx_on_separate"
 
@@ -50,6 +51,7 @@ extern "C"
     py_Name pyExit;       // Engine exit callback
     py_Name pyOnCreate;   // Object creation callback
     py_Name pyOnDelete;   // Object deletion callback
+    py_Name pyOnTrigger;  // Trigger fire callback
     py_Name pyOnCollide;  // Object collision callback
     py_Name pyOnSeparate; // Object separation callback
   } orxPY;
@@ -1978,6 +1980,25 @@ extern "C"
       }
       break;
     }
+    case orxEVENT_TYPE_TRIGGER:
+    {
+      orxASSERT(_pstEvent->eID == orxTRIGGER_EVENT_FIRE);
+      if (sstPy.pyOnTrigger != 0)
+      {
+        orxTRIGGER_EVENT_PAYLOAD *pstPayload = (orxTRIGGER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        // Build argument list
+        orxS32 s32Argc = 3;
+        py_Ref pyArgv;
+        py_newtuple(pyArgv, s32Argc);
+        py_neworxobject(py_tuple_getitem(pyArgv, 0), (orxOBJECT *)_pstEvent->hRecipient);
+        py_newstr(py_tuple_getitem(pyArgv, 1), pstPayload->zSetName);
+        py_newstr(py_tuple_getitem(pyArgv, 2), pstPayload->zEvent);
+
+        // Call handler
+        orxPy_CallN(py_getglobal(sstPy.pyOnTrigger), s32Argc, pyArgv);
+      }
+    }
     default:
     {
       orxLOG(orxPY_KZ_LOG_TAG "orxPy_EventHandler: Unsupported event (%d, %d)", _pstEvent->eType, _pstEvent->eID);
@@ -2062,6 +2083,13 @@ extern "C"
       sstPy.pyOnDelete = pyName;
     }
 
+    zName = orxPY_KZ_DEFAULT_TRIGGER_EVENT_HANDLER;
+    pyName = py_name(zName);
+    if (py_getglobal(pyName))
+    {
+      sstPy.pyOnTrigger = pyName;
+    }
+
     zName = orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER;
     pyName = py_name(zName);
     if (py_getglobal(pyName))
@@ -2091,6 +2119,7 @@ extern "C"
       sstPy.pyExit = 0;
       sstPy.pyOnCreate = 0;
       sstPy.pyOnDelete = 0;
+      sstPy.pyOnTrigger = 0;
       sstPy.pyOnCollide = 0;
       sstPy.pyOnDelete = 0;
 
@@ -2113,6 +2142,13 @@ extern "C"
         {
           orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxPy_EventHandler);
           orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, u32ObjectAddFlags, orxEVENT_KU32_MASK_ID_ALL);
+        }
+        orxU32 u32TriggerAddFlags = orxEVENT_KU32_FLAG_ID_NONE;
+        u32TriggerAddFlags |= sstPy.pyOnTrigger != 0 ? orxEVENT_GET_FLAG(orxTRIGGER_EVENT_FIRE) : orxEVENT_KU32_FLAG_ID_NONE;
+        if (u32TriggerAddFlags != orxEVENT_KU32_FLAG_ID_NONE)
+        {
+          orxEvent_AddHandler(orxEVENT_TYPE_TRIGGER, orxPy_EventHandler);
+          orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_TRIGGER, orxNULL, u32TriggerAddFlags, orxEVENT_KU32_MASK_ID_ALL);
         }
         orxU32 u32PhysicsAddFlags = orxEVENT_KU32_FLAG_ID_NONE;
         u32PhysicsAddFlags |= sstPy.pyOnCollide != 0 ? orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_ADD) : orxEVENT_KU32_FLAG_ID_NONE;
@@ -2155,11 +2191,13 @@ extern "C"
       sstPy.pyExit = 0;
       sstPy.pyOnCreate = 0;
       sstPy.pyOnDelete = 0;
+      sstPy.pyOnTrigger = 0;
       sstPy.pyOnCollide = 0;
       sstPy.pyOnDelete = 0;
 
       // Remove event handler
       orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxPy_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_TRIGGER, orxPy_EventHandler);
       orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxPy_EventHandler);
 
       // Update status
