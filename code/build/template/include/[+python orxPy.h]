@@ -480,6 +480,74 @@ extern "C"
     RETURN_VECTOR(&vPosition);
   }
 
+  BIND(Object, set_rotation)
+  {
+    PY_CHECK_ARGC(3);
+    OBJECT;
+    ARG_FLOAT(fRotation, 1);
+    ARG_BOOL(bWorld, 2);
+    if (bWorld)
+    {
+      orxObject_SetWorldRotation(pstObject, fRotation);
+    }
+    else
+    {
+      orxObject_SetRotation(pstObject, fRotation);
+    }
+    RETURN_NONE;
+  }
+
+  BIND(Object, get_rotation)
+  {
+    PY_CHECK_ARGC(2);
+    OBJECT;
+    ARG_BOOL(bWorld, 1);
+    orxFLOAT fRotation;
+    if (bWorld)
+    {
+      fRotation = orxObject_GetWorldRotation(pstObject);
+    }
+    else
+    {
+      fRotation = orxObject_GetRotation(pstObject);
+    }
+    RETURN_FLOAT(fRotation);
+  }
+
+  BIND(Object, set_scale)
+  {
+    PY_CHECK_ARGC(3);
+    OBJECT;
+    ARG_VECTOR(pvScale, 1);
+    ARG_BOOL(bWorld, 2);
+    if (bWorld)
+    {
+      orxObject_SetWorldScale(pstObject, pvScale);
+    }
+    else
+    {
+      orxObject_SetScale(pstObject, pvScale);
+    }
+    RETURN_NONE;
+  }
+
+  BIND(Object, get_scale)
+  {
+    PY_CHECK_ARGC(2);
+    OBJECT;
+    ARG_BOOL(bWorld, 1);
+    orxVECTOR vScale;
+    if (bWorld)
+    {
+      orxObject_GetWorldScale(pstObject, &vScale);
+    }
+    else
+    {
+      orxObject_GetScale(pstObject, &vScale);
+    }
+    RETURN_VECTOR(&vScale);
+  }
+
   BIND(Object, set_parent)
   {
     PY_CHECK_ARGC(2);
@@ -1224,7 +1292,7 @@ extern "C"
 
   BIND(Config, pop_section)
   {
-    PY_CHECK_ARGC(1);
+    PY_CHECK_ARGC(0);
     orxConfig_PopSection();
     RETURN_NONE;
   }
@@ -1650,6 +1718,12 @@ extern "C"
 
     BIND_METHOD("set_position(self, position: Vector, world: bool = False) -> None", set_position);
     BIND_METHOD("get_position(self, world: bool = False) -> Vector", get_position);
+
+    BIND_METHOD("set_rotation(self, rotation: float, world: bool = False) -> None", set_rotation);
+    BIND_METHOD("get_rotation(self, world: bool = False) -> float", get_rotation);
+
+    BIND_METHOD("set_scale(self, scale: Vector, world: bool = False) -> None", set_scale);
+    BIND_METHOD("get_scale(self, world: bool = False) -> Vector", get_scale);
 
     BIND_METHOD("set_parent(self, parent: Object | None) -> None", set_parent);
     BIND_METHOD("get_parent(self) -> Object | None", get_parent);
