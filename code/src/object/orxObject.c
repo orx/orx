@@ -2975,7 +2975,7 @@ void orxFASTCALL orxObject_CommandFireTrigger(orxU32 _u32ArgNumber, const orxCOM
 
     /* For all characters in event */
     for(pcSrc = _astArgList[1].zValue, pcDst = acBuffer, u32RefinementCount = 0;
-        (*pcSrc != orxCHAR_NULL) && (pcDst - acBuffer < sizeof(acBuffer) - 1);
+        (*pcSrc != orxCHAR_NULL) && ((orxU32)(pcDst - acBuffer) < sizeof(acBuffer) - 1);
         pcSrc++, pcDst++)
     {
       /* Depending on character */

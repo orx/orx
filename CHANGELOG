@@ -1,6 +1,58 @@
 Orx - Portable Game Engine
 ==========================
 
+orx 1.15
+-----
+
+* IMPORTANT: Added support for internal memory-based resources, including: orxResource_SetMemoryResource(), hotreload support, WEBP-encoded orx:font:default & orx:texture:logo textures
+* IMPORTANT: Added Trigger module to enable per-object hierarchical/cascaded event handling in config, using commands (new ScrollObject's input system relies on Triggers), added internal triggers to handle object's creation, deletion and physics collisions
+* IMPORTANT: Added support for headless mode, using embedded plugins + __orxHEADLESS__ define
+* IMPORTANT: Added support for manual parents for Animation & Frame sections
+* IMPORTANT: Using a single float value as an object/camera/spawner Position will only set its Z component, e.g. Position = -1 <=> Position = (0, 0, -1)
+* IMPORTANT: FX module overhaul, including: Bezier curves support, web easing curves (30) and user-defined float/vector FXs
+* IMPORTANT: Added orxObject_FindChild()/orxObject_FindOwnedChild (and commands) to find objects inside a hierarchy based on their name/index
+* IMPORTANT: Languages can now be added on-the-fly to the Locale module, Locale.LanguageList has been replaced by Local.Language to define the default language
+* IMPORTANT: Invalid animation sets will not stop execution anymore, using an unknown current/target anim name will be ignored (useful for recursive calls on hierarchies with diverging animation sets)
+* IMPORTANT: Init-ed projects can now be re-init-ed to add/remove/update extensions
+* IMPORTANT: Added tailored ExtensionTemplate.ini to init-ed projects, describing all config properties used by enabled extensions
+* IMPORTANT: An optional wrap around and FX can now be applied to shader time parameters
+* IMPORTANT: Bundle & Scroll extensions are now enabled by default for newly created projects using init
+* IMPORTANT: Literal positions & pivot overrides will now work properly, no matter the IgnoreFromParent settings
+* IMPORTANT: Min deployment OS version for MacOS is now 10.10
+* IMPORTANT: Removed redundant orxClock_GetNext()
+* IMPORTANT: default debug64 configurations has been replaced by debuguniv64 on MacOS
+* IMPORTANT: Added typo detector for config values, using the Damerau-Levenshtein edit distance calculation algorithm (can be disabled)
+* IMPORTANT: Added support for white, pink & brownian noises and sine, square, triangle & sawtooth (A-440 Hz) audio wave streams
+* IMPORTANT: @ is now supported as the self-section identifier for config lazy commands
+* IMPORTANT: Added orxInput_PushSet()/_PopSet() (+ associated commands) to handle input sets in a similar fashion to config sections
+* IMPORTANT: The [Color] section can now be extended/overridden in the main config file
+* New Mod init extension (based on ibxm) has replaced the former pocketmod-based one: FastTracker 2 .XM & Scream Tracker 3 .S3M formats are now supported
+* Added SNDH init extension (based on AtariAudio) to play Atari ST sound files
+* Added Cheat code (pass phrases/input sequences) init extension
+* Added Inspector init extension (to inspect objects & associated config at runtime)
+* Added support for new mouse cursors (hresize -> resize_ew, vresize -> resize_ns, resize_nesw, resize_nwse, resize_all & not_allowed)
+* Improved clock's internal sleep accuracy to prevent oversleeping and micro-stuttering
+* FPS counter isn't rendered on debug viewports anymore
+* Objects with bodies can now age (but collisions won't be resolved during aging)
+* Color literals can now be used in numeric random expressions, with or without steps
+* Color literals are now supported through exposed config API and can be used for all available color spaces
+* Added orxREMAP(), orxVector_Remap() & orxVector_Mod() (+ associated commands/aliases)
+* Fixed auto-resize behavior of multiple viewports linked to the same texture
+* Improved orxFontGen's log output
+* Muted many unessential warning messages that spam logs in some valid use cases
+* Added Input.Load, Input.Save and Input.ClearSet commands (+ orxInput_ClearSet()), orx:input:console & orx:input:profiler as internal input sets
+* Added orxConfig_GetDefaultParent() & commands Config.SetDefaultParent/Config.GetDefaultParent
+* Added Clock.Pause & Clock.IsPaused commands
+* Added Object.(Add|Remove)BodyPart & Object.SetBody commands
+* Physics simulation will now be ignored for objects linked to a paused clock
+* Objects linked to a paused clock will not be updated
+* Commands *ToSPherical & *ToCartesian now use degrees instead of radians
+* Command.Evaluate can now take an optional GUID parameter
+* Added orxObject_SetFXTime[Recursive]()/_GetFXTime() (+ associated commands)
+* Added orxObject_ResetActiveTime[Recursive]() & command Object.ResetActiveTime
+* Updated to latest Scroll (headers-only, OnFX* methods, ScrollObject::Find[Owned]Child/Get[Owned]Child, ScrollObject inputs & triggers support, etc.)
+* *Many* misc fixes, optimizations and additions
+
 orx 1.14
 -----
 * IMPORTANT: Android build system has been revamped & simplified and supports automatic downloading/updating of dependencies
@@ -21,7 +73,7 @@ orx 1.14
 * IMPORTANT: F5 is now the default key to pause/unpause the embedded profiler & F8 the default key to show/hide the profiler's history
 * IMPORTANT: Added support for FrameIndex for animations made with the multiple files mode
 * IMPORTANT: ScrollObject::SetAnim() now defaults to a recursive behavior
-* IMPORATNT: orxString_NPrint() now takes the size of the buffer including the terminating null character (no need for size + 1 as parameter any longer)
+* IMPORTANT: orxString_NPrint() now takes the size of the buffer including the terminating null character (no need for size + 1 as parameter any longer)
 * IMPORTANT: Removed orxString_Print(), orxString_NPrint() should be used instead
 * IMPORTANT: Returning an empty value for OnPrepare & OnDelete commands is now treated as "false" (ie. abort)
 * IMPORTANT: Added System config values (Bits, Build, Endianness, Platform & Processor) + System command for queries
@@ -305,7 +357,7 @@ orx 1.9
 * IMPORTANT: Added partial frame transmission support to orxFrame (+ config property IgnoreFromParent)
 * IMPORTANT: Added support for lazy command evaluation as config values (ex: MyValue = % MyModule.MyCommand 18)
 * IMPORTANT: Multiple commands can now be processed at once if separated by ',' (Works with commands from timelines as well as those from console or any call to orxCommand_Evaluate())
-* IMPORTATN: Added orxText_SetSize() that can constrain a text horizontally and vertically
+* IMPORTANT: Added orxText_SetSize() that can constrain a text horizontally and vertically
 * IMPORTANT: Added orxSound_GetCursor() & orxSound_SetCursor()
 * IMPORTANT: Graphic's texture and sound stream/sample now support locale marker ($) for localization
 
@@ -520,7 +572,7 @@ orx 1.5rc0
 * IMPORTANT: Added concept of group to objects, cameras and rendering + added orxObject_GetNext() for group browsing
 * IMPORTANT: Added MRT (Multiple Render Targets) support on computers + Android/OpenGL ES 3.0
 * IMPORTANT: Textures are not Y-reverted at runtime anymore: no need to manually Y-revert compressed textures and shader UV coordinates
-* IMPORTNAT: Added String ID support (using hash as key/comparison value + central content storage)
+* IMPORTANT: Added String ID support (using hash as key/comparison value + central content storage)
 * IMPORTANT: No more screen-as-texture support, render-to-texture should be used at all time
 * IMPORTANT: Viewports are now rendered in their order of creation (was previously reverse order)
 * IMPORTANT: Added memory tracking, including resource-related dependencies: sound, textures, physics (displayed in the profiler screen)
