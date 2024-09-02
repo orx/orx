@@ -42,6 +42,7 @@
 #include "memory/orxBank.h"
 #include "object/orxTimeLine.h"
 #include "object/orxTrigger.h"
+#include "plugin/orxPlugin.h"
 #include "utils/orxString.h"
 #include "utils/orxTree.h"
 
@@ -2830,6 +2831,59 @@ void orxFASTCALL orxCommand_CommandSetClipboard(orxU32 _u32ArgNumber, const orxC
   return;
 }
 
+/** Command: LoadPlugin
+ */
+void orxFASTCALL orxCommand_CommandLoadPlugin(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = orxFALSE;
+
+  /* Is plugin module initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_PLUGIN) != orxFALSE)
+  {
+    /* Loads plugin */
+    if(orxPlugin_LoadUsingExt(_astArgList[0].zValue, _astArgList[0].zValue) != orxHANDLE_UNDEFINED)
+    {
+      /* Updates result */
+      _pstResult->bValue = orxTRUE;
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: UnloadPlugin
+ */
+void orxFASTCALL orxCommand_CommandUnloadPlugin(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = orxFALSE;
+
+  /* Is plugin module initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_PLUGIN) != orxFALSE)
+  {
+    orxHANDLE hPlugin;
+
+    /* Gets plugin's handle */
+    hPlugin = orxPlugin_GetHandle(_astArgList[0].zValue);
+
+    /* Valid? */
+    if(hPlugin != orxHANDLE_UNDEFINED)
+    {
+      /* Unloads it */
+      if(orxPlugin_Unload(hPlugin) != orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        _pstResult->bValue = orxTRUE;
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the command commands
  */
 static orxINLINE void orxCommand_RegisterCommands()
@@ -2960,6 +3014,11 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetClipboard, "Content", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
   /* Command: SetClipboard */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, SetClipboard, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Content", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: LoadPlugin */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, LoadPlugin, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Plugin", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: UnloadPlugin */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, UnloadPlugin, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Plugin", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Alias: Help */
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
@@ -3146,6 +3205,11 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("Clipboard.Get", "Command.GetClipboard", orxNULL);
   /* Alias: Clipboard.Set */
   orxCommand_AddAlias("Clipboard.Set", "Command.SetClipboard", orxNULL);
+
+  /* Alias: Plugin.Load */
+  orxCommand_AddAlias("Plugin.Load", "Command.LoadPlugin", orxNULL);
+  /* Alias: Plugin.Unload */
+  orxCommand_AddAlias("Plugin.Unload", "Command.UnloadPlugin", orxNULL);
 
   /* Done! */
   return;
@@ -3341,6 +3405,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: Clipboard.Set */
   orxCommand_RemoveAlias("Clipboard.Set");
 
+  /* Alias: Plugin.Load */
+  orxCommand_RemoveAlias("Plugin.Load");
+  /* Alias: Plugin.Unload */
+  orxCommand_RemoveAlias("Plugin.Unload");
+
   /* Command: Help */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Help);
 
@@ -3467,6 +3536,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetClipboard);
   /* Command: SetClipboard */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, SetClipboard);
+
+  /* Command: LoadPlugin */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, LoadPlugin);
+  /* Command: UnloadPlugin */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, UnloadPlugin);
 
   /* Done! */
   return;
