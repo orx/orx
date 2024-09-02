@@ -33,6 +33,7 @@ extern "C"
 #define orxPY_KZ_DEFAULT_TRIGGER_EVENT_HANDLER "orx_on_trigger"
 #define orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER "orx_on_collide"
 #define orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER "orx_on_separate"
+#define orxPY_KZ_DEFAULT_SHADER_PARAM_EVENT_HANDLER "orx_on_shader_param"
 
   //! Custom Python types
 
@@ -45,15 +46,16 @@ extern "C"
 
   typedef struct __orxPY_t
   {
-    orxBOOL bInitialized; // Initialized state
-    py_Name pyInit;       // Engine init callback
-    py_Name pyUpdate;     // Engine update callback
-    py_Name pyExit;       // Engine exit callback
-    py_Name pyOnCreate;   // Object creation callback
-    py_Name pyOnDelete;   // Object deletion callback
-    py_Name pyOnTrigger;  // Trigger fire callback
-    py_Name pyOnCollide;  // Object collision callback
-    py_Name pyOnSeparate; // Object separation callback
+    orxBOOL bInitialized;    // Initialized state
+    py_Name pyInit;          // Engine init callback
+    py_Name pyUpdate;        // Engine update callback
+    py_Name pyExit;          // Engine exit callback
+    py_Name pyOnCreate;      // Object creation callback
+    py_Name pyOnDelete;      // Object deletion callback
+    py_Name pyOnTrigger;     // Trigger fire callback
+    py_Name pyOnCollide;     // Object collision callback
+    py_Name pyOnSeparate;    // Object separation callback
+    py_Name pyOnShaderParam; // Shader parameter event
   } orxPY;
 
   static orxPY sstPy;
@@ -1339,10 +1341,21 @@ extern "C"
 
   BIND(Config, get_vector)
   {
-    PY_CHECK_ARGC(1);
+    PY_CHECK_ARGC(2);
     ARG_STR(zKey, 0);
+    py_Ref pyIndex = py_arg(1);
+
     orxVECTOR vValue = orxVECTOR_0;
-    orxConfig_GetVector(zKey, &vValue);
+    if (py_isnone(pyIndex))
+    {
+      orxConfig_GetVector(zKey, &vValue);
+    }
+    else
+    {
+      ARG_INT(s32Index, 1);
+      orxConfig_GetListVector(zKey, (orxS32)s32Index, &vValue);
+    }
+
     RETURN_VECTOR(&vValue);
   }
 
@@ -2012,14 +2025,14 @@ extern "C"
 
           // Build argument list
           orxS32 s32Argc = 6;
-          py_Ref pyArgv;
-          py_newtuple(pyArgv, s32Argc);
-          py_neworxobject(py_tuple_getitem(pyArgv, 0), (orxOBJECT *)_pstEvent->hSender);
-          py_newstr(py_tuple_getitem(pyArgv, 1), orxBody_GetPartName(pstPayload->pstSenderPart));
-          py_neworxobject(py_tuple_getitem(pyArgv, 2), (orxOBJECT *)_pstEvent->hRecipient);
-          py_newstr(py_tuple_getitem(pyArgv, 3), orxBody_GetPartName(pstPayload->pstRecipientPart));
-          py_neworxvector(py_tuple_getitem(pyArgv, 4), &pstPayload->vPosition);
-          py_neworxvector(py_tuple_getitem(pyArgv, 5), &pstPayload->vNormal);
+          py_Ref pyArgv = py_r0();
+          py_newlistn(pyArgv, s32Argc);
+          py_neworxobject(py_offset(pyArgv, 0), (orxOBJECT *)_pstEvent->hSender);
+          py_newstr(py_offset(pyArgv, 1), orxBody_GetPartName(pstPayload->pstSenderPart));
+          py_neworxobject(py_offset(pyArgv, 2), (orxOBJECT *)_pstEvent->hRecipient);
+          py_newstr(py_offset(pyArgv, 3), orxBody_GetPartName(pstPayload->pstRecipientPart));
+          py_neworxvector(py_offset(pyArgv, 4), &pstPayload->vPosition);
+          py_neworxvector(py_offset(pyArgv, 5), &pstPayload->vNormal);
 
           // Call handler
           orxPy_CallN(py_getglobal(sstPy.pyOnCollide), s32Argc, pyArgv);
@@ -2034,14 +2047,14 @@ extern "C"
 
           // Build argument list
           orxS32 s32Argc = 4;
-          py_Ref pyArgv;
-          py_newtuple(pyArgv, s32Argc);
-          py_neworxobject(py_tuple_getitem(pyArgv, 0), (orxOBJECT *)_pstEvent->hSender);
-          py_newstr(py_tuple_getitem(pyArgv, 1), orxBody_GetPartName(pstPayload->pstSenderPart));
-          py_neworxobject(py_tuple_getitem(pyArgv, 2), (orxOBJECT *)_pstEvent->hRecipient);
-          py_newstr(py_tuple_getitem(pyArgv, 3), orxBody_GetPartName(pstPayload->pstRecipientPart));
+          py_Ref pyArgv = py_r0();
+          py_newlistn(pyArgv, s32Argc);
+          py_neworxobject(py_offset(pyArgv, 0), (orxOBJECT *)_pstEvent->hSender);
+          py_newstr(py_offset(pyArgv, 1), orxBody_GetPartName(pstPayload->pstSenderPart));
+          py_neworxobject(py_offset(pyArgv, 2), (orxOBJECT *)_pstEvent->hRecipient);
+          py_newstr(py_offset(pyArgv, 3), orxBody_GetPartName(pstPayload->pstRecipientPart));
           // Call handler
-          orxPy_CallN(py_getglobal(sstPy.pyOnCollide), s32Argc, pyArgv);
+          orxPy_CallN(py_getglobal(sstPy.pyOnSeparate), s32Argc, pyArgv);
         }
         break;
       }
@@ -2063,15 +2076,73 @@ extern "C"
 
         // Build argument list
         orxS32 s32Argc = 3;
-        py_Ref pyArgv;
-        py_newtuple(pyArgv, s32Argc);
-        py_neworxobject(py_tuple_getitem(pyArgv, 0), (orxOBJECT *)_pstEvent->hRecipient);
-        py_newstr(py_tuple_getitem(pyArgv, 1), pstPayload->zSetName);
-        py_newstr(py_tuple_getitem(pyArgv, 2), pstPayload->zEvent);
+        py_Ref pyArgv = py_r0();
+        py_newlistn(pyArgv, s32Argc);
+        py_neworxobject(py_offset(pyArgv, 0), (orxOBJECT *)_pstEvent->hRecipient);
+        py_newstr(py_offset(pyArgv, 1), pstPayload->zSetName);
+        py_newstr(py_offset(pyArgv, 2), pstPayload->zEvent);
 
         // Call handler
         orxPy_CallN(py_getglobal(sstPy.pyOnTrigger), s32Argc, pyArgv);
       }
+      break;
+    }
+    case orxEVENT_TYPE_SHADER:
+    {
+      orxASSERT(_pstEvent->eID == orxSHADER_EVENT_SET_PARAM);
+      if (sstPy.pyOnShaderParam != 0)
+      {
+        orxSHADER_EVENT_PAYLOAD *pstPayload = (orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        if (pstPayload->eParamType != orxSHADER_PARAM_TYPE_FLOAT && pstPayload->eParamType != orxSHADER_PARAM_TYPE_VECTOR)
+        {
+          // Unsupported parameter type
+          break;
+        }
+
+        // Build argument list
+        orxS32 s32Argc = 4;
+        py_Ref pyArgv = py_r0();
+        py_newlistn(pyArgv, s32Argc);
+        py_neworxobject(py_offset(pyArgv, 0), (orxOBJECT *)_pstEvent->hSender);
+        py_newstr(py_offset(pyArgv, 1), pstPayload->zShaderName);
+        py_newstr(py_offset(pyArgv, 2), pstPayload->zParamName);
+        py_assign(py_offset(pyArgv, 3), pstPayload->eParamType == orxSHADER_PARAM_TYPE_FLOAT ? py_tpobject(tp_float) : py_tpobject(tp_orxvector));
+
+        // Call handler
+        orxSTATUS eShaderResult = orxPy_CallN(py_getglobal(sstPy.pyOnShaderParam), s32Argc, pyArgv);
+        if (eShaderResult == orxSTATUS_SUCCESS && (py_isfloat(py_retval()) || py_isint(py_retval()) || py_istype(py_retval(), tp_orxvector)))
+        {
+          switch (pstPayload->eParamType)
+          {
+          case orxSHADER_PARAM_TYPE_FLOAT:
+          {
+            if (py_isfloat(py_retval()) || py_isint(py_retval()))
+            {
+              py_f64 dVal;
+              py_castfloat(py_retval(), &dVal);
+              pstPayload->fValue = (orxFLOAT)dVal;
+            }
+            break;
+          }
+          case orxSHADER_PARAM_TYPE_VECTOR:
+          {
+            if (py_istype(py_retval(), tp_orxvector))
+            {
+              orxVECTOR *pvVal = (orxVECTOR *)py_touserdata(py_retval());
+              orxVector_Copy(&pstPayload->vValue, pvVal);
+            }
+            break;
+          }
+          default:
+          {
+            // An unsupported parameter type
+            break;
+          }
+          }
+        }
+      }
+      break;
     }
     default:
     {
@@ -2178,6 +2249,13 @@ extern "C"
       sstPy.pyOnSeparate = pyName;
     }
 
+    zName = orxPY_KZ_DEFAULT_SHADER_PARAM_EVENT_HANDLER;
+    pyName = py_name(zName);
+    if (py_getglobal(pyName))
+    {
+      sstPy.pyOnShaderParam = pyName;
+    }
+
     orxConfig_PopSection();
   }
 
@@ -2196,6 +2274,7 @@ extern "C"
       sstPy.pyOnTrigger = 0;
       sstPy.pyOnCollide = 0;
       sstPy.pyOnDelete = 0;
+      sstPy.pyOnShaderParam = 0;
 
       // Initialize the Python VM
       orxSTATUS eResult = orxPy_InitVM();
@@ -2232,6 +2311,13 @@ extern "C"
           orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxPy_EventHandler);
           orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_PHYSICS, orxNULL, u32PhysicsAddFlags, orxEVENT_KU32_MASK_ID_ALL);
         }
+        orxU32 u32ShaderAddFlags = orxEVENT_KU32_FLAG_ID_NONE;
+        u32ShaderAddFlags |= sstPy.pyOnShaderParam != 0 ? orxEVENT_GET_FLAG(orxSHADER_EVENT_SET_PARAM) : orxEVENT_KU32_FLAG_ID_NONE;
+        if (u32ShaderAddFlags != orxEVENT_KU32_FLAG_ID_NONE)
+        {
+          orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxPy_EventHandler);
+          orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_SHADER, orxNULL, u32ShaderAddFlags, orxEVENT_KU32_MASK_ID_ALL);
+        }
 
         // Call Python init function
         orxPy_Call(py_getglobal(sstPy.pyInit));
@@ -2267,12 +2353,15 @@ extern "C"
       sstPy.pyOnDelete = 0;
       sstPy.pyOnTrigger = 0;
       sstPy.pyOnCollide = 0;
+      sstPy.pyOnSeparate = 0;
       sstPy.pyOnDelete = 0;
+      sstPy.pyOnShaderParam = 0;
 
       // Remove event handler
       orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxPy_EventHandler);
       orxEvent_RemoveHandler(orxEVENT_TYPE_TRIGGER, orxPy_EventHandler);
       orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxPy_EventHandler);
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SHADER, orxPy_EventHandler);
 
       // Update status
       sstPy.bInitialized = orxFALSE;
