@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -122,7 +122,8 @@ struct
   orxSTRUCTURE_DECLARE_STRUCTURE_INFO(SPAWNER,   orxSpawner_GetName),
   orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TEXT,      orxText_GetName),
   orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TEXTURE,   orxTexture_GetName),
-  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TIMELINE,  orxNULL)
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TIMELINE,  orxNULL),
+  orxSTRUCTURE_DECLARE_STRUCTURE_INFO(TRIGGER,   orxNULL)
 };
 #undef orxSTRUCTURE_DECLARE_STRUCTURE_INFO
 
@@ -166,6 +167,7 @@ static orxINLINE orxTREE_NODE *orxStructure_InsertLogNode(orxBANK *_pstBank, orx
 
     /* Creates its node */
     pstNode = (orxSTRUCTURE_LOG_NODE *)orxBank_Allocate(_pstBank);
+    orxMemory_Zero(pstNode, sizeof(orxSTRUCTURE_LOG_NODE));
     orxASSERT(pstNode != orxNULL);
     pstNode->pstStructure = _pstStructure;
 
@@ -197,17 +199,21 @@ static orxINLINE orxTREE_NODE *orxStructure_InsertLogNode(orxBANK *_pstBank, orx
   return &((*ppstBucket)->stNode);
 }
 
-static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode)
+static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode, orxBOOL _bPrivate)
 {
 #define orxSTRUCTURE_MAX_NAME_LENGTH 48
 
   /* Is Valid? */
   if(_pstNode != orxNULL)
   {
-    static orxCHAR  sacPrefixBuffer[1024] = {0};
+    static orxCHAR  sacPrefixBuffer[1024];
     static orxCHAR *spcPrefixCurrent = sacPrefixBuffer;
     orxSTRUCTURE   *pstStructure;
-    orxTREE_NODE   *pstChild, *pstSibling;
+    orxTREE_NODE   *pstSibling;
+    orxBOOL         bRecursive = orxFALSE;
+
+    /* Inits buffer */
+    sacPrefixBuffer[sizeof(sacPrefixBuffer) - 1] = orxCHAR_NULL;
 
     /* Gets next sibling */
     pstSibling = orxTree_GetSibling(_pstNode);
@@ -220,8 +226,8 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode)
     /* Gets its structure */
     pstStructure = orxSTRUCT_GET_FROM_FIELD(orxSTRUCTURE_LOG_NODE, stNode, _pstNode)->pstStructure;
 
-    /* Has public structure */
-    if((pstStructure != orxNULL) && (orxStructure_GetOwner(pstStructure) != pstStructure))
+    /* Has public structure or private accepted*/
+    if((pstStructure != orxNULL) && ((orxStructure_GetOwner(pstStructure) != pstStructure) || (_bPrivate != orxFALSE)))
     {
       orxSTRUCTURE_ID eID;
       orxU32          i;
@@ -266,34 +272,46 @@ static orxINLINE void orxStructure_LogNode(const orxTREE_NODE *_pstNode)
         /* Logs it */
         orxLOG(orxSTRUCTURE_KU32_LOG_COLOR_TREE "%s" orxSTRUCTURE_KU32_LOG_COLOR_ID "%-16s" orxSTRUCTURE_KU32_LOG_COLOR_MARKER " %*s[" orxSTRUCTURE_KU32_LOG_COLOR_GUID "%016llX" orxSTRUCTURE_KU32_LOG_COLOR_MARKER "]", sacPrefixBuffer, orxStructure_GetIDString(eID), orxSTRUCTURE_MAX_NAME_LENGTH + 2 - (orxS32)(spcPrefixCurrent - sacPrefixBuffer), orxSTRING_EMPTY, pstStructure->u64GUID);
       }
+
+      /* Updates status */
+      bRecursive = orxTRUE;
     }
     /* Root? */
     else if(_pstNode == orxTree_GetRoot(orxTree_GetTree(_pstNode)))
     {
       /* Logs it */
       orxLOG(orxSTRUCTURE_KU32_LOG_COLOR_MARKER "[" orxSTRUCTURE_KU32_LOG_COLOR_ID "ROOT" orxSTRUCTURE_KU32_LOG_COLOR_MARKER "]");
+
+      /* Updates status */
+      bRecursive = orxTRUE;
     }
 
-    /* Gets its child */
-    pstChild = orxTree_GetChild(_pstNode);
-
-    /* Valid? */
-    if(pstChild != orxNULL)
+    /* Should recurse? */
+    if(bRecursive != orxFALSE)
     {
-      /* Updates prefix */
-      *(spcPrefixCurrent - 2) = (pstSibling != orxNULL) ? '|' : ' ';
-      *(spcPrefixCurrent - 1) = ' ';
+      orxTREE_NODE *pstChild;
 
-      /* Logs its */
-      orxStructure_LogNode(pstChild);
+      /* Gets its child */
+      pstChild = orxTree_GetChild(_pstNode);
 
-      /* For all its siblings */
-      for(pstSibling = orxTree_GetSibling(pstChild);
-          pstSibling != orxNULL;
-          pstSibling = orxTree_GetSibling(pstSibling))
+      /* Valid? */
+      if(pstChild != orxNULL)
       {
-        /* Logs it */
-        orxStructure_LogNode(pstSibling);
+        /* Updates prefix */
+        *(spcPrefixCurrent - 2) = (pstSibling != orxNULL) ? '|' : ' ';
+        *(spcPrefixCurrent - 1) = ' ';
+
+        /* Logs its */
+        orxStructure_LogNode(pstChild, _bPrivate);
+
+        /* For all its siblings */
+        for(pstSibling = orxTree_GetSibling(pstChild);
+            pstSibling != orxNULL;
+            pstSibling = orxTree_GetSibling(pstSibling))
+        {
+          /* Logs it */
+          orxStructure_LogNode(pstSibling, _bPrivate);
+        }
       }
     }
 
@@ -332,7 +350,6 @@ void orxFASTCALL orxStructure_Setup()
  */
 orxSTATUS orxFASTCALL orxStructure_Init()
 {
-  orxU32    i;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -341,6 +358,8 @@ orxSTATUS orxFASTCALL orxStructure_Init()
   /* Not already Initialized? */
   if(!(sstStructure.u32Flags & orxSTRUCTURE_KU32_STATIC_FLAG_READY))
   {
+    orxU32 i;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstStructure, sizeof(orxSTRUCTURE_STATIC));
 
@@ -454,7 +473,7 @@ orxSTATUS orxFASTCALL orxStructure_Register(orxSTRUCTURE_ID _eStructureID, orxST
   if(sstStructure.astInfo[_eStructureID].u32Size == 0)
   {
     /* Creates associated bank */
-    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create((orxU16)_u32BankSize, _u32Size, orxBANK_KU32_FLAG_NONE, _eMemoryType);
+    sstStructure.astStorage[_eStructureID].pstStructureBank = orxBank_Create(_u32BankSize, _u32Size, orxBANK_KU32_FLAG_NONE, _eMemoryType);
 
     /* Valid? */
     if(sstStructure.astStorage[_eStructureID].pstStructureBank != orxNULL)
@@ -600,7 +619,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Checks */
-        orxASSERT(_eStructureID <= (orxU32)(orxSTRUCTURE_GUID_MASK_STRUCTURE_ID >> orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID));
+        orxASSERT(_eStructureID <= orxSTRUCTURE_ID_NUMBER);
         orxASSERT(u32ItemID <= (orxU32)(orxSTRUCTURE_GUID_MASK_ITEM_ID >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
         orxASSERT(sstStructure.au32InstanceCount[_eStructureID] <= (orxU32)(orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID));
 
@@ -621,7 +640,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to add node to list.");
 
         /* Frees allocated structure */
-        orxBank_Free(sstStructure.astStorage[_eStructureID].pstStructureBank, pstStructure);
+        orxBank_FreeAtIndex(sstStructure.astStorage[_eStructureID].pstStructureBank, u32ItemID);
 
         /* Not created */
         pstStructure = orxNULL;
@@ -647,12 +666,13 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 }
 
 /** Deletes a structure (needs to be cleaned beforehand)
- * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pStructure     Concerned structure
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
 {
   orxSTRUCTURE_ID eStructureID;
+  orxU64          u64GUID;
   orxSTRUCTURE   *pstStructure;
 
   /* Checks */
@@ -695,10 +715,11 @@ orxSTATUS orxFASTCALL orxStructure_Delete(void *_pStructure)
   eStructureID = orxStructure_GetID(_pStructure);
 
   /* Tags structure as deleted */
-  orxSTRUCTURE(_pStructure)->u64GUID = orxSTRUCTURE_GUID_MAGIC_TAG_DELETED;
+  u64GUID               = pstStructure->u64GUID;
+  pstStructure->u64GUID = orxSTRUCTURE_GUID_MAGIC_TAG_DELETED;
 
   /* Deletes structure */
-  orxBank_Free(sstStructure.astStorage[eStructureID].pstStructureBank, _pStructure);
+  orxBank_FreeAtIndex(sstStructure.astStorage[eStructureID].pstStructureBank, (orxU32)((u64GUID & orxSTRUCTURE_GUID_MASK_ITEM_ID) >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
 
   /* Done! */
   return orxSTATUS_SUCCESS;
@@ -763,8 +784,8 @@ orxU32 orxFASTCALL orxStructure_GetCount(orxSTRUCTURE_ID _eStructureID)
 }
 
 /** Updates structure if update function was registered for the structure type
- * @param[in]   _pStructure    Concerned structure
- * @param[in]   _pCaller       Caller structure
+ * @param[in]   _pStructure     Concerned structure
+ * @param[in]   _pCaller        Caller structure
  * @param[in]   _pstClockInfo   Update associated clock info
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -848,7 +869,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Get(orxU64 _u64GUID)
 }
 
 /** Gets structure's owner
- * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pStructure     Concerned structure
  * @return      orxSTRUCTURE / orxNULL if not found/alive
  */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetOwner(const void *_pStructure)
@@ -867,8 +888,8 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetOwner(const void *_pStructure)
 }
 
 /** Sets structure owner
- * @param[in]   _pStructure    Concerned structure
- * @param[in]   _pParent       Structure to set as owner
+ * @param[in]   _pStructure     Concerned structure
+ * @param[in]   _pParent        Structure to set as owner
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxStructure_SetOwner(void *_pStructure, void *_pOwner)
@@ -954,7 +975,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetFirst(orxSTRUCTURE_ID _eStructureID)
 }
 
 /** Gets last stored structure (last list cell or tree root depending on storage type)
- * @param[in] _eStructureID      Concerned structure ID
+ * @param[in] _eStructureID     Concerned structure ID
  * return orxSTRUCTURE / orxNULL
  */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetLast(orxSTRUCTURE_ID _eStructureID)
@@ -1015,7 +1036,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetLast(orxSTRUCTURE_ID _eStructureID)
 }
 
 /** Gets structure tree parent
- * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pStructure     Concerned structure
  * @return      orxSTRUCTURE
  */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(const void *_pStructure)
@@ -1045,7 +1066,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetParent(const void *_pStructure)
 }
 
 /** Gets structure tree child
- * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pStructure     Concerned structure
  * @return      orxSTRUCTURE
  */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(const void *_pStructure)
@@ -1075,7 +1096,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetChild(const void *_pStructure)
 }
 
 /** Gets structure tree sibling
- * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pStructure     Concerned structure
  * @return      orxSTRUCTURE
  */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(const void *_pStructure)
@@ -1105,7 +1126,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetSibling(const void *_pStructure)
 }
 
 /** Gets structure list previous
- * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pStructure     Concerned structure
  * @return      orxSTRUCTURE
  */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(const void *_pStructure)
@@ -1135,7 +1156,7 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetPrevious(const void *_pStructure)
 }
 
 /** Gets structure list next
- * @param[in]   _pStructure    Concerned structure
+ * @param[in]   _pStructure     Concerned structure
  * @return      orxSTRUCTURE
  */
 orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(const void *_pStructure)
@@ -1165,8 +1186,8 @@ orxSTRUCTURE *orxFASTCALL orxStructure_GetNext(const void *_pStructure)
 }
 
 /** Sets structure tree parent
- * @param[in]   _pStructure    Concerned structure
- * @param[in]   _pParent       Structure to set as parent
+ * @param[in]   _pStructure     Concerned structure
+ * @param[in]   _pParent        Structure to set as parent
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxStructure_SetParent(void *_pStructure, void *_pParent)
@@ -1203,10 +1224,11 @@ orxSTATUS orxFASTCALL orxStructure_SetParent(void *_pStructure, void *_pParent)
   return eResult;
 }
 
-/** Logs all user-generated active structures
+/** Logs all user-generated (& optionally private) active structures
+ * @param[in]   _bPrivate       Include all private structures in the log
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxStructure_LogAll()
+orxSTATUS orxFASTCALL orxStructure_LogAll(orxBOOL _bPrivate)
 {
   orxHASHTABLE *pstTable;
   orxBANK      *pstBank;
@@ -1219,7 +1241,7 @@ orxSTATUS orxFASTCALL orxStructure_LogAll()
   /* Valid? */
   if((pstTable != orxNULL) && (pstBank != orxNULL))
   {
-    orxTREE                 stTree = {0};
+    orxTREE                 stTree;
     orxSTRUCTURE_LOG_NODE  *pstRoot;
     orxU32                  u32DebugFlags;
     orxS32                  i;
@@ -1228,6 +1250,7 @@ orxSTATUS orxFASTCALL orxStructure_LogAll()
     pstRoot = (orxSTRUCTURE_LOG_NODE *)orxBank_Allocate(pstBank);
     orxASSERT(pstRoot != orxNULL);
     orxMemory_Zero(pstRoot, sizeof(orxSTRUCTURE_LOG_NODE));
+    orxMemory_Zero(&stTree, sizeof(orxTREE));
     orxTree_AddRoot(&stTree, &(pstRoot->stNode));
 
     /* For all IDs */
@@ -1259,7 +1282,7 @@ orxSTATUS orxFASTCALL orxStructure_LogAll()
     orxLOG("*** BEGIN STRUCTURE LOG ***\n");
 
     /* Logs tree from root */
-    orxStructure_LogNode(&(pstRoot->stNode));
+    orxStructure_LogNode(&(pstRoot->stNode), _bPrivate);
 
     /* Logs footer */
     orxLOG("\n*** END STRUCTURE LOG ***");

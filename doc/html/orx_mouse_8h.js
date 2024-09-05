@@ -1,5 +1,6 @@
 var orx_mouse_8h =
 [
+    [ "orxMOUSE_KZ_CONFIG_GRAB", "group__orx_mouse.html#ga4a7b572958c967135719908e0774706c", null ],
     [ "orxMOUSE_KZ_CONFIG_SECTION", "group__orx_mouse.html#gac8dec019d5aeb23f02b5caedf73270b9", null ],
     [ "orxMOUSE_KZ_CONFIG_SHOW_CURSOR", "group__orx_mouse.html#ga2a6cbe22bff58361030f1266c9ff01bc", null ],
     [ "orxMOUSE_AXIS", "group__orx_mouse.html#gaa0f43e289f6e13f24f218386c8d30960", [
@@ -14,6 +15,9 @@ var orx_mouse_8h =
       [ "orxMOUSE_BUTTON_MIDDLE", "group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181ac899258c56efe78692161096ff6611d1", null ],
       [ "orxMOUSE_BUTTON_EXTRA_1", "group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181a99e596c627dcecb55845620f05232699", null ],
       [ "orxMOUSE_BUTTON_EXTRA_2", "group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181aecdc08cfe08b27b53980b68cc9b8221a", null ],
+      [ "orxMOUSE_BUTTON_EXTRA_3", "group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181ad38814baac2453406b2a2f027d0d73cd", null ],
+      [ "orxMOUSE_BUTTON_EXTRA_4", "group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181a023f1e512825f4fafecf74861c14c847", null ],
+      [ "orxMOUSE_BUTTON_EXTRA_5", "group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181a71e3c4957c6d1e895ef146039d04d7d3", null ],
       [ "orxMOUSE_BUTTON_WHEEL_UP", "group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181aed46aacad1fe42b50a5dfb1a2ed9091b", null ],
       [ "orxMOUSE_BUTTON_WHEEL_DOWN", "group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181a7d5cd9033babab037f576a1fcc58525e", null ],
       [ "orxMOUSE_BUTTON_NUMBER", "group__orx_mouse.html#gga4aa7e7ce639a01898aac250b3a910181a4516adec055ec1224cf1602b65102772", null ],
@@ -25,8 +29,10 @@ var orx_mouse_8h =
     [ "orxMouse_GetMoveDelta", "group__orx_mouse.html#ga3be75b10a7f67d76f63c66c626aaac36", null ],
     [ "orxMouse_GetPosition", "group__orx_mouse.html#ga6b2ba55d2755279233740ec8b008bb97", null ],
     [ "orxMouse_GetWheelDelta", "group__orx_mouse.html#gac62f80b39434be0ab05eaf445065819f", null ],
+    [ "orxMouse_Grab", "group__orx_mouse.html#gaaa8ec29f3b4ac282f306e64d831f3a4d", null ],
     [ "orxMouse_Init", "group__orx_mouse.html#gaf02257fd334c672afea2bbf9ae03fe37", null ],
     [ "orxMouse_IsButtonPressed", "group__orx_mouse.html#gae169232145ac3e80beb2431471a7ba84", null ],
+    [ "orxMouse_SetCursor", "group__orx_mouse.html#ga2d59cd935ccb30cc91953d9b52e09111", null ],
     [ "orxMouse_SetPosition", "group__orx_mouse.html#gaba18c64581d32b073609e55f318065c5", null ],
     [ "orxMouse_Setup", "group__orx_mouse.html#ga6aaffc62cd94fb5e9f2e09d709280af2", null ],
     [ "orxMouse_ShowCursor", "group__orx_mouse.html#ga3ca2003c5818fc247b164d3f17fa0874", null ]

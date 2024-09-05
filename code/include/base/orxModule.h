@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -99,6 +99,7 @@ typedef enum __orxMODULE_ID_t
   orxMODULE_ID_TEXTURE,
   orxMODULE_ID_THREAD,
   orxMODULE_ID_TIMELINE,
+  orxMODULE_ID_TRIGGER,
   orxMODULE_ID_VIEWPORT,
 
   orxMODULE_ID_CORE_NUMBER,
@@ -125,7 +126,6 @@ typedef void                              (orxFASTCALL *orxMODULE_SETUP_FUNCTION
  * @param[in]   _pfnSetup                 Module setup callback
  * @param[in]   _pfnInit                  Module init callback
  * @param[in]   _pfnExit                  Module exit callback
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI void orxFASTCALL         orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zModuleName, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit);
 

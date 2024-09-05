@@ -1,9 +1,9 @@
-version: 1.9-dev.{build}
+version: 1.12-dev.{build}
 
 image:
-- Visual Studio 2013
-- Visual Studio 2015
 - Visual Studio 2017
+- Visual Studio 2019
+- Visual Studio 2022
 
 configuration: Default
 
@@ -21,11 +21,11 @@ cache: ../cache
 
 build_script:
 - cmd: >-
-    if "%VS120COMNTOOLS%" NEQ "" set VSVersion=2013
+    if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" set VSVersion=2017
 
-    if "%VS140COMNTOOLS%" NEQ "" set VSVersion=2015
+    if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2019" set VSVersion=2019
 
-    if "%VS90COMNTOOLS%" == "" set VSVersion=2017
+    if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2022" set VSVersion=2022
 
     set PackageVersion=vs%VSVersion%-%Version%
 
@@ -38,6 +38,16 @@ build_script:
     msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% /p:Configuration=Debug
 
     msbuild tutorial/build/windows/%Folder%/tutorial.sln /p:Platform=%Platform% /p:Configuration=Release
+
+    set ORX=%CD%\code
+
+    init.bat test +scroll +imgui +bundle
+
+    msbuild test/build/windows/%Folder%/test.sln /p:Platform=%Platform% /p:Configuration=Release
+
+    msbuild test/build/windows/%Folder%/test.sln /p:Platform=%Platform% /p:Configuration=Profile
+
+    msbuild test/build/windows/%Folder%/test.sln /p:Platform=%Platform% /p:Configuration=Debug
 
     msbuild code/build/windows/%Folder%/orx.sln /p:Platform=%Platform% "/p:Configuration=Core Release"
 
@@ -52,13 +62,19 @@ build_script:
     python package.py -p tuto%PackageVersion%
 
 artifacts:
-- path: code/build/python/packages/*vs2015-64*.zip
-  name: package-vs2015-64
-- path: code/build/python/packages/*vs2015-32*.zip
-  name: package-vs2015-32
-- path: code/build/python/packages/*vs2013-64*.zip
-  name: package-vs2013-64
-- path: code/build/python/packages/*vs2013-32*.zip
-  name: package-vs2013-32
+- path: code/build/python/packages/*vs2017-64*.zip
+  name: package-vs2017-64
+- path: code/build/python/packages/*vs2017-32*.zip
+  name: package-vs2017-32
+- path: code/build/python/packages/*vs2019-64*.zip
+  name: package-vs2019-64
+- path: code/build/python/packages/*vs2019-32*.zip
+  name: package-vs2019-32
+- path: code/build/python/packages/*vs2022-64*.zip
+  name: package-vs2022-64
+- path: code/build/python/packages/*vs2022-32*.zip
+  name: package-vs2022-32
+- path: test/bin/test.exe
+  name: test-project
 
 deploy: off

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,11 +51,14 @@
 
 /** Defines
  */
-#define orxTEXTURE_KZ_SCREEN_NAME         "screen"
-
 #define orxTEXTURE_KZ_RESOURCE_GROUP      "Texture"
+#define orxTEXTURE_KZ_LOCALE_GROUP        "Texture"
 
+#define orxTEXTURE_KZ_SCREEN              "screen"
 #define orxTEXTURE_KZ_PIXEL               "pixel"
+#define orxTEXTURE_KZ_TRANSPARENT         "transparent"
+
+#define orxTEXTURE_KZ_LOGO_NAME           "orx:texture:logo"
 
 
 /** Event enum
@@ -96,12 +99,12 @@ extern orxDLLAPI void orxFASTCALL         orxTexture_Exit();
  */
 extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_Create();
 
-/** Creates a texture from a bitmap file
+/** Loads a texture from a bitmap file
  * @param[in]   _zFileName      Name of the bitmap
  * @param[in]   _bKeepInCache   Should be kept in cache after no more references exist?
  * @return      orxTEXTURE / orxNULL
  */
-extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_CreateFromFile(const orxSTRING _zFileName, orxBOOL _bKeepInCache);
+extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_Load(const orxSTRING _zFileName, orxBOOL _bKeepInCache);
 
 /** Deletes a texture (and its referenced bitmap)
  * @param[in]   _pstTexture     Concerned texture
@@ -144,18 +147,17 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL   orxTexture_GetBitmap(const orxTEXTURE 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_GetSize(const orxTEXTURE *_pstTexture, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight);
 
+/** Gets texture given its name
+ * @param[in]   _zName          Texture name
+ * @return      orxTEXTURE / orxNULL
+ */
+extern orxDLLAPI orxTEXTURE *orxFASTCALL  orxTexture_Get(const orxSTRING _zName);
+
 /** Gets texture name
  * @param[in]   _pstTexture   Concerned texture
  * @return      Texture name / orxSTRING_EMPTY
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL orxTexture_GetName(const orxTEXTURE *_pstTexture);
-
-/** Sets texture color
- * @param[in]   _pstTexture     Concerned texture
- * @param[in]   _pstColor       Color to set
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL    orxTexture_SetColor(orxTEXTURE *_pstTexture, const orxCOLOR *_pstColor);
 
 /** Gets screen texture
  * @return      Screen texture / orxNULL

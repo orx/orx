@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -82,10 +82,12 @@ struct __orxTEXT_t
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 40 / 64 */
   orxSTRING         zString;                    /**< String : 44 / 72 */
   orxFONT          *pstFont;                    /**< Font : 48 / 80 */
-  orxFLOAT          fWidth;                     /**< Width : 52 / 84 */
-  orxFLOAT          fHeight;                    /**< Height : 56 / 88 */
-  const orxSTRING   zReference;                 /**< Config reference : 60 / 96 */
-  orxSTRING         zOriginalString;            /**< Original string : 64 / 104 */
+  orxSTRINGID       stLocaleStringID;           /**< Locale string ID : 56 / 88 */
+  orxSTRINGID       stLocaleFontID;             /**< Locale font ID : 64 / 96 */
+  orxFLOAT          fWidth;                     /**< Width : 68 / 100 */
+  orxFLOAT          fHeight;                    /**< Height : 72 / 104 */
+  const orxSTRING   zReference;                 /**< Config reference : 76 / 112 */
+  orxSTRING         zOriginalString;            /**< Original string : 80 / 120 */
 };
 
 /** Static structure
@@ -108,48 +110,6 @@ static orxTEXT_STATIC sstText;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Gets corresponding locale key
- * @param[in]   _pstText    Concerned text
- * @param[in]   _zProperty  Property to get
- * @return      orxSTRING / orxNULL
- */
-static orxINLINE const orxSTRING orxText_GetLocaleKey(const orxTEXT *_pstText, const orxSTRING _zProperty)
-{
-  const orxSTRING zResult = orxNULL;
-
-  /* Checks */
-  orxSTRUCTURE_ASSERT(_pstText);
-
-  /* Has reference? */
-  if(_pstText->zReference != orxNULL)
-  {
-    const orxSTRING zString;
-
-    /* Pushes its section */
-    orxConfig_PushSection(_pstText->zReference);
-
-    /* Gets its string */
-    zString = orxConfig_GetString(_zProperty);
-
-    /* Valid? */
-    if(zString != orxNULL)
-    {
-      /* Begins with locale marker? */
-      if((*zString == orxTEXT_KC_LOCALE_MARKER) && (*(zString + 1) != orxTEXT_KC_LOCALE_MARKER))
-      {
-        /* Updates result */
-        zResult = zString + 1;
-      }
-    }
-
-    /* Pops config section */
-    orxConfig_PopSection();
-  }
-
-  /* Done! */
-  return zResult;
-}
-
 static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
 {
   const orxSTRING zString;
@@ -165,8 +125,18 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
   /* Begins with locale marker? */
   if(*zName == orxTEXT_KC_LOCALE_MARKER)
   {
-    /* Gets its locale value */
-    zName = (*(zName + 1) == orxTEXT_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
+    /* Updates name */
+    zName = zName + 1;
+
+    /* Using locale? */
+    if(*zName != orxTEXT_KC_LOCALE_MARKER)
+    {
+      /* Stores its locale ID */
+      _pstText->stLocaleFontID = orxString_GetID(zName);
+
+      /* Gets its locale value */
+      zName = orxLocale_GetString(zName, orxTEXT_KZ_LOCALE_GROUP);
+    }
   }
 
   /* Valid? */
@@ -219,14 +189,22 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
   /* Begins with locale marker? */
   if(*zString == orxTEXT_KC_LOCALE_MARKER)
   {
-    /* Stores its locale value */
-    eResult = orxText_SetString(_pstText, (*(zString + 1) == orxTEXT_KC_LOCALE_MARKER) ? zString + 1 : orxLocale_GetString(zString + 1));
+    /* Updates string */
+    zString = zString + 1;
+
+    /* Using locale? */
+    if(*zString != orxTEXT_KC_LOCALE_MARKER)
+    {
+      /* Stores its locale ID */
+      _pstText->stLocaleStringID = orxString_GetID(zString);
+
+      /* Gets its locale value */
+      zString = orxLocale_GetString(zString, orxTEXT_KZ_LOCALE_GROUP);
+    }
   }
-  else
-  {
-    /* Stores raw text */
-    eResult = orxText_SetString(_pstText, zString);
-  }
+
+  /* Stores its value */
+  eResult = orxText_SetString(_pstText, zString);
 
   /* Pops config section */
   orxConfig_PopSection();
@@ -246,8 +224,13 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
   /* Locale? */
   if(_pstEvent->eType == orxEVENT_TYPE_LOCALE)
   {
-    /* Select language event? */
-    if(_pstEvent->eID == orxLOCALE_EVENT_SELECT_LANGUAGE)
+    orxLOCALE_EVENT_PAYLOAD *pstPayload;
+
+    /* Gets its payload */
+    pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Text group? */
+    if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXT_KZ_LOCALE_GROUP) == 0))
     {
       orxTEXT *pstText;
 
@@ -256,18 +239,13 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
           pstText != orxNULL;
           pstText = orxTEXT(orxStructure_GetNext(pstText)))
       {
-        const orxSTRING zLocaleKey;
-
-        /* Gets its corresponding locale string */
-        zLocaleKey = orxText_GetLocaleKey(pstText, orxTEXT_KZ_CONFIG_STRING);
-
-        /* Valid? */
-        if(zLocaleKey != orxNULL)
+        /* Has locale string ID? */
+        if(pstText->stLocaleStringID != 0)
         {
           const orxSTRING zText;
 
           /* Gets its localized value */
-          zText = orxLocale_GetString(zLocaleKey);
+          zText = orxLocale_GetString(orxString_GetFromID(pstText->stLocaleStringID), orxTEXT_KZ_LOCALE_GROUP);
 
           /* Valid? */
           if(*zText != orxCHAR_NULL)
@@ -277,16 +255,13 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
           }
         }
 
-        /* Gets its corresponding locale font */
-        zLocaleKey = orxText_GetLocaleKey(pstText, orxTEXT_KZ_CONFIG_FONT);
-
-        /* Valid? */
-        if(zLocaleKey != orxNULL)
+        /* Has locale font ID? */
+        if(pstText->stLocaleFontID != 0)
         {
           orxFONT *pstFont;
 
           /* Creates font */
-          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(zLocaleKey));
+          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(orxString_GetFromID(pstText->stLocaleFontID), orxTEXT_KZ_LOCALE_GROUP));
 
           /* Valid? */
           if(pstFont != orxNULL)
@@ -313,29 +288,29 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
   /* Resource */
   else
   {
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
     /* Checks */
     orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RESOURCE);
 
-    /* Add or update? */
-    if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Is config group? */
+    if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
     {
-      orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+      orxTEXT *pstText;
 
-      /* Gets payload */
-      pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-      /* Is config group? */
-      if(pstPayload->u32GroupID == orxString_ToCRC(orxCONFIG_KZ_RESOURCE_GROUP))
+      /* For all texts */
+      for(pstText = orxTEXT(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXT));
+          pstText != orxNULL;
+          pstText = orxTEXT(orxStructure_GetNext(pstText)))
       {
-        orxTEXT *pstText;
-
-        /* For all texts */
-        for(pstText = orxTEXT(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXT));
-            pstText != orxNULL;
-            pstText = orxTEXT(orxStructure_GetNext(pstText)))
+        /* Has reference? */
+        if((pstText->zReference != orxNULL) && (pstText->zReference != orxSTRING_EMPTY))
         {
           /* Match origin? */
-          if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->u32NameID)
+          if(orxConfig_GetOriginID(pstText->zReference) == pstPayload->stNameID)
           {
             /* Re-processes its config data */
             orxText_ProcessConfigData(pstText);
@@ -495,7 +470,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
           default:
           {
             /* Finds end of word */
-            for(; (u32CharacterCodePoint != ' ') && (u32CharacterCodePoint != '\t') && (u32CharacterCodePoint != orxCHAR_NULL); u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pc))
+            for(; (u32CharacterCodePoint != ' ') && (u32CharacterCodePoint != '\t') && (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL); u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pc))
             {
               fWidth += orxFont_GetCharacterWidth(_pstText->pstFont, u32CharacterCodePoint);
             }
@@ -637,6 +612,9 @@ orxSTATUS orxFASTCALL orxText_Init()
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxText_EventHandler, orxEVENT_TYPE_LOCALE, orxNULL, orxEVENT_GET_FLAG(orxLOCALE_EVENT_SELECT_LANGUAGE), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(TEXT, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxTEXT_KU32_BANK_SIZE, orxNULL);
 
@@ -648,6 +626,7 @@ orxSTATUS orxFASTCALL orxText_Init()
 
         /* Adds event handler for resources */
         orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxText_EventHandler);
+        orxEvent_SetHandlerIDFlags(orxText_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
       }
       else
       {
@@ -1245,8 +1224,8 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
     /* Has current font? */
     if(_pstText->pstFont != orxNULL)
     {
-      /* Updates structure reference count */
-      orxStructure_DecreaseCount(_pstText->pstFont);
+      /* Updates structure reference count *indirectly*, as deletion needs to be handled for non-internal fonts */
+      orxFont_Delete(_pstText->pstFont);
 
       /* Internally handled? */
       if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL) != orxFALSE)

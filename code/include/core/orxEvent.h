@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -65,6 +65,10 @@ do                                                                  \
   orxEvent_Send(&stEvent);                                          \
 } while(orxFALSE)
 
+#define orxEVENT_GET_FLAG(ID)                         ((orxU32)(1U << (orxU32)(ID)))
+#define orxEVENT_KU32_FLAG_ID_NONE                    0x00000000
+#define orxEVENT_KU32_MASK_ID_ALL                     0xFFFFFFFF
+
 
 /** Event type enum
  */
@@ -87,6 +91,7 @@ typedef enum __orxEVENT_TYPE_t
   orxEVENT_TYPE_SYSTEM,
   orxEVENT_TYPE_TEXTURE,
   orxEVENT_TYPE_TIMELINE,
+  orxEVENT_TYPE_TRIGGER,
   orxEVENT_TYPE_VIEWPORT,
 
   orxEVENT_TYPE_CORE_NUMBER,
@@ -163,6 +168,16 @@ extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_RemoveHandler(orxEVENT_TYPE _eE
  * return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE _eEventType, orxEVENT_HANDLER _pfnEventHandler, void *_pContext);
+
+/** Sets an event handler's ID flags (use orxEVENT_GET_FLAG(ID) in order to get the flag that matches an ID)
+ * @param[in] _pfnEventHandler      Concerned event handler, must have been previously added for the given type
+ * @param[in] _eEventType           Concerned type of event
+ * @param[in] _pContext             Context of the handler to update, orxNULL for updating all occurrences regardless of their context
+ * @param[in] _u32AddIDFlags        ID flags to add
+ * @param[in] _u32RemoveIDFlags     ID flags to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL  orxEvent_SetHandlerIDFlags(orxEVENT_HANDLER _pfnEventHandler, orxEVENT_TYPE _eEventType, void *_pContext, orxU32 _u32AddIDFlags, orxU32 _u32RemoveIDFlags);
 
 /** Sends an event
  * @param[in] _pstEvent             Event to send

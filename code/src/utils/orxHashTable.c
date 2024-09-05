@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -26,6 +26,7 @@
  * @file orxHashTable.c
  * @date 05/05/2005
  * @author cursor@arcallians.org
+ * @author iarwain@orx-project.org
  *
  */
 
@@ -52,6 +53,7 @@ typedef struct __orxHASHTABLE_CELL_t
 
 /** Hash Table */
 #ifdef __orxMSVC__
+  #pragma warning(push)
   #pragma warning(disable : 4200)
 #endif /* __orxMSVC__ */
 
@@ -64,7 +66,7 @@ struct __orxHASHTABLE_t
 };
 
 #ifdef __orxMSVC__
-  #pragma warning(default : 4200)
+  #pragma warning(pop)
 #endif /* __orxMSVC__ */
 
 
@@ -106,7 +108,6 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
 {
   orxHASHTABLE *pstHashTable;
   orxU32        u32Size;
-  orxU32        u32Flags;
 
   /* Checks */
   orxASSERT(_eMemType < orxMEMORY_TYPE_NUMBER);
@@ -121,6 +122,8 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
   /* Enough memory ? */
   if(pstHashTable != orxNULL)
   {
+    orxU32 u32Flags;
+
     /* Set flags */
     if(_u32Flags == orxHASHTABLE_KU32_FLAG_NOT_EXPANDABLE)
     {
@@ -135,7 +138,7 @@ orxHASHTABLE *orxFASTCALL orxHashTable_Create(orxU32 _u32NbKey, orxU32 _u32Flags
     orxMemory_Zero(pstHashTable, sizeof(orxHASHTABLE) + (u32Size * sizeof(orxHASHTABLE_CELL *)));
 
     /* Allocate bank for cells */
-    pstHashTable->pstBank = orxBank_Create((orxU16)u32Size, sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
+    pstHashTable->pstBank = orxBank_Create(u32Size, sizeof(orxHASHTABLE_CELL), u32Flags, _eMemType);
 
     /* Correct bank allocation ? */
     if(pstHashTable->pstBank != orxNULL)

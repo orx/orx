@@ -22,19 +22,20 @@ var orx_anim_8h =
     [ "orxAnim_Create", "group__orx_anim.html#ga905b2501e745a8c5f49b0e8293281d37", null ],
     [ "orxAnim_Delete", "group__orx_anim.html#ga511df81510ed565dbba388a87b47ebfe", null ],
     [ "orxAnim_Exit", "group__orx_anim.html#ga7eeb4d40ed5926bd87727e9473dbcdbb", null ],
+    [ "orxAnim_GetEventAfter", "group__orx_anim.html#gaf01780802a5c67b8b257b0a40afa82ff", null ],
     [ "orxAnim_GetEventCount", "group__orx_anim.html#ga70266ab2ac7d44c1b34f185f347e821c", null ],
     [ "orxAnim_GetEventStorageSize", "group__orx_anim.html#ga1bfc89cc39b93778b2969e7d4e2353b7", null ],
+    [ "orxAnim_GetKey", "group__orx_anim.html#ga3e53f9009441570b4f2290a96d9fe5f7", null ],
     [ "orxAnim_GetKeyCount", "group__orx_anim.html#ga55bbbc91c5ee3d9728f66d0c7d71803a", null ],
     [ "orxAnim_GetKeyData", "group__orx_anim.html#ga09b7c42ef668e8b4ab37ef42a4b04ce0", null ],
     [ "orxAnim_GetKeyStorageSize", "group__orx_anim.html#gaa10cd82b5d68b0bcfe85787ff3229625", null ],
     [ "orxAnim_GetLength", "group__orx_anim.html#ga2f5d16d134a708037091d0a64c1f490e", null ],
     [ "orxAnim_GetName", "group__orx_anim.html#ga6bdf30ba632aced8fb81f8eb2282837c", null ],
-    [ "orxAnim_GetNextEvent", "group__orx_anim.html#ga40c54d816dd6b4ed0da4c0b967ddbc8e", null ],
+    [ "orxAnim_GetNextEvent", "group__orx_anim.html#ga1c20ba4be23cdfe281b414eee07e25ae", null ],
     [ "orxAnim_Init", "group__orx_anim.html#ga3a0ffbc775811de6ce7a771300a54038", null ],
     [ "orxAnim_RemoveAllEvents", "group__orx_anim.html#ga602a39ce6b3c030c19ba21b2d57db11f", null ],
     [ "orxAnim_RemoveAllKeys", "group__orx_anim.html#ga507824bc2f1f7ca266b505503f0a5177", null ],
     [ "orxAnim_RemoveLastEvent", "group__orx_anim.html#ga024213648a185234bd60311b96c4fb8e", null ],
     [ "orxAnim_RemoveLastKey", "group__orx_anim.html#ga1c5dd06056fb50465d577913a3e0aed8", null ],
-    [ "orxAnim_Setup", "group__orx_anim.html#gac2653c854771cb228662d7a9e4eef560", null ],
-    [ "orxAnim_Update", "group__orx_anim.html#ga5f2181fce48279ff3f34841909cb59ef", null ]
+    [ "orxAnim_Setup", "group__orx_anim.html#gac2653c854771cb228662d7a9e4eef560", null ]
 ];

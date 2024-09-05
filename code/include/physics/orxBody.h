@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -265,6 +265,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetCustomGravity(orxBODY *
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetFixedRotation(orxBODY *_pstBody, orxBOOL _bFixed);
 
+/** Sets the dynamic property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _bDynamic       Dynamic / Static (or Kinematic depending on the "allow moving" property)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetDynamic(orxBODY *_pstBody, orxBOOL _bDynamic);
+
+/** Sets the "allow moving" property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _bAllowMoving   Only used for non-dynamic bodies, Kinematic / Static
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetAllowMoving(orxBODY *_pstBody, orxBOOL _bAllowMoving);
+
 /** Gets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvPosition     Position to get
@@ -312,6 +326,18 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetCustomGravity(const orx
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsFixedRotation(const orxBODY *_pstBody);
 
+/** Gets the dynamic property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsDynamic(const orxBODY *_pstBody);
+
+/** Gets the "allow moving" property of a body, only relevant for non-dynamic bodies
+ * @param[in]   _pstBody        Concerned physical body
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_GetAllowMoving(const orxBODY *_pstBody);
+
 /** Gets a body mass
  * @param[in]   _pstBody        Concerned body
  * @return      Body mass
@@ -351,6 +377,13 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetLinearDamping(const orx
  * @return      Body's angular damping
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetAngularDamping(const orxBODY *_pstBody);
+
+/** Is point inside body? (Using world coordinates)
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _pvPosition     Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsInside(const orxBODY *_pstBody, const orxVECTOR *_pvPosition);
 
 
 /** Applies a torque
@@ -403,18 +436,64 @@ extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartSelfFlags(const orx
  */
 extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartCheckMask(const orxBODY_PART *_pstBodyPart);
 
-/** Is a body part solid?
- * @param[in]   _pstBodyPart    Concerned body part
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsPartSolid(const orxBODY_PART *_pstBodyPart);
-
 /** Sets a body part solid
  * @param[in]   _pstBodyPart    Concerned body part
  * @param[in]   _bSolid         Solid or sensor?
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _bSolid);
+
+/** Is a body part solid?
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsPartSolid(const orxBODY_PART *_pstBodyPart);
+
+/** Sets friction of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fFriction      Friction
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartFriction(orxBODY_PART *_pstBodyPart, orxFLOAT _fFriction);
+
+/** Gets friction of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Friction
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetPartFriction(const orxBODY_PART *_pstBodyPart);
+
+/** Sets restitution of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fRestitution   Restitution
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartRestitution(orxBODY_PART *_pstBodyPart, orxFLOAT _fRestitution);
+
+/** Gets restitution of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Restitution
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetPartRestitution(const orxBODY_PART *_pstBodyPart);
+
+/** Sets density of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fDensity       Density
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartDensity(orxBODY_PART *_pstBodyPart, orxFLOAT _fDensity);
+
+/** Gets density of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Density
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetPartDensity(const orxBODY_PART *_pstBodyPart);
+
+/** Is point inside part? (Using world coordinates)
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @param[in]   _pvPosition     Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxBody_IsInsidePart(const orxBODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition);
 
 
 /** Enables a (revolute) body joint motor
@@ -440,21 +519,21 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetJointMaxMotorTorque(orx
 
 
 /** Gets the reaction force on the attached body at the joint anchor
- * @param[in]   _pstBodyJoint                         Concerned body joint
- * @param[out]  _pvForce                              Reaction force
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[out]  _pvForce        Reaction force
  * @return      Reaction force in Newtons
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxBody_GetJointReactionForce(const orxBODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce);
 
 /** Gets the reaction torque on the attached body
- * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @param[in]   _pstBodyJoint   Concerned body joint
  * @return      Reaction torque
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetJointReactionTorque(const orxBODY_JOINT *_pstBodyJoint);
 
 
 /** Issues a raycast to test for potential bodies in the way
- * @param[in]   _pvStart        Start of raycast
+ * @param[in]   _pvBegin        Beginning of raycast
  * @param[in]   _pvEnd          End of raycast
  * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
@@ -463,7 +542,19 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetJointReactionTorque(con
  * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
  * @return Colliding orxBODY / orxNULL
  */
-extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+
+
+/** Picks bodies in contact with the given axis aligned box.
+ * @param[in]   _pstBox                               Box used for picking
+ * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _apstBodyList                         List of bodies to fill
+ * @param[in]   _u32Number                            Number of bodies
+ * @return      Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all.
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxBody_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBODY *_apstBodyList[], orxU32 _u32Number);
+
 
 #endif /* _orxBODY_H_ */
 

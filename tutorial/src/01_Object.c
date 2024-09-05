@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -102,18 +102,3 @@ int main(int argc, char **argv)
 
   return EXIT_SUCCESS;
 }
-
-
-#ifdef __orxMSVC__
-
-// Here's an example for a console-less program under windows with visual studio
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-  // Inits and executes orx
-  orx_WinExecute(Init, Run, Exit);
-
-  // Done!
-  return EXIT_SUCCESS;
-}
-
-#endif // __orxMSVC__

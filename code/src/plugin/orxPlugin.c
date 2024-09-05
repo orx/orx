@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -44,18 +44,15 @@
 #include "utils/orxHashTable.h"
 
 
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-  #include <dlfcn.h>
-
-#endif /* __orxLINUX__ || __orxMAC__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-
 /** Platform dependent type & function defines
  */
 
 /* Windows */
 #ifdef __orxWINDOWS__
+
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+  #undef WIN32_LEAN_AND_MEAN
 
   typedef HINSTANCE                                         orxSYSPLUGIN;
 
@@ -83,19 +80,13 @@
 
   #else /* __orxIOS__ */
 
+    #include <dlfcn.h>
+
     #define orxPLUGIN_OPEN(PLUGIN)                          dlopen(PLUGIN, RTLD_LAZY)
     #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
     #define orxPLUGIN_CLOSE(PLUGIN)                         dlclose(PLUGIN)
 
-    #ifdef __orxMAC__
-
       static const orxSTRING                                szPluginLibraryExt = "so";
-
-    #else /* __orxMAC__ */
-
-      static const orxSTRING                                szPluginLibraryExt = "so";
-
-    #endif /* __orxMAC__ */
 
     #define __orxPLUGIN_DYNAMIC__
 
@@ -353,7 +344,7 @@ static void orxFASTCALL orxPlugin_DeleteFunctionInfo(orxPLUGIN_INFO *_pstPluginI
 static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID _eFunctionID, orxPLUGIN_FUNCTION _pfnFunction, orxBOOL _bEmbedded)
 {
   const orxPLUGIN_CORE_FUNCTION  *pstCoreFunction;
-  orxU32                          u32PluginIndex, u32FunctionIndex;
+  orxU32                          u32PluginIndex;
   orxSTATUS                       eResult = orxSTATUS_FAILURE;
 
   /* Checks */
@@ -371,6 +362,8 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID 
   /* Core plugin defined? */
   if(pstCoreFunction != orxNULL)
   {
+    orxU32 u32FunctionIndex;
+
     /* Gets function index */
     u32FunctionIndex = _eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
@@ -413,7 +406,7 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID 
 static orxINLINE void orxPlugin_UnregisterCoreFunction(const orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
 {
   const orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
-  orxU32 u32PluginIndex, u32FunctionIndex;
+  orxU32                          u32PluginIndex;
 
   /* Checks */
   orxASSERT(_pfnFunctionInfo != orxNULL);
@@ -430,6 +423,8 @@ static orxINLINE void orxPlugin_UnregisterCoreFunction(const orxPLUGIN_FUNCTION_
   /* Core plugin defined? */
   if(pstCoreFunction != orxNULL)
   {
+    orxU32 u32FunctionIndex;
+
     /* Gets function index */
     u32FunctionIndex = _pfnFunctionInfo->eFunctionID & orxPLUGIN_KU32_MASK_FUNCTION_ID;
 
@@ -714,9 +709,8 @@ static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
  * Has to be called during a core module init
  * @param[in] _ePluginCoreID          The numeric id of the core plugin
  * @param[in] _eModuleID              Corresponding module ID
- * @param[in] _astCoreFunction        The pointer on the core functions info array
+ * @param[in] _astCoreFunction        The pointer to the core functions info array
  * @param[in] _u32CoreFunctionNumber  Number of functions in the array
- * @return nothing.
  */
 void orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, const orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber)
 {
@@ -742,7 +736,6 @@ void orxFASTCALL orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODU
  * Has to be called during a core module init
  * @param[in] _ePluginCoreID          The numeric id of the core plugin
  * @param[in] _pfnPluginInit          Embedded plug-in init function
- * @return nothing
  */
 void orxFASTCALL orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLUGIN_INIT_FUNCTION _pfnPluginInit)
 {
@@ -1144,7 +1137,7 @@ void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, 
                     |orxDEBUG_KU32_STATIC_FLAG_TIMESTAMP
                     |orxDEBUG_KU32_STATIC_FLAG_TYPE,
                      orxDEBUG_KU32_STATIC_MASK_USER_ALL);
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_ALL, "The function <%s() @ %s:%d> has been called before being loaded!%sPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line, orxSTRING_EOL);
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "The function <%s() @ %s:%d> has been called before being loaded!%sPlease verify that the corresponding plugin has been correctly loaded and that it contains this function.", _zFunctionName, _zFileName, _u32Line, orxSTRING_EOL);
   orxDEBUG_SET_FLAGS(u32DebugFlags,
                      orxDEBUG_KU32_STATIC_MASK_USER_ALL);
 
@@ -1636,3 +1629,7 @@ const orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
   /* Done! */
   return zPluginName;
 }
+
+#undef orxPLUGIN_OPEN
+#undef orxPLUGIN_GET_SYMBOL_ADDRESS
+#undef orxPLUGIN_CLOSE

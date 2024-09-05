@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -35,7 +35,7 @@
  *
  * Object module
  * Allows to creates and handle objects
- * Objects are structures containers that can refer to many other structures such as frames, graphics, etc...
+ * Objects are structure containers that can be linked to many other structures such as frames, graphics, etc...
  *
  * @{
  */
@@ -135,7 +135,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Update(orxOBJECT *_pstObje
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable);
 
-/** Enables/disables an object and all its children.
+/** Enables/disables an object and all its owned children.
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bEnable      Enable / disable
  */
@@ -153,7 +153,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsEnabled(const orxOBJECT 
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause);
 
-/** Pauses/unpauses an object and its children.
+/** Pauses/unpauses an object and its owned children.
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bPause       Pause / unpause
  */
@@ -186,10 +186,10 @@ extern orxDLLAPI void *orxFASTCALL          orxObject_GetUserData(const orxOBJEC
 /** @name Ownership
  * @{ */
 /** Sets owner for an object. Ownership in Orx is only about lifetime management. That is, when an object
- * dies, it also kills its children. Compare this with orxObject_SetParent().
+ * dies, it also kills its owned children. Compare this with orxObject_SetParent().
  *
  * Note that the "ChildList" field of an object's config section implies two things; that the object is both
- * the owner (orxObject_SetOwner()) and the parent (orxObject_SetParent()) of its children. There is an
+ * the owner (orxObject_SetOwner()) and the parent (orxObject_SetParent()) of its owned children. There is an
  * exception to this though; when an object's child has a parent camera, the object is only the owner, and
  * the camera is the parent.
  * @param[in]   _pstObject    Concerned object
@@ -203,8 +203,8 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetOwner(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetOwner(const orxOBJECT *_pstObject);
 
-/** Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner)
- * see orxObject_SetOwner() and orxObject_SetParent() for a comparison of ownership and parenthood in Orx.
+/** Gets object's first owned child (only if created with a config ChildList / has an owner set with orxObject_SetOwner).
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of ownership and parenthood in Orx.
  *
  * This function is typically used to iterate over the owned children of an object. For example;
  * @code
@@ -225,6 +225,26 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedChild(const orxOBJ
  * @return      Next sibling object / orxNULL
  */
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedSibling(const orxOBJECT *_pstObject);
+
+/** Finds the child inside an object's owner hierarchy that matches the given path.
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
+ * Paths are composed by object names separated by '.'.
+ * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
+ * For example:
+ * @code
+ * orxObject_FindOwnedChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
+ * orxObject_FindOwnedChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zPath          Path defining which object to find in the hierarchy (cf. notes above)
+ * @return      Object matching path / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_FindOwnedChild(const orxOBJECT *_pstObject, const orxSTRING _zPath);
 /** @} */
 
 
@@ -237,6 +257,13 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedSibling(const orxO
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetClock(orxOBJECT *_pstObject, orxCLOCK *_pstClock);
 
+/** Sets associated clock for an object and its owned children.
+ * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pstClock     Clock to associate / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void  orxFASTCALL          orxObject_SetClockRecursive(orxOBJECT *_pstObject, orxCLOCK *_pstClock);
+
 /** Gets object's clock.
  * @param[in]   _pstObject    Concerned object
  * @return      Associated clock / orxNULL
@@ -245,7 +272,7 @@ extern orxDLLAPI orxCLOCK *orxFASTCALL      orxObject_GetClock(const orxOBJECT *
 /** @} */
 
 
-/** @name Linked structures
+/** @name Linked Structures
  * @{ */
 /** Links a structure to an object.
  * @param[in]   _pstObject      Concerned object
@@ -300,6 +327,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetFlip(const orxOBJECT *_
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR *_pvPivot);
+
+/** Sets object relative pivot.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _u32AlignFlags  Graphic alignment flags
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRelativePivot(orxOBJECT *_pstObject, orxU32 _u32AlignFlags);
 
 /** Sets object origin. This is a convenience wrapper around orxGraphic_SetOrigin(). The "origin" of a graphic is
  * essentially what is indicated by the "TextureOrigin" field of a config graphic section. The "origin" together with
@@ -427,14 +461,14 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetWorldRotation(const orx
 /** Get object scale. See orxObject_SetScale().
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvScale        Object scale vector
- * @return      Scale vector
+ * @return      orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetScale(const orxOBJECT *_pstObject, orxVECTOR *_pvScale);
 
 /** Gets object world scale. See orxObject_SetWorldScale().
  * @param[in]   _pstObject      Concerned object
  * @param[out]  _pvScale        Object world scale
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxVECTOR / orxNULL
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(const orxOBJECT *_pstObject, orxVECTOR *_pvScale);
 /** @} */
@@ -457,33 +491,77 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetWorldScale(const orxOBJ
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetParent(orxOBJECT *_pstObject, void *_pParent);
 
 /** Gets object's parent. See orxObject_SetParent() for a more detailed explanation.
- * @param[in]   _pstObject    Concerned object
+ * @param[in]   _pstObject      Concerned object
  * @return      Parent (object, spawner, camera or frame) / orxNULL
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetParent(const orxOBJECT *_pstObject);
 
-/** Gets object's first child. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+/** Gets object's first child object. See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
  * ownership and parenthood in Orx.
- *
- * This function is typically used to iterate over the children of an object. For example;
+ * Note: this function will filter out any camera or spawner and retrieve the first child object.
+ * This function is typically used to iterate over the children objects of an object.
+ * For example:
  * @code
- * for(orxOBJECT * pstChild = orxObject_GetChild(pstObject);
- *     pstChild;
+ * for(orxOBJECT *pstChild = orxObject_GetChild(pstObject);
+ *     pstChild != orxNULL;
  *     pstChild = orxObject_GetSibling(pstChild))
  * {
- *     do_something(pstChild);
- * } @endcode
- * @param[in]   _pstObject    Concerned object
- * @return      First child structure (object, spawner, camera or frame) / orxNULL
+ *     DoSomething(pstChild); // DoSomething() can recurse into the children of pstChild for a depth-first traversal
+ * }
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @return      First child object / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetChild(const orxOBJECT *_pstObject);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetChild(const orxOBJECT *_pstObject);
 
-/** Gets object's next sibling. This function is typically used for iterating over the children of an object,
+/** Gets object's next sibling object. This function is typically used for iterating over the children objects of an object,
  * see orxObject_GetChild() for an iteration example.
- * @param[in]   _pstObject    Concerned object
- * @return      Next sibling structure (object, spawner, camera or frame) / orxNULL
+ * Note: this function will filter out any camera or spawner and retrieve the next sibling object.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Next sibling object / orxNULL
  */
-extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetSibling(const orxOBJECT *_pstObject);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetSibling(const orxOBJECT *_pstObject);
+
+/** Gets object's next child structure of a given type (camera, object or spawner).
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * See orxObject_GetChild()/orxObject_GetSibling() if you want to only consider children objects.
+ * This function is typically used to iterate over the children of an object.
+ * For example, iterating over the immediate children cameras:
+ * @code
+ * for(orxCAMERA *pstChild = orxCAMERA(orxObject_GetNextChild(pstObject, orxNULL, orxSTRUCTURE_ID_CAMERA));
+ *     pstChild != orxNULL;
+ *     pstChild = orxCAMERA(orxObject_GetNextChild(pstObject, pstChild, orxSTRUCTURE_ID_CAMERA)))
+ * {
+ *     DoSomethingWithCamera(pstChild);
+ * }
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pChild         Concerned child to retrieve the next sibling, orxNULL to retrieve the first child
+ * @param[in]   _eStructureID   ID of the structure to consider (camera, spawner, object or frame)
+ * @return      Next child/sibling structure (camera, spawner, object or frame) / orxNULL
+ */
+extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetNextChild(const orxOBJECT *_pstObject, void *_pChild, orxSTRUCTURE_ID _eStructureID);
+
+/** Finds the child inside an object's frame hierarchy that matches the given path.
+ * See orxObject_SetOwner() and orxObject_SetParent() for a comparison of
+ * ownership and parenthood in Orx.
+ * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
+ * Paths are composed by object names separated by '.'.
+ * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
+ * For example:
+ * @code
+ * orxObject_FindChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
+ * orxObject_FindChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
+ * orxObject_FindChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
+ * @endcode
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zPath          Path defining which object to find in the hierarchy (cf. notes above)
+ * @return      Object matching path / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_FindChild(const orxOBJECT *_pstObject, const orxSTRING _zPath);
 
 
 /** Attaches an object to a parent while maintaining the object's world position.
@@ -498,6 +576,40 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Attach(orxOBJECT *_pstObje
  * @return      orsSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Detach(orxOBJECT *_pstObject);
+
+
+/** Sets object's ignore flags.
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _u32IgnoreFlags Ignore flags to set (all other ignore flags will get cleared)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetIgnoreFlags(orxOBJECT *_pstObject, orxU32 _u32IgnoreFlags);
+
+/** Sets object's ignore flags using literals.
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _zIgnoreFlags   Literals of the ignore flags to set (all other ignore flags will get cleared)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLiteralIgnoreFlags(orxOBJECT *_pstObject, const orxSTRING _zIgnoreFlags);
+
+/** Gets object's ignore flags.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Ignore flags
+ */
+extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetIgnoreFlags(const orxOBJECT *_pstObject);
+
+/** Gets object's ignore flags literals. The result will not persist through other calls to this function or to orxFrame_GetIgnoreFlagNames().
+ * @param[in]   _pstObject      Concerned object
+ * @return      Ignore flags literals
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetLiteralIgnoreFlags(const orxOBJECT *_pstObject);
+
+
+/** Logs all parents of an object, including their frame data.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_LogParents(const orxOBJECT *_pstObject);
 /** @} */
 
 
@@ -518,7 +630,40 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimSet(orxOBJECT *_pst
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
 
-/** Sets current animation for object. This function switches the currently displayed animation of the object
+/** Sets the relative animation frequency for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetAnimFrequencyRecursive(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
+/** Gets an object's relative animation frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @return Animation frequency / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAnimFrequency(const orxOBJECT *_pstObject);
+
+/** Sets an object's animation time.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimTime(orxOBJECT *_pstObject, orxFLOAT _fTime);
+
+/** Sets the animation time for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetAnimTimeRecursive(orxOBJECT *_pstObject, orxFLOAT _fTime);
+
+/** Gets an object's animation time.
+ * @param[in]   _pstObject      Concerned object
+ * @return Animation time / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAnimTime(const orxOBJECT *_pstObject);
+
+/** Sets current animation for an object. This function switches the currently displayed animation of the object
  * immediately. Compare this with orxObject_SetTargetAnim().
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
@@ -526,7 +671,14 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAnimFrequency(orxOBJECT
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetCurrentAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
 
-/** Sets target animation for object. The animations are sequenced on an object according to the animation link graph
+/** Sets current animation for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetCurrentAnimRecursive(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+
+/** Sets target animation for an object. The animations are sequenced on an object according to the animation link graph
  * defined by its AnimationSet. The sequence follows the graph and tries to reach the target animation. Use
  * orxObject_SetCurrentAnim() to switch the animation without using the link graph.
  * @param[in]   _pstObject      Concerned object
@@ -534,6 +686,25 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetCurrentAnim(orxOBJECT *
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTargetAnim(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+
+/** Sets target animation for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zAnimName      Animation name (config's one) to set / orxNULL
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetTargetAnimRecursive(orxOBJECT *_pstObject, const orxSTRING _zAnimName);
+
+/** Gets current animation.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Current animation / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetCurrentAnim(const orxOBJECT *_pstObject);
+
+/** Gets target animation.
+ * @param[in]   _pstObject      Concerned object
+ * @return      Target animation / orxSTRING_EMPTY
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTargetAnim(const orxOBJECT *_pstObject);
 
 /** Is current animation test.
  * @param[in]   _pstObject      Concerned object
@@ -551,7 +722,7 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTargetAnim(const orxOBJE
 /** @} */
 
 
-/** @name Physics / dynamics
+/** @name Physics / Dynamics
  * @{ */
 /** Sets an object speed.
  * @param[in]   _pstObject      Concerned object
@@ -647,7 +818,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_p
 
 
 /** Issues a raycast to test for potential objects in the way.
- * @param[in]   _pvStart        Start of raycast
+ * @param[in]   _pvBegin        Beginning of raycast
  * @param[in]   _pvEnd          End of raycast
  * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
@@ -656,7 +827,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ApplyImpulse(orxOBJECT *_p
  * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
  * @return Colliding orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 /** @} */
 
 
@@ -673,11 +844,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetTextString(orxOBJECT *_
  * @param[in]   _pstObject      Concerned object
  * @return      orxSTRING / orxSTRING_EMPTY
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTextString(orxOBJECT *_pstObject);
+extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetTextString(const orxOBJECT *_pstObject);
 /** @} */
 
 
-/** @name Bounding box
+/** @name Bounding Box
  * @{ */
 /** Gets object's bounding box (OBB).
  * @param[in]   _pstObject      Concerned object
@@ -697,32 +868,26 @@ extern orxDLLAPI orxOBOX *orxFASTCALL       orxObject_GetBoundingBox(const orxOB
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
 
-/** Adds a unique FX using its config ID. Refer to orxObject_AddUniqueDelayedFX() for details, since this
- * function is the same as it with the delay argument set to 0.
+/** Adds an FX to an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to add
+ * @param[in]   _fPropagationDelay Propagation delay for each child
+ */
+extern orxDLLAPI void  orxFASTCALL          orxObject_AddFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fPropagationDelay);
+
+/** Adds a unique FX using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
 
-/** Adds a delayed FX using its config ID.
+/** Adds a unique FX to an object and its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zFXConfigID    Config ID of the FX to add
- * @param[in]   _fDelay         Delay time
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _fPropagationDelay Propagation delay for each child
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
-
-/** Adds a unique delayed FX using its config ID. The difference between this function and orxObject_AddDelayedFX()
- * is that this one does not add the specified FX, if the object already has an FX with the same config ID attached.
- * note that the "uniqueness" is determined immediately at the time of this function call, not at the time of the
- * FX start (i.e. after the delay).
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zFXConfigID    Config ID of the FX to add
- * @param[in]   _fDelay         Delay time
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
+extern orxDLLAPI void orxFASTCALL           orxObject_AddUniqueFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID, orxFLOAT _fPropagationDelay);
 
 /** Removes an FX using its config ID.
  * @param[in]   _pstObject      Concerned object
@@ -730,6 +895,64 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddUniqueDelayedFX(orxOBJE
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveFX(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
+
+/** Removes an FX from an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zFXConfigID    Config ID of the FX to remove
+ */
+extern orxDLLAPI void  orxFASTCALL          orxObject_RemoveFXRecursive(orxOBJECT *_pstObject, const orxSTRING _zFXConfigID);
+
+/** Removes all FXs.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFXs(orxOBJECT *_pstObject);
+
+/** Removes all FXs from an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFXsRecursive(orxOBJECT *_pstObject);
+
+/** Sets an object's relative FX frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetFXFrequency(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
+/** Sets the relative FX frequency for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fFrequency     Frequency to set: < 1.0 for slower than initial, > 1.0 for faster than initial
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetFXFrequencyRecursive(orxOBJECT *_pstObject, orxFLOAT _fFrequency);
+
+/** Gets an object's relative FX frequency.
+ * @param[in]   _pstObject      Concerned object
+ * @return FX frequency / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetFXFrequency(const orxOBJECT *_pstObject);
+
+/** Sets an object's FX time.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetFXTime(orxOBJECT *_pstObject, orxFLOAT _fTime);
+
+/** Sets the FX time for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fTime          Time to set
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetFXTimeRecursive(orxOBJECT *_pstObject, orxFLOAT _fTime);
+
+/** Gets an object's FX time.
+ * @param[in]   _pstObject      Concerned object
+ * @return FX time / -orxFLOAT_1
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetFXTime(const orxOBJECT *_pstObject);
 
 /** Synchronizes FXs with another object's ones (if FXs are not matching on both objects the behavior is undefined).
  * @param[in]   _pstObject      Concerned object
@@ -756,6 +979,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddSound(orxOBJECT *_pstOb
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveSound(orxOBJECT *_pstObject, const orxSTRING _zSoundConfigID);
 
+/** Removes all sounds.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllSounds(orxOBJECT *_pstObject);
+
 /** Gets last added sound (Do *NOT* destroy it directly before removing it!!!).
  * @param[in]   _pstObject      Concerned object
  * @return      orxSOUND / orxNULL
@@ -771,10 +1000,18 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetVolume(orxOBJECT *_pstO
 
 /** Sets pitch for all sounds of an object.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _fPitch         Desired pitch (0.0 - 1.0)
+ * @param[in]   _fPitch         Desired pitch (< 1.0 => lower pitch, = 1.0 => original pitch, > 1.0 => higher pitch). 0.0 is ignored.
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPitch(orxOBJECT *_pstObject, orxFLOAT _fPitch);
+
+/** Sets panning of all sounds of an object.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _fPanning       Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in]   _bMix           Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetPanning(orxOBJECT *_pstObject, orxFLOAT _fPanning, orxBOOL _bMix);
 
 /** Plays all the sounds of an object.
  * @param[in]   _pstObject      Concerned object
@@ -788,6 +1025,25 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Play(orxOBJECT *_pstObject
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Stop(orxOBJECT *_pstObject);
 
+/** Adds a filter to the sounds of an object (cascading).
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zFilterConfigID  Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddFilter(orxOBJECT *_pstObject, const orxSTRING _zFilterConfigID);
+
+/** Removes last added filter from the sounds of an object.
+ * @param[in]   _pstObject      Concerned object
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveLastFilter(orxOBJECT *_pstObject);
+
+/** Removes all filters from the sounds of an object.
+ * @param[in]   _pstObject      Concerned object
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFilters(orxOBJECT *_pstObject);
+
 /** @} */
 
 
@@ -800,12 +1056,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Stop(orxOBJECT *_pstObject
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
 
+/** Adds a shader to an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+
 /** Removes a shader using its config ID.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zShaderConfigID Config ID of the shader to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+
+/** Removes a shader from an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderConfigID  Config ID of the shader to remove
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_RemoveShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object
@@ -830,12 +1098,24 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsShaderEnabled(const orxO
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
 
+/** Adds a timeline track to an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to add
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddTimeLineTrackRecursive(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
+
 /** Removes a timeline track using its config ID
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _zTrackConfigID Config ID of the timeline track to remove
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveTimeLineTrack(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
+
+/** Removes a timeline track from an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTrackConfigID   Config ID of the timeline track to remove
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_RemoveTimeLineTrackRecursive(orxOBJECT *_pstObject, const orxSTRING _zTrackConfigID);
 
 /** Enables an object's timeline.
  * @param[in]   _pstObject        Concerned object
@@ -848,6 +1128,55 @@ extern orxDLLAPI void orxFASTCALL           orxObject_EnableTimeLine(orxOBJECT *
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsTimeLineEnabled(const orxOBJECT *_pstObject);
+/** @} */
+
+
+/** @name Trigger
+ * @{ */
+/** Adds a trigger to an object using its config ID.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddTrigger(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Adds a trigger to an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to add
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_AddTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Removes a trigger using its config ID
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to remove
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveTrigger(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Removes a trigger from an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zTriggerConfigID Config ID of the trigger to remove
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_RemoveTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zTriggerConfigID);
+
+/** Fires an object's trigger.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zEvent           Event to fire
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
+ * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+
+/** Fires a trigger on an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zEvent           Event to fire
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
+ * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
 /** @} */
 
 
@@ -876,7 +1205,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *
  * orxOBOX stBox;
  * orxOBox_2DSet(&stBox, &vPosition, &vPivot, &vSize, 0);
  *
- * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox, orxU32_UNDEFINED);
+ * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox, orxSTRINGID_UNDEFINED);
  * if(pstBank) {
  *     for(int i=0; i < orxBank_GetCount(pstBank); ++i)
  *     {
@@ -887,10 +1216,10 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *
  * }
  * @endcode
  * @param[in]   _pstCheckBox    Box to check intersection with
- * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxBANK / orxNULL
  */
-extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox, orxU32 _u32GroupID);
+extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox, orxSTRINGID _stGroupID);
 
 /** Deletes an object list created with orxObject_CreateNeighborList().
  * @param[in]   _pstObjectList  Concerned object list
@@ -908,6 +1237,13 @@ extern orxDLLAPI void orxFASTCALL           orxObject_DeleteNeighborList(orxBANK
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetSmoothing(orxOBJECT *_pstObject, orxDISPLAY_SMOOTHING _eSmoothing);
 
+/** Sets smoothing for an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eSmoothing     Smoothing type (enabled, default or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetSmoothingRecursive(orxOBJECT *_pstObject, orxDISPLAY_SMOOTHING _eSmoothing);
+
 /** Gets object smoothing.
  * @param[in]   _pstObject     Concerned object
  * @return Smoothing type (enabled, default or none)
@@ -916,7 +1252,7 @@ extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxObject_GetSmoothing(const o
 /** @} */
 
 
-/** @name texture
+/** @name Texture
  * @{ */
 /** Gets object working texture.
  * @param[in]   _pstObject     Concerned object
@@ -926,7 +1262,7 @@ extern orxDLLAPI orxTEXTURE *orxFASTCALL    orxObject_GetWorkingTexture(const or
 /** @} */
 
 
-/** @name graphic
+/** @name Graphic
  * @{ */
 /** Gets object working graphic.
  * @param[in]   _pstObject     Concerned object
@@ -941,7 +1277,7 @@ extern orxDLLAPI orxGRAPHIC *orxFASTCALL    orxObject_GetWorkingGraphic(const or
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetColor(orxOBJECT *_pstObject, const orxCOLOR *_pstColor);
 
-/** Sets color of an object and all its children.
+/** Sets color of an object and all its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pstColor       Color to set, orxNULL to remove any specific color
  */
@@ -967,11 +1303,18 @@ extern orxDLLAPI orxCOLOR *orxFASTCALL      orxObject_GetColor(const orxOBJECT *
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetRGB(orxOBJECT *_pstObject, const orxVECTOR *_pvRGB);
 
-/** Sets color of an object and all its children.
+/** Sets color of an object and all its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pvRGB          RGB values to set
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetRGBRecursive(orxOBJECT *_pstObject, const orxVECTOR *_pvRGB);
+
+/** Gets object RGB values.
+ * @param[in]   _pstObject      Concerned object
+ * @param[out]  _pvRGB          Object's RGB values
+ * @return      orxVECTOR / orxNULL
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL     orxObject_GetRGB(const orxOBJECT *_pstObject, orxVECTOR *_pvRGB);
 
 /** Sets object alpha.
  * @param[in]   _pstObject      Concerned object
@@ -980,11 +1323,17 @@ extern orxDLLAPI void orxFASTCALL           orxObject_SetRGBRecursive(orxOBJECT 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetAlpha(orxOBJECT *_pstObject, orxFLOAT _fAlpha);
 
-/** Sets alpha of an object and all its children.
+/** Sets alpha of an object and all its owned children.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fAlpha         Alpha value to set
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetAlphaRecursive(orxOBJECT *_pstObject, orxFLOAT _fAlpha);
+
+/** Gets object alpha.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxFLOAT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetAlpha(const orxOBJECT *_pstObject);
 
 
 /** Sets object repeat (wrap) values.
@@ -1011,6 +1360,19 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_GetRepeat(const orxOBJECT 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetBlendMode(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode);
 
+/** Sets blend mode of an object and its owned children.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _eBlendMode     Blend mode (alpha, multiply, add or none)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_SetBlendModeRecursive(orxOBJECT *_pstObject, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Object has blend mode accessor?
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasBlendMode(const orxOBJECT *_pstObject);
+
 /** Gets object blend mode.
  * @param[in]   _pstObject     Concerned object
  * @return Blend mode (alpha, multiply, add or none)
@@ -1019,27 +1381,46 @@ extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxObject_GetBlendMode(const 
 /** @} */
 
 
-/** @name Life time / active time
+/** @name Life time / Active time
  * @{ */
-/** Sets object lifetime.
+/** Sets object's literal lifetime.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _zLifeTime      Lifetime to set, can be composed of multiple tags, separated by space: anim, child, fx, sound, spawner and track
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLiteralLifeTime(orxOBJECT *_pstObject, const orxSTRING _zLifeTime);
+
+/** Sets object's lifetime.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _fLifeTime      Lifetime to set, negative value to disable it
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetLifeTime(orxOBJECT *_pstObject, orxFLOAT _fLifeTime);
 
-/** Gets object lifetime.
+/** Gets object's lifetime.
  * @param[in]   _pstObject      Concerned object
  * @return      Lifetime / negative value if none
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetLifeTime(const orxOBJECT *_pstObject);
 
-/** Gets object active time, i.e. the amount of time that the object has been alive taking into account
+/** Gets object's active time, i.e. the amount of time that the object has been alive taking into account.
  * the object's clock multiplier and object's periods of pause.
  * @param[in]   _pstObject      Concerned object
  * @return      Active time
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetActiveTime(const orxOBJECT *_pstObject);
+
+/** Resets an object's active time.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ResetActiveTime(orxOBJECT *_pstObject);
+
+/** Resets an object's and its owned children's active time.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI void orxFASTCALL           orxObject_ResetActiveTimeRecursive(orxOBJECT *_pstObject);
 /** @} */
 
 /** @name Group
@@ -1047,33 +1428,40 @@ extern orxDLLAPI orxFLOAT orxFASTCALL       orxObject_GetActiveTime(const orxOBJ
 /** Gets default group ID.
  * @return      Default group ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetDefaultGroupID();
+extern orxDLLAPI orxSTRINGID orxFASTCALL    orxObject_GetDefaultGroupID();
 
 /** Gets object's group ID.
  * @param[in]   _pstObject      Concerned object
  * @return      Object's group ID. This is the string ID (see orxString_GetFromID()) of the object's group name.
  */
-extern orxDLLAPI orxU32 orxFASTCALL         orxObject_GetGroupID(const orxOBJECT *_pstObject);
+extern orxDLLAPI orxSTRINGID orxFASTCALL    orxObject_GetGroupID(const orxOBJECT *_pstObject);
 
 /** Sets object's group ID.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _u32GroupID     Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
+ * @param[in]   _stGroupID      Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetGroupID(orxOBJECT *_pstObject, orxU32 _u32GroupID);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetGroupID(orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
 
-/** Sets group ID of an object and all its children.
+/** Sets group ID of an object and all its owned children.
  * @param[in]   _pstObject      Concerned object
- * @param[in]   _u32GroupID     Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
+ * @param[in]   _stGroupID      Group ID to set. This is the string ID (see orxString_GetID()) of the object's group name.
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_SetGroupIDRecursive(orxOBJECT *_pstObject, orxU32 _u32GroupID);
+extern orxDLLAPI void orxFASTCALL           orxObject_SetGroupIDRecursive(orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
 
 /** Gets next object in group.
  * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
- * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(const orxOBJECT *_pstObject, orxU32 _u32GroupID);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
+
+/** Gets next enabled object.
+ * @param[in]   _pstObject      Concerned object, orxNULL to get the first one
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
+ * @return      orxOBJECT / orxNULL
+ */
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNextEnabled(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
 /** @} */
 
 
@@ -1083,18 +1471,18 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNext(const orxOBJECT *_
  * orxObject_BoxPick(), orxObject_CreateNeighborList() and orxObject_Raycast for other ways of picking
  * objects.
  * @param[in]   _pvPosition     Position to pick from
- * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition, orxU32 _u32GroupID);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID _stGroupID);
 
 /** Picks the first active object with size in contact with the given box, withing a given group. Use
  * orxObject_CreateNeighborList() to get all the objects in the box.
  * @param[in]   _pstBox         Box to use for picking
- * @param[in]   _u32GroupID     Group ID to consider, orxU32_UNDEFINED for all
+ * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
  */
-extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_BoxPick(const orxOBOX *_pstBox, orxU32 _u32GroupID);
+extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_BoxPick(const orxOBOX *_pstBox, orxSTRINGID _stGroupID);
 /** @} */
 
 #endif /* _orxOBJECT_H_ */

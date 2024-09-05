@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -54,7 +54,7 @@
 #define orxCONFIG_KZ_RESOURCE_GROUP           "Config"  /**< Config resource group */
 
 
- /** Event enum
+/** Event enum
  */
 typedef enum __orxCONFIG_EVENT_t
 {
@@ -70,6 +70,10 @@ typedef enum __orxCONFIG_EVENT_t
 
 /** Config callback function type to use with save function */
 typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption);
+
+/** Config callback function type to use with clear function */
+typedef orxBOOL (orxFASTCALL *orxCONFIG_CLEAR_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName);
+
 typedef orxSTATUS (orxFASTCALL *orxCONFIG_BOOTSTRAP_FUNCTION)();
 
 
@@ -87,6 +91,16 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Init();
 extern orxDLLAPI void orxFASTCALL             orxConfig_Exit();
 
 
+/** Enables/disables config typo check (debug-only)
+ */
+extern orxDLLAPI void orxFASTCALL             orxConfig_EnableTypoCheck(orxBOOL _bEnable);
+
+/** Is typo check enabled?
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsTypoCheckEnabled();
+
+
 /** Sets encryption key
  * @param[in] _zEncryptionKey  Encryption key to use, orxNULL to clear
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -98,10 +112,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetEncryptionKey(const o
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetEncryptionKey();
 
-/** Sets config bootstrap function: this function will get called when the config menu is initialized, before any config file is loaded.
- *  The only available APIs within the bootstrap function are those of orxConfig and its dependencies (orxMemory, orxString, orxFile, orxEvent, orxResource, ...)
+/** Sets config bootstrap function: this function will get called when the config module is initialized, before any config file is loaded.
+ * The only available APIs from within the bootstrap function are those of orxConfig and its dependencies (orxMemory, orxString, orxFile, orxEvent, orxResource, ...)
  * @param[in] _pfnBootstrap     Bootstrap function that will get called at module init, before loading any config file.
-                                If this function returns orxSTATUS_FAILURE, the default config file will be skipped, otherwise the regular load sequence will happen
+                                If this function returns orxSTATUS_FAILURE, the default config file will be skipped, otherwise the regular load sequence will take place
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetBootstrap(const orxCONFIG_BOOTSTRAP_FUNCTION _pfnBootstrap);
@@ -139,7 +153,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ReloadHistory();
 /** Writes config to given file. Will overwrite any existing file, including all comments.
  * @param[in] _zFileName        File name, if null or empty the default file name will be used
  * @param[in] _bUseEncryption   Use file encryption to make it human non-readable?
- * @param[in] _pfnSaveCallback  Callback used to filter section/key to save. If NULL is passed, all section/keys will be saved
+ * @param[in] _pfnSaveCallback  Callback used to filter sections/keys to save. If null, all sections/keys will be saved
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Save(const orxSTRING _zFileName, orxBOOL _bUseEncryption, const orxCONFIG_SAVE_FUNCTION _pfnSaveCallback);
@@ -182,9 +196,9 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetOrigin(const orxSTRIN
 
 /** Gets section origin ID (ie. the file where it was defined for the first time or orxSTRING_EMPTY if not defined via a file)
  * @param[in] _zSectionName     Concerned section name
- * @return String ID if found, 0 otherwise
+ * @return String ID if found, orxSTRINGID_UNDEFINED otherwise
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetOriginID(const orxSTRING _zSectionName);
+extern orxDLLAPI orxSTRINGID orxFASTCALL      orxConfig_GetOriginID(const orxSTRING _zSectionName);
 
 /** Sets a section's parent
  * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
@@ -195,7 +209,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetParent(const orxSTRIN
 
 /** Gets a section's parent
  * @param[in] _zSectionName     Concerned section
- * @return Section's parent name if set or orxSTRING_EMPTY if no parent has been forced, orxNULL otherwise
+ * @return Section's parent name if set, orxSTRING_EMPTY if no parent has been forced or orxNULL otherwise
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRING _zSectionName);
 
@@ -204,6 +218,11 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRIN
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetDefaultParent(const orxSTRING _zSectionName);
+
+/** Gets default parent for all sections
+ * @return Default parent name if set, orxNULL otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetDefaultParent();
 
 /** Gets current working section
  * @return Current selected section
@@ -247,9 +266,10 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetSection(orxU32 _u32Se
 
 
 /** Clears all config info
-* @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in] _pfnClearCallback Callback used to filter sections/keys to clear. If null, all sections/keys will be cleared
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Clear();
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_Clear(const orxCONFIG_CLEAR_FUNCTION _pfnClearCallback);
 
 /** Clears section
  * @param[in] _zSectionName     Section name to clear
@@ -299,6 +319,12 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_IsCommandValue(const orx
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_HasValue(const orxSTRING _zKey);
 
+/** Has specified value for the given key (no check for typos)?
+ * @param[in] _zKey             Key name
+ * @return orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_HasValueNoCheck(const orxSTRING _zKey);
+
 /** Gets a value's source section (ie. the section where the value is explicitly defined), only considering section inheritance, not local one
  * @param[in] _zKey             Key name
  * @return Name of the section that explicitly contains the value, orxSTRING_EMPTY if not found
@@ -336,6 +362,7 @@ extern orxDLLAPI orxU64 orxFASTCALL           orxConfig_GetU64(const orxSTRING _
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxConfig_GetFloat(const orxSTRING _zKey);
 
 /** Reads a string value from config (will take a random value if a list is provided for this key)
+ * Beware: result might not persist through any subsequent orxConfig_Get* calls
  * @param[in] _zKey             Key name
  * @return The value
  */
@@ -350,9 +377,17 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_GetBool(const orxSTRING 
 /** Reads a vector value from config (will take a random value if a list is provided for this key)
  * @param[in]   _zKey             Key name
  * @param[out]  _pvVector         Storage for vector value
- * @return The value
+ * @return The value if valid, orxNULL otherwise
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetVector(const orxSTRING _zKey, orxVECTOR *_pvVector);
+
+/** Reads a vector value from config and interpret any color literals in the given color space (will take a random value if a list is provided for this key)
+ * @param[in]   _zKey             Key name
+ * @param[in]   _eColorSpace      Color space to use when translating color literals (NONE: no literal, COMPONENT: 0-255 RGB values, all others: normalized spaces)
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetColorVector(const orxSTRING _zKey, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
 
 /** Duplicates a raw value (string) from config
  * @param[in] _zKey             Key name
@@ -473,6 +508,7 @@ extern orxDLLAPI orxU64 orxFASTCALL           orxConfig_GetListU64(const orxSTRI
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxConfig_GetListFloat(const orxSTRING _zKey, orxS32 _s32ListIndex);
 
 /** Reads a string value from config list
+ * Beware: result might not persist through any subsequent orxConfig_Get* calls
  * @param[in] _zKey             Key name
  * @param[in] _s32ListIndex     Index of desired item in list / -1 for random
  * @return The value
@@ -493,6 +529,15 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxConfig_GetListBool(const orxSTR
  * @return The value
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetListVector(const orxSTRING _zKey, orxS32 _s32ListIndex, orxVECTOR *_pvVector);
+
+/** Reads a vector value from config list and interpret any color literals in the given color space
+ * @param[in]   _zKey             Key name
+ * @param[in]   _s32ListIndex     Index of desired item in list / -1 for random
+ * @param[in]   _eColorSpace      Color space to use when translating color literals (NONE: no literal, COMPONENT: 0-255 RGB values, all others: normalized spaces)
+ * @param[out]  _pvVector         Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxConfig_GetListColorVector(const orxSTRING _zKey, orxS32 _s32ListIndex, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
 
 /** Writes a list of string values to config
  * @param[in] _zKey             Key name

@@ -19,22 +19,8 @@ function initconfigurations ()
 end
 
 function initplatforms ()
-    if os.is ("windows") then
-        if string.lower(_ACTION) == "vs2013"
-        or string.lower(_ACTION) == "vs2015"
-        or string.lower(_ACTION) == "vs2017" then
-            return
-            {
-                "x64",
-                "x32"
-            }
-        else
-            return
-            {
-                "Native"
-            }
-        end
-    elseif os.is ("linux") then
+    if os.is ("windows")
+    or os.is ("linux") then
         if os.is64bit () then
             return
             {
@@ -49,17 +35,11 @@ function initplatforms ()
             }
         end
     elseif os.is ("macosx") then
-        if string.find(string.lower(_ACTION), "xcode") then
-            return
-            {
-                "Universal"
-            }
-        else
-            return
-            {
-                "x32", "x64"
-            }
-        end
+        return
+        {
+            "universal64",
+            "x64"
+        }
     end
 end
 
@@ -69,7 +49,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2015")
+defaultaction ("windows", "vs2022")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -84,6 +64,12 @@ newoption
 {
     trigger = "split-platforms",
     description = "Split target folders based on platforms"
+}
+
+newoption
+{
+    trigger = "gles",
+    description = "Use OpenGL ES instead of OpenGL (Linux only)"
 }
 
 if os.is ("macosx") then
@@ -119,20 +105,21 @@ solution "orx"
     includedirs
     {
         "../include",
-        "../../extern/dlmalloc",
-        "../../extern/glfw-2.7/include",
+        "../../extern/rpmalloc/rpmalloc",
+        "../../extern/xxHash",
+        "../../extern/glfw-3/include",
         "../../extern/LiquidFun-1.1.0/include",
         "../../extern/stb_image",
-        "../../extern/openal-soft/include",
-        "../../extern/libsndfile-1.0.22/include",
+        "../../extern/miniaudio",
         "../../extern/stb_vorbis",
-        "../../extern/libwebp/include"
+        "../../extern/libwebp/src",
+        "../../extern/basisu/include",
+        "../../extern/qoi"
     }
 
     excludes
     {
-        "../src/main/orxAndroidSupport.cpp",
-        "../src/main/orxAndroidNativeSupport.cpp"
+        "../src/main/android/orxAndroidSupport.cpp"
     }
 
     flags
@@ -146,13 +133,11 @@ solution "orx"
         "NoEditAndContinue",
         "NoMinimalRebuild",
         "Symbols",
-        "StaticRuntime"
+        "StaticRuntime",
+        "FatalWarnings"
     }
 
-    configuration {"not vs2013", "not vs2015", "not vs2017"}
-        flags {"EnableSSE2"}
-
-    configuration {"not x64"}
+    configuration {"x32"}
         flags {"EnableSSE2"}
 
     configuration {"not windows"}
@@ -176,10 +161,10 @@ solution "orx"
     configuration {"linux", "x32"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/linux",
-            "../../extern/libsndfile-1.0.22/lib/linux",
+            "../../extern/glfw-3/lib/linux",
             "../../extern/LiquidFun-1.1.0/lib/linux",
-            "../../extern/libwebp/lib/linux"
+            "../../extern/libwebp/lib/linux",
+            "../../extern/basisu/lib/linux/32",
         }
         buildoptions
         {
@@ -190,10 +175,10 @@ solution "orx"
     configuration {"linux", "x64"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/linux64",
-            "../../extern/libsndfile-1.0.22/lib/linux64",
+            "../../extern/glfw-3/lib/linux64",
             "../../extern/LiquidFun-1.1.0/lib/linux64",
-            "../../extern/libwebp/lib/linux64"
+            "../../extern/libwebp/lib/linux64",
+            "../../extern/basisu/lib/linux/64",
         }
         buildoptions
         {
@@ -207,20 +192,23 @@ solution "orx"
     configuration {"macosx"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/mac",
-            "../../extern/libsndfile-1.0.22/lib/mac",
+            "../../extern/glfw-3/lib/mac",
             "../../extern/LiquidFun-1.1.0/lib/mac",
-            "../../extern/libwebp/lib/mac"
+            "../../extern/libwebp/lib/mac",
+            "../../extern/basisu/lib/mac",
         }
         buildoptions
         {
             "-x c++",
             "-gdwarf-2",
+            "-Wno-unused-function",
             "-Wno-write-strings",
-            "-fvisibility-inlines-hidden"
+            "-fvisibility-inlines-hidden",
+            "-stdlib=libc++"
         }
         linkoptions
         {
+            "-stdlib=libc++",
             "-dead_strip"
         }
 
@@ -239,65 +227,74 @@ solution "orx"
             "/MP"
         }
 
-    configuration {"vs2012"}
+    configuration {"vs2017 or vs2019 or vs2022", "x32"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/vc2012",
-            "../../extern/openal-soft/lib/vc2012",
-            "../../extern/libsndfile-1.0.22/lib/vc2012",
-            "../../extern/LiquidFun-1.1.0/lib/vc2012",
-            "../../extern/libwebp/lib/vc2012"
-        }
-
-    configuration {"vs2013", "x32"}
-        libdirs
-        {
-            "../../extern/glfw-2.7/lib/vc2013/32",
-            "../../extern/openal-soft/lib/vc2013/32",
-            "../../extern/libsndfile-1.0.22/lib/vc2013/32",
-            "../../extern/LiquidFun-1.1.0/lib/vc2013/32",
-            "../../extern/libwebp/lib/vc2013/32"
-        }
-
-    configuration {"vs2013", "x64"}
-        libdirs
-        {
-            "../../extern/glfw-2.7/lib/vc2013/64",
-            "../../extern/openal-soft/lib/vc2013/64",
-            "../../extern/libsndfile-1.0.22/lib/vc2013/64",
-            "../../extern/LiquidFun-1.1.0/lib/vc2013/64",
-            "../../extern/libwebp/lib/vc2013/64"
-        }
-
-    configuration {"vs2015 or vs2017", "x32"}
-        libdirs
-        {
-            "../../extern/glfw-2.7/lib/vc2015/32",
-            "../../extern/openal-soft/lib/vc2015/32",
-            "../../extern/libsndfile-1.0.22/lib/vc2015/32",
+            "../../extern/glfw-3/lib/vc2015/32",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/32",
-            "../../extern/libwebp/lib/vc2015/32"
+            "../../extern/libwebp/lib/vc2015/32",
+            "../../extern/basisu/lib/vc2015/32",
         }
 
-    configuration {"vs2015 or vs2017", "x64"}
+    configuration {"vs2017 or vs2019 or vs2022", "x64"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/vc2015/64",
-            "../../extern/openal-soft/lib/vc2015/64",
-            "../../extern/libsndfile-1.0.22/lib/vc2015/64",
+            "../../extern/glfw-3/lib/vc2015/64",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/64",
-            "../../extern/libwebp/lib/vc2015/64"
+            "../../extern/libwebp/lib/vc2015/64",
+            "../../extern/basisu/lib/vc2015/64",
         }
 
-    configuration {"windows", "codeblocks or codelite or gmake"}
+    configuration {"windows", "gmake or codelite or codeblocks", "x32"}
         libdirs
         {
-            "../../extern/glfw-2.7/lib/mingw",
-            "../../extern/openal-soft/lib/mingw",
-            "../../extern/libsndfile-1.0.22/lib/mingw",
-            "../../extern/LiquidFun-1.1.0/lib/mingw",
-            "../../extern/libwebp/lib/mingw"
+            "../../extern/glfw-3/lib/mingw/32",
+            "../../extern/LiquidFun-1.1.0/lib/mingw/32",
+            "../../extern/libwebp/lib/mingw/32",
+            "../../extern/basisu/lib/mingw/32",
         }
+
+    configuration {"windows", "gmake or codelite or codeblocks", "x64"}
+        libdirs
+        {
+            "../../extern/glfw-3/lib/mingw/64",
+            "../../extern/LiquidFun-1.1.0/lib/mingw/64",
+            "../../extern/libwebp/lib/mingw/64",
+            "../../extern/basisu/lib/mingw/64",
+        }
+
+    configuration {"windows", "gmake", "x32"}
+        prebuildcommands
+        {
+            "$(eval CC := i686-w64-mingw32-gcc)",
+            "$(eval CXX := i686-w64-mingw32-g++)",
+            "$(eval AR := i686-w64-mingw32-gcc-ar)"
+        }
+
+    configuration {"windows", "gmake", "x64"}
+        prebuildcommands
+        {
+            "$(eval CC := x86_64-w64-mingw32-gcc)",
+            "$(eval CXX := x86_64-w64-mingw32-g++)",
+            "$(eval AR := x86_64-w64-mingw32-gcc-ar)"
+        }
+
+    configuration {"windows", "codeblocks", "x32"}
+        envs
+        {
+            "CC=i686-w64-mingw32-gcc",
+            "CXX=i686-w64-mingw32-g++",
+            "AR=i686-w64-mingw32-gcc-ar"
+        }
+
+    configuration {"windows", "codeblocks", "x64"}
+        envs
+        {
+            "CC=x86_64-w64-mingw32-gcc",
+            "CXX=x86_64-w64-mingw32-g++",
+            "AR=x86_64-w64-mingw32-gcc-ar"
+        }
+
 
 --
 -- Project: orx
@@ -330,16 +327,16 @@ project "orx"
 
     configuration {"linux"}
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
-
-    configuration {"linux", "*Core*"}
-        linkoptions {"-Wl,--no-whole-archive"}
         links
         {
             "dl",
             "m",
-            "rt",
-            "pthread"
+            "rt"
         }
+
+    configuration {"linux", "*Core*"}
+        linkoptions {"-Wl,--no-whole-archive"}
+        links {"pthread"}
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
     configuration {"linux", "not *Debug*"}
@@ -348,13 +345,18 @@ project "orx"
 
 -- Mac OS X
 
-    configuration {"macosx", "not xcode*", "*Core*"}
+    configuration {"macosx", "gmake", "*Core*"}
         links
         {
             "Foundation.framework",
-            "IOKit.framework",
-            "AppKit.framework",
-            "pthread"
+            "IOKit.framework"
+        }
+
+    configuration {"macosx", "codelite or codeblocks", "*Core*"}
+        linkoptions
+        {
+            "-framework Foundation",
+            "-framework IOKit"
         }
 
 
@@ -380,18 +382,44 @@ project "orxLIB"
     {
         "../src/**.cpp",
         "../src/**.c",
-        "../include/**.h"
+        "../include/**.h",
+        "../include/**.inc",
+        "../**premake4.lua",
+        "../**.ini",
+        "../**.r",
+        "../build/template/include/**",
+        "../build/template/src/**",
+        "../build/template/**.ini",
+        "../build/template/**.editorconfig",
+        "../../.editorconfig",
+        "../../.extern"
     }
 
-    excludes {"../src/main/orxMain.c"}
+    excludes
+    {
+        "../src/main/orxMain.c",
+        "../build/template/**.c",
+        "../build/template/**.cpp",
+        "../build/template/**.h",
+        "../build/template/**.txt",
+        "../demo/**"
+    }
 
     targetname ("orx")
+
+    vpaths
+    {
+        ["misc/build"] = {"../build/premake4.lua"},
+        ["misc/config"] = {"../bin/**.ini"},
+        ["misc/rebol"] = {"**.r"},
+        ["misc/template/*"] = {"template/**"},
+        ["misc"] = {"../../.editorconfig", "../../.extern"}
+    }
 
     configuration {"not *Core*"}
         defines
         {
-            "__orxEMBEDDED__",
-            "AL_LIBTYPE_STATIC"
+            "__orxEMBEDDED__"
         }
 
     -- Work around for codelite "default" configuration
@@ -426,11 +454,20 @@ project "orxLIB"
     configuration {"not *Core*"}
         links {"webpdecoder"}
 
-    configuration {"*Debug*", "not *Core*"}
-        links {"liquidfund"}
+    configuration {"not *Core*", "not vs*"}
+        links {"basisu"}
+
+    configuration {"not *Debug*", "not *Core*", "vs*"}
+        links {"basisu"}
+
+    configuration {"*Debug*", "not *Core*", "vs*"}
+        links {"basisud"}
 
     configuration {"not *Debug*", "not *Core*"}
         links {"liquidfun"}
+
+    configuration {"*Debug*", "not *Core*"}
+        links {"liquidfund"}
 
 
 -- Linux
@@ -441,10 +478,7 @@ project "orxLIB"
     configuration {"linux", "not *Core*"}
         links
         {
-            "glfw",
-            "openal",
-            "sndfile",
-            "GL",
+            "glfw3",
             "X11",
             "Xrandr",
             "dl",
@@ -453,6 +487,12 @@ project "orxLIB"
             "pthread",
             "gcc"
         }
+        if _OPTIONS["gles"] then
+            defines {"__orxDISPLAY_OPENGL_ES__"}
+            links {"GLESv3"}
+        else
+            links {"GL"}
+        end
 
     configuration {"linux", "*Core*"}
         buildoptions {"-fPIC"}
@@ -476,17 +516,38 @@ project "orxLIB"
 
 -- Mac OS X
 
-    configuration {"macosx", "not *Core*"}
+    configuration {"macosx", "not *Core*", "not codelite", "not codeblocks"}
         links
         {
             "Foundation.framework",
+            "CoreFoundation.framework",
+            "CoreAudio.framework",
+            "AudioUnit.framework",
             "IOKit.framework",
             "AppKit.framework",
-            "glfw",
-            "sndfile",
-            "pthread",
-            "OpenAL.framework",
+            "CoreVideo.framework",
             "OpenGL.framework"
+        }
+
+    configuration {"macosx", "not *Core*", "codelite or codeblocks"}
+        linkoptions
+        {
+            "-framework Foundation",
+            "-framework CoreFoundation",
+            "-framework CoreAudio",
+            "-framework AudioUnit",
+            "-framework IOKit",
+            "-framework AppKit",
+            "-framework CoreVideo",
+            "-framework OpenGL"
+        }
+
+    configuration {"macosx", "not *Core*"}
+        links
+        {
+            "glfw3",
+            "m",
+            "pthread"
         }
 
     configuration{"macosx"}
@@ -532,20 +593,24 @@ project "orxLIB"
     configuration {"windows", "not *Core*"}
         links
         {
-            "glfw",
-            "openal32",
-            "winmm",
-            "sndfile"
+            "glfw3",
+            "winmm"
         }
 
-    configuration {"windows", "vs*", "not *Core*"}
+    configuration {"windows", "not *Core*", "vs*"}
         links {"OpenGL32"}
 
+    configuration {"windows", "vs*"}
+        linkoptions {"/ignore:4099"}
+
     configuration {"windows", "vs*", "*Debug*"}
-        linkoptions {"/NODEFAULTLIB:LIBCMT", "/ignore:4099"}
+        linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
     configuration {"windows", "vs*"}
         buildoptions {"/wd\"4577\""}
+
+    configuration {"windows", "not vs*"}
+        defines {"_WIN32_WINNT=_WIN32_WINNT_VISTA"}
 
     configuration {"windows", "not *Core*"}
         postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}

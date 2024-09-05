@@ -48,6 +48,7 @@ var group__orx_module =
       [ "orxMODULE_ID_TEXTURE", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708ae62cd8c9c3b495099e42aac53e01754b", null ],
       [ "orxMODULE_ID_THREAD", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a17b390ccbdc4ea4bc109f3173156aa16", null ],
       [ "orxMODULE_ID_TIMELINE", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a9bad17bdd034daf9b5daaeac3ba9ea0b", null ],
+      [ "orxMODULE_ID_TRIGGER", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2b6ff29ee648750f71ae336020c7a236", null ],
       [ "orxMODULE_ID_VIEWPORT", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a0dcac02f924f00d04f246747460f1286", null ],
       [ "orxMODULE_ID_CORE_NUMBER", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a82b13a3fd73b0301cdbf5d5b8c9875a1", null ],
       [ "orxMODULE_ID_USER_DEFINED", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a1f7a066d01cbe0fee1bbb97c43d5fe1c", null ],

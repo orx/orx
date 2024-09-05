@@ -117,7 +117,7 @@ $(document).ready(function(){initNavTree('group__orx_thread.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ga048cef6c2967af39da46f406bff39508"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_thread.html#ga048cef6c2967af39da46f406bff39508">orxTHREAD_GET_FLAG_FROM_ID</a>(ID)                            &#160;&#160;&#160;(1 &lt;&lt; ID)</td></tr>
+<tr class="memitem:ga048cef6c2967af39da46f406bff39508"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_thread.html#ga048cef6c2967af39da46f406bff39508">orxTHREAD_GET_FLAG_FROM_ID</a>(ID)                            &#160;&#160;&#160;(1 &lt;&lt; (ID))</td></tr>
 <tr class="separator:ga048cef6c2967af39da46f406bff39508"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga18c3695048664697fcf1a823516f79b0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_thread.html#ga18c3695048664697fcf1a823516f79b0">orxTHREAD_KU32_FLAG_NONE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:ga18c3695048664697fcf1a823516f79b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,6 +159,8 @@ Functions</h2></td></tr>
 <tr class="separator:gafeb2fb6aedab7664ed6f254d5122aab0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaafd1ef08638a36023f0332703d3fb6dd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_thread.html#gaafd1ef08638a36023f0332703d3fb6dd">orxThread_RunTask</a> (const <a class="el" href="group__orx_thread.html#ga0e34a49c30485f324a39cd0321cdf00e">orxTHREAD_FUNCTION</a> _pfnRun, const <a class="el" href="group__orx_thread.html#ga0e34a49c30485f324a39cd0321cdf00e">orxTHREAD_FUNCTION</a> _pfnThen, const <a class="el" href="group__orx_thread.html#ga0e34a49c30485f324a39cd0321cdf00e">orxTHREAD_FUNCTION</a> _pfnElse, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
 <tr class="separator:gaafd1ef08638a36023f0332703d3fb6dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gad394f6c23f87a099791afcc2cccdbd9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_thread.html#gad394f6c23f87a099791afcc2cccdbd9a">orxThread_SetCallbacks</a> (const <a class="el" href="group__orx_thread.html#ga0e34a49c30485f324a39cd0321cdf00e">orxTHREAD_FUNCTION</a> _pfnStart, const <a class="el" href="group__orx_thread.html#ga0e34a49c30485f324a39cd0321cdf00e">orxTHREAD_FUNCTION</a> _pfnStop, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:gad394f6c23f87a099791afcc2cccdbd9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6bb514c44ce54b13a7cd95e14a473ba5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_thread.html#ga6bb514c44ce54b13a7cd95e14a473ba5">orxThread_Setup</a> ()</td></tr>
 <tr class="separator:ga6bb514c44ce54b13a7cd95e14a473ba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabcfbbdf05586f810c91b1dcd5d5f39d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_thread.html#gabcfbbdf05586f810c91b1dcd5d5f39d3">orxThread_SignalSemaphore</a> (<a class="el" href="group__orx_thread.html#ga2cd157a0a33f4ac0308d3141e7730a9e">orxTHREAD_SEMAPHORE</a> *_pstSemaphore)</td></tr>
@@ -182,7 +184,7 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">ID</td><td>)</td>
-          <td>&#160;&#160;&#160;(1 &lt;&lt; ID)</td>
+          <td>&#160;&#160;&#160;(1 &lt;&lt; (ID))</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -530,6 +532,47 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pfnThen</td><td>Executed (on the main thread) if Run does <em>not</em> return orxSTATUS_FAILURE, can be orxNULL </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pfnElse</td><td>Executed (on the main thread) if Run returns orxSTATUS_FAILURE, can be orxNULL </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>Context that will be transmitted to all the task functions </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gad394f6c23f87a099791afcc2cccdbd9a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxThread_SetCallbacks </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_thread.html#ga0e34a49c30485f324a39cd0321cdf00e">orxTHREAD_FUNCTION</a>&#160;</td>
+          <td class="paramname"><em>_pfnStart</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__orx_thread.html#ga0e34a49c30485f324a39cd0321cdf00e">orxTHREAD_FUNCTION</a>&#160;</td>
+          <td class="paramname"><em>_pfnStop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
+          <td class="paramname"><em>_pContext</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets callbacks to run when starting and stopping new threads </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnStart</td><td>Function to run whenever a new thread is started </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnStop</td><td>Function to run whenever a thread is stopped </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>Context that will be transmitted to each callback </td></tr>
   </table>
   </dd>
 </dl>

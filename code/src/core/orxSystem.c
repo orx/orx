@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -31,13 +31,20 @@
 
 #include "core/orxSystem.h"
 
+#include "core/orxEvent.h"
 #include "debug/orxDebug.h"
 #include "memory/orxMemory.h"
 #include "math/orxMath.h"
 
 #include <time.h>
 
-#ifndef __orxWINDOWS__
+#ifdef __orxWINDOWS__
+
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+  #undef WIN32_LEAN_AND_MEAN
+
+#else /* __orxWINDOWS__ */
 
   #if defined(__orxMAC__) || defined(__orxIOS__)
 
@@ -48,7 +55,7 @@
   #include <unistd.h>
   #include <sys/time.h>
 
-#endif /* !__orxWINDOWS__ */
+#endif /* __orxWINDOWS__ */
 
 
 /** Module flags
@@ -204,6 +211,9 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
     /* Updates status */
     sstSystem.u32Flags |= orxSYSTEM_KU32_STATIC_FLAG_READY;
+
+    /* Inits random with time-based seed */
+    orxMath_InitRandom((orxU32)(1000.0 * orxSystem_GetSystemTime()));
   }
 
   /* Done! */
@@ -313,7 +323,7 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
 
   {
 
-    #if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+    #if !defined(__orxANDROID__)
 
     struct timeval stCurrentTime;
 
@@ -325,7 +335,7 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
     }
     else
 
-    #endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
+    #endif /* !__orxANDROID__ */
 
     {
       /* Logs message */
@@ -428,4 +438,70 @@ orxU32 orxFASTCALL orxSystem_GetVersionNumeric()
 
   /* Done! */
   return u32Result;
+}
+
+/** Gets clipboard's content
+ * @return Clipboard's content / orxSTRING_EMPTY, valid until next call to orxSystem_GetClipboard/orxSystem_SetClipboard
+ */
+const orxSTRING orxFASTCALL orxSystem_GetClipboard()
+{
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Checks */
+  orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
+
+  /* Is event module initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_EVENT) != orxFALSE)
+  {
+    orxEVENT                stEvent;
+    orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+    /* Inits event */
+    orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+    orxEVENT_INIT(stEvent, orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLIPBOARD, orxNULL, orxNULL, &stPayload);
+
+    /* Sends event */
+    if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
+    {
+      /* Success? */
+      if(stPayload.stClipboard.zValue != orxNULL)
+      {
+        /* Updates result */
+        zResult = stPayload.stClipboard.zValue;
+      }
+    }
+  }
+
+  /* Done! */
+  return zResult;
+}
+
+/** Sets clipboard's content
+ * @param[in] _zValue               Value to set in the clipboard, orxNULL to clear
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSystem_SetClipboard(const orxSTRING _zValue)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT((sstSystem.u32Flags & orxSYSTEM_KU32_STATIC_FLAG_READY) == orxSYSTEM_KU32_STATIC_FLAG_READY);
+
+  /* Is event module initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_EVENT) != orxFALSE)
+  {
+    orxEVENT                stEvent;
+    orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+    /* Inits event */
+    orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
+    stPayload.stClipboard.zValue = (_zValue != orxNULL) ? _zValue : orxSTRING_EMPTY;
+    orxEVENT_INIT(stEvent, orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLIPBOARD, orxNULL, orxNULL, &stPayload);
+
+    /* Sends event and updates result */
+    eResult = orxEvent_Send(&stEvent);
+  }
+
+  /* Done! */
+  return eResult;
 }

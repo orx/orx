@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -56,6 +56,7 @@ typedef struct __orxMOUSE_STATIC_t
   orxU32      u32TouchCount;
   orxBOOL     bIsClicked;
   orxVECTOR   vMouseMove, vMousePosition;
+  orxBOOL     bClearMove;
 
 } orxMOUSE_STATIC;
 
@@ -126,7 +127,7 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
 
       break;
     }
-      
+
     default:
     {
       break;
@@ -135,6 +136,23 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
 
   /* Done! */
   return eResult;
+}
+
+/** Clean callback
+ */
+static void orxFASTCALL orxMouse_Android_Clean(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  /* Should clear move? */
+  if(sstMouse.bClearMove != orxFALSE)
+  {
+    /* Clears it */
+    sstMouse.vMouseMove.fX  =
+    sstMouse.vMouseMove.fY  = orxFLOAT_0;
+    sstMouse.bClearMove     = orxFALSE;
+  }
+
+  /* Done! */
+  return;
 }
 
 orxSTATUS orxFASTCALL orxMouse_Android_ShowCursor(orxBOOL _bShow)
@@ -147,6 +165,38 @@ orxSTATUS orxFASTCALL orxMouse_Android_ShowCursor(orxBOOL _bShow)
   /* Not available */
   orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
 
+  /* Pushes config section */
+  orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+  /* Updates cursor status */
+  orxConfig_SetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR, _bShow);
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxMouse_Android_Grab(orxBOOL _bGrab)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
+
+  /* Not available */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
+
+  /* Pushes config section */
+  orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+  /* Updates grab status */
+  orxConfig_SetBool(orxMOUSE_KZ_CONFIG_GRAB, _bGrab);
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
   /* Done! */
   return eResult;
 }
@@ -158,28 +208,43 @@ orxSTATUS orxFASTCALL orxMouse_Android_Init()
   /* Wasn't already initialized? */
   if(!(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY))
   {
+    orxCLOCK *pstClock;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstMouse, sizeof(orxMOUSE_STATIC));
 
-    /* Adds our mouse event handlers */
-    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMouse_Android_EventHandler)) != orxSTATUS_FAILURE)
+    /* Gets core clock */
+    pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
+
+    /* Valid? */
+    if(pstClock != orxNULL)
     {
-      /* Updates status */
-      sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
-
-      /* Sets config section */
-      orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
-
-      /* Has show cursor value? */
-      if(orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)
-      {
-        /* Updates cursor status */
-        orxMouse_Android_ShowCursor(orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR));
-      }
+      /* Registers clean function */
+      eResult = orxClock_Register(pstClock, orxMouse_Android_Clean, orxNULL, orxMODULE_ID_MOUSE, orxCLOCK_PRIORITY_LOWER);
     }
 
-    /* Pops config section */
-    orxConfig_PopSection();
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      /* Adds event handlers */
+      if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMouse_Android_EventHandler)) != orxSTATUS_FAILURE)
+      {
+        /* Filters relevant event IDs */
+        orxEvent_SetHandlerIDFlags(orxMouse_Android_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_BEGIN) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_MOVE) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_TOUCH_END), orxEVENT_KU32_MASK_ID_ALL);
+
+        /* Updates status */
+        sstMouse.u32Flags |= orxMOUSE_KU32_STATIC_FLAG_READY;
+
+        /* Sets config section */
+        orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
+
+        /* Updates cursor status */
+        orxMouse_Android_ShowCursor(((orxConfig_HasValue(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) == orxFALSE) || (orxConfig_GetBool(orxMOUSE_KZ_CONFIG_SHOW_CURSOR) != orxFALSE)) ? orxTRUE : orxFALSE);
+
+        /* Pops config section */
+        orxConfig_PopSection();
+      }
+    }
   }
 
   /* Done! */
@@ -191,6 +256,14 @@ void orxFASTCALL orxMouse_Android_Exit()
   /* Was initialized? */
   if(sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY)
   {
+    orxCLOCK *pstClock;
+
+    /* Gets core clock */
+    pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
+
+    /* Unregisters clean function */
+    orxClock_Unregister(pstClock, orxMouse_Android_Clean);
+
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxMouse_Android_EventHandler);
 
@@ -269,8 +342,8 @@ orxVECTOR *orxFASTCALL orxMouse_Android_GetMoveDelta(orxVECTOR *_pvMoveDelta)
   /* Updates result */
   orxVector_Copy(_pvMoveDelta, &(sstMouse.vMouseMove));
 
-  /* Clears move */
-  orxVector_Copy(&(sstMouse.vMouseMove), &orxVECTOR_0);
+  /* Clears mouse move on next update */
+  sstMouse.bClearMove = orxTRUE;
 
   /* Done! */
   return pvResult;
@@ -282,9 +355,6 @@ orxFLOAT orxFASTCALL orxMouse_Android_GetWheelDelta()
 
   /* Checks */
   orxASSERT((sstMouse.u32Flags & orxMOUSE_KU32_STATIC_FLAG_READY) == orxMOUSE_KU32_STATIC_FLAG_READY);
-
-  /* Not available */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
 
   /* Done! */
   return fResult;
@@ -304,4 +374,5 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Android_IsButtonPressed, MOUSE, IS_BUT
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Android_GetMoveDelta, MOUSE, GET_MOVE_DELTA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Android_GetWheelDelta, MOUSE, GET_WHEEL_DELTA);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Android_ShowCursor, MOUSE, SHOW_CURSOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Android_Grab, MOUSE, GRAB);
 orxPLUGIN_USER_CORE_FUNCTION_END();

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -136,6 +136,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxTimeLine_AddTrackFromConfig(o
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxTimeLine_RemoveTrackFromConfig(orxTIMELINE *_pstTimeLine, const orxSTRING _zTrackID);
+
+/** Gets how many tracks are currently in use
+ * @param[in]   _pstTimeLine          Concerned TimeLine
+ * @return      orxU32
+ */
+extern orxDLLAPI orxU32 orxFASTCALL             orxTimeLine_GetCount(const orxTIMELINE *_pstTimeLine);
 
 /** Gets a track duration using its config ID
  * @param[in]   _zTrackID             Config ID of the concerned track

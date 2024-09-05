@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -25,7 +25,7 @@
 /**
  * @file orxString.h
  * @date 21/04/2005
- * @author bestel@arcallians.org
+ * @author iarwain@orx-project.org
  *
  * @todo
  * - Add autoindexing for ID generation
@@ -46,23 +46,9 @@
 
 
 #include "orxInclude.h"
-#include "memory/orxMemory.h"
+
 #include "math/orxVector.h"
-
-#ifdef __orxMSVC__
-
-  #pragma warning(disable : 4996)
-
-  #define strtoll   _strtoi64
-  #define strtoull  _strtoui64
-
-#endif /* __orxMSVC__ */
-
-#ifdef __orxIOS__
-  #define STRTO_CAST  (int)
-#else /* __orxIOS__ */
-  #define STRTO_CAST (size_t)
-#endif /* __orxIOS__ */
+#include "memory/orxMemory.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -75,30 +61,37 @@
 
 #include "debug/orxDebug.h"
 
+#ifdef __orxMSVC__
 
-#define orxSTRING_KC_VECTOR_START       '('
-#define orxSTRING_KC_VECTOR_START_ALT   '{'
-#define orxSTRING_KC_VECTOR_SEPARATOR   ','
-#define orxSTRING_KC_VECTOR_END         ')'
-#define orxSTRING_KC_VECTOR_END_ALT     '}'
+  #pragma warning(push)
+  #pragma warning(disable : 4996)
+
+  #define strtoll   _strtoi64
+  #define strtoull  _strtoui64
+
+#endif /* __orxMSVC__ */
+
+#define STRTO_CAST (int)
+
+
+#define orxSTRING_KC_VECTOR_START                         '('
+#define orxSTRING_KC_VECTOR_START_ALT                     '{'
+#define orxSTRING_KC_VECTOR_SEPARATOR                     ','
+#define orxSTRING_KC_VECTOR_END                           ')'
+#define orxSTRING_KC_VECTOR_END_ALT                       '}'
 
 
 /** Defines
  */
-#define orxSTRING_KU32_CRC_POLYNOMIAL   0xEDB88320U       /**< Using 0x04C11DB7's reverse polynomial for CRC32B */
-
-
-/** CRC Tables (slice-by-8)
- */
-extern orxDLLAPI orxU32 saau32CRCTable[8][256];
+#define orxString_ToCRC                                   orxString_Hash
 
 
 /* *** String inlined functions *** */
 
 
 /** Skips all white spaces
- * @param[in] _zString        Concerned string
- * @return    Sub string located after all leading white spaces
+ * @param[in]   _zString                Concerned string
+ * @return      The sub-string located after all leading white spaces, including EOL characters
  */
 static orxINLINE const orxSTRING                          orxString_SkipWhiteSpaces(const orxSTRING _zString)
 {
@@ -108,7 +101,8 @@ static orxINLINE const orxSTRING                          orxString_SkipWhiteSpa
   if(_zString != orxNULL)
   {
     /* Skips all white spaces */
-    for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t'); zResult++);
+    for(zResult = _zString; (*zResult == ' ') || (*zResult == '\t') || (*zResult == orxCHAR_CR) || (*zResult == orxCHAR_LF); zResult++)
+      ;
 
     /* Empty? */
     if(*zResult == orxCHAR_NULL)
@@ -128,8 +122,8 @@ static orxINLINE const orxSTRING                          orxString_SkipWhiteSpa
 }
 
 /** Skips path
- * @param[in] _zString        Concerned string
- * @return    Sub string located after all non-terminal directory separators
+ * @param[in]   _zString                Concerned string
+ * @return      The sub-string located after all non-terminal directory separators
  */
 static orxINLINE const orxSTRING                          orxString_SkipPath(const orxSTRING _zString)
 {
@@ -170,9 +164,9 @@ static orxINLINE const orxSTRING                          orxString_SkipPath(con
   return zResult;
 }
 
-/** Returns the number of orxCHAR in the string (for non-ASCII UTF-8 string, it won't be the actual number of unicode characters)
- * @param[in] _zString                  String used for length computation
- * @return                              Length of the string (doesn't count final orxCHAR_NULL)
+/** Gets the number of orxCHAR in the string (for non-ASCII UTF-8 string, it won't be the actual number of unicode characters)
+ * @param[in]   _zString                String used for length computation
+ * @return      The length of the string (doesn't include the final orxCHAR_NULL character)
  */
 static orxINLINE orxU32                                   orxString_GetLength(const orxSTRING _zString)
 {
@@ -184,8 +178,8 @@ static orxINLINE orxU32                                   orxString_GetLength(co
 }
 
 /** Tells if a character is ASCII from its ID
- * @param[in] _u32CharacterCodePoint    Concerned character code
- * @return                              orxTRUE is it's a non-extended ASCII character, orxFALSE otherwise
+* @param[in]    _u32CharacterCodePoint  Concerned character code
+ * @return      orxTRUE is it's a non-extended ASCII character, orxFALSE otherwise
  */
 static orxINLINE orxBOOL                                  orxString_IsCharacterASCII(orxU32 _u32CharacterCodePoint)
 {
@@ -194,20 +188,20 @@ static orxINLINE orxBOOL                                  orxString_IsCharacterA
 }
 
 /** Tells if a character is alpha-numeric from its ID
- * @param[in] _u32CharacterCodePoint    Concerned character code
- * @return                              orxTRUE is it's a non-extended ASCII alpha-numerical character, orxFALSE otherwise
+ * @param[in]   _u32CharacterCodePoint  Concerned character code
+ * @return      orxTRUE is it's a non-extended ASCII alpha-numerical character, orxFALSE otherwise
  */
 static orxINLINE orxBOOL                                  orxString_IsCharacterAlphaNumeric(orxU32 _u32CharacterCodePoint)
 {
   /* Done! */
-  return (((_u32CharacterCodePoint >= 'a') && (_u32CharacterCodePoint <= 'z'))
-       || ((_u32CharacterCodePoint >= 'A') && (_u32CharacterCodePoint <= 'Z'))
-       || ((_u32CharacterCodePoint >= '0') && (_u32CharacterCodePoint <= '9'))) ? orxTRUE : orxFALSE;
+  return(((_u32CharacterCodePoint >= 'a') && (_u32CharacterCodePoint <= 'z'))
+      || ((_u32CharacterCodePoint >= 'A') && (_u32CharacterCodePoint <= 'Z'))
+      || ((_u32CharacterCodePoint >= '0') && (_u32CharacterCodePoint <= '9'))) ? orxTRUE : orxFALSE;
 }
 
-/** Gets the UTF-8 encoding length of given character
- * @param[in] _u32CharacterCodePoint    Concerned character code
- * @return                              Encoding length in UTF-8 for given character if valid, orxU32_UNDEFINED otherwise
+/** Gets the UTF-8 encoding length of a given character
+ * @param[in]   _u32CharacterCodePoint  Concerned character code
+ * @return      The encoding length in UTF-8 for the given character if valid, orxU32_UNDEFINED otherwise
  */
 static orxINLINE orxU32                                   orxString_GetUTF8CharacterLength(orxU32 _u32CharacterCodePoint)
 {
@@ -245,10 +239,10 @@ static orxINLINE orxU32                                   orxString_GetUTF8Chara
 }
 
 /** Prints a unicode character encoded with UTF-8 to an orxSTRING
- * @param[in] _zDstString               Destination string
- * @param[in] _u32Size                  Available size on the string
- * @param[in] _u32CharacterCodePoint    Unicode code point of the character to print
- * @return                              Length of the encoded UTF-8 character (1, 2, 3 or 4) if valid, orxU32_UNDEFINED otherwise
+ * @param[in]   _zDstString             Destination string
+ * @param[in]   _u32Size                Available size on the string
+ * @param[in]   _u32CharacterCodePoint  Unicode code point of the character to print
+ * @return      The length of the encoded UTF-8 character (1, 2, 3 or 4) if valid, orxU32_UNDEFINED otherwise
  */
 static orxU32 orxFASTCALL                                 orxString_PrintUTF8Character(orxSTRING _zDstString, orxU32 _u32Size, orxU32 _u32CharacterCodePoint)
 {
@@ -338,21 +332,21 @@ static orxU32 orxFASTCALL                                 orxString_PrintUTF8Cha
   return u32Result;
 }
 
-/** Returns the code of the first character of the UTF-8 string
- * @param[in] _zString                  Concerned string
- * @param[out] _pzRemaining             If non null, will contain the remaining string after the first UTF-8 character
- * @return                              Code of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid character
+/** Gets the unicode code point of the first character of the UTF-8 string
+ * @param[in]   _zString                Concerned string
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the first UTF-8 character
+ * @return      The code of the first UTF-8 character of the string, orxU32_UNDEFINED if it's an invalid character
  */
 static orxU32 orxFASTCALL                                 orxString_GetFirstCharacterCodePoint(const orxSTRING _zString, const orxSTRING *_pzRemaining)
 {
-  orxU8  *pu8Byte;
-  orxU32  u32Result;
+  const orxU8  *pu8Byte;
+  orxU32        u32Result;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
 
   /* Gets the first byte */
-  pu8Byte = (orxU8 *)_zString;
+  pu8Byte = (const orxU8 *)_zString;
 
   /* ASCII? */
   if(*pu8Byte < 0x80)
@@ -506,9 +500,9 @@ static orxU32 orxFASTCALL                                 orxString_GetFirstChar
   return u32Result;
 }
 
-/** Returns the number of valid unicode characters (UTF-8) in the string (for ASCII string, it will be the same result as orxString_GetLength())
- * @param[in] _zString                  Concerned string
- * @return                              Number of valid unicode characters contained in the string, orxU32_UNDEFINED for an invalid UTF-8 string
+/** Gets the number of valid unicode characters (UTF-8) in the string (for ASCII string, it will be the same result as orxString_GetLength())
+ * @param[in]   _zString                Concerned string
+ * @return      The number of valid unicode characters contained in the string, orxU32_UNDEFINED for an invalid UTF-8 string
  */
 static orxINLINE orxU32                                   orxString_GetCharacterCount(const orxSTRING _zString)
 {
@@ -538,40 +532,26 @@ static orxINLINE orxU32                                   orxString_GetCharacter
   return u32Result;
 }
 
-/** Copies N characters from a string
- * @param[in] _zDstString       Destination string
- * @param[in] _zSrcString       Source string
- * @param[in] _u32CharNumber    Number of characters to copy
- * @return Copied string
+/** Copies up to N characters from a string
+ * @param[in]   _zDstString             Destination string
+ * @param[in]   _zSrcString             Source string
+ * @param[in]   _u32CharNumber          Number of characters to copy
+ * @return      The copied string
  */
 static orxINLINE orxSTRING                                orxString_NCopy(orxSTRING _zDstString, const orxSTRING _zSrcString, orxU32 _u32CharNumber)
 {
   /* Checks */
   orxASSERT(_zDstString != orxNULL);
   orxASSERT(_zSrcString != orxNULL);
+  orxASSERT(_u32CharNumber > 0);
 
   /* Done! */
   return(strncpy(_zDstString, _zSrcString, (size_t)_u32CharNumber));
 }
 
-/** Copies a string.
- * @param[in] _zDstString      Destination string
- * @param[in] _zSrcString      Source string
- * @return Copied string.
- */
-static orxINLINE orxSTRING                                orxString_Copy(orxSTRING _zDstString, const orxSTRING _zSrcString)
-{
-  /* Checks */
-  orxASSERT(_zDstString != orxNULL);
-  orxASSERT(_zSrcString != orxNULL);
-
-  /* Done! */
-  return(strcpy(_zDstString, _zSrcString));
-}
-
-/** Duplicate a string.
- * @param[in] _zSrcString  String to duplicate.
- * @return Duplicated string.
+/** Duplicates a string.
+ * @param[in]   _zSrcString             String to duplicate
+ * @return      The duplicated string
  */
 static orxINLINE orxSTRING                                orxString_Duplicate(const orxSTRING _zSrcString)
 {
@@ -599,7 +579,8 @@ static orxINLINE orxSTRING                                orxString_Duplicate(co
 }
 
 /** Deletes a string
- * @param[in] _zString                  String to delete
+ * @param[in]   _zString                String to delete
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_Delete(orxSTRING _zString)
 {
@@ -614,11 +595,10 @@ static orxINLINE orxSTATUS                                orxString_Delete(orxST
   return orxSTATUS_SUCCESS;
 }
 
-/** Compare two strings, case sensitive. If the first one is smaller than the second it returns -1,
- * 1 if the second one is bigger than the first, and 0 if they are equals
- * @param[in] _zString1    First String to compare
- * @param[in] _zString2    Second string to compare
- * @return -1, 0 or 1 as indicated in the description.
+/** Compares two strings (case sensitive)
+ * @param[in]   _zString1               First String to compare
+ * @param[in]   _zString2               Second string to compare
+ * @return      -1 if _zString1 < _zString2, 0 if _zString1 == _zString2, 1 if _zString1 > _zString2
  */
 static orxINLINE orxS32                                   orxString_Compare(const orxSTRING _zString1, const orxSTRING _zString2)
 {
@@ -630,13 +610,12 @@ static orxINLINE orxS32                                   orxString_Compare(cons
   return(strcmp(_zString1, _zString2));
 }
 
-/** Compare N first character from two strings, case sensitive. If the first one is smaller
- * than the second it returns -1, 1 if the second one is bigger than the first
+/** Compares the N first characters of two strings (case sensitive)
  * and 0 if they are equals.
- * @param[in] _zString1       First String to compare
- * @param[in] _zString2       Second string to compare
- * @param[in] _u32CharNumber  Number of character to compare
- * @return -1, 0 or 1 as indicated in the description.
+ * @param[in]   _zString1               First String to compare
+ * @param[in]   _zString2               Second string to compare
+ * @param[in]   _u32CharNumber          Number of character to compare
+ * @return      -1 if _zString1 < _zString2, 0 if _zString1 == _zString2, 1 if _zString1 > _zString2
  */
 static orxINLINE orxS32                                   orxString_NCompare(const orxSTRING _zString1, const orxSTRING _zString2, orxU32 _u32CharNumber)
 {
@@ -645,14 +624,13 @@ static orxINLINE orxS32                                   orxString_NCompare(con
   orxASSERT(_zString2 != orxNULL);
 
   /* Done! */
-  return strncmp(_zString1, _zString2, (size_t)_u32CharNumber);
+  return(strncmp(_zString1, _zString2, (size_t)_u32CharNumber));
 }
 
-/** Compare two strings, case insensitive. If the first one is smaller than the second, it returns -1,
- * If the second one is bigger than the first, and 0 if they are equals
- * @param[in] _zString1    First String to compare
- * @param[in] _zString2    Second string to compare
- * @return -1, 0 or 1 as indicated in the description.
+/** Compares two strings (case insensitive)
+ * @param[in]   _zString1               First String to compare
+ * @param[in]   _zString2               Second string to compare
+ * @return      -1 if _zString1 < _zString2, 0 if _zString1 == _zString2, 1 if _zString1 > _zString2
  */
 static orxINLINE orxS32                                   orxString_ICompare(const orxSTRING _zString1, const orxSTRING _zString2)
 {
@@ -668,18 +646,16 @@ static orxINLINE orxS32                                   orxString_ICompare(con
 #else /* __orxWINDOWS__ */
 
   /* Done! */
-  return strcasecmp(_zString1, _zString2);
+  return(strcasecmp(_zString1, _zString2));
 
 #endif /* __orxWINDOWS__ */
 }
 
-/** Compare N first character from two strings, case insensitive. If the first one is smaller
- * than the second, it returns -1, If the second one is bigger than the first,
- * and 0 if they are equals.
- * @param[in] _zString1       First String to compare
- * @param[in] _zString2       Second string to compare
- * @param[in] _u32CharNumber  Number of character to compare
- * @return -1, 0 or 1 as indicated in the description.
+/** Compare the N first characters of two strings (case insensitive)
+ * @param[in]   _zString1               First String to compare
+ * @param[in]   _zString2               Second string to compare
+ * @param[in]   _u32CharNumber          Number of character to compare
+ * @return      -1 if _zString1 < _zString2, 0 if _zString1 == _zString2, 1 if _zString1 > _zString2
  */
 static orxINLINE orxS32                                   orxString_NICompare(const orxSTRING _zString1, const orxSTRING _zString2, orxU32 _u32CharNumber)
 {
@@ -690,39 +666,125 @@ static orxINLINE orxS32                                   orxString_NICompare(co
 #ifdef __orxWINDOWS__
 
   /* Done! */
-  return strnicmp(_zString1, _zString2, (size_t)_u32CharNumber);
+  return(strnicmp(_zString1, _zString2, (size_t)_u32CharNumber));
 
 #else /* __orxWINDOWS__ */
 
   /* Done! */
-  return strncasecmp(_zString1, _zString2, _u32CharNumber);
+  return(strncasecmp(_zString1, _zString2, _u32CharNumber));
 
 #endif /* __orxWINDOWS__ */
 }
 
+/** Gets the edit distance (Damerau-Levenshtein) between two strings
+ * @param[in]   _zString1               First string
+ * @param[in]   _zString2               Second string
+ * @return      The edit distance between both strings
+ */
+static orxINLINE orxU32                                   orxString_GetEditDistance(const orxSTRING _zString1, const orxSTRING _zString2)
+{
+  orxU32 u32Length1, u32Length2, u32Result;
+
+  /* Checks */
+  orxASSERT(_zString1 != orxNULL);
+  orxASSERT(_zString2 != orxNULL);
+
+  /* Gets string lengths */
+  u32Length1 = orxString_GetLength(_zString1);
+  u32Length2 = orxString_GetLength(_zString2);
+
+  /* Valid? */
+  if((u32Length1 > 0) && (u32Length2 > 0))
+  {
+    orxU32 *au32PreviousRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 *au32CurrentRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 *au32NextRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 i, j;
+
+    /* Initializes the previous and current rows */
+    orxMemory_Zero(au32PreviousRow, (u32Length2 + 1) * sizeof(orxU32));
+    for(i = 0; i <= u32Length2; i++)
+    {
+      au32CurrentRow[i] = i;
+    }
+
+    /* For all characters in the first string */
+    for(i = 0; i < u32Length1; i++)
+    {
+      orxU32 *pu32dummy;
+
+      /* Inits the first value of the next row */
+      au32NextRow[0] = i + 1;
+
+      /* For all characters in the second string */
+      for(j = 0; j < u32Length2; j++)
+      {
+        /* Substitution? */
+        au32NextRow[j + 1] = au32CurrentRow[j] + ((_zString1[i] != _zString2[j]) ? 1 : 0);
+
+        /* Deletion? */
+        au32NextRow[j + 1] = orxMIN(au32NextRow[j + 1], au32CurrentRow[j + 1] + 1);
+
+        /* Insertion? */
+        au32NextRow[j + 1] = orxMIN(au32NextRow[j + 1], au32NextRow[j] + 1);
+
+        /* Swap? */
+        if((i > 0)
+        && (j > 0)
+        && (_zString1[i - 1] == _zString2[j])
+        && (_zString1[i] == _zString2[j - 1]))
+        {
+          au32NextRow[j + 1] = orxMIN(au32NextRow[j + 1], au32PreviousRow[j - 1] + 1);
+        }
+      }
+
+      /* Cycles the rows */
+      pu32dummy       = au32PreviousRow;
+      au32PreviousRow = au32CurrentRow;
+      au32CurrentRow  = au32NextRow;
+      au32NextRow     = pu32dummy;
+    }
+
+    /* Updates result */
+    u32Result = au32CurrentRow[u32Length2];
+  }
+  else
+  {
+    /* Updates result */
+    u32Result = u32Length1 + u32Length2;
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
 /** Extracts the base (2, 8, 10 or 16) from a literal number
- * @param[in]   _zString        String from which to extract the base
- * @param[out]  _pzRemaining    If non null, will contain the remaining literal number, right after the base prefix (0x, 0b or 0)
- * @return  Base or the numerical value, defaults to 10 (decimal) when no prefix is found or the literal value couldn't be identified
+ * @param[in]   _zString                String from which to extract the base
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining number literal, right after the base prefix (0x, 0b or 0) if any
+ * @return      The base or the numerical value, defaults to 10 (decimal) when no prefix is found or the literal value couldn't be identified
  */
 static orxINLINE orxU32                                   orxString_ExtractBase(const orxSTRING _zString, const orxSTRING *_pzRemaining)
 {
-  orxU32 u32Result, u32Offset;
+  const orxSTRING zString;
+  orxU32          u32Result, u32Offset;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
+
+  /* Skips white spaces */
+  zString = orxString_SkipWhiteSpaces(_zString);
 
   /* Default result and offset: decimal */
   u32Result = 10;
   u32Offset = 0;
 
   /* Depending on first character */
-  switch(_zString[0])
+  switch(zString[0])
   {
     case '0':
     {
       /* Depending on second character */
-      switch(_zString[1] | 0x20)
+      switch(zString[1] | 0x20)
       {
         case 'x':
         {
@@ -745,8 +807,8 @@ static orxINLINE orxU32                                   orxString_ExtractBase(
         default:
         {
           /* Octal? */
-          if((_zString[1] >= '0')
-          && (_zString[1] <= '9'))
+          if((zString[1] >= '0')
+          && (zString[1] <= '9'))
           {
             /* Updates result and offset: octal */
             u32Result = 8;
@@ -779,19 +841,19 @@ static orxINLINE orxU32                                   orxString_ExtractBase(
   if(_pzRemaining != orxNULL)
   {
     /* Stores it */
-    *_pzRemaining = _zString + u32Offset;
+    *_pzRemaining = zString + u32Offset;
   }
 
   /* Done! */
   return u32Result;
 }
 
-/** Converts a String to a signed int value using the given base
- * @param[in]   _zString        String To convert
- * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
- * @param[out]  _ps32OutValue   Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to a signed int value using the given base
+ * @param[in]   _zString                String To convert
+ * @param[in]   _u32Base                Base of the read value (generally 10, but can be 16 to read hexa)
+ * @param[out]  _ps32OutValue           Converted value
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the number conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToS32Base(const orxSTRING _zString, orxU32 _u32Base, orxS32 *_ps32OutValue, const orxSTRING *_pzRemaining)
 {
@@ -828,11 +890,11 @@ static orxINLINE orxSTATUS                                orxString_ToS32Base(co
   return eResult;
 }
 
-/** Converts a String to a signed int value, guessing the base
- * @param[in]   _zString        String To convert
- * @param[out]  _ps32OutValue   Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to a signed int value, guessing the base
+ * @param[in]   _zString                String To convert
+ * @param[out]  _ps32OutValue           Converted value
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the number conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToS32(const orxSTRING _zString, orxS32 *_ps32OutValue, const orxSTRING *_pzRemaining)
 {
@@ -854,12 +916,12 @@ static orxINLINE orxSTATUS                                orxString_ToS32(const 
   return eResult;
 }
 
-/** Converts a String to an unsigned int value using the given base
- * @param[in]   _zString        String To convert
- * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
- * @param[out]  _pu32OutValue   Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to an unsigned int value using the given base
+ * @param[in]   _zString                String To convert
+ * @param[in]   _u32Base                Base of the read value (generally 10, but can be 16 to read hexa)
+ * @param[out]  _pu32OutValue           Converted value
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the number conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToU32Base(const orxSTRING _zString, orxU32 _u32Base, orxU32 *_pu32OutValue, const orxSTRING *_pzRemaining)
 {
@@ -896,11 +958,11 @@ static orxINLINE orxSTATUS                                orxString_ToU32Base(co
   return eResult;
 }
 
-/** Converts a String to an unsigned int value, guessing the base
- * @param[in]   _zString        String To convert
- * @param[out]  _pu32OutValue   Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to an unsigned int value, guessing the base
+ * @param[in]   _zString                String To convert
+ * @param[out]  _pu32OutValue           Converted value
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the number conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToU32(const orxSTRING _zString, orxU32 *_pu32OutValue, const orxSTRING *_pzRemaining)
 {
@@ -922,12 +984,12 @@ static orxINLINE orxSTATUS                                orxString_ToU32(const 
   return eResult;
 }
 
-/** Converts a String to a signed int value using the given base
- * @param[in]   _zString        String To convert
- * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
- * @param[out]  _ps64OutValue   Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to a signed int value using the given base
+ * @param[in]   _zString                String To convert
+ * @param[in]   _u32Base                Base of the read value (generally 10, but can be 16 to read hexa)
+ * @param[out]  _ps64OutValue           Converted value
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the number conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToS64Base(const orxSTRING _zString, orxU32 _u32Base, orxS64 *_ps64OutValue, const orxSTRING *_pzRemaining)
 {
@@ -964,11 +1026,11 @@ static orxINLINE orxSTATUS                                orxString_ToS64Base(co
   return eResult;
 }
 
-/** Converts a String to a signed int value, guessing the base
- * @param[in]   _zString        String To convert
- * @param[out]  _ps64OutValue   Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to a signed int value, guessing the base
+ * @param[in]   _zString                String To convert
+ * @param[out]  _ps64OutValue           Converted value
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the number conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToS64(const orxSTRING _zString, orxS64 *_ps64OutValue, const orxSTRING *_pzRemaining)
 {
@@ -990,12 +1052,12 @@ static orxINLINE orxSTATUS                                orxString_ToS64(const 
   return eResult;
 }
 
-/** Converts a String to an unsigned int value using the given base
- * @param[in]   _zString        String To convert
- * @param[in]   _u32Base        Base of the read value (generally 10, but can be 16 to read hexa)
- * @param[out]  _pu64OutValue   Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to an unsigned int value using the given base
+ * @param[in]   _zString                String To convert
+ * @param[in]   _u32Base                Base of the read value (generally 10, but can be 16 to read hexa)
+ * @param[out]  _pu64OutValue           Converted value
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the number conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToU64Base(const orxSTRING _zString, orxU32 _u32Base, orxU64 *_pu64OutValue, const orxSTRING *_pzRemaining)
 {
@@ -1032,11 +1094,11 @@ static orxINLINE orxSTATUS                                orxString_ToU64Base(co
   return eResult;
 }
 
-/** Converts a String to an unsigned int value, guessing the base
- * @param[in]   _zString        String To convert
- * @param[out]  _pu64OutValue   Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to an unsigned int value, guessing the base
+ * @param[in]   _zString                String To convert
+ * @param[out]  _pu64OutValue           Converted value
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the number conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToU64(const orxSTRING _zString, orxU64 *_pu64OutValue, const orxSTRING *_pzRemaining)
 {
@@ -1058,11 +1120,11 @@ static orxINLINE orxSTATUS                                orxString_ToU64(const 
   return eResult;
 }
 
-/** Convert a string to a value
- * @param[in]   _zString        String To convert
- * @param[out]  _pfOutValue     Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to a value
+ * @param[in]   _zString                String To convert
+ * @param[out]  _pfOutValue             Converted value
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the number conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToFloat(const orxSTRING _zString, orxFLOAT *_pfOutValue, const orxSTRING *_pzRemaining)
 {
@@ -1109,11 +1171,11 @@ static orxINLINE orxSTATUS                                orxString_ToFloat(cons
   return eResult;
 }
 
-/** Convert a string to a vector
- * @param[in]   _zString        String To convert
- * @param[out]  _pvOutValue     Converted value. N.B.: if only two components (x, y) are defined, the z component will be set to zero
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the number conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to a vector
+ * @param[in]   _zString                String To convert
+ * @param[out]  _pvOutValue             Converted value. N.B.: if only two components (x, y) are defined, the z component will be set to zero
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the number conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToVector(const orxSTRING _zString, orxVECTOR *_pvOutValue, const orxSTRING *_pzRemaining)
 {
@@ -1210,11 +1272,11 @@ static orxINLINE orxSTATUS                                orxString_ToVector(con
   return eResult;
 }
 
-/** Convert a string to a boolean
- * @param[in]   _zString        String To convert
- * @param[out]  _pbOutValue     Converted value
- * @param[out]  _pzRemaining    If non null, will contain the remaining string after the boolean conversion
- * @return  orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Converts a string to a boolean
+ * @param[in]   _zString                String To convert
+ * @param[out]  _pbOutValue             Converted value
+ * @param[out]  _pzRemaining            If non null, it will contain the remaining string after the boolean conversion
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 static orxINLINE orxSTATUS                                orxString_ToBool(const orxSTRING _zString, orxBOOL *_pbOutValue, const orxSTRING *_pzRemaining)
 {
@@ -1285,9 +1347,9 @@ static orxINLINE orxSTATUS                                orxString_ToBool(const
   return eResult;
 }
 
-/** Lowercase a string
- * @param[in] _zString          String To convert
- * @return The converted string.
+/** Converts a string to lower case
+ * @param[in] _zString                  String To convert
+ * @return    The converted string
  */
 static orxINLINE orxSTRING                                orxString_LowerCase(orxSTRING _zString)
 {
@@ -1300,19 +1362,20 @@ static orxINLINE orxSTRING                                orxString_LowerCase(or
   for(pc = _zString; *pc != orxCHAR_NULL; pc++)
   {
     /* Needs to be converted? */
-    if(*pc >= 'A' && *pc <= 'Z')
+    if((*pc >= 'A') && (*pc <= 'Z'))
     {
       /* Lower case */
       *pc |= 0x20;
     }
   }
 
+  /* Done! */
   return _zString;
 }
 
-/** Uppercase a string
- * @param[in] _zString          String To convert
- * @return The converted string.
+/** Converts a string to upper case
+ * @param[in] _zString                  String To convert
+ * @return    The converted string
  */
 static orxINLINE orxSTRING                                orxString_UpperCase(orxSTRING _zString)
 {
@@ -1325,150 +1388,21 @@ static orxINLINE orxSTRING                                orxString_UpperCase(or
   for(pc = _zString; *pc != orxCHAR_NULL; pc++)
   {
     /* Needs to be converted? */
-    if(*pc >= 'a' && *pc <= 'z')
+    if((*pc >= 'a') && (*pc <= 'z'))
     {
       /* Upper case */
       *pc &= ~0x20;
     }
   }
 
+  /* Done! */
   return _zString;
 }
 
-/** Continues a CRC with a string one
- * @param[in] _zString        String used to continue the given CRC
- * @param[in] _u32CRC         Base CRC.
- * @param[in] _u32CharNumber  Number of character to process, should be <= orxString_GetLength(_zString)
- * @return The resulting CRC.
- */
-static orxINLINE orxU32                                   orxString_NContinueCRC(const orxSTRING _zString, orxU32 _u32CRC, orxU32 _u32CharNumber)
-{
-  orxU32        u32CRC, u32Length;
-  const orxU8  *pu8;
-
-#ifdef __orxLITTLE_ENDIAN__
-
-#define orxCRC_GET_FIRST(VALUE) VALUE
-#define orxCRC_INDEX_0          0
-#define orxCRC_INDEX_1          1
-#define orxCRC_INDEX_2          2
-#define orxCRC_INDEX_3          3
-#define orxCRC_INDEX_4          4
-#define orxCRC_INDEX_5          5
-#define orxCRC_INDEX_6          6
-#define orxCRC_INDEX_7          7
-
-#else /* __orxLITTLE_ENDIAN__ */
-
-#define orxCRC_GET_FIRST(VALUE) ((VALUE >> 24) | ((VALUE >> 8) & 0x0000FF00) | ((VALUE << 8) & 0x00FF0000) | (VALUE << 24))
-#define orxCRC_INDEX_0          3
-#define orxCRC_INDEX_1          2
-#define orxCRC_INDEX_2          1
-#define orxCRC_INDEX_3          0
-#define orxCRC_INDEX_4          7
-#define orxCRC_INDEX_5          6
-#define orxCRC_INDEX_6          5
-#define orxCRC_INDEX_7          4
-
-#endif /* __orxLITTLE_ENDIAN__ */
-
-  /* Checks */
-  orxASSERT(_zString != orxNULL);
-  orxASSERT(_u32CharNumber <= orxString_GetLength(_zString));
-
-  /* Inits CRC */
-  u32CRC = ~_u32CRC;
-
-  /* For all slices */
-  for(u32Length = _u32CharNumber, pu8 = (const orxU8 *)_zString; u32Length >= 8; u32Length -= 8, pu8 += 8)
-  {
-    orxU32 u32First, u32Second;
-
-    /* Gets the slice's data */
-    orxMemory_Copy(&u32First, pu8, sizeof(orxU32));
-    orxMemory_Copy(&u32Second, pu8 + 4, sizeof(orxU32));
-    u32First ^= orxCRC_GET_FIRST(u32CRC);
-
-    /* Updates the CRC */
-    u32CRC  = saau32CRCTable[orxCRC_INDEX_7][u32First & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_6][(u32First >> 8) & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_5][(u32First >> 16) & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_4][u32First >> 24]
-            ^ saau32CRCTable[orxCRC_INDEX_3][u32Second & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_2][(u32Second >> 8) & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_1][(u32Second >> 16) & 0xFF]
-            ^ saau32CRCTable[orxCRC_INDEX_0][u32Second >> 24];
-  }
-
-  /* For all remaining characters */
-  for(; u32Length != 0; u32Length--, pu8++)
-  {
-    /* Updates the CRC */
-    u32CRC = saau32CRCTable[0][((orxU8)(u32CRC & 0xFF)) ^ *pu8] ^ (u32CRC >> 8);
-  }
-
-#undef orxCRC_GET_FIRST
-#undef orxCRC_INDEX_0
-#undef orxCRC_INDEX_1
-#undef orxCRC_INDEX_2
-#undef orxCRC_INDEX_3
-#undef orxCRC_INDEX_4
-#undef orxCRC_INDEX_5
-#undef orxCRC_INDEX_6
-#undef orxCRC_INDEX_7
-
-  /* Done! */
-  return ~u32CRC;
-}
-
-/** Continues a CRC with a string one
- * @param[in] _zString        String used to continue the given CRC
- * @param[in] _u32CRC         Base CRC.
- * @return The resulting CRC.
- */
-static orxINLINE orxU32                                   orxString_ContinueCRC(const orxSTRING _zString, orxU32 _u32CRC)
-{
-  orxU32 u32CRC;
-
-  /* Updates CRC */
-  u32CRC = orxString_NContinueCRC(_zString, _u32CRC, orxString_GetLength(_zString));
-
-  /* Done! */
-  return u32CRC;
-}
-
-/** Converts a string to a CRC
- * @param[in] _zString        String To convert
- * @param[in] _u32CharNumber  Number of character to process, should be <= orxString_GetLength(_zString)
- * @return The resulting CRC.
- */
-static orxINLINE orxU32                                   orxString_NToCRC(const orxSTRING _zString, orxU32 _u32CharNumber)
-{
-  /* Checks */
-  orxASSERT(_zString != orxNULL);
-  orxASSERT(_u32CharNumber <= orxString_GetLength(_zString));
-
-  /* Done! */
-  return orxString_NContinueCRC(_zString, 0, _u32CharNumber);
-}
-
-/** Converts a string to a CRC
- * @param[in] _zString          String To convert
- * @return The resulting CRC.
- */
-static orxINLINE orxU32                                   orxString_ToCRC(const orxSTRING _zString)
-{
-  /* Checks */
-  orxASSERT(_zString != orxNULL);
-
-  /* Done! */
-  return orxString_ContinueCRC(_zString, 0);
-}
-
-/** Returns the first occurrence of _zString2 in _zString1
- * @param[in] _zString1 String to analyze
- * @param[in] _zString2 String that must be inside _zString1
- * @return The pointer of the first occurrence of _zString2, or orxNULL if not found
+/** Finds the first occurrence of _zString2 in _zString1
+ * @param[in]   _zString1               String to analyze
+ * @param[in]   _zString2               The string to find inside _zString1
+ * @return      The pointer of the first occurrence of _zString2, or orxNULL if not found
  */
 static orxINLINE const orxSTRING                          orxString_SearchString(const orxSTRING _zString1, const orxSTRING _zString2)
 {
@@ -1476,42 +1410,41 @@ static orxINLINE const orxSTRING                          orxString_SearchString
   orxASSERT(_zString1 != orxNULL);
   orxASSERT(_zString2 != orxNULL);
 
-  /* Returns result */
+  /* Done! */
   return(strstr(_zString1, _zString2));
 }
 
-/** Returns the first occurrence of _cChar in _zString
- * @param[in] _zString String to analyze
- * @param[in] _cChar   The character to find
- * @return The pointer of the first occurrence of _cChar, or orxNULL if not found
+/** Finds the first occurrence of _cChar in _zString
+ * @param[in]   _zString                String to analyze
+ * @param[in]   _cChar                  The character to find
+ * @return      The pointer of the first occurrence of _cChar, or orxNULL if not found
  */
 static orxINLINE const orxSTRING                          orxString_SearchChar(const orxSTRING _zString, orxCHAR _cChar)
 {
   /* Checks */
   orxASSERT(_zString != orxNULL);
 
-  /* Returns result */
+  /* Done! */
   return(strchr(_zString, _cChar));
 }
 
-/** Returns the first occurrence of _cChar in _zString
- * @param[in] _zString      String to analyze
- * @param[in] _cChar        The character to find
- * @param[in] _u32Position  Search begin position
- * @return The index of the next occurrence of requested character, starting at given position / -1 if not found
+/** Finds the first occurrence of _cChar in _zString
+ * @param[in]   _zString                String to analyze
+ * @param[in]   _cChar                  The character to find
+ * @param[in]   _s32Position            Search begin position
+ * @return      The index of the next occurrence of requested character, starting at given position / -1 if not found
  */
-static orxINLINE orxS32                                   orxString_SearchCharIndex(const orxSTRING _zString, orxCHAR _cChar, orxU32 _u32Position)
+static orxINLINE orxS32                                   orxString_SearchCharIndex(const orxSTRING _zString, orxCHAR _cChar, orxS32 _s32Position)
 {
-  orxS32          s32Result = -1;
-  orxS32          s32Index;
+  orxS32          s32Index, s32Result = -1;
   const orxCHAR  *pc;
 
   /* Checks */
   orxASSERT(_zString != orxNULL);
-  orxASSERT(_u32Position <= orxString_GetLength(_zString));
+  orxASSERT(_s32Position <= (orxS32)orxString_GetLength(_zString));
 
   /* For all characters */
-  for(s32Index = _u32Position, pc = _zString + s32Index; *pc != orxCHAR_NULL; pc++, s32Index++)
+  for(s32Index = _s32Position, pc = _zString + s32Index; *pc != orxCHAR_NULL; pc++, s32Index++)
   {
     /* Found? */
     if(*pc == _cChar)
@@ -1527,37 +1460,11 @@ static orxINLINE orxS32                                   orxString_SearchCharIn
   return s32Result;
 }
 
-/** Prints a formated string to a memory buffer
- * @param[out] _zDstString  Destination string
- * @param[in]  _zSrcString  Source formated string
- * @return The number of written characters
- */
-static orxINLINE orxS32 orxCDECL                          orxString_Print(orxSTRING _zDstString, const orxSTRING _zSrcString, ...)
-{
-  va_list stArgs;
-  orxS32  s32Result;
-
-  /* Checks */
-  orxASSERT(_zDstString != orxNULL);
-  orxASSERT(_zSrcString != orxNULL);
-
-  /* Gets variable arguments & prints the string */
-  va_start(stArgs, _zSrcString);
-  s32Result = vsprintf(_zDstString, _zSrcString, stArgs);
-  va_end(stArgs);
-
-  /* Clamps result */
-  s32Result = orxMAX(s32Result, 0);
-
-  /* Done! */
-  return s32Result;
-}
-
-/** Prints a formated string to a memory buffer using a max size
- * @param[out] _zDstString    Destination string
- * @param[in]  _zSrcString    Source formated string
- * @param[in]  _u32CharNumber Max number of character to print
- * @return The number of written characters
+/** Prints a formatted string to a memory buffer using a max size
+ * @param[out]  _zDstString             Destination string
+ * @param[in]   _u32CharNumber          Max number of character to print, including the terminating null character
+ * @param[in]   _zSrcString             Source formatted string
+ * @return      The number of written characters, excluding the terminating null character
  */
 static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxSTRING _zDstString, orxU32 _u32CharNumber, const orxSTRING _zSrcString, ...)
 {
@@ -1567,32 +1474,36 @@ static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxST
   /* Checks */
   orxASSERT(_zDstString != orxNULL);
   orxASSERT(_zSrcString != orxNULL);
+  orxASSERT(_u32CharNumber > 0);
 
   /* Gets variable arguments & prints the string */
   va_start(stArgs, _zSrcString);
   s32Result = vsnprintf(_zDstString, (size_t)_u32CharNumber, _zSrcString, stArgs);
   va_end(stArgs);
 
-#ifdef __orxMSVC__
   /* Overflow? */
   if(s32Result <= 0)
   {
     /* Updates result */
-    s32Result = _u32CharNumber;
+    s32Result = (orxS32)_u32CharNumber - 1;
   }
-#endif /* __orxWINDOWS__ */
+  else
+  {
+    /* Clamps result */
+    s32Result = orxCLAMP(s32Result, 0, (orxS32)_u32CharNumber - 1);
+  }
 
-  /* Clamps result */
-  s32Result = orxCLAMP(s32Result, 0, (orxS32)_u32CharNumber);
+  /* Enforces terminating null character */
+  _zDstString[s32Result] = orxCHAR_NULL;
 
   /* Done! */
   return s32Result;
 }
 
-/** Scans a formated string from a memory buffer
- * @param[in]  _zString  String to scan
- * @param[in]  _zFormat  Format string
- * @return The number of scanned items
+/** Scans a formatted string from a memory buffer
+ * @param[in]   _zString                String to scan
+ * @param[in]   _zFormat                Format string
+ * @return      The number of scanned items
  */
 static orxINLINE orxS32 orxCDECL                          orxString_Scan(const orxSTRING _zString, const orxSTRING _zFormat, ...)
 {
@@ -1602,38 +1513,10 @@ static orxINLINE orxS32 orxCDECL                          orxString_Scan(const o
   /* Checks */
   orxASSERT(_zString != orxNULL);
 
-#ifdef __orxMSVC__
-
-  /* Ugly workaround the missing vsscanf in MSVC up to version 2013 */
-  {
-    void   *p[16];
-    orxS32  i;
-
-    /* Starts variable list */
-    va_start(stArgs, _zFormat);
-
-    /* For all potential parameters */
-    for(i = 0; i < orxARRAY_GET_ITEM_COUNT(p); i++)
-    {
-      /* Gets its address */
-      p[i] = va_arg(stArgs, void *);
-    }
-
-    /* Scans the string */
-    s32Result = sscanf(_zString, _zFormat, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11], p[12], p[13], p[14], p[15]);
-
-    /* Ends variable list */
-    va_end(stArgs);
-  }
-
-#else /* __orxMSVC__ */
-
   /* Gets variable arguments & scans the string */
   va_start(stArgs, _zFormat);
   s32Result = vsscanf(_zString, _zFormat, stArgs);
   va_end(stArgs);
-
-#endif /* __orxMSVC__ */
 
   /* Clamps result */
   s32Result = orxMAX(s32Result, 0);
@@ -1642,9 +1525,9 @@ static orxINLINE orxS32 orxCDECL                          orxString_Scan(const o
   return s32Result;
 }
 
-/** Gets the extension from a file name
- * @param[in]  _zFileName     Concerned file name
- * @return Extension if exists, orxSTRING_EMPTY otherwise
+/** Gets the extension of a file name
+ * @param[in]   _zFileName              Concerned file name
+ * @return      Extension if present, orxSTRING_EMPTY otherwise
  */
 static orxINLINE const orxSTRING                          orxString_GetExtension(const orxSTRING _zFileName)
 {
@@ -1673,7 +1556,7 @@ static orxINLINE const orxSTRING                          orxString_GetExtension
 extern orxDLLAPI void orxFASTCALL                         orxString_Setup();
 
 /** Initializess the structure module
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxString_Init();
 
@@ -1682,17 +1565,30 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxString_Init();
 extern orxDLLAPI void orxFASTCALL                         orxString_Exit();
 
 
+/** Gets a string's ID (aka hash), without storing the string internally
+ * @param[in]   _zString        Concerned string
+ * @param[in]   _u32CharNumber  Number of character to process, should be <= orxString_GetLength(_zString)
+ * @return      String's ID/hash
+ */
+extern orxDLLAPI orxSTRINGID orxFASTCALL                  orxString_NHash(const orxSTRING _zString, orxU32 _u32CharNumber);
+
+/** Gets a string's ID (aka hash), without storing the string internally
+ * @param[in]   _zString        Concerned string
+ * @return      String's ID/hash
+ */
+extern orxDLLAPI orxSTRINGID orxFASTCALL                  orxString_Hash(const orxSTRING _zString);
+
 /** Gets a string's ID (and stores the string internally to prevent duplication)
  * @param[in]   _zString        Concerned string
  * @return      String's ID
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxString_GetID(const orxSTRING _zString);
+extern orxDLLAPI orxSTRINGID orxFASTCALL                  orxString_GetID(const orxSTRING _zString);
 
 /** Gets a string from an ID (it should have already been stored internally with a call to orxString_GetID)
- * @param[in]   _u32ID          Concerned string ID
+ * @param[in]   _stID           Concerned string ID
  * @return      orxSTRING if ID's found, orxSTRING_EMPTY otherwise
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_GetFromID(orxU32 _u32ID);
+extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_GetFromID(orxSTRINGID _stID);
 
 /** Stores a string internally: equivalent to an optimized call to orxString_GetFromID(orxString_GetID(_zString))
  * @param[in]   _zString        Concerned string
@@ -1703,9 +1599,14 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_Store(const 
 
 #ifdef __orxMSVC__
 
-  #pragma warning(default : 4996)
+  #pragma warning(pop)
+
+  #undef strtoll
+  #undef strtoull
 
 #endif /* __orxMSVC__ */
+
+#undef STRTO_CAST
 
 #endif /* _orxSTRING_H_ */
 

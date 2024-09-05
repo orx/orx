@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -73,6 +73,15 @@ typedef struct __orxMAIN_STATIC_t
 static orxMAIN_STATIC sstMain;
 
 
+#ifdef __orxMSVC__
+
+/* Requesting high performance dedicated GPU on hybrid laptops */
+__declspec(dllexport) unsigned long NvOptimusEnablement        = 1;
+__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+
+#endif // __orxMSVC__
+
+
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
@@ -87,24 +96,10 @@ static orxSTATUS orxFASTCALL orxMain_EventHandler(const orxEVENT *_pstEvent)
 
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+  orxASSERT(_pstEvent->eID == orxSYSTEM_EVENT_CLOSE);
 
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
-  {
-    /* Close event */
-    case orxSYSTEM_EVENT_CLOSE:
-    {
       /* Updates status */
       orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_EXIT, orxMAIN_KU32_STATIC_FLAG_NONE);
-
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-  }
 
   /* Done! */
   return eResult;
@@ -119,13 +114,12 @@ orxSTATUS orxFASTCALL orxMain_Init()
   /* Not already initialized? */
   if(!orxFLAG_TEST(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY))
   {
-    const orxSTRING zGameFileName;
-
     /* Sets module as initialized */
     orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_READY, orxMAIN_KU32_STATIC_MASK_ALL);
 
     /* Registers custom system event handler */
     eResult = orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orxMain_EventHandler);
+    orxEvent_SetHandlerIDFlags(orxMain_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
 
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
@@ -136,11 +130,13 @@ orxSTATUS orxFASTCALL orxMain_Init()
       /* Has game file? */
       if(orxConfig_HasValue(orxMAIN_KZ_CONFIG_GAME_FILE) != orxFALSE)
       {
+        const orxSTRING zGameFileName;
+
         /* Gets the game file name */
         zGameFileName = orxConfig_GetString(orxMAIN_KZ_CONFIG_GAME_FILE);
 
         /* Loads it */
-        eResult = (orxPlugin_LoadShadow(zGameFileName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        eResult = ((orxModule_IsInitialized(orxMODULE_ID_PLUGIN) != orxFALSE) && (orxPlugin_LoadShadow(zGameFileName) != orxHANDLE_UNDEFINED)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
       }
 
       /* Successful? */
@@ -291,16 +287,3 @@ int main(int argc, char **argv)
   /* Done! */
   return EXIT_SUCCESS;
 }
-
-#ifdef __orxMSVC__
-
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-  /* Executes orx */
-  orx_WinExecute(orxMain_Init, orxMain_Run, orxMain_Exit);
-
-  /* Done! */
-  return EXIT_SUCCESS;
-}
-
-#endif /* __orxMSVC__ */

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -60,10 +60,11 @@
 #define orxDEBUG_KU32_STATIC_FLAG_FILE                0x00000010
 #define orxDEBUG_KU32_STATIC_FLAG_TERMINAL            0x00000020
 #define orxDEBUG_KU32_STATIC_FLAG_CONSOLE             0x00000040
+#define orxDEBUG_KU32_STATIC_FLAG_CALLBACK            0x00000080
 
-#define orxDEBUG_KU32_STATIC_MASK_DEFAULT             0x00000075
+#define orxDEBUG_KU32_STATIC_MASK_DEFAULT             0x000000F5
 
-#define orxDEBUG_KU32_STATIC_MASK_DEBUG               0x0000003D
+#define orxDEBUG_KU32_STATIC_MASK_DEBUG               0x000000BD
 
 #define orxDEBUG_KU32_STATIC_MASK_USER_ALL            0x0FFFFFFF
 
@@ -74,6 +75,52 @@
 #define orxDEBUG_KZ_DEFAULT_LOG_FILE                  "orx.log"
 #define orxDEBUG_KZ_DEFAULT_LOG_SUFFIX                ".log"
 #define orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX              "-debug.log"
+
+
+/* Debug levels */
+typedef enum __orxDEBUG_LEVEL_t
+{
+  orxDEBUG_LEVEL_ANIM = 0,                    /**< Anim Debug */
+  orxDEBUG_LEVEL_CLOCK,                       /**< Clock Debug */
+  orxDEBUG_LEVEL_COMMAND,                     /**< Command Debug */
+  orxDEBUG_LEVEL_CONFIG,                      /**< Config Debug */
+  orxDEBUG_LEVEL_DISPLAY,                     /**< Display Debug */
+  orxDEBUG_LEVEL_FILE,                        /**< File Debug */
+  orxDEBUG_LEVEL_INPUT,                       /**< Input Debug */
+  orxDEBUG_LEVEL_JOYSTICK,                    /**< Joystick Debug */
+  orxDEBUG_LEVEL_KEYBOARD,                    /**< Keyboard Debug */
+  orxDEBUG_LEVEL_MEMORY,                      /**< Memory Debug */
+  orxDEBUG_LEVEL_MOUSE,                       /**< Mouse Debug */
+  orxDEBUG_LEVEL_OBJECT,                      /**< Object Debug */
+  orxDEBUG_LEVEL_PARAM,                       /**< Param Debug */
+  orxDEBUG_LEVEL_PHYSICS,                     /**< Physics Debug */
+  orxDEBUG_LEVEL_PLUGIN,                      /**< Plug-in Debug */
+  orxDEBUG_LEVEL_PROFILER,                    /**< Profiler Debug */
+  orxDEBUG_LEVEL_RENDER,                      /**< Render Debug */
+  orxDEBUG_LEVEL_SCREENSHOT,                  /**< Screenshot Debug */
+  orxDEBUG_LEVEL_SOUND,                       /**< Sound Debug */
+  orxDEBUG_LEVEL_SYSTEM,                      /**< System Debug */
+  orxDEBUG_LEVEL_TIMER,                       /**< Timer Debug */
+
+  orxDEBUG_LEVEL_LOG,                         /**< Log Debug */
+
+  orxDEBUG_LEVEL_ASSERT,                      /**< Assert Debug */
+
+  orxDEBUG_LEVEL_USER,                        /**< User Debug */
+
+  orxDEBUG_LEVEL_NUMBER,
+
+  orxDEBUG_LEVEL_MAX_NUMBER = 32,
+
+  orxDEBUG_LEVEL_ALL = 0xFFFFFFFE,            /**< All Debugs */
+
+  orxDEBUG_LEVEL_NONE = orxENUM_NONE
+
+} orxDEBUG_LEVEL;
+
+
+/* Log callback function */
+typedef orxSTATUS (orxFASTCALL *orxDEBUG_CALLBACK_FUNCTION)(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zLog);
 
 
 /* *** Debug Macros *** */
@@ -118,7 +165,7 @@
     u32DebugFlags = _orxDebug_GetFlags();                                                                         \
     _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                         \
                        orxDEBUG_KU32_STATIC_FLAG_FILE                                                             \
-                       orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                       \
+                      |orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                       \
     _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
     _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                        \
   } while(orxFALSE)
@@ -163,7 +210,7 @@
       u32DebugFlags = _orxDebug_GetFlags();                                                                       \
       _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                       \
                          orxDEBUG_KU32_STATIC_FLAG_FILE                                                           \
-                         orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                     \
+                        |orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                     \
       _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
       _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                      \
     } while(orxFALSE)
@@ -236,23 +283,35 @@ while(orxFALSE)
   #define orxDEBUG_SET_FLAGS(SET, UNSET)      _orxDebug_SetFlags(SET, UNSET)
   #define orxDEBUG_GET_FLAGS()                _orxDebug_GetFlags()
 
+  #define orxDEBUG_SET_LOG_CALLBACK(CALLBACK) _orxDebug_SetLogCallback(CALLBACK)
+
   /* Break */
   #define orxBREAK()                          _orxDebug_Break()
 
   /* Files */
   #define orxDEBUG_SETDEBUGFILE(FILE)         _orxDebug_SetDebugFile(FILE)
   #define orxDEBUG_SETLOGFILE(FILE)           _orxDebug_SetLogFile(FILE)
-  #define orxDEBUG_SETBASEFILENAME(FILE)                      \
-    do                                                        \
-    {                                                         \
-      orxCHAR   zBuffer[256];                                 \
-      zBuffer[255] = orxCHAR_NULL;                            \
-      strncpy(zBuffer, FILE, 255);                            \
-      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX, 255);\
-      _orxDebug_SetDebugFile(zBuffer);                        \
-      strncpy(zBuffer, FILE, 255);                            \
-      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);  \
-      _orxDebug_SetLogFile(zBuffer);                          \
+  #define orxDEBUG_SETBASEFILENAME(FILE)                                                                            \
+    do                                                                                                              \
+    {                                                                                                               \
+      if((FILE != orxNULL) && (FILE != orxSTRING_EMPTY))                                                            \
+      {                                                                                                             \
+        orxCHAR zBuffer[512];                                                                                       \
+        zBuffer[511] = orxCHAR_NULL;                                                                                \
+        /* The redundant check is a workaround for some buggy compilers that don't realize FILE is not null here */ \
+        strncpy(zBuffer, FILE ? FILE : orxSTRING_EMPTY, 256);                                                       \
+        strncat(zBuffer, orxDEBUG_KZ_DEFAULT_DEBUG_SUFFIX, 255);                                                    \
+        _orxDebug_SetDebugFile(zBuffer);                                                                            \
+        /* The redundant check is a workaround for some buggy compilers that don't realize FILE is not null here */ \
+        strncpy(zBuffer, FILE ? FILE : orxSTRING_EMPTY, 256);                                                       \
+        strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);                                                      \
+        _orxDebug_SetLogFile(zBuffer);                                                                              \
+      }                                                                                                             \
+      else                                                                                                          \
+      {                                                                                                             \
+        _orxDebug_SetDebugFile(FILE);                                                                               \
+        _orxDebug_SetLogFile(FILE);                                                                                 \
+      }                                                                                                             \
     } while(orxFALSE)
 
   /* Assert */
@@ -278,27 +337,39 @@ while(orxFALSE)
 
   #define orxDEBUG_PRINT(LEVEL, STRING, ...)
 
-  #define orxBREAK()
-
   #define orxDEBUG_ENABLE_LEVEL(LEVEL, ENABLE)_orxDebug_EnableLevel(LEVEL, ENABLE)
   #define orxDEBUG_IS_LEVEL_ENABLED(LEVEL)    _orxDebug_IsLevelEnabled(LEVEL)
 
+  #define orxDEBUG_SET_FLAGS(SET, UNSET)      _orxDebug_SetFlags(SET, UNSET)
+  #define orxDEBUG_GET_FLAGS()                _orxDebug_GetFlags()
+
+  #define orxDEBUG_SET_LOG_CALLBACK(CALLBACK) _orxDebug_SetLogCallback(CALLBACK)
+
+  /* Break */
+  #define orxBREAK()
+
+  /* File */
   #define orxDEBUG_SETDEBUGFILE(FILE)
   #define orxDEBUG_SETLOGFILE(FILE)           _orxDebug_SetLogFile(FILE)
-  #define orxDEBUG_SETBASEFILENAME(FILE)                      \
-    do                                                        \
-    {                                                         \
-      orxCHAR   zBuffer[256];                                 \
-      zBuffer[255] = orxCHAR_NULL;                            \
-      strncpy(zBuffer, FILE, 255);                            \
-      strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);  \
-      _orxDebug_SetLogFile(zBuffer);                          \
+  #define orxDEBUG_SETBASEFILENAME(FILE)                                                                            \
+    do                                                                                                              \
+    {                                                                                                               \
+      if((FILE != orxNULL) && (FILE != orxSTRING_EMPTY))                                                            \
+      {                                                                                                             \
+        orxCHAR zBuffer[512];                                                                                       \
+        zBuffer[511] = orxCHAR_NULL;                                                                                \
+        /* The redundant check is a workaround for some buggy compilers that don't realize FILE is not null here */ \
+        strncpy(zBuffer, FILE ? FILE : orxSTRING_EMPTY, 256);                                                       \
+        strncat(zBuffer, orxDEBUG_KZ_DEFAULT_LOG_SUFFIX, 255);                                                      \
+        _orxDebug_SetLogFile(zBuffer);                                                                              \
+      }                                                                                                             \
+      else                                                                                                          \
+      {                                                                                                             \
+        _orxDebug_SetLogFile(FILE);                                                                                 \
+      }                                                                                                             \
     } while(orxFALSE)
 
   #define orxASSERT(TEST, ...)
-
-  #define orxDEBUG_SET_FLAGS(SET, UNSET)      _orxDebug_SetFlags(SET, UNSET)
-  #define orxDEBUG_GET_FLAGS()                _orxDebug_GetFlags()
 
 #endif /* __orxDEBUG__ */
 
@@ -318,49 +389,6 @@ while(orxFALSE)
 #define orxDEBUG_KZ_TYPE_ERROR_FORMAT         orxANSI_KZ_COLOR_FG_RED "[%s]" orxANSI_KZ_COLOR_RESET
 
 #define orxDEBUG_KZ_FILE_FORMAT               orxANSI_KZ_COLOR_FG_MAGENTA "[%s:%s(%u)]" orxANSI_KZ_COLOR_RESET
-
-
-/*****************************************************************************/
-
-/* *** Debug types. *** */
-typedef enum __orxDEBUG_LEVEL_t
-{
-  orxDEBUG_LEVEL_ANIM = 0,                    /**< Anim Debug */
-  orxDEBUG_LEVEL_CONFIG,                      /**< Config Debug */
-  orxDEBUG_LEVEL_CLOCK,                       /**< Clock Debug */
-  orxDEBUG_LEVEL_DISPLAY,                     /**< Display Debug */
-  orxDEBUG_LEVEL_FILE,                        /**< File Debug */
-  orxDEBUG_LEVEL_INPUT,                       /**< Input Debug */
-  orxDEBUG_LEVEL_JOYSTICK,                    /**< Joystick Debug */
-  orxDEBUG_LEVEL_KEYBOARD,                    /**< Keyboard Debug */
-  orxDEBUG_LEVEL_MEMORY,                      /**< Memory Debug */
-  orxDEBUG_LEVEL_MOUSE,                       /**< Mouse Debug */
-  orxDEBUG_LEVEL_OBJECT,                      /**< Object Debug */
-  orxDEBUG_LEVEL_PARAM,                       /**< Param Debug */
-  orxDEBUG_LEVEL_PHYSICS,                     /**< Physics Debug */
-  orxDEBUG_LEVEL_PLUGIN,                      /**< Plug-in Debug */
-  orxDEBUG_LEVEL_PROFILER,                    /**< Profiler Debug */
-  orxDEBUG_LEVEL_RENDER,                      /**< Render Debug */
-  orxDEBUG_LEVEL_SCREENSHOT,                  /**< Screenshot Debug */
-  orxDEBUG_LEVEL_SOUND,                       /**< Sound Debug */
-  orxDEBUG_LEVEL_SYSTEM,                      /**< System Debug */
-  orxDEBUG_LEVEL_TIMER,                       /**< Timer Debug */
-
-  orxDEBUG_LEVEL_LOG,                         /**< Log Debug */
-
-  orxDEBUG_LEVEL_ASSERT,                      /**< Assert Debug */
-
-  orxDEBUG_LEVEL_USER,                        /**< User Debug */
-
-  orxDEBUG_LEVEL_NUMBER,
-
-  orxDEBUG_LEVEL_MAX_NUMBER = 32,
-
-  orxDEBUG_LEVEL_ALL = 0xFFFFFFFE,            /**< All Debugs */
-
-  orxDEBUG_LEVEL_NONE = orxENUM_NONE
-
-} orxDEBUG_LEVEL;
 
 
 /*****************************************************************************/
@@ -418,6 +446,11 @@ extern orxDLLAPI void orxFASTCALL             _orxDebug_SetDebugFile(const orxST
  * @param[in]   _zFileName                    Log file name
  */
 extern orxDLLAPI void orxFASTCALL             _orxDebug_SetLogFile(const orxSTRING _zFileName);
+
+/** Sets log callback function, if the callback returns orxSTATUS_FAILURE, the log entry will be entirely inhibited
+* @param[in]   _pfnLogCallback                Log callback function, orxNULL to remove it
+*/
+extern orxDLLAPI void orxFASTCALL             _orxDebug_SetLogCallback(const orxDEBUG_CALLBACK_FUNCTION _pfnLogCallback);
 
 #endif /* __orxDEBUG_H_ */
 

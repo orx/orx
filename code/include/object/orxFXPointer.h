@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -106,7 +106,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddFX(orxFXPOINTER 
 /** Adds a delayed FX
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _pstFX        FX to add
- * @param[in]   _fDelay       Delay time
+ * @param[in]   _fDelay       Delay time, ignored if the FX is staggered and other FXs are already present
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX, orxFLOAT _fDelay);
@@ -117,6 +117,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFX(orxFXP
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveFX(orxFXPOINTER *_pstFXPointer, orxFX *_pstFX);
+
+/** Removes all FXs
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_RemoveAllFXs(orxFXPOINTER *_pstFXPointer);
 
 /** Adds an FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
@@ -135,7 +141,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddUniqueFXFromConf
 /** Adds a delayed FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _zFXConfigID  Config ID of the FX to add
- * @param[in]   _fDelay       Delay time
+ * @param[in]   _fDelay       Delay time, ignored if the FX is staggered and other FXs are already present
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
@@ -143,7 +149,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddDelayedFXFromCon
 /** Adds a unique delayed FX using its config ID
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _zFXConfigID  Config ID of the FX to add
- * @param[in]   _fDelay       Delay time
+ * @param[in]   _fDelay       Delay time, ignored if the FX is staggered and other FXs are already present
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_AddUniqueDelayedFXFromConfig(orxFXPOINTER *_pstFXPointer, const orxSTRING _zFXConfigID, orxFLOAT _fDelay);
@@ -170,12 +176,31 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_Synchronize(orxFXPO
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL           orxFXPointer_GetTime(const orxFXPOINTER *_pstFXPointer);
 
+/** Gets how many FXs are currently in use
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @return      orxU32
+ */
+extern orxDLLAPI orxU32 orxFASTCALL             orxFXPointer_GetCount(const orxFXPOINTER *_pstFXPointer);
+
+/** FXPointer frequency get accessor
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @return      FXPointer frequency
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL           orxFXPointer_GetFrequency(const orxFXPOINTER *_pstFXPointer);
+
 /** FXPointer time set accessor
  * @param[in]   _pstFXPointer Concerned FXPointer
  * @param[in]   _fTime        Time to set
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        	orxFXPointer_SetTime(orxFXPOINTER *_pstFXPointer, orxFLOAT _fTime);
+
+/** FXPointer frequency set accessor
+ * @param[in]   _pstFXPointer Concerned FXPointer
+ * @param[in]   _fFrequency    Frequency to set
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxFXPointer_SetFrequency(orxFXPOINTER *_pstFXPointer, orxFLOAT _fFrequency);
 
 #endif /* _orxFXPointer_H_ */
 

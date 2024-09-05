@@ -1,0 +1,332 @@
+//! Includes
+
+#ifndef _orxMOD_H_
+#define _orxMOD_H_
+
+#include "orx.h"
+
+
+//! Prototypes
+
+orxSTATUS orxFASTCALL orxMod_Init();
+void orxFASTCALL      orxMod_Exit();
+
+
+//! Implementation
+
+#ifdef orxMOD_IMPL
+
+#ifdef __orxMSVC__
+  #pragma warning(push)
+  #pragma warning(disable : 4996)
+#endif /* __orxMSVC__ */
+
+#define calloc(count, size)               orxMemory_Zero(orxMemory_Allocate(size * orxALIGN(count, 8), orxMEMORY_TYPE_AUDIO), size * orxALIGN(count, 8))
+#define free(mem)                         orxMemory_Free(mem)
+
+#include "ibxm/ibxm.c"
+
+#undef free
+#undef calloc
+
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif // __orxMSVC__
+
+#define orxMOD_KU32_SAMPLE_RATE           48000
+
+
+//! Variables / Structures
+
+typedef struct ModData
+{
+  struct replay    *pstReplay;
+  int              *piSampleBuffer;
+  orxOBJECT        *pstObject;
+  struct module    *pstModule;
+  orxU32            u32SeqNumber;
+  orxBOOL           bFirst;
+  volatile orxBOOL  bLock;
+
+} ModData;
+
+typedef struct __orxMOD_t
+{
+  orxBANK *pstModBank;
+
+} orxMOD;
+
+static orxMOD sstMod;
+
+
+//! Code
+
+static orxSTATUS orxFASTCALL orxMod_Delete(ModData *_pstModData)
+{
+  if(sstMod.pstModBank)
+  {
+    // Wait for locked decoder
+    while(_pstModData->bLock)
+      ;
+
+    // Deletes it
+    _pstModData->pstObject = orxNULL;
+    orxMemory_Free(_pstModData->piSampleBuffer);
+    dispose_replay(_pstModData->pstReplay);
+    dispose_module(_pstModData->pstModule);
+    orxBank_Free(sstMod.pstModBank, _pstModData);
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxMod_Decode(const orxEVENT *_pstEvent)
+{
+  ModData *pstModData;
+
+  // Gets mod data
+  pstModData = (ModData *)_pstEvent->pContext;
+
+  // Matching object?
+  if(pstModData->pstObject && (pstModData->pstObject == orxOBJECT(_pstEvent->hSender)))
+  {
+    orxSOUND_EVENT_PAYLOAD *pstPayload;
+
+    // Gets payload
+    pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    // Valid?
+    if(orxObject_IsEnabled(pstModData->pstObject) && !orxObject_IsPaused(pstModData->pstObject))
+    {
+      orxU32 u32Written, i, u32SeqNumber;
+
+      // Locks decoders
+      pstModData->bLock = orxTRUE;
+      orxMEMORY_BARRIER();
+
+      // Not first packet?
+      if(!pstModData->bFirst)
+      {
+        // Has restarted?
+        if(pstPayload->stStream.stPacket.fTime == orxFLOAT_0)
+        {
+          // Resets replay
+          replay_seek(pstModData->pstReplay, 0);
+          pstModData->u32SeqNumber = 0;
+
+          // Updates status
+          pstModData->bFirst = orxTRUE;
+        }
+      }
+      else
+      {
+        // Updates status
+        pstModData->bFirst = orxFALSE;
+      }
+
+      // Inits buffer
+      pstPayload->stStream.stPacket.afSampleList = (orxFLOAT *)pstModData->piSampleBuffer;
+
+      // Fills it
+      u32Written = (orxU32)(2 * replay_get_audio(pstModData->pstReplay, pstModData->piSampleBuffer, 0));
+
+      // Converts its samples
+      for(i = 0; i < u32Written; i++)
+      {
+        pstPayload->stStream.stPacket.afSampleList[i] = orxS2F(pstModData->piSampleBuffer[i]) / orx2F(32678.0f);
+      }
+
+      // Updates buffer info
+      pstPayload->stStream.stPacket.u32SampleNumber = u32Written;
+
+      // Looped?
+      if((u32SeqNumber = (orxU32)replay_get_sequence_pos(pstModData->pstReplay)) < pstModData->u32SeqNumber)
+      {
+        pstPayload->stStream.stPacket.bLast = orxTRUE;
+        pstModData->bFirst                  = orxTRUE;
+      }
+
+      // Updates sequence number
+      pstModData->u32SeqNumber = u32SeqNumber;
+
+      // Unlocks decoders
+      orxMEMORY_BARRIER();
+      pstModData->bLock = orxFALSE;
+    }
+    else
+    {
+      // Updates packet
+      pstPayload->stStream.stPacket.bDiscard  = orxTRUE;
+      pstPayload->stStream.stPacket.bLast     = orxFALSE;
+    }
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxMod_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  // Checks
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
+
+  // New object?
+  if(_pstEvent->eID == orxOBJECT_EVENT_PREPARE)
+  {
+    // Is a mod?
+    if(orxConfig_HasValue("Mod"))
+    {
+      const orxSTRING zMod;
+      orxHANDLE       hResource;
+
+      // Has valid resource?
+      if((zMod = orxResource_Locate(orxSOUND_KZ_RESOURCE_GROUP, orxConfig_GetString("Mod")))
+      && ((hResource = orxResource_Open(zMod, orxFALSE)) != orxHANDLE_UNDEFINED))
+      {
+        orxS64  s64Size;
+        void   *pBuffer;
+
+        // Gets its size
+        s64Size = orxResource_GetSize(hResource);
+        orxASSERT(s64Size);
+
+        // Loads its content
+        pBuffer = orxMemory_Allocate((orxU32)s64Size, orxMEMORY_TYPE_AUDIO);
+        orxASSERT(pBuffer);
+        if(orxResource_Read(hResource, s64Size, pBuffer, orxNULL, orxNULL) == s64Size)
+        {
+          struct data stData;
+          ModData    *pstModData;
+          orxOBJECT  *pstObject;
+          orxCHAR     acMessage[64];
+
+          // Gets object
+          pstObject = orxOBJECT(_pstEvent->hSender);
+
+          // Creates decoder data
+          pstModData = (ModData *)orxBank_Allocate(sstMod.pstModBank);
+          orxASSERT(pstModData);
+          orxMemory_Zero(pstModData, sizeof(ModData));
+
+          // Inits decoder
+          stData.buffer = (char *)pBuffer;
+          stData.length = (int)s64Size;
+          if(((pstModData->pstModule = module_load(&stData, acMessage)))
+          && ((pstModData->pstReplay = new_replay(pstModData->pstModule, orxMOD_KU32_SAMPLE_RATE, 1))))
+          {
+            orxCHAR acBuffer[256];
+
+            // Updates mod data & object
+            pstModData->pstObject       = pstObject;
+            pstModData->piSampleBuffer  = (int *)orxMemory_Allocate(calculate_mix_buf_len(orxMOD_KU32_SAMPLE_RATE), orxMEMORY_TYPE_AUDIO);
+            orxASSERT(pstModData->piSampleBuffer);
+            pstModData->bFirst          = orxTRUE;
+
+            // Adds event handlers
+            orxEvent_AddHandlerWithContext(orxEVENT_TYPE_SOUND, orxMod_Decode, pstModData);
+            orxEvent_SetHandlerIDFlags(orxMod_Decode, orxEVENT_TYPE_SOUND, pstModData, orxEVENT_GET_FLAG(orxSOUND_EVENT_PACKET), orxEVENT_KU32_MASK_ID_ALL);
+            orxEvent_AddHandlerWithContext(orxEVENT_TYPE_OBJECT, orxMod_EventHandler, pstModData);
+            orxEvent_SetHandlerIDFlags(orxMod_EventHandler, orxEVENT_TYPE_OBJECT, pstModData, orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE), orxEVENT_KU32_MASK_ID_ALL);
+
+            // Creates music stream
+            orxString_NPrint(acBuffer, sizeof(acBuffer), "empty 2 %u", orxMOD_KU32_SAMPLE_RATE);
+            orxConfig_SetString("SoundList", orxObject_GetName(pstObject));
+            orxConfig_SetString("Music", acBuffer);
+          }
+          else
+          {
+            // Frees module
+            if(pstModData->pstModule)
+            {
+              dispose_module(pstModData->pstModule);
+            }
+
+            // Frees mod data
+            orxBank_Free(sstMod.pstModBank, pstModData);
+          }
+        }
+
+        // Frees buffer
+        orxMemory_Free(pBuffer);
+
+        // Closes resource
+        orxResource_Close(hResource);
+      }
+    }
+  }
+  else
+  {
+    ModData *pstModData;
+
+    // Gets mod data
+    pstModData = (ModData *)_pstEvent->pContext;
+
+    // Valid deleted object?
+    if(pstModData->pstObject == orxOBJECT(_pstEvent->hSender))
+    {
+      // Stops music
+      orxObject_Stop(pstModData->pstObject);
+
+      // Removes event handlers
+      orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_SOUND, orxMod_Decode, _pstEvent->pContext);
+      orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_OBJECT, orxMod_EventHandler, _pstEvent->pContext);
+
+      // Deletes it
+      orxMod_Delete(pstModData);
+    }
+  }
+
+  // Done!
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxMod_Init()
+{
+  // Not initialized?
+  if(!sstMod.pstModBank)
+  {
+    // Creates bank
+    sstMod.pstModBank = orxBank_Create(16, sizeof(ModData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+
+    // Success?
+    if(sstMod.pstModBank)
+    {
+      // Registers mod handler
+      orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxMod_EventHandler);
+      orxEvent_SetHandlerIDFlags(orxMod_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE), orxEVENT_KU32_MASK_ID_ALL);
+    }
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+void orxFASTCALL orxMod_Exit()
+{
+  // Was initialized?
+  if(sstMod.pstModBank)
+  {
+    ModData *pstModData;
+
+    // Unregisters mod handler
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxMod_EventHandler);
+
+    // Deletes bank
+    while((pstModData = (ModData *)orxBank_GetNext(sstMod.pstModBank, orxNULL)))
+    {
+      orxMod_Delete(pstModData);
+    }
+    orxBank_Delete(sstMod.pstModBank);
+    sstMod.pstModBank = orxNULL;
+  }
+
+  // Done!
+  return;
+}
+
+#endif // orxMOD_IMPL
+
+#endif // _orxMOD_H_

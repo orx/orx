@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -27,7 +27,7 @@
  * @date 25/01/2010
  * @author iarwain@orx-project.org
  *
- * iOS keyboard plugin implementation
+ * Dummy keyboard plugin implementation
  *
  */
 
@@ -51,10 +51,8 @@
 
 orxSTATUS orxFASTCALL orxKeyboard_Dummy_Init()
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
   /* Done! */
-  return eResult;
+  return orxSTATUS_SUCCESS;
 }
 
 void orxFASTCALL orxKeyboard_Dummy_Exit()
@@ -69,6 +67,14 @@ orxBOOL orxFASTCALL orxKeyboard_Dummy_IsKeyPressed(orxKEYBOARD_KEY _eKey)
 
   /* Done! */
   return bResult;
+}
+
+const orxSTRING orxFASTCALL orxKeyboard_Dummy_GetKeyDisplayName(orxKEYBOARD_KEY _eKey)
+{
+  const orxSTRING zResult = orxSTRING_EMPTY;
+
+  /* Done! */
+  return zResult;
 }
 
 orxKEYBOARD_KEY orxFASTCALL orxKeyboard_Dummy_ReadKey()
@@ -106,6 +112,7 @@ orxPLUGIN_USER_CORE_FUNCTION_START(KEYBOARD);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Init, KEYBOARD, INIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_Exit, KEYBOARD, EXIT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_IsKeyPressed, KEYBOARD, IS_KEY_PRESSED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_GetKeyDisplayName, KEYBOARD, GET_KEY_DISPLAY_NAME);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_ReadKey, KEYBOARD, READ_KEY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_ReadString, KEYBOARD, READ_STRING);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxKeyboard_Dummy_ClearBuffer, KEYBOARD, CLEAR_BUFFER);

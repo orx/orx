@@ -11,27 +11,14 @@ function initconfigurations ()
     {
         "Debug",
         "Profile",
-        "Release"
+        "Release"[+bundle ,
+        "Bundle"]
     }
 end
 
 function initplatforms ()
-    if os.is ("windows") then
-        if string.lower(_ACTION) == "vs2013"
-        or string.lower(_ACTION) == "vs2015"
-        or string.lower(_ACTION) == "vs2017" then
-            return
-            {
-                "x64",
-                "x32"
-            }
-        else
-            return
-            {
-                "Native"
-            }
-        end
-    elseif os.is ("linux") then
+    if os.is ("windows")
+    or os.is ("linux") then
         if os.is64bit () then
             return
             {
@@ -46,17 +33,11 @@ function initplatforms ()
             }
         end
     elseif os.is ("macosx") then
-        if string.find(string.lower(_ACTION), "xcode") then
-            return
-            {
-                "Universal"
-            }
-        else
-            return
-            {
-                "x32", "x64"
-            }
-        end
+        return
+        {
+            "universal64",
+            "x64"
+        }
     end
 end
 
@@ -66,7 +47,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2015")
+defaultaction ("windows", "vs2022")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -88,12 +69,12 @@ copybase = path.rebase ("..", os.getcwd (), os.getcwd () .. "/" .. destination)
 
 
 --
--- Solution: [orx]
+-- Solution: [name]
 --
 
-solution "[orx]"
+solution "[name]"
 
-    language ("C++")
+    language ("C[+c++ ++]")
 
     location (destination)
 
@@ -107,18 +88,6 @@ solution "[orx]"
     platforms
     {
         initplatforms ()
-    }
-
-    includedirs
-    {
-        "../include",
-        "$(ORX)/include"
-    }
-
-    libdirs
-    {
-        "../lib",
-        "$(ORX)/lib/dynamic"
     }
 
     targetdir ("../bin")
@@ -137,10 +106,15 @@ solution "[orx]"
         "StaticRuntime"
     }
 
-    configuration {"not vs2013", "not vs2015", "not vs2017"}
-        flags {"EnableSSE2"}
+    configuration {"not xcode*"}
+        includedirs {"$(ORX)/include"}
+        libdirs {"$(ORX)/lib/dynamic"}
 
-    configuration {"not x64"}
+    configuration {"xcode*"}
+        includedirs {"[code-path]/include"}
+        libdirs {"[code-path]/lib/dynamic"}
+
+    configuration {"x32"}
         flags {"EnableSSE2"}
 
     configuration {"not windows"}
@@ -160,6 +134,11 @@ solution "[orx]"
     configuration {"*Release*"}
         flags {"Optimize", "NoRTTI"}
         links {"orx"}
+[+bundle
+
+    configuration {"*Bundle*"}
+        flags {"Optimize", "NoRTTI"}
+        links {"orx"}]
 
     configuration {"windows", "*Release*"}
         kind ("WindowedApp")
@@ -168,7 +147,15 @@ solution "[orx]"
 -- Linux
 
     configuration {"linux"}
-        buildoptions {"-Wno-unused-function"}
+        buildoptions
+        {
+[+imgui +sndh
+            "-std=c++11",]
+[+sndh
+            "-Wno-write-strings",
+            "-Wno-multichar",]
+            "-Wno-unused-function"
+        }
         linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
         links
         {
@@ -187,19 +174,33 @@ solution "[orx]"
     configuration {"macosx"}
         buildoptions
         {
-            "-mmacosx-version-min=10.6",
+            "-stdlib=libc++",
+[+imgui +sndh
+            "-std=c++11",]
+[+sndh
+            "-Wno-multichar",]
             "-gdwarf-2",
+            "-Wno-unused-function",
             "-Wno-write-strings"
         }
+        linkoptions
+        {
+            "-stdlib=libc++",
+            "-dead_strip"
+        }
+
+    configuration {"macosx", "not codelite", "not codeblocks"}
         links
         {
             "Foundation.framework",
             "AppKit.framework"
         }
+
+    configuration {"macosx", "codelite or codeblocks"}
         linkoptions
         {
-            "-mmacosx-version-min=10.6",
-            "-dead_strip"
+            "-framework Foundation",
+            "-framework AppKit"
         }
 
     configuration {"macosx", "x32"}
@@ -211,6 +212,13 @@ solution "[orx]"
 
 -- Windows
 
+[+remote
+    configuration {"windows"}
+        links
+        {
+            "ws2_32"
+        }
+]
     configuration {"windows", "vs*"}
         buildoptions
         {
@@ -218,43 +226,100 @@ solution "[orx]"
             "/EHsc"
         }
 
+    configuration {"windows", "gmake", "x32"}
+        prebuildcommands
+        {
+            "$(eval CC := i686-w64-mingw32-gcc)",
+            "$(eval CXX := i686-w64-mingw32-g++)",
+            "$(eval AR := i686-w64-mingw32-gcc-ar)"
+        }
+
+    configuration {"windows", "gmake", "x64"}
+        prebuildcommands
+        {
+            "$(eval CC := x86_64-w64-mingw32-gcc)",
+            "$(eval CXX := x86_64-w64-mingw32-g++)",
+            "$(eval AR := x86_64-w64-mingw32-gcc-ar)"
+        }
+
+    configuration {"windows", "codelite or codeblocks", "x32"}
+        envs
+        {
+            "CC=i686-w64-mingw32-gcc",
+            "CXX=i686-w64-mingw32-g++",
+            "AR=i686-w64-mingw32-gcc-ar"
+        }
+
+    configuration {"windows", "codelite or codeblocks", "x64"}
+        envs
+        {
+            "CC=x86_64-w64-mingw32-gcc",
+            "CXX=x86_64-w64-mingw32-g++",
+            "AR=x86_64-w64-mingw32-gcc-ar"
+        }
+
 
 --
--- Project: [orx]
+-- Project: [name]
 --
 
-project "[orx]"
+project "[name]"
 
     files
     {
-        "../src/**.cpp",
+[+c++
+        "../src/**.cpp",]
         "../src/**.c",
         "../include/**.h",
+[+bundle
+        "../include/**.inc",]
+        "../build/premake4.lua",
         "../data/config/**.ini"
     }
 
-    configuration {"windows", "vs*"}
-        buildoptions {"/EHsc"}
+    includedirs
+    {
+[+scroll
+        "../include/Scroll",]
+[+imgui
+        "../include/imgui",]
+[+nuklear
+        "../include/nuklear",]
+        "../include"
+    }
 
     vpaths
     {
+[+bundle
+        ["bundle"] = {"**.inc"},]
+        ["build"] = {"**premake4.lua"},
         ["config"] = {"**.ini"}
     }
+[+bundle
+
+    configuration {"*Bundle*"}
+        debugargs {"-b", "[name].obr"}]
 
 
 -- Linux
 
     configuration {"linux"}
-        postbuildcommands {"$(shell [ -f $(ORX)/lib/dynamic/liborx.so ] && cp -f $(ORX)/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
+        postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
 
 
 -- Mac OS X
 
-    configuration {"macosx"}
-        postbuildcommands {"$(shell [ -f $(ORX)/lib/dynamic/liborx.dylib ] && cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+    configuration {"macosx", "xcode*"}
+        postbuildcommands {"cp -f [code-path]/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+
+    configuration {"macosx", "not xcode*"}
+        postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
 
 
 -- Windows
 
     configuration {"windows"}
-        postbuildcommands {"cmd /c if exist $(ORX)\\lib\\dynamic\\orx.dll copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
+        postbuildcommands {"cmd /c copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
+
+    configuration {"windows", "vs*"}
+        buildoptions {"/EHsc"}

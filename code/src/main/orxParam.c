@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -43,6 +43,7 @@
 
 #ifdef __orxMSVC__
 
+  #pragma warning(push)
   #pragma warning(disable : 4996)
 
 #endif /* __orxMSVC__ */
@@ -138,17 +139,17 @@ static orxPARAM_STATIC sstParam;
 
 /** Return the parameter info associated to the given value.
  * @param[in] _zParamName Name of the parameter (with short or long prefix inside)
- * @return Returns the pointer on the param info if found, else returns orxNULL
+ * @return Returns the pointer to the param info if found, else returns orxNULL
  */
-static orxINLINE orxPARAM_INFO *orxParam_Get(orxU32 _u32ParamName)
+static orxINLINE orxPARAM_INFO *orxParam_Get(orxSTRINGID _stParamName)
 {
   orxPARAM_INFO *pstParamInfo; /* Parameters info extracted from the Hash Table */
 
-  /* Module initialized ? */
+  /* Module initialized? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
   /* Get the parameter pointer */
-  pstParamInfo = (orxPARAM_INFO *)orxHashTable_Get(sstParam.pstHashTable, _u32ParamName);
+  pstParamInfo = (orxPARAM_INFO *)orxHashTable_Get(sstParam.pstHashTable, _stParamName);
 
   /* Returns it */
   return pstParamInfo;
@@ -163,12 +164,12 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
 {
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
-  /* Correct parameters ? */
+  /* Correct parameters? */
   orxASSERT(_u32NbParam > 0);
 
   orxPARAM_LOG("Options:");
 
-  /* Extra parameters ? */
+  /* Extra parameters? */
   if(_u32NbParam == 1)
   {
     orxPARAM_INFO *pstParamInfo = orxNULL;
@@ -186,25 +187,21 @@ static orxSTATUS orxFASTCALL orxParam_Help(orxU32 _u32NbParam, const orxSTRING _
   }
   else
   {
-    orxU32 u32Index;          /* Index to traverse extra parameters */
-    orxU32 u32LongPrefixCRC;  /* CRC for the long prefix string */
-
-    /* Create the CRC value of the prefix */
-    u32LongPrefixCRC = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
+    orxU32 u32Index;                /* Index to traverse extra parameters */
 
     /* Display the long description of the extra parameters only */
     for(u32Index = 1; u32Index < _u32NbParam; u32Index++)
     {
-      orxU32 u32Name;               /* CRC Name of the long option */
+      orxSTRINGID stName;           /* CRC Name of the long option */
       orxPARAM_INFO *pstParamInfo;  /* Stored parameter value */
 
       /* Create the full CRC Value */
-      u32Name = orxString_ContinueCRC(_azParams[u32Index], u32LongPrefixCRC);
+      stName = orxString_Hash(_azParams[u32Index]);
 
       /* Get the parameter info */
-      pstParamInfo = (orxPARAM_INFO *)orxParam_Get(u32Name);
+      pstParamInfo = (orxPARAM_INFO *)orxParam_Get(stName);
 
-      /* Valid info ? */
+      /* Valid info? */
       if(pstParamInfo != orxNULL)
       {
         /* Display its help */
@@ -278,13 +275,11 @@ static orxSTATUS orxFASTCALL orxParam_Version(orxU32 _u32NbParam, const orxSTRIN
  */
 static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
 {
-  orxU32            i;
-  const orxSTRING  *azParamList = orxNULL;
   const orxSTRING   azConfigParamList[orxPARAM_KU32_MAX_CONFIG_PARAM];
   orxCHAR           acFirstParamBuffer[256];
   orxSTATUS         eResult = orxSTATUS_SUCCESS;
 
-  /* Module initialized ? */
+  /* Module initialized? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
   orxASSERT(_pstParamInfo != orxNULL);
 
@@ -293,10 +288,10 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
   {
     /* Look at the number of time that this parameter as been set on the command line, and if multiple instance are allowed */
     if(((_pstParamInfo->u32Count == 0)
-    || ((_pstParamInfo->u32Count > 0)
-     && (orxFLAG_TEST(_pstParamInfo->stParam.u32Flags, orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED)))))
+    || (orxFLAG_TEST(_pstParamInfo->stParam.u32Flags, orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED))))
     {
-      orxU32 u32ParamCount, u32RemainingNumber = 0;
+      const orxSTRING  *azParamList = orxNULL;
+      orxU32            u32RemainingNumber = 0, i;
 
       /* Loop on Extra parameters */
       for(i = 0; i < sstParam.u32ParamNumber; i++)
@@ -336,7 +331,7 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
         if(s32ParamValueNumber > 0)
         {
           /* Prints first parameter */
-          acFirstParamBuffer[orxString_NPrint(acFirstParamBuffer, sizeof(acFirstParamBuffer) - 1, "%s%s", orxPARAM_KZ_MODULE_LONG_PREFIX, _pstParamInfo->stParam.zLongName)] = orxCHAR_NULL;
+          orxString_NPrint(acFirstParamBuffer, sizeof(acFirstParamBuffer), "%s%s", orxPARAM_KZ_MODULE_LONG_PREFIX, _pstParamInfo->stParam.zLongName);
 
           /* Stores it */
           azConfigParamList[0] = acFirstParamBuffer;
@@ -360,6 +355,8 @@ static orxSTATUS orxFASTCALL orxParam_Process(orxPARAM_INFO *_pstParamInfo)
       /* Found? */
       if(azParamList != orxNULL)
       {
+        orxU32 u32ParamCount;
+
         /* Increases ref count */
         _pstParamInfo->u32Count++;
 
@@ -468,7 +465,7 @@ orxSTATUS orxFASTCALL orxParam_Init()
                                       orxBANK_KU32_FLAG_NONE,
                                       orxMEMORY_TYPE_MAIN);
 
-    /* Bank successfully created ? */
+    /* Bank successfully created? */
     if(sstParam.pstBank != orxNULL)
     {
       /* Now create the hash table */
@@ -476,7 +473,7 @@ orxSTATUS orxFASTCALL orxParam_Init()
                                                   orxHASHTABLE_KU32_FLAG_NONE,
                                                   orxMEMORY_TYPE_MAIN);
 
-      /* HashTable Created ? */
+      /* HashTable Created? */
       if(sstParam.pstHashTable != orxNULL)
       {
         orxPARAM stParams;
@@ -484,17 +481,14 @@ orxSTATUS orxFASTCALL orxParam_Init()
         /* Set module as ready */
         sstParam.u32Flags   = orxPARAM_KU32_MODULE_FLAG_READY;
 
-        /* Enables param debug level */
-        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, orxTRUE);
-
         /* Inits the param structure */
         orxMemory_Zero(&stParams, sizeof(orxPARAM));
         stParams.pfnParser  = orxParam_ProcessConfigParams;
         stParams.u32Flags   = orxPARAM_KU32_FLAG_MULTIPLE_ALLOWED;
         stParams.zShortName = "c";
         stParams.zLongName  = "config";
-        stParams.zShortDesc = "Loads the specified configuration file.";
-        stParams.zLongDesc  = "Loads the specified configuration file from the current execution folder. More than one file can be specified.";
+        stParams.zShortDesc = "Loads the specified configuration file(s).";
+        stParams.zLongDesc  = "Loads the specified configuration file(s) from the available resource storages. Multiple files can be specified.";
 
         /* Registers it */
         eResult = orxParam_Register(&stParams);
@@ -560,6 +554,9 @@ orxSTATUS orxFASTCALL orxParam_Init()
 
           /* Pops config section */
           orxConfig_PopSection();
+
+          /* Sends event */
+          orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_PARAM_READY);
         }
         else
         {
@@ -578,6 +575,24 @@ orxSTATUS orxFASTCALL orxParam_Init()
     eResult = orxSTATUS_SUCCESS;
   }
 
+  /* Failed? */
+  if(eResult == orxSTATUS_FAILURE)
+  {
+    /* Deletes table */
+    if(sstParam.pstHashTable != orxNULL)
+    {
+      orxHashTable_Delete(sstParam.pstHashTable);
+      sstParam.pstHashTable = orxNULL;
+    }
+
+    /* Deletes bank */
+    if(sstParam.pstBank != orxNULL)
+    {
+      orxBank_Delete(sstParam.pstBank);
+      sstParam.pstBank = orxNULL;
+    }
+  }
+
   /* Done */
   return eResult;
 }
@@ -586,13 +601,20 @@ orxSTATUS orxFASTCALL orxParam_Init()
  */
 void orxFASTCALL orxParam_Exit()
 {
-  /* Module initialized ? */
+  /* Module initialized? */
   if((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY)
   {
+    /* Deletes table */
+    orxHashTable_Delete(sstParam.pstHashTable);
+
+    /* Deletes bank */
+    orxBank_Delete(sstParam.pstBank);
+
     /* Module not ready now */
     sstParam.u32Flags = orxPARAM_KU32_MODULE_FLAG_NONE;
   }
 
+  /* Done! */
   return;
 }
 
@@ -602,29 +624,28 @@ void orxFASTCALL orxParam_Exit()
  */
 orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE; /* Result of the operation */
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Module initialized ? */
+  /* Module initialized? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
 
-  /* Correct parameters ? */
+  /* Correct parameters? */
   orxASSERT(_pstParam != orxNULL);
 
   /* Short parameters and callbacks are compulsory */
-  if(_pstParam->zShortName != orxNULL &&
-      _pstParam->zShortDesc != orxNULL &&
-      _pstParam->pfnParser  != orxNULL)
+  if((_pstParam->zShortName != orxNULL)
+  && (_pstParam->zShortDesc != orxNULL)
+  && (_pstParam->pfnParser  != orxNULL))
   {
-    orxU32 u32ShortName;
+    orxSTRINGID stShortName;
 
     /* Creates CRC for the Short Name */
-    u32ShortName = orxString_ToCRC(orxPARAM_KZ_MODULE_SHORT_PREFIX);
-    u32ShortName = orxString_ContinueCRC(_pstParam->zShortName, u32ShortName);
+    stShortName = orxString_Hash(_pstParam->zShortName);
 
     /* Check if options with the same name don't have already been registered */
-    if(orxParam_Get(u32ShortName) == orxNULL)
+    if(orxParam_Get(stShortName) == orxNULL)
     {
-      orxU32 u32LongName = 0;
+      orxSTRINGID stLongName = 0;
       orxBOOL bStoreParam = orxTRUE; /* No problem at the moment, we can store the parameter */
 
       /* Check if the long name has not already been registered too */
@@ -634,26 +655,25 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
         bStoreParam = orxFALSE;
 
         /* Create CRC For the long name */
-        u32LongName = orxString_ToCRC(orxPARAM_KZ_MODULE_LONG_PREFIX);
-        u32LongName = orxString_ContinueCRC(_pstParam->zLongName, u32LongName);
+        stLongName = orxString_Hash(_pstParam->zLongName);
 
-        /* Found ? */
-        if(orxParam_Get(u32LongName) == orxNULL)
+        /* Found? */
+        if(orxParam_Get(stLongName) == orxNULL)
         {
           /* No Params have been found, we can store it */
           bStoreParam = orxTRUE;
         }
       }
 
-      /* Can we store the parameter ? */
-      if(bStoreParam)
+      /* Can we store the parameter? */
+      if(bStoreParam != orxFALSE)
       {
         orxPARAM_INFO *pstParamInfo;
 
         /* Allocate a new cell in the bank */
         pstParamInfo = (orxPARAM_INFO *)orxBank_Allocate(sstParam.pstBank);
 
-        /* Allocation success ? */
+        /* Allocation success? */
         if(pstParamInfo != orxNULL)
         {
           /* Cleans it */
@@ -663,17 +683,22 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
           orxMemory_Copy(&(pstParamInfo->stParam), _pstParam, sizeof(orxPARAM));
 
           /* Store Params in the hash Table (with short name as key) */
-          orxHashTable_Add(sstParam.pstHashTable, u32ShortName, pstParamInfo);
+          orxHashTable_Add(sstParam.pstHashTable, stShortName, pstParamInfo);
 
           /* Store Param with long name as key if it exists */
           if(_pstParam->zLongName != orxNULL)
           {
             /* Adds it to table */
-            orxHashTable_Add(sstParam.pstHashTable, u32LongName, pstParamInfo);
+            orxHashTable_Add(sstParam.pstHashTable, stLongName, pstParamInfo);
           }
 
           /* Process params */
           eResult = orxParam_Process(pstParamInfo);
+        }
+        else
+        {
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
         }
       }
       else
@@ -695,6 +720,9 @@ orxSTATUS orxFASTCALL orxParam_Register(const orxPARAM *_pstParam)
   else
   {
     orxDEBUG_PRINT(orxDEBUG_LEVEL_PARAM, "Invalid registered parameter... Forgets it");
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done */
@@ -710,19 +738,38 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Stores info */
-  sstParam.u32ParamNumber = _u32NbParams;
-  sstParam.azParams       = _azParams;
+  /* Had parameters? */
+  if(sstParam.azParams != orxNULL)
+  {
+    orxU32 i;
+
+    /* Deletes them */
+    for(i = 0; i < sstParam.u32ParamNumber; i++)
+    {
+      free(sstParam.azParams[i]);
+    }
+    free(sstParam.azParams);
+    sstParam.u32ParamNumber = 0;
+    sstParam.azParams       = orxNULL;
+  }
 
   /* Has parameters? */
   if((_u32NbParams > 0) && (_azParams != orxNULL))
   {
     orxS32  s32Index, s32NextIndex;
+    orxU32  i;
     orxCHAR zLocalName[256], zPath[256];
 
+    /* Stores them */
+    sstParam.u32ParamNumber = _u32NbParams;
+    sstParam.azParams       = (orxSTRING *)malloc(_u32NbParams * sizeof(orxSTRING));
+    for(i = 0; i < _u32NbParams; i++)
+    {
+      sstParam.azParams[i] = strdup(_azParams[i]);
+    }
+
     /* Copies it locally */
-    orxString_NPrint(zLocalName, sizeof(zLocalName) - 1, "%s", sstParam.azParams[0]);
-    zLocalName[sizeof(zLocalName) - 1] = orxCHAR_NULL;
+    orxString_NPrint(zLocalName, sizeof(zLocalName), "%s", sstParam.azParams[0]);
 
     /* Finds last '.' */
     for(s32Index = orxString_SearchCharIndex(zLocalName, '.', 0);
@@ -759,11 +806,15 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     }
 
     /* Gets debug path */
-    orxString_NPrint(zPath, sizeof(zPath) - 1, orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", zLocalName + s32Index);
-    zPath[sizeof(zPath) - 1] = orxCHAR_NULL;
+    orxString_NPrint(zPath, sizeof(zPath), orxPARAM_KZ_BASE_DIRECTORY_NAME "%s", zLocalName + s32Index);
 
     /* Stores base names for debug */
     orxDEBUG_SETBASEFILENAME(zPath);
+  }
+  else
+  {
+    /* Clears base names for debug */
+    orxDEBUG_SETBASEFILENAME(orxNULL);
   }
 
   /* Done! */
@@ -776,10 +827,15 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
 orxSTATUS orxFASTCALL orxParam_DisplayHelp()
 {
   orxPARAM  stParams;
+  orxBOOL   bDebugLevelBackup;
   orxSTATUS eResult;
 
-  /* Module initialized ? */
+  /* Module initialized? */
   orxASSERT((sstParam.u32Flags & orxPARAM_KU32_MODULE_FLAG_READY) == orxPARAM_KU32_MODULE_FLAG_READY);
+
+  /* Disables param logs */
+  bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_PARAM);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, orxFALSE);
 
   /* Everything seems ok. Register the version function */
   stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
@@ -795,6 +851,9 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
   /* Continue? */
   if(eResult != orxSTATUS_FAILURE)
   {
+    /* Sends event */
+    eResult = orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_PARAM_DISPLAY);
+
     /* Everything seems ok. Register the module help function */
     stParams.u32Flags   = orxPARAM_KU32_FLAG_STOP_ON_ERROR;
     stParams.pfnParser  = orxParam_Help;
@@ -804,15 +863,24 @@ orxSTATUS orxFASTCALL orxParam_DisplayHelp()
     stParams.zLongDesc  = "If a parameter is specified, its full description will be printed. Otherwise the list of available parameters will be printed.";
 
     /* Register */
-    eResult = orxParam_Register(&stParams);
+    if(orxParam_Register(&stParams) == orxSTATUS_FAILURE)
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
+
+  /* Restores display logs */
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, bDebugLevelBackup);
 
   /* Done! */
   return eResult;
 }
 
+#undef orxPARAM_LOG
+
 #ifdef __orxMSVC__
 
-  #pragma warning(default : 4996)
+  #pragma warning(pop)
 
 #endif /* __orxMSVC__ */

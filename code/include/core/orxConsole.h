@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -48,7 +48,7 @@
 
 /** Inputs
  */
-#define orxCONSOLE_KZ_INPUT_SET                       "-=ConsoleSet=-"                /**< Console input set */
+#define orxCONSOLE_KZ_INPUT_SET                       "orx:input:console"             /**< Console input set */
 
 #define orxCONSOLE_KZ_INPUT_TOGGLE                    "Toggle"                        /**< Toggle input */
 #define orxCONSOLE_KZ_INPUT_AUTOCOMPLETE              "AutoComplete"                  /**< Autocomplete input */
@@ -62,8 +62,11 @@
 #define orxCONSOLE_KZ_INPUT_RIGHT                     "Right"                         /**< Cursor move right */
 #define orxCONSOLE_KZ_INPUT_START                     "Start"                         /**< Cursor move start */
 #define orxCONSOLE_KZ_INPUT_END                       "End"                           /**< Cursor move end */
+#define orxCONSOLE_KZ_INPUT_PASTE                     "Paste"                         /**< Paste input */
 #define orxCONSOLE_KZ_INPUT_SCROLL_DOWN               "ScrollDown"                    /**< Log scroll down */
 #define orxCONSOLE_KZ_INPUT_SCROLL_UP                 "ScrollUp"                      /**< Log scroll up */
+
+#define orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION   "cih"                           /**< Config history file extension */
 
 
 /** Console module setup

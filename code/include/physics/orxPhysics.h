@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -57,7 +57,7 @@
 #define orxBODY_DEF_KU32_FLAG_DYNAMIC                 0x00000002  /**< Dynamic type body def flag */
 #define orxBODY_DEF_KU32_FLAG_HIGH_SPEED              0x00000004  /**< High speed type body def flag */
 #define orxBODY_DEF_KU32_FLAG_FIXED_ROTATION          0x00000008  /**< Body can't be rotated by physics */
-#define orxBODY_DEF_KU32_FLAG_CAN_MOVE                0x00000010  /**< Static body is allowed to move by user direct access */
+#define orxBODY_DEF_KU32_FLAG_CAN_MOVE                0x00000010  /**< Static body is allowed to move through direct user access */
 #define orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP             0x00000020  /**< Allow sleep body def flag */
 
 #define orxBODY_DEF_KU32_MASK_ALL                     0xFFFFFFFF  /**< Body def all mask */
@@ -155,12 +155,11 @@ typedef struct __orxBODY_PART_DEF_t
 
     struct
     {
-      orxVECTOR v0;                                   /**< Edge v0 (ghost): 44 */
-      orxVECTOR v1;                                   /**< Edge v1 : 56 */
-      orxVECTOR v2;                                   /**< Edge v2 : 68 */
-      orxVECTOR v3;                                   /**< Edge v3 (ghost): 80 */
-      orxBOOL   bHasVertex0;                          /**< Edge Has v0 : 84 */
-      orxBOOL   bHasVertex3;                          /**< Edge Has v3 : 88 */
+      orxVECTOR avVertices[2];                        /**< Edge v2 : 56 */
+      orxVECTOR vPrevious;                            /**< Previous vertex (ghost) : 68 */
+      orxVECTOR vNext;                                /**< Next vertex (ghost) : 80 */
+      orxBOOL   bHasPrevious;                         /**< Has previous vertex : 84 */
+      orxBOOL   bHasNext;                             /**< Has next vertex : 88 */
 
     } stEdge;
 
@@ -171,8 +170,8 @@ typedef struct __orxBODY_PART_DEF_t
       orxVECTOR*avVertices;                           /**< Chain vertices : 60 */
       orxU32    u32VertexCount;                       /**< Chain vertex count : 64 */
       orxBOOL   bIsLoop;                              /**< Loop chain : 68 */
-      orxBOOL   bHasPrevious;                         /**< Has Previous vertex : 72 */
-      orxBOOL   bHasNext;                             /**< Has Next vertex : 76 */
+      orxBOOL   bHasPrevious;                         /**< Has previous vertex : 72 */
+      orxBOOL   bHasNext;                             /**< Has next vertex : 76 */
 
     } stChain;
 
@@ -188,62 +187,61 @@ typedef struct __orxBODY_JOINT_DEF_t
   orxVECTOR     vDstScale;                            /**< Destination scale : 24 */
   orxVECTOR     vSrcAnchor;                           /**< Source body anchor : 36 */
   orxVECTOR     vDstAnchor;                           /**< Destination body anchor : 48 */
-  orxU32        u32Flags;                             /**< Control flags : 52 */
 
   union
   {
     struct
     {
-      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 56 */
-      orxFLOAT  fMinRotation;                         /**< Min rotation : 60 */
-      orxFLOAT  fMaxRotation;                         /**< Max rotation : 64 */
-      orxFLOAT  fMotorSpeed;                          /**< Motor speed : 68 */
-      orxFLOAT  fMaxMotorTorque;                      /**< Max motor torque : 72 */
+      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 52 */
+      orxFLOAT  fMinRotation;                         /**< Min rotation : 56 */
+      orxFLOAT  fMaxRotation;                         /**< Max rotation : 60 */
+      orxFLOAT  fMotorSpeed;                          /**< Motor speed : 64 */
+      orxFLOAT  fMaxMotorTorque;                      /**< Max motor torque : 68 */
 
-    } stRevolute;                                     /**< Revolute : 72 */
-
-    struct
-    {
-      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 56 */
-      orxVECTOR vTranslationAxis;                     /**< Translation axis : 68 */
-      orxFLOAT  fMinTranslation;                      /**< Min translation : 72 */
-      orxFLOAT  fMaxTranslation;                      /**< Max translation : 76 */
-      orxFLOAT  fMotorSpeed;                          /**< Motor speed : 80 */
-      orxFLOAT  fMaxMotorForce;                       /**< Max motor force : 84 */
-
-    } stPrismatic;                                    /**< Prismatic : 84 */
+    } stRevolute;                                     /**< Revolute : 68 */
 
     struct
     {
-      orxFLOAT  fLength;                              /**< Length : 56 */
-      orxFLOAT  fFrequency;                           /**< Frequency : 60 */
-      orxFLOAT  fDamping;                             /**< Damping : 64 */
+      orxVECTOR vTranslationAxis;                     /**< Translation axis : 60 */
+      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 64 */
+      orxFLOAT  fMinTranslation;                      /**< Min translation : 68 */
+      orxFLOAT  fMaxTranslation;                      /**< Max translation : 72 */
+      orxFLOAT  fMotorSpeed;                          /**< Motor speed : 76 */
+      orxFLOAT  fMaxMotorForce;                       /**< Max motor force : 80 */
 
-    } stSpring;                                       /**< Spring : 64 */
-
-    struct
-    {
-      orxFLOAT  fLength;                              /**< Length : 56 */
-
-    } stRope;                                         /**< Rope : 56 */
+    } stPrismatic;                                    /**< Prismatic : 80 */
 
     struct
     {
-      orxFLOAT  fLengthRatio;                         /**< Length ratio : 56 */
-      orxVECTOR vSrcGroundAnchor;                     /**< Source ground anchor : 68 */
-      orxVECTOR vDstGroundAnchor;                     /**< Destination ground anchor : 80 */
-      orxFLOAT  fSrcLength;                           /**< Source length : 84 */
-      orxFLOAT  fMaxSrcLength;                        /**< Max source length : 88 */
-      orxFLOAT  fDstLength;                           /**< Destination length : 92 */
-      orxFLOAT  fMaxDstLength;                        /**< Max destination length : 96 */
+      orxFLOAT  fLength;                              /**< Length : 52 */
+      orxFLOAT  fFrequency;                           /**< Frequency : 56 */
+      orxFLOAT  fDamping;                             /**< Damping : 60 */
 
-    } stPulley;                                       /**< Pulley : 96 */
+    } stSpring;                                       /**< Spring : 60 */
+
+    struct
+    {
+      orxFLOAT  fLength;                              /**< Length : 52 */
+
+    } stRope;                                         /**< Rope : 52 */
+
+    struct
+    {
+      orxVECTOR vSrcGroundAnchor;                     /**< Source ground anchor : 60 */
+      orxVECTOR vDstGroundAnchor;                     /**< Destination ground anchor : 72 */
+      orxFLOAT  fLengthRatio;                         /**< Length ratio : 76 */
+      orxFLOAT  fSrcLength;                           /**< Source length : 80 */
+      orxFLOAT  fMaxSrcLength;                        /**< Max source length : 84 */
+      orxFLOAT  fDstLength;                           /**< Destination length : 88 */
+      orxFLOAT  fMaxDstLength;                        /**< Max destination length : 92 */
+
+    } stPulley;                                       /**< Pulley : 92 */
 
     struct
     {
       orxVECTOR vTranslationAxis;                     /**< Translation axis : 64 */
-      orxFLOAT  fMinTranslation;                      /**< Min translation : 68 */
-      orxFLOAT  fMaxTranslation;                      /**< Max translation : 72 */
+      orxFLOAT  fFrequency;                           /**< Frequency : 68 */
+      orxFLOAT  fDamping;                             /**< Damping : 72 */
       orxFLOAT  fMotorSpeed;                          /**< Motor speed : 76 */
       orxFLOAT  fMaxMotorForce;                       /**< Max motor force : 80 */
 
@@ -270,7 +268,9 @@ typedef struct __orxBODY_JOINT_DEF_t
 
     } stGear;                                         /**< Gear : 64 */
 
-  };                                                  /**< Joint : 96 */
+  };                                                  /**< Joint : 92 */
+
+  orxU32        u32Flags;                             /**< Control flags : 96 */
 
 } orxBODY_JOINT_DEF;
 
@@ -292,10 +292,10 @@ typedef enum __orxPHYSICS_EVENT_t
  */
 typedef struct __orxPHYSICS_EVENT_PAYLOAD_t
 {
-  orxVECTOR       vPosition;                          /**< Contact position : 12 */
-  orxVECTOR       vNormal;                            /**< Contact normal : 24 */
-  const orxSTRING zSenderPartName;                    /**< Sender part name : 28 */
-  const orxSTRING zRecipientPartName;                 /**< Recipient part name : 32 */
+  orxVECTOR                 vPosition;                /**< Contact position : 12 */
+  orxVECTOR                 vNormal;                  /**< Contact normal : 24 */
+  struct __orxBODY_PART_t  *pstSenderPart;            /**< Sender part : 28 */
+  struct __orxBODY_PART_t  *pstRecipientPart;         /**< Recipient part : 32 */
 
 } orxPHYSICS_EVENT_PAYLOAD;
 
@@ -457,6 +457,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetCustomGravit
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetFixedRotation(orxPHYSICS_BODY *_pstBody, orxBOOL _bFixed);
 
+/** Sets the dynamic property of a body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _bDynamic                             Dynamic / Static (or Kinematic depending on the "allow moving" property)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetDynamic(orxPHYSICS_BODY *_pstBody, orxBOOL _bDynamic);
+
+/** Sets the "allow moving" property of a body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @param[in]   _bAllowMoving                         Only used for non-dynamic bodies, Kinematic / Static
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetAllowMoving(orxPHYSICS_BODY *_pstBody, orxBOOL _bAllowMoving);
+
 /** Gets the position of a physical body
  * @param[in]   _pstBody                              Concerned physical body
  * @param[out]  _pvPosition                           Position to get
@@ -595,18 +609,64 @@ extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetPartSelfFlag
  */
 extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart);
 
-/** Is a physical body part solid?
- * @param[in]   _pstBodyPart                          Concerned physical body part
- * @return      orxTRUE / orxFALSE
- */
-extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart);
-
 /** Sets a physical body part solid
  * @param[in]   _pstBodyPart                          Concerned physical body part
  * @param[in]   _bSolid                               Solid or sensor?
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid);
+
+/** Is a physical body part solid?
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart);
+
+/** Sets friction of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @param[in]   _fFriction                            Friction
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartFriction(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fFriction);
+
+/** Gets friction of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @return      Friction
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetPartFriction(const orxPHYSICS_BODY_PART *_pstBodyPart);
+
+/** Sets restitution of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @param[in]   _fRestitution                         Restitution
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartRestitution(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fRestitution);
+
+/** Gets restitution of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @return      Restitution
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetPartRestitution(const orxPHYSICS_BODY_PART *_pstBodyPart);
+
+/** Sets density of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @param[in]   _fDensity                             Density
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartDensity(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fDensity);
+
+/** Gets density of a physical body part
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @return      Density
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetPartDensity(const orxPHYSICS_BODY_PART *_pstBodyPart);
+
+/** Is point inside part? (Using world coordinates)
+ * @param[in]   _pstBodyPart                          Concerned physical body part
+ * @param[in]   _pvPosition                           Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxPhysics_IsInsidePart(const orxPHYSICS_BODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition);
 
 
 /** Enables a (revolute) body joint motor
@@ -646,16 +706,27 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetJointReactio
 
 
 /** Issues a raycast to test for potential physics bodies in the way
- * @param[in]   _pvStart                              Start of raycast
+ * @param[in]   _pvBegin                              Beginning of raycast
  * @param[in]   _pvEnd                                End of raycast
  * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
- * @param[in]   _bEarlyExit     Should stop as soon as an object has been hit (which might not be the closest)
+ * @param[in]   _bEarlyExit                           Should stop as soon as an object has been hit (which might not be the closest)
  * @param[in]   _pvContact                            If non-null and a contact is found it will be stored here
  * @param[in]   _pvNormal                             If non-null and a contact is found, its normal will be stored here
  * @return Colliding body's user data / orxHANDLE_UNDEFINED
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+
+
+/** Picks bodies in contact with the given axis aligned box
+ * @param[in]   _pstBox                               Box used for picking
+ * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _ahUserDataList                       List of user data to fill
+ * @param[in]   _u32Number                            Number of user data
+ * @return      Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all.
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxPhysics_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number);
 
 
 /** Enables/disables physics simulation

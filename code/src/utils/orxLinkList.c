@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -98,7 +98,7 @@ orxSTATUS orxFASTCALL orxLinkList_Clean(orxLINKLIST *_pstList)
  */
 orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 {
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -149,7 +149,7 @@ orxSTATUS orxFASTCALL orxLinkList_AddStart(orxLINKLIST *_pstList, orxLINKLIST_NO
  */
 orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE *_pstNode)
 {
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstList != orxNULL);
@@ -201,8 +201,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddEnd(orxLINKLIST *_pstList, orxLINKLIST_NODE
  */
 orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
 {
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
-  register orxLINKLIST *pstList;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxLINKLIST *pstList;
 
   /* Checks */
   orxASSERT(_pstRefNode != orxNULL);
@@ -273,8 +273,8 @@ orxSTATUS orxFASTCALL orxLinkList_AddBefore(orxLINKLIST_NODE *_pstRefNode, orxLI
  */
 orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLINKLIST_NODE *_pstNode)
 {
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
-  register orxLINKLIST *pstList;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxLINKLIST *pstList;
 
   /* Checks */
   orxASSERT(_pstRefNode != orxNULL);
@@ -343,9 +343,9 @@ orxSTATUS orxFASTCALL orxLinkList_AddAfter(orxLINKLIST_NODE *_pstRefNode, orxLIN
  */
 orxSTATUS orxFASTCALL orxLinkList_Remove(orxLINKLIST_NODE *_pstNode)
 {
-  register orxLINKLIST *pstList;
-  register orxLINKLIST_NODE *pstPrevious, *pstNext;
-  register orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxLINKLIST *pstList;
+  orxLINKLIST_NODE *pstPrevious, *pstNext;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(_pstNode != orxNULL);

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -77,24 +77,10 @@ static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 
   /* Checks */
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
+  orxASSERT(_pstEvent->eID == orxSYSTEM_EVENT_CLOSE);
 
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
-  {
-    /* Close event */
-    case orxSYSTEM_EVENT_CLOSE:
-    {
-      /* Updates status */
-      sbStopByEvent = orxTRUE;
-
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-  }
+  /* Updates status */
+  sbStopByEvent = orxTRUE;
 
   /* Done! */
   return eResult;
@@ -105,21 +91,15 @@ static orxSTATUS orxFASTCALL orx_DefaultEventHandler(const orxEVENT *_pstEvent)
 static void orxFASTCALL orx_MainSetup()
 {
   /* Adds module dependencies */
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CLOCK);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_INPUT);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_EVENT);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_LOCALE);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PLUGIN);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_OBJECT);
-  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_RENDER);
+  orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
 
-  orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_CONSOLE);
-  orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PROFILER);
+  orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_RENDER);
   orxModule_AddOptionalDependency(orxMODULE_ID_MAIN, orxMODULE_ID_SCREENSHOT);
 
+  /* Done! */
   return;
 }
 
@@ -182,6 +162,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
     /* Releases memory pool */
     [poPool release];
+
+    /* Clears params */
+    orxParam_SetArgs(0, orxNULL);
   }
 
   /* Done! */
@@ -192,9 +175,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
 #else /* __orxIOS__ */
 
-  #if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  #if defined(__orxANDROID__)
 
-#include "main/orxAndroid.h"
+#include "main/android/orxAndroid.h"
 
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
@@ -217,6 +200,9 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Sends the command line arguments to orxParam module */
   if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
+    /* Sets thread callbacks */
+    orxThread_SetCallbacks(orxAndroid_JNI_SetupThread, orxNULL, orxNULL);
+
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
     {
@@ -226,6 +212,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+      orxEvent_SetHandlerIDFlags(orx_DefaultEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Clears payload */
       orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
@@ -235,12 +222,10 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
           bStop == orxFALSE;
           bStop = ((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE)
       {
-        orxAndroid_PumpEvents();
-
         /* Sends frame start event */
         orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
 
-        /* Runs the engine */
+        /* Runs game specific code */
         eMainStatus = _pfnRun();
 
         /* Updates clock system */
@@ -252,20 +237,23 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Updates frame count */
         stPayload.u32FrameCount++;
       }
+
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Exits from the engine */
+      orxModule_Exit(orxMODULE_ID_MAIN);
     }
 
-    /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-    /* Exits from engine */
-    orxModule_Exit(orxMODULE_ID_MAIN);
+    /* Clears params */
+    orxParam_SetArgs(0, orxNULL);
   }
 
   /* Exits from the Debug system */
   orxDEBUG_EXIT();
 }
 
-  #else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #else /* __orxANDROID__ */
 
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
@@ -290,6 +278,12 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   /* Sends the command line arguments to orxParam module */
   if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
   {
+#ifdef __orxSTATIC__
+    /* Silences param & plugin warnings */
+    orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PLUGIN, orxFALSE);
+    orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_PARAM, orxFALSE);
+#endif /* __orxSTATIC */
+
     /* Inits the engine */
     if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
     {
@@ -299,6 +293,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
       /* Registers default event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+      orxEvent_SetHandlerIDFlags(orx_DefaultEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Clears payload */
       orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
@@ -311,7 +306,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Sends frame start event */
         orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
 
-        /* Runs the engine */
+        /* Runs game specific code */
         eMainStatus = _pfnRun();
 
         /* Updates clock system */
@@ -323,69 +318,27 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Updates frame count */
         stPayload.u32FrameCount++;
       }
+
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+      /* Exits from the engine */
+      orxModule_Exit(orxMODULE_ID_MAIN);
     }
 
-    /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
-
-    /* Exits from engine */
-    orxModule_Exit(orxMODULE_ID_MAIN);
+    /* Clears params */
+    orxParam_SetArgs(0, orxNULL);
   }
 
   /* Exits from the Debug system */
   orxDEBUG_EXIT();
 }
 
-    #ifdef __orxMSVC__
-
-/** Orx main execution function (console-less windows application)
- * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
- * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
- * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
- */
-static orxINLINE void orx_WinExecute(const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
-{
-  #define orxMAX_ARGS 256
-
-  int   argc;
-  char *argv[orxMAX_ARGS];
-  char *pcToken, *pcNextToken, *pcFirstDelimiters;
-  LPSTR lpFullCmdLine;
-
-  /* Gets full command line */
-  lpFullCmdLine = GetCommandLineA();
-
-  /* Starts with a double quote? */
-  if(*orxString_SkipWhiteSpaces(lpFullCmdLine) == '"')
-  {
-    /* Gets first delimiters */
-    pcFirstDelimiters = "\"";
-  }
-  else
-  {
-    /* Gets first delimiters */
-    pcFirstDelimiters = " ";
-  }
-
-  /* Process command line */
-  for(argc = 0, pcNextToken = NULL, pcToken = strtok_s(lpFullCmdLine, pcFirstDelimiters, &pcNextToken);
-      pcToken && (argc < orxMAX_ARGS);
-      pcToken = strtok_s(NULL, " ", &pcNextToken))
-  {
-    argv[argc++] = pcToken;
-  }
-
-  /* Inits and executes orx */
-  orx_Execute(argc, argv, _pfnInit, _pfnRun, _pfnExit);
-}
-
-    #endif /* __orxMSVC__ */
-
-  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+  #endif /* __orxANDROID__ */
 
 #endif /* __orxIOS__ */
 
-#endif /* __orxPLUGIN__ */
+#endif /* !__orxPLUGIN__ */
 
 #endif /*_orx_H_*/
 

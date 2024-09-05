@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -127,6 +127,24 @@ do                                                                              
   orxCommand_Unregister(#MODULE"."#COMMAND);                                                                                                                    \
 } while(orxFALSE)
 
+#define orxCOMMAND_REGISTER(NAME, FUNCTION, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                                  \
+do                                                                                                                                                              \
+{                                                                                                                                                               \
+  orxCOMMAND_VAR_DEF  stResult;                                                                                                                                 \
+  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {{"Dummy", orxCOMMAND_VAR_TYPE_NONE}, __VA_ARGS__};                               \
+  orxSTATUS           eStatus;                                                                                                                                  \
+  stResult.eType    = RESULT_TYPE;                                                                                                                              \
+  stResult.zName    = RESULT_NAME;                                                                                                                              \
+  eStatus           = orxCommand_Register(NAME, &FUNCTION, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &astParamList[1], &stResult);                                    \
+  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                      \
+} while(orxFALSE)
+
+#define orxCOMMAND_UNREGISTER(NAME)                                                                                                                             \
+do                                                                                                                                                              \
+{                                                                                                                                                               \
+  orxCommand_Unregister(NAME);                                                                                                                                  \
+} while(orxFALSE)
+
 
 /** Command module setup
  */
@@ -209,6 +227,14 @@ extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetNext(const o
 */
 extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const orxSTRING _zCommandLine, orxCOMMAND_VAR *_pstResult);
 
+/** Evaluates a command with a specific GUID
+* @param[in]   _zCommandLine  Command name + arguments
+* @param[in]   _u64GUID       GUID to use in place of the GUID markers in the command
+* @param[out]  _pstResult     Variable that will contain the result
+* @return      Command result if found, orxNULL otherwise
+*/
+extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_EvaluateWithGUID(const orxSTRING _zCommandLine, orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult);
+
 /** Executes a command
 * @param[in]   _zCommand      Command name
 * @param[in]   _u32ArgNumber  Number of arguments sent to the command
@@ -227,11 +253,11 @@ extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const o
 */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_astOperandList);
 
-/** Prints a variable to a buffer, according to its type (and ignoring any bloc/special character)
+/** Prints a variable to a buffer, according to its type (and ignoring any block/special character)
 * @param[out]  _zDstString    Destination string
-* @param[in]   _u32Size       String available size
+* @param[in]   _u32Size       Available string size, including terminating null character
 * @param[in]   _pstVar        Variable to print
-* @return Number of written characters (excluding trailing orxCHAR_NULL)
+* @return Number of written characters, excluding terminating null character
 */
 extern orxDLLAPI orxU32 orxFASTCALL                   orxCommand_PrintVar(orxSTRING _zDstString, orxU32 _u32Size, const orxCOMMAND_VAR *_pstVar);
 

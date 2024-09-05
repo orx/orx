@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -53,6 +53,7 @@
 
 #define orxRESOURCE_KZ_DEFAULT_STORAGE                    "."
 #define orxRESOURCE_KZ_TYPE_TAG_FILE                      "file"
+#define orxRESOURCE_KZ_TYPE_TAG_MEMORY                    "mem"
 
 
 /** Resource asynchronous operation callback function
@@ -62,7 +63,7 @@ typedef void (orxFASTCALL *orxRESOURCE_OP_FUNCTION)(orxHANDLE _hResource, orxS64
 
 /** Resource handlers
  */
-typedef const orxSTRING (orxFASTCALL *orxRESOURCE_FUNCTION_LOCATE)(const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence);
+typedef const orxSTRING (orxFASTCALL *orxRESOURCE_FUNCTION_LOCATE)(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence);
 typedef orxS64          (orxFASTCALL *orxRESOURCE_FUNCTION_GET_TIME)(const orxSTRING _zLocation);
 typedef orxHANDLE       (orxFASTCALL *orxRESOURCE_FUNCTION_OPEN)(const orxSTRING _zLocation, orxBOOL _bEraseMode);
 typedef void            (orxFASTCALL *orxRESOURCE_FUNCTION_CLOSE)(orxHANDLE _hResource);
@@ -112,8 +113,9 @@ typedef struct __orxRESOURCE_EVENT_PAYLOAD_t
   orxS64                        s64Time;                  /**< New resource time : 8 */
   const orxSTRING               zLocation;                /**< Resource location : 12 / 16 */
   const orxRESOURCE_TYPE_INFO  *pstTypeInfo;              /**< Type info : 16 / 24 */
-  orxU32                        u32GroupID;               /**< Group ID : 20 / 28 */
-  orxU32                        u32NameID;                /**< Name ID : 24 / 32 */
+  orxSTRINGID                   stGroupID;                /**< Group ID : 24 / 32 */
+  orxSTRINGID                   stStorageID;              /**< Storage ID : 32 / 40 */
+  orxSTRINGID                   stNameID;                 /**< Name ID : 40 / 48 */
 
 } orxRESOURCE_EVENT_PAYLOAD;
 
@@ -152,9 +154,9 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetGroup(o
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_AddStorage(const orxSTRING _zGroup, const orxSTRING _zStorage, orxBOOL _bAddFirst);
 
-/** Removes a storage for a given resource group
- * @param[in] _zGroup           Concerned resource group
- * @param[in] _zStorage         Concerned storage
+/** Removes storage(s) for specific resource group(s)
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
+ * @param[in] _zStorage         Concerned storage, orxNULL for all storages (except default one)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RemoveStorage(const orxSTRING _zGroup, const orxSTRING _zStorage);
@@ -214,7 +216,7 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_GetTime(co
 
 /** Opens the resource at the given location
  * @param[in] _zLocation        Location of the resource to open
- * @param[in] _bEraseMode       If true, the file will be erased if existing or created otherwise, if false, no content will get destroyed when opening
+ * @param[in] _bEraseMode       If true, the resource will be erased if existing or created otherwise, if false, no content will get destroyed when opening
  * @return Handle to the open location, orxHANDLE_UNDEFINED otherwise
  */
 extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode);
@@ -240,7 +242,7 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_GetSize(or
  * @param[in] _hResource        Concerned resource
  * @param[in] _s64Offset        Number of bytes to offset from 'origin'
  * @param[in] _eWhence          Starting point for the offset computation (start, current position or end)
- * @return Absolute cursor position
+ * @return Absolute cursor position if successful, -1 otherwise
  */
 extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence);
 
@@ -295,23 +297,60 @@ extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTotalPe
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pstInfo);
 
+/** Unregisters a resource type
+ * @param[in] _zTypeTag         Tag of the resource type to unregister
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_UnregisterType(const orxSTRING _zTypeTag);
+
 /** Gets number of registered resource types
  * @return Number of registered resource types
  */
 extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetTypeCount();
 
-/** Gets registered type info at given index
+/** Gets registered type tag at given index
  * @param[in] _u32Index         Index of storage
  * @return Type tag string if index is valid, orxNULL otherwise
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxResource_GetTypeTag(orxU32 _u32Index);
 
 
-/** Clears cache
+/** Syncs all cached resources for specific resource group(s): update, add or remove events will be sent for all resources that are not located in their original storage anymore
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ClearCache();
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_Sync(const orxSTRING _zGroup);
 
+/** Clears cache for specific resource group(s)
+ * @param[in] _zGroup           Concerned resource group, orxNULL for all groups
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_ClearCache(const orxSTRING _zGroup);
+
+/** Gets the cached location count for a given group
+ * @param[in] _zGroup           Concerned resource group
+ * @return    Item number
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                       orxResource_GetCacheCount(const orxSTRING _zGroup);
+
+/** Gets the next cached location for the given group and returns an iterator for next search
+ * @param[in] _zGroup           Concerned resource group
+ * @param[in] _hIterator        Iterator from previous search or orxHANDLE_UNDEFINED/orxNULL for a new search
+ * @param[out] _pzLocation      Current resource's location, orxNULL to ignore
+ * @param[out] _pzStorage       Current resource's storage, orxNULL to ignore
+ * @param[out] _pzName          Current resource's name, orxNULL to ignore
+ * @return Iterator for next element if an element has been found, orxHANDLE_UNDEFINED otherwise
+ */
+extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCachedLocation(const orxSTRING _zGroup, orxHANDLE _hIterator, const orxSTRING *_pzLocation, const orxSTRING *_pzStorage, const orxSTRING *_pzName);
+
+/** Sets an internal memory resource
+ * !IMPORTANT! The content of _pBuffer is *required* to remain valid until this resource has been successfully unset (by passing _s64Size=0 or _pBuffer=orxNULL), no internal copies will be made!
+ * @param[in] _zName            Name of the resource to set/unset
+ * @param[in] _s64Size          Size of the resource's data (0 to unset)
+ * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer);
 
 #endif /* _orxRESOURCE_H_ */
 

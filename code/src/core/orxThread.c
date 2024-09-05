@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -29,8 +29,6 @@
  *
  */
 
-#define NO_WIN32_LEAN_AND_MEAN
-
 #include "core/orxThread.h"
 
 #include "core/orxClock.h"
@@ -41,6 +39,9 @@
 
 #ifdef __orxWINDOWS__
 
+  #define NO_WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+  #undef NO_WIN32_LEAN_AND_MEAN
   #include <process.h>
 
 #else /* __orxWINDOWS__ */
@@ -56,13 +57,22 @@
 
   #endif /* __orxLINUX__ */
 
-  #if defined (__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-    #include "main/orxAndroid.h"
-
-  #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
 #endif /* __orxWINDOWS__ */
+
+#ifdef __orxLLVM__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wunknown-attributes"
+  #endif /* __orxMAC__ || __orxIOS__ */
+#endif /* __orxLLVM__ */
+
+#include "rpmalloc.h"
+
+#ifdef __orxLLVM__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
+    #pragma clang diagnostic pop
+  #endif /* __orxMAC__ || __orxIOS__ */
+#endif /* __orxLLVM__ */
 
 
 /** Module flags
@@ -81,7 +91,7 @@
 
 /** Misc
  */
-#define orxTHREAD_KU32_TASK_LIST_SIZE                 64
+#define orxTHREAD_KU32_TASK_LIST_SIZE                 256
 
 #define orxTHREAD_KZ_THREAD_NAME_MAIN                 "Main"
 #define orxTHREAD_KZ_THREAD_NAME_WORKER               "Task Runner"
@@ -134,6 +144,9 @@ typedef struct __orxTHREAD_STATIC_t
   orxTHREAD_SEMAPHORE    *pstThreadSemaphore;
   orxTHREAD_SEMAPHORE    *pstTaskSemaphore;
   orxTHREAD_SEMAPHORE    *pstWorkerSemaphore;
+  void                   *pThreadContext;
+  orxTHREAD_FUNCTION      pfnThreadStart;
+  orxTHREAD_FUNCTION      pfnThreadStop;
   orxU32                  u32WorkerID;
   volatile orxU32         u32TaskInIndex;
   volatile orxU32         u32TaskProcessIndex;
@@ -165,8 +178,7 @@ static unsigned int WINAPI orxThread_Execute(void *_pContext)
 static void *orxThread_Execute(void *_pContext)
 #endif /* __orxWINDOWS__ */
 {
-  volatile orxTHREAD_INFO  *pstInfo;
-  orxSTATUS                 eResult;
+  volatile orxTHREAD_INFO *pstInfo;
 
   /* Gets thread's info */
   pstInfo = (orxTHREAD_INFO *)_pContext;
@@ -183,29 +195,42 @@ static void *orxThread_Execute(void *_pContext)
   while(pstInfo->hThread == 0)
     ;
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+  /* Initializes rpmalloc */
+  rpmalloc_thread_initialize();
 
-  /* Notifies the Java framework */
-  orxAndroid_JNI_SetupThread();
-
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-  do
+  /* Should run? */
+  if((sstThread.pfnThreadStart == orxNULL)
+  || (sstThread.pfnThreadStart(sstThread.pThreadContext) != orxSTATUS_FAILURE))
   {
-    /* Runs thread function */
-    eResult = pstInfo->pfnRun(pstInfo->pContext);
+    orxSTATUS eResult;
 
-    /* Yields */
-    orxThread_Yield();
+    do
+    {
+      /* Runs thread function */
+      eResult = pstInfo->pfnRun(pstInfo->pContext);
 
-    /* Waits for its enable semaphore */
-    orxThread_WaitSemaphore(pstInfo->pstEnableSemaphore);
+      /* Yields */
+      orxThread_Yield();
 
-    /* Signals its enable semaphore */
-    orxThread_SignalSemaphore(pstInfo->pstEnableSemaphore);
+      /* Waits for its enable semaphore */
+      orxThread_WaitSemaphore(pstInfo->pstEnableSemaphore);
+
+      /* Signals its enable semaphore */
+      orxThread_SignalSemaphore(pstInfo->pstEnableSemaphore);
+    }
+    /* While stop hasn't been requested */
+    while((eResult != orxSTATUS_FAILURE) && !orxFLAG_TEST(pstInfo->u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP));
   }
-  /* While stop hasn't been requested */
-  while((eResult != orxSTATUS_FAILURE) && !orxFLAG_TEST(pstInfo->u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP));
+
+  /* Has stop callback? */
+  if(sstThread.pfnThreadStop != orxNULL)
+  {
+    /* Runs it */
+    sstThread.pfnThreadStop(sstThread.pThreadContext);
+  }
+
+  /* Finalizes rpmalloc */
+  rpmalloc_thread_finalize(1);
 
   /* Done! */
   return 0;
@@ -307,8 +332,21 @@ orxSTATUS orxFASTCALL orxThread_Init()
   /* Was not already initialized? */
   if(!(sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY))
   {
+    orxTHREAD_FUNCTION  pfnBackupStart, pfnBackupStop;
+    void               *pBackupContext;
+
+    /* Backups thread callbacks & context */
+    pfnBackupStart  = sstThread.pfnThreadStart;
+    pfnBackupStop   = sstThread.pfnThreadStop;
+    pBackupContext  = sstThread.pThreadContext;
+
     /* Cleans static controller */
     orxMemory_Zero(&sstThread, sizeof(orxTHREAD_STATIC));
+
+    /* Restores thread callbacks & context */
+    sstThread.pfnThreadStart  = pfnBackupStart;
+    sstThread.pfnThreadStop   = pfnBackupStop;
+    sstThread.pThreadContext  = pBackupContext;
 
     /* Updates status */
     sstThread.u32Flags |= orxTHREAD_KU32_STATIC_FLAG_READY;
@@ -321,7 +359,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
     /* Success? */
     if((sstThread.pstThreadSemaphore != orxNULL) && (sstThread.pstTaskSemaphore != orxNULL) && (sstThread.pstWorkerSemaphore != orxNULL))
     {
-#if defined(__orxWINDOWS__)
+#ifdef __orxWINDOWS__
 
       /* Inits main thread info */
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread      = GetCurrentThread();
@@ -332,16 +370,14 @@ orxSTATUS orxFASTCALL orxThread_Init()
       /* Sets thread CPU affinity to remain on the same core */
       SetThreadAffinityMask(sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread, 1);
 
-      /* Asks for small time slices */
-      timeBeginPeriod(1);
-
 #else /* __orxWINDOWS__ */
 
       /* Inits main thread info */
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].hThread  = pthread_self();
+      sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].zName    = orxTHREAD_KZ_THREAD_NAME_MAIN;
       sstThread.astThreadInfoList[orxTHREAD_KU32_MAIN_THREAD_ID].u32Flags = orxTHREAD_KU32_INFO_FLAG_INITIALIZED;
 
-  #if defined(__orxLINUX__)
+  #ifdef __orxLINUX__
 
       {
         cpu_set_t stSet;
@@ -379,13 +415,6 @@ orxSTATUS orxFASTCALL orxThread_Init()
         orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
         orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
         orxThread_DeleteSemaphore(sstThread.pstWorkerSemaphore);
-
-#ifdef __orxWINDOWS__
-
-        /* Asks for small time slices */
-        timeEndPeriod(1);
-
-#endif /* __orxWINDOWS__ */
 
         /* Updates status */
         sstThread.u32Flags &= ~orxTHREAD_KU32_STATIC_FLAG_READY;
@@ -426,6 +455,17 @@ void orxFASTCALL orxThread_Exit()
   /* Checks */
   if((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY)
   {
+    /* Is notify callback registered? */
+    if(orxFLAG_TEST(sstThread.u32Flags, orxTHREAD_KU32_STATIC_FLAG_REGISTERED))
+    {
+      /* Is clock module initialized? */
+      if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
+      {
+        /* Unregisters it */
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxThread_NotifyTask);
+      }
+    }
+
     /* Updates worker thread stop flag */
     orxFLAG_SET(sstThread.astThreadInfoList[sstThread.u32WorkerID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
     orxMEMORY_BARRIER();
@@ -438,13 +478,6 @@ void orxFASTCALL orxThread_Exit()
 
     /* Joins all remaining threads */
     orxThread_JoinAll();
-
-#ifdef __orxWINDOWS__
-
-    /* Resets time slices */
-    timeEndPeriod(1);
-
-#endif /* __orxWINDOWS__ */
 
     /* Deletes semaphores */
     orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
@@ -847,7 +880,7 @@ orxTHREAD_SEMAPHORE *orxFASTCALL orxThread_CreateSemaphore(orxU32 _u32Value)
     orxCHAR acBuffer[256];
 
     /* Prints name */
-    acBuffer[orxString_NPrint(acBuffer, sizeof(acBuffer) - 1, "orx_semaphore_%u_%u", (orxU32)getpid(), (orxU32)orxSystem_GetRealTime())] = orxCHAR_NULL;
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "orx_semaphore_%u_%u", (orxU32)getpid(), (orxU32)orxSystem_GetRealTime());
 
     /* Opens semaphore */
     pstResult = (orxTHREAD_SEMAPHORE *)sem_open(acBuffer, O_CREAT, 0644, _u32Value);
@@ -1020,7 +1053,7 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
     /* Are we on main thread, is clock module initialized and did we register callback? */
     if((orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
     && (orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
-    && (orxClock_Register(orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE), orxThread_NotifyTask, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST) != orxSTATUS_FAILURE))
+    && (orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxThread_NotifyTask, orxNULL, orxMODULE_ID_RESOURCE, orxCLOCK_PRIORITY_LOWEST) != orxSTATUS_FAILURE))
     {
       /* Updates status */
       orxFLAG_SET(sstThread.u32Flags, orxTHREAD_KU32_STATIC_FLAG_REGISTERED, orxTHREAD_KU32_STATIC_FLAG_NONE);
@@ -1112,4 +1145,22 @@ orxU32 orxFASTCALL orxThread_GetTaskCount()
 
   /* Done! */
   return u32Result;
+}
+
+/** Sets callbacks to run when starting and stopping new threads
+ * @param[in]   _pfnStart                             Function to run whenever a new thread is started
+ * @param[in]   _pfnStop                              Function to run whenever a thread is stopped
+ * @param[in]   _pContext                             Context that will be transmitted to each callback
+ */
+orxSTATUS orxFASTCALL orxThread_SetCallbacks(const orxTHREAD_FUNCTION _pfnStart, const orxTHREAD_FUNCTION _pfnStop, void *_pContext)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Stores callbacks & context */
+  sstThread.pfnThreadStart  = _pfnStart;
+  sstThread.pfnThreadStop   = _pfnStop;
+  sstThread.pThreadContext  = _pContext;
+
+  /* Done! */
+  return eResult;
 }

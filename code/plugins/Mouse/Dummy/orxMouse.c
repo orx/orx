@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -48,92 +48,85 @@
  * Private functions                                                       *
  ***************************************************************************/
 
-orxSTATUS orxFASTCALL orxMouse_Dummy_ShowCursor(orxBOOL _bShow) {
-	orxSTATUS eResult = orxSTATUS_FAILURE;
-
-	/* Not available */
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
-	/* Done! */
-	return eResult;
+orxSTATUS orxFASTCALL orxMouse_Dummy_ShowCursor(orxBOOL _bShow)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
 }
 
-orxSTATUS orxFASTCALL orxMouse_Dummy_Init() {
-	orxSTATUS eResult = orxSTATUS_FAILURE;
-
-	/* Not available */
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
-	/* Done! */
-	return eResult;
+orxSTATUS orxFASTCALL orxMouse_Dummy_Grab(orxBOOL _bGrab)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
 }
 
-void orxFASTCALL orxMouse_Dummy_Exit() {
-	return;
+orxSTATUS orxFASTCALL orxMouse_Dummy_Init()
+{
+  /* Done! */
+  return orxSTATUS_SUCCESS;
 }
 
-orxSTATUS orxFASTCALL orxMouse_Dummy_SetPosition(const orxVECTOR *_pvPosition) {
-	orxSTATUS eResult = orxSTATUS_FAILURE;
-
-	/* Not available */
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
-	/* Done! */
-	return eResult;
+void orxFASTCALL orxMouse_Dummy_Exit()
+{
+  /* Done! */
+  return;
 }
 
-orxVECTOR *orxFASTCALL orxMouse_Dummy_GetPosition(orxVECTOR *_pvPosition) {
+orxSTATUS orxFASTCALL orxMouse_Dummy_SetPosition(const orxVECTOR *_pvPosition)
+{
+  /* Done! */
+  return orxSTATUS_FAILURE;
+}
+
+orxVECTOR *orxFASTCALL orxMouse_Dummy_GetPosition(orxVECTOR *_pvPosition)
+{
   orxVECTOR* pvResult = _pvPosition;
 
-	orxVector_Copy(pvResult, &orxVECTOR_0);
+  orxVector_Copy(pvResult, &orxVECTOR_0);
 
-	/* Not available */
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
-	/* Done! */
-	return pvResult;
+  /* Done! */
+  return pvResult;
 }
 
-orxBOOL orxFASTCALL orxMouse_Dummy_IsButtonPressed(orxMOUSE_BUTTON _eButton) {
-	orxBOOL bResult = orxFALSE;
+orxBOOL orxFASTCALL orxMouse_Dummy_IsButtonPressed(orxMOUSE_BUTTON _eButton)
+{
+  orxBOOL bResult = orxFALSE;
 
-	/* Not available */
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
-	/* Done! */
-	return bResult;
+  /* Done! */
+  return bResult;
 }
 
-orxVECTOR *orxFASTCALL orxMouse_Dummy_GetMoveDelta(orxVECTOR *_pvMoveDelta) {
-	orxVECTOR *pvResult = _pvMoveDelta;
+orxVECTOR *orxFASTCALL orxMouse_Dummy_GetMoveDelta(orxVECTOR *_pvMoveDelta)
+{
+  orxVECTOR *pvResult = _pvMoveDelta;
 
-	orxVector_Copy(_pvMoveDelta, &orxVECTOR_0);
+  orxVector_Copy(_pvMoveDelta, &orxVECTOR_0);
 
-	/* Done! */
-	return pvResult;
+  /* Done! */
+  return pvResult;
 }
 
-orxFLOAT orxFASTCALL orxMouse_Dummy_GetWheelDelta() {
-	orxFLOAT fResult = orxFLOAT_0;
+orxFLOAT orxFASTCALL orxMouse_Dummy_GetWheelDelta()
+{
+  orxFLOAT fResult = orxFLOAT_0;
 
-	/* Not available */
-	orxDEBUG_PRINT(orxDEBUG_LEVEL_MOUSE, "Not available on this platform!");
-
-	/* Done! */
-	return fResult;
+  /* Done! */
+  return fResult;
 }
+
 /***************************************************************************
  * Plugin related                                                          *
  ***************************************************************************/
 orxPLUGIN_USER_CORE_FUNCTION_START(MOUSE)
-		;
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_Init, MOUSE, INIT);
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_Exit, MOUSE, EXIT);
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_SetPosition, MOUSE, SET_POSITION);
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_GetPosition, MOUSE, GET_POSITION);
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_IsButtonPressed, MOUSE, IS_BUTTON_PRESSED);
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_GetMoveDelta, MOUSE, GET_MOVE_DELTA);
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_GetWheelDelta, MOUSE, GET_WHEEL_DELTA);
-		orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_ShowCursor, MOUSE, SHOW_CURSOR);
-		orxPLUGIN_USER_CORE_FUNCTION_END()
+    ;
+    orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_Init, MOUSE, INIT);
+    orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_Exit, MOUSE, EXIT);
+    orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_SetPosition, MOUSE, SET_POSITION);
+    orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_GetPosition, MOUSE, GET_POSITION);
+    orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_IsButtonPressed, MOUSE, IS_BUTTON_PRESSED);
+    orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_GetMoveDelta, MOUSE, GET_MOVE_DELTA);
+    orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_GetWheelDelta, MOUSE, GET_WHEEL_DELTA);
+    orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_ShowCursor, MOUSE, SHOW_CURSOR);
+    orxPLUGIN_USER_CORE_FUNCTION_ADD(orxMouse_Dummy_Grab, MOUSE, GRAB);
+    orxPLUGIN_USER_CORE_FUNCTION_END()
 ;

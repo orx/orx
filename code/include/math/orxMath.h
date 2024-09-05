@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -49,22 +49,7 @@
 /** Maths related includes
  */
 #include <math.h>
-
 #ifdef __orxMSVC__
-  #ifdef NO_WIN32_LEAN_AND_MEAN
-    #undef WIN32_LEAN_AND_MEAN
-  #else /* NO_WIN32_LEAN_AND_MEAN */
-    #ifndef WIN32_LEAN_AND_MEAN
-      #define WIN32_LEAN_AND_MEAN
-      #define DEFINED_WIN32_LEAN_AND_MEAN
-    #endif /* !WIN32_LEAN_AND_MEAN */
-  #endif /* NO_WIN32_LEAN_AND_MEAN */
-  #include <windows.h>
-  #ifdef DEFINED_WIN32_LEAN_AND_MEAN
-    #undef WIN32_LEAN_AND_MEAN
-    #undef DEFINED_WIN32_LEAN_AND_MEAN
-  #endif /* DEFINED_WIN32_LEAN_AND_MEAN */
-  #undef NO_WIN32_LEAN_AND_MEAN
   #include <intrin.h>
 #endif /* __orxMSVC__ */
 
@@ -80,6 +65,15 @@
  */
 #define orxLERP(A, B, T)          ((A) + ((T) * ((B) - (A))))
 
+/** Remaps a value from one interval to another one
+ * @param[in]   A1                              First interval's low boundary
+ * @param[in]   B1                              First interval's high boundary
+ * @param[in]   A2                              Second interval's low boundary
+ * @param[in]   B2                              Second interval's high boundary
+ * @param[in]   V                               Value to remap from the first interval to the second one
+ * @return      Remaped value
+ */
+#define orxREMAP(A1, B1, A2, B2, V) (((V) - (A1)) / ((B1) - (A1)) * ((B2) - (A2)) + (A2))
 
 /** Gets minimum between two values
  * @param[in]   A                               First value
@@ -142,12 +136,28 @@ extern orxDLLAPI void orxFASTCALL     orxMath_InitRandom(orxU32 _u32Seed);
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax);
 
+/** Gets a random orxFLOAT value using step increments
+ * @param[in]   _fMin                           Minimum boundary (inclusive)
+ * @param[in]   _fMax                           Maximum boundary (inclusive)
+ * @param[in]   _fStep                          Step value, must be strictly positive
+ * @return      Random value
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL orxMath_GetSteppedRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax, orxFLOAT _fStep);
+
 /** Gets a random orxU32 value
  * @param[in]   _u32Min                         Minimum boundary (inclusive)
  * @param[in]   _u32Max                         Maximum boundary (inclusive)
  * @return      Random value
  */
 extern orxDLLAPI orxU32 orxFASTCALL   orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max);
+
+/** Gets a random U32 value using step increments
+ * @param[in]   _u32Min                         Minimum boundary (inclusive)
+ * @param[in]   _u32Max                         Maximum boundary (inclusive)
+ * @param[in]   _u32Step                        Step value, must be strictly positive
+ * @return      Random value
+ */
+extern orxDLLAPI orxU32 orxFASTCALL   orxMath_GetSteppedRandomU32(orxU32 _u32Min, orxU32 _u32Max, orxU32 _u32Step);
 
 /** Gets a random orxS32 value
  * @param[in]   _s32Min                         Minimum boundary (inclusive)
@@ -156,6 +166,14 @@ extern orxDLLAPI orxU32 orxFASTCALL   orxMath_GetRandomU32(orxU32 _u32Min, orxU3
  */
 extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetRandomS32(orxS32 _s32Min, orxS32 _s32Max);
 
+/** Gets a random S32 value using step increments
+ * @param[in]   _s32Min                         Minimum boundary (inclusive)
+ * @param[in]   _s32Max                         Maximum boundary (inclusive)
+ * @param[in]   _s32Step                        Step value, must be strictly positive
+ * @return      Random value
+ */
+extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetSteppedRandomS32(orxS32 _s32Min, orxS32 _s32Max, orxS32 _s32Step);
+
 /** Gets a random orxU64 value
  * @param[in]   _u64Min                         Minimum boundary (inclusive)
  * @param[in]   _u64Max                         Maximum boundary (inclusive)
@@ -163,12 +181,28 @@ extern orxDLLAPI orxS32 orxFASTCALL   orxMath_GetRandomS32(orxS32 _s32Min, orxS3
  */
 extern orxDLLAPI orxU64 orxFASTCALL   orxMath_GetRandomU64(orxU64 _u64Min, orxU64 _u64Max);
 
+/** Gets a random U64 value using step increments
+ * @param[in]   _u64Min                         Minimum boundary (inclusive)
+ * @param[in]   _u64Max                         Maximum boundary (inclusive)
+ * @param[in]   _u64Step                        Step value, must be strictly positive
+ * @return      Random value
+ */
+extern orxDLLAPI orxU64 orxFASTCALL   orxMath_GetSteppedRandomU64(orxU64 _u64Min, orxU64 _u64Max, orxU64 _u64Step);
+
 /** Gets a random orxS64 value
  * @param[in]   _s64Min                         Minimum boundary (inclusive)
  * @param[in]   _s64Max                         Maximum boundary (inclusive)
  * @return      Random value
  */
 extern orxDLLAPI orxS64 orxFASTCALL   orxMath_GetRandomS64(orxS64 _s64Min, orxS64 _s64Max);
+
+/** Gets a random S64 value using step increments
+ * @param[in]   _s64Min                         Minimum boundary (inclusive)
+ * @param[in]   _s64Max                         Maximum boundary (inclusive)
+ * @param[in]   _s64Step                        Step value, must be strictly positive
+ * @return      Random value
+ */
+extern orxDLLAPI orxS64 orxFASTCALL   orxMath_GetSteppedRandomS64(orxS64 _s64Min, orxS64 _s64Max, orxS64 _s64Step);
 
 /** Gets the current random seeds
  * @param[out]  _au32Seeds                      Current seeds
@@ -199,7 +233,7 @@ static orxINLINE orxU32               orxMath_GetBitCount(orxU32 _u32Value)
 #else /* __orxMSVC__ */
 
   /* Uses intrinsic */
-  u32Result = __builtin_popcount(_u32Value);
+  u32Result = (orxU32)__builtin_popcount(_u32Value);
 
 #endif /* __orxMSVC__ */
 
@@ -221,12 +255,12 @@ static orxINLINE orxU32               orxMath_GetTrailingZeroCount(orxU32 _u32Va
 #ifdef __orxMSVC__
 
   /* Uses intrinsic */
-  _BitScanForward((DWORD *)&u32Result, _u32Value);
+  _BitScanForward((unsigned long *)&u32Result, _u32Value);
 
 #else /* __orxMSVC__ */
 
   /* Uses intrinsic */
-  u32Result = __builtin_ctz(_u32Value);
+  u32Result = (orxU32)__builtin_ctz(_u32Value);
 
 #endif /* __orxMSVC__ */
 
@@ -250,7 +284,7 @@ static orxINLINE orxU32               orxMath_GetTrailingZeroCount64(orxU64 _u64
   #ifdef __orx64__
 
   /* Uses intrinsic */
-  _BitScanForward64((DWORD *)&u32Result, _u64Value);
+  _BitScanForward64((unsigned long *)&u32Result, _u64Value);
 
   #else /* __orx64__ */
 
@@ -262,7 +296,7 @@ static orxINLINE orxU32               orxMath_GetTrailingZeroCount64(orxU64 _u64
 #else /* __orxMSVC__ */
 
   /* Uses intrinsic */
-  u32Result = __builtin_ctzll(_u64Value);
+  u32Result = (orxU32)__builtin_ctzll(_u64Value);
 
 #endif /* __orxMSVC__ */
 
@@ -363,6 +397,7 @@ static orxINLINE orxFLOAT             orxMath_SmootherStep(orxFLOAT _fMin, orxFL
 #define orxMATH_KF_SQRT_2             orx2F(1.414213562f)           /**< Sqrt(2) constant */
 #define orxMATH_KF_EPSILON            orx2F(0.0001f)                /**< Epsilon constant */
 #define orxMATH_KF_TINY_EPSILON       orx2F(1.0e-037f)              /**< Tiny epsilon */
+#define orxMATH_KF_MAX                orx2F(3.402823466e+38F)       /**< Max constant */
 #define orxMATH_KF_2_PI               orx2F(6.283185307f)           /**< 2 PI constant */
 #define orxMATH_KF_PI                 orx2F(3.141592654f)           /**< PI constant */
 #define orxMATH_KF_PI_BY_2            orx2F(1.570796327f)           /**< PI / 2 constant */

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -113,13 +113,6 @@ extern orxDLLAPI orxVIEWPORT *orxFASTCALL     orxViewport_CreateFromConfig(const
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_Delete(orxVIEWPORT *_pstViewport);
-
-
-/** Sets a viewport alignment
- * @param[in]   _pstViewport    Concerned viewport
- * @param[in]   _u32AlignFlags  Alignment flags (must be OR'ed)
- */
-extern orxDLLAPI void orxFASTCALL             orxViewport_SetAlignment(orxVIEWPORT *_pstViewport, orxU32 _u32AlignFlags);
 
 
 /** Sets a viewport texture list
@@ -313,6 +306,12 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxViewport_GetCorrectionRatio(con
  * @return      orxSTRING / orxSTRING_EMPTY
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxViewport_GetName(const orxVIEWPORT *_pstViewport);
+
+/** Gets viewport given its name
+ * @param[in]   _zName          Camera name
+ * @return      orxVIEWPORT / orxNULL
+ */
+extern orxDLLAPI orxVIEWPORT *orxFASTCALL     orxViewport_Get(const orxSTRING _zName);
 
 #endif /* _orxVIEWPORT_H_ */
 

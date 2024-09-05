@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -34,7 +34,6 @@
 #include "physics/orxPhysics.h"
 #include "core/orxConfig.h"
 #include "object/orxObject.h"
-#include "object/orxFrame.h"
 #include "utils/orxString.h"
 
 #include "debug/orxDebug.h"
@@ -58,6 +57,8 @@
 
 #define orxBODY_KU32_FLAG_HAS_DATA            0x00000001  /**< Has data flag */
 #define orxBODY_KU32_FLAG_HAS_GRAVITY         0x00000002  /**< Has custom gravity flag */
+#define orxBODY_KU32_FLAG_DYNAMIC             0x00000004  /**< Dynamic type body flag */
+#define orxBODY_KU32_FLAG_CAN_MOVE            0x00000008  /**< Static body is allowed to move through direct user access */
 
 #define orxBODY_KU32_MASK_ALL                 0xFFFFFFFF  /**< User all ID mask */
 
@@ -99,10 +100,6 @@
 #define orxBODY_KZ_CONFIG_PREVIOUS_VERTEX     "PreviousVertex"
 #define orxBODY_KZ_CONFIG_NEXT_VERTEX         "NextVertex"
 #define orxBODY_KZ_CONFIG_LOOP                "Loop"
-#define orxBODY_KZ_CONFIG_VERTEX_0            "Vertex0"
-#define orxBODY_KZ_CONFIG_VERTEX_1            "Vertex1"
-#define orxBODY_KZ_CONFIG_VERTEX_2            "Vertex2"
-#define orxBODY_KZ_CONFIG_VERTEX_3            "Vertex3"
 #define orxBODY_KZ_CONFIG_PARENT_ANCHOR       "ParentAnchor"
 #define orxBODY_KZ_CONFIG_CHILD_ANCHOR        "ChildAnchor"
 #define orxBODY_KZ_CONFIG_COLLIDE             "Collide"
@@ -247,7 +244,7 @@ static orxBODY_STATIC sstBody;
  */
 static orxINLINE void orxBody_DeleteAll()
 {
-  register orxBODY *pstBody;
+  orxBODY *pstBody;
 
   /* Gets first body */
   pstBody = orxBODY(orxStructure_GetFirst(orxSTRUCTURE_ID_BODY));
@@ -276,10 +273,10 @@ static orxINLINE orxU16 orxBody_GetCollisionFlag(const orxSTRING _zConfigID)
   /* Is 0? */
   if(u32Value == 0)
   {
-    orxU32 u32Count, i;
+    orxS32 s32Count, i;
 
     /* For all elements */
-    for(i = 0, u32Count = orxConfig_GetListCount(_zConfigID); i < u32Count; i++)
+    for(i = 0, s32Count = orxConfig_GetListCount(_zConfigID); i < s32Count; i++)
     {
       /* Updates result with numerical value */
       u16Result |= (orxU16)orxPhysics_GetCollisionFlagValue(orxConfig_GetListString(_zConfigID, i));
@@ -310,7 +307,6 @@ void orxFASTCALL orxBody_Setup()
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_PHYSICS);
-  orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_FRAME);
   orxModule_AddDependency(orxMODULE_ID_BODY, orxMODULE_ID_CONFIG);
 
   return;
@@ -455,6 +451,8 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
     /* Valid? */
     if(pstBody->pstData != orxNULL)
     {
+      orxU32 u32Flags = orxBODY_KU32_FLAG_HAS_DATA;
+
       /* Stores owner */
       orxStructure_SetOwner(pstBody, pstObject);
 
@@ -464,8 +462,20 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
       /* Stores its definition flags */
       pstBody->u32DefFlags = _pstBodyDef->u32Flags;
 
+      /* Dynamic? */
+      if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
+      {
+        u32Flags |= orxBODY_KU32_FLAG_DYNAMIC;
+      }
+
+      /* Can move? */
+      if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_CAN_MOVE))
+      {
+        u32Flags |= orxBODY_KU32_FLAG_CAN_MOVE;
+      }
+
       /* Updates flags */
-      orxStructure_SetFlags(pstBody, orxBODY_KU32_FLAG_HAS_DATA, orxBODY_KU32_FLAG_NONE);
+      orxStructure_SetFlags(pstBody, u32Flags, orxBODY_KU32_FLAG_NONE);
 
       /* Increases count */
       orxStructure_IncreaseCount(pstBody);
@@ -956,7 +966,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
         if(stBodyPartDef.stMesh.u32VertexCount > orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Too many vertices in the list: %d. The maximum allowed is: %d. Using the first %d ones for the shape <%s>", stBodyPartDef.stMesh.u32VertexCount, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, _zConfigID);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Mesh <%s>: too many vertices [%d] in the list, the maximum allowed is [%d]. Using the first [%d] vertices only.", _zConfigID, stBodyPartDef.stMesh.u32VertexCount, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER, orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER);
 
           /* Updates vertices number */
           stBodyPartDef.stMesh.u32VertexCount = orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER;
@@ -972,7 +982,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex list for creating mesh body <%s> is invalid (missing or less than 3 vertices).", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Mesh <%s>: vertex list is invalid (missing or less than 3 vertices).", _zConfigID);
 
         /* Updates status */
         bSuccess = orxFALSE;
@@ -983,31 +993,55 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
     {
       /* Updates edge specific info */
       stBodyPartDef.u32Flags |= orxBODY_PART_DEF_KU32_FLAG_EDGE;
-      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_1) != orxFALSE)
-      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_2) != orxFALSE))
+      if(orxConfig_GetListCount(orxBODY_KZ_CONFIG_VERTEX_LIST) == 2)
       {
-        /* Gets them */
-        orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_1, &(stBodyPartDef.stEdge.v1));
-        orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_2, &(stBodyPartDef.stEdge.v2));
+        orxU32 i;
 
-        /* Has vertex0? */
-        if((stBodyPartDef.stEdge.bHasVertex0 = orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_0)) != orxFALSE)
+        /* For both vertices */
+        for(i = 0; i < 2; i++)
         {
-          /* Gets it */
-          orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_0, &(stBodyPartDef.stEdge.v0));
+          /* Gets its vector */
+          if(orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stEdge.avVertices[i])) == orxNULL)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Edge <%s>: could not get vertex from VertexList[%u]: <%s>, aborting.", _zConfigID, i, orxConfig_GetListString(orxBODY_KZ_CONFIG_VERTEX_LIST, i));
+
+            /* Updates status */
+            bSuccess = orxFALSE;
+            break;
+          }
         }
 
-        /* Has vertex3? */
-        if((stBodyPartDef.stEdge.bHasVertex3 = orxConfig_HasValue(orxBODY_KZ_CONFIG_VERTEX_3)) != orxFALSE)
+        /* Success? */
+        if(bSuccess != orxFALSE)
         {
-          /* Gets it */
-          orxConfig_GetVector(orxBODY_KZ_CONFIG_VERTEX_3, &(stBodyPartDef.stEdge.v3));
+          /* Has previous vertex? */
+          if(orxConfig_HasValue(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX) != orxFALSE)
+          {
+            /* Gets it */
+            if(orxConfig_GetVector(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX, &(stBodyPartDef.stEdge.vPrevious)) != orxNULL)
+            {
+              /* Updates status */
+              stBodyPartDef.stEdge.bHasPrevious = orxTRUE;
+            }
+          }
+
+          /* Has next vertex? */
+          if(orxConfig_HasValue(orxBODY_KZ_CONFIG_NEXT_VERTEX) != orxFALSE)
+          {
+            /* Gets it */
+            if(orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &(stBodyPartDef.stEdge.vNext)) != orxNULL)
+            {
+              /* Updates status */
+              stBodyPartDef.stEdge.bHasNext = orxTRUE;
+            }
+          }
         }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex1 and/or Vertex2 for creating edge body <%s> are missing.", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Edge <%s>: need exactly 2 vertices in VertexList.", _zConfigID);
 
         /* Updates status */
         bSuccess = orxFALSE;
@@ -1033,34 +1067,51 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
           for(i = 0; i < stBodyPartDef.stChain.u32VertexCount; i++)
           {
             /* Gets its vector */
-            orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stChain.avVertices[i]));
+            if(orxConfig_GetListVector(orxBODY_KZ_CONFIG_VERTEX_LIST, i, &(stBodyPartDef.stChain.avVertices[i])) == orxNULL)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Chain <%s>: could not get vertex from VertexList[%u]: <%s>, aborting.", _zConfigID, i, orxConfig_GetListString(orxBODY_KZ_CONFIG_VERTEX_LIST, i));
+
+              /* Updates status */
+              bSuccess = orxFALSE;
+              break;
+            }
           }
 
-          /* Gets loop status */
-          stBodyPartDef.stChain.bIsLoop = orxConfig_GetBool(orxBODY_KZ_CONFIG_LOOP);
-
-          /* Not a loop? */
-          if(stBodyPartDef.stChain.bIsLoop == orxFALSE)
+          /* Success? */
+          if(bSuccess != orxFALSE)
           {
-            /* Has previous vertex? */
-            if((stBodyPartDef.stChain.bHasPrevious = orxConfig_HasValue(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX)) != orxFALSE)
+            /* Not a loop? */
+            if((stBodyPartDef.stChain.bIsLoop = orxConfig_GetBool(orxBODY_KZ_CONFIG_LOOP)) == orxFALSE)
             {
-              /* Gets it */
-              orxConfig_GetVector(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX, &(stBodyPartDef.stChain.vPrevious));
-            }
+              /* Has previous vertex? */
+              if(orxConfig_HasValue(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX) != orxFALSE)
+              {
+                /* Gets it */
+                if(orxConfig_GetVector(orxBODY_KZ_CONFIG_PREVIOUS_VERTEX, &(stBodyPartDef.stChain.vPrevious)) != orxNULL)
+                {
+                  /* Updates status */
+                  stBodyPartDef.stChain.bHasPrevious = orxTRUE;
+                }
+              }
 
-            /* Has next vertex? */
-            if((stBodyPartDef.stChain.bHasNext = orxConfig_HasValue(orxBODY_KZ_CONFIG_NEXT_VERTEX)) != orxFALSE)
-            {
-              /* Gets it */
-              orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &(stBodyPartDef.stChain.vNext));
+              /* Has next vertex? */
+              if(orxConfig_HasValue(orxBODY_KZ_CONFIG_NEXT_VERTEX) != orxFALSE)
+              {
+                /* Gets it */
+                if(orxConfig_GetVector(orxBODY_KZ_CONFIG_NEXT_VERTEX, &(stBodyPartDef.stChain.vNext)) != orxNULL)
+                {
+                  /* Updates status */
+                  stBodyPartDef.stChain.bHasNext = orxTRUE;
+                }
+              }
             }
           }
         }
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Could not allocate vertex memory when creating chain body <%s>.", _zConfigID);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Chain <%s>: could not allocate vertex memory.", _zConfigID);
 
           /* Updates status */
           bSuccess = orxFALSE;
@@ -1069,7 +1120,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Vertex list for creating chain body <%s> is invalid (missing or less than 2 vertices).", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Chain <%s>: vertex list is invalid (missing or less than 2 vertices).", _zConfigID);
 
         /* Updates status */
         bSuccess = orxFALSE;
@@ -1079,7 +1130,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "<%s> isn't a valid type for a body part.", zBodyPartType);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Part <%s>: <%s> isn't a valid type for a body part.", _zConfigID, zBodyPartType);
 
       /* Updates status */
       bSuccess = orxFALSE;
@@ -1101,7 +1152,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't create part (%s)", _zConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't create part <%s>", _zConfigID);
 
       /* Updates result */
       pstResult = orxNULL;
@@ -1113,7 +1164,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't find config section named (%s)", _zConfigID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Couldn't find config section named <%s>", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -1130,7 +1181,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
  */
 orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxSTRING _zConfigID)
 {
-  orxU32        u32ID;
+  orxSTRINGID   stID;
   orxBODY_PART *pstPart;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
 
@@ -1139,7 +1190,7 @@ orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxS
   orxSTRUCTURE_ASSERT(_pstBody);
 
   /* Gets part ID */
-  u32ID = orxString_ToCRC(_zConfigID);
+  stID = orxString_Hash(_zConfigID);
 
   /* For all parts */
   for(pstPart = orxBody_GetNextPart(_pstBody, orxNULL);
@@ -1147,7 +1198,7 @@ orxSTATUS orxFASTCALL orxBody_RemovePartFromConfig(orxBODY *_pstBody, const orxS
       pstPart = orxBody_GetNextPart(_pstBody, pstPart))
   {
     /* Found? */
-    if(orxString_ToCRC(orxBody_GetPartName(pstPart)) == u32ID)
+    if(orxString_Hash(orxBody_GetPartName(pstPart)) == stID)
     {
       /* Removes it */
       eResult = orxBody_RemovePart(pstPart);
@@ -1486,7 +1537,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_SPRING;
 
       /* Stores length */
-      stBodyJointDef.stSpring.fLength     = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));;
+      stBodyJointDef.stSpring.fLength     = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));
 
       /* Stores frequency */
       stBodyJointDef.stSpring.fFrequency  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
@@ -1503,7 +1554,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_ROPE;
 
       /* Stores length */
-      stBodyJointDef.stRope.fLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));;
+      stBodyJointDef.stRope.fLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));
     }
     /* Pulley? */
     else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_PULLEY) == 0)
@@ -1535,17 +1586,11 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       /* Stores translation axis */
       orxConfig_GetVector(orxBODY_KZ_CONFIG_TRANSLATION_AXIS, &(stBodyJointDef.stSuspension.vTranslationAxis));
 
-      /* Has translation limits? */
-      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_TRANSLATION) != orxFALSE)
-      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_TRANSLATION) != orxFALSE))
-      {
-        /* Updates status */
-        stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT;
+      /* Stores frequency */
+      stBodyJointDef.stSuspension.fFrequency = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
 
-        /* Stores them */
-        stBodyJointDef.stSuspension.fMinTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MIN_TRANSLATION);
-        stBodyJointDef.stSuspension.fMaxTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_TRANSLATION);
-      }
+      /* Stores damping */
+      stBodyJointDef.stSuspension.fDamping = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
 
       /* Is a motor? */
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MOTOR_SPEED) != orxFALSE)
@@ -1838,8 +1883,8 @@ orxSTATUS orxFASTCALL orxBody_SetJointMaxMotorTorque(orxBODY_JOINT *_pstBodyJoin
 }
 
 /** Gets the reaction force on the attached body at the joint anchor
- * @param[in]   _pstBodyJoint                         Concerned body joint
- * @param[out]  _pvForce                              Reaction force
+ * @param[in]   _pstBodyJoint   Concerned body joint
+ * @param[out]  _pvForce        Reaction force
  * @return      Reaction force in Newtons
  */
 orxVECTOR *orxFASTCALL orxBody_GetJointReactionForce(const orxBODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce)
@@ -1867,7 +1912,7 @@ orxVECTOR *orxFASTCALL orxBody_GetJointReactionForce(const orxBODY_JOINT *_pstBo
 }
 
 /** Gets the reaction torque on the attached body
- * @param[in]   _pstBodyJoint                         Concerned body joint
+ * @param[in]   _pstBodyJoint   Concerned body joint
  * @return      Reaction torque
  */
 orxFLOAT orxFASTCALL orxBody_GetJointReactionTorque(const orxBODY_JOINT *_pstBodyJoint)
@@ -2229,6 +2274,74 @@ orxSTATUS orxFASTCALL orxBody_SetFixedRotation(orxBODY *_pstBody, orxBOOL _bFixe
   return eResult;
 }
 
+/** Sets the dynamic property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _bDynamic       Dynamic / Static (or Kinematic depending on the "allow moving" property)
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetDynamic(orxBODY *_pstBody, orxBOOL _bDynamic)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates physics body fixed rotation */
+  eResult = orxPhysics_SetDynamic(_pstBody->pstData, _bDynamic);
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates flags */
+    if(_bDynamic != orxFALSE)
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_DYNAMIC, orxBODY_KU32_FLAG_NONE);
+    }
+    else
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_FLAG_DYNAMIC);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the "allow moving" property of a body
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _bAllowMoving   Only used for non-dynamic bodies, Kinematic / Static
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetAllowMoving(orxBODY *_pstBody, orxBOOL _bAllowMoving)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates physics body fixed rotation */
+  eResult = orxPhysics_SetAllowMoving(_pstBody->pstData, _bAllowMoving);
+
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates flags */
+    if(_bAllowMoving != orxFALSE)
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_CAN_MOVE, orxBODY_KU32_FLAG_NONE);
+    }
+    else
+    {
+      orxStructure_SetFlags(_pstBody, orxBODY_KU32_FLAG_NONE, orxBODY_KU32_FLAG_CAN_MOVE);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Gets a body position
  * @param[in]   _pstBody        Concerned body
  * @param[out]  _pvPosition     Position to get
@@ -2426,6 +2539,44 @@ orxBOOL orxFASTCALL orxBody_IsFixedRotation(const orxBODY *_pstBody)
   return bResult;
 }
 
+/** Gets the dynamic property of a body
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_IsDynamic(const orxBODY *_pstBody)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_DYNAMIC) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets the "allow moving" property of a body, only relevant for non-dynamic bodies
+ * @param[in]   _pstBody                              Concerned physical body
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_GetAllowMoving(const orxBODY *_pstBody)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags(_pstBody, orxBODY_KU32_FLAG_CAN_MOVE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
 /** Gets a body mass
  * @param[in]   _pstBody        Concerned body
  * @return      Body mass
@@ -2574,6 +2725,34 @@ orxFLOAT orxFASTCALL orxBody_GetAngularDamping(const orxBODY *_pstBody)
 
   /* Done! */
   return fResult;
+}
+
+/** Is point inside body? (Using world coordinates)
+ * @param[in]   _pstBody        Concerned physical body
+ * @param[in]   _pvPosition     Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_IsInside(const orxBODY *_pstBody, const orxVECTOR *_pvPosition)
+{
+  orxBODY_PART *pstPart;
+  orxBOOL       bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstBody);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* For all parts */
+  for(pstPart = orxBody_GetNextPart(_pstBody, orxNULL);
+      (bResult == orxFALSE) && (pstPart != orxNULL);
+      pstPart = orxBody_GetNextPart(_pstBody, pstPart))
+  {
+    /* Updates result */
+    bResult = orxBody_IsInsidePart(pstPart, _pvPosition);
+  }
+
+  /* Done! */
+  return bResult;
 }
 
 /** Applies a torque
@@ -2755,25 +2934,6 @@ orxU16 orxFASTCALL orxBody_GetPartCheckMask(const orxBODY_PART *_pstBodyPart)
   return u16Result;
 }
 
-/** Is a body part solid?
- * @param[in]   _pstBodyPart    Concerned body part
- * @return      orxTRUE / orxFALSE
- */
-orxBOOL orxFASTCALL orxBody_IsPartSolid(const orxBODY_PART *_pstBodyPart)
-{
-  orxBOOL bResult;
-
-  /* Checks */
-  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBodyPart != orxNULL);
-
-  /* Updates result */
-  bResult = orxPhysics_IsPartSolid(_pstBodyPart->pstData);
-
-  /* Done! */
-  return bResult;
-}
-
 /** Sets a body part solid
  * @param[in]   _pstBodyPart    Concerned body part
  * @param[in]   _bSolid         Solid or sensor?
@@ -2794,8 +2954,166 @@ orxSTATUS orxFASTCALL orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _
   return eResult;
 }
 
+/** Is a body part solid?
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_IsPartSolid(const orxBODY_PART *_pstBodyPart)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  bResult = orxPhysics_IsPartSolid(_pstBodyPart->pstData);
+
+  /* Done! */
+  return bResult;
+}
+
+/** Sets friction of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fFriction      Friction
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetPartFriction(orxBODY_PART *_pstBodyPart, orxFLOAT _fFriction)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  eResult = orxPhysics_SetPartFriction(_pstBodyPart->pstData, _fFriction);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets friction of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Friction
+ */
+orxFLOAT orxFASTCALL orxBody_GetPartFriction(const orxBODY_PART *_pstBodyPart)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  fResult = orxPhysics_GetPartFriction(_pstBodyPart->pstData);
+
+  /* Done! */
+  return fResult;
+}
+
+/** Sets restitution of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fRestitution   Restitution
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetPartRestitution(orxBODY_PART *_pstBodyPart, orxFLOAT _fRestitution)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  eResult = orxPhysics_SetPartRestitution(_pstBodyPart->pstData, _fRestitution);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets restitution of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Restitution
+ */
+orxFLOAT orxFASTCALL orxBody_GetPartRestitution(const orxBODY_PART *_pstBodyPart)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  fResult = orxPhysics_GetPartRestitution(_pstBodyPart->pstData);
+
+  /* Done! */
+  return fResult;
+}
+
+/** Sets density of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @param[in]   _fDensity       Density
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxBody_SetPartDensity(orxBODY_PART *_pstBodyPart, orxFLOAT _fDensity)
+{
+  orxSTATUS eResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  eResult = orxPhysics_SetPartDensity(_pstBodyPart->pstData, _fDensity);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets density of a body part
+ * @param[in]   _pstBodyPart    Concerned body part
+ * @return      Density
+ */
+orxFLOAT orxFASTCALL orxBody_GetPartDensity(const orxBODY_PART *_pstBodyPart)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Updates result */
+  fResult = orxPhysics_GetPartDensity(_pstBodyPart->pstData);
+
+  /* Done! */
+  return fResult;
+}
+
+/** Is point inside part? (Using world coordinates)
+ * @param[in]   _pstBodyPart    Concerned physical body part
+ * @param[in]   _pvPosition     Position to test (world coordinates)
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxBody_IsInsidePart(const orxBODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Updates result */
+  bResult = orxPhysics_IsInsidePart(_pstBodyPart->pstData, _pvPosition);
+
+  /* Done! */
+  return bResult;
+}
+
+
 /** Issues a raycast to test for potential bodies in the way
- * @param[in]   _pvStart        Start of raycast
+ * @param[in]   _pvBegin        Beginning of raycast
  * @param[in]   _pvEnd          End of raycast
  * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
  * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
@@ -2804,18 +3122,18 @@ orxSTATUS orxFASTCALL orxBody_SetPartSolid(orxBODY_PART *_pstBodyPart, orxBOOL _
  * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
  * @return Colliding orxBODY / orxNULL
  */
-orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   orxHANDLE hRaycastResult;
   orxBODY  *pstResult = orxNULL;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pvStart != orxNULL);
+  orxASSERT(_pvBegin != orxNULL);
   orxASSERT(_pvEnd != orxNULL);
 
   /* Issues raycast */
-  hRaycastResult = orxPhysics_Raycast(_pvStart, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
+  hRaycastResult = orxPhysics_Raycast(_pvBegin, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
 
   /* Found? */
   if(hRaycastResult != orxHANDLE_UNDEFINED)
@@ -2827,3 +3145,32 @@ orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvStart, const orxVECTOR 
   /* Done! */
   return pstResult;
 }
+
+/** Picks bodies in contact with the given axis aligned box.
+ * @param[in]   _pstBox                               Box used for picking
+ * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _apstBodyList                         List of bodies to fill, can be orxNULL for query only
+ * @param[in]   _u32Number                            Number of bodies
+ * @return      Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all.
+ */
+orxU32 orxFASTCALL orxBody_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBODY *_apstBodyList[], orxU32 _u32Number)
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBox != orxNULL);
+  orxASSERT((_apstBodyList != orxNULL) || (_u32Number == 0));
+
+  /* Issues request */
+  u32Result = orxPhysics_BoxPick(_pstBox, _u16SelfFlags, _u16CheckMask, (orxHANDLE *)_apstBodyList, _u32Number);
+
+  /* Done! */
+  return u32Result;
+}
+
+#undef orxBODY_GET_FIRST_JOINT_FROM_SRC_LIST
+#undef orxBODY_GET_NEXT_JOINT_FROM_SRC_LIST
+#undef orxBODY_GET_FIRST_JOINT_FROM_DST_LIST
+#undef orxBODY_GET_NEXT_JOINT_FROM_DST_LIST

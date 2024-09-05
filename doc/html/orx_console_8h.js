@@ -1,5 +1,6 @@
 var orx_console_8h =
 [
+    [ "orxCONSOLE_KZ_CONFIG_HISTORY_FILE_EXTENSION", "group__orx_console.html#gafb3c581ac3c237f0c353bfbbeaaf2307", null ],
     [ "orxCONSOLE_KZ_INPUT_AUTOCOMPLETE", "group__orx_console.html#ga2ef0b8d0a9bd93e786ab72e4e44cfe63", null ],
     [ "orxCONSOLE_KZ_INPUT_DELETE", "group__orx_console.html#gaffdbd164c84f06647c8e0c79b49e7023", null ],
     [ "orxCONSOLE_KZ_INPUT_DELETE_AFTER", "group__orx_console.html#ga0d48acf8c6d88562437d4c81a519475d", null ],
@@ -7,6 +8,7 @@ var orx_console_8h =
     [ "orxCONSOLE_KZ_INPUT_ENTER", "group__orx_console.html#gaa7fe6035175d80d28aaf5bb02e0afbe1", null ],
     [ "orxCONSOLE_KZ_INPUT_LEFT", "group__orx_console.html#ga2613d6eeaf63099c8447ad92ecdccf1e", null ],
     [ "orxCONSOLE_KZ_INPUT_NEXT", "group__orx_console.html#ga20c76b2fc619147d29290b8523cc0e82", null ],
+    [ "orxCONSOLE_KZ_INPUT_PASTE", "group__orx_console.html#ga01268376a9f8ae75cd4350519c9f5598", null ],
     [ "orxCONSOLE_KZ_INPUT_PREVIOUS", "group__orx_console.html#gad93ec6077faace2cbb856e3a090ee290", null ],
     [ "orxCONSOLE_KZ_INPUT_RIGHT", "group__orx_console.html#gaefcdd23907049ded9b12ea7ce421f663", null ],
     [ "orxCONSOLE_KZ_INPUT_SCROLL_DOWN", "group__orx_console.html#gabd0d0bb35fb0b78c65359e0c3e774bb7", null ],

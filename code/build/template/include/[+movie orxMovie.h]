@@ -1,0 +1,643 @@
+//! Includes
+
+#ifndef _orxMOVIE_H_
+#define _orxMOVIE_H_
+
+#include "orx.h"
+
+
+//! Prototypes
+
+orxSTATUS orxFASTCALL orxMovie_Init();
+void orxFASTCALL      orxMovie_Exit();
+
+
+//! Implementation
+
+#ifdef orxMOVIE_IMPL
+
+#ifdef __orxMSVC__
+#pragma warning(push)
+#pragma warning(disable : 4996 4267 4244)
+#endif // __orxMSVC__
+
+#define FILE                              void
+#define fopen(NAME, MODE)                 orxResource_Open(NAME, orxFALSE)
+#define fread(BUFFER, SIZE, COUNT, FILE)  orxResource_Read(FILE, SIZE * COUNT, BUFFER, orxNULL, orxNULL)
+#define ftell(FILE)                       orxResource_Tell(FILE)
+#define fseek(FILE, OFFSET, WHENCE)       orxResource_Seek(FILE, OFFSET, (orxSEEK_OFFSET_WHENCE)WHENCE)
+#define fclose(FILE)                      orxResource_Close(FILE)
+
+#define malloc(SIZE)                      orxMemory_Allocate((orxU32)SIZE, orxMEMORY_TYPE_TEMP)
+#define realloc(MEMORY, SIZE)             orxMemory_Reallocate(MEMORY, (orxU32)SIZE, orxMEMORY_TYPE_TEMP)
+#define free(MEMORY)                      orxMemory_Free(MEMORY)
+
+#define PL_MPEG_IMPLEMENTATION
+#include "pl_mpeg/pl_mpeg.h"
+#undef PL_MPEG_IMPLEMENTATION
+
+#undef FILE
+#undef fopen
+#undef fread
+#undef ftell
+#undef fseek
+#undef fclose
+
+#undef malloc
+#undef realloc
+#undef free
+
+#ifdef __orxMSVC__
+#pragma warning(pop)
+#endif // __orxMSVC__
+
+#define orxMOVIE_KD_MAX_VIDEO_DELAY       0.2
+
+
+//! Variables / Structures
+
+typedef struct MovieData
+{
+  plm_t            *pstAudio;
+  plm_t            *pstVideo;
+  plm_frame_t      *pstFrame;
+  orxOBJECT        *pstObject;
+  orxDOUBLE         dTime;
+  orxDOUBLE         dLastSystem;
+  orxFLOAT          fDuration;
+  volatile orxBOOL  bLock;
+  volatile orxBOOL  bDelete;
+  volatile orxBOOL  bRewind;
+
+} MovieData;
+
+typedef struct __orxMOVIE_t
+{
+  orxBANK *pstMovieBank;
+
+} orxMOVIE;
+
+static orxMOVIE sstMovie;
+
+
+//! Code
+
+static void orxFASTCALL orxObject_CommandGetMovieDuration(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  // Clears result
+  _pstResult->fValue = -orxFLOAT_1;
+
+  // Gets object
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  // Valid?
+  if(pstObject)
+  {
+    MovieData *pstMovieData;
+
+    // For all movies
+    for(pstMovieData = (MovieData *)orxBank_GetNext(sstMovie.pstMovieBank, orxNULL);
+        pstMovieData;
+        pstMovieData = (MovieData *)orxBank_GetNext(sstMovie.pstMovieBank, pstMovieData))
+    {
+      // Found?
+      if(pstMovieData->pstObject == pstObject)
+      {
+        // Updates result
+        _pstResult->fValue = pstMovieData->fDuration;
+        break;
+      }
+    }
+  }
+
+  // Done!
+  return;
+}
+
+static orxSTATUS orxFASTCALL orxMovie_Delete(void *_pContext)
+{
+  MovieData *pstMovieData;
+
+  // Gets movie data
+  pstMovieData = (MovieData *)_pContext;
+
+  // Wait for locked decoders
+  while(pstMovieData->bLock)
+    ;
+
+  // Deletes decoders
+  plm_destroy(pstMovieData->pstAudio);
+  plm_destroy(pstMovieData->pstVideo);
+  if(sstMovie.pstMovieBank)
+  {
+    orxBank_Free(sstMovie.pstMovieBank, pstMovieData);
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxMovie_DecodeVideo(void *_pContext)
+{
+  MovieData *pstMovieData;
+
+  // Gets movie data
+  pstMovieData = (MovieData *)_pContext;
+
+  // Valid?
+  if(pstMovieData && !pstMovieData->bDelete)
+  {
+    // Valid?
+    if(orxObject_IsEnabled(pstMovieData->pstObject) && !orxObject_IsPaused(pstMovieData->pstObject))
+    {
+      // Ready?
+      if(pstMovieData->dLastSystem != 0.0)
+      {
+        orxCLOCK *pstClock;
+        orxDOUBLE dModifier, dCurrent;
+
+        // Updates time
+        pstClock                  = orxOBJECT_GET_STRUCTURE(pstMovieData->pstObject, CLOCK);
+        dModifier                 = pstClock ? (orxDOUBLE)orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY) : 1.0;
+        dCurrent                  = orxSystem_GetSystemTime();
+        pstMovieData->dTime      += (dCurrent - pstMovieData->dLastSystem) * (dModifier ? dModifier : 1.0);
+        pstMovieData->dLastSystem = dCurrent;
+
+        // Should skip ahead?
+        if(pstMovieData->dTime - plm_video_get_time(pstMovieData->pstVideo->video_decoder) > orxMOVIE_KD_MAX_VIDEO_DELAY)
+        {
+          // Seeks current time
+          plm_seek_frame(pstMovieData->pstVideo, pstMovieData->dTime, 0);
+        }
+        // Should decode frame?
+        while((!pstMovieData->bDelete) && !pstMovieData->bRewind && (pstMovieData->dTime >= plm_video_get_time(pstMovieData->pstVideo->video_decoder)))
+        {
+          // Decodes it */
+          pstMovieData->pstFrame = plm_decode_video(pstMovieData->pstVideo);
+        }
+      }
+    }
+    else
+    {
+      // Updates time tracking
+      pstMovieData->dLastSystem = orxSystem_GetSystemTime();
+    }
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxMovie_UpdateFrame(void *_pContext)
+{
+  MovieData *pstMovieData;
+
+  // Gets movie data
+  pstMovieData = (MovieData *)_pContext;
+
+  // Valid?
+  if(pstMovieData)
+  {
+    // Not marked for deletion?
+    if(!pstMovieData->bDelete)
+    {
+      // Should rewind video?
+      if(pstMovieData->bRewind)
+      {
+        // Rewinds video decoder
+        plm_rewind(pstMovieData->pstVideo);
+        pstMovieData->pstVideo->has_ended = 0;
+        pstMovieData->dTime   = 0.0;
+        pstMovieData->bRewind = orxFALSE;
+      }
+
+      // Has frame?
+      if(pstMovieData->pstFrame)
+      {
+        orxTEXTURE *pstTexture;
+        orxCHAR     acBuffer[256];
+
+        // Pushes shader's section
+        orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX", orxObject_GetName(pstMovieData->pstObject), orxStructure_GetGUID(pstMovieData->pstObject));
+        orxConfig_PushSection(acBuffer);
+
+        // Updates all textures
+        pstTexture = orxTexture_Get(orxConfig_GetString("y"));
+        orxDisplay_SetBitmapData(orxTexture_GetBitmap(pstTexture), pstMovieData->pstFrame->y.data, pstMovieData->pstVideo->video_decoder->luma_width * plm_get_height(pstMovieData->pstVideo));
+        pstTexture = orxTexture_Get(orxConfig_GetString("cb"));
+        orxDisplay_SetBitmapData(orxTexture_GetBitmap(pstTexture), pstMovieData->pstFrame->cb.data, pstMovieData->pstVideo->video_decoder->chroma_width * plm_get_height(pstMovieData->pstVideo) >> 1);
+        pstTexture = orxTexture_Get(orxConfig_GetString("cr"));
+        orxDisplay_SetBitmapData(orxTexture_GetBitmap(pstTexture), pstMovieData->pstFrame->cr.data, pstMovieData->pstVideo->video_decoder->chroma_width * plm_get_height(pstMovieData->pstVideo) >> 1);
+
+        // Pops config section
+        orxConfig_PopSection();
+        pstMovieData->pstFrame = orxNULL;
+      }
+    }
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxMovie_Decode(const orxEVENT *_pstEvent)
+{
+  MovieData *pstMovieData;
+
+  // Gets movie data
+  pstMovieData = (MovieData *)_pstEvent->pContext;
+
+  // Valid?
+  if(pstMovieData)
+  {
+    // Matching object?
+    if(pstMovieData->pstObject == orxOBJECT(_pstEvent->hSender))
+    {
+      // Decode audio?
+      if(_pstEvent->eType == orxEVENT_TYPE_SOUND)
+      {
+        orxSOUND_EVENT_PAYLOAD *pstPayload;
+
+        // Gets payload
+        pstPayload = (orxSOUND_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        // Valid?
+        if(orxObject_IsEnabled(pstMovieData->pstObject) && !orxObject_IsPaused(pstMovieData->pstObject))
+        {
+          // Not marked for deletion?
+          if(!pstMovieData->bDelete)
+          {
+            plm_samples_t  *pstSamples;
+            orxU32          u32SampleCount = 0;
+
+            // Locks decoders
+            pstMovieData->bLock = orxTRUE;
+            orxMEMORY_BARRIER();
+
+            // First time?
+            if(pstMovieData->dLastSystem == 0.0)
+            {
+              // Updates its time tracking
+              pstMovieData->dLastSystem = orxSystem_GetSystemTime();
+            }
+
+            // Has restarted?
+            if(pstPayload->stStream.stPacket.fTime == orxFLOAT_0)
+            {
+              // Rewinds audio
+              plm_rewind(pstMovieData->pstAudio);
+              pstMovieData->pstAudio->has_ended = 0;
+            }
+
+            // Decodes audio
+            pstSamples = plm_decode_audio(pstMovieData->pstAudio);
+
+            // Has samples?
+            if(pstSamples)
+            {
+              // Pass over all samples
+              pstPayload->stStream.stPacket.afSampleList = pstSamples->interleaved;
+
+              /* Gets sample count */
+              u32SampleCount = 2 * pstSamples->count;
+            }
+
+            // Updates packet
+            pstPayload->stStream.stPacket.u32SampleNumber = u32SampleCount;
+            pstPayload->stStream.stPacket.bDiscard        = (u32SampleCount != 0) ? orxFALSE : orxTRUE;
+            pstPayload->stStream.stPacket.bLast           = plm_has_ended(pstMovieData->pstAudio) ? orxTRUE : orxFALSE;
+
+            // Should loop?
+            if(plm_has_ended(pstMovieData->pstAudio))
+            {
+              // Requests video rewind
+              pstMovieData->dLastSystem = 0.0;
+              pstMovieData->bRewind     = orxTRUE;
+            }
+
+            // Unlocks decoders
+            orxMEMORY_BARRIER();
+            pstMovieData->bLock = orxFALSE;
+          }
+          else
+          {
+            // Updates packet
+            pstPayload->stStream.stPacket.bDiscard        = orxTRUE;
+            pstPayload->stStream.stPacket.bLast           = orxTRUE;
+          }
+        }
+        else
+        {
+          // Updates packet
+          pstPayload->stStream.stPacket.bDiscard          = orxTRUE;
+          pstPayload->stStream.stPacket.bLast             = orxFALSE;
+        }
+      }
+      else
+      {
+        // Not marked for deletion?
+        if(!pstMovieData->bDelete)
+        {
+          // Runs video decoding task
+          orxThread_RunTask(orxMovie_DecodeVideo, orxMovie_UpdateFrame, orxNULL, pstMovieData);
+        }
+      }
+    }
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  // Object?
+  if(_pstEvent->eType == orxEVENT_TYPE_OBJECT)
+  {
+    // New object?
+    if(_pstEvent->eID == orxOBJECT_EVENT_PREPARE)
+    {
+      // Is a movie?
+      if(orxConfig_HasValue("Movie"))
+      {
+        const orxSTRING zMovie;
+
+        // Has valid resource?
+        if((zMovie = orxResource_Locate("Movie", orxConfig_GetString("Movie"))) != orxNULL)
+        {
+          MovieData    *pstMovieData;
+          orxOBJECT    *pstObject;
+          orxTEXTURE   *pstTexture;
+          orxBITMAP    *pstBitmap;
+          orxCHAR       acBuffer[256];
+
+          // Gets object
+          pstObject = orxOBJECT(_pstEvent->hSender);
+
+          // Creates decoder data
+          pstMovieData = (MovieData *)orxBank_Allocate(sstMovie.pstMovieBank);
+          orxASSERT(pstMovieData);
+          orxMemory_Zero(pstMovieData, sizeof(MovieData));
+
+          // Creates audio decoder
+          pstMovieData->pstAudio = plm_create_with_filename(zMovie);
+          plm_set_video_enabled(pstMovieData->pstAudio, FALSE);
+          pstMovieData->fDuration = (orxFLOAT)plm_get_duration(pstMovieData->pstAudio);
+
+          // Creates video decoder
+          pstMovieData->pstVideo = plm_create_with_filename(zMovie);
+          plm_set_audio_enabled(pstMovieData->pstVideo, FALSE);
+
+          // Inits synchronization
+          pstMovieData->dTime       = 0.0;
+          pstMovieData->dLastSystem = 0.0;
+
+          // Updates object
+          pstMovieData->pstObject = pstObject;
+          orxConfig_SetParent(orxObject_GetName(pstObject), "Movie");
+
+          // Adds event handlers
+          orxEvent_AddHandlerWithContext(orxEVENT_TYPE_SOUND, orxMovie_Decode, pstMovieData);
+          orxEvent_SetHandlerIDFlags(orxMovie_Decode, orxEVENT_TYPE_SOUND, pstMovieData, orxEVENT_GET_FLAG(orxSOUND_EVENT_PACKET), orxEVENT_KU32_MASK_ID_ALL);
+          orxEvent_AddHandlerWithContext(orxEVENT_TYPE_RENDER, orxMovie_Decode, pstMovieData);
+          orxEvent_SetHandlerIDFlags(orxMovie_Decode, orxEVENT_TYPE_RENDER, pstMovieData, orxEVENT_GET_FLAG(orxRENDER_EVENT_OBJECT_START), orxEVENT_KU32_MASK_ID_ALL);
+          orxEvent_AddHandlerWithContext(orxEVENT_TYPE_OBJECT, orxMovie_EventHandler, pstMovieData);
+          orxEvent_SetHandlerIDFlags(orxMovie_EventHandler, orxEVENT_TYPE_OBJECT, pstMovieData, orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE), orxEVENT_KU32_MASK_ID_ALL);
+          orxEvent_AddHandlerWithContext(orxEVENT_TYPE_SOUND, orxMovie_EventHandler, pstMovieData);
+          orxEvent_SetHandlerIDFlags(orxMovie_EventHandler, orxEVENT_TYPE_SOUND, pstMovieData, orxEVENT_GET_FLAG(orxSOUND_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
+
+          // Creates music stream
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "empty 2 %u", plm_get_samplerate(pstMovieData->pstAudio));
+          orxConfig_SetString("LifeTime", "sound");
+          orxConfig_SetString("SoundList", orxObject_GetName(pstObject));
+          orxConfig_SetString("Music", acBuffer);
+
+          // Creates graphic
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
+          pstTexture = orxTexture_Create();
+          orxASSERT(pstTexture);
+          pstBitmap = orxDisplay_CreateBitmap((orxU32)plm_get_width(pstMovieData->pstVideo), (orxU32)plm_get_height(pstMovieData->pstVideo));
+          orxTexture_LinkBitmap(pstTexture, pstBitmap, acBuffer, orxTRUE);
+          orxConfig_SetString("Texture", acBuffer);
+          orxConfig_SetString("Pivot", "center");
+          orxConfig_SetString("Graphic", orxObject_GetName(pstObject));
+
+          // Pushes shader config section
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
+          orxConfig_PushSection(acBuffer);
+
+          // Creates decoding textures
+          pstTexture = orxTexture_Create();
+          orxASSERT(pstTexture);
+          pstBitmap = orxDisplay_CreateBitmap((orxU32)pstMovieData->pstVideo->video_decoder->luma_width / 4, (orxU32)plm_get_height(pstMovieData->pstVideo));
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX:y", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
+          orxTexture_LinkBitmap(pstTexture, pstBitmap, acBuffer, orxTRUE);
+          orxConfig_SetString("y", acBuffer);
+          pstTexture = orxTexture_Create();
+          orxASSERT(pstTexture);
+          pstBitmap = orxDisplay_CreateBitmap((orxU32)pstMovieData->pstVideo->video_decoder->chroma_width / 4, (orxU32)plm_get_height(pstMovieData->pstVideo) >> 1);
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX:cb", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
+          orxTexture_LinkBitmap(pstTexture, pstBitmap, acBuffer, orxTRUE);
+          orxConfig_SetString("cb", acBuffer);
+          pstTexture = orxTexture_Create();
+          orxASSERT(pstTexture);
+          pstBitmap = orxDisplay_CreateBitmap((orxU32)pstMovieData->pstVideo->video_decoder->chroma_width / 4, (orxU32)plm_get_height(pstMovieData->pstVideo) >> 1);
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX:cr", orxObject_GetName(pstObject), orxStructure_GetGUID(pstObject));
+          orxTexture_LinkBitmap(pstTexture, pstBitmap, acBuffer, orxTRUE);
+          orxConfig_SetString("cr", acBuffer);
+
+          // Creates conversion shader
+          orxConfig_SetString("ParamList", "y # cb # cr # w");
+          orxConfig_SetFloat("w", (orxFLOAT)plm_get_width(pstMovieData->pstVideo));
+          orxConfig_SetString("Code",
+            "void main()"
+            "{"
+            "  mat4 bt601 = mat4("
+            "     1.16438,  0.00000,  1.59603, -0.87079,"
+            "     1.16438, -0.39176, -0.81297,  0.52959,"
+            "     1.16438,  2.01723,  0.00000, -1.08139,"
+            "     0.00000,  0.00000,  0.00000,  1.00000"
+            "  );"
+            "  vec3 color; vec2 coord; int sel; float x = w * gl_TexCoord[0].x;"
+            "  coord = vec2((floor(x / 4.0) + 0.5) * 4.0 / w, gl_TexCoord[0].y);"
+            "  sel = int(mod(x, 4.0));"
+            "  if(sel == 0)"
+            "  {"
+            "    color.r = texture2D(y, coord.xy).r;"
+            "  }"
+            "  else if(sel == 1)"
+            "  {"
+            "    color.r = texture2D(y, coord.xy).g;"
+            "  }"
+            "  else if(sel == 2)"
+            "  {"
+            "    color.r = texture2D(y, coord.xy).b;"
+            "  }"
+            "  else"
+            "  {"
+            "    color.r = texture2D(y, coord.xy).a;"
+            "  }"
+            "  coord = vec2((floor(x / 8.0) + 0.5) * 8.0 / w, gl_TexCoord[0].y);"
+            "  sel = int(mod(x / 2.0, 4.0));"
+            "  if(sel == 0)"
+            "  {"
+            "    color.g = texture2D(cb, coord.xy).r;"
+            "    color.b = texture2D(cr, coord.xy).r;"
+            "  }"
+            "  else if(sel == 1)"
+            "  {"
+            "    color.g = texture2D(cb, coord.xy).g;"
+            "    color.b = texture2D(cr, coord.xy).g;"
+            "  }"
+            "  else if(sel == 2)"
+            "  {"
+            "    color.g = texture2D(cb, coord.xy).b;"
+            "    color.b = texture2D(cr, coord.xy).b;"
+            "  }"
+            "  else"
+            "  {"
+            "    color.g = texture2D(cb, coord.xy).a;"
+            "    color.b = texture2D(cr, coord.xy).a;"
+            "  }"
+            "  gl_FragColor = vec4(color, 1.0) * bt601 * gl_Color;"
+            "}"
+          );
+          orxObject_AddShader(pstObject, orxConfig_GetCurrentSection());
+
+          // Pops config section
+          orxConfig_PopSection();
+        }
+      }
+    }
+    // Newly enabled?
+    else if(_pstEvent->eID == orxOBJECT_EVENT_ENABLE)
+    {
+      MovieData *pstMovieData;
+
+      // Gets movie data
+      pstMovieData = (MovieData *)_pstEvent->pContext;
+
+      // Matching object?
+      if(pstMovieData->pstObject == orxOBJECT(_pstEvent->hSender))
+      {
+        // Updates its time tracking
+        pstMovieData->dLastSystem = orxSystem_GetSystemTime();
+      }
+    }
+    else
+    {
+      MovieData *pstMovieData;
+
+      // Gets movie data
+      pstMovieData = (MovieData *)_pstEvent->pContext;
+
+      // Matching object?
+      if(pstMovieData->pstObject == orxOBJECT(_pstEvent->hSender))
+      {
+        orxCHAR acBuffer[256];
+
+        // Stops music
+        orxObject_Stop(pstMovieData->pstObject);
+
+        // Deletes all textures
+        orxTEXTURE *pstTexture = orxObject_GetWorkingTexture(pstMovieData->pstObject);
+        orxTexture_Delete(pstTexture);
+        orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%016llX", orxObject_GetName(pstMovieData->pstObject), orxStructure_GetGUID(pstMovieData->pstObject));
+        orxConfig_PushSection(acBuffer);
+        pstTexture = orxTexture_Get(orxConfig_GetString("y"));
+        orxTexture_Delete(pstTexture);
+        pstTexture = orxTexture_Get(orxConfig_GetString("cb"));
+        orxTexture_Delete(pstTexture);
+        pstTexture = orxTexture_Get(orxConfig_GetString("cr"));
+        orxTexture_Delete(pstTexture);
+        orxConfig_PopSection();
+
+        // Marks it for deletion
+        pstMovieData->bDelete = orxTRUE;
+        orxMEMORY_BARRIER();
+
+        // Removes event handlers
+        orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_SOUND, orxMovie_Decode, _pstEvent->pContext);
+        orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_RENDER, orxMovie_Decode, _pstEvent->pContext);
+        orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_OBJECT, orxMovie_EventHandler, _pstEvent->pContext);
+        orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_SOUND, orxMovie_EventHandler, _pstEvent->pContext);
+
+        // Runs delete task
+        orxThread_RunTask(orxNULL, orxMovie_Delete, orxNULL, pstMovieData);
+      }
+    }
+  }
+  else
+  {
+    MovieData *pstMovieData;
+
+    // Checks
+    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SOUND);
+
+    // Gets movie data
+    pstMovieData = (MovieData *)_pstEvent->pContext;
+
+    // Matching object?
+    if(pstMovieData->pstObject == orxOBJECT(_pstEvent->hSender))
+    {
+      // Requests video rewind
+      pstMovieData->dLastSystem = 0.0;
+      pstMovieData->bRewind     = orxTRUE;
+    }
+  }
+
+  // Done!
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxMovie_Init()
+{
+  // Not initialized?
+  if(!sstMovie.pstMovieBank)
+  {
+    // Creates bank
+    sstMovie.pstMovieBank = orxBank_Create(16, sizeof(MovieData), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_TEMP);
+
+    // Success?
+    if(sstMovie.pstMovieBank)
+    {
+      // Registers commands
+      orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetMovieDuration, "Object", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
+      // Registers movie handler
+      orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxMovie_EventHandler);
+      orxEvent_SetHandlerIDFlags(orxMovie_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE), orxEVENT_KU32_MASK_ID_ALL);
+    }
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+void orxFASTCALL orxMovie_Exit()
+{
+  // Was initialized?
+  if(sstMovie.pstMovieBank)
+  {
+    // Unregisters movie handler
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxMovie_EventHandler);
+
+    // Unregisters commands
+    orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetMovieDuration);
+
+    // Deletes bank
+    orxBank_Delete(sstMovie.pstMovieBank);
+    sstMovie.pstMovieBank = orxNULL;
+  }
+
+  // Done!
+  return;
+}
+
+#endif // orxMOVIE_IMPL
+
+#endif // _orxMOVIE_H_

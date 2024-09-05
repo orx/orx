@@ -1,8 +1,6 @@
 var annotated_dup =
 [
     [ "orxAABOX", "structorx_a_a_b_o_x.html", "structorx_a_a_b_o_x" ],
-    [ "orxANDROID_AXIS_DATA", "structorx_a_n_d_r_o_i_d___a_x_i_s___d_a_t_a.html", "structorx_a_n_d_r_o_i_d___a_x_i_s___d_a_t_a" ],
-    [ "orxANDROID_JOYSTICK_EVENT", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t.html", "structorx_a_n_d_r_o_i_d___j_o_y_s_t_i_c_k___e_v_e_n_t" ],
     [ "orxANDROID_KEY_EVENT", "structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html", "structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t" ],
     [ "orxANDROID_SURFACE_CHANGED_EVENT", "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html", "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t" ],
     [ "orxANIM_CUSTOM_EVENT", "structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html", "structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t" ],
@@ -17,11 +15,13 @@ var annotated_dup =
     [ "orxCOMMAND_VAR", "structorx_c_o_m_m_a_n_d___v_a_r.html", "structorx_c_o_m_m_a_n_d___v_a_r" ],
     [ "orxCOMMAND_VAR_DEF", "structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html", "structorx_c_o_m_m_a_n_d___v_a_r___d_e_f" ],
     [ "orxDISPLAY_EVENT_PAYLOAD", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_d_i_s_p_l_a_y___e_v_e_n_t___p_a_y_l_o_a_d" ],
+    [ "orxDISPLAY_MESH", "structorx_d_i_s_p_l_a_y___m_e_s_h.html", "structorx_d_i_s_p_l_a_y___m_e_s_h" ],
     [ "orxDISPLAY_TRANSFORM", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m" ],
     [ "orxDISPLAY_VERTEX", "structorx_d_i_s_p_l_a_y___v_e_r_t_e_x.html", "structorx_d_i_s_p_l_a_y___v_e_r_t_e_x" ],
     [ "orxDISPLAY_VIDEO_MODE", "structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e.html", "structorx_d_i_s_p_l_a_y___v_i_d_e_o___m_o_d_e" ],
     [ "orxEVENT", "structorx_e_v_e_n_t.html", "structorx_e_v_e_n_t" ],
     [ "orxFILE_INFO", "structorx_f_i_l_e___i_n_f_o.html", "structorx_f_i_l_e___i_n_f_o" ],
+    [ "orxFX_CURVE_PARAM", "structorx_f_x___c_u_r_v_e___p_a_r_a_m.html", "structorx_f_x___c_u_r_v_e___p_a_r_a_m" ],
     [ "orxFX_EVENT_PAYLOAD", "structorx_f_x___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_f_x___e_v_e_n_t___p_a_y_l_o_a_d" ],
     [ "orxINPUT_EVENT_PAYLOAD", "structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_i_n_p_u_t___e_v_e_n_t___p_a_y_l_o_a_d" ],
     [ "orxLINKLIST", "structorx_l_i_n_k_l_i_s_t.html", "structorx_l_i_n_k_l_i_s_t" ],
@@ -39,6 +39,7 @@ var annotated_dup =
     [ "orxSHADER_EVENT_PAYLOAD", "structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_s_h_a_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d" ],
     [ "orxSHADER_PARAM", "structorx_s_h_a_d_e_r___p_a_r_a_m.html", "structorx_s_h_a_d_e_r___p_a_r_a_m" ],
     [ "orxSOUND_EVENT_PAYLOAD", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_s_o_u_n_d___e_v_e_n_t___p_a_y_l_o_a_d" ],
+    [ "orxSOUND_FILTER_DATA", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a" ],
     [ "orxSOUND_STREAM_INFO", "structorx_s_o_u_n_d___s_t_r_e_a_m___i_n_f_o.html", "structorx_s_o_u_n_d___s_t_r_e_a_m___i_n_f_o" ],
     [ "orxSOUND_STREAM_PACKET", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t.html", "structorx_s_o_u_n_d___s_t_r_e_a_m___p_a_c_k_e_t" ],
     [ "orxSTRUCTURE", "structorx_s_t_r_u_c_t_u_r_e.html", "structorx_s_t_r_u_c_t_u_r_e" ],
@@ -46,6 +47,7 @@ var annotated_dup =
     [ "orxTIMELINE_EVENT_PAYLOAD", "structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_t_i_m_e_l_i_n_e___e_v_e_n_t___p_a_y_l_o_a_d" ],
     [ "orxTREE", "structorx_t_r_e_e.html", "structorx_t_r_e_e" ],
     [ "orxTREE_NODE", "structorx_t_r_e_e___n_o_d_e.html", "structorx_t_r_e_e___n_o_d_e" ],
+    [ "orxTRIGGER_EVENT_PAYLOAD", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d" ],
     [ "orxVECTOR", "structorx_v_e_c_t_o_r.html", "structorx_v_e_c_t_o_r" ],
     [ "orxVERSION", "structorx_v_e_r_s_i_o_n.html", "structorx_v_e_r_s_i_o_n" ]
 ];

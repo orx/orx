@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -36,12 +36,21 @@
 #include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
+#include "display/orxDisplay.h"
 #include "memory/orxBank.h"
 #include "memory/orxMemory.h"
 #include "math/orxMath.h"
 #include "object/orxStructure.h"
 #include "utils/orxLinkList.h"
 #include "utils/orxHashTable.h"
+
+#ifdef __orxWINDOWS__
+
+  #define NO_WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+  #undef NO_WIN32_LEAN_AND_MEAN
+
+#endif /* __orxWINDOWS__ */
 
 
 /** Module flags
@@ -62,6 +71,8 @@
 #define orxCLOCK_KU32_FLAG_PAUSED               0x10000000  /**< Clock is paused */
 #define orxCLOCK_KU32_FLAG_REFERENCED           0x20000000  /**< Referenced flag */
 #define orxCLOCK_KU32_FLAG_UPDATE_LOCK          0x40000000  /**< Lock update flag */
+#define orxCLOCK_KU32_FLAG_DISPLAY              0x80000000  /**< Display sync flag */
+#define orxCLOCK_KU32_FLAG_ALLOW_SLEEP          0x01000000  /**< Allow sleep flag */
 
 #define orxCLOCK_KU32_MASK_ALL                  0xFFFFFFFF  /**< All mask */
 
@@ -70,19 +81,25 @@
  */
 #define orxCLOCK_KZ_CONFIG_SECTION              "Clock"
 #define orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY "MainClockFrequency"
-#define orxCLOCK_KZ_CONFIG_FREQUENCY            "Frequency"
-#define orxCLOCK_KZ_CONFIG_MODIFIER_TYPE        "ModifierType"
-#define orxCLOCK_KZ_CONFIG_MODIFIER_VALUE       "ModifierValue"
+#define orxCLOCK_KZ_CONFIG_ALLOW_SLEEP          "AllowSleep"
 
-#define orxCLOCK_KZ_MODIFIER_CAPPED             "capped"
 #define orxCLOCK_KZ_MODIFIER_FIXED              "fixed"
 #define orxCLOCK_KZ_MODIFIER_MULTIPLY           "multiply"
+#define orxCLOCK_KZ_MODIFIER_MAXED              "maxed"
+#define orxCLOCK_KZ_MODIFIER_AVERAGE            "average"
+
+#define orxCLOCK_KZ_DISPLAY                     "display"
 
 #define orxCLOCK_KU32_REFERENCE_TABLE_SIZE      8           /**< Reference table size */
 
 #define orxCLOCK_KU32_BANK_SIZE                 8           /**< Bank size */
 
-#define orxCLOCK_KF_DELAY_ADJUSTMENT            orx2F(-0.001f)
+#define orxCLOCK_KF_DELAY_THRESHOLD             orx2F(0.005f)
+#define orxCLOCK_KF_DELAY                       orx2F(0.001f)
+#define orxCLOCK_KF_DEFAULT_MODIFIER_FIXED      (-orxFLOAT_1)
+#define orxCLOCK_KF_DEFAULT_MODIFIER_MULTIPLY   orxFLOAT_0
+#define orxCLOCK_KF_DEFAULT_MODIFIER_MAXED      orx2F(0.1f)
+#define orxCLOCK_KF_DEFAULT_MODIFIER_AVERAGE    orxFLOAT_0
 
 
 /***************************************************************************
@@ -95,8 +112,8 @@ typedef struct __orxCLOCK_FUNCTION_STORAGE_t
 {
   orxLINKLIST_NODE            stNode;           /**< Linklist node : 12 */
   orxCLOCK_FUNCTION           pfnCallback;      /**< Clock function pointer : 16 */
-  orxCLOCK_PRIORITY           ePriority;        /**< Clock function priority : 20 */
-  void                       *pContext;         /**< Clock function context : 24 */
+  void                       *pContext;         /**< Clock function context : 20 */
+  orxCLOCK_PRIORITY           ePriority;        /**< Clock function priority : 24 */
   orxMODULE_ID                eModuleID;        /**< Clock function module ID : 28 */
 
 } orxCLOCK_FUNCTION_STORAGE;
@@ -117,12 +134,14 @@ typedef struct __orxCLOCK_TIMER_STORAGE_t
 struct __orxCLOCK_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 32 */
-  orxCLOCK_INFO     stClockInfo;                /**< Clock Info Structure : 40 */
-  orxFLOAT          fPartialDT;                 /**< Clock partial DT : 44 */
-  orxBANK          *pstFunctionBank;            /**< Function bank : 48 */
-  orxLINKLIST       stFunctionList;             /**< Function list : 60 */
-  orxLINKLIST       stTimerList;                /**< Timer list : 72 */
-  const orxSTRING   zReference;                 /**< Reference : 76 */
+  orxCLOCK_INFO     stClockInfo;                /**< Clock Info Structure : 60 */
+  orxFLOAT          fPartialDT;                 /**< Clock partial DT : 64 */
+  orxBANK          *pstFunctionBank;            /**< Function bank : 68 */
+  orxLINKLIST       stFunctionList;             /**< Function list : 80 */
+  orxLINKLIST       stTimerList;                /**< Timer list : 92 */
+  const orxSTRING   zReference;                 /**< Reference : 96 */
+  orxU32            u32HistoryIndex;            /**< Average history index : 100 */
+  orxFLOAT         *afHistory;                  /**< Average history : 104 */
 };
 
 
@@ -130,13 +149,13 @@ struct __orxCLOCK_t
  */
 typedef struct __orxCLOCK_STATIC_t
 {
-  orxBANK          *pstTimerBank;               /**< Timer bank : 4 */
-  orxCLOCK_MOD_TYPE eModType;                   /**< Clock mod type : 8 */
-  orxDOUBLE         dTime;                      /**< Current time : 16 */
-  orxFLOAT          fModValue;                  /**< Clock mod value : 20 */
-  orxFLOAT          fMainClockTickSize;         /**< Main clock tick size : 24 */
-  orxHASHTABLE     *pstReferenceTable;          /**< Table to avoid clock duplication when creating through config file : 28 */
-  orxU32            u32Flags;                   /**< Control flags : 32 */
+  orxCLOCK         *pstCore;                    /**< Core clock */
+  orxBANK          *pstTimerBank;               /**< Timer bank */
+  orxDOUBLE         dTime;                      /**< Current time */
+  orxDOUBLE         dNextTime;                  /**< Next time */
+  orxHASHTABLE     *pstReferenceTable;          /**< Table to avoid clock duplication when creating through config file */
+  orxFLOAT          fDisplayTickSize;           /**< Display tick size */
+  orxU32            u32Flags;                   /**< Control flags */
 
 } orxCLOCK_STATIC;
 
@@ -153,6 +172,77 @@ static orxCLOCK_STATIC sstClock;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Computes DT according to modifier
+ * @param[in]   _fDT                                  Real DT
+ * @param[in]   _pstClock                             Concerned clock
+ * @return      Modified DT
+ */
+orxFLOAT orxFASTCALL orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock)
+{
+  orxFLOAT fResult = _fDT;
+
+  /* Fixed modifier? */
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED] != orxFLOAT_0)
+  {
+    /* Should match tick size? */
+    if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED] < orxFLOAT_0)
+    {
+      /* Has tick size? */
+      if(_pstClock->stClockInfo.fTickSize > orxFLOAT_0)
+      {
+        /* Updates result */
+        fResult = _pstClock->stClockInfo.fTickSize;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      fResult = _pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED];
+    }
+  }
+
+  /* Multiplied modifier? */
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY] != orxFLOAT_0)
+  {
+    /* Updates result */
+    fResult *= _pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY];
+  }
+
+  /* Maxed modifier? */
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MAXED] != orxFLOAT_0)
+  {
+    /* Updates result */
+    fResult = orxMIN(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MAXED], fResult);
+  }
+
+  /* Average modifier? */
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_AVERAGE] != orxFLOAT_0)
+  {
+    orxU32 i, iCount, u32HistorySize;
+
+    /* Gets history size */
+    u32HistorySize = orxF2U(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_AVERAGE]);
+
+    /* For all history */
+    for(i = 0, iCount = orxMIN(_pstClock->u32HistoryIndex, u32HistorySize);
+        i < iCount;
+        i++)
+    {
+      /* Sums values */
+      fResult += _pstClock->afHistory[i];
+    }
+
+    /* Updates result */
+    fResult /= orxU2F(1 + iCount);
+
+    /* Updates history */
+    _pstClock->afHistory[_pstClock->u32HistoryIndex++ % u32HistorySize] = fResult;
+  }
+
+  /* Done! */
+  return fResult;
+}
 
 /** Finds a clock function storage
  * @param[in]   _pstClock                             Concerned clock
@@ -185,105 +275,27 @@ static orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(const o
   return pstFunctionStorage;
 }
 
-/** Finds the next clock in list given a tick size and a type
- * @param[in]   _fTickSize                            Desired tick size
- * @param[in]   _eType                                Desired type
- * @param[in]   _pstStartClock                        Clock used as a starting point in the list
- * @return      orxCLOCK / orxNULL
+/** Event handler
+ * @param[in]   _pstEvent                     Sent event
+ * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
  */
-static orxINLINE orxCLOCK *orxClock_FindClock(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType, const orxCLOCK *_pstStartClock)
+static orxSTATUS orxFASTCALL orxClock_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxCLOCK *pstClock;
+  orxDISPLAY_EVENT_PAYLOAD *pstPayload;
+  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxASSERT(_eType < orxCLOCK_TYPE_NUMBER);
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_DISPLAY);
+  orxASSERT(_pstEvent->eID == orxDISPLAY_EVENT_SET_VIDEO_MODE);
 
-  /* Finds matching clock */
-  for(pstClock = (_pstStartClock != orxNULL) ? orxCLOCK(orxStructure_GetNext(_pstStartClock)) : orxCLOCK(orxStructure_GetFirst(orxSTRUCTURE_ID_CLOCK));
-      pstClock != orxNULL;
-      pstClock = orxCLOCK(orxStructure_GetNext(pstClock)))
-  {
-    /* Match? */
-    if((pstClock->stClockInfo.eType == _eType)
-    && ((_fTickSize < orxFLOAT_0)
-     || (pstClock->stClockInfo.fTickSize == _fTickSize)))
-    {
-      /* Found */
-      break;
-    }
-  }
+  /* Gets payload */
+  pstPayload = (orxDISPLAY_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  /* Stores display tick size */
+  sstClock.fDisplayTickSize = (pstPayload->stVideoMode.u32RefreshRate != 0) ? orxFLOAT_1 / orxU2F(pstPayload->stVideoMode.u32RefreshRate) : orxFLOAT_0;
 
   /* Done! */
-  return pstClock;
-}
-
-/** Computes DT according to modifier
- * @param[in]   _fDT                                  Real DT
- * @param[in]   _pstClockInfo                         Concerned clock info
- * @return      Modified DT
- */
-static orxINLINE orxFLOAT orxClock_ComputeDT(orxFLOAT _fDT, const orxCLOCK_INFO *_pstClockInfo)
-{
-  register const orxCLOCK_MOD_TYPE *peModType;
-  register const orxFLOAT          *pfModValue;
-  register orxFLOAT                 fResult;
-
-  /* Using global one? */
-  if(_pstClockInfo == orxNULL)
-  {
-    peModType   = &(sstClock.eModType);
-    pfModValue  = &(sstClock.fModValue);
-  }
-  /* Using clock one */
-  else
-  {
-    peModType   = &(_pstClockInfo->eModType);
-    pfModValue  = &(_pstClockInfo->fModValue);
-  }
-
-  /* Depending on modifier type */
-  switch(*peModType)
-  {
-    case orxCLOCK_MOD_TYPE_FIXED:
-    {
-      /* Fixed DT value */
-      fResult = *pfModValue;
-      break;
-    }
-
-    case orxCLOCK_MOD_TYPE_MULTIPLY:
-    {
-      /* Multiplied DT value */
-      fResult = *pfModValue * _fDT;
-      break;
-    }
-
-    case orxCLOCK_MOD_TYPE_MAXED:
-    {
-      /* Updates DT value */
-      fResult = orxMIN(*pfModValue, _fDT);
-      break;
-    }
-
-    default:
-    {
-      /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Invalid clock modifier type (%d).", *peModType);
-
-      /* Falls through */
-    }
-
-    case orxCLOCK_MOD_TYPE_NONE:
-    {
-      /* Gets base DT */
-      fResult = _fDT;
-      break;
-    }
-  }
-
-  /* Done! */
-  return fResult;
+  return eResult;
 }
 
 /** Deletes all the clocks
@@ -305,6 +317,7 @@ static orxINLINE void orxClock_DeleteAll()
     pstClock = orxCLOCK(orxStructure_GetFirst(orxSTRUCTURE_ID_CLOCK));
   }
 
+  /* Done! */
   return;
 }
 
@@ -327,10 +340,20 @@ void orxFASTCALL orxClock_CommandSetFrequency(orxU32 _u32ArgNumber, const orxCOM
   /* Valid? */
   if(pstClock != orxNULL)
   {
-    orxFLOAT fTickSize;
+    orxFLOAT fTickSize = orxFLOAT_0;
 
-    /* Gets tick size */
-    fTickSize = ((_u32ArgNumber > 1) && (_astArgList[1].fValue > orxFLOAT_0)) ? orxFLOAT_1 / _astArgList[1].fValue : orxFLOAT_0;
+    /* No valid tick size? */
+    if((_u32ArgNumber == 1) || (orxString_ToFloat(_astArgList[1].zValue, &fTickSize, orxNULL) == orxSTATUS_FAILURE))
+    {
+      /* Defaults to display */
+      fTickSize = -orxFLOAT_1;
+    }
+    /* No frequency? */
+    else if(fTickSize != orxFLOAT_0)
+    {
+      /* Gets tick size */
+      fTickSize = orxFLOAT_1 / fTickSize;
+    }
 
     /* Sets it */
     _pstResult->bValue = (orxClock_SetTickSize(pstClock, fTickSize) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
@@ -364,43 +387,106 @@ void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMM
   /* Valid? */
   if(pstClock != orxNULL)
   {
-    orxCLOCK_MOD_TYPE eModifierType = orxCLOCK_MOD_TYPE_NONE;
+    orxCLOCK_MODIFIER eModifier = orxCLOCK_MODIFIER_NONE;
     orxFLOAT          fModifierValue;
 
     /* Gets modifier value */
     fModifierValue = _astArgList[2].fValue;
 
-    /* Is modifier value valid? */
-    if(fModifierValue >= orxFLOAT_0)
+    /* Fixed? */
+    if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
     {
-      /* Capped? */
-      if((orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_CAPPED) == 0) && (fModifierValue != orxFLOAT_0))
-      {
-        /* Updates modifier value */
-        fModifierValue = orxFLOAT_1 / fModifierValue;
-
-        /* Updates modifier type */
-        eModifierType = orxCLOCK_MOD_TYPE_MAXED;
-      }
-      /* Fixed? */
-      else if((orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_FIXED) == 0) && (fModifierValue != orxFLOAT_0))
-      {
-        /* Updates modifier value */
-        fModifierValue = orxFLOAT_1 / fModifierValue;
-
-        /* Updates modifier type */
-        eModifierType = orxCLOCK_MOD_TYPE_FIXED;
-      }
-      /* Multiply? */
-      else if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
-      {
-        /* Updates modifier type */
-        eModifierType = orxCLOCK_MOD_TYPE_MULTIPLY;
-      }
+      /* Updates modifier type */
+      eModifier = orxCLOCK_MODIFIER_FIXED;
+    }
+    /* Multiply? */
+    else if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
+    {
+      /* Updates modifier type */
+      eModifier = orxCLOCK_MODIFIER_MULTIPLY;
+    }
+    /* Maxed? */
+    else if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_MAXED) == 0)
+    {
+      /* Updates modifier type */
+      eModifier = orxCLOCK_MODIFIER_MAXED;
+    }
+    /* Average? */
+    else if(orxString_ICompare(_astArgList[1].zValue, orxCLOCK_KZ_MODIFIER_AVERAGE) == 0)
+    {
+      /* Updates modifier type */
+      eModifier = orxCLOCK_MODIFIER_AVERAGE;
     }
 
     /* Updates clock */
-    _pstResult->bValue = (orxClock_SetModifier(pstClock, eModifierType, fModifierValue) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+    _pstResult->bValue = ((eModifier != orxCLOCK_MODIFIER_NONE) && (orxClock_SetModifier(pstClock, eModifier, fModifierValue) != orxSTATUS_FAILURE)) ? orxTRUE : orxFALSE;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: Pause
+ */
+void orxFASTCALL orxClock_CommandPause(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCLOCK *pstClock;
+
+  /* Gets clock */
+  pstClock = orxClock_Get(_astArgList[0].zValue);
+
+  /* Not found? */
+  if(pstClock == orxNULL)
+  {
+    /* Creates it */
+    pstClock = orxClock_CreateFromConfig(_astArgList[0].zValue);
+  }
+
+  /* Valid? */
+  if(pstClock != orxNULL)
+  {
+    /* Updates it */
+    orxClock_Pause(pstClock, (_u32ArgNumber < 2) || (_astArgList[1].bValue != orxFALSE) ? orxTRUE : orxFALSE);
+
+    /* Updates result */
+    _pstResult->zValue = _astArgList[0].zValue;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: IsPaused
+ */
+void orxFASTCALL orxClock_CommandIsPaused(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCLOCK *pstClock;
+
+  /* Gets clock */
+  pstClock = orxClock_Get(_astArgList[0].zValue);
+
+  /* Not found? */
+  if(pstClock == orxNULL)
+  {
+    /* Creates it */
+    pstClock = orxClock_CreateFromConfig(_astArgList[0].zValue);
+  }
+
+  /* Valid? */
+  if(pstClock != orxNULL)
+  {
+    /* Updates result */
+    _pstResult->bValue = orxClock_IsPaused(pstClock);
   }
   else
   {
@@ -417,9 +503,14 @@ void orxFASTCALL orxClock_CommandSetModifier(orxU32 _u32ArgNumber, const orxCOMM
 static orxINLINE void orxClock_RegisterCommands()
 {
   /* Command: SetFrequency */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Clock, SetFrequency, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Frequency = 0.0", orxCOMMAND_VAR_TYPE_FLOAT});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Clock, SetFrequency, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Frequency = display", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: SetModifier */
   orxCOMMAND_REGISTER_CORE_COMMAND(Clock, SetModifier, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 3, 0, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Type", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_FLOAT});
+
+  /* Command: Pause */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Clock, Pause, "Clock", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Clock", orxCOMMAND_VAR_TYPE_STRING}, {"Pause = true", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: IsPaused */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Clock, IsPaused, "IsPaused?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Clock", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the clock commands
@@ -430,6 +521,11 @@ static orxINLINE void orxClock_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Clock, SetFrequency);
   /* Command: SetModifier */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Clock, SetModifier);
+
+  /* Command: Pause */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Clock, Pause);
+  /* Command: IsPaused */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Clock, IsPaused);
 }
 
 
@@ -451,6 +547,7 @@ void orxFASTCALL orxClock_Setup()
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_CLOCK, orxMODULE_ID_CONFIG);
 
+  /* Done! */
   return;
 }
 
@@ -473,72 +570,121 @@ orxSTATUS orxFASTCALL orxClock_Init()
       /* Cleans control structure */
       orxMemory_Zero(&sstClock, sizeof(orxCLOCK_STATIC));
 
-      /* Creates timer bank */
-      sstClock.pstTimerBank = orxBank_Create(orxCLOCK_KU32_TIMER_BANK_SIZE, sizeof(orxCLOCK_TIMER_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      /* Adds event handler */
+      eResult = orxEvent_AddHandler(orxEVENT_TYPE_DISPLAY, orxClock_EventHandler);
 
       /* Valid? */
-      if(sstClock.pstTimerBank != orxNULL)
+      if(eResult != orxSTATUS_FAILURE)
       {
-        /* Creates reference table */
-        sstClock.pstReferenceTable = orxHashTable_Create(orxCLOCK_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        /* Filters relevant event IDs */
+        orxEvent_SetHandlerIDFlags(orxClock_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_SET_VIDEO_MODE), orxEVENT_KU32_MASK_ID_ALL);
+
+        /* Creates timer bank */
+        sstClock.pstTimerBank = orxBank_Create(orxCLOCK_KU32_TIMER_BANK_SIZE, sizeof(orxCLOCK_TIMER_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
         /* Valid? */
-        if(sstClock.pstReferenceTable != orxNULL)
+        if(sstClock.pstTimerBank != orxNULL)
         {
-          orxCLOCK *pstClock;
+          /* Creates reference table */
+          sstClock.pstReferenceTable = orxHashTable_Create(orxCLOCK_KU32_REFERENCE_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-          /* No mod type by default */
-          sstClock.eModType = orxCLOCK_MOD_TYPE_NONE;
-
-          /* Gets init time */
-          sstClock.dTime  = orxSystem_GetTime();
-
-          /* Inits Flags */
-          sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
-
-          /* Gets main clock tick size */
-          orxConfig_PushSection(orxCLOCK_KZ_CONFIG_SECTION);
-          sstClock.fMainClockTickSize = (orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) && orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY)) : orxFLOAT_0;
-          orxConfig_PopSection();
-
-          /* Creates default full speed core clock */
-          pstClock = orxClock_Create(sstClock.fMainClockTickSize, orxCLOCK_TYPE_CORE);
-
-          /* Success? */
-          if(pstClock != orxNULL)
+          /* Valid? */
+          if(sstClock.pstReferenceTable != orxNULL)
           {
-            /* Sets it as its own owner */
-            orxStructure_SetOwner(pstClock, pstClock);
+            orxFLOAT fTickSize;
+            orxBOOL  bUseDefaultModifiers;
 
-            /* Registers commands */
-            orxClock_RegisterCommands();
+            /* Gets init time */
+            sstClock.dTime = orxSystem_GetTime();
 
-            /* Updates result */
-            eResult = orxSTATUS_SUCCESS;
+            /* Inits Flags */
+            sstClock.u32Flags = orxCLOCK_KU32_STATIC_FLAG_READY;
+
+            /* Gets main clock tick size */
+            orxConfig_PushSection(orxCLOCK_KZ_CONFIG_SECTION);
+            fTickSize = (orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) && orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY) > orxFLOAT_0) ? (orxFLOAT_1 / orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MAIN_CLOCK_FREQUENCY)) : orxFLOAT_0;
+            orxConfig_PopSection();
+
+            /* Pushes core clock section */
+            orxConfig_PushSection(orxCLOCK_KZ_CORE);
+            orxConfig_SetParent(orxCLOCK_KZ_CORE, orxCLOCK_KZ_CONFIG_SECTION);
+
+            /* No frequency? */
+            if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_FREQUENCY) == orxFALSE)
+            {
+              /* Should set one? */
+              if(fTickSize != orxFLOAT_0)
+              {
+                /* Updates it */
+                orxConfig_SetFloat(orxCLOCK_KZ_CONFIG_FREQUENCY, (fTickSize == orxFLOAT_0) ? orxFLOAT_0 : orxFLOAT_1 / fTickSize);
+              }
+            }
+
+            /* Updates modifiers status */
+            bUseDefaultModifiers = (orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_LIST) == orxFALSE) ? orxTRUE : orxFALSE;
+
+            /* Pops config section */
+            orxConfig_PopSection();
+
+            /* Creates core clock */
+            sstClock.pstCore = orxClock_CreateFromConfig(orxCLOCK_KZ_CORE);
+
+            /* Success? */
+            if(sstClock.pstCore != orxNULL)
+            {
+              /* Use default modifiers? */
+              if(bUseDefaultModifiers != orxFALSE)
+              {
+                /* Apply them */
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_FIXED, orxCLOCK_KF_DEFAULT_MODIFIER_FIXED);
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_MULTIPLY, orxCLOCK_KF_DEFAULT_MODIFIER_MULTIPLY);
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_MAXED, orxCLOCK_KF_DEFAULT_MODIFIER_MAXED);
+                orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_AVERAGE, orxCLOCK_KF_DEFAULT_MODIFIER_AVERAGE);
+              }
+
+              /* Sets it as its own owner */
+              orxStructure_SetOwner(sstClock.pstCore, sstClock.pstCore);
+
+              /* Registers commands */
+              orxClock_RegisterCommands();
+
+              /* Updates result */
+              eResult = orxSTATUS_SUCCESS;
+            }
+            else
+            {
+              /* Deletes reference table */
+              orxHashTable_Delete(sstClock.pstReferenceTable);
+
+              /* Deletes timer bank */
+              orxBank_Delete(sstClock.pstTimerBank);
+
+              /* Updates result */
+              eResult = orxSTATUS_FAILURE;
+            }
           }
           else
           {
+            /* Deletes timer bank */
+            orxBank_Delete(sstClock.pstTimerBank);
+
             /* Updates result */
             eResult = orxSTATUS_FAILURE;
           }
         }
         else
         {
-          /* Deletes timer bank */
-          orxBank_Delete(sstClock.pstTimerBank);
-          sstClock.pstTimerBank = orxNULL;
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Failed to create clock bank.");
 
-          /* Updates result */
+          /* Clock bank not created */
           eResult = orxSTATUS_FAILURE;
         }
       }
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Failed creating clock bank.");
-
-        /* Clock bank not created */
-        eResult = orxSTATUS_FAILURE;
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Failed to add event handler.");
       }
     }
     else
@@ -567,6 +713,9 @@ void orxFASTCALL orxClock_Exit()
   /* Initialized? */
   if(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxClock_EventHandler);
+
     /* Unregisters commands */
     orxClock_UnregisterCommands();
 
@@ -587,6 +736,7 @@ void orxFASTCALL orxClock_Exit()
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_READY;
   }
 
+  /* Done! */
   return;
 }
 
@@ -595,9 +745,6 @@ void orxFASTCALL orxClock_Exit()
  */
 orxSTATUS orxFASTCALL orxClock_Update()
 {
-  orxDOUBLE dNewTime;
-  orxFLOAT  fDT, fDelay;
-  orxCLOCK *pstClock;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -606,23 +753,38 @@ orxSTATUS orxFASTCALL orxClock_Update()
   /* Not already locked? */
   if(!(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK))
   {
+    orxDOUBLE dNewTime;
+    orxCLOCK *pstClock;
+    orxFLOAT  fDT, fDelay;
+
     /* Lock clocks */
     sstClock.u32Flags |= orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
-    /* Gets new time */
-    dNewTime  = orxSystem_GetTime();
+    /* Updates allow sleep status */
+    orxConfig_PushSection(orxCLOCK_KZ_CORE);
+    if((orxConfig_HasValue(orxCLOCK_KZ_CONFIG_ALLOW_SLEEP) == orxFALSE)
+    || (orxConfig_GetBool(orxCLOCK_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE))
+    {
+      sstClock.u32Flags |= orxCLOCK_KU32_FLAG_ALLOW_SLEEP;
+    }
+    else
+    {
+      sstClock.u32Flags &= ~orxCLOCK_KU32_FLAG_ALLOW_SLEEP;
+    }
+    orxConfig_PopSection();
+
+    /* Actively waits until next update */
+    while((dNewTime = orxSystem_GetTime()) < sstClock.dNextTime)
+      ;
 
     /* Computes natural DT */
-    fDT       = (orxFLOAT)(dNewTime - sstClock.dTime);
-
-    /* Gets modified DT */
-    fDT       = orxClock_ComputeDT(fDT, orxNULL);
+    fDT = (orxFLOAT)(dNewTime - sstClock.dTime);
 
     /* Updates time */
     sstClock.dTime = dNewTime;
 
     /* Inits delay */
-    fDelay = sstClock.fMainClockTickSize;
+    fDelay = sstClock.pstCore->stClockInfo.fTickSize;
 
     /* For all clocks */
     for(pstClock = orxCLOCK(orxStructure_GetFirst(orxSTRUCTURE_ID_CLOCK));
@@ -637,6 +799,13 @@ orxSTATUS orxFASTCALL orxClock_Update()
       {
         orxFLOAT fClockDelay;
 
+        /* Should sync with display? */
+        if(orxStructure_TestFlags(pstClock, orxCLOCK_KU32_FLAG_DISPLAY))
+        {
+          /* Updates its tick size */
+          pstClock->stClockInfo.fTickSize = sstClock.fDisplayTickSize;
+        }
+
         /* Updates clock real time & partial DT */
         pstClock->fPartialDT += fDT;
 
@@ -644,11 +813,11 @@ orxSTATUS orxFASTCALL orxClock_Update()
         if(pstClock->fPartialDT >= pstClock->stClockInfo.fTickSize)
         {
           orxFLOAT                    fClockDT;
-          orxCLOCK_TIMER_STORAGE     *pstTimerStorage;
-          orxCLOCK_FUNCTION_STORAGE  *pstFunctionStorage;
+          orxCLOCK_TIMER_STORAGE     *pstTimerStorage, *pstNextTimerStorage;
+          orxCLOCK_FUNCTION_STORAGE  *pstFunctionStorage, *pstNextFunctionStorage;
 
           /* Gets clock modified DT */
-          fClockDT = orxClock_ComputeDT(pstClock->fPartialDT, &(pstClock->stClockInfo));
+          fClockDT = orxClock_ComputeDT(pstClock->fPartialDT, pstClock);
 
           /* Updates clock DT */
           pstClock->stClockInfo.fDT = fClockDT;
@@ -657,8 +826,13 @@ orxSTATUS orxFASTCALL orxClock_Update()
           pstClock->stClockInfo.fTime += fClockDT;
 
           /* For all timers */
-          for(pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetFirst(&(pstClock->stTimerList)); pstTimerStorage != orxNULL;)
+          for(pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetFirst(&(pstClock->stTimerList));
+              pstTimerStorage != orxNULL;
+              pstTimerStorage = pstNextTimerStorage)
           {
+            /* Gets the next timer */
+            pstNextTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetNext(&(pstTimerStorage->stNode));
+
             /* Should call it? */
             if((pstTimerStorage->fTimeStamp <= pstClock->stClockInfo.fTime) && (pstTimerStorage->s32Repetition != 0))
             {
@@ -676,37 +850,41 @@ orxSTATUS orxFASTCALL orxClock_Update()
               }
             }
 
-            /* Should delete it */
+            /* Should delete it? */
             if(pstTimerStorage->s32Repetition == 0)
             {
-              orxCLOCK_TIMER_STORAGE *pstDelete;
-
-              /* Gets timer to delete */
-              pstDelete = pstTimerStorage;
-
-              /* Gets the next timer */
-              pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetNext(&(pstTimerStorage->stNode));
-
               /* Removes current timer */
-              orxLinkList_Remove(&(pstDelete->stNode));
+              orxLinkList_Remove(&(pstTimerStorage->stNode));
 
               /* Deletes it */
-              orxBank_Free(sstClock.pstTimerBank, pstDelete);
-            }
-            else
-            {
-              /* Gets the next timer */
-              pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetNext(&(pstTimerStorage->stNode));
+              orxBank_Free(sstClock.pstTimerBank, pstTimerStorage);
             }
           }
 
           /* For all registered callbacks */
           for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(pstClock->stFunctionList));
               pstFunctionStorage != orxNULL;
-              pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode)))
+              pstFunctionStorage = pstNextFunctionStorage)
           {
-            /* Calls it */
-            pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pContext);
+            /* Gets next function storage */
+            pstNextFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode));
+
+            /* Not marked for deletion? */
+            if(pstFunctionStorage->pfnCallback != orxNULL)
+            {
+              /* Calls callback */
+              pstFunctionStorage->pfnCallback(&(pstClock->stClockInfo), pstFunctionStorage->pContext);
+            }
+
+            /* Should delete it? */
+            if(pstFunctionStorage->pfnCallback == orxNULL)
+            {
+              /* Removes it from list */
+              orxLinkList_Remove(&(pstFunctionStorage->stNode));
+
+              /* Removes it from bank */
+              orxBank_Free(pstClock->pstFunctionBank, pstFunctionStorage);
+            }
           }
 
           /* Updates partial DT */
@@ -731,14 +909,24 @@ orxSTATUS orxFASTCALL orxClock_Update()
     /* Unlocks clocks */
     sstClock.u32Flags &= ~orxCLOCK_KU32_STATIC_FLAG_UPDATE_LOCK;
 
-    /* Gets real remaining delay */
-    fDelay = fDelay + orxCLOCK_KF_DELAY_ADJUSTMENT - orx2F(orxSystem_GetTime() - sstClock.dTime);
+    /* Sets next tick time */
+    sstClock.dNextTime = sstClock.dTime + (orxDOUBLE)fDelay;
 
-    /* Should delay? */
-    if(fDelay > orxFLOAT_0)
+    /* Can sleep? */
+    if(sstClock.u32Flags & orxCLOCK_KU32_FLAG_ALLOW_SLEEP)
     {
-      /* Waits for next time slice */
-      orxSystem_Delay(fDelay);
+      /* Should delay? */
+      while(orx2F(sstClock.dNextTime - orxSystem_GetTime()) > orxCLOCK_KF_DELAY_THRESHOLD)
+      {
+        /* Sleeps */
+#ifdef __orxWINDOWS__
+      timeBeginPeriod(1);
+#endif /* __orxWINDOWS__ */
+        orxSystem_Delay(orxCLOCK_KF_DELAY);
+#ifdef __orxWINDOWS__
+      timeEndPeriod(1);
+#endif /* __orxWINDOWS__ */
+      }
     }
   }
 
@@ -751,7 +939,7 @@ orxSTATUS orxFASTCALL orxClock_Update()
  * @param[in]   _eType                                Type of the clock
  * @return      orxCLOCK / orxNULL
  */
-orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
+orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize)
 {
   orxCLOCK *pstClock;
 
@@ -773,8 +961,6 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
     {
       /* Inits clock */
       pstClock->stClockInfo.fTickSize = _fTickSize;
-      pstClock->stClockInfo.eType     = _eType;
-      pstClock->stClockInfo.eModType  = orxCLOCK_MOD_TYPE_NONE;
       orxStructure_SetFlags(pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_MASK_ALL);
 
       /* Increases count */
@@ -828,78 +1014,120 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
     if((orxConfig_HasSection(_zConfigID) != orxFALSE)
     && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
     {
-      orxFLOAT fFrequency;
+      orxFLOAT  fFrequency;
+      orxU32    u32Flags = orxCLOCK_KU32_FLAG_NONE;
 
-      /* Gets its frequency */
-      fFrequency = orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_FREQUENCY);
+      /* Should match display refresh rate? */
+      if((orxConfig_HasValue(orxCLOCK_KZ_CONFIG_FREQUENCY) == orxFALSE) || (orxString_ICompare(orxConfig_GetString(orxCLOCK_KZ_CONFIG_FREQUENCY), orxCLOCK_KZ_DISPLAY) == 0))
+      {
+        /* Clears its frequency */
+        fFrequency = orxFLOAT_0;
+
+        /* Updates status flags */
+        u32Flags |= orxCLOCK_KU32_FLAG_DISPLAY;
+      }
+      else
+      {
+        /* Gets its frequency */
+        fFrequency = orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_FREQUENCY);
+      }
 
       /* Creates clock */
-      pstResult = orxClock_Create((fFrequency > orxFLOAT_0) ? orxFLOAT_1 / fFrequency : orxFLOAT_0, orxCLOCK_TYPE_USER);
+      pstResult = orxClock_Create((fFrequency > orxFLOAT_0) ? orxFLOAT_1 / fFrequency : orxFLOAT_0);
 
       /* Valid? */
       if(pstResult != orxNULL)
       {
-        /* Has a modifier? */
-        if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE) != orxFALSE)
+        orxCLOCK *pstClock;
+
+        /* Has a modifier list? */
+        if(orxConfig_HasValue(orxCLOCK_KZ_CONFIG_MODIFIER_LIST) != orxFALSE)
         {
-          orxFLOAT fModifierValue;
+          orxS32 i, s32Count;
 
-          /* Gets its value */
-          fModifierValue = orxConfig_GetFloat(orxCLOCK_KZ_CONFIG_MODIFIER_VALUE);
-
-          /* Valid? */
-          if(fModifierValue > orxFLOAT_0)
+          /* For all defined modifiers */
+          for(i = 0, s32Count = orxConfig_GetListCount(orxCLOCK_KZ_CONFIG_MODIFIER_LIST); i < s32Count; i++)
           {
-            const orxSTRING   zModifierType;
-            orxCLOCK_MOD_TYPE eModifierType;
+            const orxSTRING   zModifier;
+            orxCLOCK_MODIFIER eModifier = orxCLOCK_MODIFIER_NONE;
 
-            /* Gets modifier type */
-            zModifierType = orxConfig_GetString(orxCLOCK_KZ_CONFIG_MODIFIER_TYPE);
+            /* Gets its value */
+            zModifier = orxConfig_GetListString(orxCLOCK_KZ_CONFIG_MODIFIER_LIST, i);
 
-            /* Capped? */
-            if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_CAPPED) == 0)
-            {
-              /* Updates modifier value */
-              fModifierValue = orxFLOAT_1 / fModifierValue;
-
-              /* Updates modifier type */
-              eModifierType = orxCLOCK_MOD_TYPE_MAXED;
-            }
             /* Fixed? */
-            else if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_FIXED) == 0)
+            if(orxString_SearchString(zModifier, orxCLOCK_KZ_MODIFIER_FIXED) == zModifier)
             {
-              /* Updates modifier value */
-              fModifierValue = orxFLOAT_1 / fModifierValue;
-
-              /* Updates modifier type */
-              eModifierType = orxCLOCK_MOD_TYPE_FIXED;
+              /* Updates modifier */
+              zModifier  += orxString_GetLength(orxCLOCK_KZ_MODIFIER_FIXED);
+              eModifier   = orxCLOCK_MODIFIER_FIXED;
             }
             /* Multiply? */
-            else if(orxString_ICompare(zModifierType, orxCLOCK_KZ_MODIFIER_MULTIPLY) == 0)
+            else if(orxString_SearchString(zModifier, orxCLOCK_KZ_MODIFIER_MULTIPLY) == zModifier)
             {
-              /* Updates modifier type */
-              eModifierType = orxCLOCK_MOD_TYPE_MULTIPLY;
+              /* Updates modifier */
+              zModifier  += orxString_GetLength(orxCLOCK_KZ_MODIFIER_MULTIPLY);
+              eModifier   = orxCLOCK_MODIFIER_MULTIPLY;
             }
-            /* None */
-            else
+            /* Maxed? */
+            else if(orxString_SearchString(zModifier, orxCLOCK_KZ_MODIFIER_MAXED) == zModifier)
             {
-              /* Updates modifier type */
-              eModifierType = orxCLOCK_MOD_TYPE_NONE;
+              /* Updates modifier */
+              zModifier  += orxString_GetLength(orxCLOCK_KZ_MODIFIER_MAXED);
+              eModifier   = orxCLOCK_MODIFIER_MAXED;
+            }
+            /* Average? */
+            else if(orxString_SearchString(zModifier, orxCLOCK_KZ_MODIFIER_AVERAGE) == zModifier)
+            {
+              /* Updates modifier */
+              zModifier  += orxString_GetLength(orxCLOCK_KZ_MODIFIER_AVERAGE);
+              eModifier   = orxCLOCK_MODIFIER_AVERAGE;
             }
 
-            /* Updates clock */
-            orxClock_SetModifier(pstResult, eModifierType, fModifierValue);
+            /* Valid? */
+            if(eModifier != orxCLOCK_MODIFIER_NONE)
+            {
+              orxFLOAT fValue = orxFLOAT_0;
+
+              /* Gets its value */
+              orxString_ToFloat(zModifier, &fValue, orxNULL);
+
+              /* Valid? */
+              if(fValue != orxFLOAT_0)
+              {
+                /* Sets it */
+                orxClock_SetModifier(pstResult, eModifier, fValue);
+              }
+            }
           }
+        }
+        else
+        {
+          /* Defaults to fixed/-1 modifier */
+          orxClock_SetModifier(pstResult, orxCLOCK_MODIFIER_FIXED, -orxFLOAT_1);
+        }
+
+        /* Should sync with display? */
+        if(orxFLAG_TEST(u32Flags, orxCLOCK_KU32_FLAG_DISPLAY))
+        {
+          /* Updates its tick size */
+          pstResult->stClockInfo.fTickSize = sstClock.fDisplayTickSize;
+        }
+
+        /* Has core clock? */
+        if((pstClock = orxClock_Get(orxCLOCK_KZ_CORE)) != orxNULL)
+        {
+          /* Updates clock's DT */
+          pstResult->stClockInfo.fDT = orxClock_ComputeDT(pstClock->stClockInfo.fDT, pstResult);
         }
 
         /* Stores its reference key */
         pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* Adds it to reference table */
-        orxHashTable_Add(sstClock.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+        orxHashTable_Add(sstClock.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
 
         /* Updates status flags */
-        orxStructure_SetFlags(pstResult, orxCLOCK_KU32_FLAG_REFERENCED, orxCLOCK_KU32_FLAG_NONE);
+        orxStructure_SetFlags(pstResult, u32Flags | orxCLOCK_KU32_FLAG_REFERENCED, orxCLOCK_KU32_FLAG_NONE);
       }
 
       /* Pops previous section */
@@ -961,7 +1189,7 @@ orxSTATUS orxFASTCALL orxClock_Delete(orxCLOCK *_pstClock)
       if(orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_REFERENCED))
       {
         /* Removes it from reference table */
-        orxHashTable_Remove(sstClock.pstReferenceTable, orxString_ToCRC(_pstClock->zReference));
+        orxHashTable_Remove(sstClock.pstReferenceTable, orxString_Hash(_pstClock->zReference));
       }
 
       /* Deletes clock */
@@ -1093,46 +1321,35 @@ orxSTATUS orxFASTCALL orxClock_Restart(orxCLOCK *_pstClock)
 
 /** Pauses a clock
  * @param[in]   _pstClock                             Concerned clock
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _bPause                               Pause / unpause
  */
-orxSTATUS orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock)
+void orxFASTCALL orxClock_Pause(orxCLOCK *_pstClock, orxBOOL _bPause)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
 
-  /* Sends event */
-  orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_PAUSE, _pstClock, orxNULL, orxNULL);
+  /* Pause? */
+  if(_bPause != orxFALSE)
+  {
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_PAUSE, _pstClock, orxNULL, orxNULL);
 
-  /* Updates clock flags */
-  orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_PAUSED, orxCLOCK_KU32_FLAG_NONE);
+    /* Updates clock flags */
+    orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_PAUSED, orxCLOCK_KU32_FLAG_NONE);
+  }
+  /* Unpause */
+  else
+  {
+    /* Sends event */
+    orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_UNPAUSE, _pstClock, orxNULL, orxNULL);
 
-  /* Done! */
-  return eResult;
-}
-
-/** Unpauses a clock
- * @param[in]   _pstClock                             Concerned clock
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxClock_Unpause(orxCLOCK *_pstClock)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstClock);
-
-  /* Sends event */
-  orxEVENT_SEND(orxEVENT_TYPE_CLOCK, orxCLOCK_EVENT_UNPAUSE, _pstClock, orxNULL, orxNULL);
-
-  /* Updates clock flags */
-  orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_FLAG_PAUSED);
+    /* Updates clock flags */
+    orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_FLAG_PAUSED);
+  }
 
   /* Done! */
-  return eResult;
+  return;
 }
 
 /** Is a clock paused?
@@ -1146,7 +1363,7 @@ orxBOOL orxFASTCALL orxClock_IsPaused(const orxCLOCK *_pstClock)
   orxSTRUCTURE_ASSERT(_pstClock);
 
   /* Tests flags */
-  return(orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_PAUSED) ? orxTRUE : orxFALSE);
+  return(orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_PAUSED));
 }
 
 /** Gets clock info
@@ -1187,27 +1404,48 @@ orxCLOCK *orxFASTCALL orxClock_GetFromInfo(const orxCLOCK_INFO *_pstClockInfo)
   return pstClock;
 }
 
-/** Sets a clock modifier
+/** Sets a clock's modifier
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _eModType                             Modifier type
- * @param[in]   _fModValue                            Modifier value
+ * @param[in]   _eModifier                            Concerned modifier
+ * @param[in]   _fValue                               Modifier value, orxFLOAT_0 to deactivate the modifier
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYPE _eModType, orxFLOAT _fModValue)
+orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIER _eModifier, orxFLOAT _fValue)
 {
   orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
-  orxASSERT((_eModType < orxCLOCK_MOD_TYPE_NUMBER) || (_eModType == orxCLOCK_MOD_TYPE_NONE));
+  orxASSERT((_eModifier >= 0) && (_eModifier < orxCLOCK_MODIFIER_NUMBER));
 
-  /* Valid modifier value? */
-  if(_fModValue >= orxFLOAT_0)
+  /* Valid value? */
+  if((_fValue >= orxFLOAT_0) || (_eModifier == orxCLOCK_MODIFIER_FIXED))
   {
-    /* Updates clock modifier */
-    _pstClock->stClockInfo.eModType   = _eModType;
-    _pstClock->stClockInfo.fModValue  = _fModValue;
+    /* Updates modifier */
+    _pstClock->stClockInfo.afModifierList[_eModifier] = _fValue;
+
+    /* Average? */
+    if(_eModifier == orxCLOCK_MODIFIER_AVERAGE)
+    {
+      /* Should remove? */
+      if(_fValue == orxFLOAT_0)
+      {
+        /* Removes it */
+        orxMemory_Free(_pstClock->afHistory);
+        _pstClock->afHistory        = orxNULL;
+        _pstClock->u32HistoryIndex  = 0;
+      }
+      else
+      {
+        /* Allocates history */
+        _pstClock->afHistory        = (orxFLOAT *)orxMemory_Reallocate(_pstClock->afHistory, orxF2U(_fValue) * sizeof(orxFLOAT), orxMEMORY_TYPE_MAIN);
+        _pstClock->u32HistoryIndex  = 0;
+
+        /* Checks */
+        orxASSERT(_pstClock->afHistory != orxNULL);
+      }
+    }
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -1215,7 +1453,7 @@ orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYP
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "<%g> is an invalid modifier value.", _fModValue);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "[%s]: Can't set modifier [%u], invalid value <%g>.", orxClock_GetName(_pstClock), _eModifier, _fValue);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1225,42 +1463,53 @@ orxSTATUS orxFASTCALL orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYP
   return eResult;
 }
 
+/** Gets a clock's modifier
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _eModifier                            Concerned modifier
+ * @return      Modifier value / orxFLOAT_0 if deactivated
+ */
+orxFLOAT orxFASTCALL orxClock_GetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIER _eModifier)
+{
+  orxFLOAT fResult;
+
+  /* Checks */
+  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstClock);
+  orxASSERT((_eModifier < orxCLOCK_MODIFIER_NUMBER) || (_eModifier == orxCLOCK_MODIFIER_NONE));
+
+  /* Updates result */
+  fResult = _pstClock->stClockInfo.afModifierList[_eModifier];
+
+  /* Done! */
+  return fResult;
+}
+
 /** Sets a clock tick size
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _fTickSize                            Tick size
+ * @param[in]   _fTickSize                            Tick size, -1 for 'display'
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxClock_SetTickSize(orxCLOCK *_pstClock, orxFLOAT _fTickSize)
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
 
-  /* Valid modifier value? */
-  if(_fTickSize >= orxFLOAT_0)
+  /* Updates clock tick size */
+  _pstClock->stClockInfo.fTickSize = orxMAX(_fTickSize, orxFLOAT_0);
+
+  /* Sync with display? */
+  if(_fTickSize < orxFLOAT_0)
   {
-    /* Updates clock tick size */
-    _pstClock->stClockInfo.fTickSize = _fTickSize;
-
-    /* Is core clock? */
-    if(_pstClock->stClockInfo.eType == orxCLOCK_TYPE_CORE)
-    {
-      /* Updates main clock tick size */
-      sstClock.fMainClockTickSize = _fTickSize;
-    }
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_DISPLAY, orxCLOCK_KU32_FLAG_NONE);
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "<%g> is an invalid tick size.", _fTickSize);
-
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstClock, orxCLOCK_KU32_FLAG_NONE, orxCLOCK_KU32_FLAG_DISPLAY);
   }
 
   /* Done! */
@@ -1292,6 +1541,9 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, const orxCLOCK_FUNC
   if(pstFunctionStorage != orxNULL)
   {
     orxCLOCK_FUNCTION_STORAGE *pstRefFunctionStorage;
+
+    /* Clears it */
+    orxMemory_Zero(pstFunctionStorage, sizeof(orxCLOCK_FUNCTION_STORAGE));
 
     /* Finds correct index */
     for(pstRefFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stFunctionList));
@@ -1360,11 +1612,8 @@ orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, const orxCLOCK_FU
   /* Found? */
   if(pstFunctionStorage != orxNULL)
   {
-    /* Removes it from list */
-    orxLinkList_Remove(&(pstFunctionStorage->stNode));
-
-    /* Removes it from bank */
-    orxBank_Free(_pstClock->pstFunctionBank, pstFunctionStorage);
+    /* Marks it for deletion */
+    pstFunctionStorage->pfnCallback = orxNULL;
   }
   else
   {
@@ -1451,58 +1700,6 @@ orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FU
   return eResult;
 }
 
-/** Finds a clock given its tick size and its type
- * @param[in]   _fTickSize                            Tick size of the desired clock (in seconds)
- * @param[in]   _eType                                Type of the desired clock
- * @return      orxCLOCK / orxNULL
- */
-orxCLOCK *orxFASTCALL orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType)
-{
-  orxCLOCK *pstClock;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxASSERT(_eType < orxCLOCK_TYPE_NUMBER);
-
-  /* Finds first matching clock */
-  pstClock = orxClock_FindClock(_fTickSize, _eType, orxNULL);
-
-  /* Done! */
-  return pstClock;
-}
-
-/** Finds next clock of same type/tick size
- * @param[in]   _pstClock                             Concerned clock
- * @return      orxCLOCK / orxNULL
- */
-orxCLOCK *orxFASTCALL orxClock_FindNext(const orxCLOCK *_pstClock)
-{
-  orxCLOCK *pstClock;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstClock);
-
-  /* Finds next matching clock */
-  pstClock = orxClock_FindClock(_pstClock->stClockInfo.fTickSize, _pstClock->stClockInfo.eType, _pstClock);
-
-  /* Done! */
-  return pstClock;
-}
-
-/** Gets next existing clock in list (can be used to parse all existing clocks)
- * @param[in]   _pstClock                             Concerned clock
- * @return      orxCLOCK / orxNULL
- */
-orxCLOCK *orxFASTCALL orxClock_GetNext(const orxCLOCK *_pstClock)
-{
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-
-  /* Returns next stored clock */
-  return(orxCLOCK(orxStructure_GetNext(_pstClock)));
-}
-
 /** Gets clock given its name
  * @param[in]   _zName          Clock name
  * @return      orxCLOCK / orxNULL
@@ -1519,7 +1716,7 @@ orxCLOCK *orxFASTCALL orxClock_Get(const orxSTRING _zName)
   if(_zName != orxSTRING_EMPTY)
   {
     /* Updates result */
-    pstResult = (orxCLOCK *)orxHashTable_Get(sstClock.pstReferenceTable, orxString_ToCRC(_zName));
+    pstResult = (orxCLOCK *)orxHashTable_Get(sstClock.pstReferenceTable, orxString_Hash(_zName));
   }
   else
   {
@@ -1604,20 +1801,19 @@ orxSTATUS orxFASTCALL orxClock_AddTimer(orxCLOCK *_pstClock, const orxCLOCK_FUNC
 
 /** Removes a timer function from a clock
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _pfnCallback                          Concerned timer callback to remove
- * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay
- * @param[in]   _pContext                             Context of the timer to remove, orxNULL for removing all occurrences regardless of their context
+ * @param[in]   _pfnCallback                          Concerned timer callback to remove, orxNULL to remove all occurrences regardless of their callback
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f to remove all occurrences regardless of their respective delay
+ * @param[in]   _pContext                             Context of the timer to remove, orxNULL to remove all occurrences regardless of their context
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext)
 {
   orxCLOCK_TIMER_STORAGE *pstTimerStorage;
-  orxSTATUS               eResult = orxSTATUS_SUCCESS;
+  orxSTATUS               eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
-  orxASSERT(_pfnCallback != orxNULL);
 
   /* For all stored timers */
   for(pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stTimerList));
@@ -1625,7 +1821,8 @@ orxSTATUS orxFASTCALL orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_F
       pstTimerStorage = (orxCLOCK_TIMER_STORAGE *)orxLinkList_GetNext(&(pstTimerStorage->stNode)))
   {
     /* Matches criteria? */
-    if((pstTimerStorage->pfnCallback == _pfnCallback)
+    if(((_pfnCallback == orxNULL)
+     || (pstTimerStorage->pfnCallback == _pfnCallback))
     && ((_fDelay < orxFLOAT_0)
      || (pstTimerStorage->fDelay == _fDelay))
     && ((_pContext == orxNULL)
@@ -1633,6 +1830,9 @@ orxSTATUS orxFASTCALL orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_F
     {
       /* Marks it for deletion */
       pstTimerStorage->s32Repetition = 0;
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
   }
 
@@ -1657,7 +1857,7 @@ orxSTATUS orxFASTCALL orxClock_AddGlobalTimer(const orxCLOCK_FUNCTION _pfnCallba
   orxASSERT(_pfnCallback != orxNULL);
 
   /* Gets core clock */
-  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+  pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
   /* Found? */
   if(pstClock != orxNULL)
@@ -1671,9 +1871,9 @@ orxSTATUS orxFASTCALL orxClock_AddGlobalTimer(const orxCLOCK_FUNCTION _pfnCallba
 }
 
 /** Removes a global timer function (ie. from the main core clock)
- * @param[in]   _pfnCallback                          Concerned timer callback to remove
- * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay
- * @param[in]   _pContext                             Context of the timer to remove, orxNULL for removing all occurrences regardless of their context
+ * @param[in]   _pfnCallback                          Concerned timer callback to remove, orxNULL to remove all occurrences regardless of their callback
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f to remove all occurrences regardless of their respective delay
+ * @param[in]   _pContext                             Context of the timer to remove, orxNULL to remove all occurrences regardless of their context
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxClock_RemoveGlobalTimer(const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext)
@@ -1683,10 +1883,9 @@ orxSTATUS orxFASTCALL orxClock_RemoveGlobalTimer(const orxCLOCK_FUNCTION _pfnCal
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pfnCallback != orxNULL);
 
   /* Gets core clock */
-  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+  pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
   /* Found? */
   if(pstClock != orxNULL)

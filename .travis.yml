@@ -1,19 +1,99 @@
 language: c++
 
-matrix:
+jobs:
   include:
     - os: linux
       compiler: gcc
-      sudo: required
+      script: ./code/build/travis/desktop.sh
+      name: Linux / GCC
+
     - os: linux
       compiler: clang
-      sudo: required
+      script: ./code/build/travis/desktop.sh
+      name: Linux / Clang
+
     - os: osx
       compiler: clang
       osx_image: xcode8.3
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 8
+
     - os: osx
       compiler: clang
-      osx_image: xcode9.3beta
+      osx_image: xcode9.4
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 9
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode10.3
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 10
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode11.6
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 11
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode12.5
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 12
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode13.4
+      script: ./code/build/travis/desktop.sh
+      name: OSX / XCode 13
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode10.3
+      script: ./code/build/travis/ios.sh
+      name: iOS / XCode 10
+
+    - os: osx
+      compiler: clang
+      osx_image: xcode11.6
+      script: ./code/build/travis/ios.sh
+      name: iOS / XCode 11
+
+    # - os: osx
+    #   compiler: clang
+    #   osx_image: xcode12.5
+    #   script: ./code/build/travis/ios.sh
+    #   name: iOS / XCode 12
+
+    # - os: osx
+    #   compiler: clang
+    #   osx_image: xcode13.1
+    #   script: ./code/build/travis/ios.sh
+    #   name: iOS / XCode 13
+
+    # - os: osx
+    #   compiler: clang
+    #   osx_image: xcode13.4
+    #   script: ./code/build/travis/ios.sh
+    #   name: OSX / XCode 14
+
+    - language: android
+      jdk: openjdk17
+      android:
+        components:
+          - build-tools-34.0.0
+      before_install:
+        - sudo mkdir -p /usr/local/android-sdk/licenses/
+        - sudo touch /usr/local/android-sdk/licenses/android-sdk-license
+        - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" | sudo tee -a /usr/local/android-sdk/licenses/android-sdk-license
+      install:
+        - ./setup.sh
+      before_script:
+        - export ORX=$TRAVIS_BUILD_DIR/code
+      script:
+        - ./code/build/travis/android.sh
+      name: Android / OpenJDK 17
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -24,45 +104,3 @@ before_install:
 
 install:
   - ./setup.sh
-
-script:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd ~/build/orx/orx/code/build/mac/gmake ;
-    else
-      cd ~/build/orx/orx/code/build/linux/gmake ;
-    fi
-  - make config=debug64
-  - make config=profile64
-  - make config=release64
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd ~/build/orx/orx/tutorial/build/mac/gmake ;
-    else
-      cd ~/build/orx/orx/tutorial/build/linux/gmake ;
-    fi
-  - make config=release64
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd ~/build/orx/orx/code/build/mac/gmake ;
-    else
-      cd ~/build/orx/orx/code/build/linux/gmake ;
-    fi
-  - make config=core_release64
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd ~/build/orx/orx/tools/orxCrypt/build/mac/gmake ;
-    else
-      cd ~/build/orx/orx/tools/orxCrypt/build/linux/gmake ;
-    fi
-  - make config=release64
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      cd ~/build/orx/orx/tools/orxFontGen/build/mac/gmake ;
-    else
-      cd ~/build/orx/orx/tools/orxFontGen/build/linux/gmake ;
-    fi
-  - make config=release64
-  - cd ~/build/orx/orx/code/build/python
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      python package.py -p mac &&
-      python package.py -p tutomac;
-    else
-      python package.py -p linux64 &&
-      python package.py -p tutolinux64;
-    fi

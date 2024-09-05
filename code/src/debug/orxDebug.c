@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -35,16 +35,24 @@
 
 #include <stdlib.h>
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxANDROID__)
 
   #include <jni.h>
   #include <android/log.h>
 
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID__ */
 
+#ifdef __orxWINDOWS__
+
+  #define WIN32_LEAN_AND_MEAN
+  #include <windows.h>
+  #undef WIN32_LEAN_AND_MEAN
+
+#endif /* __orxWINDOWS__ */
 
 #ifdef __orxMSVC__
 
+  #pragma warning(push)
   #pragma warning(disable : 4996)
 
 #endif /* __orxMSVC__ */
@@ -62,6 +70,7 @@
 
 #define orxDEBUG_KU32_STATIC_FLAG_READY         0x10000000
 #define orxDEBUG_KU32_STATIC_FLAG_ANSI          0x20000000
+#define orxDEBUG_KU32_STATIC_FLAG_LOGGING       0x40000000
 
 #define orxDEBUG_KU32_STATIC_MASK_ALL           0xFFFFFFFF
 
@@ -104,6 +113,9 @@ typedef struct __orxDEBUG_STATIC_t
   /* Control flags */
   orxU32 u32Flags;
 
+  /* Log callback function */
+  orxDEBUG_CALLBACK_FUNCTION pfnLogCallback;
+
 } orxDEBUG_STATIC;
 
 
@@ -134,8 +146,9 @@ static orxINLINE const orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
   switch(_eLevel)
   {
     orxDEBUG_DECLARE_LEVEL_ENTRY(ANIM);
-    orxDEBUG_DECLARE_LEVEL_ENTRY(CONFIG);
     orxDEBUG_DECLARE_LEVEL_ENTRY(CLOCK);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(COMMAND);
+    orxDEBUG_DECLARE_LEVEL_ENTRY(CONFIG);
     orxDEBUG_DECLARE_LEVEL_ENTRY(DISPLAY);
     orxDEBUG_DECLARE_LEVEL_ENTRY(FILE);
     orxDEBUG_DECLARE_LEVEL_ENTRY(INPUT);
@@ -164,6 +177,8 @@ static orxINLINE const orxSTRING orxDebug_GetLevelString(orxDEBUG_LEVEL _eLevel)
     default: zResult = "INVALID DEBUG LEVEL"; break;
   }
 
+#undef orxDEBUG_DECLARE_LEVEL_ENTRY
+
   /* Done! */
   return zResult;
 }
@@ -180,8 +195,9 @@ static orxINLINE const orxSTRING orxDebug_GetLevelFormat(orxDEBUG_LEVEL _eLevel)
   switch(_eLevel)
   {
     case orxDEBUG_LEVEL_ANIM:
-    case orxDEBUG_LEVEL_CONFIG:
     case orxDEBUG_LEVEL_CLOCK:
+    case orxDEBUG_LEVEL_COMMAND:
+    case orxDEBUG_LEVEL_CONFIG:
     case orxDEBUG_LEVEL_DISPLAY:
     case orxDEBUG_LEVEL_FILE:
     case orxDEBUG_LEVEL_INPUT:
@@ -271,6 +287,9 @@ static orxINLINE void orxDebug_ClearANSICodes(orxSTRING _zBuffer)
 
   /* Ends string */
   *pcDst = orxCHAR_NULL;
+
+  /* Done! */
+  return;
 }
 
 /** Has ANSI codes>
@@ -342,17 +361,17 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
     sstDebug.u32DebugFlags  = orxDEBUG_KU32_STATIC_MASK_DEFAULT;
     sstDebug.u32LevelFlags  = orxDEBUG_KU32_STATIC_LEVEL_MASK_DEFAULT;
 
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxANDROID__)
 
     /* Sets module as initialized */
     sstDebug.u32Flags = orxDEBUG_KU32_STATIC_FLAG_READY;
 
-#else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#else /* __orxANDROID__ */
 
     /* Sets module as initialized, with ANSI support */
     sstDebug.u32Flags = orxDEBUG_KU32_STATIC_FLAG_READY | orxDEBUG_KU32_STATIC_FLAG_ANSI;
 
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID__ */
 
     /* Inits default files */
     _orxDebug_SetDebugFile(orxDEBUG_KZ_DEFAULT_DEBUG_FILE);
@@ -360,14 +379,36 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
 
 #ifdef __orxWINDOWS__
 
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+  #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 4
+#endif /* !ENABLE_VIRTUAL_TERMINAL_PROCESSING */
+
     /* Enables ANSI/VT100 features (works only with Windows 10 and up) */
-    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), 7))
+    if(!SetConsoleMode(GetStdHandle(STD_OUTPUT_HANDLE), ENABLE_PROCESSED_OUTPUT | ENABLE_WRAP_AT_EOL_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING))
     {
       /* Removes ANSI flag */
       sstDebug.u32Flags &= ~orxDEBUG_KU32_STATIC_FLAG_ANSI;
     }
 
 #endif /* __orxWINDOWS__ */
+
+#ifdef __orxMAC__
+
+    {
+      const char *zTerminal;
+
+      /* Gets TERM environment variable */
+      zTerminal = getenv("TERM");
+
+      /* No valid ANSI terminal found? */
+      if((zTerminal == orxNULL) || (orxString_SearchString(zTerminal, "color") == orxNULL))
+      {
+        /* Removes ANSI flag */
+        sstDebug.u32Flags &= ~orxDEBUG_KU32_STATIC_FLAG_ANSI;
+      }
+    }
+
+#endif /* __orxMAC__ */
 
     /* Success */
     eResult = orxSTATUS_SUCCESS;
@@ -383,7 +424,7 @@ void orxFASTCALL _orxDebug_Exit()
   /* Initialized? */
   if(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY)
   {
-#if !defined(__orxANDROID__) && !defined(__orxANDROID_NATIVE__)
+#if !defined(__orxANDROID__)
 
     /* Closes files */
     if(sstDebug.pstLogFile != orxNULL)
@@ -397,7 +438,10 @@ void orxFASTCALL _orxDebug_Exit()
        sstDebug.pstDebugFile = orxNULL;
     }
 
-#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
+#endif /* !__orxANDROID__ */
+
+    /* Clears log callback */
+    sstDebug.pfnLogCallback = orxNULL;
 
     /* Updates flags */
     sstDebug.u32Flags &= ~orxDEBUG_KU32_STATIC_FLAG_READY;
@@ -408,6 +452,7 @@ void orxFASTCALL _orxDebug_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Tried to exit debug module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 
@@ -415,44 +460,30 @@ void orxFASTCALL _orxDebug_Exit()
 void orxFASTCALL _orxDebug_Break()
 {
   /* Windows / Linux / Mac / iOS / Android */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
 
   /* Compiler specific */
-
-  #if defined(__orxGCC__) || defined(__orxLLVM__)
-
-    #if defined(__orxIOS__)
-
-      __builtin_trap();
-
-    #elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-      __builtin_trap();
-
-    #else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-      #ifdef __orxPPC__
-
-        asm("li r0, 20\nsc\nnop\nli r0, 37\nli r4, 2\nsc\nnop\n" : : : "memory", "r0", "r3", "r4");
-
-      #else /* __orxPPC__ */
-
-        asm("int $3");
-
-      #endif /* __orxPPC__ */
-
-    #endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-  #endif /* __orxGCC__ || __orxLLVM__ */
 
   #ifdef __orxMSVC__
 
     __debugbreak();
 
+  #else /* __orxMSVC__ */
+
+    #ifdef __orxGCC__
+
+      /* Requires GCC >= 4.2.4 */
+      orxASSERT((__GNUC__ > 4) || ((__GNUC__ == 4) && ((__GNUC_MINOR__ > 2) || ((__GNUC_MINOR__ == 2) && (__GNUC_PATCHLEVEL__ > 3)))))
+
+    #endif /* __orxGCC__ */
+
+    __builtin_trap();
+
   #endif /* __orxMSVC__ */
 
-#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
 
+  /* Done! */
   return;
 }
 
@@ -494,13 +525,19 @@ orxU32 orxFASTCALL _orxDebug_GetFlags()
  */
 void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, const orxSTRING _zFile, orxU32 _u32Line, const orxSTRING _zFormat, ...)
 {
-  orxBOOL bUseANSICodes = orxFALSE;
+  /* Checks */
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
 
-  /* Is level enabled? */
-  if(orxFLAG_TEST(sstDebug.u32LevelFlags, (1 << _eLevel)))
+  /* Is level enabled and not re-entrant? */
+  if(orxFLAG_TEST(sstDebug.u32LevelFlags, (1 << _eLevel)) && !orxFLAG_TEST(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_LOGGING))
   {
-    orxCHAR zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], *pcBuffer = zBuffer;
-    va_list stArgs;
+    orxCHAR   zBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE], *pcBuffer = zBuffer;
+    orxBOOL   bUseANSICodes = orxFALSE;
+    orxSTATUS eStatus = orxSTATUS_SUCCESS;
+    va_list   stArgs;
+
+    /* Updates status */
+    orxFLAG_SET(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_LOGGING, orxDEBUG_KU32_STATIC_FLAG_NONE);
 
     /* Empties current buffer */
     pcBuffer[0] = orxCHAR_NULL;
@@ -577,7 +614,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
     /* Debug Log */
     va_start(stArgs, _zFormat);
     vsnprintf(zLog, orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer), _zFormat, stArgs);
-    zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer) - 1] = '\0';
+    zLog[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE - (pcBuffer - zBuffer) - 1] = orxCHAR_NULL;
     va_end(stArgs);
 
     /* Doesn't implicitly use ANSI codes? */
@@ -597,7 +634,7 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
 
 #endif /* __orxMSVC__ */
 
-    pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = '\0';
+    pcBuffer[orxDEBUG_KS32_BUFFER_OUTPUT_SIZE  - (pcBuffer - zBuffer) - 1] = orxCHAR_NULL;
 
     /* Doesn't have ANSI support? */
     if(!orxFLAG_TEST(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_ANSI))
@@ -606,117 +643,139 @@ void orxCDECL _orxDebug_Log(orxDEBUG_LEVEL _eLevel, const orxSTRING _zFunction, 
       orxDebug_ClearANSICodes(zBuffer);
     }
 
-    /* Terminal display? */
-    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
+    /* Should call the log callback? */
+    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CALLBACK)
     {
-#if defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+      /* Is callback valid? */
+      if(sstDebug.pfnLogCallback != orxNULL)
+      {
+        /* Calls it */
+        eStatus = sstDebug.pfnLogCallback(_eLevel, _zFunction, _zFile, _u32Line, zBuffer);
+      }
+    }
+
+    /* Should continue? */
+    if(eStatus != orxSTATUS_FAILURE)
+    {
+      /* Terminal display? */
+      if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
+      {
+#if defined(__orxANDROID__)
 
 #define  LOG_TAG    "orxDebug"
-#define  LOGI(...)  __android_log_write(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGD(...)  __android_log_write(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+#define  LOGI(...)  __android_log_write(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+#define  LOGD(...)  __android_log_write(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 
-      if(_eLevel == orxDEBUG_LEVEL_LOG)
-      {
-        LOGI(zBuffer);
+        if(_eLevel == orxDEBUG_LEVEL_LOG)
+        {
+          LOGI(zBuffer);
+        }
+        else
+        {
+          LOGD(zBuffer);
+        }
+
+#undef LOG_TAG
+#undef LOGI
+#undef LOGD
+
+#else /* __orxANDROID__ */
+
+        FILE *pstFile;
+
+        if(_eLevel == orxDEBUG_LEVEL_LOG)
+        {
+          pstFile = stdout;
+        }
+        else
+        {
+          pstFile = stderr;
+        }
+
+        fprintf(pstFile, "%s", zBuffer);
+        fflush(pstFile);
+
+#endif /* __orxANDROID__ */
+
       }
-      else
+
+      /* Has ANSI support? */
+      if(orxFLAG_TEST(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_ANSI))
       {
-        LOGD(zBuffer);
+        /* Clears ANSI codes */
+        orxDebug_ClearANSICodes(zBuffer);
       }
-
-#else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-      FILE *pstFile;
-
-      if(_eLevel == orxDEBUG_LEVEL_LOG)
-      {
-        pstFile = stdout;
-      }
-      else
-      {
-        pstFile = stderr;
-      }
-
-      fprintf(pstFile, "%s", zBuffer);
-      fflush(pstFile);
-
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
-
-    }
-
-    /* Has ANSI support? */
-    if(orxFLAG_TEST(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_ANSI))
-    {
-      /* Clears ANSI codes */
-      orxDebug_ClearANSICodes(zBuffer);
-    }
 
 #ifdef __orxWINDOWS__
 
-    /* Terminal display? */
-    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
-    {
-      OutputDebugString(zBuffer);
-    }
+      /* Terminal display? */
+      if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_TERMINAL)
+      {
+        OutputDebugString(zBuffer);
+      }
 
 #endif /* __orxWINDOWS__ */
 
-    /* File print? */
-    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
-    {
-      FILE *pstFile;
-
-      if(_eLevel == orxDEBUG_LEVEL_LOG)
+      /* File print? */
+      if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_FILE)
       {
+        FILE *pstFile;
+
+        if(_eLevel == orxDEBUG_LEVEL_LOG)
+        {
 
 #if !defined(__orxANDROID__) && !defined(__orxANDROID_ANDROID__)
 
-        /* Needs to open the file? */
-        if(sstDebug.pstLogFile == orxNULL)
-        {
-          /* Opens it */
-          sstDebug.pstLogFile = fopen(sstDebug.zLogFile, "ab+");
+          /* Needs to open the file? */
+          if(sstDebug.pstLogFile == orxNULL)
+          {
+            /* Opens it */
+            sstDebug.pstLogFile = fopen(sstDebug.zLogFile, "ab+");
+          }
+
+#endif /* !__orxANDROID__ */
+
+          pstFile = sstDebug.pstLogFile;
         }
-
-#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
-
-        pstFile = sstDebug.pstLogFile;
-      }
-      else
-      {
+        else
+        {
 
 #if !defined(__orxANDROID__) && !defined(__orxANDROID_ANDROID__)
 
-        /* Needs to open the file? */
-        if(sstDebug.pstDebugFile == orxNULL)
-        {
-          /* Opens it */
-          sstDebug.pstDebugFile = fopen(sstDebug.zDebugFile, "ab+");
+          /* Needs to open the file? */
+          if(sstDebug.pstDebugFile == orxNULL)
+          {
+            /* Opens it */
+            sstDebug.pstDebugFile = fopen(sstDebug.zDebugFile, "ab+");
+          }
+
+#endif /* !__orxANDROID__ */
+
+          pstFile = sstDebug.pstDebugFile;
         }
 
-#endif /* !__orxANDROID__ && !__orxANDROID_NATIVE__ */
-
-        pstFile = sstDebug.pstDebugFile;
+        /* Valid? */
+        if(pstFile != orxNULL)
+        {
+          fprintf(pstFile, "%s", zBuffer);
+          fflush(pstFile);
+        }
       }
 
-      /* Valid? */
-      if(pstFile != orxNULL)
+      /* Console display? */
+      if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
       {
-        fprintf(pstFile, "%s", zBuffer);
-        fflush(pstFile);
+        /* Is console initialized? */
+        if(orxModule_IsInitialized(orxMODULE_ID_CONSOLE) != orxFALSE)
+        {
+          /* Logs it */
+          orxConsole_Log(zBuffer);
+        }
       }
     }
 
-    /* Console display? */
-    if(sstDebug.u32DebugFlags & orxDEBUG_KU32_STATIC_FLAG_CONSOLE)
-    {
-      /* Is console initialized? */
-      if(orxModule_IsInitialized(orxMODULE_ID_CONSOLE) != orxFALSE)
-      {
-        /* Logs it */
-        orxConsole_Log(zBuffer);
-      }
-    }
+    /* Updates status */
+    orxFLAG_SET(sstDebug.u32Flags, orxDEBUG_KU32_STATIC_FLAG_NONE, orxDEBUG_KU32_STATIC_FLAG_LOGGING);
   }
 
   /* Done */
@@ -840,6 +899,9 @@ void orxFASTCALL _orxDebug_SetDebugFile(const orxSTRING _zFileName)
     /* Uses default file */
     sstDebug.zDebugFile = (orxSTRING)orxDEBUG_KZ_DEFAULT_DEBUG_FILE;
   }
+
+  /* Done! */
+  return;
 }
 
 /** Sets log file name
@@ -884,10 +946,28 @@ void orxFASTCALL _orxDebug_SetLogFile(const orxSTRING _zFileName)
     /* Uses default file */
     sstDebug.zLogFile = (orxSTRING)orxDEBUG_KZ_DEFAULT_LOG_FILE;
   }
+
+  /* Done! */
+  return;
+}
+
+/** Sets log callback function, if the callback returns orxSTATUS_FAILURE, the log entry will be entirely inhibited
+* @param[in]   _pfnLogCallback                Log callback function, orxNULL to remove it
+*/
+void orxFASTCALL _orxDebug_SetLogCallback(const orxDEBUG_CALLBACK_FUNCTION _pfnLogCallback)
+{
+  /* Checks */
+  orxASSERT(sstDebug.u32Flags & orxDEBUG_KU32_STATIC_FLAG_READY);
+
+  /* Stores the callback */
+  sstDebug.pfnLogCallback = _pfnLogCallback;
+
+  /* Done! */
+  return;
 }
 
 #ifdef __orxMSVC__
 
-  #pragma warning(default : 4996)
+  #pragma warning(pop)
 
 #endif /* __orxMSVC__ */

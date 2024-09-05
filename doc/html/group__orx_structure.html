@@ -158,28 +158,24 @@ Macros</h2></td></tr>
 <tr class="separator:gac20399c64578aa16770a74e89ca3f2c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2f75b29afe14141e718e04b6a484a3d6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga2f75b29afe14141e718e04b6a484a3d6">orxSPAWNER</a>(STRUCTURE)          &#160;&#160;&#160;<a class="el" href="group__orx_structure.html#ga60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, SPAWNER)</td></tr>
 <tr class="separator:ga2f75b29afe14141e718e04b6a484a3d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaddc00a1cba0a753ebf56c690930f5d84"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gaddc00a1cba0a753ebf56c690930f5d84">orxSTRUCTURE</a>(STRUCTURE)      &#160;&#160;&#160;(((STRUCTURE != orxNULL) &amp;&amp; (((((<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;u64GUID &amp; <a class="el" href="group__orx_structure.html#ga4d835b38c2618a4c11a5d027ef50c42c">orxSTRUCTURE_GUID_MASK_STRUCTURE_ID</a>) &gt;&gt; <a class="el" href="group__orx_structure.html#ga35322b70271829ea9feee9d5d16de860">orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID</a>) &lt; <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320ad7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>)) ? (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)orxNULL)</td></tr>
+<tr class="memitem:gaddc00a1cba0a753ebf56c690930f5d84"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gaddc00a1cba0a753ebf56c690930f5d84">orxSTRUCTURE</a>(STRUCTURE)      &#160;&#160;&#160;((((STRUCTURE) != orxNULL) &amp;&amp; (((((<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;u64GUID &amp; <a class="el" href="group__orx_structure.html#ga4d835b38c2618a4c11a5d027ef50c42c">orxSTRUCTURE_GUID_MASK_STRUCTURE_ID</a>) &gt;&gt; <a class="el" href="group__orx_structure.html#ga35322b70271829ea9feee9d5d16de860">orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID</a>) &lt; <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320ad7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>)) ? (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)(STRUCTURE) : (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)orxNULL)</td></tr>
 <tr class="separator:gaddc00a1cba0a753ebf56c690930f5d84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab95bfa491beac04a52f1ac3357b84b2e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gab95bfa491beac04a52f1ac3357b84b2e">orxSTRUCTURE_ASSERT</a>(STRUCTURE)                                                &#160;&#160;&#160;<a class="el" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>((STRUCTURE != orxNULL) &amp;&amp; (((((<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)(STRUCTURE))-&gt;u64GUID &amp; <a class="el" href="group__orx_structure.html#ga4d835b38c2618a4c11a5d027ef50c42c">orxSTRUCTURE_GUID_MASK_STRUCTURE_ID</a>) &gt;&gt; <a class="el" href="group__orx_structure.html#ga35322b70271829ea9feee9d5d16de860">orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID</a>) &lt; <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320ad7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>));</td></tr>
-<tr class="separator:gab95bfa491beac04a52f1ac3357b84b2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga47db184cf1822e8c55b5e68809206205"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga47db184cf1822e8c55b5e68809206205">orxSTRUCTURE_ASSERT</a>(STRUCTURE)&#160;&#160;&#160;<a class="el" href="group__orx_debug.html#ga38aa33783608d4874fb65e01cf701f14">orxASSERT</a>((STRUCTURE != orxNULL) &amp;&amp; (((((<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)(STRUCTURE))-&gt;u64GUID &amp; <a class="el" href="group__orx_structure.html#ga4d835b38c2618a4c11a5d027ef50c42c">orxSTRUCTURE_GUID_MASK_STRUCTURE_ID</a>) &gt;&gt; <a class="el" href="group__orx_structure.html#ga35322b70271829ea9feee9d5d16de860">orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID</a>) &lt; <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320ad7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>));</td></tr>
+<tr class="separator:ga47db184cf1822e8c55b5e68809206205"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga60f583e9d706b403ac0ac291c98d74a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE,  TYPE)&#160;&#160;&#160;((orx##TYPE *)<a class="el" href="group__orx_structure.html#ga6166c07b080e5a284480ac699a1459bb">_orxStructure_GetPointer</a>(STRUCTURE, orxSTRUCTURE_ID_##TYPE))</td></tr>
 <tr class="separator:ga60f583e9d706b403ac0ac291c98d74a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga07319f5b8e3a32798ae498e15535b641"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga07319f5b8e3a32798ae498e15535b641">orxSTRUCTURE_GUID_MAGIC_TAG_DELETED</a>&#160;&#160;&#160;0xDEFACED0DEADC0DEULL</td></tr>
 <tr class="separator:ga07319f5b8e3a32798ae498e15535b641"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga47999a374a073e29f3e176459cab8b75"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga47999a374a073e29f3e176459cab8b75">orxSTRUCTURE_GUID_MASK_INSTANCE_ID</a>&#160;&#160;&#160;0x00000000FFFFFFE0ULL</td></tr>
+<tr class="memitem:ga47999a374a073e29f3e176459cab8b75"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga47999a374a073e29f3e176459cab8b75">orxSTRUCTURE_GUID_MASK_INSTANCE_ID</a>&#160;&#160;&#160;0xFFFFFFFF00000000ULL</td></tr>
 <tr class="separator:ga47999a374a073e29f3e176459cab8b75"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga43df5bd16b2033164b7619722455dc53"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga43df5bd16b2033164b7619722455dc53">orxSTRUCTURE_GUID_MASK_ITEM_ID</a>&#160;&#160;&#160;0x0000FFFF00000000ULL</td></tr>
+<tr class="memitem:ga43df5bd16b2033164b7619722455dc53"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga43df5bd16b2033164b7619722455dc53">orxSTRUCTURE_GUID_MASK_ITEM_ID</a>&#160;&#160;&#160;0x00000000FFFFFF00ULL</td></tr>
 <tr class="separator:ga43df5bd16b2033164b7619722455dc53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaebddd003a5bcd9fe9c3886fd3bb302b5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gaebddd003a5bcd9fe9c3886fd3bb302b5">orxSTRUCTURE_GUID_MASK_REF_COUNT</a>&#160;&#160;&#160;0xFFFF000000000000ULL</td></tr>
-<tr class="separator:gaebddd003a5bcd9fe9c3886fd3bb302b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4d835b38c2618a4c11a5d027ef50c42c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga4d835b38c2618a4c11a5d027ef50c42c">orxSTRUCTURE_GUID_MASK_STRUCTURE_ID</a>&#160;&#160;&#160;0x000000000000001FULL</td></tr>
+<tr class="memitem:ga4d835b38c2618a4c11a5d027ef50c42c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga4d835b38c2618a4c11a5d027ef50c42c">orxSTRUCTURE_GUID_MASK_STRUCTURE_ID</a>&#160;&#160;&#160;0x00000000000000FFULL</td></tr>
 <tr class="separator:ga4d835b38c2618a4c11a5d027ef50c42c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0e6d0baf2da1199306ad67380a99a7a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga0e6d0baf2da1199306ad67380a99a7a9">orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID</a>&#160;&#160;&#160;5</td></tr>
+<tr class="memitem:ga0e6d0baf2da1199306ad67380a99a7a9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga0e6d0baf2da1199306ad67380a99a7a9">orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID</a>&#160;&#160;&#160;32</td></tr>
 <tr class="separator:ga0e6d0baf2da1199306ad67380a99a7a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga98e790064b4ace4a27999b3abe547309"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga98e790064b4ace4a27999b3abe547309">orxSTRUCTURE_GUID_SHIFT_ITEM_ID</a>&#160;&#160;&#160;32</td></tr>
+<tr class="memitem:ga98e790064b4ace4a27999b3abe547309"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga98e790064b4ace4a27999b3abe547309">orxSTRUCTURE_GUID_SHIFT_ITEM_ID</a>&#160;&#160;&#160;8</td></tr>
 <tr class="separator:ga98e790064b4ace4a27999b3abe547309"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1d108ddd6ce69fb1af3f83390bbfae21"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga1d108ddd6ce69fb1af3f83390bbfae21">orxSTRUCTURE_GUID_SHIFT_REF_COUNT</a>&#160;&#160;&#160;48</td></tr>
-<tr class="separator:ga1d108ddd6ce69fb1af3f83390bbfae21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga35322b70271829ea9feee9d5d16de860"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga35322b70271829ea9feee9d5d16de860">orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:ga35322b70271829ea9feee9d5d16de860"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga884bfff1d9f70293822e5fb15a946e15"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga884bfff1d9f70293822e5fb15a946e15">orxSTRUCTURE_REGISTER</a>(TYPE,  STORAGE_TYPE,  MEMORY_TYPE,  BANK_SIZE,  UPDATE_FUNCTION)&#160;&#160;&#160;<a class="el" href="group__orx_structure.html#gab643d3cca457a20400bb056fb14a2ba1">orxStructure_Register</a>(orxSTRUCTURE_ID_##TYPE, STORAGE_TYPE, MEMORY_TYPE, sizeof(orx##TYPE), BANK_SIZE, UPDATE_FUNCTION)</td></tr>
@@ -190,6 +186,8 @@ Macros</h2></td></tr>
 <tr class="separator:gab685dba592726aeaf3d56698935df449"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaef389b9623f5550ce4f2c55304d0c9e5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gaef389b9623f5550ce4f2c55304d0c9e5">orxTIMELINE</a>(STRUCTURE)        &#160;&#160;&#160;<a class="el" href="group__orx_structure.html#ga60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, TIMELINE)</td></tr>
 <tr class="separator:gaef389b9623f5550ce4f2c55304d0c9e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga225910e71e80d5d48c2465e26dfeea74"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga225910e71e80d5d48c2465e26dfeea74">orxTRIGGER</a>(STRUCTURE)          &#160;&#160;&#160;<a class="el" href="group__orx_structure.html#ga60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, TRIGGER)</td></tr>
+<tr class="separator:ga225910e71e80d5d48c2465e26dfeea74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaaac0eac9abddde85d2660378d4f44f86"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gaaac0eac9abddde85d2660378d4f44f86">orxVIEWPORT</a>(STRUCTURE)        &#160;&#160;&#160;<a class="el" href="group__orx_structure.html#ga60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, VIEWPORT)</td></tr>
 <tr class="separator:gaaac0eac9abddde85d2660378d4f44f86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -213,23 +211,25 @@ Enumerations</h2></td></tr>
 <br />
 &#160;&#160;<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a72b4f2d0c5c830bc42126cd2ee998d35">orxSTRUCTURE_ID_SPAWNER</a>, 
 <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320ad846fa1d638eff2491e3b2721915b9da">orxSTRUCTURE_ID_TIMELINE</a>, 
+<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320aaab85d245d6f9d2025a6b75b3610e87b">orxSTRUCTURE_ID_TRIGGER</a>, 
 <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320aa63d4ded8137b23e0e0c4e2de8ea172f">orxSTRUCTURE_ID_LINKABLE_NUMBER</a>, 
-<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320aabae8c1918db82057a7faa0cf10a314c">orxSTRUCTURE_ID_ANIM</a> = orxSTRUCTURE_ID_LINKABLE_NUMBER, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a8e26d5803fc825cfe4c3195098af6d16">orxSTRUCTURE_ID_ANIMSET</a>, 
+&#160;&#160;<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320aabae8c1918db82057a7faa0cf10a314c">orxSTRUCTURE_ID_ANIM</a> = orxSTRUCTURE_ID_LINKABLE_NUMBER, 
+<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a8e26d5803fc825cfe4c3195098af6d16">orxSTRUCTURE_ID_ANIMSET</a>, 
 <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a27a9cd17907d4b5fede3cf9d33103025">orxSTRUCTURE_ID_CAMERA</a>, 
 <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a253810235295d1a07a7c539c966ea702">orxSTRUCTURE_ID_FONT</a>, 
-<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320aa53088ced29c37f0ec7f975a972efb94">orxSTRUCTURE_ID_FX</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a48b14df45d963b21b0ad76063b205d6b">orxSTRUCTURE_ID_OBJECT</a>, 
+&#160;&#160;<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320aa53088ced29c37f0ec7f975a972efb94">orxSTRUCTURE_ID_FX</a>, 
+<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a48b14df45d963b21b0ad76063b205d6b">orxSTRUCTURE_ID_OBJECT</a>, 
 <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320af5cbea92c4a1aa14f4fada61c861e42f">orxSTRUCTURE_ID_SHADER</a>, 
 <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a00f537835d607f70ffb31363889dec8e">orxSTRUCTURE_ID_SOUND</a>, 
-<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a96a8495780ac77abc0ed48a901ed8744">orxSTRUCTURE_ID_TEXT</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a6a2287c21b776f8bde356f3fc37d798b">orxSTRUCTURE_ID_TEXTURE</a>, 
+&#160;&#160;<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a96a8495780ac77abc0ed48a901ed8744">orxSTRUCTURE_ID_TEXT</a>, 
+<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a6a2287c21b776f8bde356f3fc37d798b">orxSTRUCTURE_ID_TEXTURE</a>, 
 <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a675db72a8ad9bb86cd0864f5d421d8ef">orxSTRUCTURE_ID_VIEWPORT</a>, 
 <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320ad7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>, 
-<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a3117a67a1c0b08f8e48f5af76600f6bf">orxSTRUCTURE_ID_NONE</a> = orxENUM_NONE
+<br />
+&#160;&#160;<a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320a3117a67a1c0b08f8e48f5af76600f6bf">orxSTRUCTURE_ID_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
 <tr class="separator:ga559293f09cd4d21743241cc32350b320"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -288,8 +288,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga7adf8eebf4d15c9633a845b819eb91a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga82035ca088171d0ae9999da3f05b5d4c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga82035ca088171d0ae9999da3f05b5d4c">orxStructure_Init</a> ()</td></tr>
 <tr class="separator:ga82035ca088171d0ae9999da3f05b5d4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga729e081eb94e229eb9862e64d466feec"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga729e081eb94e229eb9862e64d466feec">orxStructure_LogAll</a> ()</td></tr>
-<tr class="separator:ga729e081eb94e229eb9862e64d466feec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1012319783ec2fb69305272ec306b639"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga1012319783ec2fb69305272ec306b639">orxStructure_LogAll</a> (orxBOOL _bPrivate)</td></tr>
+<tr class="separator:ga1012319783ec2fb69305272ec306b639"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab643d3cca457a20400bb056fb14a2ba1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#gab643d3cca457a20400bb056fb14a2ba1">orxStructure_Register</a> (<a class="el" href="group__orx_structure.html#ga559293f09cd4d21743241cc32350b320">orxSTRUCTURE_ID</a> _eStructureID, <a class="el" href="group__orx_structure.html#ga04bab78daaa41a0cc0803570a9142bb9">orxSTRUCTURE_STORAGE_TYPE</a> _eStorageType, <a class="el" href="group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0">orxMEMORY_TYPE</a> _eMemoryType, orxU32 _u32Size, orxU32 _u32BankSize, const <a class="el" href="group__orx_structure.html#ga7648d4b9d2a689fb22c8ff6d903e36e5">orxSTRUCTURE_UPDATE_FUNCTION</a> _pfnUpdate)</td></tr>
 <tr class="separator:gab643d3cca457a20400bb056fb14a2ba1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga95058db32c35e47042cf42e560bda596"><td class="memItemLeft" align="right" valign="top">static orxINLINE <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_structure.html#ga95058db32c35e47042cf42e560bda596">orxStructure_SetFlags</a> (<a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pStructure, orxU32 _u32AddFlags, orxU32 _u32RemoveFlags)</td></tr>
@@ -627,7 +627,7 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">STRUCTURE</td><td>)</td>
-          <td>&#160;&#160;&#160;(((STRUCTURE != orxNULL) &amp;&amp; (((((<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;u64GUID &amp; <a class="el" href="group__orx_structure.html#ga4d835b38c2618a4c11a5d027ef50c42c">orxSTRUCTURE_GUID_MASK_STRUCTURE_ID</a>) &gt;&gt; <a class="el" href="group__orx_structure.html#ga35322b70271829ea9feee9d5d16de860">orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID</a>) &lt; <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320ad7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>)) ? (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)STRUCTURE : (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)orxNULL)</td>
+          <td>&#160;&#160;&#160;((((STRUCTURE) != orxNULL) &amp;&amp; (((((<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)STRUCTURE)-&gt;u64GUID &amp; <a class="el" href="group__orx_structure.html#ga4d835b38c2618a4c11a5d027ef50c42c">orxSTRUCTURE_GUID_MASK_STRUCTURE_ID</a>) &gt;&gt; <a class="el" href="group__orx_structure.html#ga35322b70271829ea9feee9d5d16de860">orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID</a>) &lt; <a class="el" href="group__orx_structure.html#gga559293f09cd4d21743241cc32350b320ad7914d023ebb5843c63e0fca45eb8487">orxSTRUCTURE_ID_NUMBER</a>)) ? (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)(STRUCTURE) : (<a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *)orxNULL)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -636,7 +636,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gab95bfa491beac04a52f1ac3357b84b2e"></a>
+<a class="anchor" id="ga47db184cf1822e8c55b5e68809206205"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -651,7 +651,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Structure assert </p>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00090">90</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00091">91</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -695,7 +695,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Structure magic number </p>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00095">95</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00096">96</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -704,12 +704,12 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxSTRUCTURE_GUID_MASK_INSTANCE_ID&#160;&#160;&#160;0x00000000FFFFFFE0ULL</td>
+          <td class="memname">#define orxSTRUCTURE_GUID_MASK_INSTANCE_ID&#160;&#160;&#160;0xFFFFFFFF00000000ULL</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00108">108</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00106">106</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -718,64 +718,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxSTRUCTURE_GUID_MASK_ITEM_ID&#160;&#160;&#160;0x0000FFFF00000000ULL</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00102">102</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="gaebddd003a5bcd9fe9c3886fd3bb302b5"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxSTRUCTURE_GUID_MASK_REF_COUNT&#160;&#160;&#160;0xFFFF000000000000ULL</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00105">105</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga4d835b38c2618a4c11a5d027ef50c42c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxSTRUCTURE_GUID_MASK_STRUCTURE_ID&#160;&#160;&#160;0x000000000000001FULL</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Structure GUID masks/shifts </p>
-
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00099">99</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga0e6d0baf2da1199306ad67380a99a7a9"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID&#160;&#160;&#160;5</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00109">109</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga98e790064b4ace4a27999b3abe547309"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxSTRUCTURE_GUID_SHIFT_ITEM_ID&#160;&#160;&#160;32</td>
+          <td class="memname">#define orxSTRUCTURE_GUID_MASK_ITEM_ID&#160;&#160;&#160;0x00000000FFFFFF00ULL</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -784,17 +727,46 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga1d108ddd6ce69fb1af3f83390bbfae21"></a>
+<a class="anchor" id="ga4d835b38c2618a4c11a5d027ef50c42c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxSTRUCTURE_GUID_SHIFT_REF_COUNT&#160;&#160;&#160;48</td>
+          <td class="memname">#define orxSTRUCTURE_GUID_MASK_STRUCTURE_ID&#160;&#160;&#160;0x00000000000000FFULL</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Structure GUID masks/shifts </p>
+
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00100">100</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga0e6d0baf2da1199306ad67380a99a7a9"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID&#160;&#160;&#160;32</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00106">106</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00107">107</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga98e790064b4ace4a27999b3abe547309"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxSTRUCTURE_GUID_SHIFT_ITEM_ID&#160;&#160;&#160;8</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00104">104</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -808,7 +780,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00100">100</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00101">101</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -855,7 +827,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Structure register macro </p>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00085">85</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00086">86</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -913,6 +885,24 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga225910e71e80d5d48c2465e26dfeea74"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define <a class="el" href="group__orx_trigger.html#ga89aa931d53dafadd4935af41e72cbdc2">orxTRIGGER</a></td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">STRUCTURE</td><td>)</td>
+          <td>&#160;&#160;&#160;<a class="el" href="group__orx_structure.html#ga60f583e9d706b403ac0ac291c98d74a9">orxSTRUCTURE_GET_POINTER</a>(STRUCTURE, TRIGGER)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00081">81</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="gaaac0eac9abddde85d2660378d4f44f86"></a>
 <div class="memitem">
 <div class="memproto">
@@ -927,7 +917,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00081">81</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00082">82</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -943,7 +933,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Structure update callback function type </p>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00184">184</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00183">183</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -979,6 +969,8 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga559293f09cd4d21743241cc32350b320ad846fa1d638eff2491e3b2721915b9da"></a>orxSTRUCTURE_ID_TIMELINE&#160;</td><td class="fielddoc">
 </td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga559293f09cd4d21743241cc32350b320aaab85d245d6f9d2025a6b75b3610e87b"></a>orxSTRUCTURE_ID_TRIGGER&#160;</td><td class="fielddoc">
+</td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga559293f09cd4d21743241cc32350b320aa63d4ded8137b23e0e0c4e2de8ea172f"></a>orxSTRUCTURE_ID_LINKABLE_NUMBER&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga559293f09cd4d21743241cc32350b320aabae8c1918db82057a7faa0cf10a314c"></a>orxSTRUCTURE_ID_ANIM&#160;</td><td class="fielddoc">
@@ -1009,7 +1001,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00114">114</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00112">112</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1034,7 +1026,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00153">153</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00152">152</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1079,7 +1071,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Valid <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a>, orxNULL otherwise </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00192">192</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00191">191</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1134,7 +1126,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00424">424</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00415">415</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1309,7 +1301,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxU32 </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00519">519</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00500">500</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1342,7 +1334,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxU64 </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00464">464</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00445">445</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1375,7 +1367,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTRUCTURE_ID </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00477">477</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00458">458</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1408,7 +1400,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Corresponding literal string </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00207">207</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00206">206</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1556,7 +1548,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxU32 </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00451">451</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00432">432</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1634,7 +1626,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00398">398</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00399">399</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1654,19 +1646,26 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga729e081eb94e229eb9862e64d466feec"></a>
+<a class="anchor" id="ga1012319783ec2fb69305272ec306b639"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxStructure_LogAll </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bPrivate</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Logs all user-generated active structures </p><dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+<p>Logs all user-generated (&amp; optionally private) active structures </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bPrivate</td><td>Include all private structures in the log </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div>
@@ -1778,7 +1777,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00533">533</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00514">514</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1906,7 +1905,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxTRUE / orxFALSE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00505">505</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00486">486</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>
@@ -1950,7 +1949,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxTRUE / orxFALSE </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00491">491</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_structure_8h_source.html#l00472">472</a> of file <a class="el" href="orx_structure_8h_source.html">orxStructure.h</a>.</p>
 
 </div>
 </div>

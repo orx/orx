@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -36,6 +36,7 @@
 #include "core/orxConfig.h"
 #include "core/orxCommand.h"
 #include "core/orxEvent.h"
+#include "utils/orxHashTable.h"
 #include "utils/orxString.h"
 
 
@@ -50,7 +51,10 @@
 
 /** Defines
  */
+#define orxLOCALE_KU32_TABLE_SIZE                 8
+
 #define orxLOCALE_KZ_CONFIG_SECTION               "Locale"
+#define orxLOCALE_KZ_CONFIG_LANGUAGE              "Language"
 #define orxLOCALE_KZ_CONFIG_LANGUAGE_LIST         "LanguageList"
 
 
@@ -62,7 +66,7 @@
  */
 typedef struct __orxLOCALE_STATIC_t
 {
-  const orxSTRING     zCurrentLanguage;     /**< Current language */
+  orxHASHTABLE       *pstGroupTable;        /**< Group table */
   orxU32              u32Flags;             /**< Control flags */
 
 } orxLOCALE_STATIC;
@@ -85,11 +89,13 @@ static orxLOCALE_STATIC sstLocale;
  */
 void orxFASTCALL orxLocale_CommandSelectLanguage(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxSTATUS eResult;
+
   /* Selects it */
-  orxLocale_SelectLanguage(_astArgList[0].zValue);
+  eResult = orxLocale_SelectLanguage(_astArgList[0].zValue, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL);
 
   /* Updates result */
-  _pstResult->zValue = (sstLocale.zCurrentLanguage != orxNULL) ? sstLocale.zCurrentLanguage : orxSTRING_EMPTY;
+  _pstResult->zValue = (eResult != orxSTATUS_FAILURE) ? orxLocale_GetCurrentLanguage((_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL) : orxSTRING_EMPTY;
 
   /* Done! */
   return;
@@ -100,7 +106,7 @@ void orxFASTCALL orxLocale_CommandSelectLanguage(orxU32 _u32ArgNumber, const orx
 void orxFASTCALL orxLocale_CommandGetCurrentLanguage(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->zValue = (sstLocale.zCurrentLanguage != orxNULL) ? sstLocale.zCurrentLanguage : orxSTRING_EMPTY;
+  _pstResult->zValue = orxLocale_GetCurrentLanguage((_u32ArgNumber > 0) ? _astArgList[0].zValue : orxNULL);
 
   /* Done! */
   return;
@@ -111,7 +117,7 @@ void orxFASTCALL orxLocale_CommandGetCurrentLanguage(orxU32 _u32ArgNumber, const
 void orxFASTCALL orxLocale_CommandSetString(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Sets string */
-  orxLocale_SetString(_astArgList[0].zValue, _astArgList[1].zValue);
+  orxLocale_SetString(_astArgList[0].zValue, _astArgList[1].zValue, (_u32ArgNumber > 2) ? _astArgList[2].zValue : orxNULL);
 
   /* Updates result */
   _pstResult->zValue = _astArgList[0].zValue;
@@ -125,7 +131,7 @@ void orxFASTCALL orxLocale_CommandSetString(orxU32 _u32ArgNumber, const orxCOMMA
 void orxFASTCALL orxLocale_CommandGetString(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->zValue = orxLocale_GetString(_astArgList[0].zValue);
+  _pstResult->zValue = orxLocale_GetString(_astArgList[0].zValue, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL);
 
   /* Done! */
   return;
@@ -136,14 +142,17 @@ void orxFASTCALL orxLocale_CommandGetString(orxU32 _u32ArgNumber, const orxCOMMA
 static orxINLINE void orxLocale_RegisterCommands()
 {
   /* Command: SelectLanguage */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, SelectLanguage, "Language", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Language", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, SelectLanguage, "Language", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Language", orxCOMMAND_VAR_TYPE_STRING}, {"Group = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetCurrentLanguage */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, GetCurrentLanguage, "Language", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, GetCurrentLanguage, "Language", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Group = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: SetString */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, SetString, "Key", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"String", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, SetString, "Key", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"String", orxCOMMAND_VAR_TYPE_STRING}, {"Group = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetString */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, GetString, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Key", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Locale, GetString, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Group = <void>", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Done! */
+  return;
 }
 
 /** Unregisters all the locale commands
@@ -159,6 +168,63 @@ static orxINLINE void orxLocale_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Locale, SetString);
   /* Command: GetString */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Locale, GetString);
+
+  /* Done! */
+  return;
+}
+
+/** Loads locale languages selection from config
+ */
+static orxINLINE void orxLocale_Load()
+{
+  const orxSTRING zLanguage = orxNULL;
+  orxU32          i, u32KeyCount;
+
+  /* Pushes locale config section */
+  orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
+
+  /* Has language? */
+  if(orxConfig_HasValue(orxLOCALE_KZ_CONFIG_LANGUAGE) != orxFALSE)
+  {
+    /* Picks it */
+    zLanguage = orxConfig_GetString(orxLOCALE_KZ_CONFIG_LANGUAGE);
+  }
+  /* Has language list? */
+  else if(orxConfig_HasValue(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST) != orxFALSE)
+  {
+    /* Picks its first entry */
+    zLanguage = orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, 0);
+  }
+
+  /* Has language? */
+  if(zLanguage != orxNULL)
+  {
+    /* Selects it by default */
+    orxLocale_SelectLanguage(zLanguage, orxNULL);
+  }
+
+  /* For all config keys */
+  for(i = 0, u32KeyCount = orxConfig_GetKeyCount(); i < u32KeyCount; i++)
+  {
+    const orxSTRING zKey;
+
+    /* Gets it */
+    zKey = orxConfig_GetKey(i);
+
+    /* Is a group? */
+    if((orxString_Compare(zKey, orxLOCALE_KZ_CONFIG_LANGUAGE_LIST) != 0)
+    && (orxString_Compare(zKey, orxLOCALE_KZ_CONFIG_LANGUAGE) != 0))
+    {
+      /* Selects it */
+      orxLocale_SelectLanguage(orxConfig_GetString(zKey), zKey);
+    }
+  }
+
+  /* Pops config section */
+  orxConfig_PopSection();
+
+  /* Done! */
+  return;
 }
 
 
@@ -177,6 +243,7 @@ void orxFASTCALL orxLocale_Setup()
   orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_LOCALE, orxMODULE_ID_COMMAND);
 
+  /* Done! */
   return;
 }
 
@@ -190,32 +257,32 @@ orxSTATUS orxFASTCALL orxLocale_Init()
   /* Not already Initialized? */
   if(!orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY))
   {
-    orxS32 s32LanguageCount;
+    /* Clears static controller */
+    orxMemory_Zero(&sstLocale, sizeof(orxLOCALE_STATIC));
 
-    /* Inits Flags */
-    orxFLAG_SET(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY, orxLOCALE_KU32_STATIC_MASK_ALL);
+    /* Creates group table */
+    sstLocale.pstGroupTable = orxHashTable_Create(orxLOCALE_KU32_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-    /* Pushes locale config section */
-    orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
-
-    /* Gets language count */
-    s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
-
-    /* Has any? */
-    if(s32LanguageCount > 0)
+    /* Success? */
+    if(sstLocale.pstGroupTable != orxNULL)
     {
-      /* Selects the first one by default */
-      orxLocale_SelectLanguage(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, 0));
+      /* Inits Flags */
+      orxFLAG_SET(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY, orxLOCALE_KU32_STATIC_MASK_ALL);
+
+      /* Loads language selection from config */
+      orxLocale_Load();
+
+      /* Registers commands */
+      orxLocale_RegisterCommands();
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
     }
-
-    /* Pops config section */
-    orxConfig_PopSection();
-
-    /* Registers commands */
-    orxLocale_RegisterCommands();
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    else
+    {
+      /* Updates result */
+      eResult = orxSTATUS_FAILURE;
+    }
   }
   else
   {
@@ -240,24 +307,23 @@ void orxFASTCALL orxLocale_Exit()
     /* Unregisters commands */
     orxLocale_UnregisterCommands();
 
-    /* Has selected language? */
-    if(sstLocale.zCurrentLanguage != orxNULL)
-    {
-      /* Clears internal reference */
-      sstLocale.zCurrentLanguage = orxNULL;
-    }
+    /* Deletes group table */
+    orxHashTable_Delete(sstLocale.pstGroupTable);
+    sstLocale.pstGroupTable = orxNULL;
 
     /* Updates flags */
     orxFLAG_SET(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_NONE, orxLOCALE_KU32_STATIC_MASK_ALL);
   }
 
+  /* Done! */
   return;
 }
 
 /** Selects current working language
  * @param[in] _zLanguage        Language to select
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  */
-orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
+orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage, const orxSTRING _zGroup)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -266,53 +332,74 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
   orxASSERT(_zLanguage != orxNULL);
 
   /* Is language valid? */
-  if(_zLanguage != orxSTRING_EMPTY)
+  if(*_zLanguage != orxCHAR_NULL)
   {
-    orxS32 i, s32LanguageCount;
+    /* Pushes its section */
+    eResult = orxConfig_PushSection(_zLanguage);
 
-    /* Valid? */
-    if(_zLanguage != orxSTRING_EMPTY)
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
     {
-      /* Pushes locale config section */
-      orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
+      const orxSTRING zLanguage;
+      orxU64          u64GroupKey;
 
-      /* Gets language count */
-      s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
-
-      /* For all languages */
-      for(i = 0; i < s32LanguageCount; i++)
-      {
-        /* Found? */
-        if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
-        {
-          /* Pushes its section */
-          eResult = orxConfig_PushSection(_zLanguage);
-
-          /* Success? */
-          if(eResult != orxSTATUS_FAILURE)
-          {
-            orxLOCALE_EVENT_PAYLOAD stPayload;
-
-            /* Stores its reference */
-            sstLocale.zCurrentLanguage = orxConfig_GetCurrentSection();
-
-            /* Pops config section */
-            orxConfig_PopSection();
-
-            /* Inits event payload */
-            orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
-            stPayload.zLanguage = sstLocale.zCurrentLanguage;
-
-            /* Sends it */
-            orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
-          }
-
-          break;
-        }
-      }
+      /* Gets language */
+      zLanguage = orxConfig_GetCurrentSection();
 
       /* Pops config section */
       orxConfig_PopSection();
+
+      /* Gets group key */
+      u64GroupKey = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : 0;
+
+      /* Stores language */
+      eResult = orxHashTable_Set(sstLocale.pstGroupTable, u64GroupKey, (void *)zLanguage);
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        orxLOCALE_EVENT_PAYLOAD stPayload;
+        orxS32                  i, s32LanguageCount;
+        orxBOOL                 bFound = orxFALSE;
+
+        /* Pushes locale config section */
+        orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
+
+        /* For all languages */
+        for(i = 0, s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST); i < s32LanguageCount; i++)
+        {
+          /* Found? */
+          if(orxString_Compare(_zLanguage, orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i)) == 0)
+          {
+            /* Updates status */
+            bFound = orxTRUE;
+            break;
+          }
+        }
+
+        /* New language? */
+        if(bFound == orxFALSE)
+        {
+          const orxSTRING azLanguage[] = {_zLanguage};
+
+          /* Adds it to the list */
+          orxConfig_AppendListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, azLanguage, 1);
+        }
+
+        /* Stores it in config */
+        orxConfig_SetString((_zGroup != orxNULL) ? _zGroup : orxLOCALE_KZ_CONFIG_LANGUAGE, _zLanguage);
+
+        /* Pops config section */
+        orxConfig_PopSection();
+
+        /* Inits event payload */
+        orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
+        stPayload.zLanguage = zLanguage;
+        stPayload.zGroup    = _zGroup;
+
+        /* Sends it */
+        orxEVENT_SEND(orxEVENT_TYPE_LOCALE, orxLOCALE_EVENT_SELECT_LANGUAGE, orxNULL, orxNULL, &stPayload);
+      }
     }
   }
 
@@ -321,22 +408,32 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage)
 }
 
 /** Gets current language
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return Current selected language
  */
-const orxSTRING orxFASTCALL orxLocale_GetCurrentLanguage()
+const orxSTRING orxFASTCALL orxLocale_GetCurrentLanguage(const orxSTRING _zGroup)
 {
+  orxU64          u64GroupKey;
   const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
 
-  /* Has selected language? */
-  if(sstLocale.zCurrentLanguage != orxNULL)
+  /* Gets group key */
+  u64GroupKey = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : 0;
+
+  /* Updates result */
+  zResult = (const orxSTRING)orxHashTable_Get(sstLocale.pstGroupTable, u64GroupKey);
+
+  /* Not found and was group requested? */
+  if((zResult == orxNULL) && (_zGroup != orxNULL))
   {
-    /* Updates result */
-    zResult = sstLocale.zCurrentLanguage;
+    /* Falls back to default group */
+    zResult = (const orxSTRING)orxHashTable_Get(sstLocale.pstGroupTable, 0);
   }
-  else
+
+  /* Not found? */
+  if(zResult == orxNULL)
   {
     /* Updates result */
     zResult = orxSTRING_EMPTY;
@@ -363,31 +460,24 @@ orxBOOL orxFASTCALL orxLocale_HasLanguage(const orxSTRING _zLanguage)
   {
     orxS32 i, s32LanguageCount;
 
-    /* Valid? */
-    if(_zLanguage != orxSTRING_EMPTY)
+    /* Pushes locale config section */
+    orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
+
+    /* For all languages */
+    for(i = 0, s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST); i < s32LanguageCount; i++)
     {
-      /* Pushes locale config section */
-      orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
-
-      /* Gets language count */
-      s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST);
-
-      /* For all languages */
-      for(i = 0; i < s32LanguageCount; i++)
+      /* Found? */
+      if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
       {
-        /* Found? */
-        if(orxString_SearchString(orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i), _zLanguage) != orxNULL)
-        {
-          /* Updates result */
-          bResult = orxConfig_HasSection(_zLanguage);
+        /* Updates result */
+        bResult = orxConfig_HasSection(_zLanguage);
 
-          break;
-        }
+        break;
       }
-
-      /* Pops config section */
-      orxConfig_PopSection();
     }
+
+    /* Pops config section */
+    orxConfig_PopSection();
   }
 
   /* Done! */
@@ -443,22 +533,27 @@ const orxSTRING orxFASTCALL orxLocale_GetLanguage(orxU32 _u32LanguageIndex)
 
 /** Has string for the given key?
  * @param[in] _zKey             Key name
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return orxTRUE / orxFALSE
  */
-orxBOOL orxFASTCALL orxLocale_HasString(const orxSTRING _zKey)
+orxBOOL orxFASTCALL orxLocale_HasString(const orxSTRING _zKey, const orxSTRING _zGroup)
 {
-  orxBOOL bResult;
+  const orxSTRING zLanguage;
+  orxBOOL         bResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
-  /* Has current language? */
-  if(sstLocale.zCurrentLanguage != orxNULL)
+  /* Gets current language */
+  zLanguage = orxLocale_GetCurrentLanguage(_zGroup);
+
+  /* Found? */
+  if(zLanguage != orxSTRING_EMPTY)
   {
     /* Pushes its section */
-    orxConfig_PushSection(sstLocale.zCurrentLanguage);
+    orxConfig_PushSection(zLanguage);
 
     /* Updates result */
     bResult = orxConfig_HasValue(_zKey);
@@ -478,10 +573,12 @@ orxBOOL orxFASTCALL orxLocale_HasString(const orxSTRING _zKey)
 
 /** Reads a string in the current language for the given key
  * @param[in] _zKey             Key name
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return The value
  */
-const orxSTRING orxFASTCALL orxLocale_GetString(const orxSTRING _zKey)
+const orxSTRING orxFASTCALL orxLocale_GetString(const orxSTRING _zKey, const orxSTRING _zGroup)
 {
+  const orxSTRING zLanguage;
   const orxSTRING zResult;
 
   /* Checks */
@@ -489,11 +586,14 @@ const orxSTRING orxFASTCALL orxLocale_GetString(const orxSTRING _zKey)
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
-  /* Has current language? */
-  if(sstLocale.zCurrentLanguage != orxNULL)
+  /* Gets current language */
+  zLanguage = orxLocale_GetCurrentLanguage(_zGroup);
+
+  /* Found? */
+  if(zLanguage != orxSTRING_EMPTY)
   {
     /* Pushes its section */
-    orxConfig_PushSection(sstLocale.zCurrentLanguage);
+    orxConfig_PushSection(zLanguage);
 
     /* Updates result */
     zResult = orxConfig_GetString(_zKey);
@@ -514,11 +614,13 @@ const orxSTRING orxFASTCALL orxLocale_GetString(const orxSTRING _zKey)
 /** Writes a string in the current language for the given key
  * @param[in] _zKey             Key name
  * @param[in] _zValue           Value
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING _zValue)
+orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING _zValue, const orxSTRING _zGroup)
 {
-  orxSTATUS eResult;
+  const orxSTRING zLanguage;
+  orxSTATUS       eResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
@@ -526,13 +628,16 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
   orxASSERT(_zKey != orxSTRING_EMPTY);
   orxASSERT(_zValue != orxNULL);
 
-  /* Has current language? */
-  if(sstLocale.zCurrentLanguage != orxNULL)
+  /* Gets current language */
+  zLanguage = orxLocale_GetCurrentLanguage(_zGroup);
+
+  /* Found? */
+  if(zLanguage != orxSTRING_EMPTY)
   {
     orxLOCALE_EVENT_PAYLOAD stPayload;
 
     /* Pushes its section */
-    orxConfig_PushSection(sstLocale.zCurrentLanguage);
+    orxConfig_PushSection(zLanguage);
 
     /* Updates result */
     eResult = orxConfig_SetString(_zKey, _zValue);
@@ -542,7 +647,8 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
 
     /* Inits event payload */
     orxMemory_Zero(&stPayload, sizeof(orxLOCALE_EVENT_PAYLOAD));
-    stPayload.zLanguage     = sstLocale.zCurrentLanguage;
+    stPayload.zLanguage     = zLanguage;
+    stPayload.zGroup        = _zGroup;
     stPayload.zStringKey    = _zKey;
     stPayload.zStringValue  = _zValue;
 
@@ -560,20 +666,25 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
 }
 
 /** Gets key count for the current language
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return Key count the current language if valid, 0 otherwise
  */
-orxU32 orxFASTCALL orxLocale_GetKeyCount()
+orxU32 orxFASTCALL orxLocale_GetKeyCount(const orxSTRING _zGroup)
 {
-  orxU32 u32Result;
+  const orxSTRING zLanguage;
+  orxU32          u32Result;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
 
-  /* Has current language? */
-  if(sstLocale.zCurrentLanguage != orxNULL)
+  /* Gets current language */
+  zLanguage = orxLocale_GetCurrentLanguage(_zGroup);
+
+  /* Found? */
+  if(zLanguage != orxSTRING_EMPTY)
   {
     /* Pushes its section */
-    orxConfig_PushSection(sstLocale.zCurrentLanguage);
+    orxConfig_PushSection(zLanguage);
 
     /* Updates result */
     u32Result = orxConfig_GetKeyCount();
@@ -593,20 +704,25 @@ orxU32 orxFASTCALL orxLocale_GetKeyCount()
 
 /** Gets key for the current language at the given index
  * @param[in] _u32KeyIndex      Index of the desired key
+ * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
  * @return orxSTRING if exist, orxNULL otherwise
  */
-const orxSTRING orxFASTCALL orxLocale_GetKey(orxU32 _u32KeyIndex)
+const orxSTRING orxFASTCALL orxLocale_GetKey(orxU32 _u32KeyIndex, const orxSTRING _zGroup)
 {
+  const orxSTRING zLanguage;
   const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
 
-  /* Has current language? */
-  if(sstLocale.zCurrentLanguage != orxNULL)
+  /* Gets current language */
+  zLanguage = orxLocale_GetCurrentLanguage(_zGroup);
+
+  /* Found? */
+  if(zLanguage != orxSTRING_EMPTY)
   {
     /* Pushes its section */
-    orxConfig_PushSection(sstLocale.zCurrentLanguage);
+    orxConfig_PushSection(zLanguage);
 
     /* Updates result */
     zResult = orxConfig_GetKey(_u32KeyIndex);

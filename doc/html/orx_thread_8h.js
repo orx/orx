@@ -18,6 +18,7 @@ var orx_thread_8h =
     [ "orxThread_Join", "group__orx_thread.html#ga8da3edcc56ea245646ca0384801865f2", null ],
     [ "orxThread_JoinAll", "group__orx_thread.html#gafeb2fb6aedab7664ed6f254d5122aab0", null ],
     [ "orxThread_RunTask", "group__orx_thread.html#gaafd1ef08638a36023f0332703d3fb6dd", null ],
+    [ "orxThread_SetCallbacks", "group__orx_thread.html#gad394f6c23f87a099791afcc2cccdbd9a", null ],
     [ "orxThread_Setup", "group__orx_thread.html#ga6bb514c44ce54b13a7cd95e14a473ba5", null ],
     [ "orxThread_SignalSemaphore", "group__orx_thread.html#gabcfbbdf05586f810c91b1dcd5d5f39d3", null ],
     [ "orxThread_Start", "group__orx_thread.html#gae53df94049ab903409c291e21b111ecb", null ],

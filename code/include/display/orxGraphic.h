@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -51,6 +51,7 @@
 
 #include "object/orxStructure.h"
 #include "display/orxDisplay.h"
+#include "math/orxAABox.h"
 
 
 /** Graphic flags
@@ -74,6 +75,8 @@
 #define orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE   0x00000100  /**< Truncate alignment value */
 #define orxGRAPHIC_KU32_FLAG_ALIGN_ROUND      0x00000200  /**< Round alignment value */
 
+#define orxGRAPHIC_KU32_MASK_ALIGN            0x000003F0  /**< Alignment mask */
+
 #define orxGRAPHIC_KU32_MASK_USER_ALL         0x00000FFF  /**< User all ID mask */
 
 
@@ -93,6 +96,7 @@
 #define orxGRAPHIC_KZ_CONFIG_REPEAT           "Repeat"
 #define orxGRAPHIC_KZ_CONFIG_SMOOTHING        "Smoothing"
 #define orxGRAPHIC_KZ_CONFIG_BLEND_MODE       "BlendMode"
+#define orxGRAPHIC_KZ_CONFIG_STASIS           "Stasis"
 #define orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE    "KeepInCache"
 
 
@@ -114,6 +118,21 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_Init();
 extern orxDLLAPI void orxFASTCALL             orxGraphic_Exit();
 
 
+/** Gets alignment flags from literals
+ * @param[in]   _zAlign         Align literals
+ * @ return Align flags
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxGraphic_GetAlignFlags(const orxSTRING _zAlign);
+
+/** Aligns a vector inside a box using flags
+ * @param[in]   _u32AlignFlags  Align flags
+ * @param[in]   _pstBox         Concerned box
+ * @param[out]  _pvValue        Storage for the resulting aligned vector
+ * @return orxVECTOR
+ */
+extern orxDLLAPI orxVECTOR *orxFASTCALL       orxGraphic_AlignVector(orxU32 _u32AlignFlags, const orxAABOX *_pstBox, orxVECTOR *_pvValue);
+
+
 /** Creates an empty graphic
  * @return      Created orxGRAPHIC / orxNULL
  */
@@ -130,6 +149,12 @@ extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_CreateFromConfig(const 
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_Delete(orxGRAPHIC *_pstGraphic);
+
+/** Clones a graphic
+ * @param[in]   _pstGraphic     Graphic model to clone
+ * @ return orxGRAPHIC / orxNULL
+ */
+extern orxDLLAPI orxGRAPHIC *orxFASTCALL      orxGraphic_Clone(const orxGRAPHIC *_pstGraphic);
 
 /** Gets graphic config name
  * @param[in]   _pstGraphic     Concerned graphic
@@ -176,7 +201,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxGraphic_GetFlip(const orxGRAPHIC 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, const orxVECTOR *_pvPivot);
 
-/** Sets relative graphic pivot
+/** Sets graphic relative pivot
  * @param[in]   _pstGraphic     Concerned graphic
  * @param[in]   _u32AlignFlags  Alignment flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -287,6 +312,18 @@ extern orxDLLAPI orxDISPLAY_SMOOTHING orxFASTCALL orxGraphic_GetSmoothing(const 
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLAY_BLEND_MODE _eBlendMode);
+
+/** Clears graphic blend mode
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_ClearBlendMode(orxGRAPHIC *_pstGraphic);
+
+/** Graphic has blend mode accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasBlendMode(const orxGRAPHIC *_pstGraphic);
 
 /** Gets graphic blend mode
  * @param[in]   _pstGraphic     Concerned graphic

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,13 +32,14 @@
 
 #include "display/orxGraphic.h"
 
-#include "debug/orxDebug.h"
-#include "memory/orxMemory.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "core/orxLocale.h"
+#include "debug/orxDebug.h"
 #include "display/orxText.h"
 #include "display/orxTexture.h"
+#include "memory/orxMemory.h"
+#include "object/orxObject.h"
 
 
 /** Module flags
@@ -52,10 +53,12 @@
  */
 #define orxGRAPHIC_KU32_FLAG_INTERNAL             0x10000000  /**< Internal structure handling flag  */
 #define orxGRAPHIC_KU32_FLAG_HAS_COLOR            0x20000000  /**< Has color flag  */
-#define orxGRAPHIC_KU32_FLAG_HAS_PIVOT            0x40000000  /**< Has pivot flag  */
-#define orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT       0x80000000  /**< Relative pivot flag */
-#define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x01000000  /**< Smoothing on flag  */
-#define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x02000000  /**< Smoothing off flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE       0x40000000  /**< Has color flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_PIVOT            0x80000000  /**< Has pivot flag  */
+#define orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT       0x01000000  /**< Relative pivot flag */
+#define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x02000000  /**< Smoothing on flag  */
+#define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x04000000  /**< Smoothing off flag  */
+#define orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE        0x08000000  /**< Keep in cache flag */
 
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE      0x00000000  /**< Blend mode no flags */
 
@@ -63,8 +66,6 @@
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY  0x00200000  /**< Blend mode multiply flag */
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD       0x00400000  /**< Blend mode add flag */
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL    0x00800000  /**< Blend mode premul flag */
-
-#define orxGRAPHIC_KU32_MASK_ALIGN                0x000003F0  /**< Alignment mask */
 
 #define orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL       0x00F00000  /**< Blend mode mask */
 
@@ -88,7 +89,7 @@
 
 #define orxGRAPHIC_KU32_BANK_SIZE                 1024
 
-#define orxGRAPHIC_KC_LOCALE_MARKER              '$'
+#define orxGRAPHIC_KC_LOCALE_MARKER               '$'
 
 
 /***************************************************************************
@@ -101,15 +102,17 @@ struct __orxGRAPHIC_t
 {
   orxSTRUCTURE    stStructure;              /**< Public structure, first structure member : 32 */
   orxSTRUCTURE   *pstData;                  /**< Data structure : 20 */
-  orxVECTOR       vPivot;                   /**< Pivot : 32 */
-  orxCOLOR        stColor;                  /**< Color : 48 */
-  orxFLOAT        fTop;                     /**< Top coordinate : 52 */
-  orxFLOAT        fLeft;                    /**< Left coordinate : 56 */
-  orxFLOAT        fWidth;                   /**< Width : 60 */
-  orxFLOAT        fHeight;                  /**< Height : 64 */
-  orxFLOAT        fRepeatX;                 /**< X-axis repeat count : 68 */
-  orxFLOAT        fRepeatY;                 /**< Y-axis repeat count : 72 */
-  const orxSTRING zReference;               /**< Reference : 76 */
+  orxSTRINGID     stLocaleNameID;           /**< Locale name ID : 28 */
+  orxVECTOR       vPivot;                   /**< Pivot : 40 */
+  orxCOLOR        stColor;                  /**< Color : 56 */
+  orxFLOAT        fTop;                     /**< Top coordinate : 60 */
+  orxFLOAT        fLeft;                    /**< Left coordinate : 64 */
+  orxFLOAT        fWidth;                   /**< Width : 68 */
+  orxFLOAT        fHeight;                  /**< Height : 72 */
+  orxFLOAT        fRepeatX;                 /**< X-axis repeat count : 76 */
+  orxFLOAT        fRepeatY;                 /**< Y-axis repeat count : 80 */
+  const orxSTRING zReference;               /**< Reference : 84 */
+  const orxSTRING zDataReference;           /**< Data reference : 88 */
 };
 
 /** Static structure
@@ -252,16 +255,27 @@ static orxINLINE orxSTATUS orxGraphic_SetDataInternal(orxGRAPHIC *_pstGraphic, o
  */
 static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
-  /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_LOCALE);
-
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
+  /* Locale? */
+  if(_pstEvent->eType == orxEVENT_TYPE_LOCALE)
   {
-    /* Select language event */
-    case orxLOCALE_EVENT_SELECT_LANGUAGE:
+    orxLOCALE_EVENT_PAYLOAD  *pstPayload;
+    orxBOOL                   bTextureGroup, bTextGroup;
+
+    /* Checks */
+    orxASSERT(_pstEvent->eID == orxLOCALE_EVENT_SELECT_LANGUAGE);
+
+    /* Gets its payload */
+    pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Updates status */
+    bTextureGroup = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXTURE_KZ_LOCALE_GROUP) == 0)) ? orxTRUE : orxFALSE;
+    bTextGroup    = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXT_KZ_LOCALE_GROUP) == 0))    ? orxTRUE : orxFALSE;
+
+    /* Is it texture or text group? */
+    if((bTextureGroup != orxFALSE) || (bTextGroup != orxFALSE))
     {
       orxGRAPHIC *pstGraphic;
 
@@ -270,54 +284,83 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
           pstGraphic != orxNULL;
           pstGraphic = orxGRAPHIC(orxStructure_GetNext(pstGraphic)))
       {
-        /* 2D data? */
-        if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
-        {
-          /* Has a reference? */
-          if(pstGraphic->zReference != orxNULL)
-          {
-            const orxSTRING zName;
-
-            /* Pushes its section */
-            orxConfig_PushSection(pstGraphic->zReference);
-
-            /* Gets its texture */
-            zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
-
-            /* Valid? */
-            if(zName != orxNULL)
-            {
-              /* Begins with locale marker? */
-              if((*zName == orxGRAPHIC_KC_LOCALE_MARKER) && (*(zName + 1) != orxGRAPHIC_KC_LOCALE_MARKER))
-              {
-                orxTEXTURE *pstTexture;
-
-                /* Creates texture */
-                pstTexture = orxTexture_CreateFromFile(orxLocale_GetString(zName + 1), orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
-
-                /* Updates data */
-                orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
-              }
-            }
-
-            /* Pops config section */
-            orxConfig_PopSection();
-          }
-        }
-        /* Text data? */
-        else if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
+        /* Text group and text data? */
+        if((bTextGroup != orxFALSE) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)))
         {
           /* Updates graphic's size */
           orxGraphic_UpdateSize(pstGraphic);
         }
+        /* Texture group (including disabled stasis ones)? */
+        else if(bTextureGroup != orxFALSE)
+        {
+          /* Has locale name ID? */
+          if(pstGraphic->stLocaleNameID != 0)
+          {
+            const orxSTRING zName;
+            orxTEXTURE     *pstTexture;
+
+            /* Retrieves name */
+            zName = orxLocale_GetString(orxString_GetFromID(pstGraphic->stLocaleNameID), orxTEXTURE_KZ_LOCALE_GROUP);
+
+            /* Valid? */
+            if(*zName != orxCHAR_NULL)
+            {
+              /* Has data reference? */
+              if(pstGraphic->zDataReference != orxNULL)
+              {
+                /* Updates it */
+                pstGraphic->zDataReference = orxString_Store(zName);
+              }
+
+              /* Has 2D data? */
+              if(orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
+              {
+                /* Loads texture */
+                pstTexture = orxTexture_Load(zName, orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE) ? orxTRUE : orxFALSE);
+
+                /* Valid? */
+                if(pstTexture != orxNULL)
+                {
+                  /* Updates data */
+                  orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
+                }
+              }
+            }
+          }
+        }
       }
-
-      break;
     }
+  }
+  /* Object */
+  else
+  {
+    /* Checks */
+    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
 
-    default:
+    /* Gets its graphic */
+    pstGraphic = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), GRAPHIC);
+
+    /* Has data reference? */
+    if((pstGraphic != orxNULL) && (pstGraphic->zDataReference != orxNULL))
     {
-      break;
+      /* Enable? */
+      if(_pstEvent->eID == orxOBJECT_EVENT_ENABLE)
+      {
+        /* Checks */
+        orxASSERT(pstGraphic->pstData == orxNULL);
+
+        /* Updates data */
+        orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)orxTexture_Load(pstGraphic->zDataReference, orxFALSE), orxTRUE);
+      }
+      /* Disable */
+      else
+      {
+        /* Checks */
+        orxASSERT(pstGraphic->pstData != orxNULL);
+
+        /* Updates data */
+        orxGraphic_SetDataInternal(pstGraphic, orxNULL, orxTRUE);
+      }
     }
   }
 
@@ -330,7 +373,7 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
  */
 static orxINLINE void orxGraphic_DeleteAll()
 {
-  register orxGRAPHIC *pstGraphic;
+  orxGRAPHIC *pstGraphic;
 
   /* Gets first graphic */
   pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
@@ -383,10 +426,15 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
 
     /* Registers event handler */
     eResult = orxEvent_AddHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
+    eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxGraphic_EventHandler) : orxSTATUS_FAILURE;
 
     /* Valid? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxGraphic_EventHandler, orxEVENT_TYPE_LOCALE, orxNULL, orxEVENT_GET_FLAG(orxLOCALE_EVENT_SELECT_LANGUAGE), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(orxGraphic_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DISABLE), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(GRAPHIC, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxGRAPHIC_KU32_BANK_SIZE, orxNULL);
 
@@ -400,7 +448,13 @@ orxSTATUS orxFASTCALL orxGraphic_Init()
       {
         /* Removes event handler */
         orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
+        orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxGraphic_EventHandler);
       }
+    }
+    else
+    {
+      /* Removes event handler */
+      orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
     }
   }
   else
@@ -438,6 +492,7 @@ void orxFASTCALL orxGraphic_Exit()
 
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_LOCALE, orxGraphic_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxGraphic_EventHandler);
 
     /* Unregisters structure type */
     orxStructure_Unregister(orxSTRUCTURE_ID_GRAPHIC);
@@ -452,6 +507,138 @@ void orxFASTCALL orxGraphic_Exit()
   }
 
   return;
+}
+
+/** Gets alignment flags from literals
+ * @param[in]   _zAlign         Align literals
+ * @ return Align flags
+ */
+orxU32 orxFASTCALL orxGraphic_GetAlignFlags(const orxSTRING _zAlign)
+{
+  orxCHAR acBuffer[64];
+  orxU32  u32Result = orxGRAPHIC_KU32_FLAG_ALIGN_CENTER;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zAlign != orxNULL);
+
+  /* Gets lower case value */
+  acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+  orxString_LowerCase(orxString_NCopy(acBuffer, _zAlign, sizeof(acBuffer) - 1));
+
+  /* Valid? */
+  if(*acBuffer != orxCHAR_NULL)
+  {
+    /* Left? */
+    if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_LEFT_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_LEFT;
+    }
+    /* Right? */
+    else if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_RIGHT_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT;
+    }
+
+    /* Top? */
+    if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_TOP_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_TOP;
+    }
+    /* Bottom? */
+    else if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_BOTTOM_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM;
+    }
+
+    /* Truncate? */
+    if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_TRUNCATE_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE;
+    }
+    /* Round? */
+    else if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_ROUND_PIVOT) != orxNULL)
+    {
+      /* Updates alignment flags */
+      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_ROUND;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
+/** Aligns a vector inside a box using flags
+ * @param[in]   _u32AlignFlags  Align flags
+ * @param[in]   _pstBox         Concerned box
+ * @param[out]  _pvValue        Storage for the resulting aligned vector
+ * @return orxVECTOR
+ */
+orxVECTOR *orxFASTCALL orxGraphic_AlignVector(orxU32 _u32AlignFlags, const orxAABOX *_pstBox, orxVECTOR *_pvValue)
+{
+  orxVECTOR *pvResult = _pvValue;
+
+  /* Align left? */
+  if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
+  {
+    /* Updates x position */
+    pvResult->fX = _pstBox->vTL.fX;
+  }
+  /* Align right? */
+  else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
+  {
+    /* Updates x position */
+    pvResult->fX = _pstBox->vBR.fX;
+  }
+  /* Align center */
+  else
+  {
+    /* Updates x position */
+    pvResult->fX = orx2F(0.5f) * (_pstBox->vTL.fX + _pstBox->vBR.fX);
+  }
+
+  /* Align top? */
+  if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
+  {
+    /* Updates y position */
+    pvResult->fY = _pstBox->vTL.fY;
+  }
+  /* Align bottom? */
+  else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
+  {
+    /* Updates y position */
+    pvResult->fY = _pstBox->vBR.fY;
+  }
+  /* Align center */
+  else
+  {
+    /* Updates y position */
+    pvResult->fY = orx2F(0.5f) * (_pstBox->vTL.fY + _pstBox->vBR.fY);
+  }
+
+  /* Truncate? */
+  if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
+  {
+    /* Updates position */
+    orxVector_Floor(pvResult, pvResult);
+  }
+  /* Round? */
+  else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
+  {
+    /* Updates position */
+    orxVector_Round(pvResult, pvResult);
+  }
+
+  /* Clears Z component */
+  pvResult->fZ = orxFLOAT_0;
+
+  /* Done! */
+  return pvResult;
 }
 
 /** Creates an empty graphic
@@ -475,6 +662,9 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Create()
 
     /* Clears its color */
     orxGraphic_ClearColor(pstGraphic);
+
+    /* Clears its blend mode */
+    orxGraphic_ClearBlendMode(pstGraphic);
 
     /* Sets its repeat value to default */
     orxGraphic_SetRepeat(pstGraphic, orxFLOAT_1, orxFLOAT_1);
@@ -503,6 +693,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
+    orxU32 u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
+
     /* Creates graphic */
     pstResult = orxGraphic_Create();
 
@@ -510,7 +702,6 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
     if(pstResult != orxNULL)
     {
       const orxSTRING zName;
-      orxU32          u32Flags = orxGRAPHIC_KU32_FLAG_NONE;
 
       /* Gets texture name */
       zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
@@ -523,60 +714,69 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Begins with locale marker? */
         if(*zName == orxGRAPHIC_KC_LOCALE_MARKER)
         {
-          /* Gets its locale value */
-          zName = (*(zName + 1) == orxGRAPHIC_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1);
+          /* Updates name */
+          zName = zName + 1;
+
+          /* Using locale? */
+          if(*zName != orxGRAPHIC_KC_LOCALE_MARKER)
+          {
+            /* Stores its locale name ID */
+            pstResult->stLocaleNameID = orxString_GetID(zName);
+
+            /* Gets its locale value */
+            zName = orxLocale_GetString(zName, orxTEXTURE_KZ_LOCALE_GROUP);
+          }
         }
 
-        /* Creates texture */
-        pstTexture = orxTexture_CreateFromFile(zName, orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE));
+        /* Should keep in cache? */
+        if(orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
+        {
+          /* Updates status */
+          u32Flags |= orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE;
+        }
+
+        /* Loads texture */
+        pstTexture = orxTexture_Load(zName, orxFLAG_TEST(u32Flags, orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE) ? orxTRUE : orxFALSE);
 
         /* Valid? */
         if(pstTexture != orxNULL)
         {
+          /* Stores its data reference */
+          pstResult->zDataReference = (orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_STASIS) != orxFALSE) ? orxString_Store(zName) : orxNULL;
+
           /* Links it */
           if(orxGraphic_SetDataInternal(pstResult, (orxSTRUCTURE *)pstTexture, orxTRUE) != orxSTATUS_FAILURE)
           {
-            orxVECTOR vTextureSize;
+            orxVECTOR vValue;
+
+            /* Updates size */
+            orxGraphic_UpdateSize(pstResult);
+
+            /* Has origin / corner? */
+            if((orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vValue) != orxNULL)
+            || (orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER, &vValue) != orxNULL))
+            {
+              /* Applies it */
+              pstResult->fLeft    = vValue.fX;
+              pstResult->fTop     = vValue.fY;
+
+              /* Updates size */
+              pstResult->fWidth   = orxMAX(orxFLOAT_0, pstResult->fWidth - vValue.fX);
+              pstResult->fHeight  = orxMAX(orxFLOAT_0, pstResult->fHeight - vValue.fY);
+            }
 
             /* Has size? */
-            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) != orxNULL)
+            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vValue) != orxNULL)
             {
-              orxVECTOR vTextureOrigin;
-
-              /* Has origin? */
-              if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin) != orxNULL)
-              {
-                /* Stores them */
-                pstResult->fLeft    = vTextureOrigin.fX;
-                pstResult->fTop     = vTextureOrigin.fY;
-                pstResult->fWidth   = vTextureSize.fX;
-                pstResult->fHeight  = vTextureSize.fY;
-              }
-              /* Has corner? */
-              else if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER, &vTextureOrigin) != orxNULL)
-              {
-                /* Stores them */
-                pstResult->fLeft    = vTextureOrigin.fX;
-                pstResult->fTop     = vTextureOrigin.fY;
-                pstResult->fWidth   = vTextureSize.fX;
-                pstResult->fHeight  = vTextureSize.fY;
-              }
-              else
-              {
-                /* Updates size */
-                orxGraphic_UpdateSize(pstResult);
-              }
-            }
-            else
-            {
-              /* Updates size */
-              orxGraphic_UpdateSize(pstResult);
+              /* Applies it */
+              pstResult->fWidth   = vValue.fX;
+              pstResult->fHeight  = vValue.fY;
             }
           }
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture (%s) data to graphic (%s).", zName, _zConfigID);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture <%s> data to graphic <%s>.", zName, _zConfigID);
 
             /* Deletes structures */
             orxTexture_Delete(pstTexture);
@@ -610,7 +810,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link text (%s) data to graphic (%s).", zName, _zConfigID);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link text <%s> data to graphic <%s>.", zName, _zConfigID);
 
               /* Deletes structures */
               orxText_Delete(pstText);
@@ -634,59 +834,16 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has relative pivot point? */
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_PIVOT) != orxFALSE)
         {
-          orxCHAR   acBuffer[64];
-          orxSTRING zRelativePos;
-          orxU32    u32AlignmentFlags = orxGRAPHIC_KU32_FLAG_ALIGN_CENTER;
+          const orxSTRING zRelativePivot;
 
-          /* Gets lower case value */
-          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-          zRelativePos = orxString_LowerCase(orxString_NCopy(acBuffer, orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT), sizeof(acBuffer) - 1));
-
-          /* Left? */
-          if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_LEFT_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_LEFT;
-          }
-          /* Right? */
-          else if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_RIGHT_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT;
-          }
-
-          /* Top? */
-          if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_TOP_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_TOP;
-          }
-          /* Bottom? */
-          else if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_BOTTOM_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM;
-          }
-
-          /* Truncate? */
-          if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_TRUNCATE_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE;
-          }
-          /* Round? */
-          else if(orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_ROUND_PIVOT) != orxNULL)
-          {
-            /* Updates alignment flags */
-            u32AlignmentFlags |= orxGRAPHIC_KU32_FLAG_ALIGN_ROUND;
-          }
+          /* Gets it */
+          zRelativePivot = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_PIVOT);
 
           /* Valid? */
-          if((u32AlignmentFlags != orxGRAPHIC_KU32_FLAG_ALIGN_CENTER)
-          || (orxString_SearchString(zRelativePos, orxGRAPHIC_KZ_CENTERED_PIVOT) != orxNULL))
+          if(*zRelativePivot != orxCHAR_NULL)
           {
             /* Applies it */
-            orxGraphic_SetRelativePivot(pstResult, u32AlignmentFlags);
+            orxGraphic_SetRelativePivot(pstResult, orxGraphic_GetAlignFlags(zRelativePivot));
           }
         }
 
@@ -715,16 +872,15 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has color? */
         if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_COLOR) != orxFALSE)
         {
-          orxVECTOR vColor;
+          /* Gets it */
+          if(orxConfig_GetColorVector(orxGRAPHIC_KZ_CONFIG_COLOR, orxCOLORSPACE_COMPONENT, &(pstResult->stColor.vRGB)) != orxNULL)
+          {
+            /* Normalizes it */
+            orxVector_Mulf(&(pstResult->stColor.vRGB), &(pstResult->stColor.vRGB), orxCOLOR_NORMALIZER);
 
-          /* Gets its value */
-          orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_COLOR, &vColor);
-
-          /* Normalizes and applies it */
-          orxVector_Mulf(&(pstResult->stColor.vRGB), &vColor, orxCOLOR_NORMALIZER);
-
-          /* Updates status */
-          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+            /* Updates status */
+            orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+          }
         }
         /* Has RGB values? */
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_RGB) != orxFALSE)
@@ -736,7 +892,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
         }
         /* Has HSL values? */
-        else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_HSL) != orxFALSE)
+        else if(orxConfig_HasValueNoCheck(orxGRAPHIC_KZ_CONFIG_HSL) != orxFALSE)
         {
           /* Gets its value */
           orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_HSL, &(pstResult->stColor.vHSL));
@@ -792,57 +948,8 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Has blend mode? */
         if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_BLEND_MODE) != orxFALSE)
         {
-          const orxSTRING       zBlendMode;
-          orxDISPLAY_BLEND_MODE eBlendMode;
-
-          /* Gets blend mode value */
-          zBlendMode = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE);
-          eBlendMode = orxDisplay_GetBlendModeFromString(zBlendMode);
-
-          /* Depending on blend mode */
-          switch(eBlendMode)
-          {
-            case orxDISPLAY_BLEND_MODE_ALPHA:
-            {
-              /* Updates flags */
-              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
-
-              break;
-            }
-
-            case orxDISPLAY_BLEND_MODE_MULTIPLY:
-            {
-              /* Updates flags */
-              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY;
-
-              break;
-            }
-
-            case orxDISPLAY_BLEND_MODE_ADD:
-            {
-              /* Updates flags */
-              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD;
-
-              break;
-            }
-
-            case orxDISPLAY_BLEND_MODE_PREMUL:
-            {
-              /* Updates flags */
-              u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL;
-
-              break;
-            }
-
-            default:
-            {
-            }
-          }
-        }
-        else
-        {
-          /* Defaults to alpha */
-          u32Flags |= orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA;
+          /* Sets blend mode */
+          orxGraphic_SetBlendMode(pstResult, orxDisplay_GetBlendModeFromString(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_BLEND_MODE)));
         }
 
         /* Stores its reference key */
@@ -854,7 +961,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't get text or texture for graphic (%s).", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't get text or texture for graphic <%s>.", _zConfigID);
 
         /* Deletes structures */
         orxGraphic_Delete(pstResult);
@@ -870,7 +977,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find config section named (%s).", _zConfigID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find config section named <%s>.", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -913,6 +1020,144 @@ orxSTATUS orxFASTCALL orxGraphic_Delete(orxGRAPHIC *_pstGraphic)
   return eResult;
 }
 
+/** Clones a graphic
+ * @param[in]   _pstGraphic     Graphic model to clone
+ * @ return orxGRAPHIC / orxNULL
+ */
+orxGRAPHIC *orxFASTCALL orxGraphic_Clone(const orxGRAPHIC *_pstGraphic)
+{
+  orxGRAPHIC *pstResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+
+  /* Valid? */
+  if(_pstGraphic != orxNULL)
+  {
+    /* Creates graphic */
+    pstResult = orxGraphic_Create();
+
+    /* Valid? */
+    if(pstResult != orxNULL)
+    {
+      /* Clears its data */
+      pstResult->pstData = orxNULL;
+
+      /* Updates its flags */
+      orxStructure_SetFlags(pstResult, orxStructure_GetFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_ALL), orxGRAPHIC_KU32_MASK_ALL);
+
+      /* Has texture? */
+      if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D) != orxFALSE)
+      {
+        /* Checks */
+        orxSTRUCTURE_ASSERT(orxTEXTURE(_pstGraphic->pstData));
+
+        /* Increases texture's reference count */
+        orxStructure_IncreaseCount(orxTEXTURE(_pstGraphic->pstData));
+
+        /* Can't link it? */
+        if(orxGraphic_SetDataInternal(pstResult, (orxSTRUCTURE *)orxTEXTURE(_pstGraphic->pstData), orxTRUE) == orxSTATUS_FAILURE)
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture <%s> data to cloned graphic <%s>.", orxTexture_GetName(orxTEXTURE(_pstGraphic->pstData)), _pstGraphic->zReference);
+
+          /* Decreases texture's reference count */
+          orxStructure_DecreaseCount(orxTEXTURE(_pstGraphic->pstData));
+        }
+      }
+      /* Has text? */
+      else if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE)
+      {
+        orxTEXT *pstText;
+
+        /* Checks */
+        orxSTRUCTURE_ASSERT(orxTEXT(_pstGraphic->pstData));
+
+        /* Creates new text */
+        pstText = orxText_Create();
+
+        /* Valid? */
+        if(pstText != orxNULL)
+        {
+          orxTEXT *pstModel;
+
+          /* Gets model */
+          pstModel = orxTEXT(_pstGraphic->pstData);
+
+          /* Copies its font */
+          orxText_SetFont(pstText, orxText_GetFont(pstModel));
+
+          /* Copies its string */
+          orxText_SetString(pstText, orxText_GetString(pstModel));
+
+          /* Can't link it? */
+          if(orxGraphic_SetDataInternal(pstResult, (orxSTRUCTURE *)pstText, orxTRUE) == orxSTATUS_FAILURE)
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link text <%s> data to cloned graphic <%s>.", orxText_GetName(pstModel), _pstGraphic->zReference);
+
+            /* Deletes text */
+            orxText_Delete(pstText);
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't create text data for cloned graphic <%s>.", _pstGraphic->zReference);
+        }
+      }
+
+      /* Has data? */
+      if(pstResult->pstData != orxNULL)
+      {
+        /* Copies locale name ID */
+        pstResult->stLocaleNameID = _pstGraphic->stLocaleNameID;
+
+        /* Copies data reference */
+        pstResult->zDataReference = _pstGraphic->zDataReference;
+
+        /* Copies pivot */
+        orxVector_Copy(&(pstResult->vPivot), &(_pstGraphic->vPivot));
+
+        /* Copies color */
+        orxColor_Copy(&(pstResult->stColor), &(_pstGraphic->stColor));
+
+        /* Copies coordinates */
+        pstResult->fTop     = _pstGraphic->fTop;
+        pstResult->fLeft    = _pstGraphic->fLeft;
+        pstResult->fWidth   = _pstGraphic->fWidth;
+        pstResult->fHeight  = _pstGraphic->fHeight;
+
+        /* Copies repeat */
+        pstResult->fRepeatX = _pstGraphic->fRepeatX;
+        pstResult->fRepeatY = _pstGraphic->fRepeatY;
+
+        /* Copies reference */
+        pstResult->zReference = _pstGraphic->zReference;
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't clone text or texture from graphic <%s>.", _pstGraphic->zReference);
+
+        /* Deletes structures */
+        orxGraphic_Delete(pstResult);
+
+        /* Updates result */
+        pstResult = orxNULL;
+      }
+    }
+  }
+  else
+  {
+    /* Updates result */
+    pstResult = orxNULL;
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
 /** Gets graphic config name
  * @param[in]   _pstGraphic     Concerned graphic
  * @return      orxSTRING / orxSTRING_EMPTY
@@ -939,7 +1184,7 @@ const orxSTRING orxFASTCALL orxGraphic_GetName(const orxGRAPHIC *_pstGraphic)
  */
 orxSTATUS orxFASTCALL orxGraphic_SetData(orxGRAPHIC *_pstGraphic, orxSTRUCTURE *_pstData)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
@@ -1056,14 +1301,14 @@ orxSTATUS orxFASTCALL orxGraphic_SetPivot(orxGRAPHIC *_pstGraphic, const orxVECT
   return eResult;
 }
 
-/** Sets relative graphic pivot
+/** Sets graphic relative pivot
  * @param[in]   _pstGraphic     Concerned graphic
  * @param[in]   _u32AlignFlags  Alignment flags
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU32 _u32AlignFlags)
 {
-  orxVECTOR vSize;
+  orxAABOX  stBox;
   orxSTATUS eResult;
 
   /* Checks */
@@ -1074,64 +1319,13 @@ orxSTATUS orxFASTCALL orxGraphic_SetRelativePivot(orxGRAPHIC *_pstGraphic, orxU3
   orxASSERT(_pstGraphic->fHeight >= orxFLOAT_0);
 
   /* Valid size? */
-  if(orxGraphic_GetSize(_pstGraphic, &vSize) != orxNULL)
+  if(orxGraphic_GetSize(_pstGraphic, &(stBox.vBR)) != orxNULL)
   {
-    orxFLOAT  fHeight, fWidth;
+    /* Inits box top left corner */
+    orxVector_SetAll(&(stBox.vTL), orxFLOAT_0);
 
-    /* Gets graphic size */
-    fWidth  = vSize.fX;
-    fHeight = vSize.fY;
-
-    /* Pivot left? */
-    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
-    {
-      /* Updates x position */
-      _pstGraphic->vPivot.fX = orxFLOAT_0;
-    }
-    /* Align right? */
-    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT))
-    {
-      /* Updates x position */
-      _pstGraphic->vPivot.fX = fWidth;
-    }
-    /* Align center */
-    else
-    {
-      /* Updates x position */
-      _pstGraphic->vPivot.fX = orx2F(0.5f) * fWidth;
-    }
-
-    /* Align top? */
-    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TOP))
-    {
-      /* Updates y position */
-      _pstGraphic->vPivot.fY = orxFLOAT_0;
-    }
-    /* Align bottom? */
-    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM))
-    {
-      /* Updates y position */
-      _pstGraphic->vPivot.fY = fHeight;
-    }
-    /* Align center */
-    else
-    {
-      /* Updates y position */
-      _pstGraphic->vPivot.fY = orx2F(0.5f) * fHeight;
-    }
-
-    /* Truncate? */
-    if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE))
-    {
-      /* Updates position */
-      orxVector_Floor(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
-    }
-    /* Round? */
-    else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
-    {
-      /* Updates position */
-      orxVector_Round(&(_pstGraphic->vPivot), &(_pstGraphic->vPivot));
-    }
+    /* Updates pivot */
+    orxGraphic_AlignVector(_u32AlignFlags, &stBox, &(_pstGraphic->vPivot));
 
     /* Updates status */
     orxStructure_SetFlags(_pstGraphic, _u32AlignFlags | orxGRAPHIC_KU32_FLAG_HAS_PIVOT | orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT, orxGRAPHIC_KU32_MASK_ALIGN);
@@ -1201,7 +1395,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetSize(orxGRAPHIC *_pstGraphic, const orxVECTO
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
   orxASSERT(_pvSize);
-  orxASSERT((_pvSize->fX >= orxFLOAT_0) && (_pvSize->fY >= orxFLOAT_0));
+  orxASSERT((_pvSize->fX >= orxFLOAT_0) && ((_pvSize->fY >= orxFLOAT_0) || orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)));
 
   /* Has text? */
   if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT) != orxFALSE)
@@ -1212,14 +1406,14 @@ orxSTATUS orxFASTCALL orxGraphic_SetSize(orxGRAPHIC *_pstGraphic, const orxVECTO
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Retrieves size from text */
-      orxText_GetSize(orxTEXT(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
+      /* Updates graphic */
+      orxGraphic_UpdateSize(_pstGraphic);
     }
     else
     {
       /* Stores values */
-      _pstGraphic->fWidth = _pvSize->fX;
-      _pstGraphic->fHeight = _pvSize->fY;
+      _pstGraphic->fWidth   = _pvSize->fX;
+      _pstGraphic->fHeight  = _pvSize->fY;
     }
   }
   else
@@ -1486,14 +1680,20 @@ orxSTATUS orxFASTCALL orxGraphic_UpdateSize(orxGRAPHIC *_pstGraphic)
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
   /* Is data a texture? */
-  if(orxTEXTURE(_pstGraphic->pstData) != orxNULL)
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_2D))
   {
+    /* Checks */
+    orxSTRUCTURE_ASSERT(orxTEXTURE(_pstGraphic->pstData));
+
     /* Updates coordinates */
     orxTexture_GetSize(orxTEXTURE(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
   }
   /* Is data a text? */
-  else if(orxTEXT(_pstGraphic->pstData) != orxNULL)
+  else if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT))
   {
+    /* Checks */
+    orxSTRUCTURE_ASSERT(orxTEXT(_pstGraphic->pstData));
+
     /* Inits full coordinates */
     orxText_GetSize(orxTEXT(_pstGraphic->pstData), &(_pstGraphic->fWidth), &(_pstGraphic->fHeight));
   }
@@ -1636,11 +1836,16 @@ orxSTATUS orxFASTCALL orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLA
       break;
     }
 
-    default:
+    case orxDISPLAY_BLEND_MODE_NONE:
     {
       /* Updates status */
       orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
 
+      break;
+    }
+
+    default:
+    {
       /* Updates result */
       eResult = orxSTATUS_FAILURE;
 
@@ -1648,8 +1853,53 @@ orxSTATUS orxFASTCALL orxGraphic_SetBlendMode(orxGRAPHIC *_pstGraphic, orxDISPLA
     }
   }
 
+  /* Success? */
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    /* Updates its flag */
+    orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE, orxGRAPHIC_KU32_FLAG_NONE);
+  }
+
   /* Done! */
   return eResult;
+}
+
+/** Clears graphic blend mode
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_ClearBlendMode(orxGRAPHIC *_pstGraphic)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates its flag */
+  orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE, orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE | orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Graphic has blend mode accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxGraphic_HasBlendMode(const orxGRAPHIC *_pstGraphic)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE);
+
+  /* Done! */
+  return bResult;
 }
 
 /** Gets graphic blend mode
@@ -1664,49 +1914,61 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pst
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstGraphic);
 
-  /* Depending on blend flags */
-  switch(orxStructure_GetFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL))
+  /* Has blendmode? */
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE))
   {
-    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA:
+    /* Depending on blend flags */
+    switch(orxStructure_GetFlags(_pstGraphic, orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL))
     {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_ALPHA;
+      case orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA:
+      {
+        /* Updates result */
+        eResult = orxDISPLAY_BLEND_MODE_ALPHA;
 
-      break;
+        break;
+      }
+
+      case orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY:
+      {
+        /* Updates result */
+        eResult = orxDISPLAY_BLEND_MODE_MULTIPLY;
+
+        break;
+      }
+
+      case orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD:
+      {
+        /* Updates result */
+        eResult = orxDISPLAY_BLEND_MODE_ADD;
+
+        break;
+      }
+
+      case orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL:
+      {
+        /* Updates result */
+        eResult = orxDISPLAY_BLEND_MODE_PREMUL;
+
+        break;
+      }
+
+      default:
+      {
+        /* Updates result */
+        eResult = orxDISPLAY_BLEND_MODE_NONE;
+
+        break;
+      }
     }
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Blend mode not set on graphic.");
 
-    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_MULTIPLY;
-
-      break;
-    }
-
-    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_ADD;
-
-      break;
-    }
-
-    case orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_PREMUL;
-
-      break;
-    }
-
-    default:
-    {
-      /* Updates result */
-      eResult = orxDISPLAY_BLEND_MODE_NONE;
-
-      break;
-    }
-}
+    /* Clears result */
+    eResult = orxDISPLAY_BLEND_MODE_NONE;
+  }
 
   /* Done! */
   return eResult;

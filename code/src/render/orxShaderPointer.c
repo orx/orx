@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -33,7 +33,6 @@
 #include "render/orxShaderPointer.h"
 
 #include "debug/orxDebug.h"
-#include "core/orxEvent.h"
 #include "memory/orxMemory.h"
 #include "object/orxStructure.h"
 #include "object/orxObject.h"
@@ -119,94 +118,6 @@ static orxSHADERPOINTER_STATIC sstShaderPointer;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Event handler
- * @param[in]   _pstEvent                     Sent event
- * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
- */
-static orxSTATUS orxFASTCALL orxShaderPointer_EventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RENDER);
-
-  /* Depending on event ID */
-  switch(_pstEvent->eID)
-  {
-    case orxRENDER_EVENT_OBJECT_START:
-    {
-      const orxSHADERPOINTER *pstShaderPointer;
-
-      /* Gets its shader pointer */
-      pstShaderPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), SHADERPOINTER);
-
-      /* Found? */
-      if(pstShaderPointer != orxNULL)
-      {
-        /* Starts it */
-        orxShaderPointer_Start(pstShaderPointer);
-      }
-
-      break;
-    }
-
-    case orxRENDER_EVENT_OBJECT_STOP:
-    {
-      const orxSHADERPOINTER *pstShaderPointer;
-
-      /* Gets its shader pointer */
-      pstShaderPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), SHADERPOINTER);
-
-      /* Found? */
-      if(pstShaderPointer != orxNULL)
-      {
-        /* Stops it */
-        orxShaderPointer_Stop(pstShaderPointer);
-      }
-
-      break;
-    }
-
-    case orxRENDER_EVENT_VIEWPORT_STOP:
-    {
-      orxVIEWPORT            *pstViewport;
-      const orxSHADERPOINTER *pstShaderPointer;
-
-      /* Gets viewport */
-      pstViewport = orxVIEWPORT(_pstEvent->hSender);
-
-      /* Gets its shader pointer */
-      pstShaderPointer = orxViewport_GetShaderPointer(pstViewport);
-
-      /* Found and enabled? */
-      if((pstShaderPointer != orxNULL) && (orxShaderPointer_IsEnabled(pstShaderPointer) != orxFALSE))
-      {
-        /* Updates blend mode */
-        orxDisplay_SetBlendMode(orxViewport_GetBlendMode(pstViewport));
-
-        /* Starts shader */
-        orxShaderPointer_Start(pstShaderPointer);
-
-        /* Draws render target's content */
-        orxDisplay_TransformBitmap(orxNULL, orxNULL, orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_NONE);
-
-        /* Stops shader */
-        orxShaderPointer_Stop(pstShaderPointer);
-      }
-
-      break;
-    }
-
-    default:
-    {
-      break;
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 /** Deletes all the ShaderPointers
  */
 static orxINLINE void orxShaderPointer_DeleteAll()
@@ -240,7 +151,6 @@ void orxFASTCALL orxShaderPointer_Setup()
   /* Adds module dependencies */
   orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_STRUCTURE);
-  orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_SHADER);
   orxModule_AddDependency(orxMODULE_ID_SHADERPOINTER, orxMODULE_ID_TEXTURE);
 
@@ -260,34 +170,19 @@ orxSTATUS orxFASTCALL orxShaderPointer_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstShaderPointer, sizeof(orxSHADERPOINTER_STATIC));
 
-    /* Adds event handler */
-    eResult = orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxShaderPointer_EventHandler);
+    /* Registers structure type */
+    eResult = orxSTRUCTURE_REGISTER(SHADERPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSHADERPOINTER_KU32_BANK_SIZE, orxNULL);
 
-    /* Success? */
+    /* Initialized? */
     if(eResult != orxSTATUS_FAILURE)
     {
-      /* Registers structure type */
-      eResult = orxSTRUCTURE_REGISTER(SHADERPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSHADERPOINTER_KU32_BANK_SIZE, orxNULL);
-
-      /* Initialized? */
-      if(eResult != orxSTATUS_FAILURE)
-      {
-        /* Inits Flags */
-        sstShaderPointer.u32Flags = orxSHADERPOINTER_KU32_STATIC_FLAG_READY;
-      }
-      else
-      {
-        /* Removes event handler */
-        orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxShaderPointer_EventHandler);
-
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register linked list structure.");
-      }
+      /* Inits Flags */
+      sstShaderPointer.u32Flags = orxSHADERPOINTER_KU32_STATIC_FLAG_READY;
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register event handler.");
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to register linked list structure.");
     }
   }
   else
@@ -310,9 +205,6 @@ void orxFASTCALL orxShaderPointer_Exit()
   /* Initialized? */
   if(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY)
   {
-    /* Removes event handler */
-    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxShaderPointer_EventHandler);
-
     /* Deletes ShaderPointer list */
     orxShaderPointer_DeleteAll();
 
@@ -423,7 +315,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_Delete(orxSHADERPOINTER *_pstShaderPointe
  */
 orxSTATUS orxFASTCALL orxShaderPointer_Start(const orxSHADERPOINTER *_pstShaderPointer)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
@@ -448,8 +340,12 @@ orxSTATUS orxFASTCALL orxShaderPointer_Start(const orxSHADERPOINTER *_pstShaderP
           pstOwner = orxStructure_GetOwner(_pstShaderPointer);
         }
 
-        /* Renders it */
-        eResult = orxShader_Start(_pstShaderPointer->astShaderList[i].pstShader, pstOwner);
+        /* Starts it */
+        if(orxShader_Start(_pstShaderPointer->astShaderList[i].pstShader, pstOwner) != orxSTATUS_FAILURE)
+        {
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
       }
     }
   }
@@ -469,7 +365,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_Start(const orxSHADERPOINTER *_pstShaderP
  */
 orxSTATUS orxFASTCALL orxShaderPointer_Stop(const orxSHADERPOINTER *_pstShaderPointer)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
@@ -486,8 +382,12 @@ orxSTATUS orxFASTCALL orxShaderPointer_Stop(const orxSHADERPOINTER *_pstShaderPo
       /* Valid? */
       if(_pstShaderPointer->astShaderList[i].pstShader != orxNULL)
       {
-        /* Renders it */
-        eResult = orxShader_Stop(_pstShaderPointer->astShaderList[i].pstShader);
+        /* Stops it */
+        if(orxShader_Stop(_pstShaderPointer->astShaderList[i].pstShader) != orxSTATUS_FAILURE)
+        {
+          /* Updates result */
+          eResult = orxSTATUS_SUCCESS;
+        }
       }
     }
   }
@@ -668,7 +568,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShader(orxSHADERPOINTER *_pstShader
 /** Gets a shader
  * @param[in]   _pstShaderPointer Concerned ShaderPointer
  * @param[in]   _u32Index         Index of shader to get
- * @return      orxSJADER / orxNULL
+ * @return      orxSHADER / orxNULL
  */
 const orxSHADER *orxFASTCALL orxShaderPointer_GetShader(const orxSHADERPOINTER *_pstShaderPointer, orxU32 _u32Index)
 {
@@ -781,8 +681,9 @@ orxSTATUS orxFASTCALL orxShaderPointer_AddShaderFromConfig(orxSHADERPOINTER *_ps
  */
 orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *_pstShaderPointer, const orxSTRING _zShaderConfigID)
 {
-  orxU32    i, u32ID;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTRINGID stID;
+  orxU32      i;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstShaderPointer.u32Flags & orxSHADERPOINTER_KU32_STATIC_FLAG_READY);
@@ -790,7 +691,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
   orxASSERT((_zShaderConfigID != orxNULL) && (_zShaderConfigID != orxSTRING_EMPTY));
 
   /* Gets ID */
-  u32ID = orxString_ToCRC(_zShaderConfigID);
+  stID = orxString_Hash(_zShaderConfigID);
 
   /* For all slots */
   for(i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
@@ -804,7 +705,7 @@ orxSTATUS orxFASTCALL orxShaderPointer_RemoveShaderFromConfig(orxSHADERPOINTER *
     if(pstShader != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxShader_GetName(pstShader)) == u32ID)
+      if(orxString_Hash(orxShader_GetName(pstShader)) == stID)
       {
         /* Decreases its reference count */
         orxStructure_DecreaseCount(pstShader);

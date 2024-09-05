@@ -1,5 +1,347 @@
-Orx - Portable Game Engine  (Version 1.8rc0)
-=========================================
+Orx - Portable Game Engine
+==========================
+
+orx 1.15
+-----
+
+* IMPORTANT: Added support for internal memory-based resources, including: orxResource_SetMemoryResource(), hotreload support, WEBP-encoded orx:font:default & orx:texture:logo textures
+* IMPORTANT: Added Trigger module to enable per-object hierarchical/cascaded event handling in config, using commands (new ScrollObject's input system relies on Triggers), added internal triggers to handle object's creation, deletion and physics collisions
+* IMPORTANT: Added support for headless mode, using embedded plugins + __orxHEADLESS__ define
+* IMPORTANT: Added support for manual parents for Animation & Frame sections
+* IMPORTANT: Using a single float value as an object/camera/spawner Position will only set its Z component, e.g. Position = -1 <=> Position = (0, 0, -1)
+* IMPORTANT: FX module overhaul, including: Bezier curves support, web easing curves (30) and user-defined float/vector FXs
+* IMPORTANT: Added orxObject_FindChild()/orxObject_FindOwnedChild (and commands) to find objects inside a hierarchy based on their name/index
+* IMPORTANT: Languages can now be added on-the-fly to the Locale module, Locale.LanguageList has been replaced by Local.Language to define the default language
+* IMPORTANT: Invalid animation sets will not stop execution anymore, using an unknown current/target anim name will be ignored (useful for recursive calls on hierarchies with diverging animation sets)
+* IMPORTANT: Init-ed projects can now be re-init-ed to add/remove/update extensions
+* IMPORTANT: Added tailored ExtensionTemplate.ini to init-ed projects, describing all config properties used by enabled extensions
+* IMPORTANT: An optional wrap around and FX can now be applied to shader time parameters
+* IMPORTANT: Bundle & Scroll extensions are now enabled by default for newly created projects using init
+* IMPORTANT: Literal positions & pivot overrides will now work properly, no matter the IgnoreFromParent settings
+* IMPORTANT: Min deployment OS version for MacOS is now 10.10
+* IMPORTANT: Removed redundant orxClock_GetNext()
+* IMPORTANT: default debug64 configurations has been replaced by debuguniv64 on MacOS
+* IMPORTANT: Added typo detector for config values, using the Damerau-Levenshtein edit distance calculation algorithm (can be disabled)
+* IMPORTANT: Added support for white, pink & brownian noises and sine, square, triangle & sawtooth (A-440 Hz) audio wave streams
+* IMPORTANT: @ is now supported as the self-section identifier for config lazy commands
+* IMPORTANT: Added orxInput_PushSet()/_PopSet() (+ associated commands) to handle input sets in a similar fashion to config sections
+* IMPORTANT: The [Color] section can now be extended/overridden in the main config file
+* New Mod init extension (based on ibxm) has replaced the former pocketmod-based one: FastTracker 2 .XM & Scream Tracker 3 .S3M formats are now supported
+* Added SNDH init extension (based on AtariAudio) to play Atari ST sound files
+* Added Cheat code (pass phrases/input sequences) init extension
+* Added Inspector init extension (to inspect objects & associated config at runtime)
+* Added support for new mouse cursors (hresize -> resize_ew, vresize -> resize_ns, resize_nesw, resize_nwse, resize_all & not_allowed)
+* Improved clock's internal sleep accuracy to prevent oversleeping and micro-stuttering
+* FPS counter isn't rendered on debug viewports anymore
+* Objects with bodies can now age (but collisions won't be resolved during aging)
+* Color literals can now be used in numeric random expressions, with or without steps
+* Color literals are now supported through exposed config API and can be used for all available color spaces
+* Added orxREMAP(), orxVector_Remap() & orxVector_Mod() (+ associated commands/aliases)
+* Fixed auto-resize behavior of multiple viewports linked to the same texture
+* Improved orxFontGen's log output
+* Muted many unessential warning messages that spam logs in some valid use cases
+* Added Input.Load, Input.Save and Input.ClearSet commands (+ orxInput_ClearSet()), orx:input:console & orx:input:profiler as internal input sets
+* Added orxConfig_GetDefaultParent() & commands Config.SetDefaultParent/Config.GetDefaultParent
+* Added Clock.Pause & Clock.IsPaused commands
+* Added Object.(Add|Remove)BodyPart & Object.SetBody commands
+* Physics simulation will now be ignored for objects linked to a paused clock
+* Objects linked to a paused clock will not be updated
+* Commands *ToSPherical & *ToCartesian now use degrees instead of radians
+* Command.Evaluate can now take an optional GUID parameter
+* Added orxObject_SetFXTime[Recursive]()/_GetFXTime() (+ associated commands)
+* Added orxObject_ResetActiveTime[Recursive]() & command Object.ResetActiveTime
+* Updated to latest Scroll (headers-only, OnFX* methods, ScrollObject::Find[Owned]Child/Get[Owned]Child, ScrollObject inputs & triggers support, etc.)
+* *Many* misc fixes, optimizations and additions
+
+orx 1.14
+-----
+* IMPORTANT: Android build system has been revamped & simplified and supports automatic downloading/updating of dependencies
+* IMPORTANT: Major Android revamp with better physical keys support and more flexible VSync/refresh rate support
+* IMPORTANT: Added a new 'Bundle' init extension that is fully customizable, is high performance even for a huge amount of tiny files, supports encryption & compression, cascading resource filtering, any other resource type as transport, external packages & in-executable storage and does auto-discovery of resources to pack. The old 'Archive' init extension has been retired
+* IMPORTANT: Added config property AllowSleep for the core clock, trading potential occasional micro-stuttering for lower CPU/battery usage
+* IMPORTANT: Removed config property MinFrequency from the render section (now handled directly as maxed modifier in the core clock section)
+* IMPORTANT: OpenGL ES default float precision for shaders has been changed mediump -> highp
+* IMPORTANT: Removed support for OpenGL control tear extension for swap intervals as it was introducing tearing artifacts for very short frames
+* IMPORTANT: Part names have been replaced by the parts themselves (orxBODY_PART *) in orxPHYSICS_EVENT_PAYLOAD
+* IMPORTANT: Group parameter has been added to orxRESOURCE_FUNCTION_LOCATE callbacks & storage field to orxRESOURCE_EVENT_PAYLOAD, orxResource_GetNextCachedLocation() now has an additional output storage argument()
+* IMPORTANT: Renamed orxSoundSystem_CreateStreamFromFile() -> orxSoundSystem_LoadStream() & orxTexture_CreateFromFile() -> orxTexture_Load()
+* IMPORTANT: Removed orxSound_GetSample() and added orxSound_GetSampleInfo() & orxSound_SetSampleData()
+* IMPORTANT: Added support for '@' as the current section for all config commands when invoked from config
+* IMPORTANT: Config property Input.JoyIDList now defaults to a list containing the first four joystick IDs
+* IMPORTANT: OnPrepare object command will now be run after the orxOBJECT_EVENT_PREPARE event: object's owner will now be available from the OnPrepare command when created through ChildList or has a ParentCamera
+* IMPORTANT: Default storages of resource groups can now be removed/re-added at a different priority (they default to the lowest one)
+* IMPORTANT: F5 is now the default key to pause/unpause the embedded profiler & F8 the default key to show/hide the profiler's history
+* IMPORTANT: Added support for FrameIndex for animations made with the multiple files mode
+* IMPORTANT: ScrollObject::SetAnim() now defaults to a recursive behavior
+* IMPORTANT: orxString_NPrint() now takes the size of the buffer including the terminating null character (no need for size + 1 as parameter any longer)
+* IMPORTANT: Removed orxString_Print(), orxString_NPrint() should be used instead
+* IMPORTANT: Returning an empty value for OnPrepare & OnDelete commands is now treated as "false" (ie. abort)
+* IMPORTANT: Added System config values (Bits, Build, Endianness, Platform & Processor) + System command for queries
+* IMPORTANT: Added support for optional conditions in config includes: @<condition_command>?file.ini@ or @<system_var>?file.ini@
+* IMPORTANT: Added support for no-sorting at a group level for cameras (allows rendering dozen of thousands of objects inside those groups, albeit with no sorting)
+* Config property Display.ContentScale will now report the ratio between the framebuffer size and the display dimension (useful for HiDPI/Retina displays)
+* Updated all external dependencies to their latest versions circa early 2023
+* Returning orxSTATUS_FAILURE when handling event orxSPAWNER_EVENT_WAVE_START now prevents the wave from spawning
+* When a Prefix is defined for an animation, a frame will now inherit TextureOrigin, TextureSize & FrameIndex from its non-prefixed parent frame
+* Added config property OnSpawn to spawners, used to run commands on spawned objects
+* When a spawner is set to UseSelfAsParent, the spawned object's ownership can be changed during the OnCreate phase (though this will prevent them from being cleaned if CleanOnDelete was also requested)
+* A 0-scale object is now officially supported as a way to bypass its rendering
+* Object.SetColor now accepts color literals
+* Added internal texture named 'transparent', which is a 1x1 black transparent texture (can be reference from config)
+* Updated the default temporary bitmap when doing asynchronous loads to that transparent one (previously a white opaque one was used)
+* Added support for verbose debugging logs to the setup tool (levels: 0 - 5)
+* orxObject_SetRelativePivot() is now public and takes graphic alignment flags
+* Added functions orxObject_SetAnimTime(), orxObject_SetAnimTimeRecursive() & orxObject_GetAnimTime() and associated commands
+* Added orxResource_GetCacheCount(), orxResource_GetNextCachedLocation() & orxResource_UnregisterType()
+* Added support for runtime console font scaling (config property Render.ConsoleFontScale)
+* Audio stream, audio sample and sound creation from file is now entirely asynchronous to prevent any performance spike
+* Miniaudio soundsystem plugin now supports running when no audio device is available
+* Added the following new commands: Physics.EnableSimulation, Physics.GetCollisionFlagName & Physics.GetCollisionFlagValue
+* Added multiple new math/vector commands
+* Better handling of localized graphics for animation frames
+* Negative audio volumes are now supported for better transitions using FXs
+* All display plugins now use GL_TRIANGLES instead of GL_TRIANGLE_STRIP making their output much more readable when using an external debug tool
+* Execution can now be aborted if command line params have been displayed by returning orxSTATUS_FAILURE when handling the new event orxSYSTEM_EVENT_PARAM_DISPLAY
+* Added orxSYSTEM_EVENT_PARAM_READY event
+* Added simple Sublime Text project with new projects created with the init utility
+* *Many* misc fixes, optimizations and additions
+
+orx 1.13
+-----
+* IMPORTANT: Added support for VS2022 and retired support for VS2015
+* IMPORTANT: Added config-driven command execution for objects with OnPrepare (can optionally reject object creation), OnCreate & OnDelete (can optionally reject object deletion and remove itself) & Object.SetOnDelete command (which can be called from inside OnDelete for cascading effect)
+* IMPORTANT: orxObject_Delete() now only returns orxSTATUS_SUCCESS if the object was actually deleted
+* IMPORTANT: Added support for position literals with optional offset (which honors UseParentSpace and supports regular/stepped randomization) and temporary pivot override (for flexible parent/child) alignment to objects
+* IMPORTANT: Added support for pivot literals to objects & graphics
+* IMPORTANT: Added native arm64 support for MacOS 11/XCode 12.x
+* IMPORTANT: Added orxMovie (MPEG1/MP2) init extension, based on the PL_MPEG library, that adds config-driven movie support to objects & command Object.GetMovieDuration
+* IMPORTANT: Added compressed texture/icon/cursor support for desktop versions (GLFW display plugin) using Basis Universal (UASTC -> ASTC/BC7)
+* IMPORTANT: Added support for the QOI image format to all plugins/platforms
+* IMPORTANT: Added orxMod (ProTracker MOD) init extension, based on the pocketmod library, that adds config-driven MOD support to objects
+* IMPORTANT: The OpenAL, Android & iOS SoundSystem plugins and their external dependencies (OpenAL/OpenAL-Soft, Tremolo & linsndfile) have been removed
+* IMPORTANT: Added a new SoundSystem plugin based on MiniAudio that covers all target platforms: all platforms now support loading OGG, WAV & MP3 files as well as writing WAV files, on Windows the audio backend will now update on-the-fly to the one selected by the user
+* IMPORTANT: Removed orxSoundSystem_SetSampleData() and replace stream packet payload's as16SampleList with afSampleList (samples are now 32bit floats)
+* IMPORTANT: Added support for config-driven filters for both sounds and buses, including commands: supports internal filters (biquad, low|high|band pass, low|high shelf, notch, peaking & delay) and user-defined custom filters (code only) + orxSOUND_EVENT_SET_PARAM event
+* IMPORTANT: Added support for multiple sound listeners (none by default, deactivating sound spatialization globally)
+* IMPORTANT: Added support for sound panning (including commands), sound spatialization has been entirely revamped and is now data-driven & independent of the channel count (off by default with no listeners)
+* IMPORTANT: Removed obsolete SoundSystem config properties StreamBufferSize & StreamBufferNumber, sounds can now optionally be muted when the application is sent to background (on by default)
+* IMPORTANT: Pitch FXs are now multiplicative instead of additive (neutral value is now 1 instead of 0)
+* IMPORTANT: The sound itself is now part of the payload of all sound events (ie. not bus/recording ones), including stream packets
+* IMPORTANT: The stream name of a stream event is now part of the stInfo substructure
+* IMPORTANT: The send of a stream packet is now the object, consistent with other non-recording/non-bus sound events
+* IMPORTANT: Added the concept of group to orxLocale: text, texture & sound can now be optionally localized independently (as well as user-defined custom groups)
+* IMPORTANT: Config property Object.FXDelayList has been removed & orxObject_Add[Unique]FXRecursive() now take a propagation delay parameter
+* IMPORTANT: GLFW display plugin now sets max shader version to 410 as 'varying' has been removed in 420
+* IMPORTANT: orxInput_EnableSet() now creates the set if it wasn't already present
+* IMPORTANT: orxArchive now accepts root paths in storage definitions, using `:` as separator (eg. Texture = data.zip:texture)
+* IMPORTANT: The C locale is now enforce upon initialization to prevent any conversion issues if the locale was modified by an external library such as GTK
+* IMPORTANT: Object name is now available from inside orxOBJECT_EVENT_PREPARE event handlers
+* IMPORTANT: Spawners with UseSelfAsParent will now detach spawned objects upon deletion to maintain their location with respect to the world
+* IMPORTANT: Renamed orxAnim_GetNextEvent() -> orxAnim_GetEventAfter() & Added newer version of orxAnim_GetNextEvent() to support multiple 0-length frames in a row or events associated to a 0-length frame
+* IMPORTANT: orxResource_Seek() & orxResource_Tell() now returns -1 upon failure
+* IMPORTANT: Added config property Display.DebugOutput to enable OpenGL debug output when available (OpenGL 4.3+)
+
+* Migrated init & setup utilities from Ren-C to Oldes Rebol3 for better future proofing and better platforms support
+* Setup will not create .bash_profile anymore on Linux/MacOS if it didn't already exist
+* Added UNC paths support to orxFile on Windows
+* Added convenience helpers orxCOMMAND_REGISTER() & orxCOMMAND_UNREGISTER()
+* Added read-only config property Display.MaxTextureSize, filled during display's initialization
+* orxColor_ToRGBA() now rounds RGB components during conversion (was flooring before)
+* Color literals aliases now inherits from local section: this permits to derive the Color section for local overrides while maintaining alias consistency
+* orxDisplay_SetVideoMode() now accepts zero-ed values for width, height, depth & refresh rate and will use current desktop values instead
+* orxSpawner_GetWaveSize() will now always return the spawner's wave size value, even when not in wave mode
+* orxSpawner_Spawn() can now accept orxU32_UNDEFINED as count to use the spawner's internal wave size
+* orxConfig_ReloadHistory() will not clear sections that were not originating from a file anymore (such as [Color])
+* Added command Config.RenameSection
+* Added orxRemote init extension to access remote resource over HTTP/1.1 (mostly intended as proof-of-concept/dev feature)
+* Added orxTexture_Get() to replace orxTexture_CreateFromFile()/orxTexture_Delete() calls when dealing with known existing textures
+* Fixed frame children hierarchy not being correctly re-processed when a frame was deleted
+* orxResource_ClearCache() can now take an optional group as parameter & added command Resource.ClearCache
+* orxResource_RemoveStorage() (and command Resource.RemoveStorage) can now target all groups and/or all storages in a single call
+* Added orxResource_Sync() to update all cached resource based on current group/storage definitions and command Resource.Sync
+* orxArchive now reads/decompresses inside Read() (previously inside Open()) so as to not block calling thread
+* Added bLast field to stream packets to allow stream termination from an event handler
+* The number of channels and the sample rate of an empty music stream can now be defined in config
+* Added orxInput_RemoveSet(), orxINPUT_EVENT_REMOVE_SET event & Input.RemoveSet command
+* Added support for HTML web colors to viewport's BackgroundColor property
+* Better handling of web literals/vector values mixes (ie. list-based randoms) for object, viewport, FX and graphic color properties
+* Added commands Object.GetActiveTime, Object.ApplyTorque, Object.ApplyForce & Object.ApplyImpulse
+* Added orxObject_[Get|Set][Literal]IgnoreFlags() and commands Object.SetIgnoreFlags & Object.GetIgnoreFlags
+* Publicly exposed orxObject_SetLiteralLifeTime()
+* Added orxObject_SetClockRecursive() & optional recursive argument to Object.SetClock
+* Added FX config property Stagger to add an FX after all current existing ones, along with an optional signed time offset (which doesn't require Stagger) and orxFX_[Get|Set]Stagger()
+* Added FX slot config property Stagger to add an FX slot after all current existing ones
+* Added orx[Object|FXPointer]_[Get|Set]Frequency(), orxObject_SetFXFrequencyRecursive(), commands Object.[Get|Set]FXFrequency & config property Object.FXFrequency
+* Added config property Object.FXRecursiveList to recursively apply FXs from the FXList property
+* FX slots will now default to a linear curve when none is provided in config
+* Better ANSI terminal detection on mac/XCode
+* Non-config backed texts are not considered during config hot-reload anymore
+* Updated orxStructure_LogAll & Command.LogAllStructures/Structure.LogAll to optionally log private structures
+* Added orxGraphic_GetAlignFlags() & orxGraphic_AlignVector()
+* Added Viewport.GetCorrectionRatio command
+* Default stream sample rate if now 48kHz (previously 44.1kHz)
+* Fixed NvOptimus/AmdPowerExpress exports in init template for non-MSVC Windows builds
+* Better support for multiple partial init/exit of orx (ie. only specific modules) during a single life cycle of the application
+* Misc fixes, optimizations and additions
+
+orx 1.12
+-----
+* IMPORTANT: orxCLOCK_TYPE, orxClock_FindFirst & orxClock_FindNext have been removed, use newly added orxClock_Get(orxCLOCK_KZ_CORE) to retrieve the core clock
+* IMPORTANT: Clock modifiers can now be stacked & defined in config, replaced ModifierType/ModifierValue with ModifierList, added new modifier orxCLOCK_MODIFIER_AVERAGE, command/config modifier values are now expressed in seconds (formerly Hz)
+* IMPORTANT: Clock's fixed modifier now accept -1 to match the clock's frequency if defined (new default behavior)
+* IMPORTANT: Clock's frequency now accept 'display' as value to match display's refresh rate at anytime (new default behavior)
+* IMPORTANT: Retired Clock.MainClockFrequency property in favor of core properties being defined inside the core clock's section
+* IMPORTANT: orxSTRINGID: 32bit CRCs have been replaced with 64bit Hashes, orxString_[N]ToCRC() -> orxString_[N]Hash() (orxString_CRC() has been kept as an alias to orxString_Hash())
+* IMPORTANT: Major speed & scalability improvements: from 65k to 16M concurrent objects in memory, complete rewrite of orxBANK module, object update rewrite, add support for early exit events handling, ...
+* IMPORTANT: Added orxObject_GetNextEnabled() to iterate over enabled objects (with or without grouping)
+* IMPORTANT: Spherical vector's Phi component has been shifted by -Pi/2 for convenience (Phi=0 now matches Z=0), similar to azimuth/longitude
+* IMPORTANT: Viewport's config properties RelativePosition/RelativeSize have now been folded into Position/Size with the addition of UseRelativeSize
+* IMPORTANT: Spawners now only track children when an active limit or CleanOnDelete has be set on them (optimization)
+* IMPORTANT: Spawner's UseRelativeSpeed property can now be 'false', 'spawner' (similar to former true), 'object' or 'both'/'true'
+* IMPORTANT: Objects with a valid animation set will now use the first anim's first frame as default Graphic when none is provided
+* IMPORTANT: orxObject_GetChild()/orxObject_GetSibling() now filter out non-object structures (camera, spawner, ...), added orxObject_GetNextChild() to access non-objects structures in a hierarchy
+* IMPORTANT: Added JoyIDList config property for generic inputs definition (JoyIDList = 1 # 2 + JOY_A = Action <=> JOY_A_1 = Action + JOY_A_2 = Action)
+* IMPORTANT: Reworked Android build pipeline which doesn't require separate ndk build calls any longer
+* IMPORTANT: Added complete support for joysticks on Android-Native
+* IMPORTANT: orxMemory_Reallocate() now takes an extra orxMEMORY_TYPE parameter
+* IMPORTANT: orxInput_GetMultiplier() now returns a negative value if the input isn't found
+* IMPORTANT: New video mode event will now contain the actual real refresh rate while the config property Display.RefreshRate will contain the requested one (switching from fullscreen to windowed and back will now retain the desired refresh rate)
+* IMPORTANT: Both boundaries for orxMath_GetSteppedRandomFloat() are now inclusive
+* IMPORTANT: Replaced freeglut3 with mesaGL dependency on Linux
+
+* Added color literals for all HTML web colors (can be modified/expanded directly inside the Color config section), can be used for Object, Graphic & FX Color values
+* Added color space conversion commands: From[RGB|HSL|HSV]To[RGB|HSL|HSV]
+* Added support for mouse cursor grab with orxMouse_Grab() function, Mouse.Grab command & Mouse.Grab config property
+* Added config property SphericalPosition for objects (only used if Position isn't defined)
+* Added optional extension for Nuklear to Init script + C/C++ language selection option
+* Improved variable DT handling in LiquidFun plugin's physics simulation update (fixed micro-stuttering)
+* Physics interpolation is now on by default when a simulation step is provided
+* Replaced dlmalloc with rpmalloc (+ memory alignment has changed from 8 to 16 bytes)
+* Added recursive versions of orxObject_ functions AddTimeLineTrack(), Add[Unique][Delayed]FX(), AddShader(), RemoveShader(), RemoveFX() & RemoveTimeLineTrack()
+* Added FrameIndex config property to animation frames: when defined the frame's TextureOrigin will be computed using this value along the animation's FrameSize & Direction, when defined for file-based animation, it's used a a suffix
+* Added support for empty animation in config using the 'empty' keyword (ex. MyAnim = empty)
+* Added support for resetting target animation in Object.SetAnim command (by using an empty name)
+* Added optional recursive parameter for Object. commands: SetAnimFrequency, AddTrack, AddFX, AddShader, RemoveShader, RemoveFX & RemoveTrack
+* FrameSize for single frame animations will now default to TextureSize
+* A child object's owner is now available during its creation (set in the prepare phase)
+* Supports up to 25 buttons for joysticks (previously 16)
+* Added multiple maths commands (random, vectors, cartesian/spherical, ...)
+* Fixed LiquidFun physics plugin not taking dimension ratio into account in orxPhysics_ApplyForce()
+* Fixed issue in contact handling in LiquidFun physics plugin when too many contacts were added/removed within the same frame
+* Null step value is now accepted when retrieving random vectors (ie. all components are unconstrained)
+* Added orxSpawner_SetNextWaveDelay()
+* Added orxGraphic_Clone()
+* Removed all calls to glFinish() in GLFW display plugin
+* Many fixes and improvements for multiple animation edge use cases
+* Each input can now support up to 16 bindings (previously 8)
+* Added commands Input.HasBeenActivated & Input.HasBeenDeactivated
+* Added Dummy Physics plugin when physics isn't needed
+* Misc fixes when exiting/re-initializing orx within the same process
+* Added support for volume keys inputs to Android
+* Better support for ORX environment variable definition in setup script on OSX/Linux (including ZSH & fish)
+* Updated Dear ImGUI to 1.83 WIP/docking, stb_image_write from 1.02 to 1.15 & stb_image 2.12 to 2.26
+* JPEG is now supported when saving an image
+* Misc fixes, optimizations and additions
+
+orx 1.11
+-----
+* IMPORTANT: Init script now support optional extensions through templates: current available extensions are Scroll, Dear ImGui and orxArchive
+* IMPORTANT: External dependencies are now compiled with MinGW-w64 8.1.0 (was MinGW 6.3.0), including new support for 64bit
+* IMPORTANT: Added support for VS2019 and retired support for VS2013
+* IMPORTANT: Min deployment OS version for MacOS is now 10.9 (due to stdlibc++ being replaced by libc++)
+* IMPORTANT: Random seed is now initialized by default based on a real time-based value (it can be overridden as soon as the bootstrap call or main init)
+* IMPORTANT: Fixed OSX/Retina and Windows high DPI display issues
+* IMPORTANT: Multiple commands in config blocks can now be separated by EOL with an optional comma
+* IMPORTANT: Added support for section clear marker (![Section])
+* IMPORTANT: One can now control which physical peripherals will be polled on a per set basis by using orxInput_SetTypeFlags()
+* IMPORTANT: Added support for text animations, which can also be optionally mixed with texture frames
+* IMPORTANT: Commands can now be executed by animation custom events (multiple commands need to be comma-separated)
+* IMPORTANT: Graphics/textures can now be modified when handling orxRENDER_EVENT_OBJECT_START
+* IMPORTANT: Removed obsolete functions orxDisplay_SetBitmapColorKey() and orxTexture_SetColor()
+* IMPORTANT: Removed obsolete fucntion orxViewport_SetAlignment()
+* IMPORTANT: Object LifeTime config property & command can now take literals (fx, sound, spawn, track and child) which will keep an object alive until the mentioned properties don't exist anymore
+* IMPORTANT: Viewports can now be uniquely indentified with config names + added viewport commands
+* IMPORTANT: Command string parameters beginning with ( or { are now assumed to be vectors and will be handled as a single block
+* IMPORTANT: orxObject_GetSize() will now use a default Z=1 value for 2D flat objects
+* IMPORTANT: Empty config properties FXList, TrackList, SoundList, ShaderList, TextureList and GroupList are now valid
+* IMPORTANT: Returning orxSTATUS_FAILURE when handling orxSHADER_EVENT_SET_PARAM will now keep the former parameter value in the shader
+* IMPORTANT: orxFile_GetHomeDirectory() & orxFile_GetApplicationSaveDirectory() will now use linux separators in all returned paths
+
+* Added orxThread_SetCallbacks() to support pre/post callbacks in orx threads, useful for interacting with other language runtimes
+* Added orxDisplay_SetPartialBitmapData()
+* Added config properties JoyName<Index> & JoyID<Index> that are kept up to date based on currently available joysticks
+* Added commands File.GetHomeDirectory & File.GetApplicationSaveDirectory
+* orxString_SkipWhiteSpaces() will now skip EOL characters as well
+* Added recursive versions of orxObject_SetAnimFrequency(), orxObject_SetBlendMode() and orxObject_SetSmoothing()
+* Object aging now take an object's clock multiply modifier into account if present
+* Added orxObject_GetCurrentAnim(), orxObject_GetTargetAnim() & orxObject_GetAnimFrequency() + Object.GetAnim & Object.GetAnimFrequency commands
+* Added an optional filter callback to orxConfig_Clear()
+* Added color argument to orxDisplay_Transform*()
+* Added command Command.VectorX|Y|Z + aliases Vector.X|Y|Z for vector component extraction
+* Viewport shaders can be skipped when handling orxRENDER_EVENT_VIEWPORT_STOP
+* Added support for 0-length animation frames if they contain custom events (frames won't be created but events will be stored)
+* Added swizzles to IgnoreFromParents scale, position.scale & position.position flags
+* Added orxFrame_GetIgnoreFlagNames() to convert flags back to literals
+* Added config property Display.FramebufferSize that can now be used along gl_FragCoord when necessary
+* Added orxObject_LogParents() function + Object.LogParents command to display an object's hierarchy including transformations and ignore flags
+* orxConfig_ClearSection() now works with name parameters containing inheritance markers
+* Added body/physics function for changing a part's friction, restitution and density
+* Added orxPhysics_BoxPick()/orxBody_BoxPick() + orxPhysics_IsInsidePart()/orxBody_IsInsidePart()/orxBody_IsInside()
+* Fixed Suspension (aka Wheel) joint parameters
+* Cleaner version of chain and edge body parts
+* Command Object.SetPivot can now accept literals
+* Added Object.GetCount command
+* Added new RENDER events for CONSOLE_START, CONSOLE_STOP, PROFILER_START and PROFILER_STOP
+* Added config property Render.ProfilerOrientation
+* Added Render config properties to control the colors of the console
+* Updated/Cleaned all tutorials
+* Deprecated and removed orxString_Copy() in favor of orxString_NCopy()
+* Removed outdated orxScroll demo
+* Misc fixes, optimizations and additions
+
+orx 1.10
+-----
+* IMPORTANT: Migrated display, mouse, joystick and keyboard plugins from GLFW 2.7 to GLFW 3.3
+* IMPORTANT: Modified orxDisplay_DrawMesh() to support more primitive types (points, lines/loop/strip, triangles/strip/fan)
+* IMPORTANT: Inputs can now be bound/unbound using a binding index, for complete control over rebinding
+* IMPORTANT: Resource types can now optionally support deletion (+ added deletion support to file resources)
+* IMPORTANT: Two-component vectors, ie. (x, y), are now accepted anywhere vector literals are, z component is then set to 0
+* IMPORTANT: Changed default number of digits for animation frames from 4 to 0 (ie. no leading 0-based prefixes by default)
+* IMPORTANT: Events can now be filtered out based on IDs before reaching the handler with orxEvent_SetHandlerIDFlags()
+* IMPORTANT: Updated some key names (NUMPAD_ prefix, *RETURN -> *ENTER, F16-F25, PRINT_SCREEN, ...) + added orxDisplay_GetKeyName()
+* IMPORTANT: Multiple monitors support: display can be positioned across all monitors and the current monitor will be tracked when the windows is moved
+* IMPORTANT: Added support for up to 16 joysticks + added new button/axis names (A, B, X, Y, LX, LY, RX, RY, ...)
+* IMPORTANT: Added support for gamepad mappings (as per SDL database) + custom mappings through Input.MappingList config property
+* IMPORTANT: Added drop (as in drag'n'drop) support for file names (orxSYSTEM_EVENT_DROP)
+* IMPORTANT: Copy/Paste support through event, direct function calls and commands (+ paste support inside the interactive console)
+* IMPORTANT: Hardware cursor support: for both OS builtins (arrow, ibeam, crosshair, hand, ...) and user-provided ones
+* IMPORTANT: Added support for application icon list (+ on-the-fly update)
+* IMPORTANT: Added steps variants to orxMath_GetRandom*() functions + associated config syntax (ie. val1 ~step~ val2)
+* IMPORTANT: Objects with animation sets do not require a graphic anymore, by default a copy of the first frame of the initial animation will be used
+* IMPORTANT: Prefixed animations/frames will now use an intermediate parent based on the non-prefixed animation/frame: allows for global settings
+* IMPORTANT: OSX 10.6 support has been dropped
+* IMPORTANT: Android API level raised from 14 to 19
+* IMPORTANT: Dropped 32bit support for OSX targets
+
+* Added support for UseParentSpace for objects created from a ChildList or from a spawner
+* Added support for pivot literals in object config sections
+* Added recursive version of orxObject_Set*Anim() and updated associated commands accordingly
+* Blend mode and colors can now be modified on a per-frame basis within an animation
+* Fixed a couple of minor issues in profiler's display
+* Added interactive mode to init script (when launched without any argument)
+* Console enhancement: tooltip is displayed when multiple results are returned from completion
+* orxDisplay_SetBitmapClipping() will now work by default (when orxNULL is passed) on the main destination bitmap
+* Added debug draw for physics raycasts
+* Profiler's scrolling is now pause/unpaused by pressing 'space'
+* Renamed orxSound*_GetCursor() -> orxSound*_GetTime() and orxSOUND_STREAM_PACKET.fCursor -> orxSOUND_STREAM_PACKET.fTime
+* Fixed multi-inputs/thresholds/multipliers save support
+* Fixed 1-frame delay when doing multiple animation transition in a row
+* Custom logging callback can now be provided with orxDEBUG_SET_LOG_CALLBACK()
+* orxRender_GetScreenPosition() is now inclusive with respect to near plane
+* All timers occurrences using the same callback can now be removed from a single call, even when using different contexts
+* Fixed config files not being properly loaded when using an UTF-8 BOM
+* Removed __orxFREEBASIC__
+* Misc fixes, optimizations and additions
 
 orx 1.9
 -----
@@ -15,7 +357,7 @@ orx 1.9
 * IMPORTANT: Added partial frame transmission support to orxFrame (+ config property IgnoreFromParent)
 * IMPORTANT: Added support for lazy command evaluation as config values (ex: MyValue = % MyModule.MyCommand 18)
 * IMPORTANT: Multiple commands can now be processed at once if separated by ',' (Works with commands from timelines as well as those from console or any call to orxCommand_Evaluate())
-* IMPORTATN: Added orxText_SetSize() that can constrain a text horizontally and vertically
+* IMPORTANT: Added orxText_SetSize() that can constrain a text horizontally and vertically
 * IMPORTANT: Added orxSound_GetCursor() & orxSound_SetCursor()
 * IMPORTANT: Graphic's texture and sound stream/sample now support locale marker ($) for localization
 
@@ -230,7 +572,7 @@ orx 1.5rc0
 * IMPORTANT: Added concept of group to objects, cameras and rendering + added orxObject_GetNext() for group browsing
 * IMPORTANT: Added MRT (Multiple Render Targets) support on computers + Android/OpenGL ES 3.0
 * IMPORTANT: Textures are not Y-reverted at runtime anymore: no need to manually Y-revert compressed textures and shader UV coordinates
-* IMPORTNAT: Added String ID support (using hash as key/comparison value + central content storage)
+* IMPORTANT: Added String ID support (using hash as key/comparison value + central content storage)
 * IMPORTANT: No more screen-as-texture support, render-to-texture should be used at all time
 * IMPORTANT: Viewports are now rendered in their order of creation (was previously reverse order)
 * IMPORTANT: Added memory tracking, including resource-related dependencies: sound, textures, physics (displayed in the profiler screen)

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -50,8 +50,6 @@
 /* Windows */
 #ifdef __orxWINDOWS__
 
-  typedef void *                  orxHANDLE;
-
   #ifdef __orxX86_64__
 
   typedef unsigned  int           orxU32;
@@ -78,19 +76,6 @@
 
   #endif /* __orxX86_64__ */
 
-  typedef float                   orxFLOAT;
-  typedef double                  orxDOUBLE;
-
-  typedef char                    orxCHAR;
-  #define orxSTRING               orxCHAR *
-
-  typedef orxU32                  orxENUM;
-
-  #define orx2F(V)                ((orxFLOAT)(V))
-  #define orx2D(V)                ((orxDOUBLE)(V))
-
-  #define orxENUM_NONE            0xFFFFFFFF
-
   /* Compiler specific */
   #ifdef __orxGCC__
 
@@ -111,12 +96,24 @@
 
   #endif /* __orxMSVC__ */
 
+  typedef float                   orxFLOAT;
+  typedef double                  orxDOUBLE;
+
+  typedef char                    orxCHAR;
+  #define orxSTRING               orxCHAR *
+  typedef orxU64                  orxSTRINGID;
+
+  typedef orxU32                  orxENUM;
+
+  #define orx2F(V)                ((orxFLOAT)(V))
+  #define orx2D(V)                ((orxDOUBLE)(V))
+
+  #define orxENUM_NONE            0xFFFFFFFF
+
 #else /* __orxWINDOWS__ */
 
   /* Linux / Mac / iOS / Android */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
-
-    typedef void *                orxHANDLE;
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
 
     #ifdef __orx64__
 
@@ -153,6 +150,7 @@
 
     typedef char                  orxCHAR;
     #define orxSTRING             orxCHAR *
+    typedef orxU64                orxSTRINGID;
 
     typedef orxU32                orxENUM;
 
@@ -164,6 +162,20 @@
   #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
 
 #endif /* __orxWINDOWS__ */
+
+typedef     void *                orxHANDLE;
+
+#if defined(__orx64__)
+
+  typedef   orxS64                orxSPTR;
+  typedef   orxU64                orxUPTR;
+
+#elif defined(__orx32__)
+
+  typedef   orxS32                orxSPTR;
+  typedef   orxU32                orxUPTR;
+
+#endif
 
 /* *** Misc constants *** */
 
@@ -179,6 +191,19 @@ typedef enum __orxSEEK_OFFSET_WHENCE_t
   orxSEEK_OFFSET_WHENCE_NONE = orxENUM_NONE
 
 } orxSEEK_OFFSET_WHENCE;
+
+typedef enum __orxCOLORSPACE_t
+{
+  orxCOLORSPACE_COMPONENT = 0,
+  orxCOLORSPACE_HSL,
+  orxCOLORSPACE_HSV,
+  orxCOLORSPACE_RGB,
+
+  orxCOLORSPACE_NUMBER,
+
+  orxCOLORSPACE_NONE = orxENUM_NONE
+
+} orxCOLORSPACE;
 
 
 /* *** Boolean constants *** */
@@ -203,6 +228,7 @@ static const orxU32               orxU32_UNDEFINED      = (orxU32)(-1);
 static const orxU16               orxU16_UNDEFINED      = (orxU16)(-1);
 static const orxU8                orxU8_UNDEFINED       = (orxU8)(-1);
 static const orxHANDLE            orxHANDLE_UNDEFINED   = (orxHANDLE)(-1);
+static const orxSTRINGID          orxSTRINGID_UNDEFINED = (orxSTRINGID)(-1);
 
 
 /* *** String & character constants *** */
@@ -228,15 +254,15 @@ extern orxDLLAPI const orxSTRING  orxSTRING_DIRECTORY_SEPARATOR;
 #define orxCHAR_DIRECTORY_SEPARATOR_WINDOWS   '\\'
 #define orxCHAR_DIRECTORY_SEPARATOR_LINUX     '/'
 
-#if defined(__orxWINDOWS__)
+#ifdef __orxWINDOWS__
 
 #define orxCHAR_DIRECTORY_SEPARATOR           '\\'
 
-#elif defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#else /* __orxWINDOWS__ */
 
 #define orxCHAR_DIRECTORY_SEPARATOR           '/'
 
-#endif
+#endif /* __orxWINDOWS__ */
 
 
 /* *** Status defines *** */

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -25,7 +25,7 @@
 /**
  * @file orxMemory.c
  * @date 02/04/2005
- * @author bestel@arcallians.org
+ * @author iarwain@orx-project.org
  *
  */
 
@@ -34,26 +34,43 @@
 #include "debug/orxDebug.h"
 
 
-#define USE_DL_PREFIX
-#define USE_BUILTIN_FFS 1
-#define USE_LOCKS 1
-#undef _GNU_SOURCE
+#ifdef __orxLLVM__
+  #if defined(__orxMAC__) || defined(__orxIOS__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wunknown-attributes"
+  #endif /* __orxMAC__ || __orxIOS__ */
 
-#if defined(__orxIOS__) && defined(__orxLLVM__)
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wshorten-64-to-32"
-#endif /* __orxIOS__ && __orxLLVM__ */
+  #if defined(__orxANDROID__) || defined(__orxIOS__)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wstatic-in-inline"
+  #endif /* __orxANDROID__ || __orxIOS__ */
+#endif /* __orxLLVM__ */
 
-#include "malloc.c"
+#ifdef __orxIOS__
+  #define ENABLE_PRELOAD 1
+#endif /* __orxIOS__ */
 
-#if defined(__orxIOS__) && defined(__orxLLVM__)
-  #pragma clang diagnostic pop
-#endif /* __orxIOS__ && __orxLLVM__ */
+#include "rpmalloc.c"
+
+#ifdef __orxIOS__
+  #undef ENABLE_PRELOAD
+#endif /* __orxIOS__ */
+
+#ifdef __orxLLVM__
+  #if defined(__orxANDROID__) || defined(__orxIOS__)
+    #pragma clang diagnostic pop
+  #endif /* __orxANDROID__ || __orxIOS__ */
+
+  #if defined(__orxMAC__) || defined(__orxIOS__)
+    #pragma clang diagnostic pop
+  #endif /* __orxMAC__ || __orxIOS__ */
+#endif /* __orxLLVM__ */
 
 #define orxMEMORY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */
 
-#define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  8
+#define orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE  64
+#define orxMEMORY_KU32_TAG_SIZE                 16
 
 #define orxMEMORY_KZ_LITERAL_PREFIX             "MEM_"
 
@@ -64,9 +81,9 @@
 
 typedef struct __orxMEMORY_TRACKER_t
 {
-  orxU32 u32Count, u32PeakCount;
-  orxU32 u32Size, u32PeakSize;
-  orxU32 u32OperationCount;
+  orxU64 u64Count, u64PeakCount;
+  orxU64 u64Size, u64PeakSize;
+  orxU64 u64OperationCount;
 
 } orxMEMORY_TRACKER;
 
@@ -151,16 +168,16 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
 
 static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
-  size_t stLineSize = 0, stSizeOfLineSize;
+  size_t usLineSize = 0, usSizeOfLineSize;
 
-  /* Size of variable */
-  stSizeOfLineSize = sizeof(stLineSize);
+  /* Gets size of variable */
+  usSizeOfLineSize = sizeof(usLineSize);
 
   /* Gets cache line size */
-  sysctlbyname("hw.cachelinesize", &stLineSize, &stSizeOfLineSize, 0, 0);
+  sysctlbyname("hw.cachelinesize", &usLineSize, &usSizeOfLineSize, 0, 0);
 
   /* Done! */
-  return (orxU32)(stLineSize != 0) ? (orxU32)stLineSize : 32;
+  return (orxU32)((usLineSize != 0) ? usLineSize : orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE);
 }
 
 #elif defined(__orxLINUX__)
@@ -178,7 +195,7 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
 static orxINLINE orxU32 orxMemory_CacheLineSize()
 {
   /* Done! */
-  return (orxU32)32;
+  return orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE;
 }
 
 #else
@@ -218,11 +235,23 @@ orxSTATUS orxFASTCALL orxMemory_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstMemory, sizeof(orxMEMORY_STATIC));
 
-    /* Module initialized */
-    sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_READY;
+    /* Initializes rpmalloc */
+    if(rpmalloc_initialize() == 0)
+    {
+      /* Module initialized */
+      sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_READY;
 
-    /* Success */
-    eResult = orxSTATUS_SUCCESS;
+      /* Success */
+      eResult = orxSTATUS_SUCCESS;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_MEMORY, "Failed to initialize rpmalloc, aborting.");
+
+      /* Already initialized */
+      eResult = orxSTATUS_SUCCESS;
+    }
   }
   else
   {
@@ -244,6 +273,9 @@ void orxFASTCALL orxMemory_Exit()
   /* Module initialized ? */
   if((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY)
   {
+    /* Finalizes rpmalloc */
+    rpmalloc_finalize();
+
     /* Module uninitialized */
     sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_NONE;
   }
@@ -251,10 +283,10 @@ void orxFASTCALL orxMemory_Exit()
   return;
 }
 
-/** Allocates a portion of memory in the system and returns a pointer on it
+/** Allocates some memory in the system and returns a pointer to it
  * @param[in] _u32Size    size of the memory to allocate
  * @param[in] _eMemType   Memory zone where data will be allocated
- * @return  returns a pointer on the memory allocated, or orxNULL if an error has occurred
+ * @return  returns a pointer to the memory allocated, or orxNULL if an error has occurred
  */
 void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
@@ -267,7 +299,7 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 #ifdef __orxPROFILER__
 
   /* Allocates memory */
-  pResult = dlmalloc((size_t)(_u32Size + sizeof(orxMEMORY_TYPE)));
+  pResult = rpmalloc((size_t)(_u32Size + orxMEMORY_KU32_TAG_SIZE));
 
   /* Success? */
   if(pResult != NULL)
@@ -278,19 +310,19 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
     *(orxMEMORY_TYPE *)pResult = _eMemType;
 
     /* Gets memory chunk size */
-    uMemoryChunkSize = dlmalloc_usable_size(pResult);
+    uMemoryChunkSize = rpmalloc_usable_size(pResult);
 
     /* Updates memory tracker */
-    orxMemory_Track(_eMemType, (orxU32)(uMemoryChunkSize - sizeof(orxMEMORY_TYPE)), orxTRUE);
+    orxMemory_Track(_eMemType, (orxU32)(uMemoryChunkSize - orxMEMORY_KU32_TAG_SIZE), orxTRUE);
 
     /* Updates result */
-    pResult = (orxU8 *)pResult + sizeof(orxMEMORY_TYPE);
+    pResult = (orxU8 *)pResult + orxMEMORY_KU32_TAG_SIZE;
   }
 
 #else /* __orxPROFILER__ */
 
   /* Allocates memory */
-  pResult = dlmalloc((size_t)_u32Size);
+  pResult = rpmalloc((size_t)_u32Size);
 
 #endif /* __orxPROFILER__ */
 
@@ -298,14 +330,15 @@ void *orxFASTCALL orxMemory_Allocate(orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
   return pResult;
 }
 
-/** Reallocates a previously allocated memory block, with the given new size and returns a pointer on it
+/** Reallocates a previously allocated memory block, with the given new size and returns a pointer to it
  * If possible, it'll keep the current pointer and extend the memory block, if not it'll allocate a new block,
  * copy the data over and deallocates the original block
  * @param[in]  _pMem      Memory block to reallocate
  * @param[in]  _u32Size   Size of the memory to allocate
+ * @param[in]  _eMemType  Memory zone where data will be allocated
  * @return  returns a pointer to the reallocated memory block or orxNULL if an error has occurred
  */
-void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
+void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size, orxMEMORY_TYPE _eMemType)
 {
   void *pResult;
 
@@ -316,7 +349,7 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
   if(_pMem == orxNULL)
   {
     /* Allocates it */
-    pResult = orxMemory_Allocate(_u32Size, orxMEMORY_TYPE_TEMP);
+    pResult = orxMemory_Allocate(_u32Size, _eMemType);
   }
   else
   {
@@ -327,35 +360,35 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
     size_t         uMemoryChunkSize;
 
     /* Updates pointer */
-    _pMem = (orxU8 *)_pMem - sizeof(orxMEMORY_TYPE);
+    _pMem = (orxU8 *)_pMem - orxMEMORY_KU32_TAG_SIZE;
 
-    /* Gets memory type from memory chunk tag */
+    /* Gets current memory type from memory chunk tag */
     eMemType = *(orxMEMORY_TYPE *)_pMem;
 
     /* Gets memory chunk size */
-    uMemoryChunkSize = dlmalloc_usable_size(_pMem);
+    uMemoryChunkSize = rpmalloc_usable_size(_pMem);
 
     /* Reallocates memory */
-    pResult = dlrealloc(_pMem, (size_t)(_u32Size + sizeof(orxMEMORY_TYPE)));
+    pResult = rprealloc(_pMem, (size_t)(_u32Size + orxMEMORY_KU32_TAG_SIZE));
 
     /* Success? */
     if(pResult != NULL)
     {
       /* Tags memory chunk */
-      *(orxMEMORY_TYPE *)pResult = eMemType;
+      *(orxMEMORY_TYPE *)pResult = _eMemType;
 
       /* Updates memory tracker */
-      orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - sizeof(orxMEMORY_TYPE)), orxFALSE);
-      orxMemory_Track(eMemType, (orxU32)(dlmalloc_usable_size(pResult) - sizeof(orxMEMORY_TYPE)), orxTRUE);
+      orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - orxMEMORY_KU32_TAG_SIZE), orxFALSE);
+      orxMemory_Track(_eMemType, (orxU32)(rpmalloc_usable_size(pResult) - orxMEMORY_KU32_TAG_SIZE), orxTRUE);
 
       /* Updates result */
-      pResult = (orxU8 *)pResult + sizeof(orxMEMORY_TYPE);
+      pResult = (orxU8 *)pResult + orxMEMORY_KU32_TAG_SIZE;
     }
 
 #else /* __orxPROFILER__ */
 
     /* Reallocates memory */
-    pResult = dlrealloc(_pMem, (size_t)_u32Size);
+    pResult = rprealloc(_pMem, (size_t)_u32Size);
 
 #endif /* __orxPROFILER__ */
   }
@@ -364,8 +397,8 @@ void *orxFASTCALL orxMemory_Reallocate(void *_pMem, orxU32 _u32Size)
   return pResult;
 }
 
-/** Frees a portion of memory allocated with orxMemory_Allocateate
- * @param[in] _pMem       Pointer on the memory allocated by orx
+/** Frees some memory allocated with orxMemory_Allocate
+ * @param[in] _pMem       Pointer to the memory allocated by orx
  */
 void orxFASTCALL orxMemory_Free(void *_pMem)
 {
@@ -381,22 +414,22 @@ void orxFASTCALL orxMemory_Free(void *_pMem)
     size_t         uMemoryChunkSize;
 
     /* Updates pointer */
-    _pMem = (orxU8 *)_pMem - sizeof(orxMEMORY_TYPE);
+    _pMem = (orxU8 *)_pMem - orxMEMORY_KU32_TAG_SIZE;
 
     /* Gets memory type from memory chunk tag */
     eMemType = *(orxMEMORY_TYPE *)_pMem;
 
     /* Gets memory chunk size */
-    uMemoryChunkSize = dlmalloc_usable_size(_pMem);
+    uMemoryChunkSize = rpmalloc_usable_size(_pMem);
 
     /* Updates memory tracker */
-    orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - sizeof(orxMEMORY_TYPE)), orxFALSE);
+    orxMemory_Track(eMemType, (orxU32)(uMemoryChunkSize - orxMEMORY_KU32_TAG_SIZE), orxFALSE);
   }
 
 #endif /* __orxPROFILER__ */
 
   /* System call to free memory */
-  dlfree(_pMem);
+  rpfree(_pMem);
 
   return;
 }
@@ -437,6 +470,8 @@ const orxSTRING orxFASTCALL orxMemory_GetTypeName(orxMEMORY_TYPE _eMemType)
     }
   }
 
+#undef orxMEMORY_DECLARE_TYPE_NAME
+
   /* Done! */
   return zResult;
 }
@@ -462,14 +497,14 @@ orxU32 orxFASTCALL orxMemory_GetCacheLineSize()
 
 /** Gets memory usage for a given type
  * @param[in] _eMemType         Concerned memory type
- * @param[out] _pu32Count       Current memory allocation count
- * @param[out] _pu32PeakCount   Peak memory allocation count
- * @param[out] _pu32Size        Current memory allocation size
- * @param[out] _pu32PeakSize    Peak memory allocation size
- * @param[out] _pu32OperationCount Total number of memory operations (malloc/free)
+ * @param[out] _pu64Count       Current memory allocation count
+ * @param[out] _pu64PeakCount   Peak memory allocation count
+ * @param[out] _pu64Size        Current memory allocation size
+ * @param[out] _pu64PeakSize    Peak memory allocation size
+ * @param[out] _pu64OperationCount Total number of memory operations (malloc/free)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32Count, orxU32 *_pu32PeakCount, orxU32 *_pu32Size, orxU32 *_pu32PeakSize, orxU32 *_pu32OperationCount)
+orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU64 *_pu64Count, orxU64 *_pu64PeakCount, orxU64 *_pu64Size, orxU64 *_pu64PeakSize, orxU64 *_pu64OperationCount)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -480,38 +515,38 @@ orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32
   if(_eMemType < orxMEMORY_TYPE_NUMBER)
   {
     /* Asked for current count? */
-    if(_pu32Count != orxNULL)
+    if(_pu64Count != orxNULL)
     {
       /* Updates it */
-      *_pu32Count = sstMemory.astMemoryTrackerList[_eMemType].u32Count;
+      *_pu64Count = sstMemory.astMemoryTrackerList[_eMemType].u64Count;
     }
 
     /* Asked for peak count? */
-    if(_pu32PeakCount != orxNULL)
+    if(_pu64PeakCount != orxNULL)
     {
       /* Updates it */
-      *_pu32PeakCount = sstMemory.astMemoryTrackerList[_eMemType].u32PeakCount;
+      *_pu64PeakCount = sstMemory.astMemoryTrackerList[_eMemType].u64PeakCount;
     }
 
     /* Asked for current size? */
-    if(_pu32Size != orxNULL)
+    if(_pu64Size != orxNULL)
     {
       /* Updates it */
-      *_pu32Size = sstMemory.astMemoryTrackerList[_eMemType].u32Size;
+      *_pu64Size = sstMemory.astMemoryTrackerList[_eMemType].u64Size;
     }
 
     /* Asked for peak size? */
-    if(_pu32PeakSize != orxNULL)
+    if(_pu64PeakSize != orxNULL)
     {
       /* Updates it */
-      *_pu32PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize;
+      *_pu64PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u64PeakSize;
     }
 
     /* Asked for total operation count? */
-    if(_pu32OperationCount != orxNULL)
+    if(_pu64OperationCount != orxNULL)
     {
       /* Updates it */
-      *_pu32OperationCount = sstMemory.astMemoryTrackerList[_eMemType].u32OperationCount;
+      *_pu64OperationCount = sstMemory.astMemoryTrackerList[_eMemType].u64OperationCount;
     }
   }
   else
@@ -526,7 +561,7 @@ orxSTATUS orxFASTCALL orxMemory_GetUsage(orxMEMORY_TYPE _eMemType, orxU32 *_pu32
 
 /** Tracks (external) memory allocation
  * @param[in] _eMemType               Concerned memory type
- * @param[in] _s32Size                Size to track, in bytes
+ * @param[in] _u32Size                Size to track, in bytes
  * @param[in] _bAllocate              orxTRUE if allocate, orxFALSE if free
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -544,26 +579,26 @@ orxSTATUS orxFASTCALL orxMemory_Track(orxMEMORY_TYPE _eMemType, orxU32 _u32Size,
     if(_bAllocate != orxFALSE)
     {
       /* Updates counts */
-      sstMemory.astMemoryTrackerList[_eMemType].u32Size += _u32Size;
-      sstMemory.astMemoryTrackerList[_eMemType].u32Count++;
-      if(sstMemory.astMemoryTrackerList[_eMemType].u32Count > sstMemory.astMemoryTrackerList[_eMemType].u32PeakCount)
+      sstMemory.astMemoryTrackerList[_eMemType].u64Size += (orxU64)_u32Size;
+      sstMemory.astMemoryTrackerList[_eMemType].u64Count++;
+      if(sstMemory.astMemoryTrackerList[_eMemType].u64Count > sstMemory.astMemoryTrackerList[_eMemType].u64PeakCount)
       {
-        sstMemory.astMemoryTrackerList[_eMemType].u32PeakCount = sstMemory.astMemoryTrackerList[_eMemType].u32Count;
+        sstMemory.astMemoryTrackerList[_eMemType].u64PeakCount = sstMemory.astMemoryTrackerList[_eMemType].u64Count;
       }
-      if(sstMemory.astMemoryTrackerList[_eMemType].u32Size > sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize)
+      if(sstMemory.astMemoryTrackerList[_eMemType].u64Size > sstMemory.astMemoryTrackerList[_eMemType].u64PeakSize)
       {
-        sstMemory.astMemoryTrackerList[_eMemType].u32PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u32Size;
+        sstMemory.astMemoryTrackerList[_eMemType].u64PeakSize = sstMemory.astMemoryTrackerList[_eMemType].u64Size;
       }
     }
     else
     {
       /* Updates counts */
-      sstMemory.astMemoryTrackerList[_eMemType].u32Size -= _u32Size;
-      sstMemory.astMemoryTrackerList[_eMemType].u32Count--;
+      sstMemory.astMemoryTrackerList[_eMemType].u64Size -= (orxU64)_u32Size;
+      sstMemory.astMemoryTrackerList[_eMemType].u64Count--;
     }
 
     /* Updates operation count */
-    sstMemory.astMemoryTrackerList[_eMemType].u32OperationCount++;
+    sstMemory.astMemoryTrackerList[_eMemType].u64OperationCount++;
   }
   else
   {

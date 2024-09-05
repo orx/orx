@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -41,7 +41,7 @@
  * can of course be updated with only one clock, and the given clock context is also used here
  * for demonstration only.
  * The first clock runs at 100 Hz and the second one at 5 Hz.
- * If you press numpad '+', '-' and '*', you can alter the time of the first clock.
+ * You can alter the time of the first clock by activating the "Fast", "Normal" and "Slow" inputs.
  * It'll still be updated at the same rate, but the time information that the clock will pass
  * to the callback will be stretched.
  * This provides an easy way of adding time distortion and having parts
@@ -90,7 +90,7 @@ void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
  */
 void orxFASTCALL InputUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
-  orxCLOCK  *pstClock;
+  orxCLOCK *pstClock;
 
   /* *** LOG DISPLAY SECTION *** */
 
@@ -98,7 +98,7 @@ void orxFASTCALL InputUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pstConte
   orxConfig_PushSection("Main");
 
   /* Is log input newly active? */
-  if(orxInput_IsActive("Log") && orxInput_HasNewStatus("Log"))
+  if(orxInput_HasBeenActivated("Log"))
   {
     /* Toggles logging */
     orxConfig_SetBool("DisplayLog", !orxConfig_GetBool("DisplayLog"));
@@ -109,27 +109,31 @@ void orxFASTCALL InputUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pstConte
 
   /* *** CLOCK TIME STRETCHING SECTION *** */
 
-  /* Finds first user created clock (clock1).
+  /* Finds clock1.
    * We could have stored the clock at creation, of course, but this is done here for didactic purpose. */
-  pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_USER);
+  pstClock = orxClock_Get("Clock1");
 
-  /* Is faster input active? */
-  if(orxInput_IsActive("Faster"))
+  /* Success? */
+  if(pstClock)
   {
-    /* Makes this clock go four time faster */
-    orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_MULTIPLY, orx2F(4.0f));
-  }
-  /* Is slower input active? */
-  else if(orxInput_IsActive("Slower"))
-  {
-    /* Makes this clock go four time slower */
-    orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_MULTIPLY, orx2F(0.25f));
-  }
-  /* Is normal input active? */
-  else if(orxInput_IsActive("Normal"))
-  {
-    /* Removes modifier from this clock */
-    orxClock_SetModifier(pstClock, orxCLOCK_MOD_TYPE_NONE, orxFLOAT_0);
+    /* Is faster input active? */
+    if(orxInput_IsActive("Faster"))
+    {
+      /* Makes this clock go four time faster */
+      orxClock_SetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY, orx2F(4.0f));
+    }
+    /* Is slower input active? */
+    else if(orxInput_IsActive("Slower"))
+    {
+      /* Makes this clock go four time slower */
+      orxClock_SetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY, orx2F(0.25f));
+    }
+    /* Is normal input active? */
+    else if(orxInput_IsActive("Normal"))
+    {
+      /* Clears multiply modifier from this clock */
+      orxClock_SetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY, orxFLOAT_0);
+    }
   }
 }
 
@@ -187,7 +191,7 @@ orxSTATUS orxFASTCALL Init()
   orxClock_Register(pstClock2, Update, pstObject2, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
   /* Gets main clock */
-  pstMainClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+  pstMainClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
   /* Registers our input update callback to it
    * !!IMPORTANT!! *DO NOT* handle inputs in clock callbacks that are *NOT* registered to the main clock
@@ -232,18 +236,3 @@ int main(int argc, char **argv)
 
   return EXIT_SUCCESS;
 }
-
-
-#ifdef __orxMSVC__
-
-// Here's an example for a console-less program under windows with visual studio
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-  // Inits and executes orx
-  orx_WinExecute(Init, Run, Exit);
-
-  // Done!
-  return EXIT_SUCCESS;
-}
-
-#endif // __orxMSVC__

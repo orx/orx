@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -106,6 +106,12 @@ typedef struct __orxANIM_EVENT_PAYLOAD_t
       orxU32          u32Count;               /**< Loop count : 12 */
     } stLoop;
 
+    /* Cut event */
+    struct
+    {
+      orxFLOAT        fTime;                  /**< Anim time when cut: 12 */
+    } stCut;
+
     /* Custom event */
     struct
     {
@@ -196,21 +202,27 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_RemoveLastEvent(orxANIM *_
  */
 extern orxDLLAPI void orxFASTCALL             orxAnim_RemoveAllEvents(orxANIM *_pstAnim);
 
-/** Gets next event after given timestamp
+/** Gets next event
+ * @param[in]   _pstAnim        Concerned animation
+ * @param[in]   _pstEvent       Event, orxNULL for first
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, const orxANIM_CUSTOM_EVENT *_pstEvent);
+
+/** Gets event strictly after given timestamp
  * @param[in]   _pstAnim        Concerned animation
  * @param[in]   _fTimeStamp     Time stamp, excluded
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetNextEvent(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
+extern orxDLLAPI const orxANIM_CUSTOM_EVENT *orxFASTCALL orxAnim_GetEventAfter(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
 
 
-/** Updates anim given a timestamp
+/** Gets animation's key index from a time stamp
  * @param[in]   _pstAnim        Concerned animation
- * @param[in]   _fTimeStamp     TimeStamp for animation update
- * @param[out]  _pu32CurrentKey Current key as a result of update
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _fTimeStamp     TimeStamp of the desired animation key
+ * @return      Animation key index / orxU32_UNDEFINED
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxAnim_Update(orxANIM *_pstAnim, orxFLOAT _fTimeStamp, orxU32 *_pu32CurrentKey);
+extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetKey(const orxANIM *_pstAnim, orxFLOAT _fTimeStamp);
 
 /** Anim key data accessor
  * @param[in]   _pstAnim        Concerned animation

@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxPlugin
- * 
+ *
  * Plugin core header
  * This header is used to define structures & functions for core plugins info.
  *
@@ -57,7 +57,7 @@
 /*********************************************
  Structures
  *********************************************/
- 
+
 /* Structure */
 typedef struct __orxPLUGIN_CORE_FUNCTION_t
 {
@@ -93,9 +93,8 @@ typedef orxSTATUS (*orxPLUGIN_EXIT_FUNCTION)(orxPLUGIN_ENTRY_MODE _eMode);
  * Has to be called during a core module init
  * @param[in] _ePluginCoreID          The numeric id of the core plugin
  * @param[in] _eModuleID              Corresponding module ID
- * @param[in] _astCoreFunction        The pointer on the core functions info array
+ * @param[in] _astCoreFunction        The pointer to the core functions info array
  * @param[in] _u32CoreFunctionNumber  Number of functions in the array
- * @return nothing.
  */
 extern orxDLLAPI void orxFASTCALL     orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxMODULE_ID _eModuleID, const orxPLUGIN_CORE_FUNCTION *_astCoreFunction, orxU32 _u32CoreFunctionNumber);
 
@@ -105,7 +104,6 @@ extern orxDLLAPI void orxFASTCALL     orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID _e
  * Has to be called during a core module init
  * @param[in] _ePluginCoreID          The numeric id of the core plugin
  * @param[in] _pfnPluginInit          Embedded plug-in init function
- * @return nothing
  */
 extern orxDLLAPI void orxFASTCALL     orxPlugin_BindCoreInfo(orxPLUGIN_CORE_ID _ePluginCoreID, orxPLUGIN_INIT_FUNCTION _pfnPluginInit);
 
@@ -145,7 +143,8 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
 
 /* *** Definition macro *** */
 #ifdef __orxMSVC__
-#pragma warning(disable : 4113)
+  #pragma warning(push)
+  #pragma warning(disable : 4113)
 #endif /* __orxMSVC__ */
 
 #define orxPLUGIN_DEFINE_CORE_FUNCTION(FUNCTION_NAME, RETURN, ...)          \
@@ -159,7 +158,7 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
  ******                   CORE INFO ARRAY HANDLING                    ******
  ***************************************************************************
  ***************************************************************************/
- 
+
 /* *** Core info array begin macro *** */
 #define orxPLUGIN_BEGIN_CORE_FUNCTION_ARRAY(PLUGIN_SUFFIX)                                                                            \
   static const orxPLUGIN_CORE_FUNCTION sastPluginFunctionInfo_##PLUGIN_SUFFIX[orxPLUGIN_FUNCTION_BASE_ID_##PLUGIN_SUFFIX##_NUMBER] =  \
@@ -200,6 +199,10 @@ extern orxDLLAPI void *orxFASTCALL    orxPlugin_DefaultCoreFunction(const orxSTR
     orxPlugin_AddCoreInfo(orxPLUGIN_CORE_ID_##PLUGIN_SUFFIX, orxMODULE_ID_##PLUGIN_SUFFIX, sastPluginFunctionInfo_##PLUGIN_SUFFIX, sizeof(sastPluginFunctionInfo_##PLUGIN_SUFFIX) / sizeof(orxPLUGIN_CORE_FUNCTION));
 
   #endif /* __orxEMBEDDED__ */
+
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif /* __orxMSVC__ */
 
 #endif /* _orxPLUGIN_CORE_H_ */
 

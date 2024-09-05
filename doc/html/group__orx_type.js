@@ -3,6 +3,7 @@ var group__orx_type =
     [ "_orxSTRINGIFY", "group__orx_type.html#gaffaecf095a8d27771d76c40c84627f34", null ],
     [ "orxCHAR_ASCII_NUMBER", "group__orx_type.html#ga4d349445a40afddcddc979ae95d18a91", null ],
     [ "orxCHAR_CR", "group__orx_type.html#ga3c6a34e6acad7009dda01358aa90d2c0", null ],
+    [ "orxCHAR_DIRECTORY_SEPARATOR", "group__orx_type.html#ga7f57a1dc12499cb7bc483a611e2d822e", null ],
     [ "orxCHAR_DIRECTORY_SEPARATOR_LINUX", "group__orx_type.html#gae411f0589bfd492bd54d2dd1547fe508", null ],
     [ "orxCHAR_DIRECTORY_SEPARATOR_WINDOWS", "group__orx_type.html#ga353da1d4489596d58d3ceb2020576dee", null ],
     [ "orxCHAR_EOL", "group__orx_type.html#ga735932cfe5362859520dc18bc85eb30a", null ],
@@ -11,6 +12,15 @@ var group__orx_type =
     [ "orxFALSE", "group__orx_type.html#ga28f15ac5afeea074c02dbfc96a98ce14", null ],
     [ "orxSTRINGIFY", "group__orx_type.html#ga29d78aacc5af864dfee06981362b770e", null ],
     [ "orxTRUE", "group__orx_type.html#ga459c42c8ca6b429bc45db95fef94ba7a", null ],
+    [ "orxHANDLE", "group__orx_type.html#ga10ad864319a9d9f12196e133707cae8a", null ],
+    [ "orxCOLORSPACE", "group__orx_type.html#ga994f10d91e120b5122aad209216cbfc5", [
+      [ "orxCOLORSPACE_COMPONENT", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5aa2e2d03c3baeb06360888719955a84a5", null ],
+      [ "orxCOLORSPACE_HSL", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5aae118c4eaab73f42fa87a26df8713825", null ],
+      [ "orxCOLORSPACE_HSV", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5ad83da711caab6a9ecf54254d39b53ea8", null ],
+      [ "orxCOLORSPACE_RGB", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5a41de1760f7089586895a30386d71cc05", null ],
+      [ "orxCOLORSPACE_NUMBER", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5a0cb438721b1b0cc4dadc59d28c7eea31", null ],
+      [ "orxCOLORSPACE_NONE", "group__orx_type.html#gga994f10d91e120b5122aad209216cbfc5a1760777d116183858ed58bb966e4a26c", null ]
+    ] ],
     [ "orxSEEK_OFFSET_WHENCE", "group__orx_type.html#ga08815b27cb2e29018e06e3d847116915", [
       [ "orxSEEK_OFFSET_WHENCE_START", "group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a9124c1e63f03128103809b24937832ba", null ],
       [ "orxSEEK_OFFSET_WHENCE_CURRENT", "group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a1c0f897b0c87e29f069b2b3f42d32f29", null ],
@@ -36,6 +46,7 @@ var group__orx_type =
     [ "orxSTRING_EOL", "group__orx_type.html#ga4a31f472b61a07c2b79005543d7d0480", null ],
     [ "orxSTRING_FALSE", "group__orx_type.html#ga4b202020a2ed51c9dc7de93352888bfb", null ],
     [ "orxSTRING_TRUE", "group__orx_type.html#ga20ac2ef037b65e6e63d0aad1e635d182", null ],
+    [ "orxSTRINGID_UNDEFINED", "group__orx_type.html#ga26f449027c0bfe2d30439d3695d1bf19", null ],
     [ "orxU16_UNDEFINED", "group__orx_type.html#ga44b8a4d07838f3c2d4736f878b7da5bf", null ],
     [ "orxU32_UNDEFINED", "group__orx_type.html#gafc1ca3eeccdc79d283298661feb8da21", null ],
     [ "orxU64_UNDEFINED", "group__orx_type.html#ga80e4595b5e266cac8ff88a26ccfd48d0", null ],

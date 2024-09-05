@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -35,8 +35,19 @@
 
 #ifdef __orxEMBEDDED__
 
+/* Headless? */
+#if defined(__orxHEADLESS__)
+
+#include "../plugins/Display/Dummy/orxDisplay.c"
+#include "../plugins/Joystick/Dummy/orxJoystick.c"
+#include "../plugins/Keyboard/Dummy/orxKeyboard.c"
+#include "../plugins/Mouse/Dummy/orxMouse.c"
+#include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
+#include "../plugins/Render/Home/orxRender.c"
+#include "../plugins/Sound/Dummy/orxSoundSystem.c"
+
 /* iOS? */
-#if defined(__orxIOS__)
+#elif defined(__orxIOS__)
 
 #pragma GCC visibility push(hidden)
 
@@ -48,31 +59,31 @@
 #pragma GCC visibility pop
 
 /* Android? */
-#elif defined(__orxANDROID__) || defined(__orxANDROID_NATIVE__)
+#elif defined(__orxANDROID__)
 
 #include "../plugins/Display/android/orxDisplay.c"
-#include "../plugins/Joystick/android/orxJoystick.c"
+#include "../plugins/Joystick/android/orxJoystick.cpp"
 #include "../plugins/Keyboard/android/orxKeyboard.cpp"
 #include "../plugins/Mouse/android/orxMouse.c"
 #include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
-#include "../plugins/Sound/android/orxSoundSystem.c"
+#include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
 
 /* Others */
-#else /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#else /* __orxANDROID__ */
 
 /** Includes all plugins to embed
  */
 
-/* GLFW, Box2D, OpenAL, stb_image, libsndfile & stb_vorbis */
+/* GLFW, Box2D, MiniAudio, stb_image, libsndfile & stb_vorbis */
 #include "../plugins/Display/GLFW/orxDisplay.c"
 #include "../plugins/Joystick/GLFW/orxJoystick.c"
 #include "../plugins/Keyboard/GLFW/orxKeyboard.c"
 #include "../plugins/Mouse/GLFW/orxMouse.c"
 #include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Render/Home/orxRender.c"
-#include "../plugins/Sound/OpenAL/orxSoundSystem.c"
+#include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
 
-#endif /* __orxANDROID__ || __orxANDROID_NATIVE__ */
+#endif /* __orxANDROID__ */
 
 #endif /* __orxEMBEDDED__ */

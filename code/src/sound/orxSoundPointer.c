@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -126,6 +126,9 @@ static orxSTATUS orxFASTCALL orxSoundPointer_EventHandler(const orxEVENT *_pstEv
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_OBJECT);
+
   /* Depending on event ID */
   switch(_pstEvent->eID)
   {
@@ -241,7 +244,7 @@ static orxINLINE void orxSoundPointer_DeleteAll()
 }
 
 /** Updates the SoundPointer (Callback for generic structure update calling)
- * @param[in]   _pstStructure                 Generic Structure or the concerned Body
+ * @param[in]   _pstStructure                 Generic Structure or the concerned SoundPointer
  * @param[in]   _pstCaller                    Structure of the caller
  * @param[in]   _pstClockInfo                 Clock info used for time updates
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -351,6 +354,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_Init()
     /* Success? */
     if(eResult != orxSTATUS_FAILURE)
     {
+      /* Filters relevant event IDs */
+      orxEvent_SetHandlerIDFlags(orxSoundPointer_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DISABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_PAUSE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_UNPAUSE), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(SOUNDPOINTER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxSOUNDPOINTER_KU32_BANK_SIZE, &orxSoundPointer_Update);
 
@@ -562,7 +568,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_SetVolume(orxSOUNDPOINTER *_pstSoundPointe
 
 /** Sets pitch of all related sounds
  * @param[in] _pstSoundPointer      Concerned SoundPointer
- * @param[in] _fPitch         Desired pitch
+ * @param[in] _fPitch         Desired pitch (< 1.0 => lower pitch, = 1.0 => original pitch, > 1.0 => higher pitch). 0.0 is ignored.
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxSoundPointer_SetPitch(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fPitch)
@@ -587,6 +593,41 @@ orxSTATUS orxFASTCALL orxSoundPointer_SetPitch(orxSOUNDPOINTER *_pstSoundPointer
     {
       /* Sets its pitch */
       orxSound_SetPitch(pstSound, _fPitch);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets panning of all related sounds
+ * @param[in] _pstSoundPointer      Concerned SoundPointer
+ * @param[in] _fPanning             Sound panning, -1.0f for full left, 0.0f for center, 1.0f for full right
+ * @param[in] _bMix                 Left/Right channels will be mixed if orxTRUE or act like a balance otherwise
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_SetPanning(orxSOUNDPOINTER *_pstSoundPointer, orxFLOAT _fPanning, orxBOOL _bMix)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets it */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Sets its panning */
+      orxSound_SetPanning(pstSound, _fPanning, _bMix);
     }
   }
 
@@ -1098,7 +1139,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Could not find object named '%s' in config.", _zSoundConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Could not find sound named '%s' in config.", _zSoundConfigID);
 
       /* Clears last added sound index */
       _pstSoundPointer->u32LastAddedIndex = orxU32_UNDEFINED;
@@ -1127,8 +1168,9 @@ orxSTATUS orxFASTCALL orxSoundPointer_AddSoundFromConfig(orxSOUNDPOINTER *_pstSo
  */
 orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_pstSoundPointer, const orxSTRING _zSoundConfigID)
 {
-  orxU32    i, u32ID;
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTRINGID stID;
+  orxU32      i;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
@@ -1136,7 +1178,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
   orxASSERT((_zSoundConfigID != orxNULL) && (_zSoundConfigID != orxSTRING_EMPTY));
 
   /* Gets sound ID */
-  u32ID = orxString_ToCRC(_zSoundConfigID);
+  stID = orxString_Hash(_zSoundConfigID);
 
   /* For all slots */
   for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
@@ -1150,7 +1192,7 @@ orxSTATUS orxFASTCALL orxSoundPointer_RemoveSoundFromConfig(orxSOUNDPOINTER *_ps
     if(pstSound != orxNULL)
     {
       /* Found? */
-      if(orxString_ToCRC(orxSound_GetName(pstSound)) == u32ID)
+      if(orxString_Hash(orxSound_GetName(pstSound)) == stID)
       {
         orxSOUND_EVENT_PAYLOAD  stPayload;
         orxSTRUCTURE           *pstOwner;
@@ -1226,4 +1268,183 @@ orxSOUND *orxFASTCALL orxSoundPointer_GetLastAddedSound(const orxSOUNDPOINTER *_
 
   /* Done! */
   return pstResult;
+}
+
+/** Adds a filter to all related sounds (cascading)
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _pstFilterData      Concerned filter data
+ * @param[in]   _bUseCustomParam    Filter uses custom parameters
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_AddFilter(orxSOUNDPOINTER *_pstSoundPointer, const orxSOUND_FILTER_DATA *_pstFilterData, orxBOOL _bUseCustomParam)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+  orxASSERT(_pstFilterData != orxNULL);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Adds filter to it */
+      if(orxSound_AddFilter(pstSound, _pstFilterData, _bUseCustomParam) == orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes last added filter from all related sounds
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_RemoveLastFilter(orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Removes last filter from it */
+      if(orxSound_RemoveLastFilter(pstSound) == orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Removes all filters from all related sounds
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_RemoveAllFilters(orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Removes all filters from it */
+      if(orxSound_RemoveAllFilters(pstSound) == orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Adds a filter to all related sounds from config (cascading)
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @param[in]   _zFilterConfigID    Config ID of the filter to add
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxSoundPointer_AddFilterFromConfig(orxSOUNDPOINTER *_pstSoundPointer, const orxSTRING _zFilterConfigID)
+{
+  orxU32    i;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    orxSOUND *pstSound;
+
+    /* Gets sound */
+    pstSound = _pstSoundPointer->astSoundList[i].pstSound;
+
+    /* Valid? */
+    if(pstSound != orxNULL)
+    {
+      /* Adds filter to it */
+      if(orxSound_AddFilterFromConfig(pstSound, _zFilterConfigID) == orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets how many sounds are currently in use
+ * @param[in]   _pstSoundPointer    Concerned SoundPointer
+ * @return      orxU32
+ */
+orxU32 orxFASTCALL orxSoundPointer_GetCount(const orxSOUNDPOINTER *_pstSoundPointer)
+{
+  orxU32 i, u32Result = 0;
+
+  /* Checks */
+  orxASSERT(sstSoundPointer.u32Flags & orxSOUNDPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstSoundPointer);
+
+  /* For all Sounds */
+  for(i = 0; i < orxSOUNDPOINTER_KU32_SOUND_NUMBER; i++)
+  {
+    /* Valid? */
+    if(_pstSoundPointer->astSoundList[i].pstSound != orxNULL)
+    {
+      /* Updates result */
+      u32Result++;
+    }
+  }
+
+  /* Done! */
+  return u32Result;
 }

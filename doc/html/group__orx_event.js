@@ -8,7 +8,10 @@ var group__orx_event =
       [ "pContext", "structorx_e_v_e_n_t.html#a4b5458f978a51d65fdb148db298ab2ce", null ],
       [ "pstPayload", "structorx_e_v_e_n_t.html#aed283fb8a616b4c4254ddf76f7de909f", null ]
     ] ],
+    [ "orxEVENT_GET_FLAG", "group__orx_event.html#ga7ba6a099c034c590b2e6adb364510dfd", null ],
     [ "orxEVENT_INIT", "group__orx_event.html#ga5a878336878f2e429bc83fda86366fdf", null ],
+    [ "orxEVENT_KU32_FLAG_ID_NONE", "group__orx_event.html#ga698547d801a1bd663403c5388b191da0", null ],
+    [ "orxEVENT_KU32_MASK_ID_ALL", "group__orx_event.html#ga024045cd7a6a30e8eedd27ee92d52826", null ],
     [ "orxEVENT_SEND", "group__orx_event.html#gadd3bf5f445d7d85ddafa5ae01aaf8607", null ],
     [ "orxEVENT_HANDLER", "group__orx_event.html#ga51a907faa3c2e1d09551926372107ae5", null ],
     [ "orxEVENT_TYPE", "group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8", [
@@ -29,6 +32,7 @@ var group__orx_event =
       [ "orxEVENT_TYPE_SYSTEM", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8ac55cb742a3efb2ade2800b259def35f8", null ],
       [ "orxEVENT_TYPE_TEXTURE", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a714cfbf6f8d48e92dfc8215baf29c46a", null ],
       [ "orxEVENT_TYPE_TIMELINE", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a3ca8f5d8375a2f12794d2fd1fd2fd0f5", null ],
+      [ "orxEVENT_TYPE_TRIGGER", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a568cde3a4de539035b8b969fd6ff51ee", null ],
       [ "orxEVENT_TYPE_VIEWPORT", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8aada1929d75c2a6af273873ee8a4021b7", null ],
       [ "orxEVENT_TYPE_CORE_NUMBER", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a392c55af75cd4dc15dc9d5c875ad7216", null ],
       [ "orxEVENT_TYPE_FIRST_RESERVED", "group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b", null ],
@@ -45,5 +49,6 @@ var group__orx_event =
     [ "orxEvent_RemoveHandlerWithContext", "group__orx_event.html#ga773b09f6fca3b2601f5d08b9564406f5", null ],
     [ "orxEvent_Send", "group__orx_event.html#ga9d15d61e0e499037fd039bb38a2fedf8", null ],
     [ "orxEvent_SendShort", "group__orx_event.html#ga2305585afe32179ee80f9277892d555d", null ],
+    [ "orxEvent_SetHandlerIDFlags", "group__orx_event.html#ga6a6dee64c647bc2ca1ed9d6172dff75c", null ],
     [ "orxEvent_Setup", "group__orx_event.html#ga3d093133b3664650417542f56e95f322", null ]
 ];

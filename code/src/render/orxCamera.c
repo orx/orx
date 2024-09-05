@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -52,11 +52,22 @@
 #define orxCAMERA_KU32_STATIC_MASK_ALL        0xFFFFFFFF  /**< All mask */
 
 
-/** orxCAMERA flags / masks
+/** Camera flags / masks
  */
 #define orxCAMERA_KU32_FLAG_REFERENCED        0x10000000  /**< Referenced flag */
+#define orxCAMERA_KU32_FLAG_INTERNAL_CAMERA   0x20000000  /**< Internal camera flag */
 #define orxCAMERA_KU32_MASK_ALL               0xFFFFFFFF  /**< All mask */
 
+
+/** Group flags / masks
+ */
+#define orxCAMERA_KU32_GROUP_FLAG_NONE        0x00000000  /**< No flags */
+
+#define orxCAMERA_KU32_GROUP_FLAG_SORTING     0x00000001  /**< Sorting flag */
+
+#define orxCAMERA_KU32_GROUP_MASK_DEFAULT     0x00000001  /**< Default mask */
+
+#define orxCAMERA_KU32_GROUP_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
 /** Misc defines
  */
@@ -71,6 +82,9 @@
 #define orxCAMERA_KZ_CONFIG_PARENT_CAMERA     "ParentCamera"
 #define orxCAMERA_KZ_CONFIG_IGNORE_FROM_PARENT "IgnoreFromParent"
 
+#define orxCAMERA_KZ_SORT                     "sort"
+#define orxCAMERA_KZ_RAW                      "raw"
+
 #define orxCAMERA_KU32_REFERENCE_TABLE_SIZE   16          /**< Reference table size */
 #define orxCAMERA_KU32_BANK_SIZE              16          /**< Bank size */
 
@@ -78,6 +92,15 @@
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
+/** Camera group structure
+ */
+typedef struct __orxCAMERA_GROUP_t
+{
+  orxSTRINGID     stID;                       /**< ID : 8 */
+  orxU32          u32Flags;                   /**< Flags : 12 */
+
+} orxCAMERA_GROUP;
 
 /** Camera structure
  */
@@ -87,7 +110,7 @@ struct __orxCAMERA_t
   orxFRAME       *pstFrame;                   /**< Frame : 20 */
   orxAABOX        stFrustum;                  /**< Frustum : 44 */
   const orxSTRING zReference;                 /**< Reference : 48 */
-  orxU32          au32GroupIDList[orxCAMERA_KU32_GROUP_ID_NUMBER]; /**< Group ID list : 112 */
+  orxCAMERA_GROUP astGroupList[orxCAMERA_KU32_GROUP_ID_NUMBER]; /**< Group list : 560 */
 };
 
 /** Static structure
@@ -498,6 +521,143 @@ void orxFASTCALL orxCamera_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: AddGroup
+ */
+void orxFASTCALL orxCamera_CommandAddGroup(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Adds it */
+    orxCamera_AddGroupID(pstCamera, orxString_Hash(_astArgList[1].zValue), (_u32ArgNumber > 2) ? _astArgList[2].bValue : orxFALSE);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: RemoveGroup
+ */
+void orxFASTCALL orxCamera_CommandRemoveGroup(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    /* Adds it */
+    orxCamera_RemoveGroupID(pstCamera, orxString_Hash(_astArgList[1].zValue));
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: EnableGroupSorting
+ */
+void orxFASTCALL orxCamera_CommandEnableGroupSorting(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    orxSTRINGID stGroupID;
+    orxU32      i;
+
+    /* Gets group ID */
+    stGroupID = orxString_Hash(_astArgList[1].zValue);
+
+    /* For all groups */
+    for(i = 0; (i < orxCAMERA_KU32_GROUP_ID_NUMBER) && (pstCamera->astGroupList[i].stID != 0); i++)
+    {
+      /* Found? */
+      if(pstCamera->astGroupList[i].stID == stGroupID)
+      {
+        /* Updates its status */
+        orxCamera_EnableGroupIDSorting(pstCamera, i, (_u32ArgNumber > 2) ? _astArgList[2].bValue : orxTRUE);
+        break;
+      }
+    }
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: IsGroupSortingEnabled
+ */
+void orxFASTCALL orxCamera_CommandIsGroupSortingEnabled(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCAMERA *pstCamera;
+
+  /* Updates result */
+  _pstResult->bValue = orxFALSE;
+
+  /* Gets camera */
+  pstCamera = orxCAMERA(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstCamera != orxNULL)
+  {
+    orxSTRINGID stGroupID;
+    orxU32      i;
+
+    /* Gets group ID */
+    stGroupID = orxString_Hash(_astArgList[1].zValue);
+
+    /* For all groups */
+    for(i = 0; (i < orxCAMERA_KU32_GROUP_ID_NUMBER) && (pstCamera->astGroupList[i].stID != 0); i++)
+    {
+      /* Found? */
+      if(pstCamera->astGroupList[i].stID == stGroupID)
+      {
+        /* Updates result */
+        _pstResult->bValue = orxCamera_IsGroupIDSortingEnabled(pstCamera, i);
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the camera commands
  */
 static orxINLINE void orxCamera_RegisterCommands()
@@ -535,6 +695,15 @@ static orxINLINE void orxCamera_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Camera, SetParent, "Camera", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Parent = <void>", orxCOMMAND_VAR_TYPE_U64});
   /* Command: GetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Camera, GetParent, "Parent", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: AddGroup */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, AddGroup, "Camera", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"First = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: RemoveGroup */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, RemoveGroup, "Camera", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Group", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: EnableGroupSorting */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, EnableGroupSorting, "Camera", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Group", orxCOMMAND_VAR_TYPE_STRING}, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: IsGroupSortingEnabled */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Camera, IsGroupSortingEnabled, "IsEnabled?", orxCOMMAND_VAR_TYPE_BOOL, 2, 0, {"Camera", orxCOMMAND_VAR_TYPE_U64}, {"Group", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the camera commands
@@ -574,6 +743,15 @@ static orxINLINE void orxCamera_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, SetParent);
   /* Command: GetParent */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, GetParent);
+
+  /* Command: AddGroup */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, AddGroup);
+  /* Command: RemoveGroup */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, RemoveGroup);
+  /* Command: EnableGroupSorting */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, EnableGroupSorting);
+  /* Command: IsGroupSortingEnabled */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Camera, IsGroupSortingEnabled);
 }
 
 /** Deletes all cameras
@@ -832,23 +1010,46 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         if((zIgnoreFromParent = orxConfig_GetString(orxCAMERA_KZ_CONFIG_IGNORE_FROM_PARENT)) != orxSTRING_EMPTY)
         {
           /* Updates frame */
-          orxStructure_SetFlags(pstResult->pstFrame, orxFrame_GetIgnoreFlags(zIgnoreFromParent), orxFRAME_KU32_MASK_IGNORE_ALL);
+          orxStructure_SetFlags(pstResult->pstFrame, orxFrame_GetIgnoreFlagValues(zIgnoreFromParent), orxFRAME_KU32_MASK_IGNORE_ALL);
         }
 
         /* Has group list? */
         if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_GROUP_LIST) != orxFALSE)
         {
-          orxU32 i, u32Number;
+          orxS32 i, s32Number;
 
           /* Removes default group ID */
           orxCamera_RemoveGroupID(pstResult, orxString_GetID(orxOBJECT_KZ_DEFAULT_GROUP));
 
           /* For all groups */
-          for(i = 0, u32Number = orxConfig_GetListCount(orxCAMERA_KZ_CONFIG_GROUP_LIST); i < u32Number; i++)
+          for(i = 0, s32Number = orxConfig_GetListCount(orxCAMERA_KZ_CONFIG_GROUP_LIST); i < s32Number; i++)
           {
-            /* Adds it */
-            orxCamera_AddGroupID(pstResult, orxString_GetID(orxConfig_GetListString(orxCAMERA_KZ_CONFIG_GROUP_LIST, i)), orxFALSE);
+            const orxSTRING zGroup;
+
+            /* Gets its name */
+            zGroup = orxConfig_GetListString(orxCAMERA_KZ_CONFIG_GROUP_LIST, i);
+
+            /* Valid? */
+            if(zGroup != orxSTRING_EMPTY)
+            {
+              orxSTRINGID stGroupID;
+
+              /* Gets its ID */
+              stGroupID = orxString_GetID(zGroup);
+
+              /* Adds it */
+              if(orxCamera_AddGroupID(pstResult, stGroupID, orxFALSE) != orxSTATUS_FAILURE)
+              {
+                /* Updates its sorting status */
+                orxCamera_EnableGroupIDSorting(pstResult, (orxU32)i, ((orxConfig_HasValue(zGroup) == orxFALSE) || (orxString_ICompare(orxConfig_GetString(zGroup), orxCAMERA_KZ_RAW) != 0)) ? orxTRUE : orxFALSE);
+              }
+            }
           }
+        }
+        else
+        {
+          /* Updates its sorting status */
+          orxCamera_EnableGroupIDSorting(pstResult, 0, ((orxConfig_HasValue(orxOBJECT_KZ_DEFAULT_GROUP) == orxFALSE) || (orxString_ICompare(orxConfig_GetString(orxOBJECT_KZ_DEFAULT_GROUP), orxCAMERA_KZ_RAW) != 0)) ? orxTRUE : orxFALSE);
         }
 
         /* Gets frustum info */
@@ -883,6 +1084,9 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
 
             /* Sets it as parent */
             orxCamera_SetParent(pstResult, pstCamera);
+
+            /* Updates status */
+            orxStructure_SetFlags(pstResult, orxCAMERA_KU32_FLAG_INTERNAL_CAMERA, orxCAMERA_KU32_FLAG_NONE);
           }
         }
 
@@ -903,10 +1107,20 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         }
 
         /* Has a position? */
-        if(orxConfig_GetVector(orxCAMERA_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
+        if(orxConfig_HasValue(orxCAMERA_KZ_CONFIG_POSITION) != orxFALSE)
         {
-          /* Updates camera position */
-          orxCamera_SetPosition(pstResult, &vPosition);
+          /* Is a vector? */
+          if(orxConfig_GetVector(orxCAMERA_KZ_CONFIG_POSITION, &vPosition) != orxNULL)
+          {
+            /* Updates camera position */
+            orxCamera_SetPosition(pstResult, &vPosition);
+          }
+          /* Uses it as Z component */
+          else
+          {
+            /* Updates camera position */
+            orxCamera_SetPosition(pstResult, orxVector_Set(&vPosition, orxFLOAT_0, orxFLOAT_0, orxConfig_GetFloat(orxCAMERA_KZ_CONFIG_POSITION)));
+          }
         }
 
         /* Updates object rotation */
@@ -916,7 +1130,7 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* Adds it to reference table */
-        orxHashTable_Add(sstCamera.pstReferenceTable, orxString_ToCRC(pstResult->zReference), pstResult);
+        orxHashTable_Add(sstCamera.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
 
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, orxCAMERA_KU32_FLAG_REFERENCED, orxCAMERA_KU32_FLAG_NONE);
@@ -957,6 +1171,9 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
   /* Not referenced? */
   if(orxStructure_GetRefCount(_pstCamera) == 0)
   {
+    /* Removes parent */
+    orxCamera_SetParent(_pstCamera, orxNULL);
+
     /* Removes frame reference */
     orxStructure_DecreaseCount(_pstCamera->pstFrame);
 
@@ -970,7 +1187,7 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
     if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_REFERENCED) != orxFALSE)
     {
       /* Removes it from reference table */
-      orxHashTable_Remove(sstCamera.pstReferenceTable, orxString_ToCRC(_pstCamera->zReference));
+      orxHashTable_Remove(sstCamera.pstReferenceTable, orxString_Hash(_pstCamera->zReference));
     }
 
     /* Deletes structure */
@@ -988,11 +1205,11 @@ orxSTATUS orxFASTCALL orxCamera_Delete(orxCAMERA *_pstCamera)
 
 /** Adds a group ID to a camera
  * @param[in] _pstCamera        Concerned camera
- * @param[in] _u32GroupID       ID of the group to add
+ * @param[in] _stGroupID        ID of the group to add
  * @param[in] _bAddFirst        If true this group will be used *before* any already added ones, otherwise it'll be used *after* all of them
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32GroupID, orxBOOL _bAddFirst)
+orxSTATUS orxFASTCALL orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxSTRINGID _stGroupID, orxBOOL _bAddFirst)
 {
   orxSTATUS eResult;
 
@@ -1001,7 +1218,7 @@ orxSTATUS orxFASTCALL orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32Gro
   orxSTRUCTURE_ASSERT(_pstCamera);
 
   /* Valid? */
-  if((_u32GroupID != 0) && (_u32GroupID != orxU32_UNDEFINED))
+  if((_stGroupID != 0) && (_stGroupID != orxSTRINGID_UNDEFINED))
   {
     orxU32 u32Count;
 
@@ -1018,16 +1235,19 @@ orxSTATUS orxFASTCALL orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32Gro
         for(; u32Count > 0; u32Count--)
         {
           /* Pushes it one slot further */
-          _pstCamera->au32GroupIDList[u32Count] = _pstCamera->au32GroupIDList[u32Count - 1];
+          _pstCamera->astGroupList[u32Count].stID     = _pstCamera->astGroupList[u32Count - 1].stID;
+          _pstCamera->astGroupList[u32Count].u32Flags = _pstCamera->astGroupList[u32Count - 1].u32Flags;
         }
 
         /* Stores new ID */
-        _pstCamera->au32GroupIDList[0] = _u32GroupID;
+        _pstCamera->astGroupList[0].stID      = _stGroupID;
+        _pstCamera->astGroupList[0].u32Flags  = orxCAMERA_KU32_GROUP_MASK_DEFAULT;
       }
       else
       {
         /* Stores it */
-        _pstCamera->au32GroupIDList[u32Count] = _u32GroupID;
+        _pstCamera->astGroupList[u32Count].stID     = _stGroupID;
+        _pstCamera->astGroupList[u32Count].u32Flags = orxCAMERA_KU32_GROUP_MASK_DEFAULT;
       }
 
       /* Updates result */
@@ -1045,7 +1265,7 @@ orxSTATUS orxFASTCALL orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32Gro
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't add group ID to camera: invalid ID <0x%X>.", _u32GroupID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't add group ID to camera: invalid ID <0x%X>.", _stGroupID);
 
     /* Updates result */
     eResult = orxSTATUS_FAILURE;
@@ -1057,10 +1277,10 @@ orxSTATUS orxFASTCALL orxCamera_AddGroupID(orxCAMERA *_pstCamera, orxU32 _u32Gro
 
 /** Removes a group ID from a camera
  * @param[in] _pstCamera        Concerned camera
- * @param[in] _u32GroupID       ID of the group to remove
+ * @param[in] _stGroupID        ID of the group to remove
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxU32 _u32GroupID)
+orxSTATUS orxFASTCALL orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxSTRINGID _stGroupID)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1069,25 +1289,27 @@ orxSTATUS orxFASTCALL orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxU32 _u32
   orxSTRUCTURE_ASSERT(_pstCamera);
 
   /* Valid? */
-  if((_u32GroupID != 0) && (_u32GroupID != orxU32_UNDEFINED))
+  if((_stGroupID != 0) && (_stGroupID != orxSTRINGID_UNDEFINED))
   {
     orxU32 i;
 
-    /* For all stored ID */
-    for(i = 0; (i < orxCAMERA_KU32_GROUP_ID_NUMBER) && (_pstCamera->au32GroupIDList[i] != 0); i++)
+    /* For all groups */
+    for(i = 0; (i < orxCAMERA_KU32_GROUP_ID_NUMBER) && (_pstCamera->astGroupList[i].stID != 0); i++)
     {
       /* Found? */
-      if(_pstCamera->au32GroupIDList[i] == _u32GroupID)
+      if(_pstCamera->astGroupList[i].stID == _stGroupID)
       {
         /* For all stored IDs after current one */
-        for(; (i < orxCAMERA_KU32_GROUP_ID_NUMBER - 1) && (_pstCamera->au32GroupIDList[i] != 0); i++)
+        for(; (i < orxCAMERA_KU32_GROUP_ID_NUMBER - 1) && (_pstCamera->astGroupList[i].stID != 0); i++)
         {
           /* Moves it one slot closer */
-          _pstCamera->au32GroupIDList[i] = _pstCamera->au32GroupIDList[i + 1];
+          _pstCamera->astGroupList[i].stID      = _pstCamera->astGroupList[i + 1].stID;
+          _pstCamera->astGroupList[i].u32Flags  = _pstCamera->astGroupList[i + 1].u32Flags;
         }
 
         /* Clears last slot */
-        _pstCamera->au32GroupIDList[i] = 0;
+        _pstCamera->astGroupList[i].stID      = 0;
+        _pstCamera->astGroupList[i].u32Flags  = orxCAMERA_KU32_GROUP_FLAG_NONE;
 
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -1100,13 +1322,13 @@ orxSTATUS orxFASTCALL orxCamera_RemoveGroupID(orxCAMERA *_pstCamera, orxU32 _u32
     if(eResult == orxSTATUS_FAILURE)
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: ID <0x%X> not found.", _u32GroupID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: ID <0x%X> not found.", _stGroupID);
     }
   }
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: invalid ID <0x%X>.", _u32GroupID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't remove group ID from camera: invalid ID <0x%X>.", _stGroupID);
   }
 
   /* Done! */
@@ -1126,7 +1348,7 @@ orxU32 orxFASTCALL orxCamera_GetGroupIDCount(const orxCAMERA *_pstCamera)
   orxSTRUCTURE_ASSERT(_pstCamera);
 
   /* Updates result*/
-  for(u32Result = 0; (u32Result < orxCAMERA_KU32_GROUP_ID_NUMBER) && (_pstCamera->au32GroupIDList[u32Result] != 0); u32Result++);
+  for(u32Result = 0; (u32Result < orxCAMERA_KU32_GROUP_ID_NUMBER) && (_pstCamera->astGroupList[u32Result].stID != 0); u32Result++);
 
   /* Done! */
   return u32Result;
@@ -1135,11 +1357,11 @@ orxU32 orxFASTCALL orxCamera_GetGroupIDCount(const orxCAMERA *_pstCamera)
 /** Gets the group ID of a camera at the given index
  * @param[in] _pstCamera        Concerned camera
  * @param[in] _u32Index         Index of group ID
- * @return Group ID if index is valid, orxU32_UNDEFINED otherwise
+ * @return Group ID if index is valid, orxSTRINGID_UNDEFINED otherwise
  */
-orxU32 orxFASTCALL orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32 _u32Index)
+orxSTRINGID orxFASTCALL orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32 _u32Index)
 {
-  orxU32 u32Result;
+  orxSTRINGID stResult;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
@@ -1147,10 +1369,73 @@ orxU32 orxFASTCALL orxCamera_GetGroupID(const orxCAMERA *_pstCamera, orxU32 _u32
   orxASSERT(_u32Index < orxCAMERA_KU32_GROUP_ID_NUMBER);
 
   /* Updates result */
-  u32Result = (_pstCamera->au32GroupIDList[_u32Index] != 0) ? _pstCamera->au32GroupIDList[_u32Index] : orxU32_UNDEFINED;
+  stResult = (_pstCamera->astGroupList[_u32Index].stID != 0) ? _pstCamera->astGroupList[_u32Index].stID : orxSTRINGID_UNDEFINED;
 
   /* Done! */
-  return u32Result;
+  return stResult;
+}
+
+/** Enables/disables sorting for a group ID.
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32Index         Index of group ID to update
+ * @param[in] _bEnable          Enable / disable sorting
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxCamera_EnableGroupIDSorting(orxCAMERA *_pstCamera, orxU32 _u32Index, orxBOOL _bEnable)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+  orxASSERT(_u32Index < orxCAMERA_KU32_GROUP_ID_NUMBER);
+
+  /* Valid? */
+  if(_pstCamera->astGroupList[_u32Index].stID != 0)
+  {
+    /* Enable? */
+    if(_bEnable != orxFALSE)
+    {
+      /* Updates group status */
+      orxFLAG_SET(_pstCamera->astGroupList[_u32Index].u32Flags, orxCAMERA_KU32_GROUP_FLAG_SORTING, orxCAMERA_KU32_GROUP_FLAG_NONE);
+    }
+    else
+    {
+      /* Updates group status */
+      orxFLAG_SET(_pstCamera->astGroupList[_u32Index].u32Flags, orxCAMERA_KU32_GROUP_FLAG_NONE, orxCAMERA_KU32_GROUP_FLAG_SORTING);
+    }
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Is sorting enabled for a group ID?
+ * @param[in] _pstCamera        Concerned camera
+ * @param[in] _u32Index         Index of group ID to update
+ * @return orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxCamera_IsGroupIDSortingEnabled(const orxCAMERA *_pstCamera, orxU32 _u32Index)
+{
+  orxBOOL bResult = orxFALSE;
+
+  /* Checks */
+  orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstCamera);
+  orxASSERT(_u32Index < orxCAMERA_KU32_GROUP_ID_NUMBER);
+
+  /* Valid? */
+  if(_pstCamera->astGroupList[_u32Index].stID != 0)
+  {
+    /* Updates result */
+    bResult = orxFLAG_TEST(_pstCamera->astGroupList[_u32Index].u32Flags, orxCAMERA_KU32_GROUP_FLAG_SORTING) ? orxTRUE : orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
 }
 
 /** Sets camera frustum (3D rectangle for 2D camera)
@@ -1345,7 +1630,7 @@ orxCAMERA *orxFASTCALL orxCamera_Get(const orxSTRING _zName)
   orxASSERT(_zName != orxNULL);
 
   /* Updates result */
-  pstResult = (orxCAMERA *)orxHashTable_Get(sstCamera.pstReferenceTable, orxString_ToCRC(_zName));
+  pstResult = (orxCAMERA *)orxHashTable_Get(sstCamera.pstReferenceTable, orxString_Hash(_zName));
 
   /* Done! */
   return pstResult;
@@ -1382,6 +1667,19 @@ orxSTATUS orxFASTCALL orxCamera_SetParent(orxCAMERA *_pstCamera, void *_pParent)
 
   /* Gets frame */
   pstFrame = _pstCamera->pstFrame;
+
+  /* Checks */
+  orxSTRUCTURE_ASSERT(pstFrame);
+
+  /* Has internal camera parent? */
+  if(orxStructure_TestFlags(_pstCamera, orxCAMERA_KU32_FLAG_INTERNAL_CAMERA))
+  {
+    /* Deletes it */
+    orxCamera_Delete(orxCAMERA(orxStructure_GetOwner(orxFrame_GetParent(pstFrame))));
+
+    /* Updates status */
+    orxStructure_SetFlags(_pstCamera, orxCAMERA_KU32_FLAG_NONE, orxCAMERA_KU32_FLAG_INTERNAL_CAMERA);
+  }
 
   /* No parent? */
   if(_pParent == orxNULL)

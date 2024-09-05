@@ -1,0 +1,149 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+
+android {
+    namespace 'org.orx.lib'
+    compileSdk sdkVersion.toInteger()
+
+    // Ideally, we want to use the default NDK version for the used AGP version.
+    // However, we opt-in to NDK r27 since it comes with many important features/optimizations.
+    ndkVersion '27.0.12077973'
+
+    buildFeatures {
+        prefab true
+        prefabPublishing true
+    }
+
+    defaultConfig {
+        minSdk 21
+        targetSdk sdkVersion.toInteger()
+        versionCode 116
+        versionName '1.16'
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    prefab {
+        orx {
+            headers "${System.env.ORX}/include"
+        }
+        webpdecoder_static {
+            headers "${System.env.ORX}/../extern/libwebp/src"
+        }
+        liquidfun_static {
+            headers "${System.env.ORX}/../extern/LiquidFun-1.1.0/include"
+        }
+    }
+    packagingOptions {
+        exclude('**/libc++_shared.so')
+    }
+    buildTypes {
+        release {
+            debuggable false
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            externalNativeBuild.ndkBuild {
+                arguments 'NDK_DEBUG=0', '-j'
+            }
+        }
+        debug {
+            debuggable true
+
+            externalNativeBuild.ndkBuild {
+                arguments 'NDK_DEBUG=1', '-j'
+                cFlags '-D__orxDEBUG__'
+            }
+        }
+        profile {
+            debuggable true
+
+            externalNativeBuild.ndkBuild {
+                arguments 'NDK_DEBUG=0', '-j'
+                cFlags '-D__orxPROFILER__'
+            }
+        }
+    }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+        singleVariant('debug') {
+            withSourcesJar()
+        }
+        singleVariant('profile') {
+            withSourcesJar()
+        }
+    }
+    lint {
+        abortOnError true
+    }
+}
+dependencies {
+    // Align versions of all Kotlin components
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
+
+    api 'androidx.core:core:1.13.1'
+    api 'androidx.appcompat:appcompat:1.7.0'
+
+    api 'androidx.games:games-activity:3.0.5'
+    api 'androidx.games:games-controller:2.0.2'
+    api 'androidx.games:games-frame-pacing:2.1.2'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId 'org.orx-project'
+                artifactId 'orx'
+                version android.defaultConfig.versionName
+            }
+            debug(MavenPublication) {
+                from components.debug
+                groupId 'org.orx-project'
+                artifactId 'orxd'
+                version android.defaultConfig.versionName
+            }
+            profile(MavenPublication) {
+                from components.profile
+                groupId 'org.orx-project'
+                artifactId 'orxp'
+                version android.defaultConfig.versionName
+            }
+        }
+        repositories {
+            maven {
+                name = 'orx'
+                url "${System.env.ORX}/lib/static/android/repository/"
+            }
+        }
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant->
+        afterEvaluate {
+            tasks.named("prefab${variant.name.capitalize()}Package").configure { task ->
+                // WORKAROUND: Ideally, we would want this to be auto-generated from our modules.
+                // See this FR: https://issuetracker.google.com/issues/214034366
+                task.doLast {
+                    copy {
+                        from ('./src/main/prefab')
+                        into ("./build/intermediates/prefab_package/${variant.name}/prefab")
+                        include '**/*.json'
+                    }
+                }
+            }
+        }
+    }
+}

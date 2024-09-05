@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,28 +23,26 @@
  */
 
 /**
- * @file orxModule.h
+ * @file orxModule.c
  * @date 12/09/2005
  * @author iarwain@orx-project.org
  *
  */
 
 
-#include "orxInclude.h"
+#include "base/orxModule.h"
+
 #include "orxKernel.h"
 #include "orxUtils.h"
 
 #ifdef __orxMSVC__
+  #pragma warning(push)
   #pragma warning(disable : 4276)
 #endif /* __orxMSVC__ */
 
-/** Module registration macro
- */
-#define orxMODULE_REGISTER(MODULE_ID, MODULE_BASENAME)  orxModule_Register(orxMODULE_ID_##MODULE_ID, #MODULE_ID, MODULE_BASENAME##_Setup, MODULE_BASENAME##_Init, MODULE_BASENAME##_Exit)
-
-
 /** Registers all engine modules
  */
+#define orxMODULE_REGISTER(MODULE_ID, MODULE_BASENAME)  orxModule_Register(orxMODULE_ID_##MODULE_ID, #MODULE_ID, MODULE_BASENAME##_Setup, MODULE_BASENAME##_Init, MODULE_BASENAME##_Exit)
 static orxINLINE void orxModule_RegisterAll()
 {
   /* *** All modules registration *** */
@@ -94,11 +92,15 @@ static orxINLINE void orxModule_RegisterAll()
   orxMODULE_REGISTER(TEXTURE, orxTexture);
   orxMODULE_REGISTER(THREAD, orxThread);
   orxMODULE_REGISTER(TIMELINE, orxTimeLine);
+  orxMODULE_REGISTER(TRIGGER, orxTrigger);
   orxMODULE_REGISTER(VIEWPORT, orxViewport);
 
   /* Done! */
   return;
 }
+
+#undef orxMODULE_REGISTER
+
 
 /** Module flags
  */
@@ -217,7 +219,6 @@ static orxINLINE void orxModule_SetupAll()
  * @param[in]   _pfnSetup                 Module setup callback
  * @param[in]   _pfnInit                  Module init callback
  * @param[in]   _pfnExit                  Module exit callback
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zModuleName, const orxMODULE_SETUP_FUNCTION _pfnSetup, const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_EXIT_FUNCTION _pfnExit)
 {
@@ -228,7 +229,7 @@ void orxFASTCALL orxModule_Register(orxMODULE_ID _eModuleID, const orxSTRING _zM
   orxMemory_Zero(&(sstModule.astModuleInfo[_eModuleID]), sizeof(orxMODULE_INFO));
 
   /* Stores its name */
-  orxString_NPrint(sstModule.astModuleInfo[_eModuleID].acName, orxMODULE_KU32_NAME_SIZE - 1, _zModuleName);
+  orxString_NPrint(sstModule.astModuleInfo[_eModuleID].acName, sizeof(sstModule.astModuleInfo[_eModuleID].acName), _zModuleName);
 
   /* Stores module functions */
   sstModule.astModuleInfo[_eModuleID].pfnSetup  = _pfnSetup;
@@ -276,7 +277,6 @@ void orxFASTCALL orxModule_AddOptionalDependency(orxMODULE_ID _eModuleID, orxMOD
  */
 orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
 {
-  orxU64    u64Depend;
   orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -303,6 +303,8 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
     /* Is not initialized? */
     if(!(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING)))
     {
+      orxU64 u64Depend;
+
       /* For all dependencies */
       for(u64Depend = sstModule.astModuleInfo[_eModuleID].u64DependFlags, u32Index = 0;
           u64Depend != (orxU64)0;
@@ -329,6 +331,11 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
               break;
             }
           }
+          else
+          {
+            /* Updates flags */
+            sstModule.astModuleInfo[u32Index].u64ParentFlags |= (orxU64)1 << _eModuleID;
+          }
         }
       }
 
@@ -352,6 +359,19 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
                 /* Updates flags */
                 sstModule.astModuleInfo[u32Index].u64ParentFlags |= (orxU64)1 << _eModuleID;
               }
+              else
+              {
+                /* Updates temp flag */
+                sstModule.astModuleInfo[u32Index].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_PENDING;
+
+                /* Exits from module */
+                orxModule_Exit((orxMODULE_ID)u32Index);
+              }
+            }
+            else
+            {
+              /* Updates flags */
+              sstModule.astModuleInfo[u32Index].u64ParentFlags |= (orxU64)1 << _eModuleID;
             }
           }
         }
@@ -395,32 +415,8 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
   /* Was external call? */
   if(sstModule.u32InitLoopCount == 0)
   {
-    /* Failed? */
-    if(eResult == orxSTATUS_FAILURE)
-    {
-      /* For all modules */
-      for(u32Index = 0; u32Index < orxMODULE_ID_TOTAL_NUMBER; u32Index++)
-      {
-        /* Is param initialized? */
-        if(orxModule_IsInitialized(orxMODULE_ID_PARAM) != orxFALSE)
-        {
-          /* Displays help */
-          orxParam_DisplayHelp();
-        }
-
-        /* Is temporary initialized? */
-        if(sstModule.astModuleInfo[u32Index].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_PENDING)
-        {
-          /* Updates flags */
-          sstModule.astModuleInfo[u32Index].u64ParentFlags &= ~(orxU64)1 << _eModuleID;
-
-          /* Internal exit call */
-          orxModule_Exit((orxMODULE_ID)u32Index);
-        }
-      }
-    }
-    /* Successful */
-    else
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
     {
       /* For all modules */
       for(u32Index = 0; u32Index < orxMODULE_ID_TOTAL_NUMBER; u32Index++)
@@ -428,10 +424,28 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         /* Cleans temp status */
         sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_PENDING;
       }
-
-      /* Displays help */
-      eResult = orxParam_DisplayHelp();
     }
+
+    /* Is param initialized? */
+    if(orxModule_IsInitialized(orxMODULE_ID_PARAM) != orxFALSE)
+    {
+      /* Displays help */
+      if(orxParam_DisplayHelp() == orxSTATUS_FAILURE)
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+  }
+
+  /* Failure? */
+  if(eResult == orxSTATUS_FAILURE)
+  {
+    /* Updates temp flag */
+    sstModule.astModuleInfo[_eModuleID].u32StatusFlags |= orxMODULE_KU32_STATUS_FLAG_PENDING;
+
+    /* Exits from module */
+    orxModule_Exit(_eModuleID);
   }
 
   /* Done! */
@@ -442,19 +456,14 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
  */
 void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
 {
-  orxU32 u32Index;
-
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_TOTAL_NUMBER);
 
   /* Is initialized? */
-  if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED)
+  if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & (orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING))
   {
     orxU64 u64Depend;
-
-    /* Cleans flags */
-    sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING);
-    sstModule.astModuleInfo[_eModuleID].u64ParentFlags  = 0;
+    orxU32 u32Index;
 
     /* Computes dependency flag */
     u64Depend = (orxU64)1 << _eModuleID;
@@ -465,6 +474,9 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
       /* Is module dependent? */
       if(sstModule.astModuleInfo[u32Index].u64DependFlags & u64Depend)
       {
+        /* Removes parent */
+        sstModule.astModuleInfo[_eModuleID].u64ParentFlags &= ~((orxU64)1 << u32Index);
+
         /* Exits from it */
         orxModule_Exit((orxMODULE_ID)u32Index);
       }
@@ -476,36 +488,40 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
       /* Is module dependent? */
       if(sstModule.astModuleInfo[u32Index].u64OptionalDependFlags & u64Depend)
       {
-        /* Exits from it */
-        orxModule_Exit((orxMODULE_ID)u32Index);
+        /* Removes parent */
+        sstModule.astModuleInfo[_eModuleID].u64ParentFlags &= ~((orxU64)1 << u32Index);
       }
     }
 
-    /* Has module exit function? */
-    if(sstModule.astModuleInfo[_eModuleID].pfnExit != orxNULL)
+    /* Was initialized? */
+    if(sstModule.astModuleInfo[_eModuleID].u32StatusFlags & orxMODULE_KU32_STATUS_FLAG_INITIALIZED)
     {
-      /* Calls it */
-      sstModule.astModuleInfo[_eModuleID].pfnExit();
+      /* Has module exit function? */
+      if(sstModule.astModuleInfo[_eModuleID].pfnExit != orxNULL)
+      {
+        /* Calls it */
+        sstModule.astModuleInfo[_eModuleID].pfnExit();
+      }
     }
+
+    /* Cleans flags */
+    sstModule.astModuleInfo[_eModuleID].u32StatusFlags &= ~(orxMODULE_KU32_STATUS_FLAG_INITIALIZED|orxMODULE_KU32_STATUS_FLAG_PENDING);
+    sstModule.astModuleInfo[_eModuleID].u64ParentFlags  = 0;
 
     /* For all modules */
     for(u32Index = 0; u32Index < orxMODULE_ID_TOTAL_NUMBER; u32Index++)
     {
-      /* Has parents? */
-      if(sstModule.astModuleInfo[u32Index].u64ParentFlags != 0)
+      /* Was this module one of its parents? */
+      if(sstModule.astModuleInfo[u32Index].u64ParentFlags & u64Depend)
       {
-        /* Was this module one of its parents? */
-        if(sstModule.astModuleInfo[u32Index].u64ParentFlags & u64Depend)
-        {
-          /* Removes self as parent */
-          sstModule.astModuleInfo[u32Index].u64ParentFlags &= ~u64Depend;
+        /* Removes self as parent */
+        sstModule.astModuleInfo[u32Index].u64ParentFlags &= ~u64Depend;
 
-          /* No more parents? */
-          if(sstModule.astModuleInfo[u32Index].u64ParentFlags == 0)
-          {
-            /* Exits from it */
-            orxModule_Exit((orxMODULE_ID)u32Index);
-          }
+        /* No more parents? */
+        if(sstModule.astModuleInfo[u32Index].u64ParentFlags == 0)
+        {
+          /* Exits from it */
+          orxModule_Exit((orxMODULE_ID)u32Index);
         }
       }
     }
@@ -514,6 +530,7 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
     sstModule.u32InitCount--;
   }
 
+  /* Done! */
   return;
 }
 
@@ -541,7 +558,7 @@ orxBOOL orxFASTCALL orxModule_IsInitialized(orxMODULE_ID _eModuleID)
  */
 const orxSTRING orxFASTCALL orxModule_GetName(orxMODULE_ID _eModuleID)
 {
-  const orxSTRING zResult = orxSTRING_EMPTY;
+  const orxSTRING zResult;
 
   /* Checks */
   orxASSERT(_eModuleID < orxMODULE_ID_TOTAL_NUMBER);
@@ -552,3 +569,7 @@ const orxSTRING orxFASTCALL orxModule_GetName(orxMODULE_ID _eModuleID)
   /* Done! */
   return zResult;
 }
+
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif /* __orxMSVC__ */

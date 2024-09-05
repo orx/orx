@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxPlugin
- * 
+ *
  * Header that defines all IDs of the mouse plugin
  *
  * @{
@@ -55,6 +55,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_MOUSE_t
   orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GET_MOVE_DELTA,
   orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GET_WHEEL_DELTA,
   orxPLUGIN_FUNCTION_BASE_ID_MOUSE_SHOW_CURSOR,
+  orxPLUGIN_FUNCTION_BASE_ID_MOUSE_GRAB,
 
   orxPLUGIN_FUNCTION_BASE_ID_MOUSE_NUMBER,
 

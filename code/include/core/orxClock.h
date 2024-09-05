@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -53,36 +53,26 @@
 
 #define orxCLOCK_KU32_FUNCTION_BANK_SIZE              16          /**< Function bank size */
 
+#define orxCLOCK_KZ_CONFIG_FREQUENCY                  "Frequency"
+#define orxCLOCK_KZ_CONFIG_MODIFIER_LIST              "ModifierList"
 
-/** Clock type enum
+#define orxCLOCK_KZ_CORE                              "core"
+
+
+/** Clock modifier enum
  */
-typedef enum __orxCLOCK_TYPE_t
+typedef enum __orxCLOCK_MODIFIER_t
 {
-  orxCLOCK_TYPE_CORE = 0,
-  orxCLOCK_TYPE_USER,
+  orxCLOCK_MODIFIER_FIXED = 0,                                    /**< The given DT will be constant, set to this modifier value */
+  orxCLOCK_MODIFIER_MULTIPLY,                                     /**< The given DT will be multiplied by this modifier value */
+  orxCLOCK_MODIFIER_MAXED,                                        /**< The given DT will be maxed by this modifier value */
+  orxCLOCK_MODIFIER_AVERAGE,                                      /**< The given DT will be averaged over a number of past updates defined by this modifier value */
 
-  orxCLOCK_TYPE_SECOND,
+  orxCLOCK_MODIFIER_NUMBER,
 
-  orxCLOCK_TYPE_NUMBER,
+  orxCLOCK_MODIFIER_NONE = orxENUM_NONE,
 
-  orxCLOCK_TYPE_NONE = orxENUM_NONE
-
-} orxCLOCK_TYPE;
-
-
-/** Clock mod type enum
- */
-typedef enum __orxCLOCK_MOD_TYPE_t
-{
-  orxCLOCK_MOD_TYPE_FIXED = 0,                        /**< The given DT will always be constant (= modifier value) */
-  orxCLOCK_MOD_TYPE_MULTIPLY,                         /**< The given DT will be the real one * modifier */
-  orxCLOCK_MOD_TYPE_MAXED,                            /**< The given DT will be the real one maxed by the modifier value */
-
-  orxCLOCK_MOD_TYPE_NUMBER,
-
-  orxCLOCK_MOD_TYPE_NONE = orxENUM_NONE,
-
-} orxCLOCK_MOD_TYPE;
+} orxCLOCK_MODIFIER;
 
 
 /** Clock priority
@@ -108,12 +98,10 @@ typedef enum __orxCLOCK_PRIORITY_t
  */
 typedef struct __orxCLOCK_INFO_t
 {
-  orxCLOCK_TYPE     eType;                            /**< Clock type : 4 */
-  orxFLOAT          fTickSize;                        /**< Clock tick size (in seconds) : 8 */
-  orxCLOCK_MOD_TYPE eModType;                         /**< Clock mod type : 12 */
-  orxFLOAT          fModValue;                        /**< Clock mod value : 16 */
-  orxFLOAT          fDT;                              /**< Clock DT (time elapsed between 2 clock calls in seconds) : 20 */
-  orxFLOAT          fTime;                            /**< Clock time : 24 */
+  orxFLOAT          fTickSize;                                    /**< Clock tick size (in seconds) : 4 */
+  orxFLOAT          fDT;                                          /**< Clock DT (time elapsed between 2 clock calls in seconds) : 8 */
+  orxFLOAT          fTime;                                        /**< Clock time : 12 */
+  orxFLOAT          afModifierList[orxCLOCK_MODIFIER_NUMBER];     /**< Clock modifiers : 28 */
 
 } orxCLOCK_INFO;
 
@@ -122,10 +110,10 @@ typedef struct __orxCLOCK_INFO_t
  */
 typedef enum __orxCLOCK_EVENT_t
 {
-  orxCLOCK_EVENT_RESTART = 0,                         /**< Event sent when a clock restarts */
-  orxCLOCK_EVENT_RESYNC,                              /**< Event sent when a clock resyncs */
-  orxCLOCK_EVENT_PAUSE,                               /**< Event sent when a clock is paused */
-  orxCLOCK_EVENT_UNPAUSE,                             /**< Event sent when a clock is unpaused */
+  orxCLOCK_EVENT_RESTART = 0,                                     /**< Event sent when a clock restarts */
+  orxCLOCK_EVENT_RESYNC,                                          /**< Event sent when a clock resyncs */
+  orxCLOCK_EVENT_PAUSE,                                           /**< Event sent when a clock is paused */
+  orxCLOCK_EVENT_UNPAUSE,                                         /**< Event sent when a clock is unpaused */
 
   orxCLOCK_EVENT_NUMBER,
 
@@ -162,13 +150,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Update();
 
 /** Creates a clock
  * @param[in]   _fTickSize                            Tick size for the clock (in seconds)
- * @param[in]   _eType                                Type of the clock
  * @return      orxCLOCK / orxNULL
  */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
+extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Create(orxFLOAT _fTickSize);
 
 /** Creates a clock from config
- * @param[in]   _zConfigID    Config ID
+ * @param[in]   _zConfigID                            Config ID
  * @ return orxCLOCK / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_CreateFromConfig(const orxSTRING _zConfigID);
@@ -197,15 +184,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Restart(orxCLOCK 
 
 /** Pauses a clock
  * @param[in]   _pstClock                             Concerned clock
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _bPause                               Pause / unpause
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Pause(orxCLOCK *_pstClock);
-
-/** Unpauses a clock
- * @param[in]   _pstClock                             Concerned clock
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unpause(orxCLOCK *_pstClock);
+extern orxDLLAPI void orxFASTCALL                     orxClock_Pause(orxCLOCK *_pstClock, orxBOOL _bPause);
 
 /** Is a clock paused?
  * @param[in]   _pstClock                             Concerned clock
@@ -226,17 +207,24 @@ extern orxDLLAPI const orxCLOCK_INFO *orxFASTCALL     orxClock_GetInfo(const orx
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetFromInfo(const orxCLOCK_INFO *_pstClockInfo);
 
 
-/** Sets a clock modifier
+/** Sets a clock's modifier
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _eModType                             Modifier type
- * @param[in]   _fModValue                            Modifier value
+ * @param[in]   _eModifier                            Concerned modifier
+ * @param[in]   _fValue                               Modifier value, orxFLOAT_0 to deactivate the modifier
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MOD_TYPE _eModType, orxFLOAT _fModValue);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIER _eModifier, orxFLOAT _fValue);
+
+/** Gets a clock's modifier
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _eModifier                            Concerned modifier
+ * @return      Modifier value / orxFLOAT_0 if deactivated
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxClock_GetModifier(orxCLOCK *_pstClock, orxCLOCK_MODIFIER _eModifier);
 
 /** Sets a clock tick size
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _fTickSize                            Tick size
+ * @param[in]   _fTickSize                            Tick size, -1 for 'display'
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetTickSize(orxCLOCK *_pstClock, orxFLOAT _fTickSize);
@@ -275,27 +263,8 @@ extern orxDLLAPI void *orxFASTCALL                    orxClock_GetContext(const 
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pContext);
 
 
-/** Finds a clock given its tick size and its type
- * @param[in]   _fTickSize                            Tick size of the desired clock (in seconds)
- * @param[in]   _eType                                Type of the desired clock
- * @return      orxCLOCK / orxNULL
- */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindFirst(orxFLOAT _fTickSize, orxCLOCK_TYPE _eType);
-
-/** Finds next clock of same type/tick size
- * @param[in]   _pstClock                             Concerned clock
- * @return      orxCLOCK / orxNULL
- */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_FindNext(const orxCLOCK *_pstClock);
-
-/** Gets next existing clock in list (can be used to parse all existing clocks)
- * @param[in]   _pstClock                             Concerned clock
- * @return      orxCLOCK / orxNULL
- */
-extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_GetNext(const orxCLOCK *_pstClock);
-
 /** Gets clock given its name
- * @param[in]   _zName          Clock name
+ * @param[in]   _zName                                Clock name, orxCLOCK_KZ_CORE for core clock
  * @return      orxCLOCK / orxNULL
  */
 extern orxDLLAPI orxCLOCK *orxFASTCALL                orxClock_Get(const orxSTRING _zName);
@@ -319,10 +288,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_AddTimer(orxCLOCK
 
 /** Removes a timer function from a clock
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _pfnCallback                          Concerned timer callback to remove
- * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay
- * @param[in]   _pContext                             Context of the timer to remove, orxNULL for removing all occurrences regardless of their context
-* @return       orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @param[in]   _pfnCallback                          Concerned timer callback to remove, orxNULL to remove all occurrences regardless of their callback
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f to remove all occurrences regardless of their respective delay
+ * @param[in]   _pContext                             Context of the timer to remove, orxNULL to remove all occurrences regardless of their context
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_RemoveTimer(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext);
 
@@ -336,9 +305,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_RemoveTimer(orxCL
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_AddGlobalTimer(const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, orxS32 _s32Repetition, void *_pContext);
 
 /** Removes a global timer function (ie. from the main core clock)
- * @param[in]   _pfnCallback                          Concerned timer callback to remove
- * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f for removing all occurrences regardless of their respective delay
- * @param[in]   _pContext                             Context of the timer to remove, orxNULL for removing all occurrences regardless of their context
+ * @param[in]   _pfnCallback                          Concerned timer callback to remove, orxNULL to remove all occurrences regardless of their callback
+ * @param[in]   _fDelay                               Delay between 2 calls of the timer to remove, -1.0f to remove all occurrences regardless of their respective delay
+ * @param[in]   _pContext                             Context of the timer to remove, orxNULL to remove all occurrences regardless of their context
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_RemoveGlobalTimer(const orxCLOCK_FUNCTION _pfnCallback, orxFLOAT _fDelay, void *_pContext);

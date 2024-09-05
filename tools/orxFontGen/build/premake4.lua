@@ -16,22 +16,8 @@ function initconfigurations ()
 end
 
 function initplatforms ()
-    if os.is ("windows") then
-        if string.lower(_ACTION) == "vs2013"
-        or string.lower(_ACTION) == "vs2015"
-        or string.lower(_ACTION) == "vs2017" then
-            return
-            {
-                "x64",
-                "x32"
-            }
-        else
-            return
-            {
-                "Native"
-            }
-        end
-    elseif os.is ("linux") then
+    if os.is ("windows")
+    or os.is ("linux") then
         if os.is64bit () then
             return
             {
@@ -46,17 +32,11 @@ function initplatforms ()
             }
         end
     elseif os.is ("macosx") then
-        if string.find(string.lower(_ACTION), "xcode") then
-            return
-            {
-                "Universal"
-            }
-        else
-            return
-            {
-                "x32", "x64"
-            }
-        end
+        return
+        {
+            "universal64",
+            "x64"
+        }
     end
 end
 
@@ -66,7 +46,7 @@ function defaultaction (name, action)
    end
 end
 
-defaultaction ("windows", "vs2015")
+defaultaction ("windows", "vs2022")
 defaultaction ("linux", "gmake")
 defaultaction ("macosx", "gmake")
 
@@ -115,7 +95,9 @@ solution "orxFontGen"
         "../../../code/include",
         "$(ORX)/include",
         "../../../extern/stb_image",
-        "../../../extern/freetype/include"
+        "$(ORX)/../extern/stb_image",
+        "../../../extern/freetype/include",
+        "$(ORX)/../extern/freetype/include"
     }
 
     configuration {"not macosx"}
@@ -148,10 +130,7 @@ solution "orxFontGen"
         "StaticRuntime"
     }
 
-    configuration {"not vs2013", "not vs2015", "not vs2017"}
-        flags {"EnableSSE2"}
-
-    configuration {"not x64"}
+    configuration {"x32"}
         flags {"EnableSSE2"}
 
     configuration {"not windows"}
@@ -180,12 +159,14 @@ solution "orxFontGen"
         libdirs
         {
             "../../../extern/freetype/lib/linux",
+            "$(ORX)/../extern/freetype/lib/linux"
         }
 
     configuration {"linux", "x64"}
         libdirs
         {
-            "../../../extern/freetype/lib/linux64"
+            "../../../extern/freetype/lib/linux64",
+            "$(ORX)/../extern/freetype/lib/linux64"
         }
 
     configuration {"linux"}
@@ -201,17 +182,19 @@ solution "orxFontGen"
     configuration {"macosx"}
         libdirs
         {
-            "../../../extern/freetype/lib/mac"
+            "../../../extern/freetype/lib/mac",
+            "$(ORX)/../extern/freetype/lib/mac"
         }
         buildoptions
         {
-            "-mmacosx-version-min=10.6",
+            "-stdlib=libc++",
             "-gdwarf-2",
+            "-Wno-unused-function",
             "-Wno-write-strings"
         }
         linkoptions
         {
-            "-mmacosx-version-min=10.6",
+            "-stdlib=libc++",
             "-dead_strip"
         }
         postbuildcommands {"$(shell [ -f " .. copybase .. "/../../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
@@ -234,40 +217,64 @@ solution "orxFontGen"
     configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT"}
 
-    configuration {"vs2012"}
+    configuration {"vs2017 or vs2019 or vs2022", "x32"}
         libdirs
         {
-            "../../../extern/freetype/lib/vc2012"
+            "../../../extern/freetype/lib/vc2015/32",
+            "$(ORX)/../extern/freetype/lib/vc2015/32"
         }
 
-    configuration {"vs2013", "x32"}
+    configuration {"vs2017 or vs2019 or vs2022", "x64"}
         libdirs
         {
-            "../../../extern/freetype/lib/vc2013/32"
+            "../../../extern/freetype/lib/vc2015/64",
+            "$(ORX)/../extern/freetype/lib/vc2015/64"
         }
 
-    configuration {"vs2013", "x64"}
+    configuration {"windows", "gmake or codelite or codeblocks", "x32"}
         libdirs
         {
-            "../../../extern/freetype/lib/vc2013/64"
+            "../../../extern/freetype/lib/mingw/32",
+            "$(ORX)/../extern/freetype/lib/mingw/32"
         }
 
-    configuration {"vs2015 or vs2017", "x32"}
+    configuration {"windows", "gmake or codelite or codeblocks", "x64"}
         libdirs
         {
-            "../../../extern/freetype/lib/vc2015/32"
+            "../../../extern/freetype/lib/mingw/64",
+            "$(ORX)/../extern/freetype/lib/mingw/64"
         }
 
-    configuration {"vs2015 or vs2017", "x64"}
-        libdirs
+    configuration {"windows", "gmake", "x32"}
+        prebuildcommands
         {
-            "../../../extern/freetype/lib/vc2015/64"
+            "$(eval CC := i686-w64-mingw32-gcc)",
+            "$(eval CXX := i686-w64-mingw32-g++)",
+            "$(eval AR := i686-w64-mingw32-gcc-ar)"
         }
 
-    configuration {"windows", "codeblocks or codelite or gmake"}
-        libdirs
+    configuration {"windows", "gmake", "x64"}
+        prebuildcommands
         {
-            "../../../extern/freetype/lib/mingw"
+            "$(eval CC := x86_64-w64-mingw32-gcc)",
+            "$(eval CXX := x86_64-w64-mingw32-g++)",
+            "$(eval AR := x86_64-w64-mingw32-gcc-ar)"
+        }
+
+    configuration {"windows", "codelite or codeblocks", "x32"}
+        envs
+        {
+            "CC=i686-w64-mingw32-gcc",
+            "CXX=i686-w64-mingw32-g++",
+            "AR=i686-w64-mingw32-gcc-ar"
+        }
+
+    configuration {"windows", "codelite or codeblocks", "x64"}
+        envs
+        {
+            "CC=x86_64-w64-mingw32-gcc",
+            "CXX=x86_64-w64-mingw32-g++",
+            "AR=x86_64-w64-mingw32-gcc-ar"
         }
 
 
@@ -300,12 +307,25 @@ project "orxFontGen"
 
 -- Mac OS X
 
-    configuration {"macosx"}
+    configuration {"macosx", "not codelite", "not codeblocks"}
         links
         {
             "Foundation.framework",
             "AppKit.framework",
-            "OpenGL.framework",
+            "OpenGL.framework"
+        }
+
+    configuration {"macosx", "codelite or codeblocks"}
+        linkoptions
+        {
+            "-framework Foundation",
+            "-framework AppKit",
+            "-framework OpenGL"
+        }
+
+    configuration {"macosx"}
+        links
+        {
             "z",
             "pthread"
         }

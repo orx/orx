@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2010 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -46,9 +46,6 @@
  * but you can have you own console-less program if you wish. In order to achieve that, you only need to provide
  * an argc/argv style parameter list that contains the executable name, otherwise the default loaded config file will be
  * orx.ini instead of being based on our executable name (ie. 10_Locale.ini).
- *
- * For visual studio users (windows), it can easily be achieved by writing a WinMain() function instead of main(),
- * and by getting the executable name (or hardcoding it).
  *
  * This tutorial simply display orx's logo and a localized legend. Press space to cycle through
  * all the availables languages for the legend's text.
@@ -107,16 +104,15 @@ Logo::Logo()
   // Adds ourselves to the orxOBJECT
   orxObject_SetUserData(mpstObject, this);
 
-  // Creates and stores our legend object
-  mpstLegend = orxObject_CreateFromConfig("Legend");
+  // Stores our legend object (we don't use it in this tutorial, this is done for demonstration purposes)
+  mpstLegend = orxObject_GetChild(mpstObject);
 }
 
 // D-tor
 Logo::~Logo()
 {
-  // Deletes our orxOBJECTs
+  // Deletes our orxOBJECT
   orxObject_Delete(mpstObject);
-  orxObject_Delete(mpstLegend);
 }
 
 
@@ -133,6 +129,8 @@ public:
   static orxSTATUS orxFASTCALL  Init();
   static void orxFASTCALL       Exit();
   static orxSTATUS orxFASTCALL  Run();
+  static void orxFASTCALL       Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext);
+
 
   void SelectNextLanguage();
 
@@ -157,7 +155,7 @@ void Game::SelectNextLanguage()
   u32LanguageIndex = (u32LanguageIndex == orxLocale_GetLanguageCount() - 1) ? 0 : u32LanguageIndex + 1;
 
   // Selects it
-  orxLocale_SelectLanguage(orxLocale_GetLanguage(u32LanguageIndex));
+  orxLocale_SelectLanguage(orxLocale_GetLanguage(u32LanguageIndex), orxTEXT_KZ_LOCALE_GROUP);
 }
 
 // Init game function
@@ -241,6 +239,9 @@ orxSTATUS Game::Init()
 
   orxLOG("10_Locale Init() called!");
 
+  // Registers our update function
+  orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+
   // Inits our game
   eResult = soMyGame.InitGame();
 
@@ -264,13 +265,6 @@ orxSTATUS Game::Run()
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  // Cycle action is active?
-  if(orxInput_IsActive("CycleLanguage") && orxInput_HasNewStatus("CycleLanguage"))
-  {
-    // Selects next language
-    soMyGame.SelectNextLanguage();
-  }
-
   // Is quit action active?
   if(orxInput_IsActive("Quit"))
   {
@@ -283,6 +277,18 @@ orxSTATUS Game::Run()
 
   // Done!
   return eResult;
+}
+
+/** Update callback
+ */
+void orxFASTCALL Game::Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
+{
+  // Cycle action is active?
+  if (orxInput_IsActive("CycleLanguage") && orxInput_HasNewStatus("CycleLanguage"))
+  {
+    // Selects next language
+    soMyGame.SelectNextLanguage();
+  }
 }
 
 
@@ -298,18 +304,3 @@ int main(int argc, char **argv)
   // Done!
   return EXIT_SUCCESS;
 }
-
-
-#ifdef __orxMSVC__
-
-// Here's an example for a console-less program under windows with visual studio
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-  // Inits and executes orx
-  orx_WinExecute(Game::Init, Game::Run, Game::Exit);
-
-  // Done!
-  return EXIT_SUCCESS;
-}
-
-#endif // __orxMSVC__

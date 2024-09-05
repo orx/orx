@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,7 +32,7 @@
 
 /**
  * @addtogroup orxPlugin
- * 
+ *
  * Header that defines all IDs of the keyboard plugin
  *
  * @{
@@ -50,6 +50,7 @@ typedef enum __orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_t
   orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_INIT = 0,
   orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_EXIT,
   orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_IS_KEY_PRESSED,
+  orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_GET_KEY_DISPLAY_NAME,
   orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_KEY,
   orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_READ_STRING,
   orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD_CLEAR_BUFFER,

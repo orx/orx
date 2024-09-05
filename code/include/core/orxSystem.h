@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -66,6 +66,12 @@ typedef enum __orxSYSTEM_EVENT_t
   orxSYSTEM_EVENT_ACCELERATE,
   orxSYSTEM_EVENT_MOTION_SHAKE,
 
+  orxSYSTEM_EVENT_DROP,
+  orxSYSTEM_EVENT_CLIPBOARD,
+
+  orxSYSTEM_EVENT_PARAM_READY,
+  orxSYSTEM_EVENT_PARAM_DISPLAY,
+
   orxSYSTEM_EVENT_NUMBER,
 
   orxSYSTEM_EVENT_NONE = orxENUM_NONE
@@ -94,6 +100,21 @@ typedef struct __orxSYSTEM_EVENT_PAYLOAD_t
       orxDOUBLE dTime;
       orxVECTOR vAcceleration;
     } stAccelerometer;
+
+    /* Drop event */
+    struct
+    {
+      const orxSTRING  *azValueList;
+      orxU32            u32Number;
+
+    } stDrop;
+
+    /* Clipboard event */
+    struct
+    {
+      const orxSTRING zValue;
+
+    } stClipboard;
   };
 
 } orxSYSTEM_EVENT_PAYLOAD;
@@ -152,6 +173,17 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxSystem_GetVersionFullString();
  * @return Absolute numeric value of compiled version
  */
 extern orxDLLAPI orxU32 orxFASTCALL           orxSystem_GetVersionNumeric();
+
+/** Gets clipboard's content
+ * @return Clipboard's content / orxNULL, valid until next call to orxSystem_GetClipboard/orxSystem_SetClipboard
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL  orxSystem_GetClipboard();
+
+/** Sets clipboard's content
+ * @param[in] _zValue               Value to set in the clipboard, orxNULL to clear
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxSystem_SetClipboard(const orxSTRING _zValue);
 
 
 #endif /* _orxSYSTEM_H_ */

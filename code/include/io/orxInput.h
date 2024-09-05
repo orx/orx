@@ -1,6 +1,6 @@
 /* Orx - Portable Game Engine
  *
- * Copyright (c) 2008-2018 Orx-Project
+ * Copyright (c) 2008- Orx-Project
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -53,12 +53,22 @@
 
 /** Misc defines
  */
-#define orxINPUT_KU32_BINDING_NUMBER      4
+#define orxINPUT_KZ_CONFIG_SECTION                    "Input"             /**< Input section name */
+#define orxINPUT_KZ_CONFIG_DEFAULT_THRESHOLD          "DefaultThreshold"  /**< Input default threshold */
+#define orxINPUT_KZ_CONFIG_DEFAULT_MULTIPLIER         "DefaultMultiplier" /**< Input default multiplier */
+#define orxINPUT_KZ_CONFIG_COMBINE_LIST               "CombineList"       /**< Combine input list */
+#define orxINPUT_KZ_CONFIG_JOYSTICK_ID_LIST           "JoyIDList"         /**< Joystick ID list */
 
-#define orxINPUT_KZ_INTERNAL_SET_PREFIX   "-="
+#define orxINPUT_KU32_BINDING_NUMBER                  16
 
-#define orxINPUT_KC_MODE_PREFIX_POSITIVE  '+'
-#define orxINPUT_KC_MODE_PREFIX_NEGATIVE  '-'
+#define orxINPUT_KZ_INTERNAL_SET_PREFIX               "-="
+
+#define orxINPUT_KC_MODE_PREFIX_POSITIVE              '+'
+#define orxINPUT_KC_MODE_PREFIX_NEGATIVE              '-'
+
+#define orxINPUT_GET_FLAG(TYPE)                       ((orxU32)(1U << (orxU32)(TYPE)))
+#define orxINPUT_KU32_FLAG_TYPE_NONE                  0x00000000
+#define orxINPUT_KU32_MASK_TYPE_ALL                   0x0000FFFF
 
 
 /** Input type enum
@@ -99,6 +109,7 @@ typedef enum __orxINPUT_EVENT_t
   orxINPUT_EVENT_ON = 0,
   orxINPUT_EVENT_OFF,
   orxINPUT_EVENT_SELECT_SET,
+  orxINPUT_EVENT_REMOVE_SET,
 
   orxINPUT_EVENT_NUMBER,
 
@@ -110,12 +121,12 @@ typedef enum __orxINPUT_EVENT_t
  */
 typedef struct __orxINPUT_EVENT_PAYLOAD_t
 {
-  const orxSTRING zSetName;                               /**< Set name : 4 */
-  const orxSTRING zInputName;                             /**< Input name : 8 */
-  orxINPUT_TYPE   aeType[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding type : 24 */
-  orxENUM         aeID[orxINPUT_KU32_BINDING_NUMBER];     /**< Input binding ID : 40 */
-  orxINPUT_MODE   aeMode[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding Mode : 56 */
-  orxFLOAT        afValue[orxINPUT_KU32_BINDING_NUMBER];  /**< Input binding value : 72 */
+  const orxSTRING zSetName;                               /**< Set name : 4/8 */
+  const orxSTRING zInputName;                             /**< Input name : 8/16 */
+  orxINPUT_TYPE   aeType[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding type : 40/48 */
+  orxENUM         aeID[orxINPUT_KU32_BINDING_NUMBER];     /**< Input binding ID : 72/80 */
+  orxINPUT_MODE   aeMode[orxINPUT_KU32_BINDING_NUMBER];   /**< Input binding Mode : 104/112 */
+  orxFLOAT        afValue[orxINPUT_KU32_BINDING_NUMBER];  /**< Input binding value : 136/144 */
 
 } orxINPUT_EVENT_PAYLOAD;
 
@@ -158,6 +169,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SelectSet(const orxST
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetCurrentSet();
 
+/** Gets next set
+ * @param[in]   _zSetName       Concerned set, orxNULL to get the first one
+ * @return Set name / orxNULL
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetNextSet(const orxSTRING _zSetName);
+
+/** Pushes a set (storing the current one on the stack)
+ * @param[in] _zSetName         Set name to push
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_PushSet(const orxSTRING _zSetName);
+
+/** Pops last set from the stack
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_PopSet();
+
+/** Removes a set
+ * @param[in] _zSetName         Set name to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_RemoveSet(const orxSTRING _zSetName);
+
 
 /** Enables/disables working set (without selecting it)
  * @param[in] _zSetName         Set name to enable/disable
@@ -172,6 +206,27 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_EnableSet(const orxST
  */
 extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_IsSetEnabled(const orxSTRING _zSetName);
 
+
+/** Clears all input values of a set
+ * @param[in] _zSetName         Set name to clear, will use current set if orxSTRING_EMPTY/orxNULL
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_ClearSet(const orxSTRING _zSetName);
+
+
+/** Sets current set's type flags, only set types will be polled when updating the set (use orxINPUT_GET_FLAG(TYPE) in order to get the flag that matches a type)
+ * @param[in] _u32AddTypeFlags      Type flags to add
+ * @param[in] _u32RemoveTypeFlags   Type flags to remove
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetTypeFlags(orxU32 _u32AddTypeFlags, orxU32 _u32RemoveTypeFlags);
+
+
+/** Gets next input in current set
+ * @param[in] _zInputName       Concerned input, orxNULL to get the first one
+ * @return Input name / orxNULL
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL      orxInput_GetNext(const orxSTRING _zInputName);
 
 /** Is input active?
  * @param[in] _zInputName       Concerned input name
@@ -203,14 +258,14 @@ extern orxDLLAPI orxBOOL orxFASTCALL              orxInput_HasNewStatus(const or
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL             orxInput_GetValue(const orxSTRING _zInputName);
 
-/** Sets input value (will prevail on peripheral inputs only once)
+/** Sets input value (will take precedence over peripheral inputs only once)
  * @param[in] _zInputName       Concerned input name
  * @param[in] _fValue           Value to set, orxFLOAT_0 to deactivate
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetValue(const orxSTRING _zInputName, orxFLOAT _fValue);
 
-/** Sets permanent input value (will prevail on peripheral inputs till reset)
+/** Sets permanent input value (will take precedence over peripheral inputs until reset)
  * @param[in] _zInputName       Concerned input name
  * @param[in] _fValue           Value to set, orxFLOAT_0 to deactivate
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -239,7 +294,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL            orxInput_SetThreshold(const or
 
 /** Gets input multiplier
  * @param[in] _zInputName       Concerned input name
- * @return Input multiplier
+ * @return Input multiplier if found, -1.0f otherwise
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL             orxInput_GetMultiplier(const orxSTRING _zInputName);
 
