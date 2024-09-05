@@ -1067,8 +1067,8 @@ static void orxFASTCALL orxResource_Watch(const orxCLOCK_INFO *_pstClockInfo, vo
             /* Updates its status */
             pstResourceInfo->bPendingWatch = orxTRUE;
 
-          /* Adds request */
-          orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE_GET_TIME, 0, orxNULL, &orxResource_NotifyChange, pstResourceInfo, orxNULL);
+            /* Adds request */
+            orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE_GET_TIME, 0, orxNULL, &orxResource_NotifyChange, pstResourceInfo, orxNULL);
           }
 
           /* Updates watch count */
