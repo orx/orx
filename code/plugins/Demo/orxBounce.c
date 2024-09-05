@@ -679,15 +679,9 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
     {
       orxCLOCK *pstClock;
 
-      /* Pushes section to save values when swapping */
-      orxConfig_PushSection("Hotswap");
-
       /* Restores values we care about */
-      spstBallSpawner  = orxSPAWNER(orxStructure_Get(orxConfig_GetU64("BallSpawner")));
+      spstBallSpawner = orxSPAWNER(orxStructure_Get(orxConfig_GetU64("BallSpawner")));
       spstWalls       = orxOBJECT(orxStructure_Get(orxConfig_GetU64("Walls")));
-
-      /* Pops config section */
-      orxConfig_PopSection();
 
       /* Gets rendering clock */
       pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
@@ -730,15 +724,9 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
       orxEvent_RemoveHandler(orxEVENT_TYPE_TIMELINE, orxBounce_EventHandler);
       orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxBounce_EventHandler);
 
-      /* Pushes section to save values when swapping */
-      orxConfig_PushSection("Hotswap");
-
       /* Saves values we care about */
       orxConfig_SetU64("BallSpawner", orxStructure_GetGUID(spstBallSpawner));
       orxConfig_SetU64("Walls", orxStructure_GetGUID(spstWalls));
-
-      /* Pops config section */
-      orxConfig_PopSection();
 
       break;
     }
