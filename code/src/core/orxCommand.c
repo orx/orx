@@ -2842,7 +2842,7 @@ void orxFASTCALL orxCommand_CommandLoadPlugin(orxU32 _u32ArgNumber, const orxCOM
   if(orxModule_IsInitialized(orxMODULE_ID_PLUGIN) != orxFALSE)
   {
     /* Loads plugin */
-    if(orxPlugin_LoadUsingExt(_astArgList[0].zValue, _astArgList[0].zValue) != orxHANDLE_UNDEFINED)
+    if(orxPlugin_LoadShadow(_astArgList[0].zValue) != orxHANDLE_UNDEFINED)
     {
       /* Updates result */
       _pstResult->bValue = orxTRUE;

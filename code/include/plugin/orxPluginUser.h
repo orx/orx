@@ -86,13 +86,19 @@ extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_EXIT_FUNCTION_NAME()        
   return ((orxPLUGIN_ENTRY_POINT)ENTRY_FUNCTION)(orxPLUGIN_ENTRY_MODE_EXIT);                                                          \
 }
 
-/* Defines a user plugin init entry function (that take an entry mode argument and return an orxSTATUS value) */
+/* Defines a user plugin swap entry function (that take an entry mode argument and return an orxSTATUS value) */
 #define orxPLUGIN_DECLARE_SWAP_ENTRY_POINT(ENTRY_FUNCTION)                                                                            \
 extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_SWAP_FUNCTION_NAME(orxPLUGIN_ENTRY_MODE _eMode)                                   \
 {                                                                                                                                     \
   /* Done! */                                                                                                                         \
-  return ENTRY_FUNCTION(_eMode);                                                                                                      \
+  return ((orxPLUGIN_ENTRY_POINT)ENTRY_FUNCTION)(_eMode);                                                                                                      \
 }
+
+/* Defines a user plugin entry function (that take an entry mode argument and return an orxSTATUS value) */
+#define orxPLUGIN_DECLARE_ENTRY_POINT(ENTRY_FUNCTION)                                                                                 \
+orxPLUGIN_DECLARE_INIT_ENTRY_POINT(ENTRY_FUNCTION);                                                                                   \
+orxPLUGIN_DECLARE_EXIT_ENTRY_POINT(ENTRY_FUNCTION);                                                                                   \
+orxPLUGIN_DECLARE_SWAP_ENTRY_POINT(ENTRY_FUNCTION);
 
 
 /*********************************************

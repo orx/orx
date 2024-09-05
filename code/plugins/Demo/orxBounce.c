@@ -566,8 +566,6 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
   {
     case orxPLUGIN_ENTRY_MODE_INIT:
     {
-      orxU32 i;
-
       /* Loads config file and selects its section */
       orxConfig_Load("Bounce.ini");
       orxConfig_SelectSection("Bounce");
@@ -654,7 +652,7 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
       orxConfig_PopSection();
 
       /* Gets rendering clock */
-      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+      pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
       /* Registers callback */
       eResult = orxClock_Register(pstClock, &orxBounce_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
@@ -694,7 +692,7 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
       orxCLOCK *pstClock;
 
       /* Gets rendering clock */
-      pstClock = orxClock_FindFirst(orx2F(-1.0f), orxCLOCK_TYPE_CORE);
+      pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
       /* Registers callback */
       orxClock_Unregister(pstClock, &orxBounce_Update);
@@ -726,4 +724,5 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
 
 /* Registers plugin entry */
 orxPLUGIN_DECLARE_INIT_ENTRY_POINT(orxBounce_EntryPoint);
+orxPLUGIN_DECLARE_EXIT_ENTRY_POINT(orxBounce_EntryPoint);
 orxPLUGIN_DECLARE_SWAP_ENTRY_POINT(orxBounce_EntryPoint);
