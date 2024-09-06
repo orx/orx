@@ -78,7 +78,7 @@ extern orxDLLAPI void orxFASTCALL               orxPlugin_Exit();
  * @param[in] _zPluginName  The name of the plugin, with or without its library extension
  * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_LoadShadow(const orxSTRING _zPluginName);
+extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_Load(const orxSTRING _zPluginName);
 
 /** Unloads a plugin
  * @param[in] _hPluginHandle The handle of the plugin to unload
