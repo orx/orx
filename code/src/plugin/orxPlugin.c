@@ -1155,42 +1155,61 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginName)
   /* Found? */
   if(zLocation != orxNULL)
   {
-    orxSYSPLUGIN  pstSysPlugin;
-    orxBOOL       bFound = orxFALSE;
-    orxS32        i, iCount;
-    orxCHAR       acShadowLocation[384];
+    orxSYSPLUGIN                  pstSysPlugin;
+    const orxRESOURCE_TYPE_INFO  *pstResourceType;
+    orxBOOL                       bUseShadow = orxFALSE;
+    orxCHAR                       acShadowLocation[384];
 
-    /* Pushes resource section */
-    orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
+    /* Gets resource type */
+    pstResourceType = orxResource_GetType(zLocation);
+    orxASSERT(pstResourceType != orxNULL);
 
-    /* For all watchlist entries */
-    for(i = 0, iCount = orxConfig_GetListCount(orxRESOURCE_KZ_CONFIG_WATCH_LIST); i < iCount; i++)
+    /* Not file type? */
+    if(orxString_Compare(pstResourceType->zTag, orxRESOURCE_KZ_TYPE_TAG_FILE) != 0)
     {
-      /* Found? */
-      if(orxString_ICompare(orxPLUGIN_KZ_RESOURCE_GROUP, orxConfig_GetListString(orxRESOURCE_KZ_CONFIG_WATCH_LIST, i)) == 0)
+      /* Requests local shadow */
+      bUseShadow = orxTRUE;
+    }
+    else
+    {
+      orxS32 i, iCount;
+
+      /* Pushes resource section */
+      orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
+
+      /* For all watchlist entries */
+      for(i = 0, iCount = orxConfig_GetListCount(orxRESOURCE_KZ_CONFIG_WATCH_LIST); i < iCount; i++)
       {
-        /* Updates status */
-        bFound = orxTRUE;
-        break;
+        /* Found? */
+        if(orxString_ICompare(orxPLUGIN_KZ_RESOURCE_GROUP, orxConfig_GetListString(orxRESOURCE_KZ_CONFIG_WATCH_LIST, i)) == 0)
+        {
+          /* Updates status */
+          bUseShadow = orxTRUE;
+          break;
+        }
       }
+
+      /* Pops config section */
+      orxConfig_PopSection();
     }
 
-    /* Pops config section */
-    orxConfig_PopSection();
-
     /* Should make a shadow copy? */
-    if(bFound != orxFALSE)
+    if(bUseShadow != orxFALSE)
     {
-      orxHANDLE hResource, hShadowResource;
+      orxHANDLE       hResource, hShadowResource;
+      const orxSTRING zPath;
+
+      /* Gets resource path */
+      zPath = orxResource_GetPath(zLocation);
 
       /* Inits buffer */
       acShadowLocation[sizeof(acShadowLocation) - 1] = orxCHAR_NULL;
 
       /* Gets shadow location */
   #ifdef __orxPLUGIN_MULTI_SHADOW__
-      orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxString_GetLength(zLocation) - orxString_GetLength(szPluginLibraryExt) - 1, zLocation, sstPlugin.u32ShadowCount++, szPluginLibraryExt);
+      orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%s%c%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxRESOURCE_KZ_TYPE_TAG_FILE, orxRESOURCE_KC_LOCATION_SEPARATOR, orxString_GetLength(zFileName) - orxString_GetLength(szPluginLibraryExt) - 1, zFileName, sstPlugin.u32ShadowCount++, szPluginLibraryExt);
   #else /* __orxPLUGIN_MULTI_SHADOW__ */
-      orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxString_GetLength(zLocation) - orxString_GetLength(szPluginLibraryExt) - 1, zLocation, szPluginLibraryExt);
+      orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%s%c%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxRESOURCE_KZ_TYPE_TAG_FILE, orxRESOURCE_KC_LOCATION_SEPARATOR, orxString_GetLength(zFileName) - orxString_GetLength(szPluginLibraryExt) - 1, zFileName, szPluginLibraryExt);
   #endif /* __orxPLUGIN_MULTI_SHADOW__ */
 
       /* Opens both resources */
