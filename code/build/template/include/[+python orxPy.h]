@@ -185,14 +185,12 @@ extern "C"
   ret_type name = py_to##py_type(py_arg(index))
 #define ARG_STR(name, index) ARG_VALUE(const orxSTRING, str, name, index)
 // #define ARG_FLOAT(name, index) ARG_VALUE(orxFLOAT, float, name, index)
-#define ARG_FLOAT(name, index)                \
-  orxFLOAT name;                              \
-  do                                          \
-  {                                           \
-    py_f64 fCast;                             \
-    if (!py_castfloat(py_arg(index), &fCast)) \
-      return false;                           \
-    name = fCast;                             \
+#define ARG_FLOAT(name, index)                 \
+  orxFLOAT name;                               \
+  do                                           \
+  {                                            \
+    if (!py_castfloat32(py_arg(index), &name)) \
+      return false;                            \
   } while (0)
 #define ARG_INT(name, index) ARG_VALUE(orxS64, int, name, index)
 #define ARG_BOOL(name, index) ARG_VALUE(orxBOOL, bool, name, index)
@@ -1226,9 +1224,9 @@ extern "C"
     py_Ref pyLifeTime = py_arg(1);
     if (py_isfloat(pyLifeTime) || py_isint(pyLifeTime))
     {
-      py_f64 fLifeTime;
-      py_castfloat(pyLifeTime, &fLifeTime);
-      orxObject_SetLifeTime(pstObject, (orxFLOAT)fLifeTime);
+      orxFLOAT fLifeTime;
+      py_castfloat32(pyLifeTime, &fLifeTime);
+      orxObject_SetLifeTime(pstObject, fLifeTime);
     }
     else if (py_isnone(pyLifeTime))
     {
@@ -2121,9 +2119,7 @@ extern "C"
           {
             if (py_isfloat(py_retval()) || py_isint(py_retval()))
             {
-              py_f64 dVal;
-              py_castfloat(py_retval(), &dVal);
-              pstPayload->fValue = (orxFLOAT)dVal;
+              py_castfloat32(py_retval(), &pstPayload->fValue);
             }
             break;
           }
