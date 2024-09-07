@@ -555,7 +555,7 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   orxPROFILER_POP_MARKER();
 }
 
-/** Handles bounce demo loading/unloading/swaping
+/** Handles bounce demo loading/unloading/swapping
  */
 static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
 {
@@ -616,9 +616,10 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
           orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
         }
       }
+      /* Swapping in */
       else
       {
-        /* Restores the values we care about */
+        /* Restores the existing ball spawner & walls */
         spstBallSpawner = orxSPAWNER(orxStructure_Get(orxConfig_GetU64("BallSpawner")));
         spstWalls       = orxOBJECT(orxStructure_Get(orxConfig_GetU64("Walls")));
       }
@@ -682,9 +683,10 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
           orxViewport_Delete(pstViewport);
         }
       }
+      /* Swapping out */
       else
       {
-        /* Saves the values we care about */
+        /* Saves the GUIDs of the ball spawner & walls */
         orxConfig_SetU64("BallSpawner", orxStructure_GetGUID(spstBallSpawner));
         orxConfig_SetU64("Walls", orxStructure_GetGUID(spstWalls));
       }
