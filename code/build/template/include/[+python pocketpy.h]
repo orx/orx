@@ -20,11 +20,6 @@
 #define PK_ENABLE_OS                1
 #endif
 
-// Enable `line_profiler` module and `breakpoint()` function
-#ifndef PK_ENABLE_PROFILER          // can be overridden by cmake
-#define PK_ENABLE_PROFILER          0
-#endif
-
 // GC min threshold
 #ifndef PK_GC_MIN_THRESHOLD         // can be overridden by cmake
 #define PK_GC_MIN_THRESHOLD         16384
@@ -52,12 +47,6 @@
     #define PK_PLATFORM_SEP '\\'
 #else
     #define PK_PLATFORM_SEP '/'
-#endif
-
-#ifdef NDEBUG
-    #define PK_DEBUG 0
-#else
-    #define PK_DEBUG 1
 #endif
 
 
@@ -234,6 +223,10 @@ PK_EXPORT int py_currentvm();
 PK_EXPORT void py_switchvm(int index);
 /// Reset the current VM.
 PK_EXPORT void py_resetvm();
+/// Get the current VM context. This is used for user-defined data.
+PK_EXPORT void* py_getvmctx();
+/// Set the current VM context. This is used for user-defined data.
+PK_EXPORT void py_setvmctx(void* ctx);
 /// Set `sys.argv`. Used for storing command-line arguments.
 PK_EXPORT void py_sys_setargv(int argc, char** argv);
 /// Setup the callbacks for the current VM.
@@ -257,13 +250,13 @@ PK_EXPORT bool py_eval(const char* source, py_Ref module) PY_RAISE PY_RETURN;
 /// Example:
 /// `py_newstr(py_r0(), "abc");`
 /// `py_newint(py_r1(), 123);`
-/// `py_smartexec("print(_1, _2)", NULL, py_r0(), py_r1());`
+/// `py_smartexec("print(_0, _1)", NULL, py_r0(), py_r1());`
 /// `// "abc 123" will be printed`.
 PK_EXPORT bool py_smartexec(const char* source, py_Ref module, ...) PY_RAISE PY_RETURN;
 /// Evaluate a source string with smart interpretation.
 /// Example:
 /// `py_newstr(py_r0(), "abc");`
-/// `py_smarteval("len(_1)", NULL, py_r0());`
+/// `py_smarteval("len(_)", NULL, py_r0());`
 /// `int res = py_toint(py_retval());`
 /// `// res will be 3`.
 PK_EXPORT bool py_smarteval(const char* source, py_Ref module, ...) PY_RAISE PY_RETURN;
@@ -371,6 +364,8 @@ PK_EXPORT py_f64 py_tofloat(py_Ref);
 /// If successful, return true and set the value to `out`.
 /// Otherwise, return false and raise `TypeError`.
 PK_EXPORT bool py_castfloat(py_Ref, py_f64* out) PY_RAISE;
+/// 32-bit version of `py_castfloat`.
+PK_EXPORT bool py_castfloat32(py_Ref, float* out) PY_RAISE;
 /// Cast a `int` object in python to `int64_t`.
 PK_EXPORT bool py_castint(py_Ref, py_i64* out) PY_RAISE;
 /// Convert a `bool` object in python to `bool`.
@@ -671,6 +666,8 @@ PK_EXPORT int py_less(py_Ref lhs, py_Ref rhs) PY_RAISE;
 #define py_gt(lhs, rhs) py_binaryop(lhs, rhs, __gt__, __lt__)
 #define py_ge(lhs, rhs) py_binaryop(lhs, rhs, __ge__, __le__)
 
+/// Python equivalent to `callable(val)`.
+PK_EXPORT bool py_callable(py_Ref val);
 /// Get the hash value of the object.
 PK_EXPORT bool py_hash(py_Ref, py_i64* out) PY_RAISE;
 /// Get the iterator of the object.
@@ -686,7 +683,7 @@ PK_EXPORT bool py_isidentical(py_Ref, py_Ref);
 /// The stack remains unchanged after the operation.
 PK_EXPORT bool py_call(py_Ref f, int argc, py_Ref argv) PY_RAISE PY_RETURN;
 
-#if PK_DEBUG
+#ifndef NDEBUG
 /// Call a `py_CFunction` in a safe way.
 /// This function does extra checks to help you debug `py_CFunction`.
 PK_EXPORT bool py_callcfunc(py_CFunction f, int argc, py_Ref argv) PY_RAISE PY_RETURN;
@@ -898,12 +895,15 @@ enum py_PredefinedTypes {
     tp_ImportError,
     tp_AssertionError,
     tp_KeyError,
-    /* Extended */
+    /* linalg */
     tp_vec2,
     tp_vec3,
     tp_vec2i,
     tp_vec3i,
     tp_mat3x3,
+    /* array2d */
+    tp_array2d,
+    tp_array2d_iterator,
 };
 
 #ifdef __cplusplus

@@ -168,9 +168,11 @@ extern "C"
 
   void orxPy_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
   {
+    orxPROFILER_PUSH_MARKER(__FUNCTION__);
     py_Ref pyArg = py_r0();
     py_newfloat(pyArg, _pstClockInfo->fDT);
     orxPy_Call1(py_getglobal(sstPy.pyUpdate), pyArg);
+    orxPROFILER_POP_MARKER();
   }
 
 // Binding naming
@@ -1976,6 +1978,8 @@ extern "C"
 
   orxSTATUS orxPy_EventHandler(const orxEVENT *_pstEvent)
   {
+    orxPROFILER_PUSH_MARKER(__FUNCTION__);
+
     orxSTATUS eResult = orxSTATUS_SUCCESS;
 
     switch (_pstEvent->eType)
@@ -2015,6 +2019,7 @@ extern "C"
     }
     case orxEVENT_TYPE_PHYSICS:
     {
+      orxPROFILER_PUSH_MARKER("orxPy_EventHandler_Physics");
       switch (_pstEvent->eID)
       {
       case orxPHYSICS_EVENT_CONTACT_ADD:
@@ -2065,10 +2070,12 @@ extern "C"
         break;
       }
       }
+      orxPROFILER_POP_MARKER();
       break;
     }
     case orxEVENT_TYPE_TRIGGER:
     {
+      orxPROFILER_PUSH_MARKER("orxPy_EventHandler_Trigger");
       orxASSERT(_pstEvent->eID == orxTRIGGER_EVENT_FIRE);
       if (sstPy.pyOnTrigger != 0)
       {
@@ -2085,21 +2092,16 @@ extern "C"
         // Call handler
         orxPy_CallN(py_getglobal(sstPy.pyOnTrigger), s32Argc, pyArgv);
       }
+      orxPROFILER_POP_MARKER();
       break;
     }
     case orxEVENT_TYPE_SHADER:
     {
+      orxPROFILER_PUSH_MARKER("orxPy_EventHandler_Shader");
       orxASSERT(_pstEvent->eID == orxSHADER_EVENT_SET_PARAM);
-      if (sstPy.pyOnShaderParam != 0)
+      orxSHADER_EVENT_PAYLOAD *pstPayload = (orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+      if (sstPy.pyOnShaderParam != 0 && (pstPayload->eParamType == orxSHADER_PARAM_TYPE_FLOAT || pstPayload->eParamType == orxSHADER_PARAM_TYPE_VECTOR))
       {
-        orxSHADER_EVENT_PAYLOAD *pstPayload = (orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-        if (pstPayload->eParamType != orxSHADER_PARAM_TYPE_FLOAT && pstPayload->eParamType != orxSHADER_PARAM_TYPE_VECTOR)
-        {
-          // Unsupported parameter type
-          break;
-        }
-
         // Build argument list
         orxS32 s32Argc = 4;
         py_Ref pyArgv = py_r0();
@@ -2142,6 +2144,7 @@ extern "C"
           }
         }
       }
+      orxPROFILER_POP_MARKER();
       break;
     }
     default:
@@ -2151,6 +2154,8 @@ extern "C"
       break;
     }
     }
+
+    orxPROFILER_POP_MARKER();
 
     // Done!
     return eResult;
