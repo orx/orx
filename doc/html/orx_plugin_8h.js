@@ -6,7 +6,7 @@ var orx_plugin_8h =
     [ "orxPlugin_GetName", "group__orx_plugin.html#gaa482dcf82d2bbbc6b86fa904fcecc67e", null ],
     [ "orxPlugin_Init", "group__orx_plugin.html#ga9fbf81b544a8420e59fdd7d1f629ce09", null ],
     [ "orxPlugin_Load", "group__orx_plugin.html#gae9bbec4c44f47e761a29f0ecba43f262", null ],
-    [ "orxPlugin_LoadUsingExt", "group__orx_plugin.html#ga58d434222f10d5d31aa93f8dc5d3a5ff", null ],
+    [ "orxPlugin_LoadShadow", "group__orx_plugin.html#gaffc5ee606be8da175a22c7caf10522e8", null ],
     [ "orxPlugin_Setup", "group__orx_plugin.html#ga775864294d31f40c917329a84d6e6abf", null ],
     [ "orxPlugin_Unload", "group__orx_plugin.html#ga230eab1bb1033f4e1984d444f4cb7e92", null ]
 ];

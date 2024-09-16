@@ -22,6 +22,8 @@ var group__orx_resource =
       [ "zTag", "structorx_r_e_s_o_u_r_c_e___t_y_p_e___i_n_f_o.html#a948054382e24c77ad514b54af3776ea3", null ]
     ] ],
     [ "orxRESOURCE_KC_LOCATION_SEPARATOR", "group__orx_resource.html#ga94e822a8f417dccd9de2b8a2c8999ed8", null ],
+    [ "orxRESOURCE_KZ_CONFIG_SECTION", "group__orx_resource.html#gaba06dd30357fea8510e90833fed8fad7", null ],
+    [ "orxRESOURCE_KZ_CONFIG_WATCH_LIST", "group__orx_resource.html#gae7014eaedd6c91c8b0227011924184f1", null ],
     [ "orxRESOURCE_KZ_DEFAULT_STORAGE", "group__orx_resource.html#ga61042056b7367be5bf0496181a7e561c", null ],
     [ "orxRESOURCE_KZ_TYPE_TAG_FILE", "group__orx_resource.html#gae3fdcff9f1a8c21edf64d1ee6bec0032", null ],
     [ "orxRESOURCE_KZ_TYPE_TAG_MEMORY", "group__orx_resource.html#gae4cfe4f635f3ba53d3d810577ed508df", null ],

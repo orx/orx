@@ -46,6 +46,9 @@
 
 /** Misc
  */
+#define orxRESOURCE_KZ_CONFIG_SECTION                     "Resource"
+#define orxRESOURCE_KZ_CONFIG_WATCH_LIST                  "WatchList"
+
 #define orxRESOURCE_KC_LOCATION_SEPARATOR                 ':'
 
 #define orxRESOURCE_KZ_DEFAULT_STORAGE                    "."
