@@ -106,6 +106,8 @@
 
 #define orxINPUT_KZ_MODE_FORMAT                       "%c%s"      /**< Mode format */
 
+#define orxINPUT_KZ_DEFAULT_JOYSTICK_ID_LIST          ((orxU64)0xF)/**< Default joystick ID list (4) */
+
 
 /***************************************************************************
  * Structure declaration                                                   *
@@ -668,8 +670,8 @@ static orxINLINE void orxInput_LoadCurrentSet()
   }
   else
   {
-    /* Uses first four joystick IDs */
-    u64JoyIDs = (orxU64)0x000F;
+    /* Uses the default joystick ID list */
+    u64JoyIDs = orxINPUT_KZ_DEFAULT_JOYSTICK_ID_LIST;
   }
 
   /* For all input types */
