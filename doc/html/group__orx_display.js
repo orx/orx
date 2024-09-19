@@ -40,6 +40,7 @@ var group__orx_display =
       [ "u32VertexNumber", "structorx_d_i_s_p_l_a_y___m_e_s_h.html#acdf7b863cc8cc6f7c6086f53926a7327", null ]
     ] ],
     [ "orxDISPLAY_TRANSFORM", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html", [
+      [ "eOrientation", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#ac98cc5ee51ba3014baa2cfdf1b120b8a", null ],
       [ "fDstX", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a54b8a1dee3c659bf3abdfff81b78bb75", null ],
       [ "fDstY", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a3c0a7cf0d8e8730e8f7f57a6cba4430b", null ],
       [ "fRepeatX", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a4ba0f2b96592334b5021588e4f7d0a72", null ],
@@ -123,6 +124,14 @@ var group__orx_display =
       [ "orxDISPLAY_EVENT_LOAD_BITMAP", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a352df91cdc704f1cea30e09c683ab567", null ],
       [ "orxDISPLAY_EVENT_NUMBER", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4abf194542cf21a98841b790b3c92fd92b", null ],
       [ "orxDISPLAY_EVENT_NONE", "group__orx_display.html#gga28840e9c6ef7b5e7eaf61f0108e806a4a0e07d9121e086db7d81e2849d34b52bb", null ]
+    ] ],
+    [ "orxDISPLAY_ORIENTATION", "group__orx_display.html#ga6f6093ca383ea024e7687aa04aa48464", [
+      [ "orxDISPLAY_ORIENTATION_UP", "group__orx_display.html#gga6f6093ca383ea024e7687aa04aa48464a675a8a5319f06508b9239f06c6b746e8", null ],
+      [ "orxDISPLAY_ORIENTATION_LEFT", "group__orx_display.html#gga6f6093ca383ea024e7687aa04aa48464afcc1c1a31f471e53aa41fca692f7318d", null ],
+      [ "orxDISPLAY_ORIENTATION_DOWN", "group__orx_display.html#gga6f6093ca383ea024e7687aa04aa48464a2da313bab5af26c4fabe67f651037625", null ],
+      [ "orxDISPLAY_ORIENTATION_RIGHT", "group__orx_display.html#gga6f6093ca383ea024e7687aa04aa48464a6358e5a31d04422178014a00724d4315", null ],
+      [ "orxDISPLAY_ORIENTATION_NUMBER", "group__orx_display.html#gga6f6093ca383ea024e7687aa04aa48464a89a890b5b0404551f83e80762b1bca75", null ],
+      [ "orxDISPLAY_ORIENTATION_NONE", "group__orx_display.html#gga6f6093ca383ea024e7687aa04aa48464a11d770a9f2b2df2c0b97e7ab5a608efb", null ]
     ] ],
     [ "orxDISPLAY_PRIMITIVE", "group__orx_display.html#ga459ca91299563deac47f45c51c8a0ba1", [
       [ "orxDISPLAY_PRIMITIVE_POINTS", "group__orx_display.html#gga459ca91299563deac47f45c51c8a0ba1a61b0e6b90eaa73455b903eae3918fa90", null ],
