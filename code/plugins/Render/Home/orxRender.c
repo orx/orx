@@ -2077,12 +2077,8 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                             pstRenderNode->eSmoothing   = eSmoothing;
                             pstRenderNode->eBlendMode   = eBlendMode;
                             pstRenderNode->eOrientation = orxGraphic_GetOrientation(pstGraphic);
-
-                            /* Stores its Z coordinate */
-                            pstRenderNode->fZ = vObjectPos.fZ;
-
-                            /* Stores its depth coef */
-                            pstRenderNode->fDepthCoef = fDepthCoef;
+                            pstRenderNode->fZ           = vObjectPos.fZ;
+                            pstRenderNode->fDepthCoef   = fDepthCoef;
 
                             /* No sorting or empty list? */
                             if((bSorting == orxFALSE)
