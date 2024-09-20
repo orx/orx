@@ -3688,6 +3688,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
  */
 orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM *_peID, orxFLOAT *_pfValue)
 {
+  orxBOOL   bJoystickLevelBackup, bKeyboardLevelBackup, bMouseLevelBackup;
   orxU32    eType;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -3695,6 +3696,14 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
   orxASSERT(_peType != orxNULL);
   orxASSERT(_peID != orxNULL);
+
+  /* Disables peripheral logs */
+  bJoystickLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_JOYSTICK);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_JOYSTICK, orxFALSE);
+  bKeyboardLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_KEYBOARD);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_KEYBOARD, orxFALSE);
+  bMouseLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_MOUSE);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_MOUSE, orxFALSE);
 
   /* For all input types */
   for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
@@ -3749,6 +3758,11 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
       *_pfValue = orxFLOAT_0;
     }
   }
+
+  /* Re-enables peripheral logs */
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_JOYSTICK, bJoystickLevelBackup);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_KEYBOARD, bKeyboardLevelBackup);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_MOUSE, bMouseLevelBackup);
 
   /* Done! */
   return eResult;
