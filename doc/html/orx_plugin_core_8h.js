@@ -8,7 +8,9 @@ var orx_plugin_core_8h =
     [ "orxPLUGIN_DEFINE_CORE_FUNCTION", "group__orx_plugin.html#gae0e51824230ca264bda09d31bae1ea9d", null ],
     [ "orxPLUGIN_END_CORE_FUNCTION_ARRAY", "group__orx_plugin.html#ga63f65b2ef417367e3c41a4fe71859673", null ],
     [ "orxPLUGIN_REGISTER_CORE_INFO", "group__orx_plugin.html#ga717e98b1f32f69b8163a7bd57a39a955", null ],
+    [ "orxPLUGIN_EXIT_FUNCTION", "group__orx_plugin.html#ga6c228fc109ba85b133ea9e3521c11f00", null ],
     [ "orxPLUGIN_INIT_FUNCTION", "group__orx_plugin.html#gad64f7622dcbd0df2b69058c876060835", null ],
+    [ "orxPLUGIN_SWAP_FUNCTION", "group__orx_plugin.html#gac50d70a0865e8a1cfb56ce5369574f7a", null ],
     [ "orxPlugin_AddCoreInfo", "group__orx_plugin.html#gac2d80ed85322ebf239a94637e627fbef", null ],
     [ "orxPlugin_DefaultCoreFunction", "group__orx_plugin.html#ga9533c138e64ba45a78b4f50fb819a919", null ]
 ];

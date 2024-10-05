@@ -502,6 +502,9 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
         /* Calls it */
         sstModule.astModuleInfo[_eModuleID].pfnExit();
       }
+
+      /* Updates count */
+      sstModule.u32InitCount--;
     }
 
     /* Cleans flags */
@@ -525,9 +528,6 @@ void orxFASTCALL orxModule_Exit(orxMODULE_ID _eModuleID)
         }
       }
     }
-
-    /* Updates count */
-    sstModule.u32InitCount--;
   }
 
   /* Done! */

@@ -51,6 +51,11 @@
 #include "plugin/orxPluginType.h"
 
 
+/** Misc
+ */
+#define orxPLUGIN_KZ_RESOURCE_GROUP             "Plugin"
+
+
 /*********************************************
  Function prototypes
  *********************************************/
@@ -69,19 +74,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxPlugin_Init();
 extern orxDLLAPI void orxFASTCALL               orxPlugin_Exit();
 
 
-/** Loads a plugin (using its exact complete path+name)
- * @param[in] _zPluginFileName  The complete path of the plugin file, including its extension
- * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
+/** Loads a plugin, doing a shadow copy and watching for any change on-disk to trigger an auto-swap
+ * @param[in] _zPluginName  The name of the plugin, with or without its library extension
  * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_Load(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName);
-
-/** Loads a plugin using OS common library extension + release/debug suffixes
- * @param[in] _zPluginFileName  The complete path of the plugin file, without its library extension
- * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
- * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
- */
-extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName);
+extern orxDLLAPI orxHANDLE orxFASTCALL          orxPlugin_Load(const orxSTRING _zPluginName);
 
 /** Unloads a plugin
  * @param[in] _hPluginHandle The handle of the plugin to unload

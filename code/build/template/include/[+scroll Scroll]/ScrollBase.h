@@ -2351,17 +2351,27 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
     // Shader event
     case orxEVENT_TYPE_SHADER:
     {
-      ScrollObject *poSender;
+      orxOBJECT *pstSender;
 
       // Gets sender object
-      poSender = (ScrollObject *)orxObject_GetUserData(orxOBJECT(_pstEvent->hSender));
+      pstSender = orxOBJECT(_pstEvent->hSender);
 
       // Valid?
-      if(poSender)
+      if(pstSender)
       {
-        // Calls object callback
-        eResult = poSender->OnShader(*(orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        ScrollObject *poSender;
+
+        // Gets sender object
+        poSender = (ScrollObject *)orxObject_GetUserData(pstSender);
+
+        // Valid?
+        if(poSender)
+        {
+          // Calls object callback
+          eResult = poSender->OnShader(*(orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+        }
       }
+
       break;
     }
 

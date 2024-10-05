@@ -623,6 +623,9 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
         orxASSERT(u32ItemID <= (orxU32)(orxSTRUCTURE_GUID_MASK_ITEM_ID >> orxSTRUCTURE_GUID_SHIFT_ITEM_ID));
         orxASSERT(sstStructure.au32InstanceCount[_eStructureID] <= (orxU32)(orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID));
 
+        /* Updates instance ID */
+        sstStructure.au32InstanceCount[_eStructureID] = (sstStructure.au32InstanceCount[_eStructureID] + 1) & (orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
+
         /* Stores GUID */
         pstStructure->u64GUID = ((orxU64)_eStructureID << orxSTRUCTURE_GUID_SHIFT_STRUCTURE_ID)
                               | ((orxU64)u32ItemID << orxSTRUCTURE_GUID_SHIFT_ITEM_ID)
@@ -630,9 +633,6 @@ orxSTRUCTURE *orxFASTCALL orxStructure_Create(orxSTRUCTURE_ID _eStructureID)
 
         /* Cleans owner GUID */
         pstStructure->u64OwnerGUID = orxU64_UNDEFINED;
-
-        /* Updates instance ID */
-        sstStructure.au32InstanceCount[_eStructureID] = (sstStructure.au32InstanceCount[_eStructureID] + 1) & (orxSTRUCTURE_GUID_MASK_INSTANCE_ID >> orxSTRUCTURE_GUID_SHIFT_INSTANCE_ID);
       }
       else
       {
@@ -1258,16 +1258,17 @@ orxSTATUS orxFASTCALL orxStructure_LogAll(orxBOOL _bPrivate)
     {
       orxSTRUCTURE *pstStructure;
 
-      /* Checks */
-      orxASSERT(orxStructure_GetStorageType(sastStructureLogInfoList[i].eID) == orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
-
-      /* For all structures */
-      for(pstStructure = orxStructure_GetFirst(sastStructureLogInfoList[i].eID);
-          pstStructure != orxNULL;
-          pstStructure = orxStructure_GetNext(pstStructure))
+      /* Is a linklist? */
+      if(orxStructure_GetStorageType(sastStructureLogInfoList[i].eID) == orxSTRUCTURE_STORAGE_TYPE_LINKLIST)
       {
-        /* Inserts it */
-        orxStructure_InsertLogNode(pstBank, pstTable, &(pstRoot->stNode), pstStructure);
+        /* For all structures */
+        for(pstStructure = orxStructure_GetFirst(sastStructureLogInfoList[i].eID);
+            pstStructure != orxNULL;
+            pstStructure = orxStructure_GetNext(pstStructure))
+        {
+          /* Inserts it */
+          orxStructure_InsertLogNode(pstBank, pstTable, &(pstRoot->stNode), pstStructure);
+        }
       }
     }
 

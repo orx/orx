@@ -1010,6 +1010,7 @@ static orxINLINE void orxViewport_DeleteAll()
     pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
   }
 
+  /* Done! */
   return;
 }
 
@@ -1033,6 +1034,7 @@ void orxFASTCALL orxViewport_Setup()
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_SHADERPOINTER);
   orxModule_AddDependency(orxMODULE_ID_VIEWPORT, orxMODULE_ID_COMMAND);
 
+  /* Done! */
   return;
 }
 
@@ -1147,6 +1149,7 @@ void orxFASTCALL orxViewport_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Tried to exit from viewport module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 
@@ -2110,6 +2113,7 @@ void orxFASTCALL orxViewport_Enable(orxVIEWPORT *_pstViewport, orxBOOL _bEnable)
     orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_ENABLED);
   }
 
+  /* Done! */
   return;
 }
 
@@ -2170,6 +2174,7 @@ void orxFASTCALL orxViewport_SetCamera(orxVIEWPORT *_pstViewport, orxCAMERA *_ps
     orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_CAMERA, orxVIEWPORT_KU32_FLAG_NONE);
   }
 
+  /* Done! */
   return;
 }
 
@@ -2394,6 +2399,7 @@ void orxFASTCALL orxViewport_SetPosition(orxVIEWPORT *_pstViewport, orxFLOAT _fX
   _pstViewport->fRealX  = _fX;
   _pstViewport->fRealY  = _fY;
 
+  /* Done! */
   return;
 }
 
@@ -2500,6 +2506,7 @@ void orxFASTCALL orxViewport_GetPosition(const orxVIEWPORT *_pstViewport, orxFLO
   *_pfX = _pstViewport->fX;
   *_pfY = _pstViewport->fY;
 
+  /* Done! */
   return;
 }
 
@@ -2589,6 +2596,7 @@ void orxFASTCALL orxViewport_GetSize(const orxVIEWPORT *_pstViewport, orxFLOAT *
   *_pfW = _pstViewport->fWidth;
   *_pfH = _pstViewport->fHeight;
 
+  /* Done! */
   return;
 }
 

@@ -401,13 +401,13 @@ static orxINLINE void orxGraphic_DeleteAll()
 void orxFASTCALL orxGraphic_Setup()
 {
   /* Adds module dependencies */
-  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_MEMORY);
-  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_LOCALE);
+  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_TEXT);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_TEXTURE);
-  orxModule_AddOptionalDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_LOCALE);
 
   return;
 }

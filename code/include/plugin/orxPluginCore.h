@@ -81,6 +81,8 @@ typedef struct __orxPLUGIN_USER_FUNCTION_INFO_t
 /** Plugin init function prototype
  */
 typedef orxSTATUS (*orxPLUGIN_INIT_FUNCTION)(orxU32 *_peUserFunctionNumber, orxPLUGIN_USER_FUNCTION_INFO **_pastUserFunctionInfo);
+typedef orxSTATUS (*orxPLUGIN_SWAP_FUNCTION)(orxPLUGIN_ENTRY_MODE _eMode);
+typedef orxSTATUS (*orxPLUGIN_EXIT_FUNCTION)(orxPLUGIN_ENTRY_MODE _eMode);
 
 
 /*********************************************

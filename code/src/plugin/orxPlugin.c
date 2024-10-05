@@ -34,6 +34,8 @@
 
 #include "debug/orxDebug.h"
 #include "core/orxConfig.h"
+#include "core/orxEvent.h"
+#include "core/orxResource.h"
 #include "main/orxParam.h"
 #include "memory/orxBank.h"
 #include "memory/orxMemory.h"
@@ -62,6 +64,8 @@
 
   #define __orxPLUGIN_DYNAMIC__
 
+  #define __orxPLUGIN_MULTI_SHADOW__
+
 #else /* __orxWINDOWS__ */
 
   typedef void *                                            orxSYSPLUGIN;
@@ -82,7 +86,7 @@
     #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
     #define orxPLUGIN_CLOSE(PLUGIN)                         dlclose(PLUGIN)
 
-    static const orxSTRING                                  szPluginLibraryExt = "so";
+      static const orxSTRING                                szPluginLibraryExt = "so";
 
     #define __orxPLUGIN_DYNAMIC__
 
@@ -94,33 +98,51 @@
 /** Module flags
  */
 
-#define orxPLUGIN_KU32_STATIC_FLAG_NONE                     0x00000000L
-#define orxPLUGIN_KU32_STATIC_FLAG_READY                    0x00000001L
+#define orxPLUGIN_KU32_STATIC_FLAG_NONE                     0x00000000
+#define orxPLUGIN_KU32_STATIC_FLAG_SWAP                     0x10000000
+#define orxPLUGIN_KU32_STATIC_FLAG_READY                    0x00000001
 
 
-#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_NONE             0x00000000L
-#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED           0x00000001L
-#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY            0x10000000L
+#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_NONE             0x00000000
+#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED           0x00000001
+#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY            0x10000000
 
 
 /** Misc
  */
 #define orxPLUGIN_KU32_FUNCTION_BANK_SIZE                   16
-#define orxPLUGIN_KZ_INIT_FUNCTION_NAME                     "orxPlugin_MainInit"  /**< Plugin init function name */
+#define orxPLUGIN_KZ_INIT_FUNCTION_NAME                     orxSTRINGIFY(orxPLUGIN_K_INIT_FUNCTION_NAME) /**< Plugin init function name */
+#define orxPLUGIN_KZ_EXIT_FUNCTION_NAME                     orxSTRINGIFY(orxPLUGIN_K_EXIT_FUNCTION_NAME) /**< Plugin exit function name */
+#define orxPLUGIN_KZ_SWAP_FUNCTION_NAME                     orxSTRINGIFY(orxPLUGIN_K_SWAP_FUNCTION_NAME) /**< Plugin swap function name */
 
 #define orxPLUGIN_KC_DIRECTORY_SEPARATOR                    '/'
 
 
 #define orxPLUGIN_KZ_CONFIG_SECTION                         "Plugin"
+#define orxPLUGIN_KZ_CONFIG_SWAP_SECTION                    "orx:plugin:runtime"
+
+#define orxPLUGIN_KU32_SHADOW_BUFFER_SIZE                   131072
+
+#ifdef __orxPLUGIN_MULTI_SHADOW__
+#define orxPLUGIN_KZ_SHADOW_FORMAT                          "_Shadow%03u"
+#else /* __orxPLUGIN_MULTI_SHADOW__ */
+#define orxPLUGIN_KZ_SHADOW_FORMAT                          "_Shadow"
+#endif /* __orxPLUGIN_MULTI_SHADOW__ */
 
 
-#ifdef __orxDEBUG__
+#if defined(__orxDEBUG__)
 
-  #define orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX                  "DebugSuffix"
+  #define orxPLUGIN_KZ_CONFIG_SUFFIX                  "DebugSuffix"
 
-  #define orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX                 "d"
+  #define orxPLUGIN_KZ_DEFAULT_SUFFIX                 "d"
 
-#endif /* __orxDEBUG__ */
+#elif defined(__orxPROFILER__)
+
+  #define orxPLUGIN_KZ_CONFIG_SUFFIX                  "ProfileSuffix"
+
+  #define orxPLUGIN_KZ_DEFAULT_SUFFIX                 "p"
+
+#endif
 
 
 /***************************************************************************
@@ -146,7 +168,9 @@ typedef struct __orxPLUGIN_INFO_t
   orxHANDLE       hPluginHandle;                            /**< Plugin handle : 8 */
   orxBANK        *pstFunctionBank;                          /**< Function bank : 12 */
   orxHASHTABLE   *pstFunctionTable;                         /**< Function hash table : 16 */
-  const orxSTRING zPluginName;                              /**< Plugin name : 20 */
+  orxSTRINGID     stNameID;                                 /**< Name ID : 24 */
+  orxSTRINGID     stResourceID;                             /**< Resource ID : 32 */
+  orxSTRINGID     stShadowID;                               /**< Shadow ID : 40 */
 
 } orxPLUGIN_INFO;
 
@@ -177,6 +201,14 @@ typedef struct __orxPLUGIN_STATIC_t
 
   /* Core info table */
   orxPLUGIN_CORE_INFO astCoreInfo[orxPLUGIN_CORE_ID_NUMBER];
+
+  /* Resource group ID */
+  orxSTRINGID stResourceGroupID;
+
+#ifdef __orxPLUGIN_MULTI_SHADOW__
+  /* Shadow count */
+  orxU32 u32ShadowCount;
+#endif /* __orxPLUGIN_MULTI_SHADOW__ */
 
   /* Control flags */
   orxU32 u32Flags;
@@ -380,7 +412,7 @@ static orxINLINE orxSTATUS orxPlugin_RegisterCoreFunction(orxPLUGIN_FUNCTION_ID 
  */
 static orxINLINE void orxPlugin_UnregisterCoreFunction(const orxPLUGIN_FUNCTION_INFO *_pfnFunctionInfo)
 {
-  const orxPLUGIN_CORE_FUNCTION  *pstCoreFunction;
+  const orxPLUGIN_CORE_FUNCTION *pstCoreFunction;
   orxU32                          u32PluginIndex;
 
   /* Checks */
@@ -487,10 +519,14 @@ static orxPLUGIN_INFO *orxFASTCALL orxPlugin_CreatePluginInfo()
  */
 static void orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInfo)
 {
-  orxPLUGIN_FUNCTION_INFO *pstFunctionInfo;
+  orxPLUGIN_FUNCTION_INFO  *pstFunctionInfo;
+  const orxSTRING           zShadowLocation;
 
   /* Checks */
   orxASSERT(_pstPluginInfo != orxNULL);
+
+  /* Gets shadow location */
+  zShadowLocation = (_pstPluginInfo->stShadowID != orxSTRINGID_UNDEFINED) ? orxString_GetFromID(_pstPluginInfo->stShadowID) : orxNULL;
 
   /* Deletes all function info */
   for(pstFunctionInfo = (orxPLUGIN_FUNCTION_INFO *)orxBank_GetNext(_pstPluginInfo->pstFunctionBank, orxNULL);
@@ -528,6 +564,13 @@ static void orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInf
     /* Closes it */
     orxPLUGIN_CLOSE(_pstPluginInfo->pstSysPlugin);
     _pstPluginInfo->pstSysPlugin = orxNULL;
+
+    /* Has shadow? */
+    if(zShadowLocation != orxNULL)
+    {
+      /* Deletes it */
+      orxResource_Delete(zShadowLocation);
+    }
   }
 
 #endif /* __orxPLUGIN_DYNAMIC__ */
@@ -595,69 +638,85 @@ static orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN 
  */
 static orxSTATUS orxPlugin_RegisterPlugin(orxPLUGIN_INFO *_pstPluginInfo)
 {
-  orxPLUGIN_INIT_FUNCTION pfnInit;
-  orxU32 u32UserFunctionNumber;
-  orxPLUGIN_USER_FUNCTION_INFO *astUserFunctionInfo;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(_pstPluginInfo != orxNULL);
 
-  /* Gets init function */
-  pfnInit = (orxPLUGIN_INIT_FUNCTION)orxPlugin_GetFunctionAddress(_pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_INIT_FUNCTION_NAME);
-
-  /* Valid? */
-  if(pfnInit != orxNULL)
+  /* Swapping? */
+  if(orxFLAG_TEST(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_SWAP))
   {
-    orxU32 i;
+    orxPLUGIN_SWAP_FUNCTION pfnSwap;
 
-    /* Calls it */
-    eResult = pfnInit(&u32UserFunctionNumber, &astUserFunctionInfo);
+    /* Gets swap function */
+    pfnSwap = (orxPLUGIN_SWAP_FUNCTION)orxPlugin_GetFunctionAddress(_pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
 
-    /* Adds all functions to plugin info */
-    for(i = 0; (eResult != orxSTATUS_FAILURE) && (i < u32UserFunctionNumber); i++)
+    /* Found? */
+    if(pfnSwap != orxNULL)
     {
-      /* Is function valid? */
-      if(astUserFunctionInfo[i].pfnFunction != orxNULL)
-      {
-        orxPLUGIN_FUNCTION_INFO *pstFunctionInfo;
-
-        /* Creates function info */
-        pstFunctionInfo = orxPlugin_CreateFunctionInfo(_pstPluginInfo);
-
-        /* Copies info */
-        pstFunctionInfo->pfnFunction    = astUserFunctionInfo[i].pfnFunction;
-        pstFunctionInfo->eFunctionID    = astUserFunctionInfo[i].eFunctionID;
-        pstFunctionInfo->zFunctionArgs  = astUserFunctionInfo[i].zFunctionArgs;
-        pstFunctionInfo->zFunctionName  = astUserFunctionInfo[i].zFunctionName;
-
-        /* Adds function info in plugin info structure */
-        orxHashTable_Add(_pstPluginInfo->pstFunctionTable, pstFunctionInfo->eFunctionID, pstFunctionInfo);
-
-        /* Is it a core function? */
-        if(pstFunctionInfo->eFunctionID & orxPLUGIN_KU32_FLAG_CORE_ID)
-        {
-          /* Registers core function */
-          eResult = orxPlugin_RegisterCoreFunction(pstFunctionInfo->eFunctionID, pstFunctionInfo->pfnFunction, orxFALSE);
-        }
-      }
-      else
-      {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Invalid function.");
-
-        /* Updates result */
-        eResult = orxSTATUS_FAILURE;
-      }
+      /* Calls it */
+      eResult = pfnSwap(orxPLUGIN_ENTRY_MODE_SWAP_IN);
     }
   }
   else
   {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get function address.");
+    orxPLUGIN_INIT_FUNCTION pfnInit;
+    orxU32 u32UserFunctionNumber;
+    orxPLUGIN_USER_FUNCTION_INFO *astUserFunctionInfo;
 
-    /* Can't load plugin */
-    eResult = orxSTATUS_FAILURE;
+    /* Gets init function */
+    pfnInit = (orxPLUGIN_INIT_FUNCTION)orxPlugin_GetFunctionAddress(_pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_INIT_FUNCTION_NAME);
+
+    /* Valid? */
+    if(pfnInit != orxNULL)
+    {
+      orxU32 i;
+
+      /* Calls it */
+      eResult = pfnInit(&u32UserFunctionNumber, &astUserFunctionInfo);
+
+      /* Adds all functions to plugin info */
+      for(i = 0, eResult = orxSTATUS_SUCCESS; (eResult != orxSTATUS_FAILURE) && (i < u32UserFunctionNumber); i++)
+      {
+        /* Is function valid? */
+        if(astUserFunctionInfo[i].pfnFunction != orxNULL)
+        {
+          orxPLUGIN_FUNCTION_INFO *pstFunctionInfo;
+
+          /* Creates function info */
+          pstFunctionInfo = orxPlugin_CreateFunctionInfo(_pstPluginInfo);
+
+          /* Copies info */
+          pstFunctionInfo->pfnFunction    = astUserFunctionInfo[i].pfnFunction;
+          pstFunctionInfo->eFunctionID    = astUserFunctionInfo[i].eFunctionID;
+          pstFunctionInfo->zFunctionArgs  = astUserFunctionInfo[i].zFunctionArgs;
+          pstFunctionInfo->zFunctionName  = astUserFunctionInfo[i].zFunctionName;
+
+          /* Adds function info in plugin info structure */
+          orxHashTable_Add(_pstPluginInfo->pstFunctionTable, pstFunctionInfo->eFunctionID, pstFunctionInfo);
+
+          /* Is it a core function? */
+          if(pstFunctionInfo->eFunctionID & orxPLUGIN_KU32_FLAG_CORE_ID)
+          {
+            /* Registers core function */
+            eResult = orxPlugin_RegisterCoreFunction(pstFunctionInfo->eFunctionID, pstFunctionInfo->pfnFunction, orxFALSE);
+          }
+        }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Invalid function.");
+
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+        }
+      }
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Failed to get plugin init entry point.");
+    }
   }
 
   /* Done! */
@@ -762,23 +821,88 @@ static orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, cons
   /* For all specified plugin names */
   for(i = 1; (eResult != orxSTATUS_FAILURE) && (i < _u32ParamCount); i++)
   {
-    const orxSTRING zPluginName;
-    orxS32          s32LastSeparatorIndex, s32SeparatorIndex;
-
-    /* Gets last separator index */
-    for(s32LastSeparatorIndex = 0, s32SeparatorIndex = orxString_SearchCharIndex(_azParams[i], orxPLUGIN_KC_DIRECTORY_SEPARATOR, 1);
-        s32SeparatorIndex >= s32LastSeparatorIndex;
-        s32LastSeparatorIndex = s32SeparatorIndex + 1, s32SeparatorIndex = orxString_SearchCharIndex(_azParams[i], orxPLUGIN_KC_DIRECTORY_SEPARATOR, s32LastSeparatorIndex));
-
-    /* Gets plugin base name */
-    zPluginName = _azParams[i] + s32LastSeparatorIndex;
-
     /* Loads plugin */
-    eResult = (orxPlugin_LoadUsingExt(_azParams[i], zPluginName) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+    eResult = (orxPlugin_Load(_azParams[i]) != orxHANDLE_UNDEFINED) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
   }
 
   /* Updates all modules */
   orxPlugin_UpdateAllModule();
+
+  /* Done! */
+  return eResult;
+}
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxPlugin_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Add or update? */
+  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  {
+    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+
+    /* Gets payload */
+    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+    /* Is plugin group? */
+    if(pstPayload->stGroupID == sstPlugin.stResourceGroupID)
+    {
+      orxPLUGIN_INFO *pstPluginInfo;
+
+      /* For all plugin info */
+      for(pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
+          pstPluginInfo != orxNULL;
+          pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, pstPluginInfo))
+      {
+        /* Found? */
+        if(pstPluginInfo->stResourceID == pstPayload->stNameID)
+        {
+          orxPLUGIN_SWAP_FUNCTION pfnSwap;
+
+          /* Gets swap function */
+          pfnSwap = (orxPLUGIN_SWAP_FUNCTION)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
+
+          /* Found? */
+          if(pfnSwap != orxNULL)
+          {
+            /* Updates status */
+            orxFLAG_SET(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_SWAP, orxPLUGIN_KU32_STATIC_FLAG_NONE);
+
+            /* Pushes config swap section */
+            orxConfig_PushSection(orxPLUGIN_KZ_CONFIG_SWAP_SECTION);
+
+            /* Can unload it? */
+            if(orxPlugin_Unload(pstPluginInfo->hPluginHandle) != orxSTATUS_FAILURE)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Hotloading plugin [%s]", orxString_GetFromID(pstPluginInfo->stNameID));
+
+              /* Reloads it */
+              orxPlugin_Load(orxString_GetFromID(pstPluginInfo->stNameID));
+            }
+
+            /* Pops config section */
+            orxConfig_PopSection();
+
+            /* Clears config swap section */
+            orxConfig_ClearSection(orxPLUGIN_KZ_CONFIG_SWAP_SECTION);
+
+            /* Updates status */
+            orxFLAG_SET(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_NONE, orxPLUGIN_KU32_STATIC_FLAG_SWAP);
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Can't hotload plugin [%]: no swap entry point found, aborting!", orxString_GetFromID(pstPluginInfo->stNameID));
+          }
+
+          break;
+        }
+      }
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -799,7 +923,10 @@ void orxFASTCALL orxPlugin_Setup()
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_PARAM);
   orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_PLUGIN, orxMODULE_ID_RESOURCE);
 
+  /* Done! */
   return;
 }
 
@@ -815,6 +942,9 @@ orxSTATUS orxFASTCALL orxPlugin_Init()
   {
     /* Cleans control structure */
     orxMemory_Zero(&sstPlugin, sizeof(orxPLUGIN_STATIC));
+
+    /* Inits values */
+    sstPlugin.stResourceGroupID = orxString_GetID(orxPLUGIN_KZ_RESOURCE_GROUP);
 
     /* Creates an empty spst_plugin_list */
     sstPlugin.pstPluginBank = orxBank_Create(orxPLUGIN_CORE_ID_NUMBER, sizeof(orxPLUGIN_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
@@ -855,6 +985,9 @@ orxSTATUS orxFASTCALL orxPlugin_Init()
 
 #endif /* __orxEMBEDDED__ */
 
+      /* Adds event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxPlugin_EventHandler);
+
       /* Successful */
       eResult = orxSTATUS_SUCCESS;
     }
@@ -887,6 +1020,9 @@ void orxFASTCALL orxPlugin_Exit()
   /* Initialized? */
   if(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY)
   {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxPlugin_EventHandler);
+
     /* Deletes plugin list */
     orxPlugin_DeleteAll();
 
@@ -929,151 +1065,237 @@ void *orxFASTCALL orxPlugin_DefaultCoreFunction(const orxSTRING _zFunctionName, 
   return orxNULL;
 }
 
-/** Loads a plugin (using its exact complete name)
- * @param[in] _zPluginFileName  The complete path of the plugin file, including its extension
- * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
+/** Loads a plugin, doing a shadow copy and watching for any change on-disk to trigger an auto-swap
+ * @param[in] _zPluginName  The name of the plugin, with or without its library extension
  * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
  */
-orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName)
+orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginName)
 {
-  orxHANDLE hPluginHandle = orxHANDLE_UNDEFINED;
+  orxHANDLE       hResult = orxHANDLE_UNDEFINED;
 
 #ifdef __orxPLUGIN_DYNAMIC__
 
-  orxSYSPLUGIN    pstSysPlugin;
-  orxPLUGIN_INFO *pstPluginInfo;
+  orxHANDLE       hPlugin;
+  const orxSTRING zLocation;
+  const orxSTRING zExtension;
+  const orxSTRING zFileName;
+  orxCHAR         acFileName[384];
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zPluginFileName != orxNULL);
   orxASSERT(_zPluginName != orxNULL);
 
-  /* Opens plugin */
-  pstSysPlugin = orxPLUGIN_OPEN(_zPluginFileName);
-
-  /* Valid? */
-  if(pstSysPlugin != orxNULL)
+  /* Is already loaded? */
+  if((hPlugin = orxPlugin_GetHandle(_zPluginName)) != orxHANDLE_UNDEFINED)
   {
-    /* Creates plugin info */
-    pstPluginInfo = orxPlugin_CreatePluginInfo();
+    /* Unloads it */
+    orxPlugin_Unload(hPlugin);
+  }
+
+  /* Gets extension */
+  zExtension = _zPluginName + orxString_GetLength(_zPluginName) - orxString_GetLength(szPluginLibraryExt) - 1;
+
+  /* Already contains extension? */
+  if((*zExtension++ == '.')
+  && (orxMemory_Compare(zExtension, szPluginLibraryExt, orxString_GetLength(szPluginLibraryExt)) == 0))
+  {
+    /* Locates it without any additional extension/suffix */
+    zLocation = orxResource_Locate(orxPLUGIN_KZ_RESOURCE_GROUP, _zPluginName);
+    zFileName = _zPluginName;
+  }
+  else
+  {
+#if defined(__orxDEBUG__) || defined(__orxPROFILER__)
+
+    orxSTRING zSuffix;
+
+    /* Pushes section */
+    orxConfig_PushSection(orxPLUGIN_KZ_CONFIG_SECTION);
+
+    /* Checks */
+    orxASSERT(orxString_GetLength(_zPluginName) + orxMAX(orxString_GetLength(orxConfig_GetString(orxPLUGIN_KZ_CONFIG_SUFFIX)), orxString_GetLength(orxPLUGIN_KZ_DEFAULT_SUFFIX)) < 252);
+
+#endif /* __orxDEBUG__ || __orxPROFILER__ */
+
+    /* Inits buffer */
+    acFileName[sizeof(acFileName) - 1] = orxCHAR_NULL;
+    zFileName = acFileName;
+
+#if defined(__orxDEBUG__) || defined(__orxPROFILER__)
+
+    /* Gets debug suffix */
+    zSuffix = (orxSTRING)((orxConfig_HasValue(orxPLUGIN_KZ_CONFIG_SUFFIX) != orxFALSE) ? orxConfig_GetString(orxPLUGIN_KZ_CONFIG_SUFFIX) : orxPLUGIN_KZ_DEFAULT_SUFFIX);
+
+    /* Pops previous section */
+    orxConfig_PopSection();
+
+    /* Gets complete name */
+    orxString_NPrint(acFileName, sizeof(acFileName) - 1, "%s%s.%s", _zPluginName, zSuffix, szPluginLibraryExt);
+
+    /* Locates it */
+    zLocation = orxResource_Locate(orxPLUGIN_KZ_RESOURCE_GROUP, zFileName);
+
+    /* Not found? */
+    if(zLocation == orxNULL)
+    {
+#endif /* __orxDEBUG__ || __orxPROFILER__ */
+
+    /* Gets complete name */
+    orxString_NPrint(acFileName, sizeof(acFileName) - 1, "%s.%s", _zPluginName, szPluginLibraryExt);
+
+    /* Locates it */
+    zLocation = orxResource_Locate(orxPLUGIN_KZ_RESOURCE_GROUP, zFileName);
+
+#if defined(__orxDEBUG__) || defined(__orxPROFILER__)
+    }
+
+#endif /* __orxDEBUG__ || __orxPROFILER__ */
+  }
+
+  /* Found? */
+  if(zLocation != orxNULL)
+  {
+    orxSYSPLUGIN                  pstSysPlugin;
+    const orxRESOURCE_TYPE_INFO  *pstResourceType;
+    orxBOOL                       bUseShadow = orxFALSE;
+    orxCHAR                       acShadowLocation[384];
+
+    /* Gets resource type */
+    pstResourceType = orxResource_GetType(zLocation);
+    orxASSERT(pstResourceType != orxNULL);
+
+    /* Not file type? */
+    if(orxString_Compare(pstResourceType->zTag, orxRESOURCE_KZ_TYPE_TAG_FILE) != 0)
+    {
+      /* Requests local shadow */
+      bUseShadow = orxTRUE;
+    }
+    else
+    {
+      orxS32 i, iCount;
+
+      /* Pushes resource section */
+      orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
+
+      /* For all watchlist entries */
+      for(i = 0, iCount = orxConfig_GetListCount(orxRESOURCE_KZ_CONFIG_WATCH_LIST); i < iCount; i++)
+      {
+        /* Found? */
+        if(orxString_ICompare(orxPLUGIN_KZ_RESOURCE_GROUP, orxConfig_GetListString(orxRESOURCE_KZ_CONFIG_WATCH_LIST, i)) == 0)
+        {
+          /* Updates status */
+          bUseShadow = orxTRUE;
+          break;
+        }
+      }
+
+      /* Pops config section */
+      orxConfig_PopSection();
+    }
+
+    /* Should make a shadow copy? */
+    if(bUseShadow != orxFALSE)
+    {
+      orxHANDLE       hResource, hShadowResource;
+      const orxSTRING zPath;
+
+      /* Gets resource path */
+      zPath = orxResource_GetPath(zLocation);
+
+      /* Inits buffer */
+      acShadowLocation[sizeof(acShadowLocation) - 1] = orxCHAR_NULL;
+
+      /* Gets shadow location */
+  #ifdef __orxPLUGIN_MULTI_SHADOW__
+      orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%s%c%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxRESOURCE_KZ_TYPE_TAG_FILE, orxRESOURCE_KC_LOCATION_SEPARATOR, orxString_GetLength(zFileName) - orxString_GetLength(szPluginLibraryExt) - 1, zFileName, sstPlugin.u32ShadowCount++, szPluginLibraryExt);
+  #else /* __orxPLUGIN_MULTI_SHADOW__ */
+      orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%s%c%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxRESOURCE_KZ_TYPE_TAG_FILE, orxRESOURCE_KC_LOCATION_SEPARATOR, orxString_GetLength(zFileName) - orxString_GetLength(szPluginLibraryExt) - 1, zFileName, szPluginLibraryExt);
+  #endif /* __orxPLUGIN_MULTI_SHADOW__ */
+
+      /* Opens both resources */
+      hResource       = orxResource_Open(zLocation, orxFALSE);
+      hShadowResource = orxResource_Open(acShadowLocation, orxTRUE);
+
+      /* Valid? */
+      if((hResource != orxHANDLE_UNDEFINED)
+      && (hShadowResource != orxHANDLE_UNDEFINED))
+      {
+        orxCHAR acBuffer[orxPLUGIN_KU32_SHADOW_BUFFER_SIZE];
+        orxS64  s64Size;
+
+        /* Makes the shadow copy */
+        for(s64Size = orxResource_Read(hResource, sizeof(acBuffer), acBuffer, orxNULL, orxNULL);
+            s64Size != 0;
+            s64Size = orxResource_Read(hResource, sizeof(acBuffer), acBuffer, orxNULL, orxNULL))
+        {
+          orxResource_Write(hShadowResource, s64Size, acBuffer, orxNULL, orxNULL);
+        }
+
+        /* Updates location */
+        zLocation = acShadowLocation;
+      }
+
+      /* Closes handles */
+      orxResource_Close(hResource);
+      orxResource_Close(hShadowResource);
+    }
+
+    /* Opens plugin */
+    pstSysPlugin = orxPLUGIN_OPEN(orxResource_GetPath(zLocation));
 
     /* Valid? */
-    if(pstPluginInfo != orxNULL)
+    if(pstSysPlugin != orxNULL)
     {
-      /* Stores plugin info */
-      pstPluginInfo->pstSysPlugin = pstSysPlugin;
-      pstPluginInfo->hPluginHandle = (orxHANDLE)pstPluginInfo;
+      orxPLUGIN_INFO *pstPluginInfo;
 
-      /* Registers plugin */
-      if(orxPlugin_RegisterPlugin(pstPluginInfo) != orxSTATUS_FAILURE)
+      /* Creates plugin info */
+      pstPluginInfo = orxPlugin_CreatePluginInfo();
+
+      /* Valid? */
+      if(pstPluginInfo != orxNULL)
       {
-        /* Stores plugin name */
-        pstPluginInfo->zPluginName = _zPluginName;
+        /* Stores plugin info */
+        pstPluginInfo->pstSysPlugin   = pstSysPlugin;
+        pstPluginInfo->hPluginHandle  = (orxHANDLE)pstPluginInfo;
 
-        /* Gets plugin handle */
-        hPluginHandle = pstPluginInfo->hPluginHandle;
+        /* Registers plugin */
+        if(orxPlugin_RegisterPlugin(pstPluginInfo) != orxSTATUS_FAILURE)
+        {
+          /* Stores plugin IDs */
+          pstPluginInfo->stNameID     = orxString_GetID(_zPluginName);
+          pstPluginInfo->stResourceID = orxString_GetID(zFileName);
+          pstPluginInfo->stShadowID   = (zLocation == acShadowLocation) ? orxString_GetID(zLocation) : orxSTRINGID_UNDEFINED;
+
+          /* Gets plugin handle */
+          hResult = pstPluginInfo->hPluginHandle;
+        }
+        else
+        {
+          /* Logs an error */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't register the plugin <%s>, closing it.", _zPluginName);
+
+          /* Closes plugin */
+          orxPLUGIN_CLOSE(pstSysPlugin);
+
+          /* Deletes allocated plugin info */
+          orxPlugin_DeletePluginInfo(pstPluginInfo);
+        }
       }
       else
       {
         /* Logs an error */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't register the plugin <%s>, closing it.", _zPluginFileName);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't create a plugin info for plugin <%s>.", _zPluginName);
 
         /* Closes plugin */
         orxPLUGIN_CLOSE(pstSysPlugin);
-
-        /* Deletes allocated plugin info */
-        orxPlugin_DeletePluginInfo(pstPluginInfo);
-
-        /* Empty plugin */
-        hPluginHandle = orxHANDLE_UNDEFINED;
       }
     }
     else
     {
       /* Logs an error */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't create a plugin info for plugin <%s>.", _zPluginFileName);
-
-      /* Closes plugin */
-      orxPLUGIN_CLOSE(pstSysPlugin);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't load the plugin <%s>.", _zPluginName);
     }
   }
-  else
-  {
-    /* Logs an error */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't load the plugin <%s>.", _zPluginFileName);
-  }
-
-#else /* __orxPLUGIN_DYNAMIC__ */
-
-  /* Logs message */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Ignoring function call: this version of orx has been compiled without dynamic plugin support.");
-
-#endif /* __orxPLUGIN_DYNAMIC__ */
-
-  /* Returns its handle */
-  return hPluginHandle;
-}
-
-
-/** Loads a plugin using OS common library extension + release/debug suffixes
- * @param[in] _zPluginFileName  The complete path of the plugin file, without its library extension
- * @param[in] _zPluginName      The name that the plugin will be given in the plugin list
- * @return The plugin handle on success, orxHANDLE_UNDEFINED on failure
- */
-orxHANDLE orxFASTCALL orxPlugin_LoadUsingExt(const orxSTRING _zPluginFileName, const orxSTRING _zPluginName)
-{
-  orxHANDLE hResult = orxHANDLE_UNDEFINED;
-
-#ifdef __orxPLUGIN_DYNAMIC__
-
-  orxCHAR zFileName[256];
-
-#ifdef __orxDEBUG__
-
-  orxSTRING zDebugSuffix;
-
-  /* Pushes section */
-  orxConfig_PushSection(orxPLUGIN_KZ_CONFIG_SECTION);
-
-#endif /* __ orxDEBUG__ */
-
-  /* Checks */
-  orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zPluginFileName != orxNULL);
-  orxASSERT(orxString_GetLength(_zPluginFileName) + orxMAX(orxString_GetLength(orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX)), orxString_GetLength(orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX)) < 252);
-  orxASSERT(_zPluginName != orxNULL);
-
-#ifdef __orxDEBUG__
-
-  /* Gets debug suffix */
-  zDebugSuffix = (orxSTRING)((orxConfig_HasValue(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX) != orxFALSE) ? orxConfig_GetString(orxPLUGIN_KZ_CONFIG_DEBUG_SUFFIX) : orxPLUGIN_KZ_DEFAULT_DEBUG_SUFFIX);
-
-  /* Gets complete name */
-  orxString_NPrint(zFileName, sizeof(zFileName), "%s%s.%s", _zPluginFileName, zDebugSuffix, szPluginLibraryExt);
-
-  /* Loads it */
-  hResult = orxPlugin_Load(zFileName, _zPluginName);
-
-  /* Not valid? */
-  if(hResult == orxHANDLE_UNDEFINED)
-  {
-
-#endif /* __orxDEBUG__ */
-
-  /* Gets complete name */
-  orxString_NPrint(zFileName, sizeof(zFileName), "%s.%s", _zPluginFileName, szPluginLibraryExt);
-
-  /* Loads it */
-  hResult = orxPlugin_Load(zFileName, _zPluginName);
-
-#ifdef __orxDEBUG__
-
-  }
-
-  /* Pops previous section */
-  orxConfig_PopSection();
-
-#endif /* __orxDEBUG__ */
 
 #else /* __orxPLUGIN_DYNAMIC__ */
 
@@ -1108,11 +1330,48 @@ orxSTATUS orxFASTCALL orxPlugin_Unload(orxHANDLE _hPluginHandle)
   /* Valid? */
   if(pstPluginInfo != orxNULL)
   {
+    /* Swapping? */
+    if(orxFLAG_TEST(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_SWAP))
+    {
+      orxPLUGIN_SWAP_FUNCTION pfnSwap;
+
+      /* Gets swap function */
+      pfnSwap = (orxPLUGIN_SWAP_FUNCTION)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
+
+      /* Found? */
+      if(pfnSwap != orxNULL)
+      {
+        /* Calls it */
+        eResult = pfnSwap(orxPLUGIN_ENTRY_MODE_SWAP_OUT);
+      }
+      else
+      {
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+      }
+    }
+    else
+    {
+      orxPLUGIN_EXIT_FUNCTION pfnExit;
+
+      /* Gets exit function */
+      pfnExit = (orxPLUGIN_EXIT_FUNCTION)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_EXIT_FUNCTION_NAME);
+
+      /* Found? */
+      if(pfnExit != orxNULL)
+      {
+        /* Calls it */
+        eResult = pfnExit(orxPLUGIN_ENTRY_MODE_EXIT);
+      }
+      else
+      {
+        /* Updates result */
+        eResult = orxSTATUS_SUCCESS;
+      }
+    }
+
     /* Deletes plugin */
     orxPlugin_DeletePluginInfo(pstPluginInfo);
-
-    /* Found */
-    eResult = orxSTATUS_SUCCESS;
   }
   else
   {
@@ -1188,7 +1447,8 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, c
  */
 orxHANDLE orxFASTCALL orxPlugin_GetHandle(const orxSTRING _zPluginName)
 {
-  orxHANDLE hPluginHandle = orxHANDLE_UNDEFINED;
+  orxSTRINGID stPluginID;
+  orxHANDLE   hPluginHandle = orxHANDLE_UNDEFINED;
 
 #ifdef __orxPLUGIN_DYNAMIC__
 
@@ -1198,13 +1458,16 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(const orxSTRING _zPluginName)
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
   orxASSERT(_zPluginName != orxNULL);
 
+  /* Gets plugin ID */
+  stPluginID = orxString_Hash(_zPluginName);
+
   /* Search all plugin info */
   for(pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
       pstPluginInfo != orxNULL;
       pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, pstPluginInfo))
   {
     /* Found? */
-    if(orxString_Compare(_zPluginName, pstPluginInfo->zPluginName) == 0)
+    if(stPluginID == pstPluginInfo->stNameID)
     {
       /* Gets its handle */
       hPluginHandle = pstPluginInfo->hPluginHandle;
@@ -1246,7 +1509,7 @@ const orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
   if(pstPluginInfo != orxNULL)
   {
     /* Gets plugin name */
-    zPluginName = pstPluginInfo->zPluginName;
+    zPluginName = orxString_GetFromID(pstPluginInfo->stNameID);
   }
   else
   {
