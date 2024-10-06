@@ -59,21 +59,6 @@
 
 #endif /* __orxWINDOWS__ */
 
-#ifdef __orxLLVM__
-  #if defined(__orxMAC__) || defined(__orxIOS__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wunknown-attributes"
-  #endif /* __orxMAC__ || __orxIOS__ */
-#endif /* __orxLLVM__ */
-
-#include "rpmalloc.h"
-
-#ifdef __orxLLVM__
-  #if defined(__orxMAC__) || defined(__orxIOS__)
-    #pragma clang diagnostic pop
-  #endif /* __orxMAC__ || __orxIOS__ */
-#endif /* __orxLLVM__ */
-
 
 /** Module flags
  */
@@ -195,8 +180,8 @@ static void *orxThread_Execute(void *_pContext)
   while(pstInfo->hThread == 0)
     ;
 
-  /* Initializes rpmalloc */
-  rpmalloc_thread_initialize();
+  /* Initializes memory for thread */
+  orxMemory_InitThread();
 
   /* Should run? */
   if((sstThread.pfnThreadStart == orxNULL)
@@ -229,8 +214,8 @@ static void *orxThread_Execute(void *_pContext)
     sstThread.pfnThreadStop(sstThread.pThreadContext);
   }
 
-  /* Finalizes rpmalloc */
-  rpmalloc_thread_finalize(1);
+  /* Exits memory for thread */
+  orxMemory_ExitThread();
 
   /* Done! */
   return 0;
