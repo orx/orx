@@ -280,6 +280,7 @@ void orxFASTCALL orxMemory_Exit()
     sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_NONE;
   }
 
+  /* Done! */
   return;
 }
 
