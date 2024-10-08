@@ -4348,14 +4348,19 @@ void orxFASTCALL orxConfig_CommandGetListCount(orxU32 _u32ArgNumber, const orxCO
   */
 void orxFASTCALL orxConfig_CommandGetSystem(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxCONFIG_VALUE *pstValue;
+
   /* Pushes system section */
   orxConfig_PushSection(orxCONFIG_KZ_CONFIG_SECTION_SYSTEM);
 
-  /* Is it an existing value? */
-  if(orxConfig_HasValue(_astArgList[0].zValue) != orxFALSE)
+  /* Gets corresponding value */
+  pstValue = orxConfig_GetValue(_astArgList[0].zValue);
+
+  /* Found? */
+  if(pstValue != orxNULL)
   {
     /* Updates result */
-    _pstResult->zValue = orxConfig_GetString(_astArgList[0].zValue);
+    orxConfig_GetStringFromValue(pstValue, -1, &(_pstResult->zValue));
   }
   else
   {
