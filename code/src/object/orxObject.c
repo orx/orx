@@ -169,12 +169,12 @@
 #define orxOBJECT_KZ_SOUND                      "sound"
 #define orxOBJECT_KZ_SPAWN                      "spawn"
 #define orxOBJECT_KZ_TRACK                      "track"
-#define orxOBJECT_KZ_ON_COLLIDE                 "OnCollide"
-#define orxOBJECT_KZ_ON_SEPARATE                "OnSeparate"
-#define orxOBJECT_KZ_ON_PART_COLLIDE            "OnPartCollide"
-#define orxOBJECT_KZ_ON_PART_SEPARATE           "OnPartSeparate"
-#define orxOBJECT_KZ_ON_CREATE                  "OnCreate"
-#define orxOBJECT_KZ_ON_DELETE                  "OnDelete"
+#define orxOBJECT_KZ_COLLIDE                    "Collide"
+#define orxOBJECT_KZ_SEPARATE                   "Separate"
+#define orxOBJECT_KZ_PART_COLLIDE               "PartCollide"
+#define orxOBJECT_KZ_PART_SEPARATE              "PartSeparate"
+#define orxOBJECT_KZ_CREATE                     "Create"
+#define orxOBJECT_KZ_DELETE                     "Delete"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -4866,7 +4866,7 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
         if(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
         {
           /* Fires it */
-          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_ON_DELETE, orxNULL, 0);
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_DELETE, orxNULL, 0);
         }
 
         /* Has frame? */
@@ -5019,13 +5019,13 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
     /* Selects events */
     if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
     {
-      zEvent      = orxOBJECT_KZ_ON_COLLIDE;
-      zPartEvent  = orxOBJECT_KZ_ON_PART_COLLIDE;
+      zEvent      = orxOBJECT_KZ_COLLIDE;
+      zPartEvent  = orxOBJECT_KZ_PART_COLLIDE;
     }
     else
     {
-      zEvent      = orxOBJECT_KZ_ON_SEPARATE;
-      zPartEvent  = orxOBJECT_KZ_ON_PART_SEPARATE;
+      zEvent      = orxOBJECT_KZ_SEPARATE;
+      zPartEvent  = orxOBJECT_KZ_PART_SEPARATE;
     }
 
     /* Fires triggers on sender */
@@ -7005,7 +7005,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
         {
           /* Fires it */
-          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_ON_CREATE, orxNULL, 0);
+          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_CREATE, orxNULL, 0);
         }
 
         /* Should age? */
