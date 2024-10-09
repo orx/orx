@@ -65,13 +65,54 @@ static void orxFASTCALL orxCheat_CommandEnable(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
+static orxBOOL orxFASTCALL orxCheat_CheckInput(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+{
+  const orxSTRING  *pzSection;
+  orxBOOL           bResult = orxTRUE;
+
+  // Gets section
+  pzSection = (const orxSTRING *)_pContext;
+
+  // Is input active?
+  if(orxInput_HasBeenActivated(_zKeyName))
+  {
+    // Follow transition
+    *pzSection = orxConfig_GetString(_zKeyName);
+
+    // Push new state section
+    orxConfig_PushSection(*pzSection);
+
+    // Is cheat code complete?
+    if(orxConfig_HasValue(orxCHEAT_KZ_CONFIG_COMMAND))
+    {
+      orxCOMMAND_VAR stResult;
+
+      // Cheat!
+      orxCommand_Evaluate(orxConfig_GetString(orxCHEAT_KZ_CONFIG_COMMAND), &stResult);
+
+      // Go back to the beginning
+      *pzSection = orxCHEAT_KZ_CONFIG_ROOT;
+    }
+
+    // Pop new state section
+    orxConfig_PopSection();
+
+    // Updates result
+    bResult = orxFALSE;
+  }
+
+  // Done!
+  return bResult;
+}
+
 static void orxFASTCALL orxCheat_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
 {
   const orxSTRING zInput;
   orxINPUT_TYPE   eType;
   orxENUM         eID;
   orxFLOAT        fValue;
-  orxU32          i, iCount, u32Dummy, u32Section;
+  orxU32          u32Dummy, u32Section;
+  orxSTATUS       eCheckStatus = orxSTATUS_SUCCESS;
 
   // Retrieve cheat state
   const orxSTRING zSection = sstCheat.zCurrent ? sstCheat.zCurrent : orxCHEAT_KZ_CONFIG_ROOT;
@@ -90,8 +131,8 @@ static void orxFASTCALL orxCheat_Update(const orxCLOCK_INFO *_pstClockInfo, void
   }
 
   // For all sections
-  for(u32Section = 0, i = 0, iCount = 0;
-      (i == iCount)
+  for(u32Section = 0;
+      (eCheckStatus != orxSTATUS_FAILURE)
     && (u32Section < orxARRAY_GET_ITEM_COUNT(azSections))
     && (azSections[u32Section] != orxNULL);
       u32Section++)
@@ -100,40 +141,8 @@ static void orxFASTCALL orxCheat_Update(const orxCLOCK_INFO *_pstClockInfo, void
     zSection = azSections[u32Section];
     orxConfig_PushSection(zSection);
 
-    // For all possible inputs (transitions)
-    for(i = 0, iCount = orxConfig_GetKeyCount(); i < iCount; i++)
-    {
-      const orxSTRING zKey;
-
-      // Get it
-      zKey = orxConfig_GetKey(i);
-
-      // Is it active?
-      if(orxInput_HasBeenActivated(zKey))
-      {
-        // Follow transition
-        zSection = orxConfig_GetString(zKey);
-
-        // Push new state section
-        orxConfig_PushSection(zSection);
-
-        // Is cheat code complete?
-        if(orxConfig_HasValue(orxCHEAT_KZ_CONFIG_COMMAND))
-        {
-          orxCOMMAND_VAR stResult;
-
-          // Cheat!
-          orxCommand_Evaluate(orxConfig_GetString(orxCHEAT_KZ_CONFIG_COMMAND), &stResult);
-
-          // Go back to the beginning
-          zSection = orxCHEAT_KZ_CONFIG_ROOT;
-        }
-
-        // Pop new state section
-        orxConfig_PopSection();
-        break;
-      }
-    }
+    // Check all possible inputs (transitions)
+    eCheckStatus = orxConfig_ForAllKeys(orxCheat_CheckInput, orxFALSE, &zSection);
 
     // Deselect it
     orxConfig_PopSection();
@@ -147,6 +156,101 @@ static void orxFASTCALL orxCheat_Update(const orxCLOCK_INFO *_pstClockInfo, void
 
   // Done!
   return;
+}
+
+static orxBOOL orxFASTCALL orxCheat_ProcessCheat(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+{
+  orxCHAR         acState[256], acInput[16], *pcState;
+  const orxSTRING zCheat;
+  const orxSTRING zCommand;
+  const orxCHAR  *pcCheat;
+  orxBOOL         bResult = orxTRUE;
+
+  // Get cheat sequence & command
+  zCheat    = _zKeyName;
+  zCommand  = orxConfig_GetString(zCheat);
+
+  // For all defined cheats
+  orxString_NPrint(acState, sizeof(acState), orxCHEAT_KZ_CONFIG_ROOT);
+  for(pcCheat = zCheat, pcState = acState;
+      (*pcCheat != orxCHAR_NULL)
+   && ((*pcCheat != orxCHEAT_KC_CONFIG_SEPARATOR)
+    || (*(pcCheat + 1) != orxCHAR_NULL))
+   && (pcState - acState < sizeof(acState) - 1);
+      pcCheat++)
+  {
+    // Push current state's section
+    orxConfig_PushSection(acState);
+
+    // Already has a cheat command?
+    if(orxConfig_HasValue(orxCHEAT_KZ_CONFIG_COMMAND))
+    {
+      // Log error
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cheat [%s] is clobbered by [%s], removing!", acState, zCheat);
+
+      // Clear cheat command
+      orxConfig_ClearValue(orxCHEAT_KZ_CONFIG_COMMAND);
+    }
+
+    // First state?
+    if(pcState == acState)
+    {
+      // Print prefix
+      pcState = acState + orxString_NPrint(acState, sizeof(acState), orxCHEAT_KZ_CONFIG_PREFIX);
+    }
+
+    // Separator mode?
+    if(*pcCheat == orxCHEAT_KC_CONFIG_SEPARATOR)
+    {
+      const orxSTRING zNextSeparator;
+
+      // Get input
+      zNextSeparator = orxString_SearchChar(pcCheat + 1, orxCHEAT_KC_CONFIG_SEPARATOR);
+      pcCheat += orxString_NPrint(acInput, sizeof(acInput), "%.*s", (orxU32)(zNextSeparator ? zNextSeparator - pcCheat - 1 : sizeof(acInput)), pcCheat + 1);
+    }
+    // Single character mode
+    else
+    {
+      // Get input
+      orxString_NPrint(acInput, sizeof(acInput), "%c", *pcCheat);
+    }
+
+    // Convert input to upper case
+    orxString_UpperCase(acInput);
+
+    // Update state
+    pcState += orxString_NPrint(pcState, sizeof(acState) - (orxU32)(pcState - acState), "%s", acInput);
+
+    // Store it
+    orxConfig_SetString(acInput, acState);
+
+    // Pop current state's section
+    orxConfig_PopSection();
+  }
+
+  // Push current state section
+  orxConfig_PushSection(acState);
+
+  // Clear cheat command
+  orxConfig_ClearValue(orxCHEAT_KZ_CONFIG_COMMAND);
+
+  // Not a sub-sequence of an existing cheat?
+  if(orxConfig_GetKeyCount() == 0)
+  {
+    // Store the cheat command
+    orxConfig_SetString(orxCHEAT_KZ_CONFIG_COMMAND, zCommand);
+  }
+  else
+  {
+    // Log error
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cheat [%s] is a sub-sequence of another existing cheat, skipping!", acState);
+  }
+
+  // Pop current state section
+  orxConfig_PopSection();
+
+  // Done!
+  return bResult;
 }
 
 orxSTATUS orxCheat_Init()
@@ -240,93 +344,8 @@ orxSTATUS orxCheat_Init()
     // For all cheats
     for(i = 0, u32CheatCount = orxConfig_GetKeyCount(); i < u32CheatCount; i++)
     {
-      orxCHAR         acState[256], acInput[16], *pcState;
-      const orxSTRING zCheat;
-      const orxSTRING zCommand;
-      const orxCHAR  *pcCheat;
-
-      // Get cheat sequence & command
-      zCheat    = orxConfig_GetKey(i);
-      zCommand  = orxConfig_GetString(zCheat);
-
-      // For all defined cheats
-      orxString_NPrint(acState, sizeof(acState), orxCHEAT_KZ_CONFIG_ROOT);
-      for(pcCheat = zCheat, pcState = acState;
-          (*pcCheat != orxCHAR_NULL)
-       && ((*pcCheat != orxCHEAT_KC_CONFIG_SEPARATOR)
-        || (*(pcCheat + 1) != orxCHAR_NULL))
-       && (pcState - acState < sizeof(acState) - 1);
-          pcCheat++)
-      {
-        // Push current state's section
-        orxConfig_PushSection(acState);
-
-        // Already has a cheat command?
-        if(orxConfig_HasValue(orxCHEAT_KZ_CONFIG_COMMAND))
-        {
-          // Log error
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cheat [%s] is clobbered by [%s], removing!", acState, zCheat);
-
-          // Clear cheat command
-          orxConfig_ClearValue(orxCHEAT_KZ_CONFIG_COMMAND);
-        }
-
-        // First state?
-        if(pcState == acState)
-        {
-          // Print prefix
-          pcState = acState + orxString_NPrint(acState, sizeof(acState), orxCHEAT_KZ_CONFIG_PREFIX);
-        }
-
-        // Separator mode?
-        if(*pcCheat == orxCHEAT_KC_CONFIG_SEPARATOR)
-        {
-          const orxSTRING zNextSeparator;
-
-          // Get input
-          zNextSeparator = orxString_SearchChar(pcCheat + 1, orxCHEAT_KC_CONFIG_SEPARATOR);
-          pcCheat += orxString_NPrint(acInput, sizeof(acInput), "%.*s", (orxU32)(zNextSeparator ? zNextSeparator - pcCheat - 1 : sizeof(acInput)), pcCheat + 1);
-        }
-        // Single character mode
-        else
-        {
-          // Get input
-          orxString_NPrint(acInput, sizeof(acInput), "%c", *pcCheat);
-        }
-
-        // Convert input to upper case
-        orxString_UpperCase(acInput);
-
-        // Update state
-        pcState += orxString_NPrint(pcState, sizeof(acState) - (orxU32)(pcState - acState), "%s", acInput);
-
-        // Store it
-        orxConfig_SetString(acInput, acState);
-
-        // Pop current state's section
-        orxConfig_PopSection();
-      }
-
-      // Push current state section
-      orxConfig_PushSection(acState);
-
-      // Clear cheat command
-      orxConfig_ClearValue(orxCHEAT_KZ_CONFIG_COMMAND);
-
-      // Not a sub-sequence of an existing cheat?
-      if(orxConfig_GetKeyCount() == 0)
-      {
-        // Store the cheat command
-        orxConfig_SetString(orxCHEAT_KZ_CONFIG_COMMAND, zCommand);
-      }
-      else
-      {
-        // Log error
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Cheat [%s] is a sub-sequence of another existing cheat, skipping!", acState);
-      }
-
-      // Pop current state section
-      orxConfig_PopSection();
+      // Process it
+      orxConfig_ForAllKeys(orxCheat_ProcessCheat, orxTRUE, orxNULL);
     }
 
     // Pop cheat section
