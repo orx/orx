@@ -1,5 +1,9 @@
 var NAVTREEINDEX26 =
 {
+"orx_plugin___joystick_8h.html":[3,0,0,11,0,3],
+"orx_plugin___joystick_8h_source.html":[3,0,0,11,0,3],
+"orx_plugin___keyboard_8h.html":[3,0,0,11,0,4],
+"orx_plugin___keyboard_8h_source.html":[3,0,0,11,0,4],
 "orx_plugin___mouse_8h.html":[3,0,0,11,0,5],
 "orx_plugin___mouse_8h_source.html":[3,0,0,11,0,5],
 "orx_plugin___physics_8h.html":[3,0,0,11,0,6],
@@ -245,9 +249,5 @@ var NAVTREEINDEX26 =
 "structorx_f_i_l_e___i_n_f_o.html#a2051c84e777f93482a316b7d2cf1d964":[1,20,0,3],
 "structorx_f_i_l_e___i_n_f_o.html#a57d4f6f0b89259e57065481e0458e717":[1,20,0,4],
 "structorx_f_i_l_e___i_n_f_o.html#a8b146b47d476608ee798cd126ffd62a4":[1,20,0,1],
-"structorx_f_i_l_e___i_n_f_o.html#aa77264223f3348edc8c235bf46db22f8":[1,20,0,6],
-"structorx_f_i_l_e___i_n_f_o.html#aa977df232302a0884d1efad4d0be5ed4":[1,20,0,7],
-"structorx_f_i_l_e___i_n_f_o.html#ade13600f1c4d82dff5ea2a9b25cb786b":[1,20,0,2],
-"structorx_f_i_l_e___i_n_f_o.html#ae5bfe98651850cc6c7dc02e5271f083f":[1,20,0,0],
-"structorx_f_i_l_e___i_n_f_o.html#ae6d272aa5102c9ad888cc679c43af7e4":[1,20,0,5]
+"structorx_f_i_l_e___i_n_f_o.html#aa77264223f3348edc8c235bf46db22f8":[1,20,0,6]
 };

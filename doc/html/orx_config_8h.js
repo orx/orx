@@ -3,6 +3,7 @@ var orx_config_8h =
     [ "orxCONFIG_KZ_RESOURCE_GROUP", "group__orx_config.html#ga292cacf010a38b185f65e2e54bce8733", null ],
     [ "orxCONFIG_BOOTSTRAP_FUNCTION", "group__orx_config.html#gafb7b4d512a29c9410c5a5e1f7faf9119", null ],
     [ "orxCONFIG_CLEAR_FUNCTION", "group__orx_config.html#gae1d79b4c2a48e831db1cf7d031fe5294", null ],
+    [ "orxCONFIG_KEY_FUNCTION", "group__orx_config.html#ga1738c94dce06d0e5d8650a5b7077fd6d", null ],
     [ "orxCONFIG_SAVE_FUNCTION", "group__orx_config.html#gaff09561378d9e18269c5313bc428ff18", null ],
     [ "orxCONFIG_EVENT", "group__orx_config.html#gad70a5ee64ac35b8fdd9cdaf3e4a1d267", [
       [ "orxCONFIG_EVENT_RELOAD_START", "group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ace45d5a2a874a2b0c4daf9744b323c5f", null ],
@@ -19,6 +20,7 @@ var orx_config_8h =
     [ "orxConfig_DuplicateRawValue", "group__orx_config.html#ga71d5a6dcd9e8c5d835e4b480716a8ac9", null ],
     [ "orxConfig_EnableTypoCheck", "group__orx_config.html#gafc3530a66bdce91c5d75b71d186876c3", null ],
     [ "orxConfig_Exit", "group__orx_config.html#gabc9ffc867226e9cf1d1c225a2c842139", null ],
+    [ "orxConfig_ForAllKeys", "group__orx_config.html#gab1644a1fd540f78b1d4ef4e3abd76ba5", null ],
     [ "orxConfig_GetBool", "group__orx_config.html#ga020eac8fa22c7e5b650ecd730f8b3f92", null ],
     [ "orxConfig_GetColorVector", "group__orx_config.html#ga128f66724f673066c8ea02cc4af8dfda", null ],
     [ "orxConfig_GetCurrentSection", "group__orx_config.html#gabe3d8af4f39e50865bacc61ca74812b6", null ],
