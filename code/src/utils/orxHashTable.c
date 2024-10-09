@@ -337,6 +337,7 @@ orxSTATUS orxFASTCALL orxHashTable_Set(orxHASHTABLE *_pstHashTable, orxU64 _u64K
 
   /* Checks */
   orxASSERT(_pstHashTable != orxNULL);
+  orxASSERT(_pData != orxNULL);
 
   /* Gets the index from the key */
   u32Index = orxHashTable_FindIndex(_pstHashTable, _u64Key);

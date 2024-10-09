@@ -3465,11 +3465,11 @@ orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS
           /* Stores it */
           eResult = orxHashTable_Set(sstResource.pstMemoryDataTable, stNameID, pstData);
         }
-  else
-  {
+        else
+        {
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
-  }
+        }
       }
       /* Unset */
       else
