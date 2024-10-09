@@ -7996,13 +7996,12 @@ const orxSTRING orxFASTCALL orxConfig_GetKey(orxU32 _u32KeyIndex)
  * @param[in] _pfnKeyCallback   Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit)
  * @param[in] _bIncludeParents  Include keys inherited from all parents (ie. that are not locally defined), except the default one
  * @param[in] _pContext         User defined context, passed to the callback
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return orxSTATUS_SUCCESS if all keys were processed without interruption, orxSTATUS_FAILURE otherwise
  */
 orxSTATUS orxFASTCALL orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyCallback, orxBOOL _bIncludeParents, void *_pContext)
 {
   orxCONFIG_SECTION  *pstSection;
-  orxBOOL             bStop;
-  orxSTATUS           eResult = orxSTATUS_SUCCESS;
+  orxSTATUS           eResult;
 
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxConfig_ForAllKeys");
@@ -8015,8 +8014,8 @@ orxSTATUS orxFASTCALL orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyC
   orxHashTable_Clear(sstConfig.pstKeyTable);
 
   /* For all inheritance sections, *except* the default parent */
-  for(bStop = orxFALSE, pstSection = sstConfig.pstCurrentSection;
-      (bStop == orxFALSE) && (pstSection != orxNULL) && (pstSection != orxHANDLE_UNDEFINED);
+  for(eResult = orxSTATUS_SUCCESS, pstSection = sstConfig.pstCurrentSection;
+      (eResult != orxSTATUS_FAILURE) && (pstSection != orxNULL) && (pstSection != orxHANDLE_UNDEFINED);
       pstSection = (_bIncludeParents != orxFALSE) ? pstSection->pstParent : orxNULL)
   {
     orxCONFIG_ENTRY *pstEntry;
@@ -8033,8 +8032,8 @@ orxSTATUS orxFASTCALL orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyC
         /* Runs callback */
         if(_pfnKeyCallback(orxString_GetFromID(pstEntry->stID), (pstSection != sstConfig.pstCurrentSection) ? orxTRUE : orxFALSE, _pContext) == orxFALSE)
         {
-          /* Stops */
-          bStop = orxTRUE;
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
           break;
         }
       }

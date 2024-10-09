@@ -581,7 +581,7 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetKey(orxU32 _u32KeyInd
  * @param[in] _pfnKeyCallback   Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit)
  * @param[in] _bIncludeParents  Include keys inherited from all parents (ie. that are not locally defined), except the default one
  * @param[in] _pContext         User defined context, passed to the callback
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ * @return orxSTATUS_SUCCESS if all keys were processed without interruption, orxSTATUS_FAILURE otherwise
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyCallback, orxBOOL _bIncludeParents, void *_pContext);
 
