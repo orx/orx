@@ -93,6 +93,7 @@
 #define orxCONFIG_KU32_SECTION_BANK_SIZE          2048        /**< Default section bank size */
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE            16384       /**< Default entry bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE          32          /**< Default history bank size */
+#define orxCONFIG_KU32_KEY_TABLE_SIZE             128         /**< Default key table size */
 #define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
 #define orxCONFIG_KU32_STACK_SIZE                 64          /**< Section stack size */
 
@@ -344,6 +345,7 @@ typedef struct __orxCONFIG_STATIC_t
   orxCHAR            *pcEncryptionChar;     /**< Current encryption char */
   orxLINKLIST         stSectionList;        /**< Section list */
   orxHASHTABLE       *pstSectionTable;      /**< Section table */
+  orxHASHTABLE       *pstKeyTable;          /**< Key table */
   orxCONFIG_SECTION  *pstDefaultSection;    /**< Default parent section */
   orxU32              u32CurrentStackEntry; /**< Current stack entry */
   orxCONFIG_SECTION*  apstSectionStack[orxCONFIG_KU32_STACK_SIZE]; /**< Section stack */
@@ -4651,9 +4653,10 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     sstConfig.pstEntryBank    = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionBank  = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionTable = orxHashTable_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+    sstConfig.pstKeyTable     = orxHashTable_Create(orxCONFIG_KU32_KEY_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
 
     /* Valid? */
-    if((sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
+    if((sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL) && (sstConfig.pstKeyTable != orxNULL))
     {
       orxBOOL bLoadDefault;
 
@@ -4731,6 +4734,20 @@ orxSTATUS orxFASTCALL orxConfig_Init()
         orxBank_Delete(sstConfig.pstEntryBank);
       }
 
+      /* Should delete section table? */
+      if(sstConfig.pstSectionTable != orxNULL)
+      {
+        /* Deletes it */
+        orxHashTable_Delete(sstConfig.pstSectionTable);
+      }
+
+      /* Should delete key table? */
+      if(sstConfig.pstKeyTable != orxNULL)
+      {
+        /* Deletes it */
+        orxHashTable_Delete(sstConfig.pstKeyTable);
+      }
+
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't allocate history bank, entry bank and/or section bank/table.");
     }
@@ -4769,6 +4786,9 @@ void orxFASTCALL orxConfig_Exit()
 
     /* Clears section list */
     orxLinkList_Clean(&(sstConfig.stSectionList));
+
+    /* Deletes key table */
+    orxHashTable_Delete(sstConfig.pstKeyTable);
 
     /* Deletes section table */
     orxHashTable_Delete(sstConfig.pstSectionTable);
@@ -7970,6 +7990,62 @@ const orxSTRING orxFASTCALL orxConfig_GetKey(orxU32 _u32KeyIndex)
 
   /* Done! */
   return zResult;
+}
+
+/** Runs a callback for all keys of the current section
+ * @param[in] _pfnKeyCallback   Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit)
+ * @param[in] _bIncludeParents  Include keys inherited from all parents (ie. that are not locally defined), except the default one
+ * @param[in] _pContext         User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyCallback, orxBOOL _bIncludeParents, void *_pContext)
+{
+  orxCONFIG_SECTION  *pstSection;
+  orxBOOL             bStop;
+  orxSTATUS           eResult = orxSTATUS_SUCCESS;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxConfig_ForAllKeys");
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_pfnKeyCallback != orxNULL);
+
+  /* Clears key table */
+  orxHashTable_Clear(sstConfig.pstKeyTable);
+
+  /* For all inheritance sections, *except* the default parent */
+  for(bStop = orxFALSE, pstSection = sstConfig.pstCurrentSection;
+      (bStop == orxFALSE) && (pstSection != orxNULL) && (pstSection != orxHANDLE_UNDEFINED);
+      pstSection = (_bIncludeParents != orxFALSE) ? pstSection->pstParent : orxNULL)
+  {
+    orxCONFIG_ENTRY *pstEntry;
+
+    /* For all entries */
+    for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
+        pstEntry != orxNULL;
+        pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+    {
+      /* Should process? */
+      if((_bIncludeParents == orxFALSE)
+      || (orxHashTable_Add(sstConfig.pstKeyTable, (orxU64)pstEntry->stID, orxHANDLE_UNDEFINED) != orxSTATUS_FAILURE))
+      {
+        /* Runs callback */
+        if(_pfnKeyCallback(orxString_GetFromID(pstEntry->stID), (pstSection != sstConfig.pstCurrentSection) ? orxTRUE : orxFALSE, _pContext) == orxFALSE)
+        {
+          /* Stops */
+          bStop = orxTRUE;
+          break;
+        }
+      }
+    }
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return eResult;
 }
 
 #ifdef __orxGCC__

@@ -68,13 +68,17 @@ typedef enum __orxCONFIG_EVENT_t
 } orxCONFIG_EVENT;
 
 
-/** Config callback function type to use with save function */
+/** Config callback function type to use with Save */
 typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption);
 
-/** Config callback function type to use with clear function */
+/** Config callback function type to use with Clear */
 typedef orxBOOL (orxFASTCALL *orxCONFIG_CLEAR_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName);
 
+/** Config bootstrap function type to use with SetBootstrap */
 typedef orxSTATUS (orxFASTCALL *orxCONFIG_BOOTSTRAP_FUNCTION)();
+
+/** Config callback function type to use with ForAllKeys */
+typedef orxBOOL (orxFASTCALL *orxCONFIG_KEY_FUNCTION)(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext);
 
 
 /** Config module setup
@@ -572,6 +576,15 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetKeyCount();
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetKey(orxU32 _u32KeyIndex);
+
+/** Runs a callback for all keys of the current section
+ * @param[in] _pfnKeyCallback   Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit)
+ * @param[in] _bIncludeParents  Include keys inherited from all parents (ie. that are not locally defined), except the default one
+ * @param[in] _pContext         User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyCallback, orxBOOL _bIncludeParents, void *_pContext);
+
 
 #endif /*_orxCONFIG_H_*/
 
