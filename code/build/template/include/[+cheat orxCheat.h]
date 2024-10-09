@@ -157,7 +157,7 @@ orxSTATUS orxCheat_Init()
   if(!sstCheat.bInit)
   {
     orxU32          i, u32CheatCount;
-    const orxSTRING zBumper;
+    const orxSTRING zButton;
 
     // Init structure
     orxMemory_Zero(&sstCheat, sizeof(orxCHEAT));
@@ -166,7 +166,12 @@ orxSTATUS orxCheat_Init()
     orxConfig_PushSection(orxCHEAT_KZ_INPUT_SET);
 
     // Bind all keyboard inputs
-    for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_0; eKey <= orxKEYBOARD_KEY_Z; eKey = (orxKEYBOARD_KEY)(eKey + 1))
+    for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_0; eKey <= orxKEYBOARD_KEY_9; eKey = (orxKEYBOARD_KEY)(eKey + 1))
+    {
+      const orxSTRING zName = orxKeyboard_GetKeyName(eKey);
+      orxConfig_SetString(zName, zName + 4);
+    }
+    for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_A; eKey <= orxKEYBOARD_KEY_Z; eKey = (orxKEYBOARD_KEY)(eKey + 1))
     {
       const orxSTRING zName = orxKeyboard_GetKeyName(eKey);
       orxConfig_SetString(zName, zName + 4);
@@ -183,8 +188,10 @@ orxSTATUS orxCheat_Init()
     }
     orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_ENTER), "START");
     orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_NUMPAD_ENTER), "START");
-    zBumper = "LBUMPER", orxConfig_AppendListString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_L), &zBumper, 1);
-    zBumper = "RBUMPER", orxConfig_AppendListString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_R), &zBumper, 1);
+    zButton = "LBUMPER", orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_LCTRL), zButton), orxConfig_AppendListString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_L), &zButton, 1);
+    zButton = "RBUMPER", orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_RCTRL), zButton), orxConfig_AppendListString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_R), &zButton, 1);
+    zButton = "LTRIGGER", orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_LSHIFT), zButton);
+    zButton = "RTRIGGER", orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_RSHIFT), zButton);
 
     // Bind all joystick inputs
     for(orxJOYSTICK_BUTTON eButton = orxJOYSTICK_BUTTON_A_1; eButton <= orxJOYSTICK_BUTTON_LEFT_1; eButton = (orxJOYSTICK_BUTTON)(eButton + 1))
