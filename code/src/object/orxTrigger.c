@@ -1029,15 +1029,20 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
     pstOwner = orxStructure_GetOwner(_pstTrigger);
 
     /* For all refinements */
-    for(i = 0; i < (orxS32)_u32Size; i++)
+    for(i = 0, s32StopDepth = 0; i < (orxS32)_u32Size; i++)
     {
+      const orxSTRING zRefinement;
+
+      /* Gets refinement & stop depth */
+      zRefinement = (*_azRefinementList[i] == orxTRIGGER_KC_STOP_MARKER) ? s32StopDepth = i + 1, _azRefinementList[i] + 1 : _azRefinementList[i];
+
       /* Stores its ID */
-      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "%c%s", orxTRIGGER_KC_SEPARATOR, _azRefinementList[i]);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "%c%s", orxTRIGGER_KC_SEPARATOR, zRefinement);
       astEventIDList[i + 1] = orxString_Hash(acBuffer);
     }
 
     /* For all refinements, in reverse order */
-    for(i = (orxS32)_u32Size, s32StopDepth = 0; (i >= 0) && (i >= s32StopDepth); i--)
+    for(i = (orxS32)_u32Size; (i >= 0) && (i >= s32StopDepth); i--)
     {
       orxSTRINGID stEventID;
       orxU32      u32SetIndex;
