@@ -71,6 +71,16 @@ typedef struct __orxLOCALE_STATIC_t
 
 } orxLOCALE_STATIC;
 
+/** Key callback context
+ */
+typedef struct __orxLOCALE_KEY_CONTEXT_t
+{
+  orxLOCALE_KEY_FUNCTION  pfnKeyCallback;
+  const orxSTRING         zGroup;
+  void                   *pContext;
+
+} orxLOCALE_KEY_CONTEXT;
+
 
 /***************************************************************************
  * Static variables                                                        *
@@ -171,6 +181,23 @@ static orxINLINE void orxLocale_UnregisterCommands()
 
   /* Done! */
   return;
+}
+
+/** Key callback
+ */
+static orxBOOL orxFASTCALL orxLocale_KeyCallback(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+{
+  orxLOCALE_KEY_CONTEXT  *pstContext;
+  orxBOOL                 bResult;
+
+  /* Gets context */
+  pstContext = (orxLOCALE_KEY_CONTEXT *)_pContext;
+
+  /* Runs callback */
+  bResult = pstContext->pfnKeyCallback(_zKeyName, pstContext->zGroup, pstContext->pContext);
+
+  /* Done! */
+  return bResult;
 }
 
 /** Loads locale languages selection from config
@@ -665,17 +692,20 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
   return eResult;
 }
 
-/** Gets key count for the current language
+/** Runs a callback for all keys of the current language
+ * @param[in] _pfnKeyCallback   Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit)
  * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
- * @return Key count the current language if valid, 0 otherwise
+ * @param[in] _pContext         User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS if a current language is present and all keys were processed without interruption, orxSTATUS_FAILURE otherwise
  */
-orxU32 orxFASTCALL orxLocale_GetKeyCount(const orxSTRING _zGroup)
+orxSTATUS orxFASTCALL orxLocale_ForAllKeys(const orxLOCALE_KEY_FUNCTION _pfnKeyCallback, const orxSTRING _zGroup, void *_pContext)
 {
   const orxSTRING zLanguage;
-  orxU32          u32Result;
+  orxSTATUS       eResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
+  orxASSERT(_pfnKeyCallback != orxNULL);
 
   /* Gets current language */
   zLanguage = orxLocale_GetCurrentLanguage(_zGroup);
@@ -683,11 +713,18 @@ orxU32 orxFASTCALL orxLocale_GetKeyCount(const orxSTRING _zGroup)
   /* Found? */
   if(zLanguage != orxSTRING_EMPTY)
   {
+    orxLOCALE_KEY_CONTEXT stContext;
+
+    /* Inits context */
+    stContext.pfnKeyCallback  = _pfnKeyCallback;
+    stContext.zGroup          = _zGroup;
+    stContext.pContext        = _pContext;
+
     /* Pushes its section */
     orxConfig_PushSection(zLanguage);
 
-    /* Updates result */
-    u32Result = orxConfig_GetKeyCount();
+    /* Runs callback on all keys */
+    eResult = orxConfig_ForAllKeys(orxLocale_KeyCallback, orxTRUE, &stContext);
 
     /* Pops config section */
     orxConfig_PopSection();
@@ -695,47 +732,9 @@ orxU32 orxFASTCALL orxLocale_GetKeyCount(const orxSTRING _zGroup)
   else
   {
     /* Updates result */
-    u32Result = 0;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
-  return u32Result;
-}
-
-/** Gets key for the current language at the given index
- * @param[in] _u32KeyIndex      Index of the desired key
- * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
- * @return orxSTRING if exist, orxNULL otherwise
- */
-const orxSTRING orxFASTCALL orxLocale_GetKey(orxU32 _u32KeyIndex, const orxSTRING _zGroup)
-{
-  const orxSTRING zLanguage;
-  const orxSTRING zResult;
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
-
-  /* Gets current language */
-  zLanguage = orxLocale_GetCurrentLanguage(_zGroup);
-
-  /* Found? */
-  if(zLanguage != orxSTRING_EMPTY)
-  {
-    /* Pushes its section */
-    orxConfig_PushSection(zLanguage);
-
-    /* Updates result */
-    zResult = orxConfig_GetKey(_u32KeyIndex);
-
-    /* Pops config section */
-    orxConfig_PopSection();
-  }
-  else
-  {
-    /* Updates result */
-    zResult = orxSTRING_EMPTY;
-  }
-
-  /* Done! */
-  return zResult;
+  return eResult;
 }
