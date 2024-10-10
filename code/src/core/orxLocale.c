@@ -200,12 +200,27 @@ static orxBOOL orxFASTCALL orxLocale_KeyCallback(const orxSTRING _zKeyName, orxB
   return bResult;
 }
 
+static orxBOOL orxFASTCALL orxLocale_LoadGroupCallback(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+{
+  orxBOOL bResult = orxTRUE;
+
+  /* Is a group? */
+  if((orxString_Compare(_zKeyName, orxLOCALE_KZ_CONFIG_LANGUAGE_LIST) != 0)
+  && (orxString_Compare(_zKeyName, orxLOCALE_KZ_CONFIG_LANGUAGE) != 0))
+  {
+    /* Selects its language */
+    orxLocale_SelectLanguage(orxConfig_GetString(_zKeyName), _zKeyName);
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Loads locale languages selection from config
  */
 static orxINLINE void orxLocale_Load()
 {
   const orxSTRING zLanguage = orxNULL;
-  orxU32          i, u32KeyCount;
 
   /* Pushes locale config section */
   orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
@@ -230,22 +245,8 @@ static orxINLINE void orxLocale_Load()
     orxLocale_SelectLanguage(zLanguage, orxNULL);
   }
 
-  /* For all config keys */
-  for(i = 0, u32KeyCount = orxConfig_GetKeyCount(); i < u32KeyCount; i++)
-  {
-    const orxSTRING zKey;
-
-    /* Gets it */
-    zKey = orxConfig_GetKey(i);
-
-    /* Is a group? */
-    if((orxString_Compare(zKey, orxLOCALE_KZ_CONFIG_LANGUAGE_LIST) != 0)
-    && (orxString_Compare(zKey, orxLOCALE_KZ_CONFIG_LANGUAGE) != 0))
-    {
-      /* Selects it */
-      orxLocale_SelectLanguage(orxConfig_GetString(zKey), zKey);
-    }
-  }
+  /* Loads all groups */
+  orxConfig_ForAllKeys(orxLocale_LoadGroupCallback, orxTRUE, orxNULL);
 
   /* Pops config section */
   orxConfig_PopSection();
