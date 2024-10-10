@@ -1,0 +1,45 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug (lldb/gdb)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/[name]d",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": false,
+      "preLaunchTask": "Build [name] (debug)",
+      "linux": {
+        "MIMode": "gdb"
+      },
+      "osx": {
+        "MIMode": "lldb"
+      },
+      "windows": {
+        "MIMode": "gdb"
+      }
+    },
+    {
+      "name": "Debug (MSVC/Visual Studio 2022)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/[name]d.exe",
+      "symbolSearchPath": "${workspaceFolder}/build/windows/vs2022/obj/x64/Debug",
+      "externalConsole": true,
+      "logging": {
+        "moduleLoad": false,
+        "engineLogging": false,
+        "trace": true,
+        "traceResponse": true
+      },
+      "visualizerFile": "${workspaceFolder}/[name].natvis",
+      "cwd": "${workspaceFolder}/bin"
+    }
+  ]
+}
