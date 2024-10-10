@@ -27,6 +27,7 @@ var searchData=
   ['orxgraphic',['orxGRAPHIC',['../group__orx_graphic.html#gaf93b9ab6d42751f73e78536cc47fb4ae',1,'orxGraphic.h']]],
   ['orxhandle',['orxHANDLE',['../group__orx_type.html#ga10ad864319a9d9f12196e133707cae8a',1,'orxType.h']]],
   ['orxhashtable',['orxHASHTABLE',['../group__orx_hash_table.html#ga983bdcad3c74528ce4fcfa1bed18ea5a',1,'orxHashTable.h']]],
+  ['orxlocale_5fkey_5ffunction',['orxLOCALE_KEY_FUNCTION',['../group__orx_locale.html#ga4ec67f1760c25377794b69d65031aecd',1,'orxLocale.h']]],
   ['orxobject',['orxOBJECT',['../group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457',1,'orxObject.h']]],
   ['orxparam_5finit_5ffunction',['orxPARAM_INIT_FUNCTION',['../group__orx_param.html#gaad503a45da20b0af29fb0955a67f038c',1,'orxParam.h']]],
   ['orxphysics_5fbody',['orxPHYSICS_BODY',['../group__orx_physics.html#ga4d95f1a2c67d8af72bd48522bd47aea6',1,'orxPhysics.h']]],

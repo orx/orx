@@ -108,6 +108,7 @@ $(document).ready(function(){initNavTree('group__orx_locale.html','');});
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -119,6 +120,11 @@ $(document).ready(function(){initNavTree('group__orx_locale.html','');});
 Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_l_o_c_a_l_e___e_v_e_n_t___p_a_y_l_o_a_d.html">orxLOCALE_EVENT_PAYLOAD</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga4ec67f1760c25377794b69d65031aecd"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga4ec67f1760c25377794b69d65031aecd">orxLOCALE_KEY_FUNCTION</a>) (const orxSTRING _zKey, const orxSTRING _zGroup, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:ga4ec67f1760c25377794b69d65031aecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -133,12 +139,10 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ga21375b2d919d677b5d7c571bd792be48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga21375b2d919d677b5d7c571bd792be48">orxLocale_Exit</a> ()</td></tr>
 <tr class="separator:ga21375b2d919d677b5d7c571bd792be48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa60541e008bbafc5b50f96ca7b897d24"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#gaa60541e008bbafc5b50f96ca7b897d24">orxLocale_ForAllKeys</a> (const <a class="el" href="group__orx_locale.html#ga4ec67f1760c25377794b69d65031aecd">orxLOCALE_KEY_FUNCTION</a> _pfnKeyCallback, const orxSTRING _zGroup, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:gaa60541e008bbafc5b50f96ca7b897d24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga81d8c50cd470701e9d00de3d0bbc0a0e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga81d8c50cd470701e9d00de3d0bbc0a0e">orxLocale_GetCurrentLanguage</a> (const orxSTRING _zGroup)</td></tr>
 <tr class="separator:ga81d8c50cd470701e9d00de3d0bbc0a0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1cbac78489df4bc55ae16690ee70676b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga1cbac78489df4bc55ae16690ee70676b">orxLocale_GetKey</a> (orxU32 _u32KeyIndex, const orxSTRING _zGroup)</td></tr>
-<tr class="separator:ga1cbac78489df4bc55ae16690ee70676b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad9e92431131ee8c03c60cc71f9bb0d98"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#gad9e92431131ee8c03c60cc71f9bb0d98">orxLocale_GetKeyCount</a> (const orxSTRING _zGroup)</td></tr>
-<tr class="separator:gad9e92431131ee8c03c60cc71f9bb0d98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga23a4db109de6971c9f0971c000bbada7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga23a4db109de6971c9f0971c000bbada7">orxLocale_GetLanguage</a> (orxU32 _u32LanguageIndex)</td></tr>
 <tr class="separator:ga23a4db109de6971c9f0971c000bbada7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab2ad922e1b3bbadd5a58ce6507bf63c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#gab2ad922e1b3bbadd5a58ce6507bf63c9">orxLocale_GetLanguageCount</a> ()</td></tr>
@@ -160,6 +164,22 @@ Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Localization module Module that handles localized strings </p>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a class="anchor" id="ga4ec67f1760c25377794b69d65031aecd"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxBOOL(orxFASTCALL * orxLOCALE_KEY_FUNCTION) (const orxSTRING _zKey, const orxSTRING _zGroup, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Locale callback function type to use with ForAllKeys </p>
+
+<p>Definition at line <a class="el" href="orx_locale_8h_source.html#l00075">75</a> of file <a class="el" href="orx_locale_8h_source.html">orxLocale.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a class="anchor" id="ga34fce4009110a95be99a43a912bc98ca"></a>
 <div class="memitem">
@@ -205,6 +225,47 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="gaa60541e008bbafc5b50f96ca7b897d24"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxLocale_ForAllKeys </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_locale.html#ga4ec67f1760c25377794b69d65031aecd">orxLOCALE_KEY_FUNCTION</a>&#160;</td>
+          <td class="paramname"><em>_pfnKeyCallback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zGroup</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
+          <td class="paramname"><em>_pContext</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Runs a callback for all keys of the current language </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnKeyCallback</td><td>Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned group, orxNULL for default/fallback one </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>User defined context, passed to the callback </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS if a current language is present and all keys were processed without interruption, orxSTATUS_FAILURE otherwise </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga81d8c50cd470701e9d00de3d0bbc0a0e"></a>
 <div class="memitem">
 <div class="memproto">
@@ -225,63 +286,6 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Current selected language </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="ga1cbac78489df4bc55ae16690ee70676b"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL orxLocale_GetKey </td>
-          <td>(</td>
-          <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32KeyIndex</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zGroup</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Gets key for the current language at the given index </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32KeyIndex</td><td>Index of the desired key </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned group, orxNULL for default/fallback one </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTRING if exist, orxNULL otherwise </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gad9e92431131ee8c03c60cc71f9bb0d98"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxLocale_GetKeyCount </td>
-          <td>(</td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zGroup</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Gets key count for the current language </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zGroup</td><td>Concerned group, orxNULL for default/fallback one </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Key count the current language if valid, 0 otherwise </dd></dl>
 
 </div>
 </div>
