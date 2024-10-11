@@ -223,7 +223,17 @@ typedef struct __orxOBJECT_LISTS_t
 {
   orxLINKLIST       stList;                     /**< List : 12 / 24 */
   orxLINKLIST       stEnableList;               /**< Enable list : 24 / 48 */
+
 } orxOBJECT_LISTS;
+
+/** Object context structure
+ */
+typedef struct __orxOBJECT_CONTEXT_t
+{
+  orxOBJECT        *pstObject;
+  const orxSTRING   zCommand;
+
+} orxOBJECT_CONTEXT;
 
 /** Object structure
  */
@@ -426,6 +436,30 @@ static orxINLINE orxBODY *orxObject_SetBodyFromConfig(orxOBJECT *_pstObject, con
 
   /* Done! */
   return pstResult;
+}
+
+/** Run Command Callback
+ */
+orxBOOL orxFASTCALL orxObject_RunCommand(orxOBJECT *_pstObject, void *_pContext)
+{
+  orxCOMMAND_VAR      stCommandResult;
+  orxOBJECT_CONTEXT  *pstContext;
+  orxBOOL             bResult;
+
+  /* Gets context */
+  pstContext = (orxOBJECT_CONTEXT *)_pContext;
+
+  /* Evaluates command on object */
+  bResult = (_pstObject == pstContext->pstObject)
+         || ((orxCommand_EvaluateWithGUID(pstContext->zCommand, orxStructure_GetGUID(_pstObject), &stCommandResult) == orxNULL)
+         || ((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
+         || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (*stCommandResult.zValue != orxNULL) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE) != 0))
+         || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
+          ? orxTRUE
+          : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }
 
 /** Command: Create
@@ -3994,6 +4028,42 @@ void orxFASTCALL orxObject_CommandGetPivot(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: ForAllNeighbors
+ */
+void orxFASTCALL orxObject_CommandForAllNeighbors(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT_CONTEXT stContext;
+  orxOBOX           stObjectBox, *pstBox = orxNULL;
+  orxOBJECT        *pstObject;
+  orxU64            u64Result = orxU64_UNDEFINED;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Gets its bounding box */
+    pstBox = orxObject_GetBoundingBox(pstObject, &stObjectBox);
+
+    /* Updates result */
+    u64Result = _astArgList[0].u64Value;
+  }
+
+  /* Inits context */
+  stContext.pstObject = pstObject;
+  stContext.zCommand  = _astArgList[1].zValue;
+
+  /* Runs command on all neighbors */
+  orxObject_ForAllNeighbors(orxObject_RunCommand, pstBox, ((_u32ArgNumber > 2) && (*_astArgList[2].zValue != orxCHAR_NULL)) ? orxString_Hash(_astArgList[2].zValue) : orxSTRINGID_UNDEFINED, (_u32ArgNumber > 3) ? _astArgList[3].bValue : orxFALSE, &stContext);
+
+  /* Updates result */
+  _pstResult->u64Value = u64Result;
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the object commands
  */
 static orxINLINE void orxObject_RegisterCommands()
@@ -4241,6 +4311,14 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPivot, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pivot", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetPivot */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetPivot, "Pivot", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: ForAllNeighbors */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, ForAllNeighbors, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Command", orxCOMMAND_VAR_TYPE_STRING}, {"Group = <undefined>", orxCOMMAND_VAR_TYPE_STRING}, {"Enabled = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Alias: ForAll */
+  orxCommand_AddAlias("Object.ForAll", "Object.ForAllNeighbors", "\"\"");
+
+  /* Done! */
+  return;
 }
 
 /** Unregisters all the object commands
@@ -4490,6 +4568,14 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPivot);
   /* Command: GetPivot */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetPivot);
+
+  /* Command: ForAllNeighbors */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, ForAllNeighbors);
+  /* Alias: ForAll */
+  orxCommand_RemoveAlias("Object.ForAll");
+
+  /* Done! */
+  return;
 }
 
 /** Adds a delayed FX using its config ID.
