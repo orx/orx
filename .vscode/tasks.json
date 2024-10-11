@@ -7,12 +7,26 @@
   "type": "shell",
   "linux": {
     "options": {
-      "cwd": "code/build/linux/gmake/"
+      "cwd": "code/build/linux/gmake/",
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/code/build/linux/gmake/"
+        ]
+      }
     }
   },
   "osx": {
     "options": {
-      "cwd": "code/build/mac/gmake/"
+      "cwd": "code/build/mac/gmake/",
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/code/build/mac/gmake/"
+        ]
+      }
     }
   },
   "windows": {
@@ -23,6 +37,13 @@
         "args": [
           "/d",
           "/c"
+        ]
+      },
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/code/build/windows/gmake/"
         ]
       }
     }
@@ -57,9 +78,7 @@
         "Build orx (profile)",
         "Build orx (release)"
       ],
-      "problemMatcher": [
-        "$gcc"
-      ]
+      "problemMatcher": "$gcc"
     },
     {
       "label": "Build orx (debug)",
@@ -75,10 +94,7 @@
       },
       "windows": {
         "command": "mingw32-make.exe -j config=debug64"
-      },
-      "problemMatcher": [
-        "$gcc"
-      ]
+      }
     },
     {
       "label": "Build orx (profile)",
@@ -92,10 +108,7 @@
       },
       "windows": {
         "command": "mingw32-make.exe -j config=profile64"
-      },
-      "problemMatcher": [
-        "$gcc"
-      ]
+      }
     },
     {
       "label": "Build orx (release)",
@@ -109,10 +122,7 @@
       },
       "windows": {
         "command": "mingw32-make.exe -j config=release64"
-      },
-      "problemMatcher": [
-        "$gcc"
-      ]
+      }
     }
   ]
 }

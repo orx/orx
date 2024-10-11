@@ -7,12 +7,26 @@
   "type": "shell",
   "linux": {
     "options": {
-      "cwd": "build/linux/gmake/"
+      "cwd": "build/linux/gmake/",
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/build/linux/gmake/"
+        ]
+      }
     }
   },
   "osx": {
     "options": {
-      "cwd": "build/mac/gmake/"
+      "cwd": "build/mac/gmake/",
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/build/mac/gmake/"
+        ]
+      }
     }
   },
   "windows": {
@@ -23,6 +37,13 @@
         "args": [
           "/d",
           "/c"
+        ]
+      },
+      "problemMatcher": {
+        "base": "$gcc",
+        "fileLocation": [
+          "relative",
+          "${workspaceFolder}/build/windows/gmake/"
         ]
       }
     }
@@ -45,9 +66,7 @@
         "Build [name] (profile)",
         "Build [name] (release)"
       ],
-      "problemMatcher": [
-        "$gcc"
-      ]
+      "problemMatcher": "$gcc"
     },
     {
       "label": "Build [name] (debug)",
@@ -63,10 +82,7 @@
       },
       "windows": {
         "command": "mingw32-make.exe -j config=debug64"
-      },
-      "problemMatcher": [
-        "$gcc"
-      ]
+      }
     },
     {
       "label": "Build [name] (profile)",
@@ -80,10 +96,7 @@
       },
       "windows": {
         "command": "mingw32-make.exe -j config=profile64"
-      },
-      "problemMatcher": [
-        "$gcc"
-      ]
+      }
     },
     {
       "label": "Build [name] (release)",
@@ -97,10 +110,7 @@
       },
       "windows": {
         "command": "mingw32-make.exe -j config=release64"
-      },
-      "problemMatcher": [
-        "$gcc"
-      ]
+      }
     },
     {
       "label": "Run [name] (debug)",
