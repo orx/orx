@@ -42,7 +42,7 @@ var NAVTREEINDEX =
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea3034e510ee9559a413a2b63619832db7",
 "group__orx_locale.html#ga4ec67f1760c25377794b69d65031aecd",
 "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a4c935f90370ec12906a84c9944742fd2",
-"group__orx_object.html#ga4897a87b6d7191e34a0a5f7c0f23d3ac",
+"group__orx_object.html#ga462a259ceb147a855b225194fe97e171",
 "group__orx_object.html#gaf70b8e79b6b833ae4041c88aaa2f875d",
 "group__orx_physics.html#gaef90eaf6b2c4f4724d7aa7f999e43907",
 "group__orx_plugin.html#gga52930271b93c1ba2aaad22d49a86117ba603c481893ed6e74bb0823cee49ca399",

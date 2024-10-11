@@ -127,7 +127,6 @@ $(document).ready(function(){initNavTree('orx_object_8h.html','');});
 <code>#include &quot;<a class="el" href="orx_graphic_8h_source.html">display/orxGraphic.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="orx_texture_8h_source.html">display/orxTexture.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="orx_o_box_8h_source.html">math/orxOBox.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="orx_bank_8h_source.html">memory/orxBank.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="orx_structure_8h_source.html">object/orxStructure.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="orx_sound_8h_source.html">sound/orxSound.h</a>&quot;</code><br />
 </div>
@@ -144,6 +143,8 @@ Macros</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga780c6211b200bb2a9f0ca89eba707457"><td class="memItemLeft" align="right" valign="top">typedef struct __orxOBJECT_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a></td></tr>
 <tr class="separator:ga780c6211b200bb2a9f0ca89eba707457"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2755e23b3641d2d78bb63693c69d6e97"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga2755e23b3641d2d78bb63693c69d6e97">orxOBJECT_NEIGHBOR_FUNCTION</a>) (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:ga2755e23b3641d2d78bb63693c69d6e97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -496,10 +497,8 @@ Functions</h2></td></tr>
 <tr class="memitem:gaf6057aef62392d8ad9da2db34242cc4a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaf6057aef62392d8ad9da2db34242cc4a">orxObject_GetName</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
 <tr class="separator:gaf6057aef62392d8ad9da2db34242cc4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Neighboring</div></td></tr>
-<tr class="memitem:gadcbd19a771edb146fed6d42d9d7643bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gadcbd19a771edb146fed6d42d9d7643bd">orxObject_CreateNeighborList</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstCheckBox, orxSTRINGID _stGroupID)</td></tr>
-<tr class="separator:gadcbd19a771edb146fed6d42d9d7643bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaeac04e584788022c4bfb0e0e72ac0533"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaeac04e584788022c4bfb0e0e72ac0533">orxObject_DeleteNeighborList</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstObjectList)</td></tr>
-<tr class="separator:gaeac04e584788022c4bfb0e0e72ac0533"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaea006c47cb9c5c3074fd90ec07c7f9a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaea006c47cb9c5c3074fd90ec07c7f9a0">orxObject_ForAllNeighbors</a> (const <a class="el" href="group__orx_object.html#ga2755e23b3641d2d78bb63693c69d6e97">orxOBJECT_NEIGHBOR_FUNCTION</a> _pfnNeighborCallback, const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstCheckBox, orxSTRINGID _stGroupID, orxBOOL _bEnabled, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:gaea006c47cb9c5c3074fd90ec07c7f9a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Smoothing</div></td></tr>
 <tr class="memitem:ga3b0b13fce2f6979246d9fd16074e8390"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga3b0b13fce2f6979246d9fd16074e8390">orxObject_SetSmoothing</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_display.html#ga06d1a571694db550938b75f1c66cd331">orxDISPLAY_SMOOTHING</a> _eSmoothing)</td></tr>
 <tr class="separator:ga3b0b13fce2f6979246d9fd16074e8390"><td class="memSeparator" colspan="2">&#160;</td></tr>
