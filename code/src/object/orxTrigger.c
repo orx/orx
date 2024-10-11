@@ -275,7 +275,7 @@ static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID
         {
           orxU32 u32EventIndex = 0, u32Flags = orxTRIGGER_SET_KU32_FLAG_NONE;
 
-          /* For all events */
+          /* Adds all events */
           orxConfig_ForAllKeys(orxTrigger_AddEvent, orxTRUE, pstResult);
 
           /* Checks */

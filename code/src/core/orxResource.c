@@ -2052,7 +2052,7 @@ orxSTATUS orxFASTCALL orxResource_ReloadStorage()
   /* Pushes resource config section */
   orxConfig_PushSection(orxRESOURCE_KZ_CONFIG_SECTION);
 
-  /* Load all storages */
+  /* Loads all storages */
   orxConfig_ForAllKeys(orxResource_LoadStorage, orxTRUE, &eResult);
 
   /* Pops config section */

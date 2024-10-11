@@ -1306,7 +1306,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
           /* Pushes config section */
           orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
 
-          /* For all keys */
+          /* Adds all aliases */
           orxConfig_ForAllKeys(orxConsole_AddAlias, orxTRUE, orxNULL);
 
           /* Pops config section */
