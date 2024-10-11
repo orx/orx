@@ -124,7 +124,7 @@
       "type": "process",
       "command": "[name]d",
       "options": {
-        "cwd": "bin/"
+        "cwd": "${workspaceFolder}/bin/"
       }
     },
     {
@@ -139,7 +139,7 @@
       "type": "process",
       "command": "[name]",
       "options": {
-        "cwd": "bin/"
+        "cwd": "${workspaceFolder}/bin/"
       }
     },
     {
@@ -154,7 +154,7 @@
       "type": "process",
       "command": "[name]p",
       "options": {
-        "cwd": "bin/"
+        "cwd": "${workspaceFolder}/bin/"
       }
     }
   ]
