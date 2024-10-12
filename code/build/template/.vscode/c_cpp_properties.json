@@ -20,7 +20,7 @@
       ],
       "defines": [],
       "macFrameworkPath": [],
-      "compilerPath": "/usr/bin/clang++",
+      "compilerPath": "clang++",
       "cStandard": "c17",
       "cppStandard": "c++20",
       "intelliSenseMode": "macos-clang-arm64"
