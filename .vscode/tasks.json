@@ -123,6 +123,51 @@
       "windows": {
         "command": "mingw32-make.exe -j config=release64"
       }
+    },
+    {
+      "label": "Run bounce demo (debug)",
+      "dependsOn": [
+        "Build orx (debug)"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "type": "process",
+      "command": "orxd",
+      "options": {
+        "cwd": "${workspaceFolder}/code/bin/"
+      }
+    },
+    {
+      "label": "Run bounce demo (release)",
+      "dependsOn": [
+        "Build orx (release)"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "type": "process",
+      "command": "orx",
+      "options": {
+        "cwd": "${workspaceFolder}/code/bin/"
+      }
+    },
+    {
+      "label": "Run bounce demo (profile)",
+      "dependsOn": [
+        "Build orx (profile)"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "type": "process",
+      "command": "orxp",
+      "options": {
+        "cwd": "${workspaceFolder}/code/bin/"
+      }
     }
   ]
 }

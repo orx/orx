@@ -5,16 +5,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug (lldb/gdb)",
+      "name": "Debug bounce demo (lldb/gdb)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/bin/[name]d",
+      "program": "${workspaceFolder}/code/bin/orxd",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
-      "preLaunchTask": "Build [name] (debug)",
+      "preLaunchTask": "Build orx (debug)",
       "linux": {
         "MIMode": "gdb"
       },
