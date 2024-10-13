@@ -31,7 +31,7 @@ orxBOOL                                     orxInspector_IsObjectRegistered(cons
 #define orxINSPECTOR_KZ_TRIGGER_REGISTER    "Register"
 #define orxINSPECTOR_KZ_TRIGGER_UNREGISTER  "Unregister"
 
-#define orxEVENT_TYPE_INSPECTOR             orxEVENT_TYPE_LAST_RESERVED
+#define orxEVENT_TYPE_INSPECTOR             orxEVENT_TYPE_FIRST_EXTENSION
 #define orxINSPECTOR_EVENT_WINDOW           0
 
 #define orxINSPECTOR_KV_DEFAULT_WINDOW_SIZE orx2F(500.0f), orx2F(600.0f), orxFLOAT_0
