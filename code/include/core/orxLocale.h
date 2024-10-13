@@ -71,6 +71,9 @@ typedef struct __orxLOCALE_EVENT_PAYLOAD_t
 
 } orxLOCALE_EVENT_PAYLOAD;
 
+/** Locale callback function type to use with ForAllKeys */
+typedef orxBOOL (orxFASTCALL *orxLOCALE_KEY_FUNCTION)(const orxSTRING _zKey, const orxSTRING _zGroup, void *_pContext);
+
 
 /** Locale module setup
  */
@@ -138,18 +141,13 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetString(co
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_SetString(const orxSTRING _zKey, const orxSTRING _zValue, const orxSTRING _zGroup);
 
-/** Gets key count for the current language
+/** Runs a callback for all keys of the current language
+ * @param[in] _pfnKeyCallback   Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit)
  * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
- * @return Key count the current language if valid, 0 otherwise
+ * @param[in] _pContext         User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS if a current language is present and all keys were processed without interruption, orxSTATUS_FAILURE otherwise
  */
-extern orxDLLAPI orxU32 orxFASTCALL                       orxLocale_GetKeyCount(const orxSTRING _zGroup);
-
-/** Gets key for the current language at the given index
- * @param[in] _u32KeyIndex      Index of the desired key
- * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
- * @return orxSTRING if exist, orxNULL otherwise
- */
-extern orxDLLAPI const orxSTRING orxFASTCALL              orxLocale_GetKey(orxU32 _u32KeyIndex, const orxSTRING _zGroup);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxLocale_ForAllKeys(const orxLOCALE_KEY_FUNCTION _pfnKeyCallback, const orxSTRING _zGroup, void *_pContext);
 
 #endif /*__orxLOCALE_H_*/
 

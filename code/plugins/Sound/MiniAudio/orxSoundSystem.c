@@ -47,17 +47,8 @@
   #undef APIENTRY
 #endif /* APIENTRY */
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-  void rpmalloc_thread_initialize();
-  void rpmalloc_thread_finalize(int);
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
-#define MA_ON_THREAD_ENTRY                rpmalloc_thread_initialize();
-#define MA_ON_THREAD_EXIT                 rpmalloc_thread_finalize(1);
+#define MA_ON_THREAD_ENTRY                orxMemory_InitThread();
+#define MA_ON_THREAD_EXIT                 orxMemory_ExitThread();
 
 #define MA_NO_FLAC
 

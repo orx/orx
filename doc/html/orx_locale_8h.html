@@ -114,6 +114,7 @@ $(document).ready(function(){initNavTree('orx_locale_8h.html','');});
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -129,6 +130,11 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_l_o_c_a_l_e___e_v_e_n_t___p_a_y_l_o_a_d.html">orxLOCALE_EVENT_PAYLOAD</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga4ec67f1760c25377794b69d65031aecd"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga4ec67f1760c25377794b69d65031aecd">orxLOCALE_KEY_FUNCTION</a>) (const orxSTRING _zKey, const orxSTRING _zGroup, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:ga4ec67f1760c25377794b69d65031aecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:ga34fce4009110a95be99a43a912bc98ca"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga34fce4009110a95be99a43a912bc98ca">orxLOCALE_EVENT</a> { <a class="el" href="group__orx_locale.html#gga34fce4009110a95be99a43a912bc98caa8c0cd87c3303f3c0b3b661cad7be8dc5">orxLOCALE_EVENT_SELECT_LANGUAGE</a> = 0, 
@@ -142,12 +148,10 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ga21375b2d919d677b5d7c571bd792be48"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga21375b2d919d677b5d7c571bd792be48">orxLocale_Exit</a> ()</td></tr>
 <tr class="separator:ga21375b2d919d677b5d7c571bd792be48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa60541e008bbafc5b50f96ca7b897d24"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#gaa60541e008bbafc5b50f96ca7b897d24">orxLocale_ForAllKeys</a> (const <a class="el" href="group__orx_locale.html#ga4ec67f1760c25377794b69d65031aecd">orxLOCALE_KEY_FUNCTION</a> _pfnKeyCallback, const orxSTRING _zGroup, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:gaa60541e008bbafc5b50f96ca7b897d24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga81d8c50cd470701e9d00de3d0bbc0a0e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga81d8c50cd470701e9d00de3d0bbc0a0e">orxLocale_GetCurrentLanguage</a> (const orxSTRING _zGroup)</td></tr>
 <tr class="separator:ga81d8c50cd470701e9d00de3d0bbc0a0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1cbac78489df4bc55ae16690ee70676b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga1cbac78489df4bc55ae16690ee70676b">orxLocale_GetKey</a> (orxU32 _u32KeyIndex, const orxSTRING _zGroup)</td></tr>
-<tr class="separator:ga1cbac78489df4bc55ae16690ee70676b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad9e92431131ee8c03c60cc71f9bb0d98"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#gad9e92431131ee8c03c60cc71f9bb0d98">orxLocale_GetKeyCount</a> (const orxSTRING _zGroup)</td></tr>
-<tr class="separator:gad9e92431131ee8c03c60cc71f9bb0d98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga23a4db109de6971c9f0971c000bbada7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#ga23a4db109de6971c9f0971c000bbada7">orxLocale_GetLanguage</a> (orxU32 _u32LanguageIndex)</td></tr>
 <tr class="separator:ga23a4db109de6971c9f0971c000bbada7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab2ad922e1b3bbadd5a58ce6507bf63c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_locale.html#gab2ad922e1b3bbadd5a58ce6507bf63c9">orxLocale_GetLanguageCount</a> ()</td></tr>

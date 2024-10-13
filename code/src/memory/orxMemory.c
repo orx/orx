@@ -280,6 +280,36 @@ void orxFASTCALL orxMemory_Exit()
     sstMemory.u32Flags = orxMEMORY_KU32_STATIC_FLAG_NONE;
   }
 
+  /* Done! */
+  return;
+}
+
+/** Inits the memory module for the current thread
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxMemory_InitThread()
+{
+  /* Checks */
+  orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
+
+  /* Initializes thread */
+  rpmalloc_thread_initialize();
+
+  /* Done! */
+  return orxSTATUS_SUCCESS;
+}
+
+/** Exits from the memory module for the current thread
+ */
+void orxFASTCALL orxMemory_ExitThread()
+{
+  /* Checks */
+  orxASSERT((sstMemory.u32Flags & orxMEMORY_KU32_STATIC_FLAG_READY) == orxMEMORY_KU32_STATIC_FLAG_READY);
+
+  /* Finalizes rpmalloc */
+  rpmalloc_thread_finalize(1);
+
+  /* Done! */
   return;
 }
 

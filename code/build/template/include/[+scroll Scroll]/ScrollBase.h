@@ -350,7 +350,6 @@ protected:
   static  const orxSTRING       szConfigScrollObjectTiling;
   static  const orxSTRING       szConfigScrollObjectPausable;
   static  const orxSTRING       szConfigScrollObjectInput;
-  static  const orxSTRING       szConfigScrollObjectOnInput;
   static  const orxCHAR         scConfigScrollObjectInstantMarker   = '.';
   static  const orxCHAR         scConfigScrollObjectNegativeMarker  = '-';
 
@@ -520,7 +519,6 @@ const orxSTRING ScrollBase::szConfigScrollObjectSmoothing     = "Smoothing";
 const orxSTRING ScrollBase::szConfigScrollObjectTiling        = "Tiling";
 const orxSTRING ScrollBase::szConfigScrollObjectPausable      = "Pausable";
 const orxSTRING ScrollBase::szConfigScrollObjectInput         = "Input";
-const orxSTRING ScrollBase::szConfigScrollObjectOnInput       = "OnInput";
 
 
 //! Static variables
@@ -1810,6 +1808,9 @@ void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
                 orxCHAR acBuffer[256], *pc = acBuffer;
                 orxBOOL bInstant = orxFALSE;
 
+                // Adds propagation stop marker
+                *pc++ = orxTRIGGER_KC_STOP_MARKER;
+
                 // Has new status?
                 if(orxInput_HasNewStatus(zInput))
                 {
@@ -1832,13 +1833,18 @@ void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
                 pc = acBuffer;
 
                 // Fires trigger
-                if((orxObject_FireTrigger(pstObject, szConfigScrollObjectOnInput, (const orxSTRING *)&pc, 1) == orxSTATUS_FAILURE) && (bInstant != orxFALSE))
+                if((orxObject_FireTrigger(pstObject, szConfigScrollObjectInput, (const orxSTRING *)&pc, 1) == orxSTATUS_FAILURE) && (bInstant != orxFALSE))
                 {
                   // Gets non-instant trigger event
-                  pc++;
+                  for(pc += 2; *pc != orxCHAR_NULL; pc++)
+                  {
+                    *(pc - 1) = *pc;
+                  }
+                  *(pc - 1) = orxCHAR_NULL;
+                  pc = acBuffer;
 
                   // Fires it
-                  orxObject_FireTrigger(pstObject, szConfigScrollObjectOnInput, (const orxSTRING *)&pc, 1);
+                  orxObject_FireTrigger(pstObject, szConfigScrollObjectInput, (const orxSTRING *)&pc, 1);
                 }
               }
             }

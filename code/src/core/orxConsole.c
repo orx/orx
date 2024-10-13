@@ -959,6 +959,51 @@ static orxSTATUS orxFASTCALL orxConsole_EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
+/** Add alias callback
+ */
+static orxBOOL orxFASTCALL orxConsole_AddAlias(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+{
+  orxBOOL bResult = orxTRUE;
+
+  /* Isn't toggle key, console input history nor scroll size? */
+  if((orxString_Compare(_zKeyName, orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != 0)
+  && (orxString_Compare(_zKeyName, orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != 0)
+  && (orxString_Compare(_zKeyName, orxCONSOLE_KZ_CONFIG_SCROLL_SIZE) != 0))
+  {
+    const orxSTRING zAlias;
+    orxCHAR         cBackup = orxCHAR_NULL, *pc;
+
+    /* Gets its content */
+    zAlias = orxConfig_GetString(_zKeyName);
+
+    /* Finds its end */
+    for(pc = (orxCHAR *)zAlias; (*pc != orxCHAR_NULL) && (*pc != ' ') && (*pc != '\t'); pc++);
+
+    /* Has args? */
+    if(*pc != orxCHAR_NULL)
+    {
+     /* Backups character */
+     cBackup = *pc;
+
+     /* Ends alias */
+     *pc = orxCHAR_NULL;
+    }
+
+    /* Adds it as alias */
+    orxCommand_AddAlias(_zKeyName, orxConfig_GetString(_zKeyName), (cBackup != orxCHAR_NULL) ? pc + 1 : orxNULL);
+
+    /* Had args? */
+    if(cBackup != orxCHAR_NULL)
+    {
+      /* Restores it */
+      *pc = cBackup;
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Command: Enable
  */
 void orxFASTCALL orxConsole_CommandEnable(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1253,7 +1298,6 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          orxU32  i, u32Count;
           orxBOOL bDebugLevelBackup;
 
           /* Inits log end index */
@@ -1262,49 +1306,8 @@ orxSTATUS orxFASTCALL orxConsole_Init()
           /* Pushes config section */
           orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
 
-          /* For all keys */
-          for(i = 0, u32Count = orxConfig_GetKeyCount(); i < u32Count; i++)
-          {
-            const orxSTRING zKey;
-
-            /* Gets it */
-            zKey = orxConfig_GetKey(i);
-
-            /* Isn't toggle key, console input history nor scroll size? */
-            if((orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != 0)
-            && (orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != 0)
-            && (orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_SCROLL_SIZE) != 0))
-            {
-              const orxSTRING zAlias;
-              orxCHAR         cBackup = orxCHAR_NULL, *pc;
-
-              /* Gets its content */
-              zAlias = orxConfig_GetString(zKey);
-
-              /* Finds its end */
-              for(pc = (orxCHAR *)zAlias; (*pc != orxCHAR_NULL) && (*pc != ' ') && (*pc != '\t'); pc++);
-
-              /* Has args? */
-              if(*pc != orxCHAR_NULL)
-              {
-               /* Backups character */
-               cBackup = *pc;
-
-               /* Ends alias */
-               *pc = orxCHAR_NULL;
-              }
-
-              /* Adds it as alias */
-              orxCommand_AddAlias(zKey, orxConfig_GetString(zKey), (cBackup != orxCHAR_NULL) ? pc + 1 : orxNULL);
-
-              /* Had args? */
-              if(cBackup != orxCHAR_NULL)
-              {
-                /* Restores it */
-                *pc = cBackup;
-              }
-            }
-          }
+          /* Adds all aliases */
+          orxConfig_ForAllKeys(orxConsole_AddAlias, orxTRUE, orxNULL);
 
           /* Pops config section */
           orxConfig_PopSection();

@@ -32,20 +32,21 @@
 
 #include "object/orxObject.h"
 
-#include "debug/orxDebug.h"
-#include "debug/orxProfiler.h"
+#include "anim/orxAnimPointer.h"
 #include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
-#include "memory/orxMemory.h"
-#include "anim/orxAnimPointer.h"
+#include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "display/orxText.h"
-#include "physics/orxBody.h"
+#include "memory/orxBank.h"
+#include "memory/orxMemory.h"
 #include "object/orxFrame.h"
 #include "object/orxFXPointer.h"
 #include "object/orxSpawner.h"
 #include "object/orxTimeLine.h"
 #include "object/orxTrigger.h"
+#include "physics/orxBody.h"
 #include "render/orxCamera.h"
 #include "render/orxShaderPointer.h"
 #include "sound/orxSoundPointer.h"
@@ -169,12 +170,12 @@
 #define orxOBJECT_KZ_SOUND                      "sound"
 #define orxOBJECT_KZ_SPAWN                      "spawn"
 #define orxOBJECT_KZ_TRACK                      "track"
-#define orxOBJECT_KZ_ON_COLLIDE                 "OnCollide"
-#define orxOBJECT_KZ_ON_SEPARATE                "OnSeparate"
-#define orxOBJECT_KZ_ON_PART_COLLIDE            "OnPartCollide"
-#define orxOBJECT_KZ_ON_PART_SEPARATE           "OnPartSeparate"
-#define orxOBJECT_KZ_ON_CREATE                  "OnCreate"
-#define orxOBJECT_KZ_ON_DELETE                  "OnDelete"
+#define orxOBJECT_KZ_COLLIDE                    "Collide"
+#define orxOBJECT_KZ_SEPARATE                   "Separate"
+#define orxOBJECT_KZ_PART_COLLIDE               "PartCollide"
+#define orxOBJECT_KZ_PART_SEPARATE              "PartSeparate"
+#define orxOBJECT_KZ_CREATE                     "Create"
+#define orxOBJECT_KZ_DELETE                     "Delete"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -222,7 +223,17 @@ typedef struct __orxOBJECT_LISTS_t
 {
   orxLINKLIST       stList;                     /**< List : 12 / 24 */
   orxLINKLIST       stEnableList;               /**< Enable list : 24 / 48 */
+
 } orxOBJECT_LISTS;
+
+/** Object context structure
+ */
+typedef struct __orxOBJECT_CONTEXT_t
+{
+  orxOBJECT        *pstObject;
+  const orxSTRING   zCommand;
+
+} orxOBJECT_CONTEXT;
 
 /** Object structure
  */
@@ -425,6 +436,30 @@ static orxINLINE orxBODY *orxObject_SetBodyFromConfig(orxOBJECT *_pstObject, con
 
   /* Done! */
   return pstResult;
+}
+
+/** Run Command Callback
+ */
+orxBOOL orxFASTCALL orxObject_RunCommand(orxOBJECT *_pstObject, void *_pContext)
+{
+  orxCOMMAND_VAR      stCommandResult;
+  orxOBJECT_CONTEXT  *pstContext;
+  orxBOOL             bResult;
+
+  /* Gets context */
+  pstContext = (orxOBJECT_CONTEXT *)_pContext;
+
+  /* Evaluates command on object */
+  bResult = (_pstObject == pstContext->pstObject)
+         || ((orxCommand_EvaluateWithGUID(pstContext->zCommand, orxStructure_GetGUID(_pstObject), &stCommandResult) == orxNULL)
+         || ((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
+         || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (*stCommandResult.zValue != orxNULL) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE) != 0))
+         || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
+          ? orxTRUE
+          : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }
 
 /** Command: Create
@@ -3993,6 +4028,42 @@ void orxFASTCALL orxObject_CommandGetPivot(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: ForAllNeighbors
+ */
+void orxFASTCALL orxObject_CommandForAllNeighbors(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT_CONTEXT stContext;
+  orxOBOX           stObjectBox, *pstBox = orxNULL;
+  orxOBJECT        *pstObject;
+  orxU64            u64Result = orxU64_UNDEFINED;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Gets its bounding box */
+    pstBox = orxObject_GetBoundingBox(pstObject, &stObjectBox);
+
+    /* Updates result */
+    u64Result = _astArgList[0].u64Value;
+  }
+
+  /* Inits context */
+  stContext.pstObject = pstObject;
+  stContext.zCommand  = _astArgList[1].zValue;
+
+  /* Runs command on all neighbors */
+  orxObject_ForAllNeighbors(orxObject_RunCommand, pstBox, ((_u32ArgNumber > 2) && (*_astArgList[2].zValue != orxCHAR_NULL)) ? orxString_Hash(_astArgList[2].zValue) : orxSTRINGID_UNDEFINED, (_u32ArgNumber > 3) ? _astArgList[3].bValue : orxFALSE, &stContext);
+
+  /* Updates result */
+  _pstResult->u64Value = u64Result;
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the object commands
  */
 static orxINLINE void orxObject_RegisterCommands()
@@ -4240,6 +4311,14 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPivot, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pivot", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetPivot */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetPivot, "Pivot", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: ForAllNeighbors */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, ForAllNeighbors, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Command", orxCOMMAND_VAR_TYPE_STRING}, {"Group = <undefined>", orxCOMMAND_VAR_TYPE_STRING}, {"Enabled = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Alias: ForAll */
+  orxCommand_AddAlias("Object.ForAll", "Object.ForAllNeighbors", "\"\"");
+
+  /* Done! */
+  return;
 }
 
 /** Unregisters all the object commands
@@ -4489,6 +4568,14 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPivot);
   /* Command: GetPivot */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetPivot);
+
+  /* Command: ForAllNeighbors */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, ForAllNeighbors);
+  /* Alias: ForAll */
+  orxCommand_RemoveAlias("Object.ForAll");
+
+  /* Done! */
+  return;
 }
 
 /** Adds a delayed FX using its config ID.
@@ -4866,7 +4953,7 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
         if(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
         {
           /* Fires it */
-          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_ON_DELETE, orxNULL, 0);
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_DELETE, orxNULL, 0);
         }
 
         /* Has frame? */
@@ -5019,13 +5106,13 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
     /* Selects events */
     if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
     {
-      zEvent      = orxOBJECT_KZ_ON_COLLIDE;
-      zPartEvent  = orxOBJECT_KZ_ON_PART_COLLIDE;
+      zEvent      = orxOBJECT_KZ_COLLIDE;
+      zPartEvent  = orxOBJECT_KZ_PART_COLLIDE;
     }
     else
     {
-      zEvent      = orxOBJECT_KZ_ON_SEPARATE;
-      zPartEvent  = orxOBJECT_KZ_ON_PART_SEPARATE;
+      zEvent      = orxOBJECT_KZ_SEPARATE;
+      zPartEvent  = orxOBJECT_KZ_PART_SEPARATE;
     }
 
     /* Fires triggers on sender */
@@ -7005,7 +7092,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
         {
           /* Fires it */
-          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_ON_CREATE, orxNULL, 0);
+          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_CREATE, orxNULL, 0);
         }
 
         /* Should age? */
@@ -11821,105 +11908,57 @@ const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *_pstObject)
   return zResult;
 }
 
-/** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box).
- * The following is an example for iterating over a neighbor list:
- * @code
- * orxVECTOR vPosition; // The world position of the neighborhood area
- * // set_position(vPosition);
- * orxVECTOR vSize; // The size of the neighborhood area
- * // set_size(vSize);
- * orxVECTOR vPivot; // The pivot of the neighborhood area
- * // set_pivot(vPivot);
- *
- * orxOBOX stBox;
- * orxOBox_2DSet(&stBox, &vPosition, &vPivot, &vSize, 0);
- *
- * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox, orxU32_UNDEFINED);
- * if(pstBank) {
- *     for(int i=0; i < orxBank_GetCount(pstBank); ++i)
- *     {
- *         orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));
- *         do_something_with(pstObject);
- *     }
- *     orxObject_DeleteNeighborList(pstBank);
- * }
- * @endcode
- * @param[in]   _pstCheckBox    Box to check intersection with
+/** Runs a callback for all neighboring objects (ie. whose bounding volume intersects this box).
+ * @param[in]   _pfnNeighborCallback Function to run for each neighbor. If this function returns orxFALSE, no other neighbor will be processed (ie. early exit)
+ * @param[in]   _pstCheckBox    Box to check intersection with, orxNULL for all objects
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
- * @return      orxBANK / orxNULL
+ * @param[in]   _bEnabled       Only consider enabled objects if set to orxTRUE, consider all objects otherwise
+ * @param[in]   _pContext       User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS if all neighbors were processed without interruption, orxSTATUS_FAILURE otherwise
  */
-orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox, orxSTRINGID _stGroupID)
+orxSTATUS orxFASTCALL orxObject_ForAllNeighbors(const orxOBJECT_NEIGHBOR_FUNCTION _pfnNeighborCallback, const orxOBOX *_pstCheckBox, orxSTRINGID _stGroupID, orxBOOL _bEnabled, void *_pContext)
 {
-  orxOBOX    stObjectBox;
-  orxOBJECT  *pstObject;
-  orxBANK    *pstResult;
+  orxOBJECT *(orxFASTCALL  *pfnGet)(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
+  orxOBJECT                *pstObject;
+  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxObject_ForAllNeighbors");
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstCheckBox != orxNULL);
+  orxASSERT(_pfnNeighborCallback != orxNULL);
 
-  /* Creates bank */
-  pstResult = orxBank_Create(orxOBJECT_KU32_NEIGHBOR_LIST_SIZE, sizeof(orxOBJECT *), orxBANK_KU32_FLAG_NOT_EXPANDABLE, orxMEMORY_TYPE_TEMP);
+  /* Selects get function */
+  pfnGet = (_bEnabled != orxFALSE) ? orxObject_GetNextEnabled : orxObject_GetNext;
 
-  /* Valid? */
-  if(pstResult != orxNULL)
+  /* For all objects */
+  for(pstObject = pfnGet(orxNULL, _stGroupID);
+      pstObject != orxNULL;
+      pstObject = pfnGet(pstObject, _stGroupID))
   {
-    orxU32 u32Count;
+    orxOBOX stObjectBox;
 
-    /* For all objects */
-    for(u32Count = 0, pstObject = orxObject_GetNext(orxNULL, _stGroupID);
-        (u32Count < orxOBJECT_KU32_NEIGHBOR_LIST_SIZE) && (pstObject != orxNULL);
-        pstObject = orxObject_GetNext(pstObject, _stGroupID))
+    /* No box or is intersecting? */
+    if((_pstCheckBox == orxNULL)
+    || ((orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+     && (orxOBox_ZAlignedTestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)))
     {
-      /* Gets its bounding box */
-      if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+      /* Runs callback */
+      if(_pfnNeighborCallback(pstObject, _pContext) == orxFALSE)
       {
-        /* Is intersecting? */
-        if(orxOBox_ZAlignedTestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)
-        {
-          orxOBJECT **ppstObject;
-
-          /* Creates a new cell */
-          ppstObject = (orxOBJECT **)orxBank_Allocate(pstResult);
-
-          /* Valid? */
-          if(ppstObject != orxNULL)
-          {
-            /* Adds object */
-            *ppstObject = pstObject;
-
-            /* Updates count */
-            u32Count++;
-          }
-          else
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to allocate new object neighbor cell.");
-            break;
-          }
-        }
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+        break;
       }
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
-  return pstResult;
-}
-
-/** Deletes an object list created with orxObject_CreateNeigborList.
- * @param[in]   _astObjectList  Concerned object list
- */
-void orxFASTCALL orxObject_DeleteNeighborList(orxBANK *_pstObjectList)
-{
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-
-  /* Non null? */
-  if(_pstObjectList != orxNULL)
-  {
-    /* Deletes it */
-    orxBank_Delete(_pstObjectList);
-  }
+  return eResult;
 }
 
 /** Sets object smoothing.
@@ -13063,8 +13102,7 @@ orxOBJECT *orxFASTCALL orxObject_GetNextEnabled(const orxOBJECT *_pstObject, orx
 }
 
 /** Picks the first active object with size "under" the given position, within a given group. See
- * orxObject_BoxPick(), orxObject_CreateNeighborList() and orxObject_Raycast for other ways of picking
- * objects.
+ * orxObject_BoxPick(), orxObject_ForAllNeighbors() and orxObject_Raycast() for other ways of picking objects.
  * @param[in]   _pvPosition     Position to pick from
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
@@ -13123,7 +13161,7 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID 
 }
 
 /** Picks the first active object with size in contact with the given box, withing a given group. Use
- * orxObject_CreateNeighborList() to get all the objects in the box.
+ * orxObject_ForAllNeighbors() to access all the objects in the box.
  * @param[in]   _pstBox         Box to use for picking
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
