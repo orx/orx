@@ -4330,55 +4330,58 @@ orxBOOL orxFASTCALL orxDisplay_Android_IsVideoModeAvailable(const orxDISPLAY_VID
 static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_pstEvent)
 {
   /* Render stop? */
-  if(_pstEvent->eType == orxEVENT_TYPE_RENDER && _pstEvent->eID == orxRENDER_EVENT_STOP)
+  if(_pstEvent->eType == orxEVENT_TYPE_RENDER)
   {
-    /* Draws remaining items */
-    orxDisplay_Android_DrawArrays();
-
-    /* Profiles */
-    orxPROFILER_PUSH_MARKER("PollEvents");
-
-    /* Polls events */
-    orxAndroid_PumpEvents();
-
-    /* Profiles */
-    orxPROFILER_POP_MARKER();
-  }
-
-  if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_DESTROYED)
-  {
-    orxAndroid_Display_DestroySurface();
-  }
-
-  if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CREATED)
-  {
-    orxAndroid_Display_CreateSurface();
-
-    /* Re-inits refresh rate */
-    orxAndroid_Display_UpdateRefreshRate();
-  }
-
-  if(_pstEvent->eType == orxANDROID_EVENT_TYPE_SURFACE && _pstEvent->eID == orxANDROID_EVENT_SURFACE_CHANGED)
-  {
-    orxANDROID_SURFACE_CHANGED_EVENT  *pstSurfaceChangedEvent;
-
-    /* Gets payload */
-    pstSurfaceChangedEvent = (orxANDROID_SURFACE_CHANGED_EVENT *)_pstEvent->pstPayload;
-
-    /* Valid? */
-    if((pstSurfaceChangedEvent->u32Width > 0) && (pstSurfaceChangedEvent->u32Height > 0))
+    if(_pstEvent->eID == orxRENDER_EVENT_STOP)
     {
-      orxDISPLAY_VIDEO_MODE stVideoMode;
+      /* Draws remaining items */
+      orxDisplay_Android_DrawArrays();
 
-      /* Inits video mode */
-      stVideoMode.u32Width        = pstSurfaceChangedEvent->u32Width;
-      stVideoMode.u32Height       = pstSurfaceChangedEvent->u32Height;
-      stVideoMode.u32Depth        = sstDisplay.u32Depth;
-      stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
-      stVideoMode.bFullScreen     = orxTRUE;
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("PollEvents");
 
-      /* Applies it */
-      orxDisplay_Android_SetVideoMode(&stVideoMode);
+      /* Polls events */
+      orxAndroid_PumpEvents();
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
+    }
+  }
+  else if(_pstEvent->eType == orxEVENT_TYPE_ANDROID)
+  {
+    if(_pstEvent->eID == orxANDROID_EVENT_SURFACE_DESTROY)
+    {
+      orxAndroid_Display_DestroySurface();
+    }
+    else if(_pstEvent->eID == orxANDROID_EVENT_SURFACE_CREATE)
+    {
+      orxAndroid_Display_CreateSurface();
+
+      /* Re-inits refresh rate */
+      orxAndroid_Display_UpdateRefreshRate();
+    }
+    else if(_pstEvent->eID == orxANDROID_EVENT_SURFACE_CHANGE)
+    {
+      orxANDROID_EVENT_PAYLOAD *pstPayload;
+
+      /* Gets payload */
+      pstPayload = (orxANDROID_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+      /* Valid? */
+      if((pstPayload->stSurface.u32Width > 0) && (pstPayload->stSurface.u32Height > 0))
+      {
+        orxDISPLAY_VIDEO_MODE stVideoMode;
+
+        /* Inits video mode */
+        stVideoMode.u32Width        = pstPayload->stSurface.u32Width;
+        stVideoMode.u32Height       = pstPayload->stSurface.u32Height;
+        stVideoMode.u32Depth        = sstDisplay.u32Depth;
+        stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+        stVideoMode.bFullScreen     = orxTRUE;
+
+        /* Applies it */
+        orxDisplay_Android_SetVideoMode(&stVideoMode);
+      }
     }
   }
 
@@ -4497,8 +4500,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
 
       /* Adds event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_EventHandler);
-      orxEvent_AddHandler(orxANDROID_EVENT_TYPE_SURFACE, orxDisplay_Android_EventHandler);
+      orxEvent_AddHandler(orxEVENT_TYPE_ANDROID, orxDisplay_Android_EventHandler);
       orxEvent_SetHandlerIDFlags(orxDisplay_Android_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(orxDisplay_Android_EventHandler, orxEVENT_TYPE_ANDROID, orxNULL, orxEVENT_GET_FLAG(orxANDROID_EVENT_SURFACE_CREATE) | orxEVENT_GET_FLAG(orxANDROID_EVENT_SURFACE_DESTROY) | orxEVENT_GET_FLAG(orxANDROID_EVENT_SURFACE_CHANGE), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Allocates screen bitmap */
       sstDisplay.pstScreen = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
@@ -4663,7 +4667,7 @@ void orxFASTCALL orxDisplay_Android_Exit()
   {
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_Android_EventHandler);
-    orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_SURFACE, orxDisplay_Android_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_ANDROID, orxDisplay_Android_EventHandler);
 
     /* Deletes default shaders */
     orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);

@@ -46,9 +46,11 @@
 #include <pthread.h>
 #include <stdlib.h>
 
-#define KZ_CONFIG_ANDROID                        "Android"
-#define KZ_CONFIG_SURFACE_SCALE                  "SurfaceScale"
-#define KZ_CONFIG_ACCELEROMETER_FREQUENCY        "AccelerometerFrequency"
+#define KZ_CONFIG_ANDROID                     "Android"
+#define KZ_CONFIG_SURFACE_SCALE               "SurfaceScale"
+#define KZ_CONFIG_ACCELEROMETER_FREQUENCY     "AccelerometerFrequency"
+
+#define orxEVENT_TYPE_ANDROID                 (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 0)
 
 #include <android/native_window.h>
 
@@ -59,17 +61,42 @@ extern "C"
 {
 #endif
 
-typedef struct __orxANDROID_KEY_EVENT_t {
-  orxU32 u32Action;
-  orxU32 u32KeyCode;
+/** Event enum
+ */
+typedef enum __orxANDROID_EVENT_t
+{
+  orxANDROID_EVENT_KEY_DOWN = 0,
+  orxANDROID_EVENT_KEY_UP,
+  orxANDROID_EVENT_SURFACE_CREATE,
+  orxANDROID_EVENT_SURFACE_DESTROY,
+  orxANDROID_EVENT_SURFACE_CHANGE,
+  orxANDROID_EVENT_ACCELERATE,
 
-} orxANDROID_KEY_EVENT;
+  orxANDROID_EVENT_NUMBER,
 
-typedef struct __orxANDROID_SURFACE_CHANGED_EVENT_t {
-  orxU32   u32Width;
-  orxU32   u32Height;
+  orxANDROID_EVENT_NONE = orxENUM_NONE
 
-} orxANDROID_SURFACE_CHANGED_EVENT;
+} orxANDROID_EVENT;
+
+/** Event payload
+ */
+typedef struct __orxANDROID_EVENT_PAYLOAD_t
+{
+  union
+  {
+    struct
+    {
+      orxU32 u32KeyCode;
+    } stKey;
+
+    struct
+    {
+      orxU32 u32Width;
+      orxU32 u32Height;
+    } stSurface;
+  };
+
+} orxANDROID_EVENT_PAYLOAD;
 
 /**
   Gets the window
@@ -104,17 +131,6 @@ orxSTATUS orxFASTCALL orxAndroid_JNI_SetupThread(void *_pContext);
 #if defined(__cplusplus)
 }
 #endif
-
-#define orxANDROID_EVENT_TYPE_KEYBOARD       (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 0)
-#define orxANDROID_EVENT_KEYBOARD_DOWN       0
-#define orxANDROID_EVENT_KEYBOARD_UP         1
-
-#define orxANDROID_EVENT_TYPE_SURFACE        (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 1)
-#define orxANDROID_EVENT_SURFACE_DESTROYED   0
-#define orxANDROID_EVENT_SURFACE_CREATED     1
-#define orxANDROID_EVENT_SURFACE_CHANGED     2
-
-#define orxANDROID_EVENT_TYPE_ACCELERATE     (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_RESERVED + 2)
 
 #endif /* _orxANDROID_H_ */
 
