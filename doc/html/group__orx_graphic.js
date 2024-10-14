@@ -5,7 +5,6 @@ var group__orx_graphic =
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_CENTER", "group__orx_graphic.html#ga8740ea5b0c094102f8a04cf4ab95423f", null ],
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_LEFT", "group__orx_graphic.html#gae784d5f05049b6e71d1a42e541e11e5a", null ],
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_RIGHT", "group__orx_graphic.html#gaa675c3be8339c6594d00e45faf4e799c", null ],
-    [ "orxGRAPHIC_KU32_FLAG_ALIGN_ROUND", "group__orx_graphic.html#ga3fe97eb6e0aa45885bc958e40d2c3711", null ],
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_TOP", "group__orx_graphic.html#gaecdca5276af484721b0c426ffb3dbda4", null ],
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE", "group__orx_graphic.html#gacc58fa8471bb4e17849d37298d4c7856", null ],
     [ "orxGRAPHIC_KU32_FLAG_FLIP_X", "group__orx_graphic.html#ga8859736ea173e43e859dd14aa18206ba", null ],
