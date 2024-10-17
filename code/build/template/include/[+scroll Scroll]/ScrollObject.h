@@ -81,6 +81,9 @@ public:
                 orxFLOAT                GetRotation(orxBOOL _bWorld = orxFALSE) const;
                 void                    SetRotation(orxFLOAT _fRotation, orxBOOL _bWorld = orxFALSE);
 
+                orxFLOAT                GetAngularVelocity() const;
+                void                    SetAngularVelocity(orxFLOAT _fVelocity);
+
                 orxVECTOR &             GetSpeed(orxVECTOR &_rvSpeed, orxBOOL _bRelative = orxFALSE) const;
                 void                    SetSpeed(const orxVECTOR &_rvSpeed, orxBOOL _bRelative = orxFALSE);
 
@@ -406,6 +409,18 @@ void ScrollObject::SetRotation(orxFLOAT _fRotation, orxBOOL _bWorld)
     // Updates its rotation
     orxObject_SetWorldRotation(mpstObject, _fRotation);
   }
+}
+
+orxFLOAT ScrollObject::GetAngularVelocity() const
+{
+  // Done!
+  return orxObject_GetAngularVelocity(mpstObject);
+}
+
+void ScrollObject::SetAngularVelocity(orxFLOAT _fVelocity)
+{
+  // Updates its angular velocity
+  orxObject_SetAngularVelocity(mpstObject, _fVelocity);
 }
 
 orxVECTOR &ScrollObject::GetSpeed(orxVECTOR &_rvSpeed, orxBOOL _bRelative) const
