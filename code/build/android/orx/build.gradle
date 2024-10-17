@@ -9,7 +9,7 @@ android {
 
     // Ideally, we want to use the default NDK version for the used AGP version.
     // However, we opt-in to NDK r27 since it comes with many important features/optimizations.
-    ndkVersion '27.0.12077973'
+    ndkVersion '27.1.12297006'
 
     buildFeatures {
         prefab true
