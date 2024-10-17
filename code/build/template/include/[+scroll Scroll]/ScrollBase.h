@@ -1685,9 +1685,6 @@ orxSTATUS ScrollBase::BaseInit()
       // Gets main camera
       mpstMainCamera = orxViewport_GetCamera(mpstMainViewport);
 
-      // Sets default layer
-      SetLayerNumber(1);
-
       // Calls child init
       eResult = Init();
 
