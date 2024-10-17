@@ -154,6 +154,8 @@ private:
   virtual       void                    OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal);
   virtual       void                    OnSeparate(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart);
 
+  virtual       void                    OnSpawn(ScrollObject *_poSpawned);
+
   virtual       void                    OnNewAnim(const orxSTRING _zOldAnim, const orxSTRING _zNewAnim, orxBOOL _bCut);
   virtual       void                    OnAnimUpdate(const orxSTRING _zAnim);
   virtual       void                    OnAnimEvent(const orxSTRING _zAnim, const orxSTRING _zEvent, orxFLOAT _fTime, orxFLOAT _fValue);
@@ -988,6 +990,10 @@ void ScrollObject::OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, 
 }
 
 void ScrollObject::OnSeparate(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart)
+{
+}
+
+void ScrollObject::OnSpawn(ScrollObject *_poSpawned)
 {
 }
 

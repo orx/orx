@@ -1658,6 +1658,7 @@ orxSTATUS ScrollBase::BaseInit()
     eResult = ((orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, StaticEventHandler) != orxSTATUS_FAILURE)
             && (orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, StaticEventHandler) != orxSTATUS_FAILURE)
             && (orxEvent_AddHandler(orxEVENT_TYPE_ANIM, StaticEventHandler) != orxSTATUS_FAILURE)
+            && (orxEvent_AddHandler(orxEVENT_TYPE_SPAWNER, StaticEventHandler) != orxSTATUS_FAILURE)
             && (orxEvent_AddHandler(orxEVENT_TYPE_RENDER, StaticEventHandler) != orxSTATUS_FAILURE)
             && (orxEvent_AddHandler(orxEVENT_TYPE_SHADER, StaticEventHandler) != orxSTATUS_FAILURE)
             && (orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, StaticEventHandler) != orxSTATUS_FAILURE)
@@ -1670,6 +1671,7 @@ orxSTATUS ScrollBase::BaseInit()
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_GAME_LOOP_START), orxEVENT_KU32_MASK_ID_ALL);
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_CREATE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE), orxEVENT_KU32_MASK_ID_ALL);
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_ANIM, orxNULL, orxEVENT_GET_FLAG(orxANIM_EVENT_STOP) | orxEVENT_GET_FLAG(orxANIM_EVENT_CUT) | orxEVENT_GET_FLAG(orxANIM_EVENT_LOOP) | orxEVENT_GET_FLAG(orxANIM_EVENT_UPDATE) | orxEVENT_GET_FLAG(orxANIM_EVENT_CUSTOM_EVENT), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_SPAWNER, orxNULL, orxEVENT_GET_FLAG(orxSPAWNER_EVENT_SPAWN), orxEVENT_KU32_MASK_ID_ALL);
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_OBJECT_START), orxEVENT_KU32_MASK_ID_ALL);
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_SHADER, orxNULL, orxEVENT_GET_FLAG(orxSHADER_EVENT_SET_PARAM), orxEVENT_KU32_MASK_ID_ALL);
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_PHYSICS, orxNULL, orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_ADD) | orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_REMOVE), orxEVENT_KU32_MASK_ID_ALL);
@@ -1753,6 +1755,7 @@ void ScrollBase::BaseExit()
   orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, StaticEventHandler);
   orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, StaticEventHandler);
   orxEvent_RemoveHandler(orxEVENT_TYPE_ANIM, StaticEventHandler);
+  orxEvent_RemoveHandler(orxEVENT_TYPE_SPAWNER, StaticEventHandler);
   orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, StaticEventHandler);
   orxEvent_RemoveHandler(orxEVENT_TYPE_SHADER, StaticEventHandler);
   orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, StaticEventHandler);
@@ -2279,6 +2282,23 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
       break;
     }
 
+    // Spawner event
+    case orxEVENT_TYPE_SPAWNER:
+    {
+      ScrollObject *poSender;
+
+      // Gets sender object
+      poSender = (ScrollObject *)orxObject_GetUserData(orxOBJECT(orxStructure_GetOwner(_pstEvent->hSender)));
+
+      // Valid?
+      if(poSender)
+      {
+        // Calls its callback
+        poSender->OnSpawn((ScrollObject *)orxObject_GetUserData(orxOBJECT(_pstEvent->hRecipient)));
+      }
+      break;
+    }
+
     // FX event
     case orxEVENT_TYPE_FX:
     {
@@ -2330,7 +2350,6 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
           }
         }
       }
-
       break;
     }
 
@@ -2374,7 +2393,6 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
           eResult = poSender->OnShader(*(orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
         }
       }
-
       break;
     }
 
