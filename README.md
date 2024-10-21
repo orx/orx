@@ -68,7 +68,7 @@ Supported Platforms
 The engine compiles and is tested for:
 
 - Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
-- Windows (x86/x86-64 with vs2017, vs2019 & vs2022, x86/x86-64 mingw-w64 (8.1.0) with codelite, codeblocks and GNU makefile)
+- Windows (x86/x86-64 with vs2017, vs2019 & vs2022, x86/x86-64 mingw-w64 (8.1.0-14.2.0) with codelite, codeblocks and GNU makefile)
 - MacOS X (x86/x86-64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.6+
 - iOS (iPhone/iPod Touch/iPad, simulator & device with xcode)
 - Android (NDK build files, simulator & device)
