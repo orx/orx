@@ -1565,6 +1565,40 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
   return pstResult;
 }
 
+/** Checks for typo
+ */
+static orxBOOL orxFASTCALL orxConfig_CheckTypo(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+{
+  const orxSTRING zKey;
+  orxBOOL         bResult = orxTRUE;
+
+  /* Gets requested key */
+  zKey = (const orxSTRING)_pContext;
+
+  /* Local & identical? */
+  if((_bInherited == orxFALSE) && (orxString_Compare(zKey, _zKeyName) == 0))
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT "inherits from" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "however one of its ancestors was not found" orxANSI_KZ_COLOR_UNDERLINE_OFF ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKeyName, orxConfig_GetEntry(orxString_Hash(_zKeyName))->stValue.zValue);
+
+    /* Updates result */
+    bResult = orxFALSE;
+  }
+  else
+  {
+    /* Typo? */
+    if((orxString_ICompare(zKey, _zKeyName) == 0)
+    || (orxString_GetEditDistance(zKey, _zKeyName) <= ((orxString_GetLength(zKey) <= 4UL) ? 1UL : orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE)))
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "was found instead of requested key" orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_UNDERLINE_OFF " <%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKeyName, zKey);
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Gets a value from the current section, using inheritance
  * @param[in] _zKeyID           Entry key
  * @return                      orxCONFIG_VALUE / orxNULL
@@ -1599,37 +1633,8 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
       /* Not found? */
       if(pstResult == orxNULL)
       {
-        orxCONFIG_ENTRY *pstEntry;
-
-        /* For all entries in section */
-        for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(sstConfig.pstCurrentSection->stEntryList));
-            pstEntry != orxNULL;
-            pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
-        {
-          /* Identical? */
-          if(pstEntry->stID == stID)
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT "inherits from" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "however one of its ancestors was not found" orxANSI_KZ_COLOR_UNDERLINE_OFF ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKey, pstEntry->stValue.zValue);
-
-            break;
-          }
-          else
-          {
-            const orxSTRING zKey;
-
-            /* Gets its key */
-            zKey = orxString_GetFromID(pstEntry->stID);
-
-            /* Typo? */
-            if((orxString_ICompare(zKey, _zKey) == 0)
-            || (orxString_GetEditDistance(zKey, _zKey) <= ((orxString_GetLength(_zKey) <= 4UL) ? 1UL : orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE)))
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "was found instead of requested key" orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_UNDERLINE_OFF " <%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, zKey, _zKey);
-            }
-          }
-        }
+        /* For all entries */
+        orxConfig_ForAllKeys(orxConfig_CheckTypo, orxTRUE, (void *)_zKey);
       }
     }
 
