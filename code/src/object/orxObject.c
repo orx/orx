@@ -11877,7 +11877,7 @@ void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orx
       pstChild = orxObject_GetOwnedSibling(pstChild))
   {
     /* Fires its trigger */
-    orxObject_FireTrigger(pstChild, _zEvent, _azRefinementList, _u32Size);
+    orxObject_FireTriggerRecursive(pstChild, _zEvent, _azRefinementList, _u32Size);
   }
 
   /* Done! */
