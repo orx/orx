@@ -540,7 +540,7 @@ var searchData=
   ['orxconfig_5fislocallyinheritedvalue',['orxConfig_IsLocallyInheritedValue',['../group__orx_config.html#ga032eeae8a5daa24e51543f19967f066d',1,'orxConfig.h']]],
   ['orxconfig_5fisrandomvalue',['orxConfig_IsRandomValue',['../group__orx_config.html#gaa0a1cc968946c9743e15dfe4adba66b7',1,'orxConfig.h']]],
   ['orxconfig_5fistypocheckenabled',['orxConfig_IsTypoCheckEnabled',['../group__orx_config.html#gadbb55c383ac3d7b8de5ed280ca79b343',1,'orxConfig.h']]],
-  ['orxconfig_5fkey_5ffunction',['orxCONFIG_KEY_FUNCTION',['../group__orx_config.html#ga1738c94dce06d0e5d8650a5b7077fd6d',1,'orxConfig.h']]],
+  ['orxconfig_5fkey_5ffunction',['orxCONFIG_KEY_FUNCTION',['../group__orx_config.html#ga71023c547365f8b2ef23d94a199413e8',1,'orxConfig.h']]],
   ['orxconfig_5fkz_5fresource_5fgroup',['orxCONFIG_KZ_RESOURCE_GROUP',['../group__orx_config.html#ga292cacf010a38b185f65e2e54bce8733',1,'orxConfig.h']]],
   ['orxconfig_5fload',['orxConfig_Load',['../group__orx_config.html#gaf36ad6ebff7b59ac6d6c03647786d174',1,'orxConfig.h']]],
   ['orxconfig_5floadfrommemory',['orxConfig_LoadFromMemory',['../group__orx_config.html#ga75b35018162183cd8e353a4c92d581be',1,'orxConfig.h']]],
