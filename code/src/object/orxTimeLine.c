@@ -191,7 +191,7 @@ static orxTIMELINE_STATIC sstTimeLine;
 
 /** Gather callback
  */
-static orxBOOL orxFASTCALL orxTimeLine_Gather(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxTimeLine_Gather(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   orxFLOAT  fTime;
   orxBOOL   bResult = orxTRUE;

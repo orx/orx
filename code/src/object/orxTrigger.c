@@ -152,7 +152,7 @@ static orxTRIGGER_STATIC sstTrigger;
  * Private functions                                                       *
  ***************************************************************************/
 
-static orxBOOL orxFASTCALL orxTrigger_Count(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxTrigger_Count(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   orxU32 *pu32Counter;
 
@@ -166,7 +166,7 @@ static orxBOOL orxFASTCALL orxTrigger_Count(const orxSTRING _zKeyName, orxBOOL _
   return orxTRUE;
 }
 
-static orxBOOL orxFASTCALL orxTrigger_AddEvent(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxTrigger_AddEvent(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   orxSTRINGID     stEventID;
   orxTRIGGER_SET *pstTriggerSet;

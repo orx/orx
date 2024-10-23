@@ -1567,7 +1567,7 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
 
 /** Checks for typo
  */
-static orxBOOL orxFASTCALL orxConfig_CheckTypo(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxConfig_CheckTypo(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   const orxSTRING zKey;
   orxBOOL         bResult = orxTRUE;
@@ -1575,11 +1575,32 @@ static orxBOOL orxFASTCALL orxConfig_CheckTypo(const orxSTRING _zKeyName, orxBOO
   /* Gets requested key */
   zKey = (const orxSTRING)_pContext;
 
-  /* Local & identical? */
-  if((_bInherited == orxFALSE) && (orxString_Compare(zKey, _zKeyName) == 0))
+  /* Identical? */
+  if(orxString_Compare(zKey, _zKeyName) == 0)
   {
+    orxCONFIG_ENTRY *pstEntry;
+
+    /* Pushes section */
+    orxConfig_PushSection(_zSectionName);
+
+    /* Gets its entry */
+    pstEntry = orxConfig_GetEntry(orxString_Hash(_zKeyName));
+
+    /* Pops section */
+    orxConfig_PopSection();
+
+    /* Checks */
+    orxASSERT(pstEntry != orxNULL);
+
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT "inherits from" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "however one of its ancestors was not found" orxANSI_KZ_COLOR_UNDERLINE_OFF ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKeyName, orxConfig_GetEntry(orxString_Hash(_zKeyName))->stValue.zValue);
+    if(orxString_Compare(_zSectionName, sstConfig.pstCurrentSection->zName) == 0)
+    {
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT "is defined " orxANSI_KZ_COLOR_FG_DEFAULT "as" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "however one of its ancestors was not found" orxANSI_KZ_COLOR_UNDERLINE_OFF ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKeyName, pstEntry->stValue.zValue);
+    }
+    else
+    {
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT "is defined in parent" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT "as" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "however one of its ancestors was not found" orxANSI_KZ_COLOR_UNDERLINE_OFF ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKeyName, _zSectionName, pstEntry->stValue.zValue);
+    }
 
     /* Updates result */
     bResult = orxFALSE;
@@ -8035,7 +8056,7 @@ orxSTATUS orxFASTCALL orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyC
       || (orxHashTable_Add(sstConfig.pstKeyTable, (orxU64)pstEntry->stID, orxHANDLE_UNDEFINED) != orxSTATUS_FAILURE))
       {
         /* Runs callback */
-        if(_pfnKeyCallback(orxString_GetFromID(pstEntry->stID), (pstSection != sstConfig.pstCurrentSection) ? orxTRUE : orxFALSE, _pContext) == orxFALSE)
+        if(_pfnKeyCallback(orxString_GetFromID(pstEntry->stID), pstSection->zName, _pContext) == orxFALSE)
         {
           /* Updates result */
           eResult = orxSTATUS_FAILURE;

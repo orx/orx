@@ -78,7 +78,7 @@ typedef orxBOOL (orxFASTCALL *orxCONFIG_CLEAR_FUNCTION)(const orxSTRING _zSectio
 typedef orxSTATUS (orxFASTCALL *orxCONFIG_BOOTSTRAP_FUNCTION)();
 
 /** Config callback function type to use with ForAllKeys */
-typedef orxBOOL (orxFASTCALL *orxCONFIG_KEY_FUNCTION)(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext);
+typedef orxBOOL (orxFASTCALL *orxCONFIG_KEY_FUNCTION)(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext);
 
 
 /** Config module setup

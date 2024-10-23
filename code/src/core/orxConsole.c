@@ -961,7 +961,7 @@ static orxSTATUS orxFASTCALL orxConsole_EventHandler(const orxEVENT *_pstEvent)
 
 /** Add alias callback
  */
-static orxBOOL orxFASTCALL orxConsole_AddAlias(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxConsole_AddAlias(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   orxBOOL bResult = orxTRUE;
 

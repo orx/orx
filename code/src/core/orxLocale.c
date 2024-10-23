@@ -185,7 +185,7 @@ static orxINLINE void orxLocale_UnregisterCommands()
 
 /** Key callback
  */
-static orxBOOL orxFASTCALL orxLocale_KeyCallback(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxLocale_KeyCallback(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   orxLOCALE_KEY_CONTEXT  *pstContext;
   orxBOOL                 bResult;
@@ -200,7 +200,7 @@ static orxBOOL orxFASTCALL orxLocale_KeyCallback(const orxSTRING _zKeyName, orxB
   return bResult;
 }
 
-static orxBOOL orxFASTCALL orxLocale_LoadGroupCallback(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxLocale_LoadGroupCallback(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   orxBOOL bResult = orxTRUE;
 
