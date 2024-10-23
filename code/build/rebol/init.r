@@ -144,7 +144,7 @@ either all [
   not find system/options/args {--help}
 ] [
   use [interactive? args value +extensions -extensions] [
-    +extensions: copy [] -extensions: copy []
+    +extensions: copy [] -extensions: copy [] y: yes n: no
     either interactive?: zero? length? args: copy system/options/args [
       log {No argument, switching to interactive mode}
       foreach [param desc default deps] params [
