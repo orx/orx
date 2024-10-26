@@ -152,7 +152,7 @@ static orxTRIGGER_STATIC sstTrigger;
  * Private functions                                                       *
  ***************************************************************************/
 
-static orxBOOL orxFASTCALL orxTrigger_Count(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxTrigger_Count(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   orxU32 *pu32Counter;
 
@@ -160,13 +160,13 @@ static orxBOOL orxFASTCALL orxTrigger_Count(const orxSTRING _zKeyName, orxBOOL _
   pu32Counter = (orxU32 *)_pContext;
 
   /* Increases it */
-  (*pu32Counter)++;
+  (*pu32Counter) += (orxU32)orxConfig_GetListCount(_zKeyName);
 
   /* Done! */
   return orxTRUE;
 }
 
-static orxBOOL orxFASTCALL orxTrigger_AddEvent(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxTrigger_AddEvent(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   orxSTRINGID     stEventID;
   orxTRIGGER_SET *pstTriggerSet;
@@ -285,7 +285,7 @@ static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID
           pstResult->zReference = orxString_GetFromID(pstResult->stID);
 
           /* Updates its ref count */
-          pstResult->u32RefCount    = 1;
+          pstResult->u32RefCount = 1;
 
           /* Should keep in cache? */
           if(orxConfig_GetBool(orxTRIGGER_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)

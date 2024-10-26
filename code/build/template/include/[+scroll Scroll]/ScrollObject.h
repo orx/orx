@@ -81,6 +81,9 @@ public:
                 orxFLOAT                GetRotation(orxBOOL _bWorld = orxFALSE) const;
                 void                    SetRotation(orxFLOAT _fRotation, orxBOOL _bWorld = orxFALSE);
 
+                orxFLOAT                GetAngularVelocity() const;
+                void                    SetAngularVelocity(orxFLOAT _fVelocity);
+
                 orxVECTOR &             GetSpeed(orxVECTOR &_rvSpeed, orxBOOL _bRelative = orxFALSE) const;
                 void                    SetSpeed(const orxVECTOR &_rvSpeed, orxBOOL _bRelative = orxFALSE);
 
@@ -150,6 +153,8 @@ private:
 
   virtual       void                    OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart, const orxVECTOR &_rvPosition, const orxVECTOR &_rvNormal);
   virtual       void                    OnSeparate(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart);
+
+  virtual       void                    OnSpawn(ScrollObject *_poSpawned);
 
   virtual       void                    OnNewAnim(const orxSTRING _zOldAnim, const orxSTRING _zNewAnim, orxBOOL _bCut);
   virtual       void                    OnAnimUpdate(const orxSTRING _zAnim);
@@ -406,6 +411,18 @@ void ScrollObject::SetRotation(orxFLOAT _fRotation, orxBOOL _bWorld)
     // Updates its rotation
     orxObject_SetWorldRotation(mpstObject, _fRotation);
   }
+}
+
+orxFLOAT ScrollObject::GetAngularVelocity() const
+{
+  // Done!
+  return orxObject_GetAngularVelocity(mpstObject);
+}
+
+void ScrollObject::SetAngularVelocity(orxFLOAT _fVelocity)
+{
+  // Updates its angular velocity
+  orxObject_SetAngularVelocity(mpstObject, _fVelocity);
 }
 
 orxVECTOR &ScrollObject::GetSpeed(orxVECTOR &_rvSpeed, orxBOOL _bRelative) const
@@ -973,6 +990,10 @@ void ScrollObject::OnCollide(ScrollObject *_poCollider, orxBODY_PART *_pstPart, 
 }
 
 void ScrollObject::OnSeparate(ScrollObject *_poCollider, orxBODY_PART *_pstPart, orxBODY_PART *_pstColliderPart)
+{
+}
+
+void ScrollObject::OnSpawn(ScrollObject *_poSpawned)
 {
 }
 

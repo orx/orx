@@ -65,7 +65,7 @@ static void orxFASTCALL orxCheat_CommandEnable(orxU32 _u32ArgNumber, const orxCO
   return;
 }
 
-static orxBOOL orxFASTCALL orxCheat_CheckInput(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxCheat_CheckInput(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   const orxSTRING  *pzSection;
   orxBOOL           bResult = orxTRUE;
@@ -158,7 +158,7 @@ static void orxFASTCALL orxCheat_Update(const orxCLOCK_INFO *_pstClockInfo, void
   return;
 }
 
-static orxBOOL orxFASTCALL orxCheat_ProcessCheat(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxCheat_ProcessCheat(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   orxCHAR         acState[256], acInput[16], *pcState;
   const orxSTRING zCheat;
@@ -270,12 +270,15 @@ orxSTATUS orxCheat_Init()
     orxConfig_PushSection(orxCHEAT_KZ_INPUT_SET);
 
     // Bind all keyboard inputs
-    for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_0; eKey <= orxKEYBOARD_KEY_9; eKey = (orxKEYBOARD_KEY)(eKey + 1))
-    {
-      const orxSTRING zName = orxKeyboard_GetKeyName(eKey);
-      orxConfig_SetString(zName, zName + 4);
-    }
     for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_A; eKey <= orxKEYBOARD_KEY_Z; eKey = (orxKEYBOARD_KEY)(eKey + 1))
+    {
+      orxConfig_SetString(orxKeyboard_GetKeyName(eKey), orxKeyboard_GetKeyDisplayName(eKey));
+    }
+    for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_QUOTE; eKey <= orxKEYBOARD_KEY_BACKQUOTE; eKey = (orxKEYBOARD_KEY)(eKey + 1))
+    {
+      orxConfig_SetString(orxKeyboard_GetKeyName(eKey), orxKeyboard_GetKeyDisplayName(eKey));
+    }
+    for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_0; eKey <= orxKEYBOARD_KEY_9; eKey = (orxKEYBOARD_KEY)(eKey + 1))
     {
       const orxSTRING zName = orxKeyboard_GetKeyName(eKey);
       orxConfig_SetString(zName, zName + 4);

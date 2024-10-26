@@ -73,7 +73,6 @@
 #define orxGRAPHIC_KU32_FLAG_ALIGN_TOP        0x00000040  /**< Top vertical alignment */
 #define orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM     0x00000080  /**< Bottom vertical alignment */
 #define orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE   0x00000100  /**< Truncate alignment value */
-#define orxGRAPHIC_KU32_FLAG_ALIGN_ROUND      0x00000200  /**< Round alignment value */
 
 #define orxGRAPHIC_KU32_MASK_ALIGN            0x000003F0  /**< Alignment mask */
 

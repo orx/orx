@@ -1182,7 +1182,7 @@ static void orxResource_UpdatePostInit()
 
 /** Load storage callback
  */
-static orxBOOL orxFASTCALL orxResource_LoadStorage(const orxSTRING _zKeyName, orxBOOL _bInherited, void *_pContext)
+static orxBOOL orxFASTCALL orxResource_LoadStorage(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
 {
   const orxSTRING   zGroup;
   orxSTRINGID       stGroupID;

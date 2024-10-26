@@ -15,7 +15,7 @@ var searchData=
   ['orxcommand_5ffunction',['orxCOMMAND_FUNCTION',['../group__orx_command.html#gae902a012bb44dd4c6a38f7214ff851e0',1,'orxCommand.h']]],
   ['orxconfig_5fbootstrap_5ffunction',['orxCONFIG_BOOTSTRAP_FUNCTION',['../group__orx_config.html#gafb7b4d512a29c9410c5a5e1f7faf9119',1,'orxConfig.h']]],
   ['orxconfig_5fclear_5ffunction',['orxCONFIG_CLEAR_FUNCTION',['../group__orx_config.html#gae1d79b4c2a48e831db1cf7d031fe5294',1,'orxConfig.h']]],
-  ['orxconfig_5fkey_5ffunction',['orxCONFIG_KEY_FUNCTION',['../group__orx_config.html#ga1738c94dce06d0e5d8650a5b7077fd6d',1,'orxConfig.h']]],
+  ['orxconfig_5fkey_5ffunction',['orxCONFIG_KEY_FUNCTION',['../group__orx_config.html#ga71023c547365f8b2ef23d94a199413e8',1,'orxConfig.h']]],
   ['orxconfig_5fsave_5ffunction',['orxCONFIG_SAVE_FUNCTION',['../group__orx_config.html#gaff09561378d9e18269c5313bc428ff18',1,'orxConfig.h']]],
   ['orxdebug_5fcallback_5ffunction',['orxDEBUG_CALLBACK_FUNCTION',['../group__orx_debug.html#gae0b8709d32707d5377660d1dbc6435f8',1,'orxDebug.h']]],
   ['orxevent_5fhandler',['orxEVENT_HANDLER',['../group__orx_event.html#ga51a907faa3c2e1d09551926372107ae5',1,'orxEvent.h']]],

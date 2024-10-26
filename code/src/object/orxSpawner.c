@@ -727,8 +727,8 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           /* Gets owner as spawner */
           pstSpawner = orxSPAWNER(orxObject_GetOwner(pstObject));
 
-          /* Valid? */
-          if(pstSpawner != orxNULL)
+          /* Valid and not currently spawning? */
+          if((pstSpawner != orxNULL) && (sstSpawner.pstCurrentSpawner != pstSpawner))
           {
             /* Checks */
             orxASSERT(pstSpawner->pstSpawnedTable != orxNULL);

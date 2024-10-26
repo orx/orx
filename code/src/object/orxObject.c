@@ -159,11 +159,6 @@
 #define orxOBJECT_KZ_OVERRIDE_MARKER            "->"
 #define orxOBJECT_KZ_CENTERED_PIVOT             "center"
 #define orxOBJECT_KZ_TRUNCATE_PIVOT             "truncate"
-#define orxOBJECT_KZ_ROUND_PIVOT                "round"
-#define orxOBJECT_KZ_TOP_PIVOT                  "top"
-#define orxOBJECT_KZ_LEFT_PIVOT                 "left"
-#define orxOBJECT_KZ_BOTTOM_PIVOT               "bottom"
-#define orxOBJECT_KZ_RIGHT_PIVOT                "right"
 #define orxOBJECT_KZ_ANIM                       "anim"
 #define orxOBJECT_KZ_CHILD                      "child"
 #define orxOBJECT_KZ_FX                         "fx"
@@ -11882,7 +11877,7 @@ void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orx
       pstChild = orxObject_GetOwnedSibling(pstChild))
   {
     /* Fires its trigger */
-    orxObject_FireTrigger(pstChild, _zEvent, _azRefinementList, _u32Size);
+    orxObject_FireTriggerRecursive(pstChild, _zEvent, _azRefinementList, _u32Size);
   }
 
   /* Done! */

@@ -3,7 +3,7 @@ var group__orx_config =
     [ "orxCONFIG_KZ_RESOURCE_GROUP", "group__orx_config.html#ga292cacf010a38b185f65e2e54bce8733", null ],
     [ "orxCONFIG_BOOTSTRAP_FUNCTION", "group__orx_config.html#gafb7b4d512a29c9410c5a5e1f7faf9119", null ],
     [ "orxCONFIG_CLEAR_FUNCTION", "group__orx_config.html#gae1d79b4c2a48e831db1cf7d031fe5294", null ],
-    [ "orxCONFIG_KEY_FUNCTION", "group__orx_config.html#ga1738c94dce06d0e5d8650a5b7077fd6d", null ],
+    [ "orxCONFIG_KEY_FUNCTION", "group__orx_config.html#ga71023c547365f8b2ef23d94a199413e8", null ],
     [ "orxCONFIG_SAVE_FUNCTION", "group__orx_config.html#gaff09561378d9e18269c5313bc428ff18", null ],
     [ "orxCONFIG_EVENT", "group__orx_config.html#gad70a5ee64ac35b8fdd9cdaf3e4a1d267", [
       [ "orxCONFIG_EVENT_RELOAD_START", "group__orx_config.html#ggad70a5ee64ac35b8fdd9cdaf3e4a1d267ace45d5a2a874a2b0c4daf9744b323c5f", null ],

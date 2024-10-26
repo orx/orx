@@ -71,9 +71,9 @@ void orxFASTCALL orxMath_InitRandom(orxU32 _u32Seed)
 
   /* Inits random seed */
   su32X = _u32Seed;
-  su32Y = 362436069;
-  su32Z = 521288629;
-  su32W = 88675123;
+  su32Y = su32X * _u32Seed;
+  su32Z = su32Y * _u32Seed;
+  su32W = su32Z * _u32Seed;
 }
 
 /** Gets a random orxFLOAT value
