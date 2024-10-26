@@ -345,6 +345,7 @@ int c11__byte_index_to_unicode(const char* data, int n);
 
 bool c11__is_unicode_Lo_char(int c);
 int c11__u8_header(unsigned char c, bool suppress);
+int c11__u8_value(int u8bytes, const char* data);
 
 typedef enum IntParsingResult {
     IntParsing_SUCCESS,
@@ -1041,9 +1042,6 @@ OPCODE(JUMP_IF_FALSE_OR_POP)
 OPCODE(SHORTCUT_IF_FALSE_OR_POP)
 OPCODE(LOOP_CONTINUE)
 OPCODE(LOOP_BREAK)
-/***/
-OPCODE(JUMP_ABSOLUTE_TOP)
-OPCODE(GOTO)
 /**************************/
 OPCODE(CALL)
 OPCODE(CALL_VARGS)
@@ -1085,6 +1083,8 @@ OPCODE(RE_RAISE)
 OPCODE(PUSH_EXCEPTION)
 OPCODE(BEGIN_EXC_HANDLING)
 OPCODE(END_EXC_HANDLING)
+OPCODE(BEGIN_FINALLY)
+OPCODE(END_FINALLY)
 /**************************/
 OPCODE(FORMAT_STRING)
 /**************************/
@@ -1127,7 +1127,6 @@ typedef struct CodeObject {
     int nlocals;                        // cached varnames.size()
 
     c11_smallmap_n2i varnames_inv;
-    c11_smallmap_n2i labels;
 
     c11_vector /*T=CodeBlock*/ blocks;
     c11_vector /*T=FuncDecl_*/ func_decls;
@@ -2543,7 +2542,6 @@ FrameResult VM__run_top_frame(VM* self) {
 
 #ifndef NDEBUG
         pk_print_stack(self, frame, byte);
-        // assert(!py_checkexc(true));
 #endif
 
         switch((Opcode)byte.op) {
@@ -3077,20 +3075,6 @@ FrameResult VM__run_top_frame(VM* self) {
                 Frame__prepare_jump_break(frame, &self->stack, target);
                 DISPATCH_JUMP((int16_t)byte.arg);
             }
-            case OP_JUMP_ABSOLUTE_TOP: {
-                int target = py_toint(TOP());
-                POP();
-                DISPATCH_JUMP_ABSOLUTE(target);
-            }
-            case OP_GOTO: {
-                int target = c11_smallmap_n2i__get(&frame->co->labels, byte.arg, -1);
-                if(target < 0) {
-                    RuntimeError("label '%n' not found", byte.arg);
-                    goto __ERROR;
-                }
-                Frame__prepare_jump_break(frame, &self->stack, target);
-                DISPATCH_JUMP_ABSOLUTE(target);
-            }
                 /*****************************************/
             case OP_CALL: {
                 ManagedHeap__collect_if_needed(&self->heap);
@@ -3456,8 +3440,10 @@ FrameResult VM__run_top_frame(VM* self) {
                 goto __ERROR;
             }
             case OP_RE_RAISE: {
-                assert(self->curr_exception.type);
-                goto __ERROR_RE_RAISE;
+                if(self->curr_exception.type && !self->is_curr_exc_handled) {
+                    goto __ERROR_RE_RAISE;
+                }
+                DISPATCH();
             }
             case OP_PUSH_EXCEPTION: {
                 assert(self->curr_exception.type);
@@ -3471,6 +3457,20 @@ FrameResult VM__run_top_frame(VM* self) {
             case OP_END_EXC_HANDLING: {
                 assert(self->curr_exception.type);
                 py_clearexc(NULL);
+                DISPATCH();
+            }
+            case OP_BEGIN_FINALLY: {
+                if(self->curr_exception.type) {
+                    // temporarily handle the exception if any
+                    self->is_curr_exc_handled = true;
+                }
+                DISPATCH();
+            }
+            case OP_END_FINALLY: {
+                if(self->curr_exception.type && self->is_curr_exc_handled) {
+                    // revert the exception handling if needed
+                    self->is_curr_exc_handled = false;
+                }
                 DISPATCH();
             }
             //////////////////
@@ -4079,7 +4079,6 @@ void CodeObject__ctor(CodeObject* self, SourceData_ src, c11_sv name) {
     self->nlocals = 0;
 
     c11_smallmap_n2i__ctor(&self->varnames_inv);
-    c11_smallmap_n2i__ctor(&self->labels);
 
     c11_vector__ctor(&self->blocks, sizeof(CodeBlock));
     c11_vector__ctor(&self->func_decls, sizeof(FuncDecl_));
@@ -4102,7 +4101,6 @@ void CodeObject__dtor(CodeObject* self) {
     c11_vector__dtor(&self->varnames);
 
     c11_smallmap_n2i__dtor(&self->varnames_inv);
-    c11_smallmap_n2i__dtor(&self->labels);
 
     c11_vector__dtor(&self->blocks);
 
@@ -4354,7 +4352,7 @@ const char kPythonLibs_datetime[] = "from time import localtime\nimport operator
 const char kPythonLibs_functools[] = "class cache:\n    def __init__(self, f):\n        self.f = f\n        self.cache = {}\n\n    def __call__(self, *args):\n        if args not in self.cache:\n            self.cache[args] = self.f(*args)\n        return self.cache[args]\n    \ndef reduce(function, sequence, initial=...):\n    it = iter(sequence)\n    if initial is ...:\n        try:\n            value = next(it)\n        except StopIteration:\n            raise TypeError(\"reduce() of empty sequence with no initial value\")\n    else:\n        value = initial\n    for element in it:\n        value = function(value, element)\n    return value\n\nclass partial:\n    def __init__(self, f, *args, **kwargs):\n        self.f = f\n        if not callable(f):\n            raise TypeError(\"the first argument must be callable\")\n        self.args = args\n        self.kwargs = kwargs\n\n    def __call__(self, *args, **kwargs):\n        kwargs.update(self.kwargs)\n        return self.f(*self.args, *args, **kwargs)\n\n";
 const char kPythonLibs_heapq[] = "# Heap queue algorithm (a.k.a. priority queue)\ndef heappush(heap, item):\n    \"\"\"Push item onto heap, maintaining the heap invariant.\"\"\"\n    heap.append(item)\n    _siftdown(heap, 0, len(heap)-1)\n\ndef heappop(heap):\n    \"\"\"Pop the smallest item off the heap, maintaining the heap invariant.\"\"\"\n    lastelt = heap.pop()    # raises appropriate IndexError if heap is empty\n    if heap:\n        returnitem = heap[0]\n        heap[0] = lastelt\n        _siftup(heap, 0)\n        return returnitem\n    return lastelt\n\ndef heapreplace(heap, item):\n    \"\"\"Pop and return the current smallest value, and add the new item.\n\n    This is more efficient than heappop() followed by heappush(), and can be\n    more appropriate when using a fixed-size heap.  Note that the value\n    returned may be larger than item!  That constrains reasonable uses of\n    this routine unless written as part of a conditional replacement:\n\n        if item > heap[0]:\n            item = heapreplace(heap, item)\n    \"\"\"\n    returnitem = heap[0]    # raises appropriate IndexError if heap is empty\n    heap[0] = item\n    _siftup(heap, 0)\n    return returnitem\n\ndef heappushpop(heap, item):\n    \"\"\"Fast version of a heappush followed by a heappop.\"\"\"\n    if heap and heap[0] < item:\n        item, heap[0] = heap[0], item\n        _siftup(heap, 0)\n    return item\n\ndef heapify(x):\n    \"\"\"Transform list into a heap, in-place, in O(len(x)) time.\"\"\"\n    n = len(x)\n    # Transform bottom-up.  The largest index there's any point to looking at\n    # is the largest with a child index in-range, so must have 2*i + 1 < n,\n    # or i < (n-1)/2.  If n is even = 2*j, this is (2*j-1)/2 = j-1/2 so\n    # j-1 is the largest, which is n//2 - 1.  If n is odd = 2*j+1, this is\n    # (2*j+1-1)/2 = j so j-1 is the largest, and that's again n//2-1.\n    for i in reversed(range(n//2)):\n        _siftup(x, i)\n\n# 'heap' is a heap at all indices >= startpos, except possibly for pos.  pos\n# is the index of a leaf with a possibly out-of-order value.  Restore the\n# heap invariant.\ndef _siftdown(heap, startpos, pos):\n    newitem = heap[pos]\n    # Follow the path to the root, moving parents down until finding a place\n    # newitem fits.\n    while pos > startpos:\n        parentpos = (pos - 1) >> 1\n        parent = heap[parentpos]\n        if newitem < parent:\n            heap[pos] = parent\n            pos = parentpos\n            continue\n        break\n    heap[pos] = newitem\n\ndef _siftup(heap, pos):\n    endpos = len(heap)\n    startpos = pos\n    newitem = heap[pos]\n    # Bubble up the smaller child until hitting a leaf.\n    childpos = 2*pos + 1    # leftmost child position\n    while childpos < endpos:\n        # Set childpos to index of smaller child.\n        rightpos = childpos + 1\n        if rightpos < endpos and not heap[childpos] < heap[rightpos]:\n            childpos = rightpos\n        # Move the smaller child up.\n        heap[pos] = heap[childpos]\n        pos = childpos\n        childpos = 2*pos + 1\n    # The leaf at pos is empty now.  Put newitem there, and bubble it up\n    # to its final resting place (by sifting its parents down).\n    heap[pos] = newitem\n    _siftdown(heap, startpos, pos)";
 const char kPythonLibs_operator[] = "# https://docs.python.org/3/library/operator.html#mapping-operators-to-functions\n\ndef le(a, b): return a <= b\ndef lt(a, b): return a < b\ndef ge(a, b): return a >= b\ndef gt(a, b): return a > b\ndef eq(a, b): return a == b\ndef ne(a, b): return a != b\n\ndef and_(a, b): return a & b\ndef or_(a, b): return a | b\ndef xor(a, b): return a ^ b\ndef invert(a): return ~a\ndef lshift(a, b): return a << b\ndef rshift(a, b): return a >> b\n\ndef is_(a, b): return a is b\ndef is_not(a, b): return a is not b\ndef not_(a): return not a\ndef truth(a): return bool(a)\ndef contains(a, b): return b in a\n\ndef add(a, b): return a + b\ndef sub(a, b): return a - b\ndef mul(a, b): return a * b\ndef truediv(a, b): return a / b\ndef floordiv(a, b): return a // b\ndef mod(a, b): return a % b\ndef pow(a, b): return a ** b\ndef neg(a): return -a\ndef matmul(a, b): return a @ b\n\ndef getitem(a, b): return a[b]\ndef setitem(a, b, c): a[b] = c\ndef delitem(a, b): del a[b]\n\ndef iadd(a, b): a += b; return a\ndef isub(a, b): a -= b; return a\ndef imul(a, b): a *= b; return a\ndef itruediv(a, b): a /= b; return a\ndef ifloordiv(a, b): a //= b; return a\ndef imod(a, b): a %= b; return a\n# def ipow(a, b): a **= b; return a\n# def imatmul(a, b): a @= b; return a\ndef iand(a, b): a &= b; return a\ndef ior(a, b): a |= b; return a\ndef ixor(a, b): a ^= b; return a\ndef ilshift(a, b): a <<= b; return a\ndef irshift(a, b): a >>= b; return a\n";
-const char kPythonLibs_pickle[] = "import json\nimport builtins\n\n_BASIC_TYPES = [int, float, str, bool, type(None)]\n_MOD_T_SEP = \"@\"\n\ndef _find_class(path: str):\n    if _MOD_T_SEP not in path:\n        return builtins.__dict__[path]\n    modpath, name = path.split(_MOD_T_SEP)\n    return __import__(modpath).__dict__[ name ]\n\nclass _Pickler:\n    def __init__(self, obj) -> None:\n        self.obj = obj\n        self.raw_memo = {}  # id -> int\n        self.memo = []      # int -> object\n\n    @staticmethod\n    def _type_id(t: type):\n        assert type(t) is type\n        name = t.__name__\n        mod = t.__module__\n        if mod is not None:\n            name = mod + _MOD_T_SEP + name\n        return name\n\n    def wrap(self, o):\n        o_t = type(o)\n        if o_t in _BASIC_TYPES:\n            return o\n        if o_t is type:\n            return [\"type\", self._type_id(o)]\n\n        index = self.raw_memo.get(id(o), None)\n        if index is not None:\n            return [index]\n        \n        ret = []\n        index = len(self.memo)\n        self.memo.append(ret)\n        self.raw_memo[id(o)] = index\n\n        if o_t is tuple:\n            ret.append(\"tuple\")\n            ret.append([self.wrap(i) for i in o])\n            return [index]\n        if o_t is bytes:\n            ret.append(\"bytes\")\n            ret.append([o[j] for j in range(len(o))])\n            return [index]\n        if o_t is list:\n            ret.append(\"list\")\n            ret.append([self.wrap(i) for i in o])\n            return [index]\n        if o_t is dict:\n            ret.append(\"dict\")\n            ret.append([[self.wrap(k), self.wrap(v)] for k,v in o.items()])\n            return [index]\n        \n        _0 = self._type_id(o_t)\n\n        if getattr(o_t, '__struct__', False):\n            ret.append(_0)\n            ret.append(o.tostruct().hex())\n            return [index]\n\n        if hasattr(o, \"__getnewargs__\"):\n            _1 = o.__getnewargs__()     # an iterable\n            _1 = [self.wrap(i) for i in _1]\n        else:\n            _1 = None\n\n        if o.__dict__ is None:\n            _2 = None\n        else:\n            _2 = {k: self.wrap(v) for k,v in o.__dict__.items()}\n\n        ret.append(_0)  # type id\n        ret.append(_1)  # newargs\n        ret.append(_2)  # state\n        return [index]\n    \n    def run_pipe(self):\n        o = self.wrap(self.obj)\n        return [o, self.memo]\n\n\n\nclass _Unpickler:\n    def __init__(self, obj, memo: list) -> None:\n        self.obj = obj\n        self.memo = memo\n        self._unwrapped = [None] * len(memo)\n\n    def tag(self, index, o):\n        assert self._unwrapped[index] is None\n        self._unwrapped[index] = o\n\n    def unwrap(self, o, index=None):\n        if type(o) in _BASIC_TYPES:\n            return o\n        assert type(o) is list\n\n        if o[0] == \"type\":\n            return _find_class(o[1])\n\n        # reference\n        if type(o[0]) is int:\n            assert index is None    # index should be None\n            index = o[0]\n            if self._unwrapped[index] is None:\n                o = self.memo[index]\n                assert type(o) is list\n                assert type(o[0]) is str\n                self.unwrap(o, index)\n                assert self._unwrapped[index] is not None\n            return self._unwrapped[index]\n        \n        # concrete reference type\n        if o[0] == \"tuple\":\n            ret = tuple([self.unwrap(i) for i in o[1]])\n            self.tag(index, ret)\n            return ret\n        if o[0] == \"bytes\":\n            ret = bytes(o[1])\n            self.tag(index, ret)\n            return ret\n        if o[0] == \"list\":\n            ret = []\n            self.tag(index, ret)\n            for i in o[1]:\n                ret.append(self.unwrap(i))\n            return ret\n        if o[0] == \"dict\":\n            ret = {}\n            self.tag(index, ret)\n            for k,v in o[1]:\n                ret[self.unwrap(k)] = self.unwrap(v)\n            return ret\n        \n        # generic object\n        cls = _find_class(o[0])\n        # if getattr(cls, '__struct__', False):\n        if False:\n            inst = cls.fromstruct(struct.fromhex(o[1]))\n            self.tag(index, inst)\n            return inst\n        else:\n            _, newargs, state = o\n            # create uninitialized instance\n            new_f = getattr(cls, \"__new__\")\n            if newargs is not None:\n                newargs = [self.unwrap(i) for i in newargs]\n                inst = new_f(cls, *newargs)\n            else:\n                inst = new_f(cls)\n            self.tag(index, inst)\n            # restore state\n            if state is not None:\n                for k,v in state.items():\n                    setattr(inst, k, self.unwrap(v))\n            return inst\n\n    def run_pipe(self):\n        return self.unwrap(self.obj)\n\n\ndef _wrap(o):\n    return _Pickler(o).run_pipe()\n\ndef _unwrap(packed: list):\n    return _Unpickler(*packed).run_pipe()\n\ndef dumps(o) -> bytes:\n    o = _wrap(o)\n    return json.dumps(o).encode()\n\ndef loads(b) -> object:\n    assert type(b) is bytes\n    o = json.loads(b.decode())\n    return _unwrap(o)";
+const char kPythonLibs_pickle[] = "import json\nimport builtins\n\n_BASIC_TYPES = [int, float, str, bool, type(None)]\n_MOD_T_SEP = \"@\"\n\ndef _find_class(path: str):\n    if _MOD_T_SEP not in path:\n        return builtins.__dict__[path]\n    modpath, name = path.split(_MOD_T_SEP)\n    return __import__(modpath).__dict__[name]\n\nclass _Pickler:\n    def __init__(self, obj) -> None:\n        self.obj = obj\n        self.raw_memo = {}  # id -> int\n        self.memo = []      # int -> object\n\n    @staticmethod\n    def _type_id(t: type):\n        assert type(t) is type\n        name = t.__name__\n        mod = t.__module__\n        if mod is not None:\n            name = mod + _MOD_T_SEP + name\n        return name\n\n    def wrap(self, o):\n        o_t = type(o)\n        if o_t in _BASIC_TYPES:\n            return o\n        if o_t is type:\n            return [\"type\", self._type_id(o)]\n\n        index = self.raw_memo.get(id(o), None)\n        if index is not None:\n            return [index]\n        \n        ret = []\n        index = len(self.memo)\n        self.memo.append(ret)\n        self.raw_memo[id(o)] = index\n\n        if o_t is tuple:\n            ret.append(\"tuple\")\n            ret.append([self.wrap(i) for i in o])\n            return [index]\n        if o_t is bytes:\n            ret.append(\"bytes\")\n            ret.append([o[j] for j in range(len(o))])\n            return [index]\n        if o_t is list:\n            ret.append(\"list\")\n            ret.append([self.wrap(i) for i in o])\n            return [index]\n        if o_t is dict:\n            ret.append(\"dict\")\n            ret.append([[self.wrap(k), self.wrap(v)] for k,v in o.items()])\n            return [index]\n        \n        _0 = self._type_id(o_t)\n\n        if getattr(o_t, '__struct__', False):\n            ret.append(_0)\n            ret.append(o.tostruct().hex())\n            return [index]\n\n        if hasattr(o, \"__getnewargs__\"):\n            _1 = o.__getnewargs__()     # an iterable\n            _1 = [self.wrap(i) for i in _1]\n        else:\n            _1 = None\n\n        if o.__dict__ is None:\n            _2 = None\n        else:\n            _2 = {k: self.wrap(v) for k,v in o.__dict__.items()}\n\n        ret.append(_0)  # type id\n        ret.append(_1)  # newargs\n        ret.append(_2)  # state\n        return [index]\n    \n    def run_pipe(self):\n        o = self.wrap(self.obj)\n        return [o, self.memo]\n\n\n\nclass _Unpickler:\n    def __init__(self, obj, memo: list) -> None:\n        self.obj = obj\n        self.memo = memo\n        self._unwrapped = [None] * len(memo)\n\n    def tag(self, index, o):\n        assert self._unwrapped[index] is None\n        self._unwrapped[index] = o\n\n    def unwrap(self, o, index=None):\n        if type(o) in _BASIC_TYPES:\n            return o\n        assert type(o) is list\n\n        if o[0] == \"type\":\n            return _find_class(o[1])\n\n        # reference\n        if type(o[0]) is int:\n            assert index is None    # index should be None\n            index = o[0]\n            if self._unwrapped[index] is None:\n                o = self.memo[index]\n                assert type(o) is list\n                assert type(o[0]) is str\n                self.unwrap(o, index)\n                assert self._unwrapped[index] is not None\n            return self._unwrapped[index]\n        \n        # concrete reference type\n        if o[0] == \"tuple\":\n            ret = tuple([self.unwrap(i) for i in o[1]])\n            self.tag(index, ret)\n            return ret\n        if o[0] == \"bytes\":\n            ret = bytes(o[1])\n            self.tag(index, ret)\n            return ret\n        if o[0] == \"list\":\n            ret = []\n            self.tag(index, ret)\n            for i in o[1]:\n                ret.append(self.unwrap(i))\n            return ret\n        if o[0] == \"dict\":\n            ret = {}\n            self.tag(index, ret)\n            for k,v in o[1]:\n                ret[self.unwrap(k)] = self.unwrap(v)\n            return ret\n        \n        # generic object\n        cls = _find_class(o[0])\n        # if getattr(cls, '__struct__', False):\n        if False:\n            inst = cls.fromstruct(struct.fromhex(o[1]))\n            self.tag(index, inst)\n            return inst\n        else:\n            _, newargs, state = o\n            # create uninitialized instance\n            new_f = getattr(cls, \"__new__\")\n            if newargs is not None:\n                newargs = [self.unwrap(i) for i in newargs]\n                inst = new_f(cls, *newargs)\n            else:\n                inst = new_f(cls)\n            self.tag(index, inst)\n            # restore state\n            if state is not None:\n                for k,v in state.items():\n                    setattr(inst, k, self.unwrap(v))\n            return inst\n\n    def run_pipe(self):\n        return self.unwrap(self.obj)\n\n\ndef _wrap(o):\n    return _Pickler(o).run_pipe()\n\ndef _unwrap(packed: list):\n    return _Unpickler(*packed).run_pipe()\n\ndef dumps(o) -> bytes:\n    o = _wrap(o)\n    return json.dumps(o).encode()\n\ndef loads(b) -> object:\n    assert type(b) is bytes\n    o = json.loads(b.decode())\n    return _unwrap(o)";
 const char kPythonLibs_this[] = "print(\"\"\"The Zen of Python, by Tim Peters\n\nBeautiful is better than ugly.\nExplicit is better than implicit.\nSimple is better than complex.\nComplex is better than complicated.\nFlat is better than nested.\nSparse is better than dense.\nReadability counts.\nSpecial cases aren't special enough to break the rules.\nAlthough practicality beats purity.\nErrors should never pass silently.\nUnless explicitly silenced.\nIn the face of ambiguity, refuse the temptation to guess.\nThere should be one-- and preferably only one --obvious way to do it.\nAlthough that way may not be obvious at first unless you're Dutch.\nNow is better than never.\nAlthough never is often better than *right* now.\nIf the implementation is hard to explain, it's a bad idea.\nIf the implementation is easy to explain, it may be a good idea.\nNamespaces are one honking great idea -- let's do more of those!\"\"\")";
 const char kPythonLibs_typing[] = "class _Placeholder:\n    def __init__(self, *args, **kwargs):\n        pass\n    def __getitem__(self, *args):\n        return self\n    def __call__(self, *args, **kwargs):\n        return self\n    def __and__(self, other):\n        return self\n    def __or__(self, other):\n        return self\n    def __xor__(self, other):\n        return self\n\n\n_PLACEHOLDER = _Placeholder()\n\nList = _PLACEHOLDER\nDict = _PLACEHOLDER\nTuple = _PLACEHOLDER\nSet = _PLACEHOLDER\nAny = _PLACEHOLDER\nUnion = _PLACEHOLDER\nOptional = _PLACEHOLDER\nCallable = _PLACEHOLDER\nType = _PLACEHOLDER\nProtocol = _PLACEHOLDER\n\nLiteral = _PLACEHOLDER\nLiteralString = _PLACEHOLDER\n\nIterable = _PLACEHOLDER\nGenerator = _PLACEHOLDER\n\nHashable = _PLACEHOLDER\n\nTypeVar = _PLACEHOLDER\nSelf = _PLACEHOLDER\n\nclass Generic:\n    pass\n\nTYPE_CHECKING = False\n\n# decorators\noverload = lambda x: x\nfinal = lambda x: x\n";
 
@@ -4753,6 +4751,26 @@ int c11__u8_header(unsigned char c, bool suppress) {
     if((c & 0b11111110) == 0b11111100) return 6;
     if(!suppress) c11__abort("invalid utf8 char");
     return 0;
+}
+
+int c11__u8_value(int u8bytes, const char* data) {
+    assert(u8bytes != 0);
+    if(u8bytes == 1) return (int)data[0];
+    uint32_t value = 0;
+    for(int k = 0; k < u8bytes; k++) {
+        uint8_t b = data[k];
+        if(k == 0) {
+            if(u8bytes == 2)
+                value = (b & 0b00011111) << 6;
+            else if(u8bytes == 3)
+                value = (b & 0b00001111) << 12;
+            else if(u8bytes == 4)
+                value = (b & 0b00000111) << 18;
+        } else {
+            value |= (b & 0b00111111) << (6 * (u8bytes - k - 1));
+        }
+    }
+    return (int)value;
 }
 
 IntParsingResult c11__parse_uint(c11_sv text, int64_t* out, int base) {
@@ -6549,10 +6567,15 @@ static bool builtins_ord(int argc, py_Ref argv) {
     PY_CHECK_ARGC(1);
     PY_CHECK_ARG_TYPE(0, tp_str);
     c11_sv sv = py_tosv(py_arg(0));
-    if(sv.size != 1) {
-        return TypeError("ord() expected a character, but string of length %d found", sv.size);
+    if(c11_sv__u8_length(sv) != 1) {
+        return TypeError("ord() expected a character, but string of length %d found", c11_sv__u8_length(sv));
     }
-    py_newint(py_retval(), sv.data[0]);
+    int u8bytes = c11__u8_header(sv.data[0], true);
+    if (u8bytes == 0) {
+        return ValueError("invalid char: %c", sv.data[0]);
+    }
+    int value = c11__u8_value(u8bytes, sv.data);
+    py_newint(py_retval(), value);
     return true;
 }
 
@@ -8635,7 +8658,8 @@ static py_TValue _True, _False, _None, _NIL;
 
 void py_initialize() {
     if(pk_current_vm){
-        c11__abort("py_initialize() can only be called once!");
+        // c11__abort("py_initialize() can only be called once!");
+        return;
     }
 
     MemoryPools__initialize();
@@ -8780,9 +8804,6 @@ OPCODE(JUMP_IF_FALSE_OR_POP)
 OPCODE(SHORTCUT_IF_FALSE_OR_POP)
 OPCODE(LOOP_CONTINUE)
 OPCODE(LOOP_BREAK)
-/***/
-OPCODE(JUMP_ABSOLUTE_TOP)
-OPCODE(GOTO)
 /**************************/
 OPCODE(CALL)
 OPCODE(CALL_VARGS)
@@ -8824,6 +8845,8 @@ OPCODE(RE_RAISE)
 OPCODE(PUSH_EXCEPTION)
 OPCODE(BEGIN_EXC_HANDLING)
 OPCODE(END_EXC_HANDLING)
+OPCODE(BEGIN_FINALLY)
+OPCODE(END_FINALLY)
 /**************************/
 OPCODE(FORMAT_STRING)
 /**************************/
@@ -8941,7 +8964,7 @@ py_Ref py_tpfindmagic(py_Type t, py_Name name) {
     assert(py_ismagicname(name));
     py_TypeInfo* ti = pk__type_info(t);
     do {
-        py_Ref f = &ti->magic[ name ];
+        py_Ref f = &ti->magic[name];
         if(!py_isnil(f)) return f;
         ti = ti->base_ti;
     } while(ti);
@@ -11064,6 +11087,13 @@ static bool bytes_decode(int argc, py_Ref argv) {
     return true;
 }
 
+static bool bytes__len__(int argc, py_Ref argv) {
+    PY_CHECK_ARGC(1);
+    c11_bytes* self = py_touserdata(&argv[0]);
+    py_newint(py_retval(), self->size);
+    return true;
+}
+
 py_Type pk_bytes__register() {
     py_Type type = pk_newtype("bytes", tp_object, NULL, NULL, false, true);
     // no need to dtor because the memory is controlled by the object
@@ -11075,6 +11105,7 @@ py_Type pk_bytes__register() {
     py_bindmagic(tp_bytes, __ne__, bytes__ne__);
     py_bindmagic(tp_bytes, __add__, bytes__add__);
     py_bindmagic(tp_bytes, __hash__, bytes__hash__);
+    py_bindmagic(tp_bytes, __len__, bytes__len__);
 
     py_bindmethod(tp_bytes, "decode", bytes_decode);
     return type;
@@ -13052,7 +13083,7 @@ static bool array2d_find_bounding_rect(int argc, py_Ref argv) {
     int width = right - left + 1;
     int height = bottom - top + 1;
     if(width <= 0 || height <= 0) {
-        py_newnone(py_retval());
+        return ValueError("value not found");
     } else {
         py_newtuple(py_retval(), 4);
         py_TValue* data = py_tuple_data(py_retval());
@@ -13804,7 +13835,6 @@ static void disassemble(CodeObject* co) {
                 case OP_STORE_ATTR:
                 case OP_DELETE_ATTR:
                 case OP_BEGIN_CLASS:
-                case OP_GOTO:
                 case OP_DELETE_GLOBAL:
                 case OP_STORE_CLASS_ATTR: {
                     pk_sprintf(&ss, " (%n)", byte.arg);
@@ -14210,21 +14240,7 @@ static Error* eat_name(Lexer* self) {
                 break;
             }
         }
-        // handle multibyte char
-        uint32_t value = 0;
-        for(int k = 0; k < u8bytes; k++) {
-            uint8_t b = self->curr_char[k];
-            if(k == 0) {
-                if(u8bytes == 2)
-                    value = (b & 0b00011111) << 6;
-                else if(u8bytes == 3)
-                    value = (b & 0b00001111) << 12;
-                else if(u8bytes == 4)
-                    value = (b & 0b00000111) << 18;
-            } else {
-                value |= (b & 0b00111111) << (6 * (u8bytes - k - 1));
-            }
-        }
+        int value = c11__u8_value(u8bytes, self->curr_char);
         if(c11__is_unicode_Lo_char(value)) {
             self->curr_char += u8bytes;
         } else {
@@ -14804,7 +14820,6 @@ double TokenDeserializer__read_float(TokenDeserializer* self, char c) {
 
 // src/compiler/compiler.c
 #include <assert.h>
-#include <ctype.h>
 #include <stdbool.h>
 
 /* expr.h */
@@ -14879,7 +14894,6 @@ static int Ctx__emit_virtual(Ctx* self, Opcode opcode, uint16_t arg, int line, b
 static void Ctx__revert_last_emit_(Ctx* self);
 static int Ctx__emit_int(Ctx* self, int64_t value, int line);
 static void Ctx__patch_jump(Ctx* self, int index);
-static bool Ctx__add_label(Ctx* self, py_Name name);
 static int Ctx__add_varname(Ctx* self, py_Name name);
 static int Ctx__add_const(Ctx* self, py_Ref);
 static int Ctx__add_const_string(Ctx* self, c11_sv);
@@ -15988,13 +16002,6 @@ static void Ctx__patch_jump(Ctx* self, int index) {
     Bytecode__set_signed_arg(&co_codes[index], target - index);
 }
 
-static bool Ctx__add_label(Ctx* self, py_Name name) {
-    bool ok = c11_smallmap_n2i__contains(&self->co->labels, name);
-    if(ok) return false;
-    c11_smallmap_n2i__set(&self->co->labels, name, self->co->codes.length);
-    return true;
-}
-
 static int Ctx__add_varname(Ctx* self, py_Name name) {
     // PK_MAX_CO_VARNAMES will be checked when pop_context(), not here
     return CodeObject__add_varname(self->co, name);
@@ -17027,9 +17034,7 @@ static Error* consume_pep695_py312(Compiler* self) {
     Error* err;
     if(match(TK_LBRACKET)) {
         consume(TK_ID);
-        if(match(TK_COLON)){
-            check(consume_type_hints(self));
-        }
+        if(match(TK_COLON)) { check(consume_type_hints(self)); }
         consume(TK_RBRACKET);
     }
     return NULL;
@@ -17242,18 +17247,27 @@ __EAT_DOTS_END:
 
 static Error* compile_try_except(Compiler* self) {
     Error* err;
+    int patches[8];
+    int patches_length = 0;
+
     Ctx__enter_block(ctx(), CodeBlockType_TRY_EXCEPT);
     Ctx__emit_(ctx(), OP_TRY_ENTER, BC_NOARG, prev()->line);
     check(compile_block_body(self, compile_stmt));
 
-    int patches[8];
-    int patches_length = 0;
-
-    patches[patches_length++] = Ctx__emit_(ctx(), OP_JUMP_FORWARD, BC_NOARG, BC_KEEPLINE);
+    bool finally_matched = match(TK_FINALLY);
+    if(!finally_matched) {
+        patches[patches_length++] = Ctx__emit_(ctx(), OP_JUMP_FORWARD, BC_NOARG, BC_KEEPLINE);
+    }
     Ctx__exit_block(ctx());
 
-    if(curr()->type == TK_FINALLY) {
-        return SyntaxError(self, "finally clause is not supported yet");
+    if(finally_matched) {
+        Ctx__emit_(ctx(), OP_BEGIN_FINALLY, BC_NOARG, prev()->line);
+        // finally only, no except block
+        compile_block_body(self, compile_stmt);
+        Ctx__emit_(ctx(), OP_END_FINALLY, BC_NOARG, BC_KEEPLINE);
+        // re-raise if needed
+        Ctx__emit_(ctx(), OP_RE_RAISE, BC_NOARG, BC_KEEPLINE);
+        return NULL;
     }
 
     do {
@@ -17263,14 +17277,17 @@ static Error* compile_try_except(Compiler* self) {
         py_Name as_name = 0;
         consume(TK_EXCEPT);
         if(is_expression(self, false)) {
-            check(EXPR(self));  // push assumed type on to the stack
+            // except <expr>:
+            check(EXPR(self));
             Ctx__s_emit_top(ctx());
             Ctx__emit_(ctx(), OP_EXCEPTION_MATCH, BC_NOARG, prev()->line);
             if(match(TK_AS)) {
+                // except <expr> as <name>:
                 consume(TK_ID);
                 as_name = py_namev(Token__sv(prev()));
             }
         } else {
+            // except:
             Ctx__emit_(ctx(), OP_LOAD_TRUE, BC_NOARG, BC_KEEPLINE);
         }
         int patch = Ctx__emit_(ctx(), OP_POP_JUMP_IF_FALSE, BC_NOARG, BC_KEEPLINE);
@@ -17287,11 +17304,19 @@ static Error* compile_try_except(Compiler* self) {
     } while(curr()->type == TK_EXCEPT);
 
     // no match, re-raise
-    Ctx__emit_(ctx(), OP_RE_RAISE, BC_NOARG, BC_KEEPLINE);
+    // ...
 
-    // no exception or no match, jump to the end
+    // match one & handled, jump to the end
     for(int i = 0; i < patches_length; i++)
         Ctx__patch_jump(ctx(), patches[i]);
+
+    if(match(TK_FINALLY)) {
+        Ctx__emit_(ctx(), OP_BEGIN_FINALLY, BC_NOARG, prev()->line);
+        compile_block_body(self, compile_stmt);
+        Ctx__emit_(ctx(), OP_END_FINALLY, BC_NOARG, BC_KEEPLINE);
+    }
+    // re-raise if needed
+    Ctx__emit_(ctx(), OP_RE_RAISE, BC_NOARG, BC_KEEPLINE);
     return NULL;
 }
 
@@ -17419,25 +17444,6 @@ static Error* compile_stmt(Compiler* self) {
             Ctx__emit_(ctx(), OP_WITH_EXIT, BC_NOARG, prev()->line);
             Ctx__exit_block(ctx());
         } break;
-        /*************************************************/
-        case TK_EQ: {
-            consume(TK_ID);
-            if(mode() != EXEC_MODE)
-                return SyntaxError(self, "'label' is only available in EXEC_MODE");
-            c11_sv name = Token__sv(prev());
-            bool ok = Ctx__add_label(ctx(), py_namev(name));
-            if(!ok) return SyntaxError(self, "label %q already exists", name);
-            consume(TK_EQ);
-            consume_end_stmt();
-        } break;
-        case TK_ARROW:
-            consume(TK_ID);
-            if(mode() != EXEC_MODE)
-                return SyntaxError(self, "'goto' is only available in EXEC_MODE");
-            py_Name name = py_namev(Token__sv(prev()));
-            Ctx__emit_(ctx(), OP_GOTO, name, prev()->line);
-            consume_end_stmt();
-            break;
         /*************************************************/
         // handle dangling expression or assignment
         default: {
