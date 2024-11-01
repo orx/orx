@@ -907,9 +907,10 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
   if(_bBlockMode == orxFALSE)
   {
     orxU32  u32Size;
-    orxBOOL bNeedDuplication = orxFALSE;
+    orxBOOL bNeedDuplication;
 
     /* Inits status */
+    bNeedDuplication = (sstConfig.u32LoadCount == 0) ? orxTRUE : orxFALSE;
     _pstValue->u16Flags = orxCONFIG_VALUE_KU16_FLAG_NONE;
 
     /* Buffer not already prepared? */
