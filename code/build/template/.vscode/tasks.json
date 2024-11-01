@@ -50,10 +50,13 @@
   },
   "tasks": [
     {
-      "label": "Update premake",
+      "label": "Refresh [name] project files",
       "group": "build",
       "type": "shell",
       "command": "./premake4",
+      "windows": {
+        "command": "premake4.exe gmake"
+      },
       "options": {
         "cwd": "${workspaceFolder}/build/"
       }
