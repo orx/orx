@@ -635,8 +635,8 @@ static orxU32 orxAndroid_Display_GetRefreshRate()
   }
   else
   {
-    /* Use default refresh rate */
-    u32Result = orxDISPLAY_KU32_DEFAULT_REFRESH_RATE;
+    /* Use system refresh rate */
+    u32Result = sstDisplay.u32SystemRefreshRate;
   }
 
   /* Done! */
