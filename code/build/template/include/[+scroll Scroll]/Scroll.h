@@ -29,12 +29,6 @@
 //! Includes
 #include "ScrollBase.h"
 
-#ifdef __SCROLLED__
-  #if __has_include("ScrollEd.h")
-    #include "ScrollEd.h"
-  #endif // __has_include("ScrollEd.h")
-#endif // __SCROLLED__
-
 
 //! Scroll template class
 template<class G>
@@ -45,14 +39,9 @@ public:
   static        G &             GetInstance();
                 void            Execute(int argc, char **argv);
 
-                ScrollObject *  CreateObject(const orxSTRING _zModelName)   {return ScrollBase::CreateObject(_zModelName, ScrollObject::FlagRunTime);}
-          template<class O> O * CreateObject(const orxSTRING _zModelName)   {return ScrollCast<O *>(CreateObject(_zModelName));}
+                ScrollObject *  CreateObject(const orxSTRING _zName)        {return ScrollBase::CreateObject(_zName);}
+          template<class O> O * CreateObject(const orxSTRING _zName)        {return ScrollCast<O *>(CreateObject(_zName));}
                 void            DeleteObject(ScrollObject *_poObject)       {ScrollBase::DeleteObject(_poObject);}
-
-                orxSTATUS       SetMapName(const orxSTRING _zMapName);
-          const orxSTRING       GetMapName() const;
-          const orxSTRING       GetMapShortName() const;
-                orxSTATUS       LoadMap();
 
 
 protected:
@@ -68,16 +57,10 @@ private:
   virtual       void            Exit()                                      {}
   virtual       void            Update(const orxCLOCK_INFO &_rstInfo)       {}
   virtual       void            CameraUpdate(const orxCLOCK_INFO &_rstInfo) {}
-  virtual       orxBOOL         MapSaveFilter(const orxSTRING _zSectionName,
-                                              const orxSTRING _zKeyName,
-                                              const orxSTRING _zFileName,
-                                              orxBOOL _bUseEncryption)      {return orxFALSE;}
   virtual       void            BindObjects()                               {}
 
   virtual       void            OnObjectCreate(ScrollObject *_poObject)     {}
   virtual       void            OnObjectDelete(ScrollObject *_poObject)     {}
-  virtual       void            OnMapLoad()                                 {}
-  virtual       void            OnMapSave(orxBOOL _bEncrypt)                {}
   virtual       void            OnStartGame()                               {}
   virtual       void            OnStopGame()                                {}
   virtual       void            OnPauseGame(orxBOOL _bPause)                {}
@@ -106,67 +89,9 @@ G &Scroll<G>::GetInstance()
 #ifdef __SCROLL_IMPL__
 
 //! Constants
-#ifdef __SCROLLED__
-static const orxSTRING szParamEditor = "-editor";
-#endif // __SCROLLED__
+
 
 //! Code
-template<class G>
-orxSTATUS Scroll<G>::SetMapName(const orxSTRING _zMapName)
-{
-  orxSTATUS eResult;
-
-  // Not in editor mode?
-  if(!IsEditorMode())
-  {
-    // Calls base method
-    eResult = ScrollBase::SetMapName(_zMapName);
-  }
-  else
-  {
-    // Updates result
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  // Done!
-  return eResult;
-}
-
-template<class G>
-const orxSTRING Scroll<G>::GetMapName() const
-{
-  // Calls base method
-  return ScrollBase::GetMapName();
-}
-
-template<class G>
-const orxSTRING Scroll<G>::GetMapShortName() const
-{
-  // Calls base method
-  return ScrollBase::GetMapShortName();
-}
-
-template<class G>
-orxSTATUS Scroll<G>::LoadMap()
-{
-  orxSTATUS eResult;
-
-  // Not in editor mode?
-  if(!IsEditorMode())
-  {
-    // Calls base method
-    eResult = ScrollBase::LoadMap();
-  }
-  else
-  {
-    // Updates result
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  // Done!
-  return eResult;
-}
-
 template<class G>
 const orxSTRING Scroll<G>::GetEncryptionKey() const
 {
@@ -182,35 +107,8 @@ orxSTATUS Scroll<G>::Bootstrap() const
 template<class G>
 void Scroll<G>::Execute(int argc, char **argv)
 {
-#ifdef __SCROLLED__
-  orxBOOL bEditor = orxFALSE;
-
-  // For all params
-  for(int i = 0; !bEditor && (i < argc); i++)
-  {
-    // Is editor switch?
-    if(!orxString_ICompare(argv[i], szParamEditor))
-    {
-      // Updates editor status
-      bEditor = true;
-      break;
-    }
-  }
-
-  // Editor mode?
-  if(bEditor)
-  {
-    // Executes editor
-    ScrollEd::GetInstance().Execute(argc, argv);
-  }
-  else
-  {
-#endif // __SCROLLED__
-  // Executes game
+  // Executes the game
   ScrollBase::GetInstance().Execute(argc, argv);
-#ifdef __SCROLLED__
-  }
-#endif // __SCROLLED__
 }
 
 #endif // __SCROLL_IMPL__
