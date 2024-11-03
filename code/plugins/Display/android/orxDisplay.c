@@ -585,11 +585,6 @@ static void orxAndroid_Display_InitSupportedRefreshRates()
     for(i = 0; i < u32NativeRateCount; i++)
     {
       orxU32 u32RefreshRate = orxDISPLAY_NANO_INVERSE(pu64RefreshPeriods[i]);
-      if(u32RefreshRate > sstDisplay.u32SystemRefreshRate)
-      {
-        /* Current system refresh rate sets the limit */
-        continue;
-      }
 
       for(d = 1; d <= u32RefreshRate; d++)
       {
