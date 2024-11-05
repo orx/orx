@@ -1155,7 +1155,8 @@ const orxSTRING orxFASTCALL orxGraphic_GetName(const orxGRAPHIC *_pstGraphic)
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstGraphic);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
 
   /* Updates result */
   zResult = (_pstGraphic->zReference != orxNULL) ? _pstGraphic->zReference : orxSTRING_EMPTY;
