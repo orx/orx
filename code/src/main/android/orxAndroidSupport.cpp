@@ -334,6 +334,41 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
   return rotation;
 }
 
+extern "C" orxFLOAT orxAndroid_JNI_GetPhysicalFrameRate()
+{
+  orxFLOAT fRefreshRate;
+
+  /* Note : Display.Mode.getRefreshRate() returns the physical refresh rate starting with Android S */
+  if(orxAndroid_GetSdkVersion() < __ANDROID_API_S__)
+  {
+    return orxFLOAT_0;
+  }
+
+  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
+
+  pstEnv->PushLocalFrame(16);
+
+  /* Gets display structure */
+  jobject display = orxAndroid_JNI_getDisplay(pstEnv);
+
+  /* Finds classes */
+  jclass displayClass = pstEnv->FindClass("android/view/Display");
+  jclass modeClass = pstEnv->FindClass("android/view/Display$Mode");
+
+  /* Finds methods */
+  jmethodID getModeMethod = pstEnv->GetMethodID(displayClass, "getMode", "()Landroid/view/Display$Mode;");
+  jmethodID getRefreshRateMethod = pstEnv->GetMethodID(modeClass, "getRefreshRate", "()F");
+
+  /* Calls method and stores refresh rate */
+  jobject mode = pstEnv->CallObjectMethod(display, getModeMethod);
+  fRefreshRate = float(pstEnv->CallFloatMethod(mode, getRefreshRateMethod));
+
+  /* Frees all the local references */
+  pstEnv->PopLocalFrame(NULL);
+
+  return fRefreshRate;
+}
+
 extern "C" void orxAndroid_SetKeyFilter(android_key_event_filter _pfnFilter)
 {
   android_app_set_key_event_filter(sstAndroid.app, _pfnFilter);
