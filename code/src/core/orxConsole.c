@@ -990,7 +990,7 @@ static orxBOOL orxFASTCALL orxConsole_AddAlias(const orxSTRING _zKeyName, const 
     }
 
     /* Adds it as alias */
-    orxCommand_AddAlias(_zKeyName, orxConfig_GetString(_zKeyName), (cBackup != orxCHAR_NULL) ? pc + 1 : orxNULL);
+    orxCommand_AddAlias(_zKeyName, zAlias, (cBackup != orxCHAR_NULL) ? pc + 1 : orxNULL);
 
     /* Had args? */
     if(cBackup != orxCHAR_NULL)
