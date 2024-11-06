@@ -1696,7 +1696,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
   if(orxConfig_HasValue(ScrollBase::szConfigScrollObjectInput))
   {
     // Stores it
-    poResult->mzInputSet = orxConfig_GetString(ScrollBase::szConfigScrollObjectInput);
+    poResult->mzInputSet = orxString_Store(orxConfig_GetString(ScrollBase::szConfigScrollObjectInput));
 
     // Enables it & pushes it
     if((orxInput_EnableSet(poResult->mzInputSet, orxTRUE) != orxSTATUS_FAILURE)

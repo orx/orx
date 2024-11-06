@@ -168,7 +168,7 @@ static orxBOOL orxFASTCALL orxCheat_ProcessCheat(const orxSTRING _zKeyName, cons
 
   // Get cheat sequence & command
   zCheat    = _zKeyName;
-  zCommand  = orxConfig_GetString(zCheat);
+  zCommand  = orxString_Store(orxConfig_GetString(zCheat));
 
   // For all defined cheats
   orxString_NPrint(acState, sizeof(acState), orxCHEAT_KZ_CONFIG_ROOT);
