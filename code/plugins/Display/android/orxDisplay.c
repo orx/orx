@@ -665,37 +665,27 @@ static orxU32 orxAndroid_Display_GetRefreshRate()
   return u32Result;
 }
 
-static void orxAndroid_Display_UpdateRefreshRate()
+static void orxAndroid_Display_InitializeVideo()
 {
-  orxU32 u32RefreshRate;
+  /* Stores physical refresh rate */
+  sstDisplay.u32PhysicalRefreshRate = orxAndroid_Display_GetPhysicalRefreshRate();
 
-  u32RefreshRate = orxAndroid_Display_GetPhysicalRefreshRate();
-  if(u32RefreshRate != sstDisplay.u32PhysicalRefreshRate)
-  {
-    /* Stores physical refresh rate */
-    sstDisplay.u32PhysicalRefreshRate = u32RefreshRate;
+  /* Re-inits supported refresh rates */
+  orxAndroid_Display_InitSupportedRefreshRates();
 
-    /* Re-inits supported refresh rates */
-    orxAndroid_Display_InitSupportedRefreshRates();
+  sstDisplay.u32RefreshRate = orxAndroid_Display_GetRefreshRate();
 
-    u32RefreshRate = orxAndroid_Display_GetRefreshRate();
+  orxDISPLAY_VIDEO_MODE stVideoMode;
 
-    /* Refresh rate changed? */
-    if(u32RefreshRate != sstDisplay.u32RefreshRate)
-    {
-      orxDISPLAY_VIDEO_MODE stVideoMode;
+  /* Inits video mode */
+  stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
+  stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
+  stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+  stVideoMode.u32Depth        = sstDisplay.u32Depth;
+  stVideoMode.bFullScreen     = orxTRUE;
 
-      /* Inits video mode */
-      stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
-      stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
-      stVideoMode.u32RefreshRate  = u32RefreshRate;
-      stVideoMode.u32Depth        = sstDisplay.u32Depth;
-      stVideoMode.bFullScreen     = orxTRUE;
-
-      /* Applies it */
-      orxDisplay_Android_SetVideoMode(&stVideoMode);
-    }
-  }
+  /* Applies it */
+  orxDisplay_Android_SetVideoMode(&stVideoMode);
 }
 
 static orxSTATUS orxAndroid_Display_CreateSurface()
@@ -4382,10 +4372,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
     }
     else if(_pstEvent->eID == orxANDROID_EVENT_SURFACE_CREATE)
     {
-      orxAndroid_Display_CreateSurface();
-
-      /* Re-inits refresh rate */
-      orxAndroid_Display_UpdateRefreshRate();
+      orxAndroid_Display_InitializeVideo();
     }
     else if(_pstEvent->eID == orxANDROID_EVENT_SURFACE_CHANGE)
     {
