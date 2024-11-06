@@ -88,7 +88,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 
   // Create the [-movie scene][+movie logo]
   orxObject_CreateFromConfig("[-movie Scene][+movie Logo]");
-
+]
 [+bundle
   // Is processing a new bundle?
   if(orxBundle_IsProcessing())
@@ -99,7 +99,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 ]
   // Create the viewport
   orxViewport_CreateFromConfig("MainViewport");
-]
+
   // Done!
   return orxSTATUS_SUCCESS;
 }
@@ -129,8 +129,8 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
  */
 void [!name]::BindObjects()
 {
-  // Bind the Object class to the Object config section
-  ScrollBindObject<Object>("Object");
+  // Bind the Object class
+  BindObject(Object);
 }
 ]
 /** Bootstrap function, it is called before config is initialized, allowing for early resource storage definitions
