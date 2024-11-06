@@ -131,7 +131,7 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
     orxU32          u32Value;
 
     /* Gets directory name */
-    zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_DIRECTORY);
+    zValue = orxString_Store(orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_DIRECTORY));
 
     /* Valid? */
     if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
@@ -141,7 +141,7 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
     }
 
     /* Gets screenshot base name */
-    zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_BASE_NAME);
+    zValue = orxString_Store(orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_BASE_NAME));
 
     /* Valid? */
     if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
@@ -151,7 +151,7 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
     }
 
     /* Gets screenshot extension */
-    zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_EXTENSION);
+    zValue = orxString_Store(orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_EXTENSION));
 
     /* Valid? */
     if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
