@@ -293,7 +293,7 @@ project "[name]"
 [+bundle
         ["bundle"] = {"**.inc"},]
         ["build"] = {"**premake4.lua"},
-        ["config"] = {"**.ini"}
+        ["config/**"] = {"../data/config/**.ini"}
     }
 [+bundle
 
