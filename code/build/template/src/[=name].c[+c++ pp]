@@ -58,7 +58,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   ImGui::ShowMetricsWindow();
 ]
   // Should quit?
-  if(orxInput_IsActive("Quit"))
+  if(orxInput_HasBeenActivated("Quit"))
   {
     // Send close event
     orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
