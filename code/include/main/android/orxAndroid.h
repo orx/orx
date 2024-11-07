@@ -104,14 +104,19 @@ typedef struct __orxANDROID_EVENT_PAYLOAD_t
 ANativeWindow *orxAndroid_GetNativeWindow();
 
 /**
-  Get the internal storage path
+  Gets the internal storage path
   */
 const char *orxAndroid_GetInternalStoragePath();
 
 /**
-  Get the orientation
+  Gets the orientation
   */
 orxU32 orxAndroid_JNI_GetRotation();
+
+/**
+  Gets the physical frame rate
+  */
+orxFLOAT orxAndroid_JNI_GetPhysicalFrameRate();
 
 /**
   Register APK resources IO

@@ -344,8 +344,8 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32Flags;
   orxU32                    u32Depth;
   orxU32                    u32RefreshRate;
-  orxU32                    u32SystemRefreshRate;
-  orxU32                    u32DesiredRefreshRate;
+  orxU32                    u32PhysicalRefreshRate;
+  orxU32                    u32TargetRefreshRate;
   orxS32                    s32ActiveTextureUnit;
   stbi_io_callbacks         stSTBICallbacks;
   GLenum                    aeDrawBufferList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
@@ -560,6 +560,24 @@ static orxU32 orxAndroid_Display_GetActiveRefreshRate()
   return u32Result;
 }
 
+static orxU32 orxAndroid_Display_GetPhysicalRefreshRate()
+{
+  orxU32 u32Result, u32Rate;
+
+  u32Rate = (orxU32)orxAndroid_JNI_GetPhysicalFrameRate();
+  if(u32Rate != 0)
+  {
+    u32Result = u32Rate;
+  }
+  else
+  {
+    /* No physical refresh rate? 60 Hz is our best guess! */
+    u32Result = orxDISPLAY_KU32_DEFAULT_REFRESH_RATE;
+  }
+
+  return u32Result;
+}
+
 static void orxAndroid_Display_InitSupportedRefreshRates()
 {
   orxU32 u32NativeRateCount;
@@ -568,9 +586,10 @@ static void orxAndroid_Display_InitSupportedRefreshRates()
   orxMemory_Zero(sstDisplay.acSupportedRates, sizeof(sstDisplay.acSupportedRates) * sizeof(char));
 
   u32NativeRateCount = SwappyGL_getSupportedRefreshPeriodsNS(nullptr, 0);
+
   /* Checks */
   orxASSERT(u32NativeRateCount > 0);
-  orxASSERT(sstDisplay.u32SystemRefreshRate > 0);
+  orxASSERT(sstDisplay.u32PhysicalRefreshRate > 0);
 
   if(u32NativeRateCount > 0)
   {
@@ -585,6 +604,11 @@ static void orxAndroid_Display_InitSupportedRefreshRates()
     for(i = 0; i < u32NativeRateCount; i++)
     {
       orxU32 u32RefreshRate = orxDISPLAY_NANO_INVERSE(pu64RefreshPeriods[i]);
+      if(u32RefreshRate > sstDisplay.u32PhysicalRefreshRate)
+      {
+        /* Current physical refresh rate sets the limit */
+        continue;
+      }
 
       for(d = 1; d <= u32RefreshRate; d++)
       {
@@ -611,12 +635,15 @@ static orxU32 orxAndroid_Display_GetRefreshRate()
 {
   orxU32 u32Result, u32Rate;
 
+  /* Checks */
+  orxASSERT(sstDisplay.u32TargetRefreshRate > 0);
+
   /* Finds best matching refresh rate */
   for(u32Rate = orxDISPLAY_KU32_MAX_REFRESH_RATE; u32Rate > 0; u32Rate--)
   {
     if(orxDISPLAY_BIT_TEST(sstDisplay.acSupportedRates, u32Rate))
     {
-      if(u32Rate <= sstDisplay.u32DesiredRefreshRate)
+      if(u32Rate <= sstDisplay.u32TargetRefreshRate)
       {
         break;
       }
@@ -631,39 +658,34 @@ static orxU32 orxAndroid_Display_GetRefreshRate()
   else
   {
     /* Use system refresh rate */
-    u32Result = sstDisplay.u32SystemRefreshRate;
+    u32Result = orxAndroid_Display_GetActiveRefreshRate();
   }
 
   /* Done! */
   return u32Result;
 }
 
-static void orxAndroid_Display_UpdateRefreshRate()
+static void orxAndroid_Display_InitializeVideo()
 {
-  orxU32 u32RefreshRate;
-
-  /* Stores system refresh rate */
-  sstDisplay.u32SystemRefreshRate = orxAndroid_Display_GetActiveRefreshRate();
+  /* Stores physical refresh rate */
+  sstDisplay.u32PhysicalRefreshRate = orxAndroid_Display_GetPhysicalRefreshRate();
 
   /* Re-inits supported refresh rates */
   orxAndroid_Display_InitSupportedRefreshRates();
 
-  u32RefreshRate = orxAndroid_Display_GetRefreshRate();
-  /* Refresh rate changed? */
-  if(u32RefreshRate != sstDisplay.u32RefreshRate)
-  {
-    orxDISPLAY_VIDEO_MODE stVideoMode;
+  sstDisplay.u32RefreshRate = orxAndroid_Display_GetRefreshRate();
 
-    /* Inits video mode */
-    stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
-    stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
-    stVideoMode.u32RefreshRate  = u32RefreshRate;
-    stVideoMode.u32Depth        = sstDisplay.u32Depth;
-    stVideoMode.bFullScreen     = orxTRUE;
+  orxDISPLAY_VIDEO_MODE stVideoMode;
 
-    /* Applies it */
-    orxDisplay_Android_SetVideoMode(&stVideoMode);
-  }
+  /* Inits video mode */
+  stVideoMode.u32Width        = orxF2U(sstDisplay.pstScreen->fWidth);
+  stVideoMode.u32Height       = orxF2U(sstDisplay.pstScreen->fHeight);
+  stVideoMode.u32RefreshRate  = sstDisplay.u32RefreshRate;
+  stVideoMode.u32Depth        = sstDisplay.u32Depth;
+  stVideoMode.bFullScreen     = orxTRUE;
+
+  /* Applies it */
+  orxDisplay_Android_SetVideoMode(&stVideoMode);
 }
 
 static orxSTATUS orxAndroid_Display_CreateSurface()
@@ -4350,10 +4372,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_EventHandler(const orxEVENT *_ps
     }
     else if(_pstEvent->eID == orxANDROID_EVENT_SURFACE_CREATE)
     {
-      orxAndroid_Display_CreateSurface();
-
-      /* Re-inits refresh rate */
-      orxAndroid_Display_UpdateRefreshRate();
+      orxAndroid_Display_InitializeVideo();
     }
     else if(_pstEvent->eID == orxANDROID_EVENT_SURFACE_CHANGE)
     {
@@ -4458,15 +4477,15 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       sstDisplay.eLastBufferMode    = orxDISPLAY_BUFFER_MODE_NUMBER;
       sstDisplay.ePrimitive         = orxDISPLAY_KE_DEFAULT_PRIMITIVE;
 
-      /* Stores system refresh rate */
-      sstDisplay.u32SystemRefreshRate = orxAndroid_Display_GetActiveRefreshRate();
+      /* Stores physical refresh rate */
+      sstDisplay.u32PhysicalRefreshRate = orxAndroid_Display_GetPhysicalRefreshRate();
 
       /* Inits supported refresh rates */
       orxAndroid_Display_InitSupportedRefreshRates();
 
-      /* Stores depth & refresh rate */
+      /* Stores depth & target refresh rate */
       sstDisplay.u32Depth = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : 32;
-      sstDisplay.u32DesiredRefreshRate = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) : sstDisplay.u32SystemRefreshRate;
+      sstDisplay.u32TargetRefreshRate = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) : orxAndroid_Display_GetActiveRefreshRate();
 
       /* Inits refresh rate */
       sstDisplay.u32RefreshRate = orxAndroid_Display_GetRefreshRate();
