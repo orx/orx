@@ -383,7 +383,6 @@ project "orxLIB"
         "../src/**.cpp",
         "../src/**.c",
         "../include/**.h",
-        "../include/**.hpp",
         "../include/**.inc",
         "../**premake4.lua",
         "../**.ini",
