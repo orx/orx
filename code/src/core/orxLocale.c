@@ -397,7 +397,7 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage, const
         for(i = 0, s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST); i < s32LanguageCount; i++)
         {
           /* Found? */
-          if(orxString_Compare(_zLanguage, orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i)) == 0)
+          if(orxString_Compare(zLanguage, orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i)) == 0)
           {
             /* Updates status */
             bFound = orxTRUE;
@@ -408,14 +408,14 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage, const
         /* New language? */
         if(bFound == orxFALSE)
         {
-          const orxSTRING azLanguage[] = {_zLanguage};
+          const orxSTRING azLanguage[] = {zLanguage};
 
           /* Adds it to the list */
           orxConfig_AppendListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, azLanguage, 1);
         }
 
         /* Stores it in config */
-        orxConfig_SetString((_zGroup != orxNULL) ? _zGroup : orxLOCALE_KZ_CONFIG_LANGUAGE, _zLanguage);
+        orxConfig_SetString((_zGroup != orxNULL) ? _zGroup : orxLOCALE_KZ_CONFIG_LANGUAGE, zLanguage);
 
         /* Pops config section */
         orxConfig_PopSection();
@@ -624,7 +624,7 @@ const orxSTRING orxFASTCALL orxLocale_GetString(const orxSTRING _zKey, const orx
     orxConfig_PushSection(zLanguage);
 
     /* Updates result */
-    zResult = orxConfig_GetString(_zKey);
+    zResult = orxString_Store(orxConfig_GetString(_zKey));
 
     /* Pops config section */
     orxConfig_PopSection();

@@ -34,30 +34,27 @@ class ScrollObject
   friend class ScrollObjectBinderBase;
   template <class O> friend class ScrollObjectBinder;
 
+
 public:
 
   enum Flag
   {
-    FlagNone      = 0x00000000,
+    FlagNone          = 0x00000000,
 
-    FlagSave      = 0x00000001,
-    FlagSmoothed  = 0x00000002,
-    FlagTiled     = 0x00000004,
-    FlagRunTime   = 0x00000008,
-    FlagPausable  = 0x00000010,
+    FlagPausable      = 0x00000001,
+    FlagInput         = 0x00000002,
+    FlagInputBinding  = 0x00000004,
 
-    MaskAll       = 0xFFFFFFFF
+    MaskAll           = 0xFFFFFFFF
   };
 
 
-                void                    SetFlags(Flag _xAddFlags, Flag _xRemoveFlags = FlagNone)  {mxFlags = (Flag)(mxFlags & ~_xRemoveFlags); mxFlags = (Flag)(mxFlags | _xAddFlags);}
-                void                    SwapFlags(Flag _xSwapFlags)                               {mxFlags = (Flag)(mxFlags ^ _xSwapFlags);}
                 orxBOOL                 TestFlags(Flag _xTestFlags) const                         {return (mxFlags & _xTestFlags) ? orxTRUE : orxFALSE;}
                 orxBOOL                 TestAllFlags(Flag _xTestFlags) const                      {return ((mxFlags & _xTestFlags) == _xTestFlags) ? orxTRUE : orxFALSE;}
                 Flag                    GetFlags(Flag _xMask = MaskAll) const                     {return (Flag)(mxFlags & _xMask);}
                 orxOBJECT *             GetOrxObject() const                                      {return mpstObject;}
-                const orxSTRING         GetName() const                                           {return macName;}
-                const orxSTRING         GetModelName() const                                      {return mzModelName;}
+                const orxSTRING         GetName() const                                           {return mzName;}
+                const orxSTRING         GetInstanceName() const                                   {return macInstanceName;}
                 orxU64                  GetGUID() const                                           {return orxStructure_GetGUID(mpstObject);}
 
                 orxSTRINGID             GetGroupID() const;
@@ -133,6 +130,7 @@ public:
                 void                    PushConfigSection(orxBOOL _bPushInstanceSection = orxFALSE) const;
                 void                    PopConfigSection() const;
 
+
 protected:
 
                                         ScrollObject();
@@ -164,7 +162,8 @@ private:
   virtual       void                    OnFXStop(const orxSTRING _zFX, orxFX *_pstFX);
   virtual       void                    OnFXLoop(const orxSTRING _zFX, orxFX *_pstFX);
 
-                void                    SetDifferentialMode(orxBOOL _bDifferential = orxTRUE);
+                void                    SetFlags(Flag _xAddFlags, Flag _xRemoveFlags = FlagNone)  {mxFlags = (Flag)(mxFlags & ~_xRemoveFlags); mxFlags = (Flag)(mxFlags | _xAddFlags);}
+                void                    SwapFlags(Flag _xSwapFlags)                               {mxFlags = (Flag)(mxFlags ^ _xSwapFlags);}
 
                 void                    SetOrxObject(orxOBJECT *_pstObject);
 
@@ -173,12 +172,12 @@ private:
 private:
 
                 orxOBJECT *             mpstObject;
-                const orxSTRING         mzModelName;
+                const orxSTRING         mzName;
                 orxLINKLIST_NODE        mstNode;
                 orxLINKLIST_NODE        mstChronoNode;
                 const orxSTRING         mzInputSet;
                 Flag                    mxFlags;
-                orxCHAR                 macName[16];
+                orxCHAR                 macInstanceName[20];
 };
 
 
@@ -222,12 +221,12 @@ inline ScrollObject::Flag operator~(ScrollObject::Flag _x1)
 #ifdef __SCROLL_IMPL__
 
 //! Code
-ScrollObject::ScrollObject() : mpstObject(orxNULL), mzModelName(orxNULL), mzInputSet(orxNULL), mxFlags(FlagNone)
+ScrollObject::ScrollObject() : mpstObject(orxNULL), mzName(orxNULL), mzInputSet(orxNULL), mxFlags(FlagNone)
 {
   // Clears nodes
   orxMemory_Zero(&mstNode, sizeof(orxLINKLIST_NODE));
   orxMemory_Zero(&mstChronoNode, sizeof(orxLINKLIST_NODE));
-  orxMemory_Zero(macName, sizeof(macName));
+  orxMemory_Zero(macInstanceName, sizeof(macInstanceName));
 }
 
 ScrollObject::~ScrollObject()
@@ -732,8 +731,8 @@ void ScrollObject::SetLifeTime(orxFLOAT _fLifeTime)
 
 void ScrollObject::PushConfigSection(orxBOOL _bPushInstanceSection) const
 {
-  // Pushes its model section
-  orxConfig_PushSection(_bPushInstanceSection ? macName : mzModelName);
+  // Pushes its section
+  orxConfig_PushSection(_bPushInstanceSection ? GetInstanceName() : GetName());
 }
 
 ScrollObject *ScrollObject::GetParent() const
@@ -904,39 +903,6 @@ void ScrollObject::PopConfigSection() const
   orxConfig_PopSection();
 }
 
-void ScrollObject::SetDifferentialMode(orxBOOL _bDifferential)
-{
-  // Uses differential scrolling?
-  if(_bDifferential)
-  {
-    // Enforces object's differential flags
-    orxStructure_SetFlags(orxOBJECT_GET_STRUCTURE(mpstObject, FRAME), orxFRAME_KU32_FLAG_DEPTH_SCALE|orxFRAME_KU32_FLAG_SCROLL_X|orxFRAME_KU32_FLAG_SCROLL_Y, orxFRAME_KU32_FLAG_NONE);
-
-    // For all children
-    for(orxOBJECT *pstChild = orxObject_GetOwnedChild(mpstObject);
-        pstChild;
-        pstChild = orxObject_GetOwnedSibling(pstChild))
-    {
-      // Enforces its differential flags
-      orxStructure_SetFlags(orxOBJECT_GET_STRUCTURE(pstChild, FRAME), orxFRAME_KU32_FLAG_DEPTH_SCALE|orxFRAME_KU32_FLAG_SCROLL_X|orxFRAME_KU32_FLAG_SCROLL_Y, orxFRAME_KU32_FLAG_NONE);
-    }
-  }
-  else
-  {
-    // Removes object's differential flags
-    orxStructure_SetFlags(orxOBJECT_GET_STRUCTURE(mpstObject, FRAME), orxFRAME_KU32_FLAG_NONE, orxFRAME_KU32_FLAG_DEPTH_SCALE|orxFRAME_KU32_FLAG_SCROLL_X|orxFRAME_KU32_FLAG_SCROLL_Y);
-
-    // For all children
-    for(orxOBJECT *pstChild = orxObject_GetOwnedChild(mpstObject);
-        pstChild;
-        pstChild = orxObject_GetOwnedSibling(pstChild))
-    {
-      // Removes its differential flags
-      orxStructure_SetFlags(orxOBJECT_GET_STRUCTURE(pstChild, FRAME), orxFRAME_KU32_FLAG_NONE, orxFRAME_KU32_FLAG_DEPTH_SCALE|orxFRAME_KU32_FLAG_SCROLL_X|orxFRAME_KU32_FLAG_SCROLL_Y);
-    }
-  }
-}
-
 void ScrollObject::SetOrxObject(orxOBJECT *_pstObject)
 {
   // Stores it
@@ -945,13 +911,15 @@ void ScrollObject::SetOrxObject(orxOBJECT *_pstObject)
   // Valid?
   if(_pstObject)
   {
-    // Stores model name
-    mzModelName = orxObject_GetName(_pstObject);
+    // Stores its names
+    mzName = orxObject_GetName(_pstObject);
+    orxString_NPrint(macInstanceName, sizeof(macInstanceName), "0x%016llX", orxStructure_GetGUID(_pstObject));
   }
   else
   {
-    // Clears model name
-    mzModelName = orxNULL;
+    // Clears its names
+    mzName = orxNULL;
+    *macInstanceName = orxCHAR_NULL;
   }
 }
 

@@ -970,11 +970,11 @@ static orxBOOL orxFASTCALL orxConsole_AddAlias(const orxSTRING _zKeyName, const 
   && (orxString_Compare(_zKeyName, orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != 0)
   && (orxString_Compare(_zKeyName, orxCONSOLE_KZ_CONFIG_SCROLL_SIZE) != 0))
   {
-    const orxSTRING zAlias;
-    orxCHAR         cBackup = orxCHAR_NULL, *pc;
+    orxSTRING zAlias;
+    orxCHAR   cBackup = orxCHAR_NULL, *pc;
 
     /* Gets its content */
-    zAlias = orxConfig_GetString(_zKeyName);
+    zAlias = orxString_Duplicate(orxConfig_GetString(_zKeyName));
 
     /* Finds its end */
     for(pc = (orxCHAR *)zAlias; (*pc != orxCHAR_NULL) && (*pc != ' ') && (*pc != '\t'); pc++);
@@ -990,7 +990,7 @@ static orxBOOL orxFASTCALL orxConsole_AddAlias(const orxSTRING _zKeyName, const 
     }
 
     /* Adds it as alias */
-    orxCommand_AddAlias(_zKeyName, orxConfig_GetString(_zKeyName), (cBackup != orxCHAR_NULL) ? pc + 1 : orxNULL);
+    orxCommand_AddAlias(_zKeyName, zAlias, (cBackup != orxCHAR_NULL) ? pc + 1 : orxNULL);
 
     /* Had args? */
     if(cBackup != orxCHAR_NULL)
@@ -998,6 +998,9 @@ static orxBOOL orxFASTCALL orxConsole_AddAlias(const orxSTRING _zKeyName, const 
       /* Restores it */
       *pc = cBackup;
     }
+
+    /* Deletes string copy */
+    orxString_Delete(zAlias);
   }
 
   /* Done! */

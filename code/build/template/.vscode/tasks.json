@@ -1,7 +1,7 @@
 {
   "version": "2.0.0",
   "presentation": {
-    "reveal": "silent",
+    "reveal": "always",
     "revealProblems": "onProblem"
   },
   "type": "shell",
@@ -50,10 +50,13 @@
   },
   "tasks": [
     {
-      "label": "Update premake",
+      "label": "Refresh [name] project files",
       "group": "build",
       "type": "shell",
       "command": "./premake4",
+      "windows": {
+        "command": "premake4.exe gmake"
+      },
       "options": {
         "cwd": "${workspaceFolder}/build/"
       }
@@ -123,6 +126,9 @@
       },
       "type": "process",
       "command": "[name]d",
+      "windows": {
+        "command": "[name]d.exe"
+      },
       "options": {
         "cwd": "${workspaceFolder}/bin/"
       }
@@ -138,6 +144,9 @@
       },
       "type": "process",
       "command": "[name]",
+      "windows": {
+        "command": "[name].exe"
+      },
       "options": {
         "cwd": "${workspaceFolder}/bin/"
       }
@@ -153,6 +162,9 @@
       },
       "type": "process",
       "command": "[name]p",
+      "windows": {
+        "command": "[name]p.exe"
+      },
       "options": {
         "cwd": "${workspaceFolder}/bin/"
       }

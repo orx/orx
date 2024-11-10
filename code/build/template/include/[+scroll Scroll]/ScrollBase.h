@@ -25,7 +25,6 @@
 #ifndef _SCROLLBASE_H_
 #define _SCROLLBASE_H_
 
-
 #include "orx.h"
 
 //! Defines
@@ -141,10 +140,8 @@ private:
 
   static        ScrollObjectBinderBase *GetDefaultBinder();
 
-                ScrollObject *          CreateObject(const orxSTRING _zModelName, const orxSTRING _zInstanceName, ScrollObject::Flag _xFlags);
-                ScrollObject *          CreateObject(orxOBJECT *_pstOrxObject, const orxSTRING _zInstanceName, ScrollObject::Flag _xFlags);
+                ScrollObject *          CreateObject(orxOBJECT *_pstObject);
                 void                    DeleteObject(ScrollObject *_poObject);
-                void                    DeleteObject(ScrollObject *_poObject, const orxSTRING _zModelName);
   virtual       ScrollObject *          ConstructObject(orxBANK * _pstBank) const = 0;
                 void                    DestructObject(ScrollObject *_poObject) const;
 
@@ -161,7 +158,6 @@ private:
                 ScrollObject *          mpoFirstObject;
                 ScrollObject *          mpoLastObject;
   static        orxHASHTABLE *          spstTable;
-
 };
 
 
@@ -174,7 +170,7 @@ class ScrollObjectBinder : public ScrollObjectBinderBase
 public:
 
   static        ScrollObjectBinder<O> * GetInstance(orxS32 _s32SegmentSize = -1);
-  static        void                    Register(const orxSTRING _zModelName, orxS32 _s32SegmentSize);
+  static        void                    Register(const orxSTRING _zName, orxS32 _s32SegmentSize);
 
 
 protected:
@@ -244,6 +240,11 @@ ScrollObject *ScrollObjectBinder<O>::ConstructObject(orxBANK *_pstBank) const
 
 
 //! Scroll object bind helper
+#if defined(__orxGCC__) || defined(__orxLLVM__)
+  #define BindObject(OBJECT, ...)       ScrollBindObject<OBJECT>(#OBJECT, ##__VA_ARGS__)
+#else // __orxGCC__ || __orxLLVM__
+  #define BindObject(OBJECT, ...)       ScrollBindObject<OBJECT>(#OBJECT, __VA_ARGS__)
+#endif // __orxGCC__ || __orxLLVM__
 template<class O>
 inline static void ScrollBindObject(const orxSTRING _zName, orxS32 _s32SegmentSize = 128)
 {
@@ -278,8 +279,6 @@ public:
 
                 orxU32          GetFrameCount() const;
 
-                orxVIEWPORT *   GetMainViewport() const;
-                orxCAMERA *     GetMainCamera() const;
                 ScrollObject *  GetObject(orxU64 _u64GUID) const;
           template<class O> O * GetObject(orxU64 _u64GUID) const {return ScrollCast<O *>(GetObject(_u64GUID));}
 
@@ -300,54 +299,9 @@ protected:
                                 ScrollBase();
   virtual                      ~ScrollBase();
 
-                orxSTATUS       SetMapName(const orxSTRING _zMapName);
-          const orxSTRING       GetMapName() const;
-          const orxSTRING       GetMapShortName() const;
-                orxSTATUS       LoadMap();
-                orxSTATUS       SaveMap(orxBOOL _bEncrypt = orxFALSE, const orxCONFIG_SAVE_FUNCTION _pfnMapSaveFilter = orxNULL);
-                orxSTATUS       ResetMap();
-                ScrollObject *  CreateObject(const orxSTRING _zModelName, ScrollObject::Flag _xFlags = ScrollObject::FlagNone, const orxSTRING _zInstanceName = orxNULL);
-                ScrollObject *  CreateObject(orxOBJECT *_pstOrxObject, ScrollObject::Flag _xFlags = ScrollObject::FlagNone, const orxSTRING _zInstanceName = orxNULL);
+                ScrollObject *  CreateObject(const orxSTRING _zName);
                 void            DeleteObject(ScrollObject *_poObject);
 
-                orxCOLOR *      GetObjectConfigColor(const ScrollObject *_poObject, orxCOLOR &_rstColor);
-                orxSTATUS       SetObjectConfigColor(ScrollObject *_poObject, const orxCOLOR &_rstColor);
-
-                void            SetLayerNumber(orxU32 _u32LayerNumber);
-                orxU32          GetLayerNumber() const;
-
-                orxU32          GetLayer(const orxVECTOR &_rvPosition) const;
-                orxFLOAT        GetLayerDepth(orxU32 _u32Layer = 0) const;
-
-                void            SetEditorMode(orxBOOL _bEnable = orxTRUE);
-                orxBOOL         IsEditorMode() const;
-
-                void            SetDifferentialMode(orxBOOL _bEnable = orxTRUE);
-                orxBOOL         IsDifferentialMode() const;
-
-  static  const orxSTRING       szConfigClockFrequency;
-
-  static  const orxSTRING       szInputSetGame;
-  static  const orxSTRING       szConfigSectionMap;
-  static  const orxSTRING       szConfigMainViewport;
-  static  const orxSTRING       szConfigCameraPosition;
-  static  const orxSTRING       szConfigCameraZoom;
-  static  const orxSTRING       szConfigDifferential;
-  static  const orxSTRING       szConfigLayerNumber;
-  static  const orxSTRING       szConfigNoSave;
-  static  const orxSTRING       szConfigSectionScrollObject;
-  static  const orxSTRING       szConfigScrollObjectNumber;
-  static  const orxSTRING       szConfigScrollObjectPrefix;
-  static  const orxSTRING       szConfigScrollObjectFormat;
-  static  const orxSTRING       szConfigScrollObjectRuntimeFormat;
-  static  const orxSTRING       szConfigScrollObjectName;
-  static  const orxSTRING       szConfigScrollObjectPosition;
-  static  const orxSTRING       szConfigScrollObjectRotation;
-  static  const orxSTRING       szConfigScrollObjectScale;
-  static  const orxSTRING       szConfigScrollObjectColor;
-  static  const orxSTRING       szConfigScrollObjectAlpha;
-  static  const orxSTRING       szConfigScrollObjectSmoothing;
-  static  const orxSTRING       szConfigScrollObjectTiling;
   static  const orxSTRING       szConfigScrollObjectPausable;
   static  const orxSTRING       szConfigScrollObjectInput;
   static  const orxCHAR         scConfigScrollObjectInstantMarker   = '.';
@@ -362,12 +316,9 @@ private:
   virtual       void            Update(const orxCLOCK_INFO &_rstInfo) = 0;
   virtual       void            CameraUpdate(const orxCLOCK_INFO &_rstInfo) = 0;
   virtual       void            BindObjects() = 0;
-  virtual       orxBOOL         MapSaveFilter(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption) = 0;
 
   virtual       void            OnObjectCreate(ScrollObject *_poObject) = 0;
   virtual       void            OnObjectDelete(ScrollObject *_poObject) = 0;
-  virtual       void            OnMapLoad() = 0;
-  virtual       void            OnMapSave(orxBOOL _bEncrypt) = 0;
   virtual       void            OnStartGame() = 0;
   virtual       void            OnStopGame() = 0;
   virtual       void            OnPauseGame(orxBOOL _bPause) = 0;
@@ -381,8 +332,6 @@ private:
                 void            BaseExit();
                 void            BaseUpdate(const orxCLOCK_INFO &_rstInfo);
                 void            BaseCameraUpdate(const orxCLOCK_INFO &_rstInfo);
-                orxBOOL         BaseMapSaveFilter(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption);
-                orxSTRING       GetNewObjectName(orxCHAR _zName[32], orxBOOL bRunTime = orxFALSE);
 
 
   static  void                  DeleteInstance();
@@ -392,7 +341,6 @@ private:
   static  void      orxFASTCALL StaticExit();
   static  void      orxFASTCALL StaticUpdate(const orxCLOCK_INFO *_pstInfo, void *_pstContext);
   static  void      orxFASTCALL StaticCameraUpdate(const orxCLOCK_INFO *_pstInfo, void *_pstContext);
-  static  orxBOOL   orxFASTCALL StaticMapSaveFilter(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption);
   static  orxSTATUS orxFASTCALL StaticEventHandler(const orxEVENT *_pstEvent);
   static  orxSTATUS orxFASTCALL StaticBootstrap();
 
@@ -402,22 +350,13 @@ protected:
 
   static        ScrollBase *    spoInstance;
 
+
 private:
 
                 orxLINKLIST     mstObjectList;
                 orxLINKLIST     mstObjectChronoList;
-                orxSTRING       mzMapName;
-                const orxSTRING mzCurrentCreateObject;
-                const orxSTRING mzCurrentDeleteObject;
-                orxVIEWPORT *   mpstMainViewport;
-                orxCAMERA *     mpstMainCamera;
-                orxCONFIG_SAVE_FUNCTION mpfnCustomMapSaveFilter;
-                orxU32          mu32NextObjectID;
-                orxU32          mu32RuntimeObjectID;
-                orxU32          mu32LayerNumber;
                 orxU32          mu32FrameCount;
-                orxBOOL         mbEditorMode;
-                orxBOOL         mbDifferentialMode;
+                orxU32          mu32CreateObjectCount;
                 orxBOOL         mbObjectListLocked;
                 orxBOOL         mbIsRunning;
                 orxBOOL         mbIsPaused;
@@ -495,28 +434,6 @@ O *ScrollBase::GetPreviousObject(const O *_poObject) const
 
 
 //! Constants
-const orxSTRING ScrollBase::szInputSetGame                    = "ScrollInput";
-const orxSTRING ScrollBase::szConfigClockFrequency            = "ClockFrequency";
-const orxSTRING ScrollBase::szConfigSectionMap                = "Map";
-const orxSTRING ScrollBase::szConfigMainViewport              = "MainViewport";
-const orxSTRING ScrollBase::szConfigCameraPosition            = "CameraPosition";
-const orxSTRING ScrollBase::szConfigCameraZoom                = "CameraZoom";
-const orxSTRING ScrollBase::szConfigDifferential              = "Differential";
-const orxSTRING ScrollBase::szConfigLayerNumber               = "LayerNumber";
-const orxSTRING ScrollBase::szConfigNoSave                    = "NoSave";
-const orxSTRING ScrollBase::szConfigSectionScrollObject       = "ScrollObject";
-const orxSTRING ScrollBase::szConfigScrollObjectNumber        = "ObjectNumber";
-const orxSTRING ScrollBase::szConfigScrollObjectPrefix        = "SO:";
-const orxSTRING ScrollBase::szConfigScrollObjectFormat        = "SO:%08u";
-const orxSTRING ScrollBase::szConfigScrollObjectRuntimeFormat = "RT:%08u";
-const orxSTRING ScrollBase::szConfigScrollObjectName          = "Name";
-const orxSTRING ScrollBase::szConfigScrollObjectPosition      = "Position";
-const orxSTRING ScrollBase::szConfigScrollObjectRotation      = "Rotation";
-const orxSTRING ScrollBase::szConfigScrollObjectScale         = "Scale";
-const orxSTRING ScrollBase::szConfigScrollObjectColor         = "Color";
-const orxSTRING ScrollBase::szConfigScrollObjectAlpha         = "Alpha";
-const orxSTRING ScrollBase::szConfigScrollObjectSmoothing     = "Smoothing";
-const orxSTRING ScrollBase::szConfigScrollObjectTiling        = "Tiling";
 const orxSTRING ScrollBase::szConfigScrollObjectPausable      = "Pausable";
 const orxSTRING ScrollBase::szConfigScrollObjectInput         = "Input";
 
@@ -537,10 +454,8 @@ ScrollBase &ScrollBase::GetInstance()
   return *spoInstance;
 }
 
-ScrollBase::ScrollBase() : mzMapName(orxNULL), mzCurrentCreateObject(orxNULL), mzCurrentDeleteObject(orxNULL),
-                           mpstMainViewport(orxNULL), mpstMainCamera(orxNULL), mpfnCustomMapSaveFilter(orxNULL),
-                           mu32NextObjectID(0), mu32RuntimeObjectID(0), mu32LayerNumber(1), mu32FrameCount(0),
-                           mbEditorMode(orxFALSE), mbDifferentialMode(orxFALSE), mbObjectListLocked(orxFALSE), mbIsRunning(orxFALSE), mbIsPaused(orxFALSE)
+ScrollBase::ScrollBase() : mu32FrameCount(0), mu32CreateObjectCount(0),
+                           mbObjectListLocked(orxFALSE), mbIsRunning(orxFALSE), mbIsPaused(orxFALSE)
 {
 }
 
@@ -560,119 +475,32 @@ void ScrollBase::Execute(int argc, char **argv)
   orx_Execute(argc, argv, StaticInit, StaticRun, StaticExit);
 }
 
-ScrollObject *ScrollBase::CreateObject(const orxSTRING _zModelName, ScrollObject::Flag _xFlags, const orxSTRING _zInstanceName)
+ScrollObject *ScrollBase::CreateObject(const orxSTRING _zName)
 {
   ScrollObject *poResult = orxNULL;
 
-  // Checks
-  orxASSERT((_xFlags & ScrollObject::MaskAll) == _xFlags);
-
   // Valid?
-  if(_zModelName && (_zModelName != orxSTRING_EMPTY))
+  if(_zName && (_zName != orxSTRING_EMPTY))
   {
-    orxCHAR                 zInstanceName[32];
-    const orxSTRING         zPreviousObject;
-    ScrollObjectBinderBase *poBinder;
+    orxOBJECT *pstObject;
 
-    // Gets binder
-    poBinder = ScrollObjectBinderBase::GetBinder(orxFLAG_TEST(_xFlags, ScrollObject::FlagSave | ScrollObject::FlagRunTime) ? _zModelName : orxSTRING_EMPTY);
+    // Requests a ScrollObject
+    mu32CreateObjectCount++;
 
-    // Stores current object
-    zPreviousObject = mzCurrentCreateObject;
+    // Creates object
+    pstObject = orxObject_CreateFromConfig(_zName);
 
-    // Flags current object creation
-    mzCurrentCreateObject = _zModelName;
-
-    // Uses it
-    poResult = poBinder->CreateObject(_zModelName, _zInstanceName ? _zInstanceName : GetNewObjectName(zInstanceName, (_xFlags & ScrollObject::FlagRunTime) ? orxTRUE : orxFALSE), _xFlags);
-
-    // Restores previous object
-    mzCurrentCreateObject = zPreviousObject;
+    // Updates request count
+    mu32CreateObjectCount--;
 
     // Valid?
-    if(poResult)
+    if(pstObject)
     {
-      // Savable or runtime object?
-      if(poResult->TestFlags(ScrollObject::FlagSave | ScrollObject::FlagRunTime))
-      {
-        // Calls create callback
-        OnObjectCreate(poResult);
-      }
+      // Updates result
+      poResult = (ScrollObject *)orxObject_GetUserData(pstObject);
 
-      // Editor mode?
-      if(IsEditorMode())
-      {
-        // For all linkable structures
-        for(orxSTRUCTURE_ID eID = (orxSTRUCTURE_ID)0; eID < orxSTRUCTURE_ID_LINKABLE_NUMBER; eID = (orxSTRUCTURE_ID)(eID + 1))
-        {
-          // Not graphic, anim pointer nor frame?
-          if((eID != orxSTRUCTURE_ID_GRAPHIC) && (eID != orxSTRUCTURE_ID_ANIMPOINTER) && (eID != orxSTRUCTURE_ID_FRAME))
-          {
-            // Unlinks it
-            orxObject_UnlinkStructure(poResult->GetOrxObject(), eID);
-          }
-        }
-      }
-    }
-  }
-
-  // Done!
-  return poResult;
-}
-
-ScrollObject *ScrollBase::CreateObject(orxOBJECT *_pstOrxObject, ScrollObject::Flag _xFlags, const orxSTRING _zInstanceName)
-{
-  ScrollObject *poResult = orxNULL;
-
-  // Checks
-  orxASSERT((_xFlags & ScrollObject::MaskAll) == _xFlags);
-
-  // Valid?
-  if(_pstOrxObject)
-  {
-    orxCHAR                 zInstanceName[32];
-    ScrollObjectBinderBase *poBinder;
-    const orxSTRING         zObjectName;
-
-    // Checks
-    orxSTRUCTURE_ASSERT(_pstOrxObject);
-
-    // Gets its name
-    zObjectName = orxObject_GetName(_pstOrxObject);
-
-    // Gets binder
-    poBinder = ScrollObjectBinderBase::GetBinder(zObjectName);
-
-    // Uses it
-    poResult = poBinder->CreateObject(_pstOrxObject, _zInstanceName ? _zInstanceName : GetNewObjectName(zInstanceName, (_xFlags & ScrollObject::FlagRunTime) ? orxTRUE : orxFALSE), _xFlags);
-
-    // Valid?
-    if(poResult)
-    {
-      // Updates it
-      poResult->SetFlags(_xFlags, ScrollObject::MaskAll);
-
-      // Savable or runtime object?
-      if(poResult->TestFlags(ScrollObject::FlagSave | ScrollObject::FlagRunTime))
-      {
-        // Calls create callback
-        OnObjectCreate(poResult);
-      }
-
-      // Editor mode?
-      if(IsEditorMode())
-      {
-        // For all linkable structures
-        for(orxSTRUCTURE_ID eID = (orxSTRUCTURE_ID)0; eID < orxSTRUCTURE_ID_LINKABLE_NUMBER; eID = (orxSTRUCTURE_ID)(eID + 1))
-        {
-          // Not graphic, anim pointer nor frame?
-          if((eID != orxSTRUCTURE_ID_GRAPHIC) && (eID != orxSTRUCTURE_ID_ANIMPOINTER) && (eID != orxSTRUCTURE_ID_FRAME))
-          {
-            // Unlinks it
-            orxObject_UnlinkStructure(poResult->GetOrxObject(), eID);
-          }
-        }
-      }
+      // Calls create callback
+      OnObjectCreate(poResult);
     }
   }
 
@@ -688,23 +516,8 @@ void ScrollBase::DeleteObject(ScrollObject *_poObject)
     // Object list not locked?
     if(!mbObjectListLocked)
     {
-      ScrollObjectBinderBase *poBinder;
-      const orxSTRING         zPreviousObject;
-
-      // Gets binder
-      poBinder = ScrollObjectBinderBase::GetBinder(_poObject->TestFlags(ScrollObject::FlagSave | ScrollObject::FlagRunTime) ? _poObject->GetModelName() : orxSTRING_EMPTY);
-
-      // Stores current object
-      zPreviousObject = mzCurrentDeleteObject;
-
-      // Flags current object deletion
-      mzCurrentDeleteObject = _poObject->GetModelName();
-
       // Deletes it
-      poBinder->DeleteObject(_poObject);
-
-      // Restores previous object
-      mzCurrentDeleteObject = zPreviousObject;
+      orxObject_Delete(_poObject->GetOrxObject());
     }
     else
     {
@@ -792,544 +605,6 @@ ScrollObject *ScrollBase::PickObject(const orxOBOX &_rstBox, orxSTRINGID _stGrou
 
   // Done!
   return poResult;
-}
-
-orxCOLOR *ScrollBase::GetObjectConfigColor(const ScrollObject *_poObject, orxCOLOR &_rstColor)
-{
-  orxCOLOR *pstResult = orxNULL;
-
-  // Can select object's config section
-  if(_poObject && (orxConfig_PushSection(_poObject->GetName()) != orxSTATUS_FAILURE))
-  {
-    // Has alpha?
-    if(orxConfig_HasValue(szConfigScrollObjectAlpha))
-    {
-      // Stores it
-      _rstColor.fAlpha = orxConfig_GetFloat(szConfigScrollObjectAlpha);
-
-      // Updates result
-      pstResult = &_rstColor;
-    }
-    else
-    {
-      // Uses default alpha
-      _rstColor.fAlpha = orxFLOAT_1;
-    }
-    if(orxConfig_GetVector(szConfigScrollObjectColor, &_rstColor.vRGB))
-    {
-      // Updates result
-      pstResult = &_rstColor;
-    }
-    else
-    {
-      // Uses white color
-      orxVector_Copy(&_rstColor.vRGB, &orxVECTOR_WHITE);
-    }
-
-    // Pops config section
-    orxConfig_PopSection();
-  }
-
-  // Done!
-  return pstResult;
-}
-
-orxSTATUS ScrollBase::SetObjectConfigColor(ScrollObject *_poObject, const orxCOLOR &_rstColor)
-{
-  orxSTATUS eResult;
-
-  // Can select object's config section
-  if(_poObject && (orxConfig_PushSection(_poObject->GetName()) != orxSTATUS_FAILURE))
-  {
-    // Sets alpha
-    orxConfig_SetFloat(szConfigScrollObjectAlpha, _rstColor.fAlpha);
-
-    // Sets color
-    orxConfig_SetVector(szConfigScrollObjectColor, &_rstColor.vRGB);
-
-    // Sets real time color
-    _poObject->SetColor(_rstColor);
-
-    // Updates result
-    eResult = orxSTATUS_SUCCESS;
-
-    // Pops config section
-    orxConfig_PopSection();
-  }
-  else
-  {
-    // Updates result
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  // Done!
-  return eResult;
-}
-
-orxSTATUS ScrollBase::SetMapName(const orxSTRING _zMapName)
-{
-  if(mzMapName)
-  {
-    orxString_Delete(mzMapName);
-    mzMapName = orxNULL;
-  }
-
-  if(_zMapName)
-  {
-    mzMapName = orxString_Duplicate(_zMapName);
-  }
-
-  return orxSTATUS_SUCCESS;
-}
-
-const orxSTRING ScrollBase::GetMapName() const
-{
-  return mzMapName;
-}
-
-const orxSTRING ScrollBase::GetMapShortName() const
-{
-  orxS32    s32LastSeparator, i;
-  orxSTRING zResult;
-
-  // Gets last directory separator
-  for(s32LastSeparator = -1, i = orxString_SearchCharIndex(mzMapName, orxCHAR_DIRECTORY_SEPARATOR_LINUX, 0);
-      i >= 0;
-      s32LastSeparator = i, i = orxString_SearchCharIndex(mzMapName, orxCHAR_DIRECTORY_SEPARATOR_LINUX, i + 1));
-
-  // Not found?
-  if(s32LastSeparator < 0)
-  {
-    // Gets last directory separator
-    for(s32LastSeparator = -1, i = orxString_SearchCharIndex(mzMapName, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, 0);
-        i >= 0;
-        s32LastSeparator = i, i = orxString_SearchCharIndex(mzMapName, orxCHAR_DIRECTORY_SEPARATOR_WINDOWS, i + 1));
-  }
-
-  // Has directory?
-  if(s32LastSeparator >= 0)
-  {
-    // Updates text's content
-    zResult = mzMapName + s32LastSeparator + 1;
-  }
-  else
-  {
-    // Updates result
-    zResult = mzMapName;
-  }
-
-  // Done!
-  return zResult;
-}
-
-orxSTATUS ScrollBase::LoadMap()
-{
-  orxCHAR   acBuffer[32];
-  orxU32    i;
-  orxSTATUS eResult;
-
-  // Object list not locked and has a valid map name?
-  if(!mbObjectListLocked && mzMapName && (mzMapName != orxSTRING_EMPTY))
-  {
-    // Updates result
-    eResult = orxSTATUS_SUCCESS;
-
-    // For all current objects
-    for(ScrollObject *poObject = GetNextObject(), *poNextObject = GetNextObject(poObject);
-        poObject;
-        poObject = poNextObject, poNextObject = GetNextObject(poNextObject))
-    {
-      // Is it a map object?
-      if(poObject && poObject->TestFlags(ScrollObject::FlagSave))
-      {
-        // Deletes it
-        DeleteObject(poObject);
-      }
-    }
-
-    // Loads map
-    if(orxConfig_Load(mzMapName))
-    {
-      orxS32 s32ScrollObjectCount, s32ScrollObjectNumber;
-
-      // Selects map section
-      orxConfig_SelectSection(szConfigSectionMap);
-
-      // Updates differential mode
-      mbDifferentialMode = orxConfig_GetBool(szConfigDifferential);
-
-      // Gets number of objects to load
-      orxConfig_SelectSection(szConfigSectionMap);
-      s32ScrollObjectNumber = orxConfig_GetS32(szConfigScrollObjectNumber);
-
-      // For all objects to load
-      for(s32ScrollObjectCount = 0, i = 0, orxString_NPrint(acBuffer, sizeof(acBuffer), szConfigScrollObjectFormat, i);
-          s32ScrollObjectCount < s32ScrollObjectNumber;
-          i++, orxString_NPrint(acBuffer, sizeof(acBuffer), szConfigScrollObjectFormat, i))
-      {
-        // Has section?
-        if(orxConfig_HasSection(acBuffer))
-        {
-          ScrollObject *poObject;
-
-          // Selects its section
-          orxConfig_SelectSection(acBuffer);
-
-          // Creates it
-          poObject = CreateObject(orxConfig_GetString(szConfigScrollObjectName), ScrollObject::FlagSave, acBuffer);
-
-          // Valid?
-          if(poObject)
-          {
-            orxVECTOR   vPos, vScale;
-            orxCOLOR    stColor;
-            orxOBJECT  *pstOrxObject;
-            orxFRAME   *pstFrame;
-            orxBOOL     bApplyColor = orxFALSE;
-
-            // Gets internal object
-            pstOrxObject = poObject->GetOrxObject();
-
-            // Updates it
-            orxObject_SetPosition(pstOrxObject, orxConfig_GetVector(szConfigScrollObjectPosition, &vPos));
-            orxObject_SetScale(pstOrxObject, orxConfig_GetVector(szConfigScrollObjectScale, &vScale));
-            orxObject_SetRotation(pstOrxObject, orxConfig_GetFloat(szConfigScrollObjectRotation));
-
-            // Gets its frame
-            pstFrame = orxOBJECT_GET_STRUCTURE(pstOrxObject, FRAME);
-
-            // Updates its differential mode
-            poObject->SetDifferentialMode(mbDifferentialMode);
-
-            // Has alpha?
-            if(orxConfig_HasValue(szConfigScrollObjectAlpha))
-            {
-              stColor.fAlpha  = orxConfig_GetFloat(szConfigScrollObjectAlpha);
-              bApplyColor     = orxTRUE;
-            }
-            else
-            {
-              stColor.fAlpha = orxFLOAT_1;
-            }
-            if(orxConfig_GetVector(szConfigScrollObjectColor, &stColor.vRGB))
-            {
-              bApplyColor     = orxTRUE;
-            }
-            else
-            {
-              // Uses white color
-              orxVector_Copy(&stColor.vRGB, &orxVECTOR_WHITE);
-            }
-
-            // Should apply color?
-            if(bApplyColor)
-            {
-              // Applies it
-              poObject->SetColor(stColor);
-            }
-
-            // Gets its smoothing
-            if(orxConfig_GetBool(szConfigScrollObjectSmoothing))
-            {
-              // Applies it to object
-              orxObject_SetSmoothing(pstOrxObject, orxDISPLAY_SMOOTHING_ON);
-              poObject->SetFlags(ScrollObject::FlagSmoothed);
-            }
-            else
-            {
-              // Resets its smoothing
-              orxObject_SetSmoothing(pstOrxObject, orxDISPLAY_SMOOTHING_OFF);
-            }
-
-            // Gets its tiling
-            if(orxConfig_GetBool(szConfigScrollObjectTiling))
-            {
-              // Applies it to object
-              orxObject_SetRepeat(pstOrxObject, orxMath_Abs(vScale.fX), orxMath_Abs(vScale.fY));
-              poObject->SetFlags(ScrollObject::FlagTiled);
-            }
-            else
-            {
-              // Resets its tiling
-              orxObject_SetRepeat(pstOrxObject, orxFLOAT_1, orxFLOAT_1);
-            }
-          }
-          else
-          {
-            // Logs message
-            orxLOG("Couldn't load object [%s]: invalid model <%s>.", acBuffer, orxConfig_GetString(szConfigScrollObjectName));
-
-            // Clears its section
-            orxConfig_ClearSection(acBuffer);
-          }
-
-          // Updates count
-          s32ScrollObjectCount++;
-        }
-      }
-
-      // Updates next object ID
-      mu32NextObjectID = orxMAX(mu32NextObjectID, i);
-
-      // Selects map section
-      orxConfig_SelectSection(szConfigSectionMap);
-
-      // Has layer number?
-      if(orxConfig_HasValue(szConfigLayerNumber))
-      {
-        // Stores it
-        SetLayerNumber(orxConfig_GetU32(szConfigLayerNumber));
-      }
-
-      // Has camera position?
-      if(orxConfig_HasValue(szConfigCameraPosition))
-      {
-        orxVECTOR vPos;
-
-        // Updates camera position
-        orxConfig_GetVector(szConfigCameraPosition, &vPos);
-        orxCamera_SetPosition(mpstMainCamera, &vPos);
-      }
-
-      // Has camera zoom?
-      if(orxConfig_HasValue(szConfigCameraZoom))
-      {
-        // Updates camera zoom
-        orxCamera_SetZoom(mpstMainCamera, orxConfig_GetFloat(szConfigCameraZoom));
-      }
-    }
-
-    // Calls map load callback
-    OnMapLoad();
-  }
-  else
-  {
-    // Updates result
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  // Done!
-  return eResult;
-}
-
-orxSTATUS ScrollBase::SaveMap(orxBOOL _bEncrypt, const orxCONFIG_SAVE_FUNCTION _pfnMapSaveFilter)
-{
-  ScrollObject *poObject;
-  orxU32        u32Count;
-  orxSTATUS     eResult = orxSTATUS_FAILURE;
-
-  // Valid?
-  if(mzMapName && (mzMapName != orxSTRING_EMPTY))
-  {
-    orxVECTOR vPos;
-
-    // Stores camera position
-    orxConfig_SetVector(szConfigCameraPosition, orxCamera_GetPosition(mpstMainCamera, &vPos));
-
-    // Stores camera zoom
-    orxConfig_SetFloat(szConfigCameraZoom, orxCamera_GetZoom(mpstMainCamera));
-
-    // Stores differential mode
-    orxConfig_SetBool(szConfigDifferential, mbDifferentialMode);
-
-    // Stores layer number
-    orxConfig_SetU32(szConfigLayerNumber, mu32LayerNumber);
-
-    // Locks object list
-    mbObjectListLocked = orxTRUE;
-
-    // For all objects
-    for(poObject = GetNextObject(), u32Count = 0;
-        poObject;
-        poObject = GetNextObject(poObject))
-    {
-      // Selects its section
-      orxConfig_SelectSection(poObject->GetName());
-
-      // Should save it?
-      if(poObject->TestFlags(ScrollObject::FlagSave))
-      {
-        orxCOLOR    stColor;
-        orxVECTOR   vTemp;
-        orxOBJECT  *pstOrxObject;
-
-        // Gets internal object
-        pstOrxObject = poObject->GetOrxObject();
-
-        // Adds all its properties
-        orxConfig_SetString(szConfigScrollObjectName, poObject->GetModelName());
-        if(orxObject_GetPosition(pstOrxObject, &vTemp))
-        {
-          orxConfig_SetVector(szConfigScrollObjectPosition, &vTemp);
-        }
-        if(orxObject_GetScale(pstOrxObject, &vTemp))
-        {
-          orxConfig_SetVector(szConfigScrollObjectScale, &vTemp);
-        }
-        orxConfig_SetFloat(szConfigScrollObjectRotation, orxObject_GetRotation(pstOrxObject));
-        if(GetObjectConfigColor(poObject, stColor))
-        {
-          orxConfig_SetVector(szConfigScrollObjectColor, &stColor.vRGB);
-          orxConfig_SetFloat(szConfigScrollObjectAlpha, stColor.fAlpha);
-        }
-        orxConfig_SetBool(szConfigScrollObjectSmoothing, poObject->TestFlags(ScrollObject::FlagSmoothed));
-        orxConfig_SetBool(szConfigScrollObjectTiling, poObject->TestFlags(ScrollObject::FlagTiled));
-
-        // Updates count
-        u32Count++;
-      }
-      else
-      {
-        // Don't save
-        orxConfig_SetBool(szConfigNoSave, orxTRUE);
-      }
-    }
-
-    // Unlocks object list
-    mbObjectListLocked = orxFALSE;
-
-    // Restores map section
-    orxConfig_SelectSection(szConfigSectionMap);
-
-    // Stores game object count
-    orxConfig_SetS32(szConfigScrollObjectNumber, u32Count);
-
-    // Calls save callback
-    OnMapSave(_bEncrypt);
-
-    // Stores custom save filter
-    mpfnCustomMapSaveFilter = _pfnMapSaveFilter;
-
-    // Saves to file
-    eResult = orxConfig_Save(mzMapName, _bEncrypt, StaticMapSaveFilter);
-
-    // Clears custom save filter
-    mpfnCustomMapSaveFilter = orxNULL;
-  }
-
-  // Done!
-  return eResult;
-}
-
-orxSTATUS ScrollBase::ResetMap()
-{
-  orxVECTOR vPos;
-  orxFLOAT  fZoom;
-  orxSTATUS eResult;
-
-  // Backups camera position & zoom
-  orxCamera_GetPosition(mpstMainCamera, &vPos);
-  fZoom = orxCamera_GetZoom(mpstMainCamera);
-
-  // Reloads it
-  eResult = LoadMap();
-
-  // Restores main camera position & zoom
-  orxCamera_SetPosition(mpstMainCamera, &vPos);
-  orxCamera_SetZoom(mpstMainCamera, fZoom);
-
-  // Done!
-  return eResult;
-}
-
-void ScrollBase::SetLayerNumber(orxU32 _u32LayerNumber)
-{
-  orxAABOX    stFrustum;
-  orxVECTOR   vPos;
-  orxFLOAT    fDepth, fWidth, fHeight;
-  orxCAMERA  *pstCamera;
-
-  // Is even?
-  if(!(_u32LayerNumber & 1))
-  {
-    // Adds an extra layer
-    mu32LayerNumber = _u32LayerNumber + 1;
-
-    // Logs message
-    orxLOG("Can't use an even number of layers, adding an extra one => %d layers will be used.", mu32LayerNumber);
-  }
-  else
-  {
-    // Stores it
-    mu32LayerNumber = _u32LayerNumber;
-  }
-
-  // Gets main camera
-  pstCamera = GetMainCamera();
-
-  // Gets its frustum & position
-  orxCamera_GetFrustum(pstCamera, &stFrustum);
-  orxCamera_GetPosition(pstCamera, &vPos);
-
-  // Gets its size & depth
-  fWidth  = stFrustum.vBR.fX - stFrustum.vTL.fX;
-  fHeight = stFrustum.vBR.fY - stFrustum.vTL.fY;
-  fDepth  = stFrustum.vBR.fZ - stFrustum.vTL.fZ;
-
-  // Calculates correct position for the camera
-  vPos.fZ = -orx2F(0.5f) * fDepth;
-
-  // Updates camera position
-  orxCamera_SetPosition(pstCamera, &vPos);
-
-  // Updates camera frustum
-  orxCamera_SetFrustum(pstCamera, fWidth, fHeight, orxFLOAT_0, fDepth);
-}
-
-orxU32 ScrollBase::GetLayerNumber() const
-{
-  // Done!
-  return mu32LayerNumber;
-}
-
-orxU32 ScrollBase::GetLayer(const orxVECTOR &_rvPosition) const
-{
-  orxAABOX  stFrustum;
-  orxVECTOR vCameraPos;
-  orxU32    u32Result;
-
-  // Gets asbolute frustum
-  orxCamera_GetFrustum(GetMainCamera(), &stFrustum);
-  orxCamera_GetPosition(GetMainCamera(), &vCameraPos);
-  orxVector_Add(&(stFrustum.vTL), &(stFrustum.vTL), &vCameraPos);
-  orxVector_Add(&(stFrustum.vBR), &(stFrustum.vBR), &vCameraPos);
-
-  // Updates result
-  u32Result = orxF2U((_rvPosition.fZ - stFrustum.vTL.fZ) / (stFrustum.vBR.fZ - stFrustum.vTL.fZ) * orxU2F(mu32LayerNumber));
-
-  // Done!
-  return u32Result;
-}
-
-orxFLOAT ScrollBase::GetLayerDepth(orxU32 _u32Layer) const
-{
-  orxAABOX stFrustum;
-  orxFLOAT fResult;
-
-  // Corrects range
-  _u32Layer = orxMIN(_u32Layer, mu32LayerNumber);
-
-  // Gets camera depth
-  orxCamera_GetFrustum(GetMainCamera(), &stFrustum);
-
-  // Game layer?
-  if(((mu32LayerNumber - 1) >> 1) == _u32Layer)
-  {
-    fResult = orxFLOAT_0;
-  }
-  else
-  {
-    orxVECTOR vCameraPos;
-
-    // Gets camera position
-    orxCamera_GetPosition(GetMainCamera(), &vCameraPos);
-
-    // Updates result
-    fResult = orxLERP(stFrustum.vTL.fZ, stFrustum.vBR.fZ, (orxU2F(_u32Layer) + orx2F(0.5f)) / orxU2F(mu32LayerNumber)) + vCameraPos.fZ;
-  }
-
-  // Done!
-  return fResult;
 }
 
 orxSTATUS ScrollBase::StartGame()
@@ -1487,18 +762,6 @@ orxU32 ScrollBase::GetFrameCount() const
   return mu32FrameCount;
 }
 
-orxVIEWPORT *ScrollBase::GetMainViewport() const
-{
-  // Done!
-  return mpstMainViewport;
-}
-
-orxCAMERA *ScrollBase::GetMainCamera() const
-{
-  // Done!
-  return mpstMainCamera;
-}
-
 ScrollObject *ScrollBase::GetObject(orxU64 _u64GUID) const
 {
   orxOBJECT    *pstObject;
@@ -1608,48 +871,23 @@ ScrollObject *ScrollBase::GetPreviousObject(const ScrollObject *_poObject, orxBO
   return poResult;
 }
 
-void ScrollBase::SetEditorMode(orxBOOL _bEnable)
-{
-  mbEditorMode = _bEnable;
-}
-
-orxBOOL ScrollBase::IsEditorMode() const
-{
-  return mbEditorMode;
-}
-
-void ScrollBase::SetDifferentialMode(orxBOOL _bEnable)
-{
-  mbDifferentialMode = _bEnable;
-}
-
-orxBOOL ScrollBase::IsDifferentialMode() const
-{
-  return mbDifferentialMode;
-}
-
 orxSTATUS ScrollBase::BaseInit()
 {
-  orxCLOCK *pstCoreClock;
+  orxCLOCK *pstClock;
   orxSTATUS eResult;
 
-  // Binds default ScrollObject section
-  orxConfig_PushSection(szConfigSectionScrollObject);
-  orxConfig_PopSection();
-  ScrollBindObject<ScrollObject>(szConfigSectionScrollObject);
+  // Binds ScrollObject
+  BindObject(ScrollObject);
 
   // Binds objects
   BindObjects();
 
-  // Selects map section
-  orxConfig_SelectSection(szConfigSectionMap);
-
   // Gets core clock
-  pstCoreClock = orxClock_Get(orxCLOCK_KZ_CORE);
+  pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
   // Registers update function
-  eResult = ((orxClock_Register(pstCoreClock, StaticUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL) != orxSTATUS_FAILURE)
-          && (orxClock_Register(pstCoreClock, StaticCameraUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  eResult = ((orxClock_Register(pstClock, StaticUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL) != orxSTATUS_FAILURE)
+          && (orxClock_Register(pstClock, StaticCameraUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER) != orxSTATUS_FAILURE)) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
   // Successful?
   if(eResult != orxSTATUS_FAILURE)
@@ -1681,11 +919,8 @@ orxSTATUS ScrollBase::BaseInit()
       orxMemory_Zero(&mstObjectList, sizeof(orxLINKLIST));
       orxMemory_Zero(&mstObjectChronoList, sizeof(orxLINKLIST));
 
-      // Creates main viewport
-      mpstMainViewport = orxViewport_CreateFromConfig(szConfigMainViewport);
-
-      // Gets main camera
-      mpstMainCamera = orxViewport_GetCamera(mpstMainViewport);
+      // Updates running status
+      mbIsRunning = orxFALSE;
 
       // Calls child init
       eResult = Init();
@@ -1693,15 +928,8 @@ orxSTATUS ScrollBase::BaseInit()
       // Successful?
       if(eResult != orxSTATUS_FAILURE)
       {
-        // Updates running status
-        mbIsRunning = orxFALSE;
-
-        // Not in editor mode?
-        if(!IsEditorMode())
-        {
-          // Starts game
-          StartGame();
-        }
+        // Starts game
+        StartGame();
       }
     }
     else
@@ -1736,9 +964,6 @@ void ScrollBase::BaseExit()
   // Calls child exit
   Exit();
 
-  // Clears map
-  SetMapName(orxNULL);
-
   // Disables object create handler
   orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_KU32_FLAG_ID_NONE, orxEVENT_GET_FLAG(orxOBJECT_EVENT_CREATE));
 
@@ -1759,6 +984,7 @@ void ScrollBase::BaseExit()
   orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, StaticEventHandler);
   orxEvent_RemoveHandler(orxEVENT_TYPE_SHADER, StaticEventHandler);
   orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, StaticEventHandler);
+  orxEvent_RemoveHandler(orxEVENT_TYPE_FX, StaticEventHandler);
 
   // Deletes binder's table
   ScrollObjectBinderBase::DeleteTable();
@@ -1889,81 +1115,8 @@ void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
 
 void ScrollBase::BaseCameraUpdate(const orxCLOCK_INFO &_rstInfo)
 {
-  // Not in editor mode?
-  if(!IsEditorMode())
-  {
-    // Calls child update
-    CameraUpdate(_rstInfo);
-  }
-}
-
-orxBOOL ScrollBase::BaseMapSaveFilter(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)
-{
-  orxBOOL bResult;
-
-  // Map section or game object?
-  if((!orxString_Compare(_zSectionName, szConfigSectionMap)) || (orxString_SearchString(_zSectionName, szConfigScrollObjectPrefix) == _zSectionName))
-  {
-    // Full section?
-    if(!_zKeyName)
-    {
-      // Pushes section
-      orxConfig_PushSection(_zSectionName);
-
-      // Updates result
-      bResult = !orxConfig_GetBool(szConfigNoSave);
-
-      // Pops section
-      orxConfig_PopSection();
-    }
-    else
-    {
-      // Updates result
-      bResult = orxTRUE;
-    }
-  }
-  else
-  {
-    // Calls child method
-    bResult = MapSaveFilter(_zSectionName, _zKeyName, _zFileName, _bUseEncryption);
-
-    // Not saving yet?
-    if(!bResult)
-    {
-      // Has custom filter
-      if(mpfnCustomMapSaveFilter)
-      {
-        // Calls it
-        bResult = mpfnCustomMapSaveFilter(_zSectionName, _zKeyName, _zFileName, _bUseEncryption);
-      }
-    }
-  }
-
-  // Done!
-  return bResult;
-}
-
-orxSTRING ScrollBase::GetNewObjectName(orxCHAR _zInstanceName[32], orxBOOL _bRunTime)
-{
-  orxSTRING zResult = _zInstanceName;
-
-  // Checks
-  orxASSERT(_zInstanceName);
-
-  // Runtime?
-  if(_bRunTime)
-  {
-    // Creates name
-    orxString_NPrint(zResult, 32, szConfigScrollObjectRuntimeFormat, mu32RuntimeObjectID++);
-  }
-  else
-  {
-    // Creates name
-    orxString_NPrint(zResult, 32, szConfigScrollObjectFormat, mu32NextObjectID++);
-  }
-
-  // Done
-  return zResult;
+  // Calls child update
+  CameraUpdate(_rstInfo);
 }
 
 void ScrollBase::DeleteInstance()
@@ -2032,14 +1185,6 @@ void orxFASTCALL ScrollBase::StaticCameraUpdate(const orxCLOCK_INFO *_pstInfo, v
   roGame.BaseCameraUpdate(*_pstInfo);
 }
 
-orxBOOL orxFASTCALL ScrollBase::StaticMapSaveFilter(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)
-{
-  ScrollBase &roGame = GetInstance();
-
-  // Calls base map save filter
-  return roGame.BaseMapSaveFilter(_zSectionName, _zKeyName, _zFileName, _bUseEncryption);
-}
-
 orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -2077,68 +1222,40 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
       // Create?
       if(_pstEvent->eID == orxOBJECT_EVENT_CREATE)
       {
-        // Not an internal creation?
-        if(!roGame.mzCurrentCreateObject || orxString_Compare(roGame.mzCurrentCreateObject, orxObject_GetName(pstObject)))
+        ScrollObjectBinderBase *poBinder;
+
+        // Gets binder
+        poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject), (roGame.mu32CreateObjectCount != 0) ? orxTRUE : orxFALSE);
+
+        // Found?
+        if(poBinder)
         {
-          ScrollObjectBinderBase *poBinder;
-
-          // Gets binder
-          poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject), roGame.mzCurrentCreateObject ? orxTRUE : orxFALSE);
-
-          // Found?
-          if(poBinder)
-          {
-            orxCHAR       zInstanceName[32];
-            ScrollObject *poObject;
-
-            // Uses it
-            poObject = poBinder->CreateObject(pstObject, roGame.GetNewObjectName(zInstanceName, orxTRUE), ScrollObject::FlagRunTime);
-
-            // Valid?
-            if(poObject)
-            {
-              // Updates its flags
-              poObject->SetFlags(ScrollObject::FlagRunTime);
-            }
-          }
-        }
-        else
-        {
-          // Clears internal object
-          roGame.mzCurrentCreateObject = orxNULL;
+          // Uses it
+          poBinder->CreateObject(pstObject);
         }
       }
       // Delete?
       else if(_pstEvent->eID == orxOBJECT_EVENT_DELETE)
       {
-        // Not an internal deletion?
-        if(!roGame.mzCurrentDeleteObject || orxString_Compare(roGame.mzCurrentDeleteObject, orxObject_GetName(pstObject)))
+        ScrollObject *poObject;
+
+        // Gets scroll object
+        poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
+
+        // Checks
+        orxASSERT((!poObject) || (!poObject->mpstObject) || (poObject->mpstObject == pstObject));
+
+        // Valid object (first deletion)?
+        if(poObject && poObject->mpstObject)
         {
-          ScrollObject *poObject;
+          ScrollObjectBinderBase *poBinder;
 
-          // Gets scroll object
-          poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
+          // Gets binder
+          poBinder = ScrollObjectBinderBase::GetBinder(poObject->GetName());
+          orxASSERT(poBinder);
 
-          // Checks
-          orxASSERT((!poObject) || (!poObject->mpstObject) || (poObject->mpstObject == pstObject));
-
-          // Valid object (first deletion)?
-          if(poObject && poObject->mpstObject)
-          {
-            ScrollObjectBinderBase *poBinder;
-
-            // Gets binder
-            poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject));
-            orxASSERT(poBinder);
-
-            // Uses it to delete object
-            poBinder->DeleteObject(poObject, orxObject_GetName(pstObject));
-          }
-        }
-        else
-        {
-          // Clears internal object
-          roGame.mzCurrentDeleteObject = orxNULL;
+          // Uses it to delete object
+          poBinder->DeleteObject(poObject);
         }
       }
       break;
@@ -2520,185 +1637,111 @@ ScrollObjectBinderBase::~ScrollObjectBinderBase()
   mpstBank = orxNULL;
 }
 
-ScrollObject *ScrollObjectBinderBase::CreateObject(const orxSTRING _zModelName, const orxSTRING _zInstanceName, ScrollObject::Flag _xFlags)
+ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
 {
-  orxOBJECT    *pstOrxObject;
-  ScrollObject *poResult;
+  ScrollObject::Flag  xFlags = ScrollObject::FlagNone;
+  ScrollObject       *poResult;
 
-  // Creates orx object
-  pstOrxObject = orxObject_CreateFromConfig(_zModelName);
+  // Checks
+  orxSTRUCTURE_ASSERT(_pstObject);
 
-  // Valid?
-  if(pstOrxObject)
+  // Gets game instance
+  ScrollBase &roGame = ScrollBase::GetInstance();
+
+  // Checks
+  orxASSERT(!orxObject_GetUserData(_pstObject));
+
+  // Creates scroll object
+  poResult = ConstructObject(mpstBank);
+
+  // First one?
+  if(!mpoFirstObject)
   {
-    // Updates result
-    poResult = CreateObject(pstOrxObject, _zInstanceName, _xFlags);
+    // Stores it
+    mpoFirstObject = mpoLastObject = poResult;
+
+    // Adds it to the end of the list
+    orxLinkList_AddEnd(&roGame.mstObjectList, &poResult->mstNode);
   }
   else
   {
-    // Updates result
-    poResult = orxNULL;
+    // Adds it after last object
+    orxLinkList_AddAfter(&mpoLastObject->mstNode, &poResult->mstNode);
+
+    // Stores it
+    mpoLastObject = poResult;
   }
 
-  // Done!
-  return poResult;
-}
+  // Adds to chronological list
+  orxLinkList_AddEnd(&roGame.mstObjectChronoList, &poResult->mstChronoNode);
 
-ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstOrxObject, const orxSTRING _zInstanceName, ScrollObject::Flag _xFlags)
-{
-  ScrollObject *poResult;
+  // Stores internal object
+  poResult->SetOrxObject(_pstObject);
 
-  // Is object valid?
-  if(_pstOrxObject)
+  // Sets object as user data
+  orxObject_SetUserData(_pstObject, poResult);
+
+  // Pushes its section
+  poResult->PushConfigSection();
+
+  // Is pausable?
+  if((!orxConfig_HasValue(ScrollBase::szConfigScrollObjectPausable))
+  || (orxConfig_GetBool(ScrollBase::szConfigScrollObjectPausable)))
   {
-    ScrollObject::Flag  xFlags;
-    orxFLOAT            fRepeatX, fRepeatY;
+    // Updates flags
+    xFlags |= ScrollObject::FlagPausable;
+  }
 
-    // Gets game instance
-    ScrollBase &roGame = ScrollBase::GetInstance();
+  // Has input set?
+  if(orxConfig_HasValue(ScrollBase::szConfigScrollObjectInput))
+  {
+    // Stores it
+    poResult->mzInputSet = orxString_Store(orxConfig_GetString(ScrollBase::szConfigScrollObjectInput));
 
-    // Checks
-    orxSTRUCTURE_ASSERT(_pstOrxObject);
-    orxASSERT(!orxObject_GetUserData(_pstOrxObject));
-
-    // Creates scroll object
-    poResult = ConstructObject(mpstBank);
-
-    // Savable or runtime object?
-    if(_xFlags & (ScrollObject::FlagSave | ScrollObject::FlagRunTime))
+    // Enables it & pushes it
+    if((orxInput_EnableSet(poResult->mzInputSet, orxTRUE) != orxSTATUS_FAILURE)
+    && (orxInput_PushSet(poResult->mzInputSet) != orxSTATUS_FAILURE))
     {
-      // First one?
-      if(!mpoFirstObject)
+      // Updates flags
+      xFlags |= ScrollObject::FlagInput;
+      
+      // No defined input?
+      if(!orxInput_GetNext(orxNULL))
       {
-        // Stores it
-        mpoFirstObject = mpoLastObject = poResult;
-
-        // Adds it to the end of the list
-        orxLinkList_AddEnd(&roGame.mstObjectList, &poResult->mstNode);
+        // Updates its type
+        orxInput_SetTypeFlags(orxINPUT_KU32_FLAG_TYPE_NONE, orxINPUT_KU32_MASK_TYPE_ALL);
       }
       else
       {
-        // Adds it after last object
-        orxLinkList_AddAfter(&mpoLastObject->mstNode, &poResult->mstNode);
-
-        // Stores it
-        mpoLastObject = poResult;
+        // Updates flags
+        xFlags |= ScrollObject::FlagInputBinding;
       }
-    }
 
-    // Adds to chronological list
-    orxLinkList_AddEnd(&roGame.mstObjectChronoList, &poResult->mstChronoNode);
-
-    // Stores internal object
-    poResult->SetOrxObject(_pstOrxObject);
-
-    // Sets object as user data
-    orxObject_SetUserData(_pstOrxObject, poResult);
-
-    // Stores its name
-    orxString_NPrint(poResult->macName, sizeof(poResult->macName), "%s", _zInstanceName);
-
-    // Inits flags
-    xFlags = _xFlags;
-
-    // Is tiled?
-    if((orxOBJECT_GET_STRUCTURE(_pstOrxObject, GRAPHIC))
-    && (orxObject_GetRepeat(_pstOrxObject, &fRepeatX, &fRepeatY) != orxSTATUS_FAILURE)
-    && ((fRepeatX != orxFLOAT_1)
-     || (fRepeatY != orxFLOAT_1)))
-    {
-      // Updates flags
-      xFlags |= ScrollObject::FlagTiled;
+      // Pops set
+      orxInput_PopSet();
     }
     else
     {
-      // Updates flags
-      xFlags &= ~ScrollObject::FlagTiled;
+      // Clears set
+      poResult->mzInputSet = orxNULL;
     }
-
-    // Is smoothed?
-    if(orxObject_GetSmoothing(_pstOrxObject) == orxDISPLAY_SMOOTHING_ON)
-    {
-      // Updates flags
-      xFlags |= ScrollObject::FlagSmoothed;
-    }
-    else
-    {
-      xFlags &= ~ScrollObject::FlagSmoothed;
-    }
-
-    // Not runtime?
-    if(!(_xFlags & ScrollObject::FlagRunTime))
-    {
-      // Creates and protects its instance section
-      orxConfig_PushSection(_zInstanceName);
-      orxConfig_ProtectSection(_zInstanceName, orxTRUE);
-      orxConfig_PopSection();
-    }
-
-    // Pushes its section
-    poResult->PushConfigSection();
-
-    // Is pausable?
-    if((!orxConfig_HasValue(ScrollBase::szConfigScrollObjectPausable))
-    || (orxConfig_GetBool(ScrollBase::szConfigScrollObjectPausable)))
-    {
-      // Updates flags
-      xFlags |= ScrollObject::FlagPausable;
-    }
-
-    // Stores flags
-    poResult->SetFlags(xFlags, ScrollObject::MaskAll);
-
-    // Has input set?
-    if(orxConfig_HasValue(ScrollBase::szConfigScrollObjectInput))
-    {
-      // Stores it
-      poResult->mzInputSet = orxConfig_GetString(ScrollBase::szConfigScrollObjectInput);
-
-      // Enables it & pushes it
-      if((orxInput_EnableSet(poResult->mzInputSet, orxTRUE) != orxSTATUS_FAILURE)
-      && (orxInput_PushSet(poResult->mzInputSet) != orxSTATUS_FAILURE))
-      {
-        // No defined input?
-        if(!orxInput_GetNext(orxNULL))
-        {
-          // Updates its type
-          orxInput_SetTypeFlags(orxINPUT_KU32_FLAG_TYPE_NONE, orxINPUT_KU32_MASK_TYPE_ALL);
-        }
-
-        // Pops set
-        orxInput_PopSet();
-      }
-      else
-      {
-        // Clears set
-        poResult->mzInputSet = orxNULL;
-      }
-    }
-
-    // Should use callback?
-    if(poResult->TestFlags(ScrollObject::FlagSave | ScrollObject::FlagRunTime))
-    {
-      // Calls it
-      poResult->OnCreate();
-
-      // Is game running?
-      if(roGame.IsGameRunning())
-      {
-        // Calls its start game callback
-        poResult->OnStartGame();
-      }
-    }
-
-    // Pops section
-    poResult->PopConfigSection();
   }
-  else
+
+  // Stores flags
+  poResult->SetFlags(xFlags, ScrollObject::MaskAll);
+
+  // Calls it
+  poResult->OnCreate();
+
+  // Is game running?
+  if(roGame.IsGameRunning())
   {
-    // Updates result
-    poResult = orxNULL;
+    // Calls its start game callback
+    poResult->OnStartGame();
   }
+
+  // Pops section
+  poResult->PopConfigSection();
 
   // Done!
   return poResult;
@@ -2706,109 +1749,73 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstOrxObject, con
 
 void ScrollObjectBinderBase::DeleteObject(ScrollObject *_poObject)
 {
-  // Deletes orx object
-  if(_poObject)
-  {
-    orxOBJECT *pstObject;
+  const orxSTRING zInstanceName;
+  orxBOOL         bObjectListBlockBackup;
 
-    // Checks
-    orxSTRUCTURE_ASSERT(_poObject->GetOrxObject());
-
-    // Gets internal object
-    pstObject = _poObject->GetOrxObject();
-
-    // Deletes object
-    DeleteObject(_poObject, orxObject_GetName(pstObject));
-
-    // Deletes internal object
-    orxObject_Delete(pstObject);
-  }
-}
-
-void ScrollObjectBinderBase::DeleteObject(ScrollObject *_poObject, const orxSTRING _zModelName)
-{
-  const orxSTRING zName;
+  // Checks
+  orxSTRUCTURE_ASSERT(_poObject->GetOrxObject());
 
   // Gets game instance
   ScrollBase &roGame = ScrollBase::GetInstance();
 
-  // Should use callback?
-  if(_poObject->TestFlags(ScrollObject::FlagSave | ScrollObject::FlagRunTime))
-  {
-    orxBOOL bObjectListBlockBackup;
+  // Calls game callback
+  roGame.OnObjectDelete(_poObject);
 
-    // Calls game callback
-    roGame.OnObjectDelete(_poObject);
+  // Blocks object list
+  bObjectListBlockBackup = roGame.mbObjectListLocked;
+  roGame.mbObjectListLocked = orxTRUE;
 
-    // Blocks object list
-    bObjectListBlockBackup = roGame.mbObjectListLocked;
-    roGame.mbObjectListLocked = orxTRUE;
+  // Calls object callback
+  _poObject->OnDelete();
 
-    // Calls object callback
-    _poObject->OnDelete();
-
-    // Restores object list blocking
-    roGame.mbObjectListLocked = bObjectListBlockBackup;
-  }
+  // Restores object list blocking
+  roGame.mbObjectListLocked = bObjectListBlockBackup;
 
   // Gets its name
-  zName = _poObject->GetName();
+  zInstanceName = _poObject->GetInstanceName();
 
-  // Valid?
-  if(zName && (zName[0] != orxCHAR_NULL))
-  {
-    // Not runtime?
-    if(!_poObject->TestFlags(ScrollObject::FlagRunTime))
-    {
-      // Unprotects instance section
-      orxConfig_ProtectSection(zName, orxFALSE);
-    }
+  // Checks
+  orxASSERT(zInstanceName && *zInstanceName != orxCHAR_NULL);
 
-    // Clears it
-    orxConfig_ClearSection(zName);
-    orxASSERT(!orxConfig_HasSection(zName));
-  }
+  // Clears it
+  orxConfig_ClearSection(zInstanceName);
 
   // Removes object as user data
-  orxObject_SetUserData(_poObject->mpstObject, orxNULL);
+  orxObject_SetUserData(_poObject->GetOrxObject(), orxNULL);
 
   // Clears internal reference
   _poObject->SetOrxObject(orxNULL);
 
-  // Savable or runtime?
-  if(_poObject->TestFlags(ScrollObject::FlagSave | ScrollObject::FlagRunTime))
+  // First object?
+  if(_poObject == mpoFirstObject)
   {
-    // First object?
-    if(_poObject == mpoFirstObject)
-    {
-      ScrollObject *poNewFirstObject;
+    ScrollObject *poNewFirstObject;
 
-      // Gets new first object
-      poNewFirstObject = GetNextObject(_poObject);
+    // Gets new first object
+    poNewFirstObject = GetNextObject(_poObject);
 
-      // Last object?
-      if(_poObject == mpoLastObject)
-      {
-        // Updates last object
-        mpoLastObject = GetPreviousObject(_poObject);
-      }
-
-      // Updates first object
-      mpoFirstObject = poNewFirstObject;
-    }
     // Last object?
-    else if(_poObject == mpoLastObject)
+    if(_poObject == mpoLastObject)
     {
       // Updates last object
       mpoLastObject = GetPreviousObject(_poObject);
     }
 
-    // Checks
-    orxASSERT(orxLinkList_GetList(&_poObject->mstNode) == &roGame.mstObjectList);
-
-    // Removes it from chronological list
-    orxLinkList_Remove(&_poObject->mstNode);
+    // Updates first object
+    mpoFirstObject = poNewFirstObject;
   }
+  // Last object?
+  else if(_poObject == mpoLastObject)
+  {
+    // Updates last object
+    mpoLastObject = GetPreviousObject(_poObject);
+  }
+
+  // Checks
+  orxASSERT(orxLinkList_GetList(&_poObject->mstNode) == &roGame.mstObjectList);
+
+  // Removes it from list
+  orxLinkList_Remove(&_poObject->mstNode);
 
   // Checks
   orxASSERT(orxLinkList_GetList(&_poObject->mstChronoNode) == &roGame.mstObjectChronoList);

@@ -1676,7 +1676,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       u32Digits = (orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIGITS) != orxFALSE) ? orxConfig_GetU32(orxANIMSET_KZ_CONFIG_DIGITS) : orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS;
 
       /* Gets prefix */
-      zPrefix = orxConfig_GetString(orxANIMSET_KZ_CONFIG_PREFIX);
+      zPrefix = orxString_Store(orxConfig_GetString(orxANIMSET_KZ_CONFIG_PREFIX));
 
       /* Has prefix? */
       if(*zPrefix != orxCHAR_NULL)

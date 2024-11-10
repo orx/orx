@@ -253,7 +253,7 @@ static orxSTATUS orxFASTCALL ProcessKeyParams(orxU32 _u32ParamCount, const orxST
       if(orxConfig_HasValue("key"))
       {
         // Gets it
-        zKey = orxConfig_GetString("key");
+        zKey = orxString_Store(orxConfig_GetString("key"));
       }
       else
       {

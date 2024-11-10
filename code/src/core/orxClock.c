@@ -1738,7 +1738,7 @@ const orxSTRING orxFASTCALL orxClock_GetName(const orxCLOCK *_pstClock)
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstClock);
+  orxSTRUCTURE_ASSERT(_pstClock);
 
   /* Updates result */
   zResult = (orxStructure_TestFlags(_pstClock, orxCLOCK_KU32_FLAG_REFERENCED)) ? _pstClock->zReference : orxSTRING_EMPTY;

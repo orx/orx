@@ -278,7 +278,8 @@ project "[name]"
     files
     {
 [+c++
-        "../src/**.cpp",]
+        "../src/**.cpp",
+        "../src/**.hpp",]
         "../src/**.c",
         "../include/**.h",
 [+bundle
@@ -303,7 +304,7 @@ project "[name]"
 [+bundle
         ["bundle"] = {"**.inc"},]
         ["build"] = {"**premake4.lua"},
-        ["config"] = {"**.ini"}
+        ["config/**"] = {"../data/config/**.ini"}
     }
 [+bundle
 
@@ -330,6 +331,3 @@ project "[name]"
 
     configuration {"windows"}
         postbuildcommands {"cmd /c copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
-
-    configuration {"windows", "vs*"}
-        buildoptions {"/EHsc"}

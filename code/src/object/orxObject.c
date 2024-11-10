@@ -5721,7 +5721,7 @@ orxSTATUS orxFASTCALL orxObject_Update(orxOBJECT *_pstObject, const orxCLOCK_INF
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstObject != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* Updates object */
