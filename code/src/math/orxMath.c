@@ -37,23 +37,24 @@
  * Static variables                                                        *
  ***************************************************************************/
 
-static orxU32 su32X = 123456789, su32Y = 362436069, su32Z = 521288629, su32W = 88675123;
+static orxU64 su64State;
 
 
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
 
-static orxINLINE orxU32 orxMath_Xor128()
+static orxINLINE orxU64 orxMath_SplitMix64()
 {
-  orxU32 u32Temp;
+  orxU64 u64Result;
 
-  u32Temp = su32X ^ (su32X << 11);
-  su32X   = su32Y; su32Y = su32Z; su32Z = su32W;
-  su32W   = su32W ^ (su32W >> 19) ^ (u32Temp ^ (u32Temp >> 8));
+  u64Result = su64State;
+  su64State = su64State + 0x9E3779B97F4A7C15;
+  u64Result = (u64Result ^ (u64Result >> 30)) * 0xBF58476D1CE4E5B9;
+  u64Result = (u64Result ^ (u64Result >> 27)) * 0x94D049BB133111EB;
 
   /* Done! */
-  return su32W;
+  return(u64Result ^ (u64Result >> 31));
 }
 
 
@@ -70,10 +71,10 @@ void orxFASTCALL orxMath_InitRandom(orxU32 _u32Seed)
   orxASSERT(_u32Seed != 0);
 
   /* Inits random seed */
-  su32X = _u32Seed;
-  su32Y = su32X * _u32Seed;
-  su32Z = su32Y * _u32Seed;
-  su32W = su32Z * _u32Seed;
+  su64State = (orxU64)_u32Seed * (orxU64)_u32Seed;
+  
+  /* Done! */
+  return;
 }
 
 /** Gets a random orxFLOAT value
@@ -91,7 +92,7 @@ orxFLOAT orxFASTCALL orxMath_GetRandomFloat(orxFLOAT _fMin, orxFLOAT _fMax)
   orxFLOAT fResult;
 
   /* Gets next random number (as float) */
-  stSwap.u32Value = (orxMath_Xor128() >> 9) | 0x3f800000;
+  stSwap.u32Value = (((orxU32)orxMath_SplitMix64()) >> 9) | 0x3f800000;
 
   /* Updates result */
   fResult = _fMin + (stSwap.fValue - orxFLOAT_1) * (_fMax - _fMin);
@@ -119,7 +120,7 @@ orxFLOAT orxFASTCALL orxMath_GetSteppedRandomFloat(orxFLOAT _fMin, orxFLOAT _fMa
   orxASSERT(_fStep >= orxMATH_KF_TINY_EPSILON);
 
   /* Gets next random number (as float) */
-  stSwap.u32Value = (orxMath_Xor128() >> 9) | 0x3f800000;
+  stSwap.u32Value = (((orxU32)orxMath_SplitMix64()) >> 9) | 0x3f800000;
 
   /* Updates result */
   fTemp   = orxMath_Abs(_fMax - _fMin);
@@ -140,7 +141,7 @@ orxU32 orxFASTCALL orxMath_GetRandomU32(orxU32 _u32Min, orxU32 _u32Max)
   orxU32 u32Temp, u32Result;
 
   /* Gets next random number */
-  u32Temp = orxMath_Xor128();
+  u32Temp = (orxU32)orxMath_SplitMix64();
 
   /* Updates result */
   u32Result = _u32Min + (u32Temp % ((_u32Max - _u32Min) + 1));
@@ -163,7 +164,7 @@ orxU32 orxFASTCALL orxMath_GetSteppedRandomU32(orxU32 _u32Min, orxU32 _u32Max, o
   orxASSERT(_u32Step > 0);
 
   /* Gets next random number */
-  u32Temp = orxMath_Xor128();
+  u32Temp = (orxU32)orxMath_SplitMix64();
 
   /* Updates result */
   u32Temp   = u32Temp % ((_u32Max - _u32Min) + 1);
@@ -184,7 +185,7 @@ orxS32 orxFASTCALL orxMath_GetRandomS32(orxS32 _s32Min, orxS32 _s32Max)
   orxS32 s32Result;
 
   /* Gets next random number */
-  u32Temp = orxMath_Xor128();
+  u32Temp = (orxU32)orxMath_SplitMix64();
 
   /* Updates result */
   s32Result = _s32Min + (u32Temp % ((_s32Max - _s32Min) + 1));
@@ -208,7 +209,7 @@ orxS32 orxFASTCALL orxMath_GetSteppedRandomS32(orxS32 _s32Min, orxS32 _s32Max, o
   orxASSERT(_s32Step > 0);
 
   /* Gets next random number */
-  u32Temp = orxMath_Xor128();
+  u32Temp = (orxU32)orxMath_SplitMix64();
 
   /* Updates result */
   u32Temp   = u32Temp % ((_s32Max - _s32Min) + 1);
@@ -228,7 +229,7 @@ orxU64 orxFASTCALL orxMath_GetRandomU64(orxU64 _u64Min, orxU64 _u64Max)
   orxU64 u64Temp, u64Result;
 
   /* Gets next random number */
-  u64Temp = ((orxU64)orxMath_Xor128() << 32) | (orxU64)orxMath_Xor128();
+  u64Temp = orxMath_SplitMix64();
 
   /* Updates result */
   u64Result = _u64Min + (u64Temp % ((_u64Max - _u64Min) + 1));
@@ -251,7 +252,7 @@ orxU64 orxFASTCALL orxMath_GetSteppedRandomU64(orxU64 _u64Min, orxU64 _u64Max, o
   orxASSERT(_u64Step > 0);
 
   /* Gets next random number */
-  u64Temp = ((orxU64)orxMath_Xor128() << 32) | (orxU64)orxMath_Xor128();
+  u64Temp = orxMath_SplitMix64();
 
   /* Updates result */
   u64Temp   = u64Temp % ((_u64Max - _u64Min) + 1);
@@ -272,7 +273,7 @@ orxS64 orxFASTCALL orxMath_GetRandomS64(orxS64 _s64Min, orxS64 _s64Max)
   orxS64 s64Result;
 
   /* Gets next random number */
-  u64Temp = ((orxU64)orxMath_Xor128() << 32) | (orxU64)orxMath_Xor128();
+  u64Temp = orxMath_SplitMix64();
 
   /* Updates result */
   s64Result = _s64Min + (u64Temp % ((_s64Max - _s64Min) + 1));
@@ -296,7 +297,7 @@ orxS64 orxFASTCALL orxMath_GetSteppedRandomS64(orxS64 _s64Min, orxS64 _s64Max, o
   orxASSERT(_s64Step > 0);
 
   /* Gets next random number */
-  u64Temp = ((orxU64)orxMath_Xor128() << 32) | (orxU64)orxMath_Xor128();
+  u64Temp = orxMath_SplitMix64();
 
   /* Updates result */
   u64Temp   = u64Temp % ((_s64Max - _s64Min) + 1);
@@ -312,10 +313,10 @@ orxS64 orxFASTCALL orxMath_GetSteppedRandomS64(orxS64 _s64Min, orxS64 _s64Max, o
 void orxFASTCALL orxMath_GetRandomSeeds(orxU32 _au32Seeds[4])
 {
   /* Gets all seeds */
-  _au32Seeds[0] = su32X;
-  _au32Seeds[1] = su32Y;
-  _au32Seeds[2] = su32Z;
-  _au32Seeds[3] = su32W;
+  _au32Seeds[0] = (orxU32)su64State;
+  _au32Seeds[1] = (orxU32)(su64State >> 32);
+  _au32Seeds[2] = 0;
+  _au32Seeds[3] = 0;
 
   /* Done! */
   return;
@@ -326,11 +327,8 @@ void orxFASTCALL orxMath_GetRandomSeeds(orxU32 _au32Seeds[4])
  */
 void orxFASTCALL orxMath_SetRandomSeeds(const orxU32 _au32Seeds[4])
 {
-  /* Gets all seeds */
-  su32X = _au32Seeds[0];
-  su32Y = _au32Seeds[1];
-  su32Z = _au32Seeds[2];
-  su32W = _au32Seeds[3];
+  /* Restores state */
+  su64State = (((orxU64)_au32Seeds[1]) << 32) | (orxU64)_au32Seeds[0];
 
   /* Done! */
   return;
