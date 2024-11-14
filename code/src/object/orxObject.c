@@ -6817,6 +6817,30 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Sets angular velocity? */
         orxObject_SetAngularVelocity(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY));
 
+        /* *** Sound *** */
+
+        /* Has sound? */
+        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
+        {
+          orxS32 i;
+
+          /* For all defined sounds */
+          for(i = 0; i < s32Count; i++)
+          {
+            const orxSTRING zSound;
+
+            /* Gets its name */
+            zSound = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND_LIST, i);
+
+            /* Valid? */
+            if(*zSound != orxCHAR_NULL)
+            {
+              /* Adds it */
+              orxObject_AddSound(pstResult, zSound);
+            }
+          }
+        }
+
         /* *** FX *** */
 
         /* Has FX? */
@@ -6918,30 +6942,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               /* Deletes it */
               orxSpawner_Delete(pstSpawner);
               pstSpawner = orxNULL;
-            }
-          }
-        }
-
-        /* *** Sound *** */
-
-        /* Has sound? */
-        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
-        {
-          orxS32 i;
-
-          /* For all defined sounds */
-          for(i = 0; i < s32Count; i++)
-          {
-            const orxSTRING zSound;
-
-            /* Gets its name */
-            zSound = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND_LIST, i);
-
-            /* Valid? */
-            if(*zSound != orxCHAR_NULL)
-            {
-              /* Adds it */
-              orxObject_AddSound(pstResult, zSound);
             }
           }
         }
