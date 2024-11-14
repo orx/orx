@@ -1641,6 +1641,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
 {
   ScrollObject::Flag  xFlags = ScrollObject::FlagNone;
   ScrollObject       *poResult;
+  const orxSTRING     zInputSet;
 
   // Checks
   orxSTRUCTURE_ASSERT(_pstObject);
@@ -1692,15 +1693,22 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
     xFlags |= ScrollObject::FlagPausable;
   }
 
-  // Has input set?
-  if(orxConfig_HasValue(ScrollBase::szConfigScrollObjectInput))
+  // Gets input set
+  zInputSet = orxConfig_GetString(ScrollBase::szConfigScrollObjectInput);
+
+  // Valid?
+  if(*zInputSet != orxCHAR_NULL)
   {
-    // Stores it
-    poResult->mzInputSet = orxString_Store(orxConfig_GetString(ScrollBase::szConfigScrollObjectInput));
+    // Instance?
+    if((*zInputSet == orxCOMMAND_KC_GUID_MARKER) && (*(zInputSet + 1) == orxCHAR_NULL))
+    {
+      // Updates it
+      zInputSet = poResult->GetInstanceName();
+    }
 
     // Enables it & pushes it
-    if((orxInput_EnableSet(poResult->mzInputSet, orxTRUE) != orxSTATUS_FAILURE)
-    && (orxInput_PushSet(poResult->mzInputSet) != orxSTATUS_FAILURE))
+    if((orxInput_EnableSet(zInputSet, orxTRUE) != orxSTATUS_FAILURE)
+    && (orxInput_PushSet(zInputSet) != orxSTATUS_FAILURE))
     {
       // Updates flags
       xFlags |= ScrollObject::FlagInput;
@@ -1717,13 +1725,11 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
         xFlags |= ScrollObject::FlagInputBinding;
       }
 
+      // Stores its name
+      poResult->mzInputSet = orxInput_GetCurrentSet();
+
       // Pops set
       orxInput_PopSet();
-    }
-    else
-    {
-      // Clears set
-      poResult->mzInputSet = orxNULL;
     }
   }
 
@@ -1749,8 +1755,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
 
 void ScrollObjectBinderBase::DeleteObject(ScrollObject *_poObject)
 {
-  const orxSTRING zInstanceName;
-  orxBOOL         bObjectListBlockBackup;
+  orxBOOL bObjectListBlockBackup;
 
   // Checks
   orxSTRUCTURE_ASSERT(_poObject->GetOrxObject());
@@ -1770,15 +1775,6 @@ void ScrollObjectBinderBase::DeleteObject(ScrollObject *_poObject)
 
   // Restores object list blocking
   roGame.mbObjectListLocked = bObjectListBlockBackup;
-
-  // Gets its name
-  zInstanceName = _poObject->GetInstanceName();
-
-  // Checks
-  orxASSERT(zInstanceName && *zInstanceName != orxCHAR_NULL);
-
-  // Clears it
-  orxConfig_ClearSection(zInstanceName);
 
   // Removes object as user data
   orxObject_SetUserData(_poObject->GetOrxObject(), orxNULL);

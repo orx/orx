@@ -905,6 +905,16 @@ void ScrollObject::PopConfigSection() const
 
 void ScrollObject::SetOrxObject(orxOBJECT *_pstObject)
 {
+  // Had an object?
+  if(mpstObject != orxNULL)
+  {
+    // Checks
+    orxASSERT(*macInstanceName != orxCHAR_NULL);
+
+    // Clears its instance section
+    orxConfig_ClearSection(macInstanceName);
+  }
+
   // Stores it
   mpstObject = _pstObject;
 
@@ -914,6 +924,9 @@ void ScrollObject::SetOrxObject(orxOBJECT *_pstObject)
     // Stores its names
     mzName = orxObject_GetName(_pstObject);
     orxString_NPrint(macInstanceName, sizeof(macInstanceName), "0x%016llX", orxStructure_GetGUID(_pstObject));
+    
+    // Creates its instance section
+    orxConfig_SetParent(macInstanceName, mzName);
   }
   else
   {
