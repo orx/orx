@@ -1726,7 +1726,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
       }
 
       // Stores its name
-      poResult->mzInputSet = orxInput_GetCurrentSet();
+      poResult->mzInputSet = (zInputSet == poResult->GetInstanceName()) ? zInputSet : orxInput_GetCurrentSet();
 
       // Pops set
       orxInput_PopSet();
@@ -1775,6 +1775,13 @@ void ScrollObjectBinderBase::DeleteObject(ScrollObject *_poObject)
 
   // Restores object list blocking
   roGame.mbObjectListLocked = bObjectListBlockBackup;
+
+  // Has instance input set?
+  if(_poObject->mzInputSet == _poObject->GetInstanceName())
+  {
+    // Removes it
+    orxInput_RemoveSet(_poObject->mzInputSet);
+  }
 
   // Removes object as user data
   orxObject_SetUserData(_poObject->GetOrxObject(), orxNULL);
