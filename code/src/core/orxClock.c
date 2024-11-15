@@ -592,7 +592,7 @@ orxSTATUS orxFASTCALL orxClock_Init()
           if(sstClock.pstReferenceTable != orxNULL)
           {
             orxFLOAT fTickSize;
-            orxBOOL  bUseDefaultModifiers;
+            orxBOOL  bUseDefaultModifiers, bUseDisplayFrequency = orxFALSE;
 
             /* Gets init time */
             sstClock.dTime = orxSystem_GetTime();
@@ -618,6 +618,11 @@ orxSTATUS orxFASTCALL orxClock_Init()
                 /* Updates it */
                 orxConfig_SetFloat(orxCLOCK_KZ_CONFIG_FREQUENCY, (fTickSize == orxFLOAT_0) ? orxFLOAT_0 : orxFLOAT_1 / fTickSize);
               }
+              else
+              {
+                /* Updates status */
+                bUseDisplayFrequency = orxTRUE;
+              }
             }
 
             /* Updates modifiers status */
@@ -635,11 +640,18 @@ orxSTATUS orxFASTCALL orxClock_Init()
               /* Use default modifiers? */
               if(bUseDefaultModifiers != orxFALSE)
               {
-                /* Apply them */
+                /* Applies them */
                 orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_FIXED, orxCLOCK_KF_DEFAULT_MODIFIER_FIXED);
                 orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_MULTIPLY, orxCLOCK_KF_DEFAULT_MODIFIER_MULTIPLY);
                 orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_MAXED, orxCLOCK_KF_DEFAULT_MODIFIER_MAXED);
                 orxClock_SetModifier(sstClock.pstCore, orxCLOCK_MODIFIER_AVERAGE, orxCLOCK_KF_DEFAULT_MODIFIER_AVERAGE);
+              }
+
+              /* Use display frequency? */
+              if(bUseDisplayFrequency != orxFALSE)
+              {
+                /* Updates its tick size */
+                orxClock_SetTickSize(sstClock.pstCore, -orxFLOAT_1);
               }
 
               /* Sets it as its own owner */
@@ -1018,7 +1030,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
       orxU32    u32Flags = orxCLOCK_KU32_FLAG_NONE;
 
       /* Should match display refresh rate? */
-      if((orxConfig_HasValue(orxCLOCK_KZ_CONFIG_FREQUENCY) == orxFALSE) || (orxString_ICompare(orxConfig_GetString(orxCLOCK_KZ_CONFIG_FREQUENCY), orxCLOCK_KZ_DISPLAY) == 0))
+      if(orxString_ICompare(orxConfig_GetString(orxCLOCK_KZ_CONFIG_FREQUENCY), orxCLOCK_KZ_DISPLAY) == 0)
       {
         /* Clears its frequency */
         fFrequency = orxFLOAT_0;
