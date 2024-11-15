@@ -1085,8 +1085,16 @@ void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
             // Not paused?
             if(!orxClock_IsPaused(pstClock))
             {
+              orxCLOCK_INFO stClockInfo;
+
+              // Copies its info
+              orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
+
+              // Computes its DT
+              stClockInfo.fDT = orxClock_ComputeDT(pstClock, _rstInfo.fDT);
+
               // Updates object
-              poObject->Update(*orxClock_GetInfo(pstClock));
+              poObject->Update(stClockInfo);
             }
           }
           else

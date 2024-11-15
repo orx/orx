@@ -292,8 +292,7 @@ static orxOBJECT_STATIC sstObject;
 
 /** Semi-private, internal-use only forward declarations
  */
-orxVECTOR *orxFASTCALL  orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
-orxFLOAT orxFASTCALL    orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock);
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
 
 /** Update body scale
  */
@@ -5191,7 +5190,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
       orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
 
       /* Computes its DT */
-      stClockInfo.fDT = (orxClock_IsPaused(pstClock) != orxFALSE) ? orxFLOAT_0 : orxClock_ComputeDT(_pstClockInfo->fDT, pstClock);
+      stClockInfo.fDT = (orxClock_IsPaused(pstClock) != orxFALSE) ? orxFLOAT_0 : orxClock_ComputeDT(pstClock, _pstClockInfo->fDT);
     }
     else
     {

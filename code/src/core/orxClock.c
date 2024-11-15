@@ -173,77 +173,6 @@ static orxCLOCK_STATIC sstClock;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Computes DT according to modifier
- * @param[in]   _fDT                                  Real DT
- * @param[in]   _pstClock                             Concerned clock
- * @return      Modified DT
- */
-orxFLOAT orxFASTCALL orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock)
-{
-  orxFLOAT fResult = _fDT;
-
-  /* Fixed modifier? */
-  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED] != orxFLOAT_0)
-  {
-    /* Should match tick size? */
-    if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED] < orxFLOAT_0)
-    {
-      /* Has tick size? */
-      if(_pstClock->stClockInfo.fTickSize > orxFLOAT_0)
-      {
-        /* Updates result */
-        fResult = _pstClock->stClockInfo.fTickSize;
-      }
-    }
-    else
-    {
-      /* Updates result */
-      fResult = _pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED];
-    }
-  }
-
-  /* Multiplied modifier? */
-  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY] != orxFLOAT_0)
-  {
-    /* Updates result */
-    fResult *= _pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY];
-  }
-
-  /* Maxed modifier? */
-  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MAXED] != orxFLOAT_0)
-  {
-    /* Updates result */
-    fResult = orxMIN(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MAXED], fResult);
-  }
-
-  /* Average modifier? */
-  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_AVERAGE] != orxFLOAT_0)
-  {
-    orxU32 i, iCount, u32HistorySize;
-
-    /* Gets history size */
-    u32HistorySize = orxF2U(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_AVERAGE]);
-
-    /* For all history */
-    for(i = 0, iCount = orxMIN(_pstClock->u32HistoryIndex, u32HistorySize);
-        i < iCount;
-        i++)
-    {
-      /* Sums values */
-      fResult += _pstClock->afHistory[i];
-    }
-
-    /* Updates result */
-    fResult /= orxU2F(1 + iCount);
-
-    /* Updates history */
-    _pstClock->afHistory[_pstClock->u32HistoryIndex++ % u32HistorySize] = fResult;
-  }
-
-  /* Done! */
-  return fResult;
-}
-
 /** Finds a clock function storage
  * @param[in]   _pstClock                             Concerned clock
  * @param[in]   _pfnCallback                          Concerned callback
@@ -752,6 +681,77 @@ void orxFASTCALL orxClock_Exit()
   return;
 }
 
+/** Computes DT according to modifier
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _fDT                                  Real DT
+ * @return      Modified DT
+ */
+orxFLOAT orxFASTCALL orxClock_ComputeDT(const orxCLOCK *_pstClock, orxFLOAT _fDT)
+{
+  orxFLOAT fResult = _fDT;
+
+  /* Fixed modifier? */
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED] != orxFLOAT_0)
+  {
+    /* Should match tick size? */
+    if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED] < orxFLOAT_0)
+    {
+      /* Has tick size? */
+      if(_pstClock->stClockInfo.fTickSize > orxFLOAT_0)
+      {
+        /* Updates result */
+        fResult = _pstClock->stClockInfo.fTickSize;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      fResult = _pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_FIXED];
+    }
+  }
+
+  /* Multiplied modifier? */
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY] != orxFLOAT_0)
+  {
+    /* Updates result */
+    fResult *= _pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MULTIPLY];
+  }
+
+  /* Maxed modifier? */
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MAXED] != orxFLOAT_0)
+  {
+    /* Updates result */
+    fResult = orxMIN(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_MAXED], fResult);
+  }
+
+  /* Average modifier? */
+  if(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_AVERAGE] != orxFLOAT_0)
+  {
+    orxU32 i, iCount, u32HistorySize;
+
+    /* Gets history size */
+    u32HistorySize = orxF2U(_pstClock->stClockInfo.afModifierList[orxCLOCK_MODIFIER_AVERAGE]);
+
+    /* For all history */
+    for(i = 0, iCount = orxMIN(_pstClock->u32HistoryIndex, u32HistorySize);
+        i < iCount;
+        i++)
+    {
+      /* Sums values */
+      fResult += _pstClock->afHistory[i];
+    }
+
+    /* Updates result */
+    fResult /= orxU2F(1 + iCount);
+
+    /* Updates history */
+    _pstClock->afHistory[((orxCLOCK *)_pstClock)->u32HistoryIndex++ % u32HistorySize] = fResult;
+  }
+
+  /* Done! */
+  return fResult;
+}
+
 /** Updates the clock system
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
@@ -829,7 +829,7 @@ orxSTATUS orxFASTCALL orxClock_Update()
           orxCLOCK_FUNCTION_STORAGE  *pstFunctionStorage, *pstNextFunctionStorage;
 
           /* Gets clock modified DT */
-          fClockDT = orxClock_ComputeDT(pstClock->fPartialDT, pstClock);
+          fClockDT = orxClock_ComputeDT(pstClock, pstClock->fPartialDT);
 
           /* Updates clock DT */
           pstClock->stClockInfo.fDT = fClockDT;
@@ -1129,7 +1129,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
         if((pstClock = orxClock_Get(orxCLOCK_KZ_CORE)) != orxNULL)
         {
           /* Updates clock's DT */
-          pstResult->stClockInfo.fDT = orxClock_ComputeDT(pstClock->stClockInfo.fDT, pstResult);
+          pstResult->stClockInfo.fDT = orxClock_ComputeDT(pstResult, pstClock->stClockInfo.fDT);
         }
 
         /* Stores its reference key */
