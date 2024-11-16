@@ -992,130 +992,126 @@ void ScrollBase::BaseExit()
 
 void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
 {
-  // Not paused?
-  if(!mbIsPaused)
+  orxOBJECT *pstObject;
+
+  // Locks object list
+  mbObjectListLocked = orxTRUE;
+
+  // For all enabled objects
+  for(pstObject = orxObject_GetNextEnabled(orxNULL, orxSTRINGID_UNDEFINED);
+      pstObject;
+      pstObject = orxObject_GetNextEnabled(pstObject, orxSTRINGID_UNDEFINED))
   {
-    orxOBJECT *pstObject;
-
-    // Locks object list
-    mbObjectListLocked = orxTRUE;
-
-    // For all enabled objects
-    for(pstObject = orxObject_GetNextEnabled(orxNULL, orxSTRINGID_UNDEFINED);
-        pstObject;
-        pstObject = orxObject_GetNextEnabled(pstObject, orxSTRINGID_UNDEFINED))
+    // Not paused and not pending deletion?
+    if(!orxObject_IsPaused(pstObject)
+    && (orxObject_GetLifeTime(pstObject) != orxFLOAT_0))
     {
-      // Not paused and not pending deletion?
-      if(!orxObject_IsPaused(pstObject)
-      && (orxObject_GetLifeTime(pstObject) != orxFLOAT_0))
+      ScrollObject *poObject;
+
+      // Gets its associated scroll object
+      poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
+
+      // Valid?
+      if(poObject)
       {
-        ScrollObject *poObject;
+        orxCLOCK *pstClock;
 
-        // Gets its associated scroll object
-        poObject = (ScrollObject *)orxObject_GetUserData(pstObject);
-
-        // Valid?
-        if(poObject)
+        // Has input set?
+        if(poObject->mzInputSet != orxNULL)
         {
-          orxCLOCK *pstClock;
+          // Pushes input set
+          orxInput_PushSet(poObject->mzInputSet);
 
-          // Has input set?
-          if(poObject->mzInputSet != orxNULL)
+          // Has trigger?
+          if(orxOBJECT_GET_STRUCTURE(pstObject, TRIGGER))
           {
-            // Pushes input set
-            orxInput_PushSet(poObject->mzInputSet);
-
-            // Has trigger?
-            if(orxOBJECT_GET_STRUCTURE(pstObject, TRIGGER))
+            // For all inputs
+            for(const orxSTRING zInput = orxInput_GetNext(orxNULL); zInput; zInput = orxInput_GetNext(zInput))
             {
-              // For all inputs
-              for(const orxSTRING zInput = orxInput_GetNext(orxNULL); zInput; zInput = orxInput_GetNext(zInput))
+              orxCHAR acBuffer[256], *pc = acBuffer;
+              orxBOOL bInstant = orxFALSE;
+
+              // Adds propagation stop marker
+              *pc++ = orxTRIGGER_KC_STOP_MARKER;
+
+              // Has new status?
+              if(orxInput_HasNewStatus(zInput))
               {
-                orxCHAR acBuffer[256], *pc = acBuffer;
-                orxBOOL bInstant = orxFALSE;
+                // Adds instant marker
+                *pc++ = scConfigScrollObjectInstantMarker;
 
-                // Adds propagation stop marker
-                *pc++ = orxTRIGGER_KC_STOP_MARKER;
+                // Updates status
+                bInstant = orxTRUE;
+              }
 
-                // Has new status?
-                if(orxInput_HasNewStatus(zInput))
+              // Is inactive?
+              if(!orxInput_IsActive(zInput))
+              {
+                // Adds negative marker
+                *pc++ = scConfigScrollObjectNegativeMarker;
+              }
+
+              // Adds input name
+              orxString_NPrint(pc, sizeof(acBuffer) - (orxU32)(pc - acBuffer), "%s", zInput);
+              pc = acBuffer;
+
+              // Fires trigger
+              if((orxObject_FireTrigger(pstObject, szConfigScrollObjectInput, (const orxSTRING *)&pc, 1) == orxSTATUS_FAILURE) && (bInstant != orxFALSE))
+              {
+                // Gets non-instant trigger event
+                for(pc += 2; *pc != orxCHAR_NULL; pc++)
                 {
-                  // Adds instant marker
-                  *pc++ = scConfigScrollObjectInstantMarker;
-
-                  // Updates status
-                  bInstant = orxTRUE;
+                  *(pc - 1) = *pc;
                 }
-
-                // Is inactive?
-                if(!orxInput_IsActive(zInput))
-                {
-                  // Adds negative marker
-                  *pc++ = scConfigScrollObjectNegativeMarker;
-                }
-
-                // Adds input name
-                orxString_NPrint(pc, sizeof(acBuffer) - (orxU32)(pc - acBuffer), "%s", zInput);
+                *(pc - 1) = orxCHAR_NULL;
                 pc = acBuffer;
 
-                // Fires trigger
-                if((orxObject_FireTrigger(pstObject, szConfigScrollObjectInput, (const orxSTRING *)&pc, 1) == orxSTATUS_FAILURE) && (bInstant != orxFALSE))
-                {
-                  // Gets non-instant trigger event
-                  for(pc += 2; *pc != orxCHAR_NULL; pc++)
-                  {
-                    *(pc - 1) = *pc;
-                  }
-                  *(pc - 1) = orxCHAR_NULL;
-                  pc = acBuffer;
-
-                  // Fires it
-                  orxObject_FireTrigger(pstObject, szConfigScrollObjectInput, (const orxSTRING *)&pc, 1);
-                }
+                // Fires it
+                orxObject_FireTrigger(pstObject, szConfigScrollObjectInput, (const orxSTRING *)&pc, 1);
               }
             }
           }
+        }
 
-          // Gets its clock
-          pstClock = orxObject_GetClock(pstObject);
+        // Gets its clock
+        pstClock = orxObject_GetClock(pstObject);
 
-          // Valid?
-          if(pstClock)
+        // Valid?
+        if(pstClock)
+        {
+          // Not paused?
+          if(!orxClock_IsPaused(pstClock))
           {
-            // Not paused?
-            if(!orxClock_IsPaused(pstClock))
-            {
-              orxCLOCK_INFO stClockInfo;
+            orxCLOCK_INFO stClockInfo;
 
-              // Copies its info
-              orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
+            // Copies its info
+            orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
 
-              // Computes its DT
-              stClockInfo.fDT = orxClock_ComputeDT(pstClock, _rstInfo.fDT);
+            // Computes its DT
+            stClockInfo.fDT = orxClock_ComputeDT(pstClock, _rstInfo.fDT);
 
-              // Updates object
-              poObject->Update(stClockInfo);
-            }
-          }
-          else
-          {
             // Updates object
-            poObject->Update(_rstInfo);
+            poObject->Update(stClockInfo);
           }
+        }
+        else
+        {
+          // Updates object
+          poObject->Update(_rstInfo);
+        }
 
-          // Has input set?
-          if(poObject->mzInputSet != orxNULL)
-          {
-            // Pops input set
-            orxInput_PopSet();
-          }
+        // Has input set?
+        if(poObject->mzInputSet != orxNULL)
+        {
+          // Pops input set
+          orxInput_PopSet();
         }
       }
     }
-
-    // Unlocks object list
-    mbObjectListLocked = orxFALSE;
   }
+
+  // Unlocks object list
+  mbObjectListLocked = orxFALSE;
 
   // Calls child update
   Update(_rstInfo);
@@ -1752,6 +1748,13 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
   {
     // Calls its start game callback
     poResult->OnStartGame();
+  }
+
+  // Is game paused?
+  if(roGame.IsGamePaused())
+  {
+    // Calls its pause game callback
+    poResult->OnPauseGame(orxTRUE);
   }
 
   // Pops section
