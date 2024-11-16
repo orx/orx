@@ -217,6 +217,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetParent(const orxSTRIN
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRING _zSectionName);
 
+/** Gets parent distance, ie. how far up the ancestry of a given section is a parent (does not consider the default parent)
+ * @param[in] _zSectionName     Concerned section
+ * @param[in] _zParentName      Parent section name to check
+ * @return 1 for a direct parent, 2 for a grandparent, etc., and 0 if not found in the ancestry
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetParentDistance(const orxSTRING _zSectionName, const orxSTRING _zParentName);
+
 /** Sets default parent for all sections
  * @param[in] _zSectionName     Section name that will be used as an implicit default parent section for all config sections, if orxNULL is provided, default parent will be removed
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE

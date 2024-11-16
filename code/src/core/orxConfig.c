@@ -6063,6 +6063,46 @@ const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)
   return zResult;
 }
 
+/** Gets parent distance, ie. how far up the ancestry of a given section is a parent (does not consider the default parent)
+ * @param[in] _zSectionName     Concerned section
+ * @param[in] _zParentName      Parent section name to check
+ * @return 1 for a direct parent, 2 for a grandparent, etc., and 0 if not found in the ancestry
+ */
+orxU32 orxFASTCALL orxConfig_GetParentDistance(const orxSTRING _zSectionName, const orxSTRING _zParentName)
+{
+  orxCONFIG_SECTION  *pstSection;
+  orxU32              u32Result = 0, i;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSectionName != orxNULL);
+  orxASSERT(_zParentName != orxNULL);
+
+  /* Gets section */
+  pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, orxString_Hash(_zSectionName));
+
+  /* Valid? */
+  if(pstSection != orxNULL)
+  {
+    /* For all parents */
+    for(i = 1, pstSection = pstSection->pstParent;
+        (pstSection != orxNULL) && (pstSection != orxHANDLE_UNDEFINED);
+        i++, pstSection = pstSection->pstParent)
+    {
+      /* Found? */
+      if(orxString_Compare(pstSection->zName, _zParentName) == 0)
+      {
+        /* Updates result */
+        u32Result = i;
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
 /** Sets default parent for all sections
 * @param[in] _zSectionName     Section name that will be used as an implicit default parent section for all config sections, if orxNULL is provided, default parent will be removed
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
