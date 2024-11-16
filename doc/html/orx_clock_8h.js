@@ -37,6 +37,7 @@ var orx_clock_8h =
     ] ],
     [ "orxClock_AddGlobalTimer", "group__orx_clock.html#ga153e90a40237dabd7a1e5025ec4b8e33", null ],
     [ "orxClock_AddTimer", "group__orx_clock.html#gad1d377c0cfe953d16d614b44bae42e6c", null ],
+    [ "orxClock_ComputeDT", "group__orx_clock.html#ga038f416bbf90c7d84161bc07d0d5aca1", null ],
     [ "orxClock_Create", "group__orx_clock.html#ga1fe33b0c4025cc6214f3083bdde0d3d8", null ],
     [ "orxClock_CreateFromConfig", "group__orx_clock.html#ga2877a0cb560d9394397ce42b1cf71ec7", null ],
     [ "orxClock_Delete", "group__orx_clock.html#ga93f8fe8c1e9aa8d220c1513d280f20ba", null ],

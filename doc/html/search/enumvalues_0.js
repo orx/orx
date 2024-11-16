@@ -1,5 +1,13 @@
 var searchData=
 [
+  ['orxandroid_5fevent_5faccelerate',['orxANDROID_EVENT_ACCELERATE',['../group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a3c82e1c6c93ac54c07bc38f6bc3136bb',1,'orxAndroid.h']]],
+  ['orxandroid_5fevent_5fkey_5fdown',['orxANDROID_EVENT_KEY_DOWN',['../group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a9c1bf67951bd18db71486689b36a4df2',1,'orxAndroid.h']]],
+  ['orxandroid_5fevent_5fkey_5fup',['orxANDROID_EVENT_KEY_UP',['../group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a58c7e9b548f3be75d3631abbdbe9b019',1,'orxAndroid.h']]],
+  ['orxandroid_5fevent_5fnone',['orxANDROID_EVENT_NONE',['../group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a943518bccab04ef4942374f3d93722aa',1,'orxAndroid.h']]],
+  ['orxandroid_5fevent_5fnumber',['orxANDROID_EVENT_NUMBER',['../group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a1fa1baea8809af881e244e0be81e3b6c',1,'orxAndroid.h']]],
+  ['orxandroid_5fevent_5fsurface_5fchange',['orxANDROID_EVENT_SURFACE_CHANGE',['../group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a097311b3c400ae4571a38ec9c7b528df',1,'orxAndroid.h']]],
+  ['orxandroid_5fevent_5fsurface_5fcreate',['orxANDROID_EVENT_SURFACE_CREATE',['../group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6ac6deff249d1728298b53668941d5d0af',1,'orxAndroid.h']]],
+  ['orxandroid_5fevent_5fsurface_5fdestroy',['orxANDROID_EVENT_SURFACE_DESTROY',['../group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a88688ddc3e5f10377bc7763fcdd1729a',1,'orxAndroid.h']]],
   ['orxanim_5fevent_5fcustom_5fevent',['orxANIM_EVENT_CUSTOM_EVENT',['../group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0a1d89ac9eb00e961ee1f3e30ff5655707',1,'orxAnim.h']]],
   ['orxanim_5fevent_5fcut',['orxANIM_EVENT_CUT',['../group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0a3ad02947e37f6a84a131dba87c132c0c',1,'orxAnim.h']]],
   ['orxanim_5fevent_5floop',['orxANIM_EVENT_LOOP',['../group__orx_anim.html#gga35c8d85da4576521adb85018dd46f3e0a83d9ae013834c5fc7bf9990606d2ffc5',1,'orxAnim.h']]],

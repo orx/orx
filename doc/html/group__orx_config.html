@@ -207,6 +207,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga64131912a289b067324ced29eee5cc28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9c67829801e603be067ba7d3bfa5127e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga9c67829801e603be067ba7d3bfa5127e">orxConfig_GetParent</a> (const orxSTRING _zSectionName)</td></tr>
 <tr class="separator:ga9c67829801e603be067ba7d3bfa5127e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1c2e081eff7492f0a198d89fe887a867"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga1c2e081eff7492f0a198d89fe887a867">orxConfig_GetParentDistance</a> (const orxSTRING _zSectionName, const orxSTRING _zParentName)</td></tr>
+<tr class="separator:ga1c2e081eff7492f0a198d89fe887a867"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga70670ce00716ab2003d48c63c54319d5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga70670ce00716ab2003d48c63c54319d5">orxConfig_GetS32</a> (const orxSTRING _zKey)</td></tr>
 <tr class="separator:ga70670ce00716ab2003d48c63c54319d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaee6c39874f4e63e136d7433e2b8e2959"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaee6c39874f4e63e136d7433e2b8e2959">orxConfig_GetS64</a> (const orxSTRING _zKey)</td></tr>
@@ -1295,6 +1297,40 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Section's parent name if set, orxSTRING_EMPTY if no parent has been forced or orxNULL otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga1c2e081eff7492f0a198d89fe887a867"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxConfig_GetParentDistance </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zSectionName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zParentName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets parent distance, ie. how far up the ancestry of a given section is a parent (does not consider the default parent) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSectionName</td><td>Concerned section </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zParentName</td><td>Parent section name to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 for a direct parent, 2 for a grandparent, etc., and 0 if not found in the ancestry </dd></dl>
 
 </div>
 </div>

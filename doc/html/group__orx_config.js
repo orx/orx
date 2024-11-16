@@ -43,6 +43,7 @@ var group__orx_config =
     [ "orxConfig_GetOrigin", "group__orx_config.html#ga4939987f72a20bb800f868eba8bee3d2", null ],
     [ "orxConfig_GetOriginID", "group__orx_config.html#ga64131912a289b067324ced29eee5cc28", null ],
     [ "orxConfig_GetParent", "group__orx_config.html#ga9c67829801e603be067ba7d3bfa5127e", null ],
+    [ "orxConfig_GetParentDistance", "group__orx_config.html#ga1c2e081eff7492f0a198d89fe887a867", null ],
     [ "orxConfig_GetS32", "group__orx_config.html#ga70670ce00716ab2003d48c63c54319d5", null ],
     [ "orxConfig_GetS64", "group__orx_config.html#gaee6c39874f4e63e136d7433e2b8e2959", null ],
     [ "orxConfig_GetSection", "group__orx_config.html#ga58f521eb01abf13b8663ebdf1fdd7a57", null ],
