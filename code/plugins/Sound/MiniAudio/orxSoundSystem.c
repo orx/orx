@@ -4617,7 +4617,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetVolume(orxSOUNDSYSTEM_SOUND *_
   if(_pstSound->bReady != orxFALSE)
   {
     /* Sets volume */
-    ma_sound_set_volume(&(_pstSound->stSound), _fVolume);
+    ma_sound_set_volume(&(_pstSound->stSound), orxCLAMP(_fVolume, orxFLOAT_0, orxFLOAT_1));
   }
   else
   {
@@ -4625,7 +4625,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetVolume(orxSOUNDSYSTEM_SOUND *_
 
     /* Prepares task parameter */
     pstTaskParam          = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
-    pstTaskParam->fVolume = _fVolume;
+    pstTaskParam->fVolume = orxCLAMP(_fVolume, orxFLOAT_0, orxFLOAT_1);
 
     /* Runs set volume task */
     eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetVolumeTask, orxNULL, orxNULL, pstTaskParam);

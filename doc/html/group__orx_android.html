@@ -109,6 +109,7 @@ $(document).ready(function(){initNavTree('group__orx_android.html','');});
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">OrxAndroid</div>  </div>
@@ -117,9 +118,7 @@ $(document).ready(function(){initNavTree('group__orx_android.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html">orxANDROID_KEY_EVENT</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html">orxANDROID_SURFACE_CHANGED_EVENT</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html">orxANDROID_EVENT_PAYLOAD</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
@@ -132,24 +131,26 @@ Macros</h2></td></tr>
 <tr class="separator:gab716135367c8f2c971827d19e46a2e5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga45308ee9088638007a8dfb5133ba6e25"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga45308ee9088638007a8dfb5133ba6e25">LOOPER_ID_SENSOR</a>&#160;&#160;&#160;LOOPER_ID_USER</td></tr>
 <tr class="separator:ga45308ee9088638007a8dfb5133ba6e25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga550ffc6e6dad9a71a4a746d72c35709a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga550ffc6e6dad9a71a4a746d72c35709a">orxANDROID_EVENT_KEYBOARD_DOWN</a>&#160;&#160;&#160;0</td></tr>
-<tr class="separator:ga550ffc6e6dad9a71a4a746d72c35709a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaca0657d8a701bf22499cd348acce246d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#gaca0657d8a701bf22499cd348acce246d">orxANDROID_EVENT_KEYBOARD_UP</a>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:gaca0657d8a701bf22499cd348acce246d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa096d9d24dd165d54a7b302af09267ff"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#gaa096d9d24dd165d54a7b302af09267ff">orxANDROID_EVENT_SURFACE_CHANGED</a>&#160;&#160;&#160;2</td></tr>
-<tr class="separator:gaa096d9d24dd165d54a7b302af09267ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0cc518bbc6da8cb86d21aa071da39db3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga0cc518bbc6da8cb86d21aa071da39db3">orxANDROID_EVENT_SURFACE_CREATED</a>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:ga0cc518bbc6da8cb86d21aa071da39db3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf58cbf6efdf1f84d0d307885a44158d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#gaf58cbf6efdf1f84d0d307885a44158d2">orxANDROID_EVENT_SURFACE_DESTROYED</a>&#160;&#160;&#160;0</td></tr>
-<tr class="separator:gaf58cbf6efdf1f84d0d307885a44158d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga12c34ada03ea722b1436196ffcc71e7f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga12c34ada03ea722b1436196ffcc71e7f">orxANDROID_EVENT_TYPE_ACCELERATE</a>&#160;&#160;&#160;(<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>)(<a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a> + 2)</td></tr>
-<tr class="separator:ga12c34ada03ea722b1436196ffcc71e7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2571fc956eb158bdd227cc4477fd5e6c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga2571fc956eb158bdd227cc4477fd5e6c">orxANDROID_EVENT_TYPE_KEYBOARD</a>&#160;&#160;&#160;(<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>)(<a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a> + 0)</td></tr>
-<tr class="separator:ga2571fc956eb158bdd227cc4477fd5e6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae1fe3d56113fcf936fd4ef5fc20e9d81"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#gae1fe3d56113fcf936fd4ef5fc20e9d81">orxANDROID_EVENT_TYPE_SURFACE</a>&#160;&#160;&#160;(<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>)(<a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a> + 1)</td></tr>
-<tr class="separator:gae1fe3d56113fcf936fd4ef5fc20e9d81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6b733850fcd358e5fc35c4aca02abc69"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga6b733850fcd358e5fc35c4aca02abc69">orxANDROID_KU32_MAX_JOYSTICK_NUMBER</a>&#160;&#160;&#160;PADDLEBOAT_MAX_CONTROLLERS</td></tr>
 <tr class="separator:ga6b733850fcd358e5fc35c4aca02abc69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga764758c200a0c028790b29455b41e26c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga764758c200a0c028790b29455b41e26c">orxEVENT_TYPE_ANDROID</a>&#160;&#160;&#160;(<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>)(<a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a> + 0)</td></tr>
+<tr class="separator:ga764758c200a0c028790b29455b41e26c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:ga47388b128fba88aa32d4711d93b3def6"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga47388b128fba88aa32d4711d93b3def6">orxANDROID_EVENT</a> { <br />
+&#160;&#160;<a class="el" href="group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a9c1bf67951bd18db71486689b36a4df2">orxANDROID_EVENT_KEY_DOWN</a> = 0, 
+<a class="el" href="group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a58c7e9b548f3be75d3631abbdbe9b019">orxANDROID_EVENT_KEY_UP</a>, 
+<a class="el" href="group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6ac6deff249d1728298b53668941d5d0af">orxANDROID_EVENT_SURFACE_CREATE</a>, 
+<a class="el" href="group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a88688ddc3e5f10377bc7763fcdd1729a">orxANDROID_EVENT_SURFACE_DESTROY</a>, 
+<br />
+&#160;&#160;<a class="el" href="group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a097311b3c400ae4571a38ec9c7b528df">orxANDROID_EVENT_SURFACE_CHANGE</a>, 
+<a class="el" href="group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a3c82e1c6c93ac54c07bc38f6bc3136bb">orxANDROID_EVENT_ACCELERATE</a>, 
+<a class="el" href="group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a1fa1baea8809af881e244e0be81e3b6c">orxANDROID_EVENT_NUMBER</a>, 
+<a class="el" href="group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a943518bccab04ef4942374f3d93722aa">orxANDROID_EVENT_NONE</a> = orxENUM_NONE
+<br />
+ }</td></tr>
+<tr class="separator:ga47388b128fba88aa32d4711d93b3def6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -159,6 +160,8 @@ Functions</h2></td></tr>
 <tr class="separator:gae61fe62bd38977850791da3eb9522237"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2655223eb8e84adf8378018f210c1604"><td class="memItemLeft" align="right" valign="top">ANativeWindow *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga2655223eb8e84adf8378018f210c1604">orxAndroid_GetNativeWindow</a> ()</td></tr>
 <tr class="separator:ga2655223eb8e84adf8378018f210c1604"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga33ad98ce3db4a269187796ae99060c0f"><td class="memItemLeft" align="right" valign="top">orxFLOAT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga33ad98ce3db4a269187796ae99060c0f">orxAndroid_JNI_GetPhysicalFrameRate</a> ()</td></tr>
+<tr class="separator:ga33ad98ce3db4a269187796ae99060c0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga10c24f6007e9bfd70608c16dc103f17d"><td class="memItemLeft" align="right" valign="top">orxU32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga10c24f6007e9bfd70608c16dc103f17d">orxAndroid_JNI_GetRotation</a> ()</td></tr>
 <tr class="separator:ga10c24f6007e9bfd70608c16dc103f17d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8497f0065453b50165d9ac20dd951dba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_android.html#ga8497f0065453b50165d9ac20dd951dba">orxAndroid_JNI_SetupThread</a> (<a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
@@ -225,119 +228,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00055">55</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga550ffc6e6dad9a71a4a746d72c35709a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxANDROID_EVENT_KEYBOARD_DOWN&#160;&#160;&#160;0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00109">109</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="gaca0657d8a701bf22499cd348acce246d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxANDROID_EVENT_KEYBOARD_UP&#160;&#160;&#160;1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00110">110</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="gaa096d9d24dd165d54a7b302af09267ff"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxANDROID_EVENT_SURFACE_CHANGED&#160;&#160;&#160;2</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00115">115</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga0cc518bbc6da8cb86d21aa071da39db3"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxANDROID_EVENT_SURFACE_CREATED&#160;&#160;&#160;1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00114">114</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="gaf58cbf6efdf1f84d0d307885a44158d2"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxANDROID_EVENT_SURFACE_DESTROYED&#160;&#160;&#160;0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00113">113</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga12c34ada03ea722b1436196ffcc71e7f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxANDROID_EVENT_TYPE_ACCELERATE&#160;&#160;&#160;(<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>)(<a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a> + 2)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00117">117</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga2571fc956eb158bdd227cc4477fd5e6c"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxANDROID_EVENT_TYPE_KEYBOARD&#160;&#160;&#160;(<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>)(<a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a> + 0)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00108">108</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="gae1fe3d56113fcf936fd4ef5fc20e9d81"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define orxANDROID_EVENT_TYPE_SURFACE&#160;&#160;&#160;(<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>)(<a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a> + 1)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00112">112</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00057">57</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
 
 </div>
 </div>
@@ -352,6 +243,54 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Definition at line <a class="el" href="orx_android_activity_8h_source.html#l00052">52</a> of file <a class="el" href="orx_android_activity_8h_source.html">orxAndroidActivity.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga764758c200a0c028790b29455b41e26c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxEVENT_TYPE_ANDROID&#160;&#160;&#160;(<a class="el" href="group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8">orxEVENT_TYPE</a>)(<a class="el" href="group__orx_event.html#gga4576598772ee9b827a80ca5b6c9a6cd8a7fc44ce327d3d4216f00d48b372af84b">orxEVENT_TYPE_FIRST_RESERVED</a> + 0)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00053">53</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a class="anchor" id="ga47388b128fba88aa32d4711d93b3def6"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="group__orx_android.html#ga47388b128fba88aa32d4711d93b3def6">orxANDROID_EVENT</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Event enum </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a class="anchor" id="gga47388b128fba88aa32d4711d93b3def6a9c1bf67951bd18db71486689b36a4df2"></a>orxANDROID_EVENT_KEY_DOWN&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga47388b128fba88aa32d4711d93b3def6a58c7e9b548f3be75d3631abbdbe9b019"></a>orxANDROID_EVENT_KEY_UP&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga47388b128fba88aa32d4711d93b3def6ac6deff249d1728298b53668941d5d0af"></a>orxANDROID_EVENT_SURFACE_CREATE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga47388b128fba88aa32d4711d93b3def6a88688ddc3e5f10377bc7763fcdd1729a"></a>orxANDROID_EVENT_SURFACE_DESTROY&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga47388b128fba88aa32d4711d93b3def6a097311b3c400ae4571a38ec9c7b528df"></a>orxANDROID_EVENT_SURFACE_CHANGE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga47388b128fba88aa32d4711d93b3def6a3c82e1c6c93ac54c07bc38f6bc3136bb"></a>orxANDROID_EVENT_ACCELERATE&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga47388b128fba88aa32d4711d93b3def6a1fa1baea8809af881e244e0be81e3b6c"></a>orxANDROID_EVENT_NUMBER&#160;</td><td class="fielddoc">
+</td></tr>
+<tr><td class="fieldname"><a class="anchor" id="gga47388b128fba88aa32d4711d93b3def6a943518bccab04ef4942374f3d93722aa"></a>orxANDROID_EVENT_NONE&#160;</td><td class="fielddoc">
+</td></tr>
+</table>
+
+<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00066">66</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
 
 </div>
 </div>
@@ -384,7 +323,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get the internal storage path </p>
+<p>Gets the internal storage path </p>
 
 </div>
 </div>
@@ -404,6 +343,22 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga33ad98ce3db4a269187796ae99060c0f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxFLOAT orxAndroid_JNI_GetPhysicalFrameRate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the physical frame rate </p>
+
+</div>
+</div>
 <a class="anchor" id="ga10c24f6007e9bfd70608c16dc103f17d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -416,7 +371,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get the orientation </p>
+<p>Gets the orientation </p>
 
 </div>
 </div>

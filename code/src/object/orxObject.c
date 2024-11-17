@@ -108,6 +108,7 @@
 
 #define orxOBJECT_KC_PATH_SEPARATOR             '.'
 #define orxOBJECT_KC_PATH_WILDCARD              '*'
+#define orxOBJECT_KC_PATH_INHERITANCE           '@'
 #define orxOBJECT_KC_PATH_INDEX_START           '['
 #define orxOBJECT_KC_PATH_INDEX_STOP            ']'
 
@@ -292,8 +293,7 @@ static orxOBJECT_STATIC sstObject;
 
 /** Semi-private, internal-use only forward declarations
  */
-orxVECTOR *orxFASTCALL  orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
-orxFLOAT orxFASTCALL    orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock);
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
 
 /** Update body scale
  */
@@ -4716,7 +4716,7 @@ void orxFASTCALL orxObject_ApplyFXRecursive(orxOBJECT *_pstObject, const orxCLOC
 
 /* Finds next child
  */
-static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObject, const orxSTRING _zName, orxS32 *_ps32Skip, orxBOOL _bRecursive, orxOBJECT *(orxFASTCALL *_pfnGetChild)(const orxOBJECT *), orxOBJECT *(orxFASTCALL *_pfnGetSibling)(const orxOBJECT *))
+static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObject, const orxSTRING _zName, orxS32 *_ps32Skip, orxBOOL _bRecursive, orxBOOL _bCheckParents, orxOBJECT *(orxFASTCALL *_pfnGetChild)(const orxOBJECT *), orxOBJECT *(orxFASTCALL *_pfnGetSibling)(const orxOBJECT *))
 {
   orxOBJECT *pstChild, *pstResult = orxNULL;
 
@@ -4725,8 +4725,16 @@ static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObjec
       pstChild != orxNULL;
       pstChild = _pfnGetSibling(pstChild))
   {
+    const orxSTRING zChildName;
+
+    /* Gets child name */
+    zChildName = orxObject_GetName(pstChild);
+
     /* Found? */
-    if(((*_zName == orxCHAR_NULL) || (orxString_Compare(_zName, orxObject_GetName(pstChild)) == 0))
+    if(((*_zName == orxCHAR_NULL)
+     || (orxString_Compare(_zName, zChildName) == 0)
+     || ((_bCheckParents != orxFALSE)
+      && (orxConfig_GetParentDistance(zChildName, _zName) > 0)))
     && ((*_ps32Skip)-- <= 0))
     {
       /* Updates result */
@@ -4745,7 +4753,7 @@ static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObjec
       orxOBJECT *pstObject;
 
       /* Finds object recursively */
-      pstObject = orxObject_FindNextChild(pstChild, _zName, _ps32Skip, orxTRUE, _pfnGetChild, _pfnGetSibling);
+      pstObject = orxObject_FindNextChild(pstChild, _zName, _ps32Skip, orxTRUE, _bCheckParents, _pfnGetChild, _pfnGetSibling);
 
       /* Found? */
       if(pstObject != orxNULL)
@@ -4835,8 +4843,20 @@ static orxINLINE orxOBJECT *orxObject_FindChildInternal(const orxOBJECT *_pstObj
         /* Should continue? */
         if(bValid != orxFALSE)
         {
+          orxBOOL bCheckParents = orxFALSE;
+
+          /* Inheritance marker? */
+          if(*pcToken == orxOBJECT_KC_PATH_INHERITANCE)
+          {
+            /* Updates status */
+            bCheckParents = orxTRUE;
+
+            /* Updates token */
+            pcToken++;
+          }
+
           /* Finds current object */
-          pstObject = orxObject_FindNextChild(pstObject, pcToken, &s32Skip, bWildcard, _pfnGetChild, _pfnGetSibling);
+          pstObject = orxObject_FindNextChild(pstObject, pcToken, &s32Skip, bWildcard, bCheckParents, _pfnGetChild, _pfnGetSibling);
 
           /* Updates status */
           bWildcard = orxFALSE;
@@ -4856,7 +4876,7 @@ static orxINLINE orxOBJECT *orxObject_FindChildInternal(const orxOBJECT *_pstObj
       orxS32 s32Skip = 0;
 
       /* Updates result */
-      pstResult = (bWildcard != orxFALSE) ? orxObject_FindNextChild(pstObject, orxSTRING_EMPTY, &s32Skip, orxTRUE, _pfnGetChild, _pfnGetSibling) : (orxOBJECT *)pstObject;
+      pstResult = (bWildcard != orxFALSE) ? orxObject_FindNextChild(pstObject, orxSTRING_EMPTY, &s32Skip, orxTRUE, orxFALSE, _pfnGetChild, _pfnGetSibling) : (orxOBJECT *)pstObject;
     }
     else
     {
@@ -5191,7 +5211,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
       orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
 
       /* Computes its DT */
-      stClockInfo.fDT = (orxClock_IsPaused(pstClock) != orxFALSE) ? orxFLOAT_0 : orxClock_ComputeDT(_pstClockInfo->fDT, pstClock);
+      stClockInfo.fDT = (orxClock_IsPaused(pstClock) != orxFALSE) ? orxFLOAT_0 : orxClock_ComputeDT(pstClock, _pstClockInfo->fDT);
     }
     else
     {
@@ -6817,6 +6837,30 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Sets angular velocity? */
         orxObject_SetAngularVelocity(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY));
 
+        /* *** Sound *** */
+
+        /* Has sound? */
+        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
+        {
+          orxS32 i;
+
+          /* For all defined sounds */
+          for(i = 0; i < s32Count; i++)
+          {
+            const orxSTRING zSound;
+
+            /* Gets its name */
+            zSound = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND_LIST, i);
+
+            /* Valid? */
+            if(*zSound != orxCHAR_NULL)
+            {
+              /* Adds it */
+              orxObject_AddSound(pstResult, zSound);
+            }
+          }
+        }
+
         /* *** FX *** */
 
         /* Has FX? */
@@ -6918,30 +6962,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
               /* Deletes it */
               orxSpawner_Delete(pstSpawner);
               pstSpawner = orxNULL;
-            }
-          }
-        }
-
-        /* *** Sound *** */
-
-        /* Has sound? */
-        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
-        {
-          orxS32 i;
-
-          /* For all defined sounds */
-          for(i = 0; i < s32Count; i++)
-          {
-            const orxSTRING zSound;
-
-            /* Gets its name */
-            zSound = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND_LIST, i);
-
-            /* Valid? */
-            if(*zSound != orxCHAR_NULL)
-            {
-              /* Adds it */
-              orxObject_AddSound(pstResult, zSound);
             }
           }
         }

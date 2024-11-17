@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>orx: orxRENDER_EVENT_PAYLOAD Struct Reference</title>
+<title>orx: orxANDROID_EVENT_PAYLOAD Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -95,7 +95,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html','');});
+$(document).ready(function(){initNavTree('structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -116,54 +116,115 @@ $(document).ready(function(){initNavTree('structorx_r_e_n_d_e_r___e_v_e_n_t___p_
   <div class="summary">
 <a href="#pub-attribs">Data Fields</a>  </div>
   <div class="headertitle">
-<div class="title">orxRENDER_EVENT_PAYLOAD Struct Reference<div class="ingroups"><a class="el" href="group__orx_render.html">OrxRender</a></div></div>  </div>
+<div class="title">orxANDROID_EVENT_PAYLOAD Struct Reference<div class="ingroups"><a class="el" href="group__orx_android.html">OrxAndroid</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="orx_render_8h_source.html">orxRender.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a65326ca9390916c3c88a38f769c6c28a"><td class="memItemLeft" >struct {</td></tr>
-<tr class="memitem:ab5dd7bdc99566ea3a36fb936a280639c"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a> *&#160;&#160;&#160;<a class="el" href="structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a53efcddf712cdc8ab7d3333306759ea7">pstTransform</a></td></tr>
-<tr class="separator:ab5dd7bdc99566ea3a36fb936a280639c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65326ca9390916c3c88a38f769c6c28a"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a65326ca9390916c3c88a38f769c6c28a">stObject</a></td></tr>
-<tr class="separator:a65326ca9390916c3c88a38f769c6c28a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1e5a7d938ae27022d203d76cada7e4b"><td class="memItemLeft" >union {</td></tr>
+<tr class="memitem:a6de8cb6bcd719bd0fdf865aac1f0b002"><td class="memItemLeft" >&#160;&#160;&#160;struct {</td></tr>
+<tr class="memitem:a0ecf7968dcb8e7dd9c60bc7302f9a546"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;orxU32&#160;&#160;&#160;<a class="el" href="structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a2bb43e6de43bda1e1dbec065111ce0a5">u32KeyCode</a></td></tr>
+<tr class="separator:a0ecf7968dcb8e7dd9c60bc7302f9a546"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6de8cb6bcd719bd0fdf865aac1f0b002"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<a class="el" href="structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a979944d2d1b7054ab4f324eb5a880bff">stKey</a></td></tr>
+<tr class="separator:a6de8cb6bcd719bd0fdf865aac1f0b002"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa27a663088940d5f61bd494835fad5d"><td class="memItemLeft" >&#160;&#160;&#160;struct {</td></tr>
+<tr class="memitem:a7f2af926a95661b43f0bc36be7f93033"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;orxU32&#160;&#160;&#160;<a class="el" href="structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ad3677f6c48b82b6f2b76cdd8370f3785">u32Height</a></td></tr>
+<tr class="separator:a7f2af926a95661b43f0bc36be7f93033"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c9fdf2c10bdd1eed92ada979a1f1fb2"><td class="memItemLeft" >&#160;&#160;&#160;&#160;&#160;&#160;orxU32&#160;&#160;&#160;<a class="el" href="structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a924726b330e0d6e3ff7ef2444c05f0d0">u32Width</a></td></tr>
+<tr class="separator:a5c9fdf2c10bdd1eed92ada979a1f1fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa27a663088940d5f61bd494835fad5d"><td class="memItemLeft" valign="top">&#160;&#160;&#160;}&#160;&#160;&#160;<a class="el" href="structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ab8ae081e5eca54d5d9387224ac657cd0">stSurface</a></td></tr>
+<tr class="separator:afa27a663088940d5f61bd494835fad5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af1e5a7d938ae27022d203d76cada7e4b"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:af1e5a7d938ae27022d203d76cada7e4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Event payload </p>
 
-<p>Definition at line <a class="el" href="orx_render_8h_source.html#l00116">116</a> of file <a class="el" href="orx_render_8h_source.html">orxRender.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00083">83</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
-<a class="anchor" id="a53efcddf712cdc8ab7d3333306759ea7"></a>
+<a class="anchor" id="af1e5a7d938ae27022d203d76cada7e4b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html">orxDISPLAY_TRANSFORM</a>* orxRENDER_EVENT_PAYLOAD::pstTransform</td>
+          <td class="memname">union { ... } </td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Object display transform : 4 / 8 </p>
-
-<p>Definition at line <a class="el" href="orx_render_8h_source.html#l00120">120</a> of file <a class="el" href="orx_render_8h_source.html">orxRender.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a65326ca9390916c3c88a38f769c6c28a"></a>
+<a class="anchor" id="a979944d2d1b7054ab4f324eb5a880bff"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">struct { ... }   orxRENDER_EVENT_PAYLOAD::stObject</td>
+          <td class="memname">struct { ... }   orxANDROID_EVENT_PAYLOAD::stKey</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab8ae081e5eca54d5d9387224ac657cd0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct { ... }   orxANDROID_EVENT_PAYLOAD::stSurface</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ad3677f6c48b82b6f2b76cdd8370f3785"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxU32 orxANDROID_EVENT_PAYLOAD::u32Height</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00095">95</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a2bb43e6de43bda1e1dbec065111ce0a5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxU32 orxANDROID_EVENT_PAYLOAD::u32KeyCode</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00089">89</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a924726b330e0d6e3ff7ef2444c05f0d0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">orxU32 orxANDROID_EVENT_PAYLOAD::u32Width</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Definition at line <a class="el" href="orx_android_8h_source.html#l00094">94</a> of file <a class="el" href="orx_android_8h_source.html">orxAndroid.h</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/render/<a class="el" href="orx_render_8h_source.html">orxRender.h</a></li>
+<li>include/main/android/<a class="el" href="orx_android_8h_source.html">orxAndroid.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

@@ -143,6 +143,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Init();
 extern orxDLLAPI void orxFASTCALL                     orxClock_Exit();
 
 
+/** Computes DT according to modifier
+ * @param[in]   _pstClock                             Concerned clock
+ * @param[in]   _fDT                                  Real DT
+ * @return      Modified DT
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL                 orxClock_ComputeDT(const orxCLOCK *_pstClock, orxFLOAT _fDT);
+
 /** Updates the clock system
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */

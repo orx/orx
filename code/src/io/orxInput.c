@@ -622,6 +622,9 @@ static orxINLINE void orxInput_LoadCurrentSet()
   orxU32 eType;
   orxU32 i, u32Count;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxInput_LoadCurrentSet");
+
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
   orxASSERT(sstInput.pstCurrentSet != orxNULL);
@@ -776,6 +779,9 @@ static orxINLINE void orxInput_LoadCurrentSet()
 
   /* Pops previous section */
   orxConfig_PopSection();
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;

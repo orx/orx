@@ -273,7 +273,7 @@ static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID
         /* Adds it to reference table */
         if(orxHashTable_Set(sstTrigger.pstSetTable, pstResult->stID, pstResult) != orxSTATUS_FAILURE)
         {
-          orxU32 u32EventIndex = 0, u32Flags = orxTRIGGER_SET_KU32_FLAG_NONE;
+          orxU32 u32Flags = orxTRIGGER_SET_KU32_FLAG_NONE;
 
           /* Adds all events */
           orxConfig_ForAllKeys(orxTrigger_AddEvent, orxTRUE, pstResult);
