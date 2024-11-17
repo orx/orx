@@ -71,6 +71,7 @@
 #define orxCONFIG_KU32_STATIC_FLAG_READY          0x00000001  /**< Ready flag */
 #define orxCONFIG_KU32_STATIC_FLAG_HISTORY        0x00000002  /**< Keep history flag */
 #define orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK     0x00000004  /**< Typo check flag */
+#define orxCONFIG_KU32_STATIC_FLAG_FOR_ALL_KEYS   0x00000008  /**< For all keys flag */
 
 #define orxCONFIG_KU32_STATIC_MASK_ALL            0xFFFFFFFF  /**< All mask */
 
@@ -8126,6 +8127,7 @@ const orxSTRING orxFASTCALL orxConfig_GetKey(orxU32 _u32KeyIndex)
 orxSTATUS orxFASTCALL orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyCallback, orxBOOL _bIncludeParents, void *_pContext)
 {
   orxCONFIG_SECTION  *pstSection;
+  orxBOOL             bTypoChecksEnabled;
   orxSTATUS           eResult;
 
   /* Profiles */
@@ -8134,6 +8136,14 @@ orxSTATUS orxFASTCALL orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyC
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
   orxASSERT(_pfnKeyCallback != orxNULL);
+  orxASSERT(!orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_FOR_ALL_KEYS) && "orxConfig_ForAllKeys re-entrance is not supported");
+
+  /* Updates status */
+  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_FOR_ALL_KEYS, orxCONFIG_KU32_STATIC_FLAG_NONE);
+
+  /* Disables typo checks */
+  bTypoChecksEnabled = orxConfig_IsTypoCheckEnabled();
+  orxConfig_EnableTypoCheck(orxFALSE);
 
   /* Clears key table */
   orxHashTable_Clear(sstConfig.pstKeyTable);
@@ -8164,6 +8174,12 @@ orxSTATUS orxFASTCALL orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyC
       }
     }
   }
+
+  /* Restores typo checks */
+  orxConfig_EnableTypoCheck(bTypoChecksEnabled);
+
+  /* Updates status */
+  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_FOR_ALL_KEYS);
 
   /* Profiles */
   orxPROFILER_POP_MARKER();
