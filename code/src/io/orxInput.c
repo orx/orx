@@ -460,6 +460,9 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasBeenActivated, "BeenActivated?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasBeenDeactivated */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasBeenDeactivated, "BeenDeactivated?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Done! */
+  return;
 }
 
 /** Unregisters all the input commands
@@ -505,6 +508,9 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasBeenActivated);
   /* Command: HasBeenDeactivated */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasBeenDeactivated);
+
+  /* Done! */
+  return;
 }
 
 static orxINLINE orxFLOAT orxInput_ScaleValue(orxFLOAT _fValue, orxFLOAT _fThreshold, orxFLOAT _fMultiplier)
@@ -791,6 +797,9 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
 {
   orxINPUT_ENTRY *pstEntry;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxInput_UpdateSet");
+
   /* For all entries */
   for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(_pstSet->stEntryList));
       pstEntry != orxNULL;
@@ -1064,6 +1073,12 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
       }
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
 }
 
 /* Save filter callback */
