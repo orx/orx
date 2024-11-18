@@ -1703,7 +1703,7 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
   orxASSERT(sstConfig.pstCurrentSection != orxNULL);
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zValue != orxNULL);
-  orxASSERT((_eSetMode < orxCONFIG_SET_MODE_NUMBER) && (_eSetMode > orxCONFIG_SET_MODE_NONE));
+  orxASSERT((_eSetMode >= 0) && (_eSetMode < orxCONFIG_SET_MODE_NUMBER));
 
   /* Valid? */
   if(_zKey != orxSTRING_EMPTY)
