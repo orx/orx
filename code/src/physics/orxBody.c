@@ -686,7 +686,7 @@ const orxSTRING orxFASTCALL orxBody_GetName(const orxBODY *_pstBody)
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstBody);
+  orxSTRUCTURE_ASSERT(_pstBody);
 
   /* Updates result */
   zResult = (_pstBody->zReference != orxNULL) ? _pstBody->zReference : orxSTRING_EMPTY;

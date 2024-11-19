@@ -1258,16 +1258,17 @@ orxSTATUS orxFASTCALL orxStructure_LogAll(orxBOOL _bPrivate)
     {
       orxSTRUCTURE *pstStructure;
 
-      /* Checks */
-      orxASSERT(orxStructure_GetStorageType(sastStructureLogInfoList[i].eID) == orxSTRUCTURE_STORAGE_TYPE_LINKLIST);
-
-      /* For all structures */
-      for(pstStructure = orxStructure_GetFirst(sastStructureLogInfoList[i].eID);
-          pstStructure != orxNULL;
-          pstStructure = orxStructure_GetNext(pstStructure))
+      /* Is a linklist? */
+      if(orxStructure_GetStorageType(sastStructureLogInfoList[i].eID) == orxSTRUCTURE_STORAGE_TYPE_LINKLIST)
       {
-        /* Inserts it */
-        orxStructure_InsertLogNode(pstBank, pstTable, &(pstRoot->stNode), pstStructure);
+        /* For all structures */
+        for(pstStructure = orxStructure_GetFirst(sastStructureLogInfoList[i].eID);
+            pstStructure != orxNULL;
+            pstStructure = orxStructure_GetNext(pstStructure))
+        {
+          /* Inserts it */
+          orxStructure_InsertLogNode(pstBank, pstTable, &(pstRoot->stNode), pstStructure);
+        }
       }
     }
 

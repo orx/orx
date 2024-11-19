@@ -68,13 +68,17 @@ typedef enum __orxCONFIG_EVENT_t
 } orxCONFIG_EVENT;
 
 
-/** Config callback function type to use with save function */
+/** Config callback function type to use with Save */
 typedef orxBOOL (orxFASTCALL *orxCONFIG_SAVE_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption);
 
-/** Config callback function type to use with clear function */
+/** Config callback function type to use with Clear */
 typedef orxBOOL (orxFASTCALL *orxCONFIG_CLEAR_FUNCTION)(const orxSTRING _zSectionName, const orxSTRING _zKeyName);
 
+/** Config bootstrap function type to use with SetBootstrap */
 typedef orxSTATUS (orxFASTCALL *orxCONFIG_BOOTSTRAP_FUNCTION)();
+
+/** Config callback function type to use with ForAllKeys */
+typedef orxBOOL (orxFASTCALL *orxCONFIG_KEY_FUNCTION)(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext);
 
 
 /** Config module setup
@@ -212,6 +216,13 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetParent(const orxSTRIN
  * @return Section's parent name if set, orxSTRING_EMPTY if no parent has been forced or orxNULL otherwise
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetParent(const orxSTRING _zSectionName);
+
+/** Gets parent distance, ie. how far up the ancestry of a given section is a parent (does not consider the default parent)
+ * @param[in] _zSectionName     Concerned section
+ * @param[in] _zParentName      Parent section name to check
+ * @return 1 for a direct parent, 2 for a grandparent, etc., and 0 if not found in the ancestry
+ */
+extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetParentDistance(const orxSTRING _zSectionName, const orxSTRING _zParentName);
 
 /** Sets default parent for all sections
  * @param[in] _zSectionName     Section name that will be used as an implicit default parent section for all config sections, if orxNULL is provided, default parent will be removed
@@ -572,6 +583,15 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxConfig_GetKeyCount();
  * @return orxSTRING if exist, orxSTRING_EMPTY otherwise
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetKey(orxU32 _u32KeyIndex);
+
+/** Runs a callback for all keys of the current section
+ * @param[in] _pfnKeyCallback   Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit)
+ * @param[in] _bIncludeParents  Include keys inherited from all parents (ie. that are not locally defined), except the default one
+ * @param[in] _pContext         User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS if all keys were processed without interruption, orxSTATUS_FAILURE otherwise
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyCallback, orxBOOL _bIncludeParents, void *_pContext);
+
 
 #endif /*_orxCONFIG_H_*/
 

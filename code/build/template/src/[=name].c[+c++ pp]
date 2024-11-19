@@ -58,7 +58,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   ImGui::ShowMetricsWindow();
 ]
   // Should quit?
-  if(orxInput_IsActive("Quit"))
+  if(orxInput_HasBeenActivated("Quit"))
   {
     // Send close event
     orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
@@ -79,16 +79,16 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   InitExtensions();
 
 [+scroll
-  // Create the [-movie scene][+movie logo]
-  CreateObject("[-movie Scene][+movie Logo]");
+  // Create the [-movie scene][+movie splash screen]
+  CreateObject("[-movie Scene][+movie Splash]");
 ]
 [-scroll
   // Register the Update function to the core clock
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 
-  // Create the [-movie scene][+movie logo]
-  orxObject_CreateFromConfig("[-movie Scene][+movie Logo]");
-
+  // Create the [-movie scene][+movie splash screen]
+  orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");
+]
 [+bundle
   // Is processing a new bundle?
   if(orxBundle_IsProcessing())
@@ -99,7 +99,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 ]
   // Create the viewport
   orxViewport_CreateFromConfig("MainViewport");
-]
+
   // Done!
   return orxSTATUS_SUCCESS;
 }
@@ -129,8 +129,8 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
  */
 void [!name]::BindObjects()
 {
-  // Bind the Object class to the Object config section
-  ScrollBindObject<Object>("Object");
+  // Bind the Object class
+  BindObject(Object);
 }
 ]
 /** Bootstrap function, it is called before config is initialized, allowing for early resource storage definitions

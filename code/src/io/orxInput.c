@@ -73,6 +73,8 @@
 #define orxINPUT_KU32_SET_BANK_SIZE                   8
 #define orxINPUT_KU32_ENTRY_BANK_SIZE                 32
 
+#define orxINPUT_KU32_NAME_TABLE_SIZE                 4096
+
 #define orxINPUT_KU32_SET_FLAG_NONE                   0x00000000  /**< No flags */
 
 #define orxINPUT_KU32_SET_FLAG_ENABLED                0x10000000  /**< Enabled flag */
@@ -107,6 +109,12 @@
 #define orxINPUT_KZ_MODE_FORMAT                       "%c%s"      /**< Mode format */
 
 #define orxINPUT_KZ_DEFAULT_JOYSTICK_ID_LIST          ((orxU64)0xF)/**< Default joystick ID list (4) */
+
+
+/** Helpers
+ */
+#define orxINPUT_PACK(TYPE, ID, MODE, VALUE)          VALUE = ((TYPE & 0xFF) << 20) | ((MODE & 0xF) << 16) | (ID & 0xFFFF) | 0x80000000
+#define orxINPUT_UNPACK(TYPE, ID, MODE, VALUE)        TYPE = (VALUE >> 20) & 0xFF, MODE = (VALUE >> 16) & 0xF, ID = VALUE & 0xFFFF
 
 
 /***************************************************************************
@@ -161,6 +169,7 @@ typedef struct __orxINPUT_STATIC_t
 {
   orxBANK      *pstSetBank;                                       /**< Set bank */
   orxHASHTABLE *pstSetTable;                                      /**< Set table */
+  orxHASHTABLE *pstNameTable;                                     /**< Name table */
   orxINPUT_SET *pstCurrentSet;                                    /**< Current set */
   orxINPUT_SET *pstDefaultSet;                                    /**< Default set */
   orxVECTOR     vMouseMove;                                       /**< Mouse move */
@@ -451,6 +460,9 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasBeenActivated, "BeenActivated?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasBeenDeactivated */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasBeenDeactivated, "BeenDeactivated?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Done! */
+  return;
 }
 
 /** Unregisters all the input commands
@@ -496,6 +508,9 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasBeenActivated);
   /* Command: HasBeenDeactivated */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasBeenDeactivated);
+
+  /* Done! */
+  return;
 }
 
 static orxINLINE orxFLOAT orxInput_ScaleValue(orxFLOAT _fValue, orxFLOAT _fThreshold, orxFLOAT _fMultiplier)
@@ -616,11 +631,95 @@ static orxINLINE orxFLOAT orxInput_GetBindingValue(const orxINPUT_SET *_pstSet, 
   return fResult;
 }
 
+static orxBOOL orxFASTCALL orxInput_LoadInput(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
+{
+  orxUPTR pInput;
+  orxBOOL bResult = orxTRUE;
+
+  /* Retrieves input */
+  pInput = (orxUPTR)orxHashTable_Get(sstInput.pstNameTable, orxString_Hash(_zKeyName));
+
+  /* Valid? */
+  if(pInput != orxNULL)
+  {
+    orxU64  u64IDs = 1;
+    orxU32  u32Index;
+    orxU32  eType, eID, eMode;
+
+    /* Unpacks it */
+    if(pInput != (orxUPTR)orxHANDLE_UNDEFINED)
+    {
+      orxINPUT_UNPACK(eType, eID, eMode, pInput);
+    }
+    else
+    {
+      u64IDs = *(orxU64 *)_pContext;
+    }
+
+    /* For all variations */
+    for(u32Index = 1; u64IDs != 0; u32Index++, u64IDs >>= 1)
+    {
+      /* Defined? */
+      if(u64IDs & 1)
+      {
+        orxU32  u32Count, i;
+        orxCHAR acBuffer[128];
+
+        /* Generic joystick input? */
+        if(pInput == (orxUPTR)orxHANDLE_UNDEFINED)
+        {
+          orxUPTR pRealInput;
+
+          /* Gets actual input name */
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s_%u", _zKeyName, u32Index);
+
+          /* Retrieves it */
+          pRealInput = (orxUPTR)orxHashTable_Get(sstInput.pstNameTable, orxString_Hash(acBuffer));
+          orxASSERT(pRealInput != orxNULL);
+
+          /* Unpacks it */
+          orxINPUT_UNPACK(eType, eID, eMode, pRealInput);
+        }
+
+        /* For all defined inputs */
+        for(i = 0, u32Count = orxConfig_GetListCount(_zKeyName); i < u32Count; i++)
+        {
+          const orxSTRING zInput;
+
+          /* Gets bound input */
+          zInput = orxConfig_GetListString(_zKeyName, i);
+
+          /* Binds it */
+          if(orxInput_Bind(zInput, (orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode, -1) != orxSTATUS_FAILURE)
+          {
+            /* Gets threshold name */
+            orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_THRESHOLD_FORMAT, zInput);
+
+            /* Stores threshold */
+            orxInput_SetThreshold(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.pstCurrentSet->fDefaultThreshold);
+
+            /* Gets multiplier name */
+            orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_MULTIPLIER_FORMAT, zInput);
+
+            /* Stores multiplier */
+            orxInput_SetMultiplier(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.pstCurrentSet->fDefaultMultiplier);
+          }
+        }
+      }
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 static orxINLINE void orxInput_LoadCurrentSet()
 {
   orxU64 u64JoyIDs = 0;
-  orxU32 eType;
   orxU32 i, u32Count;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxInput_LoadCurrentSet");
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
@@ -674,98 +773,8 @@ static orxINLINE void orxInput_LoadCurrentSet()
     u64JoyIDs = orxINPUT_KZ_DEFAULT_JOYSTICK_ID_LIST;
   }
 
-  /* For all input types */
-  for(eType = 0; eType < orxINPUT_TYPE_NUMBER; eType++)
-  {
-    orxU32  eMode;
-    orxBOOL bIsJoystick;
-
-    /* Updates status */
-    bIsJoystick = ((eType == orxINPUT_TYPE_JOYSTICK_AXIS) || (eType == orxINPUT_TYPE_JOYSTICK_BUTTON)) ? orxTRUE : orxFALSE;
-
-    /* For all modes */
-    for(eMode = 0; eMode < orxINPUT_MODE_NUMBER; eMode++)
-    {
-      orxENUM   eID;
-      const orxSTRING zBinding = orxNULL;
-
-      /* For all bindings */
-      for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
-      {
-        /* Gets binding name */
-        zBinding = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode);
-
-        /* Valid? */
-        if(zBinding != orxSTRING_EMPTY)
-        {
-          orxCHAR acBuffer[64];
-
-          /* Is joystick and not defined? */
-          if((bIsJoystick != orxFALSE) && (orxConfig_HasValueNoCheck(zBinding) == orxFALSE))
-          {
-            orxS32 s32Index, s32NextIndex;
-            orxU32 u32JoyID;
-
-            /* Finds last separator */
-            for(s32Index = orxString_SearchCharIndex(zBinding, '_', 0);
-                (s32Index >= 0) && ((s32NextIndex = orxString_SearchCharIndex(zBinding, '_', s32Index + 1)) > 0);
-                s32Index = s32NextIndex)
-              ;
-
-            /* Checks */
-            orxASSERT((s32Index > 0) && (s32Index < (orxS32)sizeof(acBuffer)));
-
-            /* Gets its ID */
-            orxString_ToU32(zBinding + s32Index + 1, &u32JoyID, orxNULL);
-
-            /* Defined? */
-            if(u64JoyIDs & (((orxU64)1) << (u32JoyID - 1)))
-            {
-              /* Uses binding's base name */
-              orxString_NCopy(acBuffer, zBinding, s32Index);
-              acBuffer[s32Index] = orxCHAR_NULL;
-              zBinding = acBuffer;
-            }
-          }
-
-          /* Has binding? */
-          if(orxConfig_HasValueNoCheck(zBinding) != orxFALSE)
-          {
-            /* For all defined inputs */
-            for(u32Count = orxConfig_GetListCount(zBinding), i = 0; i < u32Count; i++)
-            {
-              const orxSTRING zInput;
-
-              /* Gets bound input */
-              zInput = orxConfig_GetListString(zBinding, i);
-
-              /* Valid? */
-              if(zInput != orxSTRING_EMPTY)
-              {
-                orxCHAR acBuffer[128];
-
-                /* Binds it */
-                if(orxInput_Bind(zInput, (orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode, -1) != orxSTATUS_FAILURE)
-                {
-                  /* Gets threshold name */
-                  orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_THRESHOLD_FORMAT, zInput);
-
-                  /* Stores threshold */
-                  orxInput_SetThreshold(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.pstCurrentSet->fDefaultThreshold);
-
-                  /* Gets multiplier name */
-                  orxString_NPrint(acBuffer, sizeof(acBuffer), orxINPUT_KZ_MULTIPLIER_FORMAT, zInput);
-
-                  /* Stores multiplier */
-                  orxInput_SetMultiplier(zInput, (orxConfig_HasValue(acBuffer) != orxFALSE) ? orxConfig_GetFloat(acBuffer) : sstInput.pstCurrentSet->fDefaultMultiplier);
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  /* Loads all defined inputs */
+  orxConfig_ForAllKeys(orxInput_LoadInput, orxTRUE, (void *)&u64JoyIDs);
 
   /* For all defined combines */
   for(i = 0, u32Count = orxConfig_GetListCount(orxINPUT_KZ_CONFIG_COMBINE_LIST); i < u32Count; i++)
@@ -777,6 +786,9 @@ static orxINLINE void orxInput_LoadCurrentSet()
   /* Pops previous section */
   orxConfig_PopSection();
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return;
 }
@@ -784,6 +796,9 @@ static orxINLINE void orxInput_LoadCurrentSet()
 static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
 {
   orxINPUT_ENTRY *pstEntry;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxInput_UpdateSet");
 
   /* For all entries */
   for(pstEntry = (orxINPUT_ENTRY *)orxLinkList_GetFirst(&(_pstSet->stEntryList));
@@ -1058,6 +1073,12 @@ static orxINLINE void orxInput_UpdateSet(orxINPUT_SET *_pstSet)
       }
     }
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
 }
 
 /* Save filter callback */
@@ -1471,11 +1492,12 @@ orxSTATUS orxFASTCALL orxInput_Init()
     /* Success? */
     if(sstInput.pstSetBank != orxNULL)
     {
-      /* Creates set table */
-      sstInput.pstSetTable = orxHashTable_Create(orxINPUT_KU32_SET_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      /* Creates set & name tables */
+      sstInput.pstSetTable  = orxHashTable_Create(orxINPUT_KU32_SET_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstInput.pstNameTable = orxHashTable_Create(orxINPUT_KU32_NAME_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Success? */
-      if(sstInput.pstSetTable != orxNULL)
+      if((sstInput.pstSetTable != orxNULL) && (sstInput.pstNameTable != orxNULL))
       {
         orxCLOCK *pstClock;
 
@@ -1491,8 +1513,46 @@ orxSTATUS orxFASTCALL orxInput_Init()
           /* Successful? */
           if(eResult != orxSTATUS_FAILURE)
           {
+            orxU32 eType;
+
             /* Updates flags */
             orxFLAG_SET(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY, orxINPUT_KU32_STATIC_FLAG_NONE);
+
+            /* For all input types */
+            for(eType = 0; eType < orxINPUT_TYPE_NUMBER; eType++)
+            {
+              orxU32 eMode;
+
+              /* For all modes */
+              for(eMode = 0; eMode < orxINPUT_MODE_NUMBER; eMode++)
+              {
+                const orxSTRING zName = orxNULL;
+                orxENUM         eID;
+
+                /* For all bindings */
+                for(eID = 0; zName != orxSTRING_EMPTY; eID++)
+                {
+                  orxUPTR pInput;
+
+                  /* Gets its name */
+                  zName = orxInput_GetBindingName((orxINPUT_TYPE)eType, eID, (orxINPUT_MODE)eMode);
+
+                  /* Packs it */
+                  orxINPUT_PACK(eType, eID, eMode, pInput);
+
+                  /* Stores it */
+                  orxHashTable_Set(sstInput.pstNameTable, orxString_Hash(zName), (void *)pInput);
+
+                  /* Is a first joystick? */
+                  if(((eType == orxINPUT_TYPE_JOYSTICK_AXIS) && (orxJOYSTICK_GET_ID_FROM_AXIS(eID) == 1))
+                  || ((eType == orxINPUT_TYPE_JOYSTICK_BUTTON) && (orxJOYSTICK_GET_ID_FROM_BUTTON(eID) == 1) && (eMode == orxINPUT_MODE_FULL)))
+                  {
+                    /* Stores its generic version */
+                    orxHashTable_Set(sstInput.pstNameTable, orxString_NHash(zName, orxString_GetLength(zName) - 2), orxHANDLE_UNDEFINED);
+                  }
+                }
+              }
+            }
 
             /* Loads from input */
             orxInput_Load(orxNULL);
@@ -1509,8 +1569,9 @@ orxSTATUS orxFASTCALL orxInput_Init()
             /* Deletes clock */
             orxClock_Delete(pstClock);
 
-            /* Deletes set table */
+            /* Deletes tables */
             orxHashTable_Delete(sstInput.pstSetTable);
+            orxHashTable_Delete(sstInput.pstNameTable);
 
             /* Deletes set bank */
             orxBank_Delete(sstInput.pstSetBank);
@@ -1518,8 +1579,9 @@ orxSTATUS orxFASTCALL orxInput_Init()
         }
         else
         {
-          /* Deletes set table */
+          /* Deletes tables */
           orxHashTable_Delete(sstInput.pstSetTable);
+          orxHashTable_Delete(sstInput.pstNameTable);
 
           /* Deletes set bank */
           orxBank_Delete(sstInput.pstSetBank);
@@ -1527,6 +1589,16 @@ orxSTATUS orxFASTCALL orxInput_Init()
       }
       else
       {
+        /* Deletes tables */
+        if(sstInput.pstSetTable != orxNULL)
+        {
+          orxHashTable_Delete(sstInput.pstSetTable);
+        }
+        if(sstInput.pstNameTable != orxNULL)
+        {
+          orxHashTable_Delete(sstInput.pstNameTable);
+        }
+
         /* Deletes set bank */
         orxBank_Delete(sstInput.pstSetBank);
       }
@@ -1570,9 +1642,11 @@ void orxFASTCALL orxInput_Exit()
       orxInput_DeleteSet(pstSet);
     }
 
-    /* Deletes set table */
+    /* Deletes tables */
     orxHashTable_Delete(sstInput.pstSetTable);
     sstInput.pstSetTable = orxNULL;
+    orxHashTable_Delete(sstInput.pstNameTable);
+    sstInput.pstNameTable = orxNULL;
 
     /* Clears sets bank */
     orxBank_Delete(sstInput.pstSetBank);
@@ -3650,8 +3724,8 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
         /* For all modes */
         for(eMode = 0; eMode < orxINPUT_MODE_NUMBER; eMode++)
         {
-          orxENUM   eID;
           const orxSTRING zBinding = orxNULL;
+          orxENUM         eID;
 
           /* For all bindings */
           for(eID = 0; zBinding != orxSTRING_EMPTY; eID++)
@@ -3688,6 +3762,7 @@ orxSTATUS orxFASTCALL orxInput_GetBindingType(const orxSTRING _zName, orxINPUT_T
  */
 orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM *_peID, orxFLOAT *_pfValue)
 {
+  orxBOOL   bJoystickLevelBackup, bKeyboardLevelBackup, bMouseLevelBackup;
   orxU32    eType;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -3695,6 +3770,14 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
   orxASSERT(orxFLAG_TEST(sstInput.u32Flags, orxINPUT_KU32_STATIC_FLAG_READY));
   orxASSERT(_peType != orxNULL);
   orxASSERT(_peID != orxNULL);
+
+  /* Disables peripheral logs */
+  bJoystickLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_JOYSTICK);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_JOYSTICK, orxFALSE);
+  bKeyboardLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_KEYBOARD);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_KEYBOARD, orxFALSE);
+  bMouseLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_MOUSE);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_MOUSE, orxFALSE);
 
   /* For all input types */
   for(eType = 0; (eResult == orxSTATUS_FAILURE) && (eType < orxINPUT_TYPE_NUMBER); eType++)
@@ -3749,6 +3832,11 @@ orxSTATUS orxFASTCALL orxInput_GetActiveBinding(orxINPUT_TYPE *_peType, orxENUM 
       *_pfValue = orxFLOAT_0;
     }
   }
+
+  /* Re-enables peripheral logs */
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_JOYSTICK, bJoystickLevelBackup);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_KEYBOARD, bKeyboardLevelBackup);
+  orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_MOUSE, bMouseLevelBackup);
 
   /* Done! */
   return eResult;

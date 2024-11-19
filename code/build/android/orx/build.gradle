@@ -9,7 +9,7 @@ android {
 
     // Ideally, we want to use the default NDK version for the used AGP version.
     // However, we opt-in to NDK r27 since it comes with many important features/optimizations.
-    ndkVersion '27.0.12077973'
+    ndkVersion '27.1.12297006'
 
     buildFeatures {
         prefab true
@@ -91,7 +91,7 @@ dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
 
-    api 'androidx.core:core:1.13.1'
+    api 'androidx.core:core:1.15.0'
     api 'androidx.appcompat:appcompat:1.7.0'
 
     api 'androidx.games:games-activity:3.0.5'

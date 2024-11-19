@@ -779,7 +779,7 @@ orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(_pstData != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstData);
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
   orxASSERT((orxAnim_GetKeyCount(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astKeyList[orxAnim_GetKeyCount(_pstAnim) - 1].fTimeStamp));
 

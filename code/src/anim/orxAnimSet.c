@@ -133,6 +133,7 @@
 #define orxANIMSET_KZ_CONFIG_DIGITS                   "Digits"
 #define orxANIMSET_KZ_CONFIG_FRAME_SIZE               "FrameSize"
 #define orxANIMSET_KZ_CONFIG_FRAME_INDEX              "FrameIndex"
+#define orxANIMSET_KZ_CONFIG_FRAME_GRID               "FrameGrid"
 #define orxANIMSET_KZ_CONFIG_KEY_DURATION             "KeyDuration"
 #define orxANIMSET_KZ_CONFIG_KEY_EVENT                "KeyEvent"
 #define orxANIMSET_KZ_CONFIG_DIRECTION                "Direction"
@@ -1676,7 +1677,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       u32Digits = (orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIGITS) != orxFALSE) ? orxConfig_GetU32(orxANIMSET_KZ_CONFIG_DIGITS) : orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS;
 
       /* Gets prefix */
-      zPrefix = orxConfig_GetString(orxANIMSET_KZ_CONFIG_PREFIX);
+      zPrefix = orxString_Store(orxConfig_GetString(orxANIMSET_KZ_CONFIG_PREFIX));
 
       /* Has prefix? */
       if(*zPrefix != orxCHAR_NULL)
@@ -1847,6 +1848,38 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             {
               /* Stops */
               bContinue = orxFALSE;
+            }
+          }
+        }
+        else
+        {
+          /* Doesn't have frame size? */
+          if(bHasFrameSize == orxFALSE)
+          {
+            orxVECTOR vFrameGrid;
+
+            /* Has frame grid? */
+            if(orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_GRID, &vFrameGrid) != orxNULL)
+            {
+              /* Valid? */
+              if ((vFrameGrid.fX > orxFLOAT_0) && (vFrameGrid.fY > orxFLOAT_0))
+              {
+                /* Updates frame size */
+                vFrameSize.fX = orxMath_Floor(vTextureSize.fX / vFrameGrid.fX);
+                vFrameSize.fY = orxMath_Floor(vTextureSize.fY / vFrameGrid.fY);
+                vFrameSize.fZ = orxFLOAT_0;
+
+                /* Updates status */
+                bHasFrameSize = orxTRUE;
+              }
+              else
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid FrameGrid (%g, %g)" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", aborting!", zAnimSet, vFrameGrid.fX, vFrameGrid.fY, _zConfigID);
+
+                /* Stops */
+                bContinue = orxFALSE;
+              }
             }
           }
         }

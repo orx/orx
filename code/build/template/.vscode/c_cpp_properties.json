@@ -1,0 +1,43 @@
+{
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "${workspaceFolder}/include/**",
+        "${env:ORX}/include"
+      ],
+      "defines": [],
+      "compilerPath": "gcc",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "linux-gcc-x64"
+    },
+    {
+      "name": "Mac",
+      "includePath": [
+        "${workspaceFolder}/include/**",
+        "${env:ORX}/include"
+      ],
+      "defines": [],
+      "macFrameworkPath": [],
+      "compilerPath": "clang++",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "macos-clang-arm64"
+    },
+    {
+      "name": "Win32",
+      "includePath": [
+        "${workspaceFolder}/include/**",
+        "${env:ORX}/include"
+      ],
+      "defines": [],
+      "macFrameworkPath": [],
+      "compilerPath": "gcc.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "windows-gcc-x64"
+    }
+  ],
+  "version": 4
+}

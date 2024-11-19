@@ -7,18 +7,18 @@ REBOL [
 
 ; Variables
 params: compose/deep [
-  name        {Project name (relative or full path)}                                            (none)    (none)
-  bundle      {Bundle support (resources can be automatically packaged and encrypted)}          +         []
+  name        {Project name (relative or absolute path)}                                        (none)    (none)
+  bundle      {Automatic resource encryption & packaging}                                       +         []
   cheat       {Secret pass/cheat code support}                                                  -         []
   c++         {Create a C++ project instead of C}                                               +         []
   imgui       {Dear ImGui support (https://github.com/ocornut/imgui)}                           -         [+c++]
-  inspector   {Object debug GUI inspector support (requires the imgui extension)}               -         [+imgui]
-  mod         {MOD (Protracker), XM (FastTracker 2) & S3M (Scream Tracker 3) decoding support}  -         []
-  movie       {Movie (MPEG-1) decoding support}                                                 -         []
+  inspector   {Object debug GUI inspector}                                                      -         [+imgui]
+  mod         {Audio MOD, XM & S3M support}                                                     -         []
+  movie       {Movie (MPEG-1) support}                                                          -         []
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}                  -         []
-  remote      {Remote support (resources can be stored on a web server, HTTP-only, PoC)}        -         []
+  remote      {Web-served resources support, HTTP/1.1 only, proof of concept)}                  -         []
   scroll      {C++ convenience layer with config-object binding}                                +         [+c++]
-  sndh        {SNDH (Atari ST) decoding support}                                                -         [+c++]
+  sndh        {Audio SNDH (Atari ST) support}                                                   -         [+c++]
 ]
 platforms:  [
   windows     [config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
@@ -29,7 +29,7 @@ source-path: %../template/
 extern: %../../../extern/
 
 ; Helpers
-log: func [
+log: function [
   message [string! char! block!]
   /only
   /no-break
@@ -112,7 +112,7 @@ templates: append collect [
 ] [date code-path]
 
 ; Usage
-usage: func [
+usage: function [
   /message content [string!]
 ] [
   if content [
@@ -120,38 +120,17 @@ usage: func [
   ]
 
   log/no-break reform [{Usage:} to-local-file clean-path rejoin [system/options/script/../../../.. {/} platform-info/script]]
-
   foreach [param desc default deps] params [
-    log/only/no-break rejoin [
-      { }
-      case [
-        extension? param [
-          rejoin [{[+/-} param {]}]
-        ]
-        default [
-          rejoin [{[} param {]}]
-        ]
-        true [
-          param
-        ]
-      ]
-    ]
+    unless extension? param [log/only/no-break rejoin [{ } param]]
   ]
-  log/only newline
+  log/only rejoin [{ [{+/-extension} ...]} newline]
+
+  param-max-length: 6 + first find-max map-each param extract params 4 [length? param]
+  desc-max-length: first find-max map-each param extract next params 4 [length? param]
   foreach [param desc default deps] params [
     log/only rejoin [
-      {  - } param {: } desc
-      case [
-        extension? param [
-          rejoin [{=[} pick [{yes} {no}] default = '+ {]} either empty? deps [{}] [rejoin [{, triggers [} deps {]}]] {, optional}]
-        ]
-        default [
-          rejoin [{=[} default {], optional}]
-        ]
-        true [
-          {, required}
-        ]
-      ]
+      {  } param: rejoin [{[} pick reduce [default {!}] extension? param {] } param] append/dup copy {} { } param-max-length - length? param desc
+      pick reduce [{} rejoin [append/dup copy {} { } desc-max-length - length? desc { -> [} deps {]}]] empty? deps
     ]
   ]
   quit
@@ -165,7 +144,7 @@ either all [
   not find system/options/args {--help}
 ] [
   use [interactive? args value +extensions -extensions] [
-    +extensions: copy [] -extensions: copy []
+    +extensions: copy [] -extensions: copy [] y: yes n: no
     either interactive?: zero? length? args: copy system/options/args [
       log {No argument, switching to interactive mode}
       foreach [param desc default deps] params [

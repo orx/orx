@@ -334,6 +334,41 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
   return rotation;
 }
 
+extern "C" orxFLOAT orxAndroid_JNI_GetPhysicalFrameRate()
+{
+  orxFLOAT fRefreshRate;
+
+  /* Note : Display.Mode.getRefreshRate() returns the physical refresh rate starting with Android S */
+  if(orxAndroid_GetSdkVersion() < __ANDROID_API_S__)
+  {
+    return orxFLOAT_0;
+  }
+
+  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
+
+  pstEnv->PushLocalFrame(16);
+
+  /* Gets display structure */
+  jobject display = orxAndroid_JNI_getDisplay(pstEnv);
+
+  /* Finds classes */
+  jclass displayClass = pstEnv->FindClass("android/view/Display");
+  jclass modeClass = pstEnv->FindClass("android/view/Display$Mode");
+
+  /* Finds methods */
+  jmethodID getModeMethod = pstEnv->GetMethodID(displayClass, "getMode", "()Landroid/view/Display$Mode;");
+  jmethodID getRefreshRateMethod = pstEnv->GetMethodID(modeClass, "getRefreshRate", "()F");
+
+  /* Calls method and stores refresh rate */
+  jobject mode = pstEnv->CallObjectMethod(display, getModeMethod);
+  fRefreshRate = float(pstEnv->CallFloatMethod(mode, getRefreshRateMethod));
+
+  /* Frees all the local references */
+  pstEnv->PopLocalFrame(NULL);
+
+  return fRefreshRate;
+}
+
 extern "C" void orxAndroid_SetKeyFilter(android_key_event_filter _pfnFilter)
 {
   android_app_set_key_event_filter(sstAndroid.app, _pfnFilter);
@@ -363,19 +398,16 @@ static void orxAndroid_CheckForNewAxis()
 
 static void orxAndroid_SendKey(orxU32 _u32KeyCode, orxU32 _u32Action)
 {
-  orxANDROID_KEY_EVENT stKeyEvent;
+  orxANDROID_EVENT_PAYLOAD stPayload;
 
   /* Checks */
   orxASSERT((_u32Action == AKEY_EVENT_ACTION_DOWN) || (_u32Action == AKEY_EVENT_ACTION_UP));
 
   /* Inits event payload */
-  orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
-  stKeyEvent.u32KeyCode = _u32KeyCode;
-  stKeyEvent.u32Action  = (_u32Action == AKEY_EVENT_ACTION_DOWN)
-                          ? orxANDROID_EVENT_KEYBOARD_DOWN
-                          : orxANDROID_EVENT_KEYBOARD_UP;
+  orxMemory_Zero(&stPayload, sizeof(orxANDROID_EVENT_PAYLOAD));
+  stPayload.stKey.u32KeyCode = _u32KeyCode;
 
-  orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
+  orxEVENT_SEND(orxEVENT_TYPE_ANDROID, (_u32Action == AKEY_EVENT_ACTION_DOWN) ? orxANDROID_EVENT_KEY_DOWN : orxANDROID_EVENT_KEY_UP, orxNULL, orxNULL, &stPayload);
 }
 
 static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
@@ -506,19 +538,25 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
           }
           case AMOTION_EVENT_ACTION_DOWN:
           {
-            stPayload.stTouch.u32ID = event->pointers[0].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, 0);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, 0);
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+            for(iIndex = 0; iIndex < event->pointerCount; iIndex++)
+            {
+              stPayload.stTouch.u32ID = event->pointers[iIndex].id;
+              stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
+              stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+            }
             break;
           }
           case AMOTION_EVENT_ACTION_UP:
           case AMOTION_EVENT_ACTION_CANCEL:
           {
-            stPayload.stTouch.u32ID = event->pointers[0].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, 0);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, 0);
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+            for(iIndex = 0; iIndex < event->pointerCount; iIndex++)
+            {
+              stPayload.stTouch.u32ID = event->pointers[iIndex].id;
+              stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
+              stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+            }
             break;
           }
           case AMOTION_EVENT_ACTION_MOVE:
@@ -548,7 +586,7 @@ static void orxAndroid_handleCmd(struct android_app *_pstApp, int32_t _s32Cmd)
     {
       LOGI("APP_CMD_INIT_WINDOW");
       SwappyGL_setWindow(_pstApp->window);
-      orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
+      orxEVENT_SEND(orxEVENT_TYPE_ANDROID, orxANDROID_EVENT_SURFACE_CREATE, orxNULL, orxNULL, orxNULL);
       break;
     }
     case APP_CMD_TERM_WINDOW:
@@ -556,7 +594,7 @@ static void orxAndroid_handleCmd(struct android_app *_pstApp, int32_t _s32Cmd)
       LOGI("APP_CMD_TERM_WINDOW");
       SwappyGL_setWindow(nullptr);
       sstAndroid.fSurfaceScale = orxFLOAT_0;
-      orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
+      orxEVENT_SEND(orxEVENT_TYPE_ANDROID, orxANDROID_EVENT_SURFACE_DESTROY, orxNULL, orxNULL, orxNULL);
       break;
     }
     case APP_CMD_WINDOW_RESIZED:
@@ -572,11 +610,12 @@ static void orxAndroid_handleCmd(struct android_app *_pstApp, int32_t _s32Cmd)
     case APP_CMD_CONTENT_RECT_CHANGED:
     {
       LOGI("APP_CMD_CONTENT_RECT_CHANGED");
-      orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
-      stSurfaceChangedEvent.u32Width = _pstApp->contentRect.right - _pstApp->contentRect.left;
-      stSurfaceChangedEvent.u32Height = _pstApp->contentRect.bottom - _pstApp->contentRect.top;
+      orxANDROID_EVENT_PAYLOAD stPayload;
+      orxMemory_Zero(&stPayload, sizeof(orxANDROID_EVENT_PAYLOAD));
+      stPayload.stSurface.u32Width  = _pstApp->contentRect.right - _pstApp->contentRect.left;
+      stPayload.stSurface.u32Height = _pstApp->contentRect.bottom - _pstApp->contentRect.top;
 
-      orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
+      orxEVENT_SEND(orxEVENT_TYPE_ANDROID, orxANDROID_EVENT_SURFACE_CHANGE, orxNULL, orxNULL, &stPayload);
       sstAndroid.fSurfaceScale = orxFLOAT_0;
       break;
     }
@@ -684,7 +723,7 @@ extern "C" void orxAndroid_PumpEvents()
 
     if(id == LOOPER_ID_SENSOR)
     {
-      orxEvent_SendShort(orxANDROID_EVENT_TYPE_ACCELERATE, 0);
+      orxEvent_SendShort((orxEVENT_TYPE)orxANDROID_EVENT_ACCELERATE, 0);
     }
 
     /* Check if we are exiting. */

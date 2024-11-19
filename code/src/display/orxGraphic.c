@@ -79,7 +79,6 @@
 
 #define orxGRAPHIC_KZ_CENTERED_PIVOT              "center"
 #define orxGRAPHIC_KZ_TRUNCATE_PIVOT              "truncate"
-#define orxGRAPHIC_KZ_ROUND_PIVOT                 "round"
 #define orxGRAPHIC_KZ_TOP_PIVOT                   "top"
 #define orxGRAPHIC_KZ_LEFT_PIVOT                  "left"
 #define orxGRAPHIC_KZ_BOTTOM_PIVOT                "bottom"
@@ -407,13 +406,13 @@ static orxINLINE void orxGraphic_DeleteAll()
 void orxFASTCALL orxGraphic_Setup()
 {
   /* Adds module dependencies */
-  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_MEMORY);
-  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_LOCALE);
+  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_TEXT);
   orxModule_AddDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_TEXTURE);
-  orxModule_AddOptionalDependency(orxMODULE_ID_GRAPHIC, orxMODULE_ID_LOCALE);
 
   return;
 }
@@ -567,12 +566,6 @@ orxU32 orxFASTCALL orxGraphic_GetAlignFlags(const orxSTRING _zAlign)
       /* Updates alignment flags */
       u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE;
     }
-    /* Round? */
-    else if(orxString_SearchString(acBuffer, orxGRAPHIC_KZ_ROUND_PIVOT) != orxNULL)
-    {
-      /* Updates alignment flags */
-      u32Result |= orxGRAPHIC_KU32_FLAG_ALIGN_ROUND;
-    }
   }
 
   /* Done! */
@@ -632,12 +625,6 @@ orxVECTOR *orxFASTCALL orxGraphic_AlignVector(orxU32 _u32AlignFlags, const orxAA
   {
     /* Updates position */
     orxVector_Floor(pvResult, pvResult);
-  }
-  /* Round? */
-  else if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_ROUND))
-  {
-    /* Updates position */
-    orxVector_Round(pvResult, pvResult);
   }
 
   /* Clears Z component */
@@ -1204,7 +1191,8 @@ const orxSTRING orxFASTCALL orxGraphic_GetName(const orxGRAPHIC *_pstGraphic)
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstGraphic);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
 
   /* Updates result */
   zResult = (_pstGraphic->zReference != orxNULL) ? _pstGraphic->zReference : orxSTRING_EMPTY;

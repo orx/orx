@@ -15,6 +15,22 @@ orxSTATUS                                   orxInspector_UnregisterObject(orxOBJ
 orxBOOL                                     orxInspector_IsObjectRegistered(const orxOBJECT *_pstObject);
 
 
+//! Events
+
+typedef enum __orxINSPECTOR_EVENT_t
+{
+  orxINSPECTOR_EVENT_RENDER_START = 0,
+  orxINSPECTOR_EVENT_RENDER_STOP,
+
+  orxINSPECTOR_EVENT_NUMBER,
+
+  orxINSPECTOR_EVENT_NONE = orxENUM_NONE
+
+} orxINSPECTOR_EVENT;
+
+#define orxEVENT_TYPE_INSPECTOR             (orxEVENT_TYPE)(orxEVENT_TYPE_FIRST_EXTENSION + 0)
+
+
 //! Defines
 
 #define orxINSPECTOR_KZ_CONFIG_SECTION      "Inspector"
@@ -26,6 +42,10 @@ orxBOOL                                     orxInspector_IsObjectRegistered(cons
 
 #define orxINSPECTOR_KZ_INPUT_SET           "orx:input:inspector"
 #define orxINSPECTOR_KZ_INPUT_INSPECT       "Inspect"
+
+#define orxINSPECTOR_KZ_TRIGGER             "Inspector"
+#define orxINSPECTOR_KZ_TRIGGER_REGISTER    "Register"
+#define orxINSPECTOR_KZ_TRIGGER_UNREGISTER  "Unregister"
 
 #define orxINSPECTOR_KV_DEFAULT_WINDOW_SIZE orx2F(500.0f), orx2F(600.0f), orxFLOAT_0
 
@@ -763,6 +783,8 @@ void orxInspector_ShowObject(orxOBJECT *_pstObject)
   const orxSTRING zName = orxObject_GetName(_pstObject);
   if(ImGui::Begin(orxInspector_PrintGUID(_pstObject, zName), &bRegistered))
   {
+    orxEVENT_SEND(orxEVENT_TYPE_INSPECTOR, orxINSPECTOR_EVENT_RENDER_START, _pstObject, _pstObject, orxNULL);
+
     orxInspector_ShowHighlightCheckbox(_pstObject);
     orxInspector_ShowStatus(_pstObject);
     orxInspector_ShowConfig(zName);
@@ -771,6 +793,8 @@ void orxInspector_ShowObject(orxOBJECT *_pstObject)
     orxInspector_ShowParent(_pstObject);
     orxInspector_ShowSiblings(_pstObject);
     orxInspector_ShowChildren(_pstObject);
+
+    orxEVENT_SEND(orxEVENT_TYPE_INSPECTOR, orxINSPECTOR_EVENT_RENDER_STOP, _pstObject, _pstObject, orxNULL);
   }
   ImGui::End();
 
@@ -1030,11 +1054,15 @@ orxSTATUS orxInspector_RegisterObject(orxOBJECT *_pstObject)
   // Valid?
   if(_pstObject != orxNULL)
   {
+    const orxSTRING zRefinement = orxINSPECTOR_KZ_TRIGGER_REGISTER;
+
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
     orxConfig_SetBool(orxInspector_PrintGUID(_pstObject), orxTRUE);
     orxConfig_PopSection();
 
     orxObject_AddShader(_pstObject, sstInspector.zShader);
+
+    orxObject_FireTrigger(_pstObject, orxINSPECTOR_KZ_TRIGGER, &zRefinement, 1);
 
     // Update status
     eResult = orxSTATUS_SUCCESS;
@@ -1051,11 +1079,15 @@ orxSTATUS orxInspector_UnregisterObject(orxOBJECT *_pstObject)
   // Valid?
   if(_pstObject != orxNULL)
   {
+    const orxSTRING zRefinement = orxINSPECTOR_KZ_TRIGGER_UNREGISTER;
+
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
     orxConfig_ClearValue(orxInspector_PrintGUID(_pstObject));
     orxConfig_PopSection();
 
     orxObject_RemoveShader(_pstObject, sstInspector.zShader);
+
+    orxObject_FireTrigger(_pstObject, orxINSPECTOR_KZ_TRIGGER, &zRefinement, 1);
 
     // Update result
     eResult = orxSTATUS_SUCCESS;

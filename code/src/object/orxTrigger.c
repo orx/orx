@@ -152,6 +152,94 @@ static orxTRIGGER_STATIC sstTrigger;
  * Private functions                                                       *
  ***************************************************************************/
 
+static orxBOOL orxFASTCALL orxTrigger_Count(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
+{
+  orxU32 *pu32Counter;
+
+  /* Gets counter */
+  pu32Counter = (orxU32 *)_pContext;
+
+  /* Increases it */
+  (*pu32Counter) += (orxU32)orxConfig_GetListCount(_zKeyName);
+
+  /* Done! */
+  return orxTRUE;
+}
+
+static orxBOOL orxFASTCALL orxTrigger_AddEvent(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
+{
+  orxSTRINGID     stEventID;
+  orxTRIGGER_SET *pstTriggerSet;
+  const orxCHAR  *pcSrc;
+  orxCHAR        *pcDst;
+  orxU32          u32StopDepth, u32Depth;
+  orxS32          s32ListCount, i;
+  orxCHAR         acBuffer[orxTRIGGER_KU32_BUFFER_SIZE];
+
+  /* Gets trigger set */
+  pstTriggerSet = (orxTRIGGER_SET *)_pContext;
+
+  /* For all characters */
+  for(pcSrc = _zKeyName, pcDst = acBuffer, u32StopDepth = 0, u32Depth = 0;
+      (*pcSrc != orxCHAR_NULL) && (pcDst - acBuffer < sizeof(acBuffer) - 1);
+      pcSrc++)
+  {
+    /* Depending on character */
+    switch(*pcSrc)
+    {
+      case orxTRIGGER_KC_STOP_MARKER:
+      {
+        /* Checks */
+        if((u32StopDepth != 0) || (u32Depth == 0))
+        {
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s] Invalid stop markers found for event <%s>.", orxString_GetFromID(pstTriggerSet->stID), _zKeyName);
+        }
+
+        /* Updates stop depth */
+        u32StopDepth = u32Depth;
+
+        break;
+      }
+
+      case orxTRIGGER_KC_SEPARATOR:
+      {
+        /* Updates depth */
+        u32Depth++;
+
+        /* Fall through */
+      }
+
+      default:
+      {
+        /* Copies it */
+        *(pcDst++) = *pcSrc;
+
+        break;
+      }
+    }
+  }
+
+  /* Terminates buffer */
+  *pcDst = orxCHAR_NULL;
+
+  /* Gets event ID */
+  stEventID = orxString_Hash(acBuffer);
+
+  /* For all associated values */
+  for(i = 0, s32ListCount = orxConfig_GetListCount(_zKeyName);
+      i < s32ListCount;
+      i++, (pstTriggerSet->u32EventCount)++)
+  {
+    /* Stores it */
+    pstTriggerSet->astEventList[pstTriggerSet->u32EventCount].stID          = stEventID;
+    pstTriggerSet->astEventList[pstTriggerSet->u32EventCount].zValue        = orxString_Store(orxConfig_GetListString(_zKeyName, i));
+    pstTriggerSet->astEventList[pstTriggerSet->u32EventCount].u32StopDepth  = u32StopDepth;
+  }
+
+  /* Done! */
+  return orxTRUE;
+}
+
 /** Creates a set
  */
 static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID)
@@ -162,17 +250,10 @@ static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
-    orxU32 i, u32KeyCount, u32EventCount;
+    orxU32 u32EventCount = 0;
 
-    /* Gets number of keys */
-    u32KeyCount = orxConfig_GetKeyCount();
-
-    /* For all keys */
-    for(i = 0, u32EventCount = 0; i < u32KeyCount; i++)
-    {
-      /* Updates event count */
-      u32EventCount += (orxU32)orxConfig_GetListCount(orxConfig_GetKey(i));
-    }
+    /* Gets event count */
+    orxConfig_ForAllKeys(orxTrigger_Count, orxTRUE, &u32EventCount);
 
     /* Valid? */
     if(u32EventCount > 0)
@@ -186,91 +267,25 @@ static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID
         /* Stores its ID */
         pstResult->stID = orxString_GetID(orxConfig_GetCurrentSection());
 
+        /* Inits its event count */
+        pstResult->u32EventCount = 0;
+
         /* Adds it to reference table */
         if(orxHashTable_Set(sstTrigger.pstSetTable, pstResult->stID, pstResult) != orxSTATUS_FAILURE)
         {
-          orxU32 u32KeyIndex, u32EventIndex, u32Flags = orxTRIGGER_SET_KU32_FLAG_NONE;
+          orxU32 u32Flags = orxTRIGGER_SET_KU32_FLAG_NONE;
 
-          /* For all keys */
-          for(u32KeyIndex = 0, u32EventIndex = 0; u32KeyIndex < u32KeyCount; u32KeyIndex++)
-          {
-            orxSTRINGID     stEventID;
-            const orxSTRING zKey;
-            const orxCHAR  *pcSrc;
-            orxCHAR        *pcDst;
-            orxCHAR         acBuffer[orxTRIGGER_KU32_BUFFER_SIZE];
-            orxU32          u32ListCount, u32StopDepth, u32Depth;
+          /* Adds all events */
+          orxConfig_ForAllKeys(orxTrigger_AddEvent, orxTRUE, pstResult);
 
-            /* Gets corresponding key */
-            zKey = orxConfig_GetKey(u32KeyIndex);
-
-            /* For all characters */
-            for(pcSrc = zKey, pcDst = acBuffer, u32StopDepth = 0, u32Depth = 0;
-                (*pcSrc != orxCHAR_NULL) && (pcDst - acBuffer < sizeof(acBuffer) - 1);
-                pcSrc++)
-            {
-              /* Depending on character */
-              switch(*pcSrc)
-              {
-                case orxTRIGGER_KC_STOP_MARKER:
-                {
-                  /* Checks */
-                  if((u32StopDepth != 0) || (u32Depth == 0))
-                  {
-                    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s] Invalid stop markers found for event <%s>.", _zConfigID, zKey);
-                  }
-
-                  /* Updates stop depth */
-                  u32StopDepth = u32Depth;
-
-                  break;
-                }
-
-                case orxTRIGGER_KC_SEPARATOR:
-                {
-                  /* Updates depth */
-                  u32Depth++;
-
-                  /* Fall through */
-                }
-
-                default:
-                {
-                  /* Copies it */
-                  *(pcDst++) = *pcSrc;
-
-                  break;
-                }
-              }
-            }
-
-            /* Terminates buffer */
-            *pcDst = orxCHAR_NULL;
-
-            /* Gets event ID */
-            stEventID = orxString_Hash(acBuffer);
-
-            /* For all associated values */
-            for(i = 0, u32ListCount = orxConfig_GetListCount(zKey);
-                i < u32ListCount;
-                i++, u32EventIndex++)
-            {
-              /* Checks */
-              orxASSERT(u32EventIndex < u32EventCount);
-
-              /* Stores it */
-              pstResult->astEventList[u32EventIndex].stID         = stEventID;
-              pstResult->astEventList[u32EventIndex].zValue       = orxString_Store(orxConfig_GetListString(zKey, i));
-              pstResult->astEventList[u32EventIndex].u32StopDepth = u32StopDepth;
-            }
-          }
+          /* Checks */
+          orxASSERT(pstResult->u32EventCount == u32EventCount);
 
           /* Stores its reference */
           pstResult->zReference = orxString_GetFromID(pstResult->stID);
 
-          /* Updates set counts */
-          pstResult->u32RefCount    = 1;
-          pstResult->u32EventCount  = u32EventCount;
+          /* Updates its ref count */
+          pstResult->u32RefCount = 1;
 
           /* Should keep in cache? */
           if(orxConfig_GetBool(orxTRIGGER_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
@@ -1014,15 +1029,20 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
     pstOwner = orxStructure_GetOwner(_pstTrigger);
 
     /* For all refinements */
-    for(i = 0; i < (orxS32)_u32Size; i++)
+    for(i = 0, s32StopDepth = 0; i < (orxS32)_u32Size; i++)
     {
+      const orxSTRING zRefinement;
+
+      /* Gets refinement & stop depth */
+      zRefinement = (*_azRefinementList[i] == orxTRIGGER_KC_STOP_MARKER) ? s32StopDepth = i + 1, _azRefinementList[i] + 1 : _azRefinementList[i];
+
       /* Stores its ID */
-      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "%c%s", orxTRIGGER_KC_SEPARATOR, _azRefinementList[i]);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "%c%s", orxTRIGGER_KC_SEPARATOR, zRefinement);
       astEventIDList[i + 1] = orxString_Hash(acBuffer);
     }
 
     /* For all refinements, in reverse order */
-    for(i = (orxS32)_u32Size, s32StopDepth = 0; (i >= 0) && (i >= s32StopDepth); i--)
+    for(i = (orxS32)_u32Size; (i >= 0) && (i >= s32StopDepth); i--)
     {
       orxSTRINGID stEventID;
       orxU32      u32SetIndex;

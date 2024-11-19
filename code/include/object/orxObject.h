@@ -53,7 +53,6 @@
 #include "display/orxGraphic.h"
 #include "display/orxTexture.h"
 #include "math/orxOBox.h"
-#include "memory/orxBank.h"
 #include "object/orxStructure.h"
 #include "sound/orxSound.h"
 
@@ -85,6 +84,9 @@ typedef enum __orxOBJECT_EVENT_t
 
 /** Internal object structure */
 typedef struct __orxOBJECT_t                orxOBJECT;
+
+/** Object callback function type to use with ForAllNeighbors */
+typedef orxBOOL (orxFASTCALL *orxOBJECT_NEIGHBOR_FUNCTION)(orxOBJECT *_pstObject, void *_pContext);
 
 
 /** @name Internal module function
@@ -1192,39 +1194,15 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *
 
 /** @name Neighboring
  * @{ */
-/** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box).
- * The following is an example for iterating over a neighbor list:
- * @code
- * orxVECTOR vPosition; // The world position of the neighborhood area
- * // set_position(vPosition);
- * orxVECTOR vSize; // The size of the neighborhood area
- * // set_size(vSize);
- * orxVECTOR vPivot; // The pivot of the neighborhood area
- * // set_pivot(vPivot);
- *
- * orxOBOX stBox;
- * orxOBox_2DSet(&stBox, &vPosition, &vPivot, &vSize, 0);
- *
- * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox, orxSTRINGID_UNDEFINED);
- * if(pstBank) {
- *     for(int i=0; i < orxBank_GetCount(pstBank); ++i)
- *     {
- *         orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));
- *         do_something_with(pstObject);
- *     }
- *     orxObject_DeleteNeighborList(pstBank);
- * }
- * @endcode
- * @param[in]   _pstCheckBox    Box to check intersection with
+/** Runs a callback for all neighboring objects (ie. whose bounding volume intersects this box).
+ * @param[in]   _pfnNeighborCallback Function to run for each neighbor. If this function returns orxFALSE, no other neighbor will be processed (ie. early exit)
+ * @param[in]   _pstCheckBox    Box to check intersection with, orxNULL for all objects
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
- * @return      orxBANK / orxNULL
+ * @param[in]   _bEnabled       Only consider enabled objects if set to orxTRUE, consider all objects otherwise
+ * @param[in]   _pContext       User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS if all neighbors were processed without interruption, orxSTATUS_FAILURE otherwise
  */
-extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox, orxSTRINGID _stGroupID);
-
-/** Deletes an object list created with orxObject_CreateNeighborList().
- * @param[in]   _pstObjectList  Concerned object list
- */
-extern orxDLLAPI void orxFASTCALL           orxObject_DeleteNeighborList(orxBANK *_pstObjectList);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ForAllNeighbors(const orxOBJECT_NEIGHBOR_FUNCTION _pfnNeighborCallback, const orxOBOX *_pstCheckBox, orxSTRINGID _stGroupID, orxBOOL _bEnabled, void *_pContext);
 /** @} */
 
 
@@ -1468,8 +1446,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNextEnabled(const orxOB
 /** @name Picking
  * @{ */
 /** Picks the first active object with size "under" the given position, within a given group. See
- * orxObject_BoxPick(), orxObject_CreateNeighborList() and orxObject_Raycast for other ways of picking
- * objects.
+ * orxObject_BoxPick(), orxObject_ForAllNeighbors() and orxObject_Raycast() for other ways of picking objects.
  * @param[in]   _pvPosition     Position to pick from
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
@@ -1477,7 +1454,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNextEnabled(const orxOB
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID _stGroupID);
 
 /** Picks the first active object with size in contact with the given box, withing a given group. Use
- * orxObject_CreateNeighborList() to get all the objects in the box.
+ * orxObject_ForAllNeighbors() to access all the objects in the box.
  * @param[in]   _pstBox         Box to use for picking
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL

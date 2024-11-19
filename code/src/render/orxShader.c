@@ -393,20 +393,27 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
       orxS32 i;
 
 #ifdef __orxMSVC__
-      const orxSTRING *azCodeList = (const orxSTRING *)alloca(s32Count * sizeof(const orxSTRING));
+      orxSTRING *azCodeList = (orxSTRING *)alloca(s32Count * sizeof(const orxSTRING));
 #else /* __orxMSVC__ */
-      const orxSTRING azCodeList[s32Count];
+      orxSTRING azCodeList[s32Count];
 #endif /* __orxMSVC__ */
 
       /* For all code entries */
       for(i = 0; i < s32Count; i++)
       {
         /* Gets it */
-        azCodeList[i] = orxConfig_GetString(orxConfig_GetListString(orxSHADER_KZ_CONFIG_CODE_LIST, i));
+        azCodeList[i] = orxString_Duplicate(orxConfig_GetString(orxConfig_GetListString(orxSHADER_KZ_CONFIG_CODE_LIST, i)));
       }
 
       /* Compiles code */
-      orxShader_CompileCode(_pstShader, azCodeList, s32Count);
+      orxShader_CompileCode(_pstShader, (const orxSTRING *)azCodeList, s32Count);
+
+      /* For all code entries */
+      for(i = 0; i < s32Count; i++)
+      {
+        /* Gets it */
+        orxString_Delete(azCodeList[i]);
+      }
     }
   }
   else

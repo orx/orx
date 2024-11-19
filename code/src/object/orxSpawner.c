@@ -189,6 +189,13 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
         {
           /* Removes its owner */
           orxObject_SetOwner(pstObject, orxNULL);
+
+          /* Should clean? */
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE))
+          {
+            /* Updates its lifetime */
+            orxObject_SetLifeTime(pstObject, orxFLOAT_0);
+          }
         }
 
         /* Deletes its table */
@@ -727,8 +734,8 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           /* Gets owner as spawner */
           pstSpawner = orxSPAWNER(orxObject_GetOwner(pstObject));
 
-          /* Valid? */
-          if(pstSpawner != orxNULL)
+          /* Valid and not currently spawning? */
+          if((pstSpawner != orxNULL) && (sstSpawner.pstCurrentSpawner != pstSpawner))
           {
             /* Checks */
             orxASSERT(pstSpawner->pstSpawnedTable != orxNULL);
@@ -747,8 +754,6 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
 
             /* Removes it from spawned table */
             orxHashTable_Remove(pstSpawner->pstSpawnedTable, u64Key);
-
-            break;
           }
 
           break;

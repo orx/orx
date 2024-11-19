@@ -126,6 +126,8 @@ Macros</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga780c6211b200bb2a9f0ca89eba707457"><td class="memItemLeft" align="right" valign="top">typedef struct __orxOBJECT_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a></td></tr>
 <tr class="separator:ga780c6211b200bb2a9f0ca89eba707457"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2755e23b3641d2d78bb63693c69d6e97"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga2755e23b3641d2d78bb63693c69d6e97">orxOBJECT_NEIGHBOR_FUNCTION</a>) (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:ga2755e23b3641d2d78bb63693c69d6e97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -517,10 +519,8 @@ Name</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Neighboring</h2></td></tr>
-<tr class="memitem:gadcbd19a771edb146fed6d42d9d7643bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gadcbd19a771edb146fed6d42d9d7643bd">orxObject_CreateNeighborList</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstCheckBox, orxSTRINGID _stGroupID)</td></tr>
-<tr class="separator:gadcbd19a771edb146fed6d42d9d7643bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaeac04e584788022c4bfb0e0e72ac0533"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaeac04e584788022c4bfb0e0e72ac0533">orxObject_DeleteNeighborList</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstObjectList)</td></tr>
-<tr class="separator:gaeac04e584788022c4bfb0e0e72ac0533"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaea006c47cb9c5c3074fd90ec07c7f9a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaea006c47cb9c5c3074fd90ec07c7f9a0">orxObject_ForAllNeighbors</a> (const <a class="el" href="group__orx_object.html#ga2755e23b3641d2d78bb63693c69d6e97">orxOBJECT_NEIGHBOR_FUNCTION</a> _pfnNeighborCallback, const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstCheckBox, orxSTRINGID _stGroupID, orxBOOL _bEnabled, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:gaea006c47cb9c5c3074fd90ec07c7f9a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Smoothing</h2></td></tr>
@@ -601,7 +601,7 @@ Picking</h2></td></tr>
 </div><div class="memdoc">
 <p>Defines </p>
 
-<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00062">62</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00061">61</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
 
 </div>
 </div>
@@ -615,7 +615,7 @@ Picking</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00064">64</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00063">63</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
 
 </div>
 </div>
@@ -631,7 +631,22 @@ Picking</h2></td></tr>
 </div><div class="memdoc">
 <p>Internal object structure </p>
 
-<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00087">87</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00086">86</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga2755e23b3641d2d78bb63693c69d6e97"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxBOOL(orxFASTCALL * orxOBJECT_NEIGHBOR_FUNCTION) (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Object callback function type to use with ForAllNeighbors </p>
+
+<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00089">89</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
 
 </div>
 </div>
@@ -667,7 +682,7 @@ Picking</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00069">69</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00068">68</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
 
 </div>
 </div>
@@ -1297,7 +1312,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks the first active object with size in contact with the given box, withing a given group. Use <a class="el" href="group__orx_object.html#gadcbd19a771edb146fed6d42d9d7643bd">orxObject_CreateNeighborList()</a> to get all the objects in the box. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Picks the first active object with size in contact with the given box, withing a given group. Use <a class="el" href="group__orx_object.html#gaea006c47cb9c5c3074fd90ec07c7f9a0">orxObject_ForAllNeighbors()</a> to access all the objects in the box. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBox</td><td>Box to use for picking </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_stGroupID</td><td>Group ID to consider, orxSTRINGID_UNDEFINED for all </td></tr>
@@ -1346,40 +1361,6 @@ Picking</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gadcbd19a771edb146fed6d42d9d7643bd"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a>* orxFASTCALL orxObject_CreateNeighborList </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&#160;</td>
-          <td class="paramname"><em>_pstCheckBox</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxSTRINGID&#160;</td>
-          <td class="paramname"><em>_stGroupID</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box). The following is an example for iterating over a neighbor list: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;orxVECTOR vPosition; // The world position of the neighborhood area</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;// set_position(vPosition);</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;orxVECTOR vSize; // The size of the neighborhood area</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;// set_size(vSize);</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;orxVECTOR vPivot; // The pivot of the neighborhood area</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;// set_pivot(vPivot);</div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;orxOBOX stBox;</div><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;orxOBox_2DSet(&amp;stBox, &amp;vPosition, &amp;vPivot, &amp;vSize, 0);</div><div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;orxBANK * pstBank = orxObject_CreateNeighborList(&amp;stBox, orxSTRINGID_UNDEFINED);</div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;if(pstBank) {</div><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    for(int i=0; i &lt; orxBank_GetCount(pstBank); ++i)</div><div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    {</div><div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));</div><div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        do_something_with(pstObject);</div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    }</div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    orxObject_DeleteNeighborList(pstBank);</div><div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCheckBox</td><td>Box to check intersection with </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_stGroupID</td><td>Group ID to consider, orxSTRINGID_UNDEFINED for all </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxBANK / orxNULL </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="ga72bd441390e6a8dfa1e4635fc91149c4"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1400,28 +1381,6 @@ Picking</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gaeac04e584788022c4bfb0e0e72ac0533"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxObject_DeleteNeighborList </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *&#160;</td>
-          <td class="paramname"><em>_pstObjectList</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Deletes an object list created with <a class="el" href="group__orx_object.html#gadcbd19a771edb146fed6d42d9d7643bd">orxObject_CreateNeighborList()</a>. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObjectList</td><td>Concerned object list </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -1757,6 +1716,61 @@ Picking</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaea006c47cb9c5c3074fd90ec07c7f9a0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_ForAllNeighbors </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#ga2755e23b3641d2d78bb63693c69d6e97">orxOBJECT_NEIGHBOR_FUNCTION</a>&#160;</td>
+          <td class="paramname"><em>_pfnNeighborCallback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&#160;</td>
+          <td class="paramname"><em>_pstCheckBox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxSTRINGID&#160;</td>
+          <td class="paramname"><em>_stGroupID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bEnabled</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
+          <td class="paramname"><em>_pContext</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Runs a callback for all neighboring objects (ie. whose bounding volume intersects this box). </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnNeighborCallback</td><td>Function to run for each neighbor. If this function returns orxFALSE, no other neighbor will be processed (ie. early exit) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCheckBox</td><td>Box to check intersection with, orxNULL for all objects </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_stGroupID</td><td>Group ID to consider, orxSTRINGID_UNDEFINED for all </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bEnabled</td><td>Only consider enabled objects if set to orxTRUE, consider all objects otherwise </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>User defined context, passed to the callback </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS if all neighbors were processed without interruption, orxSTATUS_FAILURE otherwise </dd></dl>
 
 </div>
 </div>
@@ -3525,7 +3539,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks the first active object with size "under" the given position, within a given group. See <a class="el" href="group__orx_object.html#gaaf70ba8a146be3b1948af70a1bc8990c">orxObject_BoxPick()</a>, <a class="el" href="group__orx_object.html#gadcbd19a771edb146fed6d42d9d7643bd">orxObject_CreateNeighborList()</a> and orxObject_Raycast for other ways of picking objects. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Picks the first active object with size "under" the given position, within a given group. See <a class="el" href="group__orx_object.html#gaaf70ba8a146be3b1948af70a1bc8990c">orxObject_BoxPick()</a>, <a class="el" href="group__orx_object.html#gaea006c47cb9c5c3074fd90ec07c7f9a0">orxObject_ForAllNeighbors()</a> and <a class="el" href="group__orx_object.html#ga5d833ebee1dec1bcc0715edd58d775af">orxObject_Raycast()</a> for other ways of picking objects. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPosition</td><td>Position to pick from </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_stGroupID</td><td>Group ID to consider, orxSTRINGID_UNDEFINED for all </td></tr>

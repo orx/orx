@@ -3466,6 +3466,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       orxCLOCK *pstClock;
       orxU32    u32IterationsPerStep;
 
+      /* Updates allow sleep status */
+      sstPhysics.poWorld->SetAllowSleeping((orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? ((orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? true : false) : true);
+
       /* Creates listeners */
       sstPhysics.poContactListener = new orxPhysicsContactListener();
 

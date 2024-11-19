@@ -71,6 +71,7 @@
 #define orxCONFIG_KU32_STATIC_FLAG_READY          0x00000001  /**< Ready flag */
 #define orxCONFIG_KU32_STATIC_FLAG_HISTORY        0x00000002  /**< Keep history flag */
 #define orxCONFIG_KU32_STATIC_FLAG_TYPO_CHECK     0x00000004  /**< Typo check flag */
+#define orxCONFIG_KU32_STATIC_FLAG_FOR_ALL_KEYS   0x00000008  /**< For all keys flag */
 
 #define orxCONFIG_KU32_STATIC_MASK_ALL            0xFFFFFFFF  /**< All mask */
 
@@ -93,6 +94,7 @@
 #define orxCONFIG_KU32_SECTION_BANK_SIZE          2048        /**< Default section bank size */
 #define orxCONFIG_KU32_ENTRY_BANK_SIZE            16384       /**< Default entry bank size */
 #define orxCONFIG_KU32_HISTORY_BANK_SIZE          32          /**< Default history bank size */
+#define orxCONFIG_KU32_KEY_TABLE_SIZE             128         /**< Default key table size */
 #define orxCONFIG_KU32_BASE_FILENAME_LENGTH       256         /**< Base file name length */
 #define orxCONFIG_KU32_STACK_SIZE                 64          /**< Section stack size */
 
@@ -237,6 +239,20 @@
  * Structure declaration                                                   *
  ***************************************************************************/
 
+/** Config set mode enum
+ */
+typedef enum __orxCONFIG_SET_MODE_t
+{
+  orxCONFIG_SET_MODE_SINGLE = 0,
+  orxCONFIG_SET_MODE_BLOCK,
+  orxCONFIG_SET_MODE_APPEND,
+
+  orxCONFIG_SET_MODE_NUMBER,
+
+  orxCONFIG_SET_MODE_NONE = orxENUM_NONE
+
+} orxCONFIG_SET_MODE;
+
 /** Config value type enum
  */
 typedef enum __orxCONFIG_VALUE_TYPE_t
@@ -344,6 +360,7 @@ typedef struct __orxCONFIG_STATIC_t
   orxCHAR            *pcEncryptionChar;     /**< Current encryption char */
   orxLINKLIST         stSectionList;        /**< Section list */
   orxHASHTABLE       *pstSectionTable;      /**< Section table */
+  orxHASHTABLE       *pstKeyTable;          /**< Key table */
   orxCONFIG_SECTION  *pstDefaultSection;    /**< Default parent section */
   orxU32              u32CurrentStackEntry; /**< Current stack entry */
   orxCONFIG_SECTION*  apstSectionStack[orxCONFIG_KU32_STACK_SIZE]; /**< Section stack */
@@ -881,17 +898,17 @@ static void orxFASTCALL orxConfig_RestoreLiteralValue(orxCONFIG_VALUE *_pstValue
 
   /* Cleans list status */
   _pstValue->u16Flags      &= ~orxCONFIG_VALUE_KU16_FLAG_LIST;
-  _pstValue->u16ListCount = 1;
+  _pstValue->u16ListCount   = 1;
   _pstValue->u16CacheIndex  = 0;
 }
 
 /** Initializes a value
  * @param[in] _pstValue         Concerned config value
  * @param[in] _zValue           Value to use for initialization
- * @param[in] _bBlockMode       In block mode?
+ * @param[in] _eSetMode         Set mode
  * @return                      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const orxSTRING _zValue, orxBOOL _bBlockMode)
+static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const orxSTRING _zValue, orxCONFIG_SET_MODE _eSetMode)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -902,12 +919,13 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
   _pstValue->au32ListIndexTable = orxNULL;
 
   /* Not in block mode? */
-  if(_bBlockMode == orxFALSE)
+  if(_eSetMode != orxCONFIG_SET_MODE_BLOCK)
   {
     orxU32  u32Size;
-    orxBOOL bNeedDuplication = orxFALSE;
+    orxBOOL bNeedDuplication;
 
     /* Inits status */
+    bNeedDuplication = (sstConfig.u32LoadCount == 0) ? orxTRUE : orxFALSE;
     _pstValue->u16Flags = orxCONFIG_VALUE_KU16_FLAG_NONE;
 
     /* Buffer not already prepared? */
@@ -1035,7 +1053,7 @@ static orxINLINE orxSTATUS orxConfig_InitValue(orxCONFIG_VALUE *_pstValue, const
 
     /* Block mode, no list nor random allowed */
     _pstValue->u16Flags       = orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE;
-    _pstValue->u16ListCount = 1;
+    _pstValue->u16ListCount   = 1;
   }
 
   /* Clears value buffer */
@@ -1563,6 +1581,61 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
   return pstResult;
 }
 
+/** Checks for typo
+ */
+static orxBOOL orxFASTCALL orxConfig_CheckTypo(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
+{
+  const orxSTRING zKey;
+  orxBOOL         bResult = orxTRUE;
+
+  /* Gets requested key */
+  zKey = (const orxSTRING)_pContext;
+
+  /* Identical? */
+  if(orxString_Compare(zKey, _zKeyName) == 0)
+  {
+    orxCONFIG_ENTRY *pstEntry;
+
+    /* Pushes section */
+    orxConfig_PushSection(_zSectionName);
+
+    /* Gets its entry */
+    pstEntry = orxConfig_GetEntry(orxString_Hash(_zKeyName));
+
+    /* Pops section */
+    orxConfig_PopSection();
+
+    /* Checks */
+    orxASSERT(pstEntry != orxNULL);
+
+    /* Logs message */
+    if(orxString_Compare(_zSectionName, sstConfig.pstCurrentSection->zName) == 0)
+    {
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT "is defined " orxANSI_KZ_COLOR_FG_DEFAULT "as" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "however one of its ancestors was not found" orxANSI_KZ_COLOR_UNDERLINE_OFF ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKeyName, pstEntry->stValue.zValue);
+    }
+    else
+    {
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT "is defined in parent" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT "as" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "however one of its ancestors was not found" orxANSI_KZ_COLOR_UNDERLINE_OFF ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKeyName, _zSectionName, pstEntry->stValue.zValue);
+    }
+
+    /* Updates result */
+    bResult = orxFALSE;
+  }
+  else
+  {
+    /* Typo? */
+    if((orxString_ICompare(zKey, _zKeyName) == 0)
+    || (orxString_GetEditDistance(zKey, _zKeyName) <= ((orxString_GetLength(zKey) <= 4UL) ? 1UL : orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE)))
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "was found instead of requested key" orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_UNDERLINE_OFF " <%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKeyName, zKey);
+    }
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Gets a value from the current section, using inheritance
  * @param[in] _zKeyID           Entry key
  * @return                      orxCONFIG_VALUE / orxNULL
@@ -1597,37 +1670,8 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
       /* Not found? */
       if(pstResult == orxNULL)
       {
-        orxCONFIG_ENTRY *pstEntry;
-
-        /* For all entries in section */
-        for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(sstConfig.pstCurrentSection->stEntryList));
-            pstEntry != orxNULL;
-            pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
-        {
-          /* Identical? */
-          if(pstEntry->stID == stID)
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT "inherits from" orxANSI_KZ_COLOR_FG_YELLOW " <%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "however one of its ancestors was not found" orxANSI_KZ_COLOR_UNDERLINE_OFF ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKey, pstEntry->stValue.zValue);
-
-            break;
-          }
-          else
-          {
-            const orxSTRING zKey;
-
-            /* Gets its key */
-            zKey = orxString_GetFromID(pstEntry->stID);
-
-            /* Typo? */
-            if((orxString_ICompare(zKey, _zKey) == 0)
-            || (orxString_GetEditDistance(zKey, _zKey) <= ((orxString_GetLength(_zKey) <= 4UL) ? 1UL : orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE)))
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "was found instead of requested key" orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_UNDERLINE_OFF " <%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, zKey, _zKey);
-            }
-          }
-        }
+        /* For all entries */
+        orxConfig_ForAllKeys(orxConfig_CheckTypo, orxTRUE, (void *)_zKey);
       }
     }
 
@@ -1645,11 +1689,10 @@ static orxINLINE orxCONFIG_VALUE *orxConfig_GetValue(const orxSTRING _zKey)
 /** Sets an entry in the current section (adds it if need be)
  * @param[in] _zKey             Entry key
  * @param[in] _zValue           Entry value
- * @param[in] _bBlockMode       Block mode (ie. ignore special characters)?
- * @param[in] _bAppend          Append to list
+ * @param[in] _eSetMode         Set mode
  * @return                      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxSTRING _zValue, orxBOOL _bBlockMode, orxBOOL _bAppend)
+static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxSTRING _zValue, orxCONFIG_SET_MODE _eSetMode)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1660,7 +1703,7 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
   orxASSERT(sstConfig.pstCurrentSection != orxNULL);
   orxASSERT(_zKey != orxNULL);
   orxASSERT(_zValue != orxNULL);
-  orxASSERT((_bBlockMode && _bAppend) == orxFALSE);
+  orxASSERT((_eSetMode >= 0) && (_eSetMode < orxCONFIG_SET_MODE_NUMBER));
 
   /* Valid? */
   if(_zKey != orxSTRING_EMPTY)
@@ -1679,7 +1722,7 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
     if(pstEntry != orxNULL)
     {
       /* Not appending? */
-      if(_bAppend == orxFALSE)
+      if(_eSetMode != orxCONFIG_SET_MODE_APPEND)
       {
         /* Deletes value */
         orxConfig_CleanValue(&(pstEntry->stValue));
@@ -1700,28 +1743,70 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
     /* Valid? */
     if(pstEntry != orxNULL)
     {
-      /* Really appending? */
-      if((bReuse != orxFALSE) && (_bAppend != orxFALSE))
+      /* Appending? */
+      if(_eSetMode == orxCONFIG_SET_MODE_APPEND)
       {
-        /* Not self or inheritance? */
-        if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE))
+        /* Locally appending? */
+        if(bReuse != orxFALSE)
         {
-          /* Appends value */
-          eResult = orxConfig_AppendValue(&(pstEntry->stValue), _zValue);
+          /* Not self or inheritance? */
+          if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE))
+          {
+            /* Appends value */
+            eResult = orxConfig_AppendValue(&(pstEntry->stValue), _zValue);
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to append [%s] to config entry <%s.%s>: can't append list item(s) to a value that contains an inheritance marker <%s>.", _zValue, sstConfig.pstCurrentSection->zName, _zKey, pstEntry->stValue.zValue);
+          }
         }
         else
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to append [%s] to config entry <%s.%s>: can't append list item(s) to a value that contains an inheritance marker <%s>.", _zValue, sstConfig.pstCurrentSection->zName, _zKey, pstEntry->stValue.zValue);
+          orxCONFIG_ENTRY *pstParentEntry;
 
-          /* Updates result */
-          eResult = orxSTATUS_FAILURE;
+          /* Gets parent entry */
+          pstParentEntry = orxConfig_GetEntryFromKey(stKeyID);
+
+          /* Found? */
+          if(pstParentEntry != orxNULL)
+          {
+            /* Not self or inheritance? */
+            if(!orxFLAG_TEST(pstParentEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE))
+            {
+              /* Restores string */
+              orxConfig_RestoreLiteralValue(&(pstParentEntry->stValue));
+
+              /* Inits value */
+              if(orxConfig_InitValue(&(pstEntry->stValue), pstParentEntry->stValue.zValue, orxCONFIG_SET_MODE_SINGLE) != orxSTATUS_FAILURE)
+              {
+                /* Appends value */
+                eResult = orxConfig_AppendValue(&(pstEntry->stValue), _zValue);
+              }
+
+              /* Computes working value back */
+              orxConfig_ComputeWorkingValue(&(pstParentEntry->stValue), orxU32_UNDEFINED);
+            }
+            else
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to append [%s] to config entry <%s.%s>: can't append list item(s) to a value that contains an inheritance marker <%s>.", _zValue, orxSTRUCT_GET_FROM_FIELD(orxCONFIG_SECTION, stEntryList, orxLinkList_GetList(&(pstParentEntry->stNode)))->zName, _zKey, pstParentEntry->stValue.zValue);
+            }
+          }
+          else
+          {
+            /* Inits value */
+            eResult = orxConfig_InitValue(&(pstEntry->stValue), _zValue, _eSetMode);
+
+            /* Stores origin */
+            pstEntry->stOriginID = sstConfig.stLoadFileID;
+          }
         }
       }
       else
       {
         /* Inits value */
-        eResult = orxConfig_InitValue(&(pstEntry->stValue), _zValue, _bBlockMode);
+        eResult = orxConfig_InitValue(&(pstEntry->stValue), _zValue, _eSetMode);
 
         /* Stores origin */
         pstEntry->stOriginID = sstConfig.stLoadFileID;
@@ -1747,7 +1832,7 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
       else
       {
         /* Not appending? */
-        if(_bAppend == orxFALSE)
+        if(_eSetMode != orxCONFIG_SET_MODE_APPEND)
         {
           /* Logs message */
           orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to set value [%s] on config entry <%s.%s>.", _zValue, sstConfig.pstCurrentSection->zName, _zKey);
@@ -1957,7 +2042,7 @@ static orxINLINE orxSTATUS orxConfig_GetS32FromValue(orxCONFIG_VALUE *_pstValue,
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u16ListCount - 1);
+      _s32ListIndex = orxMath_GetRandomS32(0, (orxU32)_pstValue->u16ListCount - 1);
     }
   }
 
@@ -2098,7 +2183,7 @@ static orxINLINE orxSTATUS orxConfig_GetU32FromValue(orxCONFIG_VALUE *_pstValue,
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxS32)_pstValue->u16ListCount - 1);
+      _s32ListIndex = orxMath_GetRandomS32(0, (orxS32)_pstValue->u16ListCount - 1);
     }
   }
 
@@ -2239,7 +2324,7 @@ static orxINLINE orxSTATUS orxConfig_GetS64FromValue(orxCONFIG_VALUE *_pstValue,
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u16ListCount - 1);
+      _s32ListIndex = orxMath_GetRandomS32(0, (orxU32)_pstValue->u16ListCount - 1);
     }
   }
 
@@ -2380,7 +2465,7 @@ static orxINLINE orxSTATUS orxConfig_GetU64FromValue(orxCONFIG_VALUE *_pstValue,
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxS32)_pstValue->u16ListCount - 1);
+      _s32ListIndex = orxMath_GetRandomS32(0, (orxS32)_pstValue->u16ListCount - 1);
     }
   }
 
@@ -2521,7 +2606,7 @@ static orxINLINE orxSTATUS orxConfig_GetFloatFromValue(orxCONFIG_VALUE *_pstValu
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u16ListCount - 1);
+      _s32ListIndex = orxMath_GetRandomS32(0, (orxU32)_pstValue->u16ListCount - 1);
     }
   }
 
@@ -2662,7 +2747,7 @@ static orxINLINE orxSTATUS orxConfig_GetStringFromValue(orxCONFIG_VALUE *_pstVal
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u16ListCount - 1);
+      _s32ListIndex = orxMath_GetRandomS32(0, (orxU32)_pstValue->u16ListCount - 1);
     }
   }
 
@@ -2695,7 +2780,7 @@ static orxINLINE orxSTATUS orxConfig_GetBoolFromValue(orxCONFIG_VALUE *_pstValue
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u16ListCount - 1);
+      _s32ListIndex = orxMath_GetRandomS32(0, (orxU32)_pstValue->u16ListCount - 1);
     }
   }
 
@@ -2766,7 +2851,7 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
     else
     {
       /* Updates real index */
-      _s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)_pstValue->u16ListCount - 1);
+      _s32ListIndex = orxMath_GetRandomS32(0, (orxU32)_pstValue->u16ListCount - 1);
     }
   }
 
@@ -2892,12 +2977,12 @@ static orxINLINE orxSTATUS orxConfig_GetVectorFromValue(orxCONFIG_VALUE *_pstVal
  */
 static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHAR *_acBuffer, orxU32 _u32Size, orxU32 _u32Offset)
 {
-  orxCHAR  *pc, *pcKeyEnd, *pcLineStart, *pcValueStart;
-  orxBOOL   bBlockMode, bAppend;
-  orxU32    u32Result;
+  orxCHAR            *pc, *pcKeyEnd, *pcLineStart, *pcValueStart;
+  orxCONFIG_SET_MODE  eSetMode;
+  orxU32              u32Result;
 
   /* For all buffered characters */
-  for(pc = pcLineStart = _acBuffer + _u32Offset, pcKeyEnd = pcValueStart = orxNULL, bBlockMode = orxFALSE, bAppend = orxFALSE;
+  for(pc = pcLineStart = _acBuffer + _u32Offset, pcKeyEnd = pcValueStart = orxNULL, eSetMode = orxCONFIG_SET_MODE_NONE;
       pc < _acBuffer + _u32Size;
       pc++)
   {
@@ -2905,12 +2990,12 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
     if((((*pc == orxCONFIG_KC_COMMENT)
       || (*pc == orxCHAR_CR)
       || (*pc == orxCHAR_LF))
-     && (bBlockMode == orxFALSE))
-    || ((bBlockMode != orxFALSE)
+     && (eSetMode != orxCONFIG_SET_MODE_BLOCK))
+    || ((eSetMode == orxCONFIG_SET_MODE_BLOCK)
      && (*pc == orxCONFIG_KC_BLOCK)))
     {
       /* Block mode? */
-      if(bBlockMode != orxFALSE)
+      if(eSetMode == orxCONFIG_SET_MODE_BLOCK)
       {
         /* Not enough buffer? */
         if(pc + 1 >= _acBuffer + _u32Size)
@@ -2935,7 +3020,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
         orxSTRING pcValueEnd;
 
         /* Not in block mode? */
-        if(bBlockMode == orxFALSE)
+        if(eSetMode != orxCONFIG_SET_MODE_BLOCK)
         {
           /* Finds end of value position */
           for(pcValueEnd = pc - 1;
@@ -2994,7 +3079,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
         }
 
         /* Empty? */
-        if((bBlockMode == orxFALSE) && ((*pcValueStart == orxCONFIG_KC_COMMENT) || (*pcValueStart == orxCHAR_CR) || (*pcValueStart == orxCHAR_LF)))
+        if((eSetMode != orxCONFIG_SET_MODE_BLOCK) && ((*pcValueStart == orxCONFIG_KC_COMMENT) || (*pcValueStart == orxCHAR_CR) || (*pcValueStart == orxCHAR_LF)))
         {
           /* Uses empty string */
           pcValueStart = (orxCHAR *)orxSTRING_EMPTY;
@@ -3021,7 +3106,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
               orxConfig_RestoreLiteralValue(&(pstEntry->stValue));
 
               /* Appending? */
-              if(bAppend != orxFALSE)
+              if(eSetMode == orxCONFIG_SET_MODE_APPEND)
               {
                 /* Logs */
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: <%s.%s> += %s", _zName, sstConfig.pstCurrentSection->zName, orxString_GetFromID(pstEntry->stID), pcValueStart);
@@ -3050,7 +3135,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
 #endif /* __orxDEBUG__ */
 
         /* Adds/replaces entry */
-        orxConfig_SetEntry(pcLineStart, pcValueStart, bBlockMode, bAppend);
+        orxConfig_SetEntry(pcLineStart, pcValueStart, eSetMode);
 
         /* Updates pointers */
         pcKeyEnd = pcValueStart = orxNULL;
@@ -3064,8 +3149,8 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
         }
       }
 
-      /* Resets block mode */
-      bBlockMode = orxFALSE;
+      /* Resets set mode */
+      eSetMode = orxCONFIG_SET_MODE_NONE;
 
       /* Valid? */
       if(pc < _acBuffer + _u32Size)
@@ -3408,13 +3493,13 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
             {
               /* Inits end of key search */
               pcStart = pc - 2;
-              bAppend = orxTRUE;
+              eSetMode = orxCONFIG_SET_MODE_APPEND;
             }
             else
             {
               /* Inits end of key search */
               pcStart = pc - 1;
-              bAppend = orxFALSE;
+              eSetMode = orxCONFIG_SET_MODE_SINGLE;
             }
 
             /* Finds end of key position */
@@ -3450,8 +3535,11 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
                   || ((pcValueStart + 1 < _acBuffer + _u32Size)
                    && (*(pcValueStart + 1) == orxCONFIG_KC_BLOCK)))
                   {
+                    /* Checks */
+                    orxASSERT(eSetMode == orxCONFIG_SET_MODE_SINGLE);
+
                     /* Activates block mode */
-                    bBlockMode = orxTRUE;
+                    eSetMode = orxCONFIG_SET_MODE_BLOCK;
                   }
                 }
               }
@@ -4109,7 +4197,7 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
       if(s32Index == -1)
       {
         /* Updates real index */
-        s32Index = orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST) ? (orxS32)orxMath_GetRandomU32(0, (orxU32)pstValue->u16ListCount - 1) : 0;
+        s32Index = orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST) ? orxMath_GetRandomS32(0, (orxU32)pstValue->u16ListCount - 1) : 0;
       }
       else
       {
@@ -4348,14 +4436,19 @@ void orxFASTCALL orxConfig_CommandGetListCount(orxU32 _u32ArgNumber, const orxCO
   */
 void orxFASTCALL orxConfig_CommandGetSystem(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
+  orxCONFIG_VALUE *pstValue;
+
   /* Pushes system section */
   orxConfig_PushSection(orxCONFIG_KZ_CONFIG_SECTION_SYSTEM);
 
-  /* Is it an existing value? */
-  if(orxConfig_HasValue(_astArgList[0].zValue) != orxFALSE)
+  /* Gets corresponding value */
+  pstValue = orxConfig_GetValue(_astArgList[0].zValue);
+
+  /* Found? */
+  if(pstValue != orxNULL)
   {
     /* Updates result */
-    _pstResult->zValue = orxConfig_GetString(_astArgList[0].zValue);
+    orxConfig_GetStringFromValue(pstValue, -1, &(_pstResult->zValue));
   }
   else
   {
@@ -4646,9 +4739,10 @@ orxSTATUS orxFASTCALL orxConfig_Init()
     sstConfig.pstEntryBank    = orxBank_Create(orxCONFIG_KU32_ENTRY_BANK_SIZE, sizeof(orxCONFIG_ENTRY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionBank  = orxBank_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, sizeof(orxCONFIG_SECTION), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
     sstConfig.pstSectionTable = orxHashTable_Create(orxCONFIG_KU32_SECTION_BANK_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
+    sstConfig.pstKeyTable     = orxHashTable_Create(orxCONFIG_KU32_KEY_TABLE_SIZE, orxHASHTABLE_KU32_FLAG_NONE, orxMEMORY_TYPE_CONFIG);
 
     /* Valid? */
-    if((sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL))
+    if((sstConfig.pstHistoryBank != orxNULL) && (sstConfig.pstSectionBank != orxNULL) && (sstConfig.pstEntryBank != orxNULL) && (sstConfig.pstSectionTable != orxNULL) && (sstConfig.pstKeyTable != orxNULL))
     {
       orxBOOL bLoadDefault;
 
@@ -4726,6 +4820,20 @@ orxSTATUS orxFASTCALL orxConfig_Init()
         orxBank_Delete(sstConfig.pstEntryBank);
       }
 
+      /* Should delete section table? */
+      if(sstConfig.pstSectionTable != orxNULL)
+      {
+        /* Deletes it */
+        orxHashTable_Delete(sstConfig.pstSectionTable);
+      }
+
+      /* Should delete key table? */
+      if(sstConfig.pstKeyTable != orxNULL)
+      {
+        /* Deletes it */
+        orxHashTable_Delete(sstConfig.pstKeyTable);
+      }
+
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Can't allocate history bank, entry bank and/or section bank/table.");
     }
@@ -4764,6 +4872,9 @@ void orxFASTCALL orxConfig_Exit()
 
     /* Clears section list */
     orxLinkList_Clean(&(sstConfig.stSectionList));
+
+    /* Deletes key table */
+    orxHashTable_Delete(sstConfig.pstKeyTable);
 
     /* Deletes section table */
     orxHashTable_Delete(sstConfig.pstSectionTable);
@@ -6011,6 +6122,46 @@ const orxSTRING orxFASTCALL orxConfig_GetParent(const orxSTRING _zSectionName)
   return zResult;
 }
 
+/** Gets parent distance, ie. how far up the ancestry of a given section is a parent (does not consider the default parent)
+ * @param[in] _zSectionName     Concerned section
+ * @param[in] _zParentName      Parent section name to check
+ * @return 1 for a direct parent, 2 for a grandparent, etc., and 0 if not found in the ancestry
+ */
+orxU32 orxFASTCALL orxConfig_GetParentDistance(const orxSTRING _zSectionName, const orxSTRING _zParentName)
+{
+  orxCONFIG_SECTION  *pstSection;
+  orxU32              u32Result = 0, i;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSectionName != orxNULL);
+  orxASSERT(_zParentName != orxNULL);
+
+  /* Gets section */
+  pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, orxString_Hash(_zSectionName));
+
+  /* Valid? */
+  if(pstSection != orxNULL)
+  {
+    /* For all parents */
+    for(i = 1, pstSection = pstSection->pstParent;
+        (pstSection != orxNULL) && (pstSection != orxHANDLE_UNDEFINED);
+        i++, pstSection = pstSection->pstParent)
+    {
+      /* Found? */
+      if(orxString_Compare(pstSection->zName, _zParentName) == 0)
+      {
+        /* Updates result */
+        u32Result = i;
+        break;
+      }
+    }
+  }
+
+  /* Done! */
+  return u32Result;
+}
+
 /** Sets default parent for all sections
 * @param[in] _zSectionName     Section name that will be used as an implicit default parent section for all config sections, if orxNULL is provided, default parent will be removed
 * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -7030,7 +7181,7 @@ orxVECTOR *orxFASTCALL orxConfig_GetColorVector(const orxSTRING _zKey, orxCOLORS
     else
     {
       /* Updates real index */
-      s32ListIndex = (orxS32)orxMath_GetRandomU32(0, (orxU32)pstValue->u16ListCount - 1);
+      s32ListIndex = orxMath_GetRandomS32(0, (orxU32)pstValue->u16ListCount - 1);
     }
 
     /* Gets its value */
@@ -7111,7 +7262,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS32(const orxSTRING _zKey, orxS32 _s32Value)
   orxString_NPrint(zValue, sizeof(zValue), "%d", _s32Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxCONFIG_SET_MODE_SINGLE);
 
   /* Done! */
   return eResult;
@@ -7136,7 +7287,7 @@ orxSTATUS orxFASTCALL orxConfig_SetU32(const orxSTRING _zKey, orxU32 _u32Value)
   orxString_NPrint(zValue, sizeof(zValue), "%u", _u32Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxCONFIG_SET_MODE_SINGLE);
 
   /* Done! */
   return eResult;
@@ -7161,7 +7312,7 @@ orxSTATUS orxFASTCALL orxConfig_SetS64(const orxSTRING _zKey, orxS64 _s64Value)
   orxString_NPrint(zValue, sizeof(zValue), "%lld", _s64Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxCONFIG_SET_MODE_SINGLE);
 
   /* Done! */
   return eResult;
@@ -7186,7 +7337,7 @@ orxSTATUS orxFASTCALL orxConfig_SetU64(const orxSTRING _zKey, orxU64 _u64Value)
   orxString_NPrint(zValue, sizeof(zValue), "%llu", _u64Value);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxCONFIG_SET_MODE_SINGLE);
 
   /* Done! */
   return eResult;
@@ -7211,7 +7362,7 @@ orxSTATUS orxFASTCALL orxConfig_SetFloat(const orxSTRING _zKey, orxFLOAT _fValue
   orxString_NPrint(zValue, sizeof(zValue), "%f", _fValue);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxCONFIG_SET_MODE_SINGLE);
 
   /* Done! */
   return eResult;
@@ -7233,7 +7384,7 @@ orxSTATUS orxFASTCALL orxConfig_SetString(const orxSTRING _zKey, const orxSTRING
   orxASSERT(_zValue != orxNULL);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, _zValue, orxFALSE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, _zValue, orxCONFIG_SET_MODE_SINGLE);
 
   /* Done! */
   return eResult;
@@ -7255,7 +7406,7 @@ orxSTATUS orxFASTCALL orxConfig_SetStringBlock(const orxSTRING _zKey, const orxS
   orxASSERT(_zValue != orxNULL);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, _zValue, orxTRUE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, _zValue, orxCONFIG_SET_MODE_BLOCK);
 
   /* Done! */
   return eResult;
@@ -7276,7 +7427,7 @@ orxSTATUS orxFASTCALL orxConfig_SetBool(const orxSTRING _zKey, orxBOOL _bValue)
   orxASSERT(_zKey != orxSTRING_EMPTY);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, (_bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE, orxFALSE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, (_bValue == orxFALSE) ? orxSTRING_FALSE : orxSTRING_TRUE, orxCONFIG_SET_MODE_SINGLE);
 
   /* Done! */
   return eResult;
@@ -7302,7 +7453,7 @@ orxSTATUS orxFASTCALL orxConfig_SetVector(const orxSTRING _zKey, const orxVECTOR
   orxString_NPrint(zValue, sizeof(zValue), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, _pvValue->fX, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fY, orxSTRING_KC_VECTOR_SEPARATOR, _pvValue->fZ, orxSTRING_KC_VECTOR_END);
 
   /* Adds/replaces new entry */
-  eResult = orxConfig_SetEntry(_zKey, zValue, orxFALSE, orxFALSE);
+  eResult = orxConfig_SetEntry(_zKey, zValue, orxCONFIG_SET_MODE_SINGLE);
 
   /* Done! */
   return eResult;
@@ -7786,7 +7937,7 @@ orxSTATUS orxFASTCALL orxConfig_SetListString(const orxSTRING _zKey, const orxST
       sstConfig.u32BufferListSize = _u32Number;
 
       /* Adds/replaces new entry */
-      eResult = orxConfig_SetEntry(_zKey, sstConfig.acValueBuffer, orxFALSE, orxFALSE);
+      eResult = orxConfig_SetEntry(_zKey, sstConfig.acValueBuffer, orxCONFIG_SET_MODE_SINGLE);
     }
 
     /* Clears value buffer */
@@ -7864,7 +8015,7 @@ orxSTATUS orxFASTCALL orxConfig_AppendListString(const orxSTRING _zKey, const or
       sstConfig.u32BufferListSize = _u32Number;
 
       /* Appends to existing entry */
-      eResult = orxConfig_SetEntry(_zKey, sstConfig.acValueBuffer, orxFALSE, orxTRUE);
+      eResult = orxConfig_SetEntry(_zKey, sstConfig.acValueBuffer, orxCONFIG_SET_MODE_APPEND);
     }
 
     /* Clears value buffer */
@@ -7900,7 +8051,7 @@ orxSTATUS orxFASTCALL orxConfig_AppendString(const orxSTRING _zKey, const orxSTR
   orxASSERT(_zValue != orxNULL);
 
   /* Appends to existing entry */
-  eResult = orxConfig_SetEntry(_zKey, _zValue, orxFALSE, orxTRUE);
+  eResult = orxConfig_SetEntry(_zKey, _zValue, orxCONFIG_SET_MODE_APPEND);
 
   /* Done! */
   return eResult;
@@ -7965,6 +8116,76 @@ const orxSTRING orxFASTCALL orxConfig_GetKey(orxU32 _u32KeyIndex)
 
   /* Done! */
   return zResult;
+}
+
+/** Runs a callback for all keys of the current section
+ * @param[in] _pfnKeyCallback   Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit)
+ * @param[in] _bIncludeParents  Include keys inherited from all parents (ie. that are not locally defined), except the default one
+ * @param[in] _pContext         User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS if all keys were processed without interruption, orxSTATUS_FAILURE otherwise
+ */
+orxSTATUS orxFASTCALL orxConfig_ForAllKeys(const orxCONFIG_KEY_FUNCTION _pfnKeyCallback, orxBOOL _bIncludeParents, void *_pContext)
+{
+  orxCONFIG_SECTION  *pstSection;
+  orxBOOL             bTypoChecksEnabled;
+  orxSTATUS           eResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxConfig_ForAllKeys");
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_pfnKeyCallback != orxNULL);
+  orxASSERT(!orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_FOR_ALL_KEYS) && "orxConfig_ForAllKeys re-entrance is not supported");
+
+  /* Updates status */
+  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_FOR_ALL_KEYS, orxCONFIG_KU32_STATIC_FLAG_NONE);
+
+  /* Disables typo checks */
+  bTypoChecksEnabled = orxConfig_IsTypoCheckEnabled();
+  orxConfig_EnableTypoCheck(orxFALSE);
+
+  /* Clears key table */
+  orxHashTable_Clear(sstConfig.pstKeyTable);
+
+  /* For all inheritance sections, *except* the default parent */
+  for(eResult = orxSTATUS_SUCCESS, pstSection = sstConfig.pstCurrentSection;
+      (eResult != orxSTATUS_FAILURE) && (pstSection != orxNULL) && (pstSection != orxHANDLE_UNDEFINED);
+      pstSection = (_bIncludeParents != orxFALSE) ? pstSection->pstParent : orxNULL)
+  {
+    orxCONFIG_ENTRY *pstEntry;
+
+    /* For all entries */
+    for(pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetFirst(&(pstSection->stEntryList));
+        pstEntry != orxNULL;
+        pstEntry = (orxCONFIG_ENTRY *)orxLinkList_GetNext(&(pstEntry->stNode)))
+    {
+      /* Should process? */
+      if((_bIncludeParents == orxFALSE)
+      || (orxHashTable_Add(sstConfig.pstKeyTable, (orxU64)pstEntry->stID, orxHANDLE_UNDEFINED) != orxSTATUS_FAILURE))
+      {
+        /* Runs callback */
+        if(_pfnKeyCallback(orxString_GetFromID(pstEntry->stID), pstSection->zName, _pContext) == orxFALSE)
+        {
+          /* Updates result */
+          eResult = orxSTATUS_FAILURE;
+          break;
+        }
+      }
+    }
+  }
+
+  /* Restores typo checks */
+  orxConfig_EnableTypoCheck(bTypoChecksEnabled);
+
+  /* Updates status */
+  orxFLAG_SET(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_NONE, orxCONFIG_KU32_STATIC_FLAG_FOR_ALL_KEYS);
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return eResult;
 }
 
 #ifdef __orxGCC__
