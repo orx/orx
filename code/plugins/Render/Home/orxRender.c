@@ -2418,13 +2418,13 @@ static void orxFASTCALL orxRender_Home_RenderAll(const orxCLOCK_INFO *_pstClockI
       if(orxConsole_IsEnabled() != orxFALSE)
       {
         /* Updates its offset */
-        sstRender.fConsoleOffset += orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
+        sstRender.fConsoleOffset += _pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED;
         sstRender.fConsoleOffset  = orxMIN(sstRender.fConsoleOffset, orxFLOAT_0);
       }
       else
       {
         /* Updates its offset */
-        sstRender.fConsoleOffset -= orxMath_Floor(_pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED);
+        sstRender.fConsoleOffset -= _pstClockInfo->fDT * orxRENDER_KF_CONSOLE_SPEED;
         sstRender.fConsoleOffset  = orxMAX(sstRender.fConsoleOffset, sstRender.fDefaultConsoleOffset);
       }
 
