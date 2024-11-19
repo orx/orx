@@ -734,8 +734,6 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Valid? */
         if(pstTexture != orxNULL)
         {
-          const orxSTRING zOrientation;
-
           /* Stores its data reference */
           pstResult->zDataReference = (orxConfig_GetBool(orxGRAPHIC_KZ_CONFIG_STASIS) != orxFALSE) ? orxString_Store(zName) : orxNULL;
 
@@ -768,28 +766,39 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
               pstResult->fHeight  = vValue.fY;
             }
 
-            /* Gets orientation */
-            zOrientation = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_ORIENTATION);
+            /* Has orientation? */
+            if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_ORIENTATION) != orxFALSE)
+            {
+              const orxSTRING zOrientation;
 
-            /* Left? */
-            if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_LEFT_ORIENTATION))
-            {
-              /* Sets orientation */
-              pstResult->eOrientation = orxDISPLAY_ORIENTATION_LEFT;
+              /* Gets orientation */
+              zOrientation = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_ORIENTATION);
+
+              /* Left? */
+              if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_LEFT_ORIENTATION))
+              {
+                /* Sets orientation */
+                pstResult->eOrientation = orxDISPLAY_ORIENTATION_LEFT;
+              }
+              /* Down? */
+              else if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_DOWN_ORIENTATION))
+              {
+                /* Sets orientation */
+                pstResult->eOrientation = orxDISPLAY_ORIENTATION_DOWN;
+              }
+              /* Right? */
+              else if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_RIGHT_ORIENTATION))
+              {
+                /* Sets orientation */
+                pstResult->eOrientation = orxDISPLAY_ORIENTATION_RIGHT;
+              }
+              /* Up */
+              else
+              {
+                /* Sets orientation */
+                pstResult->eOrientation = orxDISPLAY_ORIENTATION_UP;
+              }
             }
-            /* Down? */
-            else if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_DOWN_ORIENTATION))
-            {
-              /* Sets orientation */
-              pstResult->eOrientation = orxDISPLAY_ORIENTATION_DOWN;
-            }
-            /* Right? */
-            else if(!orxString_ICompare(zOrientation, orxGRAPHIC_KZ_RIGHT_ORIENTATION))
-            {
-              /* Sets orientation */
-              pstResult->eOrientation = orxDISPLAY_ORIENTATION_RIGHT;
-            }
-            /* Up */
             else
             {
               /* Sets orientation */
