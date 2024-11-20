@@ -46,11 +46,8 @@
 
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_NO_PSD
-#define STBI_NO_GIF
 #define STBI_NO_HDR
 #define STBI_NO_PIC
-#define STBI_NO_PNM
 #define STBI_MALLOC(sz)         orxMemory_Allocate((orxU32)sz, orxMEMORY_TYPE_VIDEO)
 #define STBI_REALLOC(p, newsz)  orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_VIDEO)
 #define STBI_FREE(p)            orxMemory_Free(p)
@@ -58,11 +55,8 @@
 #undef STBI_FREE
 #undef STBI_REALLOC
 #undef STBI_MALLOC
-#undef STBI_NO_PNM
 #undef STBI_NO_PIC
 #undef STBI_NO_HDR
-#undef STBI_NO_GIF
-#undef STBI_NO_PSD
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
 
