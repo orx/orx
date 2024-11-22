@@ -21,6 +21,11 @@
 #define orxMOD_IMPL
 #include "orxMod.h"
 #undef orxMOD_IMPL]
+[+noisetex
+
+#define orxNOISETEXTURE_IMPL
+#include "orxNoiseTexture.h"
+#undef orxNOISETEXTURE_IMPL]
 [+sndh
 
 #define orxSNDH_IMPL
@@ -66,6 +71,10 @@ void InitExtensions()
   // Initialize MOD support
   orxMod_Init();
 ]
+[+noisetex
+  // Initialize noise texture support
+  orxNoiseTexture_Init();
+]
 [+sndh
   // Initialize SNDH support
   orxSndh_Init();
@@ -109,6 +118,10 @@ void ExitExtensions()
 [+movie
   // Exit from movie support
   orxMovie_Exit();
+]
+[+noisetex
+  // Exit from noise texture support
+  orxNoiseTexture_Exit();
 ]
 [+cheat
   // Exit from cheat support
