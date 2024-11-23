@@ -15,7 +15,7 @@
 #define STBTT_malloc(SIZE, USER)  orxMemory_Allocate((orxU32)(SIZE), orxMEMORY_TYPE_TEMP)
 #define STBTT_free(PTR, USER)     orxMemory_Free(PTR)
 
-#include "nuklear.h"
+#include "nuklear/nuklear.h"
 
 
 //! Prototypes / Declarations
@@ -74,7 +74,7 @@ static void orxNuklear_Free(nk_handle _hHandle, void *_pPtr)
 }
 
 #define NK_IMPLEMENTATION
-#include "nuklear.h"
+#include "nuklear/nuklear.h"
 #undef NK_IMPLEMENTATION
 
 static orxBOOL              sbNuklearInFrame  = orxFALSE;

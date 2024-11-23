@@ -280,12 +280,9 @@ project "[name]"
 
     includedirs
     {
-[+scroll
-        "../include/Scroll",]
 [+imgui
-        "../include/imgui",]
-[+nuklear
-        "../include/nuklear",]
+        "../include/extensions/imgui",]
+        "../include/extensions",
         "../include"
     }
 
