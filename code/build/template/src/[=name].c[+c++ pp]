@@ -89,14 +89,6 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Create the [-movie scene][+movie splash screen]
   orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");
 ]
-[+bundle
-  // Is processing a new bundle?
-  if(orxBundle_IsProcessing())
-  {
-    // Done!
-    return orxSTATUS_SUCCESS;
-  }
-]
   // Create the viewport
   orxViewport_CreateFromConfig("MainViewport");
 

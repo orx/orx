@@ -19,6 +19,9 @@ void orxFASTCALL      orxRemote_Exit();
 #ifdef __orxWINDOWS__
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+#ifdef EXCEPTION_ILLEGAL_INSTRUCTION
+#undef EXCEPTION_ILLEGAL_INSTRUCTION // Conflict with AtariAudio internal definition (sndh extension)
+#endif // EXCEPTION_ILLEGAL_INSTRUCTION
 #include <winsock2.h>
 #undef _WINSOCK_DEPRECATED_NO_WARNINGS
 

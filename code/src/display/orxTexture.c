@@ -865,6 +865,12 @@ orxTEXTURE *orxFASTCALL orxTexture_Load(const orxSTRING _zFileName, orxBOOL _bKe
     {
       orxBITMAP *pstBitmap;
 
+      /* Updates status */
+      orxStructure_SetFlags(pstResult, orxTEXTURE_KU32_FLAG_LOADING, orxTEXTURE_KU32_FLAG_NONE);
+
+      /* Updates load count */
+      sstTexture.u32LoadCount++;
+
       /* Loads bitmap */
       pstBitmap = orxDisplay_LoadBitmap(_zFileName);
 
@@ -885,17 +891,15 @@ orxTEXTURE *orxFASTCALL orxTexture_Load(const orxSTRING _zFileName, orxBOOL _bKe
         /* Sends event */
         orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_CREATE, pstResult, orxNULL, orxNULL);
 
-        /* Asynchronous loading? */
-        if(orxDisplay_GetTempBitmap() != orxNULL)
+        /* Synchronous loading? */
+        if(orxDisplay_GetTempBitmap() == orxNULL)
         {
-          /* Updates load count */
-          sstTexture.u32LoadCount++;
-
           /* Updates status */
-          orxStructure_SetFlags(pstResult, orxTEXTURE_KU32_FLAG_LOADING, orxTEXTURE_KU32_FLAG_NONE);
-        }
-        else
-        {
+          orxStructure_SetFlags(pstResult, orxTEXTURE_KU32_FLAG_NONE, orxTEXTURE_KU32_FLAG_LOADING);
+
+          /* Updates load count */
+          sstTexture.u32LoadCount--;
+
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_TEXTURE, orxTEXTURE_EVENT_LOAD, pstResult, orxNULL, orxNULL);
         }
@@ -904,6 +908,12 @@ orxTEXTURE *orxFASTCALL orxTexture_Load(const orxSTRING _zFileName, orxBOOL _bKe
       {
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Failed to load bitmap [%s] and link it to texture.", _zFileName);
+
+        /* Updates status */
+        orxStructure_SetFlags(pstResult, orxTEXTURE_KU32_FLAG_NONE, orxTEXTURE_KU32_FLAG_LOADING);
+
+        /* Updates load count */
+        sstTexture.u32LoadCount--;
 
         /* Frees allocated texture */
         orxTexture_Delete(pstResult);

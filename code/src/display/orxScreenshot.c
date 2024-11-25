@@ -131,33 +131,33 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
     orxU32          u32Value;
 
     /* Gets directory name */
-    zValue = orxString_Store(orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_DIRECTORY));
+    zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_DIRECTORY);
 
     /* Valid? */
     if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
     {
       /* Stores it */
-      zDirectory = zValue;
+      zDirectory = orxString_Store(zValue);
     }
 
     /* Gets screenshot base name */
-    zValue = orxString_Store(orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_BASE_NAME));
+    zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_BASE_NAME);
 
     /* Valid? */
     if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
     {
       /* Stores it */
-      zBaseName = zValue;
+      zBaseName = orxString_Store(zValue);
     }
 
     /* Gets screenshot extension */
-    zValue = orxString_Store(orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_EXTENSION));
+    zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_EXTENSION);
 
     /* Valid? */
     if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
     {
       /* Stores it */
-      zExtension = zValue;
+      zExtension = orxString_Store(zValue);
     }
 
     /* Gets digit number */

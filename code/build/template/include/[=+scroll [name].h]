@@ -6,7 +6,7 @@
 #ifndef __[!name]_H__
 #define __[!name]_H__
 
-#include "Scroll.h"
+#include "Scroll/Scroll.h"
 
 /** Game Class
  */

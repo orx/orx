@@ -44,11 +44,8 @@
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_THREAD_LOCALS
-#define STBI_NO_PSD
-#define STBI_NO_GIF
 #define STBI_NO_HDR
 #define STBI_NO_PIC
-#define STBI_NO_PNM
 #if defined(__orxARM__)
   #define STBI_NEON
 #endif /* __orxARM__ */
@@ -62,11 +59,8 @@
 #if defined(__orxARM__)
   #undef STBI_NEON
 #endif /* __orxARM__ */
-#undef STBI_NO_PNM
 #undef STBI_NO_PIC
 #undef STBI_NO_HDR
-#undef STBI_NO_GIF
-#undef STBI_NO_PSD
 #undef STBI_NO_THREAD_LOCALS
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
