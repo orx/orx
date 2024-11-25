@@ -21,10 +21,11 @@
     <a href="https://app.travis-ci.com/github/orx/orx"><img src="https://api.travis-ci.com/orx/orx.svg?branch=master" alt="build-travis"></a>
     <a href="https://ci.appveyor.com/project/iarwain/orx"><img src="https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true" alt="build-appveyor"></a>
     <a href="https://github.com/orx/orx/commits/master"><img src="https://img.shields.io/github/last-commit/orx/orx/master" alt="last-commit"></a>
-    <a href="https://github.com/orx/orx/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/m/orx/orx/master" alt="commit-activity"></a>
+    <a href="https://github.com/orx/orx/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/m/orx/orx/master" alt="monthly-commit-activity"></a>
 </p>
 
 <p align="center">
+    <a href="https://github.com/orx/orx/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/t/orx/orx/master" alt="total-commit-activity"></a>
     <a href="https://github.com/orx/orx"><img src="https://img.shields.io/github/repo-size/orx/orx.svg" alt="repo-size"></a>
     <a href="https://github.com/orx/orx/issues"><img src="https://img.shields.io/github/issues/orx/orx" alt="issues"></a>
     <a href="https://github.com/orx/orx/pulls"><img src="https://img.shields.io/github/issues-pr/orx/orx" alt="pull-requests"></a>
