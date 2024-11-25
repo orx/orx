@@ -6,13 +6,14 @@
 
 <p align="center">
     <a href="LICENSE"><img src="https://img.shields.io/github/license/orx/orx" alt="license"></a>
-    <a href="https://orx-project.org"><img src="https://img.shields.io/website?url=https%3A%2F%2Forx-project.org" alt="site"></a>
-    <a href="https://orx-project.org/discord"><img src="https://discordapp.com/api/guilds/522167736823185418/widget.png?style=shield" alt="discord"></a>
-    <a href="https://github.com/orx/orx/forks"><img src="https://img.shields.io/github/forks/orx/orx" alt="forks"></a>
+    <a href="https://github.com/orx/orx/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/t/orx/orx/master" alt="total-commit-activity"></a>
     <a href="https://github.com/orx/orx"><img src="https://img.shields.io/github/stars/orx/orx" alt="stars"></a>
+    <a href="https://github.com/orx/orx/forks"><img src="https://img.shields.io/github/forks/orx/orx" alt="forks"></a>
+    <a href="https://orx-project.org/discord"><img src="https://discordapp.com/api/guilds/522167736823185418/widget.png?style=shield" alt="discord"></a>
 </p>
 
 <p align="center">
+    <a href="https://orx-project.org"><img src="https://img.shields.io/website?url=https%3A%2F%2Forx-project.org" alt="site"></a>
     <a href="https://wiki.orx-project.org"><img src="https://img.shields.io/badge/platforms-windows%20%7C%20linux%20%7C%20mac%20%7C%20android%20%7C%20ios-red" alt="platforms"></a>
     <a href="https://github.com/orx/orx/releases"><img src="https://img.shields.io/github/v/release/orx/orx?color=orange" alt="releases"></a>
 </p>
@@ -25,7 +26,6 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/orx/orx/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/t/orx/orx/master" alt="total-commit-activity"></a>
     <a href="https://github.com/orx/orx"><img src="https://img.shields.io/github/repo-size/orx/orx.svg" alt="repo-size"></a>
     <a href="https://github.com/orx/orx/issues"><img src="https://img.shields.io/github/issues/orx/orx" alt="issues"></a>
     <a href="https://github.com/orx/orx/pulls"><img src="https://img.shields.io/github/issues-pr/orx/orx" alt="pull-requests"></a>
