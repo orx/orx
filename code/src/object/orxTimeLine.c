@@ -595,12 +595,22 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
             stPayload.pstTimeLine = pstTimeLine;
             stPayload.zTrackName  = pstTrack->zReference;
 
+            /* Updates its status */
+            orxFLAG_SET(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED, orxTIMELINE_HOLDER_KU32_FLAG_NONE);
+
             /* Sends event */
             orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_START, _pstCaller, _pstCaller, &stPayload);
+
+            /* Is track gone? */
+            if(pstTimeLine->astTrackList[i].pstTrack == orxNULL)
+            {
+              /* Skips to next */
+              continue;
+            }
           }
 
           /* Updates its status */
-          orxFLAG_SET(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED | orxTIMELINE_HOLDER_KU32_FLAG_UPDATED, orxTIMELINE_HOLDER_KU32_FLAG_NONE);
+          orxFLAG_SET(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_UPDATED, orxTIMELINE_HOLDER_KU32_FLAG_NONE);
 
           /* Inits event payload */
           orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
@@ -609,7 +619,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
 
           /* For all recently past events */
           for(u32EventIndex = pstTimeLine->astTrackList[i].u32NextEventIndex;
-              (u32EventIndex < pstTrack->u32EventCount) && (fTrackLocalTime >= pstTrack->astEventList[u32EventIndex].fTimeStamp);
+              (pstTimeLine->astTrackList[i].pstTrack != orxNULL) && (u32EventIndex < pstTrack->u32EventCount) && (fTrackLocalTime >= pstTrack->astEventList[u32EventIndex].fTimeStamp);
               u32EventIndex++)
           {
             /* Updates payload */
@@ -620,48 +630,54 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
             orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRIGGER, _pstCaller, _pstCaller, &stPayload);
           }
 
-          /* Is over? */
-          if(u32EventIndex >= pstTrack->u32EventCount)
+          /* Is track still valid? */
+          if(pstTimeLine->astTrackList[i].pstTrack != orxNULL)
           {
-            orxTIMELINE_TRACK *pstTrack;
-
-            /* Gets track */
-            pstTrack = pstTimeLine->astTrackList[i].pstTrack;
-
-            /* Inits event payload */
-            orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
-            stPayload.pstTimeLine = pstTimeLine;
-            stPayload.zTrackName  = pstTrack->zReference;
-
-            /* Is a looping track? */
-            if(orxFLAG_TEST(pstTrack->u32Flags, orxTIMELINE_TRACK_KU32_FLAG_LOOP))
+            /* Is over? */
+            if(u32EventIndex >= pstTrack->u32EventCount)
             {
-              /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_LOOP, _pstCaller, _pstCaller, &stPayload);
+              /* Inits event payload */
+              orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
+              stPayload.pstTimeLine = pstTimeLine;
+              stPayload.zTrackName  = pstTrack->zReference;
 
-              /* Resets track */
-              pstTimeLine->astTrackList[i].u32NextEventIndex  = 0;
-              pstTimeLine->astTrackList[i].fStartTime         = pstTimeLine->fTime;
+              /* Is a looping track? */
+              if(orxFLAG_TEST(pstTrack->u32Flags, orxTIMELINE_TRACK_KU32_FLAG_LOOP))
+              {
+                /* Sends event */
+                orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_LOOP, _pstCaller, _pstCaller, &stPayload);
+
+                /* Resets track */
+                pstTimeLine->astTrackList[i].u32NextEventIndex  = 0;
+                pstTimeLine->astTrackList[i].fStartTime         = pstTimeLine->fTime;
+              }
+              else
+              {
+                /* Updates status */
+                orxFLAG_SET(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_NONE, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED);
+                
+                /* Sends event */
+                orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, _pstCaller, _pstCaller, &stPayload);
+
+                /* Is still valid? */
+                if(pstTimeLine->astTrackList[i].pstTrack != orxNULL)
+                {
+                  /* Removes its reference */
+                  pstTimeLine->astTrackList[i].pstTrack = orxNULL;
+
+                  /* Sends event */
+                  orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, _pstCaller, _pstCaller, &stPayload);
+
+                  /* Deletes it */
+                  orxTimeLine_DeleteTrack(pstTrack);
+                }
+              }
             }
             else
             {
-              /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, _pstCaller, _pstCaller, &stPayload);
-
-              /* Removes its reference */
-              pstTimeLine->astTrackList[i].pstTrack = orxNULL;
-
-              /* Sends event */
-              orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, _pstCaller, _pstCaller, &stPayload);
-
-              /* Deletes it */
-              orxTimeLine_DeleteTrack(pstTrack);
+              /* Updates next event index */
+              pstTimeLine->astTrackList[i].u32NextEventIndex = u32EventIndex;
             }
-          }
-          else
-          {
-            /* Updates next event index */
-            pstTimeLine->astTrackList[i].u32NextEventIndex = u32EventIndex;
           }
         }
       }
@@ -878,17 +894,31 @@ orxSTATUS orxFASTCALL orxTimeLine_Delete(orxTIMELINE *_pstTimeLine)
         /* Gets track */
         pstTrack = _pstTimeLine->astTrackList[i].pstTrack;
 
-        /* Removes its reference */
-        _pstTimeLine->astTrackList[i].pstTrack = orxNULL;
-
         /* Updates payload */
         stPayload.zTrackName = pstTrack->zReference;
 
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, pstOwner, pstOwner, &stPayload);
+        /* Was started? */
+        if(orxFLAG_TEST(_pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED))
+        {
+          /* Updates status */
+          orxFLAG_SET(_pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_NONE, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED);
+          
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, pstOwner, pstOwner, &stPayload);
+        }
 
-        /* Deletes it */
-        orxTimeLine_DeleteTrack(pstTrack);
+        /* Still valid? */
+        if(_pstTimeLine->astTrackList[i].pstTrack != orxNULL)
+        {
+          /* Removes its reference */
+          _pstTimeLine->astTrackList[i].pstTrack = orxNULL;
+
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, pstOwner, pstOwner, &stPayload);
+
+          /* Deletes it */
+          orxTimeLine_DeleteTrack(pstTrack);
+        }
       }
     }
 
@@ -1107,20 +1137,33 @@ orxSTATUS orxFASTCALL orxTimeLine_RemoveTrackFromConfig(orxTIMELINE *_pstTimeLin
         /* Gets track */
         pstTrack = _pstTimeLine->astTrackList[u32Index].pstTrack;
 
-        /* Removes its reference */
-        _pstTimeLine->astTrackList[u32Index].pstTrack = orxNULL;
-
         /* Inits event payload */
         orxMemory_Zero(&stPayload, sizeof(orxTIMELINE_EVENT_PAYLOAD));
         stPayload.pstTimeLine = _pstTimeLine;
         stPayload.zTrackName  = pstTrack->zReference;
 
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, pstOwner, pstOwner, &stPayload);
+        /* Was started? */
+        if(orxFLAG_TEST(_pstTimeLine->astTrackList[u32Index].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED))
+        {
+          /* Updates status */
+          orxFLAG_SET(_pstTimeLine->astTrackList[u32Index].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_NONE, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED);
+          
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, pstOwner, pstOwner, &stPayload);
+        }
 
-        /* Deletes it */
-        orxTimeLine_DeleteTrack(pstTrack);
+        /* Still valid? */
+        if(_pstTimeLine->astTrackList[u32Index].pstTrack != orxNULL)
+        {
+          /* Removes its reference */
+          _pstTimeLine->astTrackList[u32Index].pstTrack = orxNULL;
 
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_REMOVE, pstOwner, pstOwner, &stPayload);
+
+          /* Deletes it */
+          orxTimeLine_DeleteTrack(pstTrack);
+        }
         break;
       }
     }
