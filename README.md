@@ -6,13 +6,14 @@
 
 <p align="center">
     <a href="LICENSE"><img src="https://img.shields.io/github/license/orx/orx" alt="license"></a>
-    <a href="https://orx-project.org"><img src="https://img.shields.io/website?url=https%3A%2F%2Forx-project.org" alt="site"></a>
-    <a href="https://orx-project.org/discord"><img src="https://discordapp.com/api/guilds/522167736823185418/widget.png?style=shield" alt="discord"></a>
-    <a href="https://github.com/orx/orx/forks"><img src="https://img.shields.io/github/forks/orx/orx" alt="forks"></a>
+    <a href="https://github.com/orx/orx/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/t/orx/orx/master" alt="total-commit-activity"></a>
     <a href="https://github.com/orx/orx"><img src="https://img.shields.io/github/stars/orx/orx" alt="stars"></a>
+    <a href="https://github.com/orx/orx/forks"><img src="https://img.shields.io/github/forks/orx/orx" alt="forks"></a>
+    <a href="https://orx-project.org/discord"><img src="https://discordapp.com/api/guilds/522167736823185418/widget.png?style=shield" alt="discord"></a>
 </p>
 
 <p align="center">
+    <a href="https://orx-project.org"><img src="https://img.shields.io/website?url=https%3A%2F%2Forx-project.org" alt="site"></a>
     <a href="https://wiki.orx-project.org"><img src="https://img.shields.io/badge/platforms-windows%20%7C%20linux%20%7C%20mac%20%7C%20android%20%7C%20ios-red" alt="platforms"></a>
     <a href="https://github.com/orx/orx/releases"><img src="https://img.shields.io/github/v/release/orx/orx?color=orange" alt="releases"></a>
 </p>
@@ -21,7 +22,7 @@
     <a href="https://app.travis-ci.com/github/orx/orx"><img src="https://api.travis-ci.com/orx/orx.svg?branch=master" alt="build-travis"></a>
     <a href="https://ci.appveyor.com/project/iarwain/orx"><img src="https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true" alt="build-appveyor"></a>
     <a href="https://github.com/orx/orx/commits/master"><img src="https://img.shields.io/github/last-commit/orx/orx/master" alt="last-commit"></a>
-    <a href="https://github.com/orx/orx/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/m/orx/orx/master" alt="commit-activity"></a>
+    <a href="https://github.com/orx/orx/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/m/orx/orx/master" alt="monthly-commit-activity"></a>
 </p>
 
 <p align="center">
