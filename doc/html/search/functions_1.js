@@ -1238,7 +1238,7 @@ var searchData=
   ['orxspawner_5fgetworldscale',['orxSpawner_GetWorldScale',['../group__orx_spawner.html#ga56edd656547321c9cbb37152a4fa224b',1,'orxSpawner.h']]],
   ['orxspawner_5finit',['orxSpawner_Init',['../group__orx_spawner.html#gaff800cd8cb86a34956293b1288f5f24e',1,'orxSpawner.h']]],
   ['orxspawner_5fisenabled',['orxSpawner_IsEnabled',['../group__orx_spawner.html#ga64d22cba58280cc097133aaaec19ea57',1,'orxSpawner.h']]],
-  ['orxspawner_5freset',['orxSpawner_Reset',['../group__orx_spawner.html#ga94e4e78d9003e0d5f140230552953c95',1,'orxSpawner.h']]],
+  ['orxspawner_5freset',['orxSpawner_Reset',['../group__orx_spawner.html#ga1494acbfa1b12c3d55a54f06a5caebd0',1,'orxSpawner.h']]],
   ['orxspawner_5fsetactiveobjectlimit',['orxSpawner_SetActiveObjectLimit',['../group__orx_spawner.html#ga447ab00a10c978925eaed817af28cddf',1,'orxSpawner.h']]],
   ['orxspawner_5fsetnextwavedelay',['orxSpawner_SetNextWaveDelay',['../group__orx_spawner.html#ga26ae6b63a8db49505069447a50c0b26c',1,'orxSpawner.h']]],
   ['orxspawner_5fsetobjectspeed',['orxSpawner_SetObjectSpeed',['../group__orx_spawner.html#ga56689aca0a6e07e4190e8b81804035ab',1,'orxSpawner.h']]],
