@@ -1447,12 +1447,12 @@ orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunction(orxHANDLE _hPluginHandle, c
  */
 orxHANDLE orxFASTCALL orxPlugin_GetHandle(const orxSTRING _zPluginName)
 {
-  orxSTRINGID stPluginID;
-  orxHANDLE   hPluginHandle = orxHANDLE_UNDEFINED;
+  orxHANDLE hPluginHandle = orxHANDLE_UNDEFINED;
 
 #ifdef __orxPLUGIN_DYNAMIC__
 
   orxPLUGIN_INFO *pstPluginInfo;
+  orxSTRINGID     stPluginID;
 
   /* Checks */
   orxASSERT(sstPlugin.u32Flags & orxPLUGIN_KU32_STATIC_FLAG_READY);
