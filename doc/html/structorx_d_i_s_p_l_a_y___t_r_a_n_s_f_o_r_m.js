@@ -1,5 +1,6 @@
 var structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m =
 [
+    [ "eOrientation", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#ac98cc5ee51ba3014baa2cfdf1b120b8a", null ],
     [ "fDstX", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a54b8a1dee3c659bf3abdfff81b78bb75", null ],
     [ "fDstY", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a3c0a7cf0d8e8730e8f7f57a6cba4430b", null ],
     [ "fRepeatX", "structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a4ba0f2b96592334b5021588e4f7d0a72", null ],

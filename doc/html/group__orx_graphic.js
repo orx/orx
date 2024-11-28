@@ -1,6 +1,5 @@
 var group__orx_graphic =
 [
-    [ "orxGRAPHIC_KU32_FLAG_2D", "group__orx_graphic.html#ga4052190ffa545c60c6391940b189b269", null ],
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM", "group__orx_graphic.html#ga7d07c15fae0da64fa3039e4bb22a0c5b", null ],
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_CENTER", "group__orx_graphic.html#ga8740ea5b0c094102f8a04cf4ab95423f", null ],
     [ "orxGRAPHIC_KU32_FLAG_ALIGN_LEFT", "group__orx_graphic.html#gae784d5f05049b6e71d1a42e541e11e5a", null ],
@@ -10,7 +9,9 @@ var group__orx_graphic =
     [ "orxGRAPHIC_KU32_FLAG_FLIP_X", "group__orx_graphic.html#ga8859736ea173e43e859dd14aa18206ba", null ],
     [ "orxGRAPHIC_KU32_FLAG_FLIP_Y", "group__orx_graphic.html#gac0105b93b7499249af3d967fcefb21d7", null ],
     [ "orxGRAPHIC_KU32_FLAG_NONE", "group__orx_graphic.html#ga71fdf8276ba78400fd9286613901507c", null ],
+    [ "orxGRAPHIC_KU32_FLAG_QUAD", "group__orx_graphic.html#ga70d74fd2b8525685364c2ed29df34e18", null ],
     [ "orxGRAPHIC_KU32_FLAG_TEXT", "group__orx_graphic.html#ga429feecaa5e1169e1facf295b8204a2f", null ],
+    [ "orxGRAPHIC_KU32_MASK_2D", "group__orx_graphic.html#gaccd0ec470033a9166ae50070d261db6e", null ],
     [ "orxGRAPHIC_KU32_MASK_ALIGN", "group__orx_graphic.html#ga91105faaec3413a50da3acf7ade64297", null ],
     [ "orxGRAPHIC_KU32_MASK_FLIP_BOTH", "group__orx_graphic.html#gac11cc36b783832c0d1d32d44c741d49f", null ],
     [ "orxGRAPHIC_KU32_MASK_TYPE", "group__orx_graphic.html#ga9927d2032328f4f33900b365cdb1101a", null ],
@@ -46,6 +47,7 @@ var group__orx_graphic =
     [ "orxGraphic_GetData", "group__orx_graphic.html#gaf2bf0a43dfcd07dc7294e46d29c70894", null ],
     [ "orxGraphic_GetFlip", "group__orx_graphic.html#ga49707d128385388a046065c6f390edc6", null ],
     [ "orxGraphic_GetName", "group__orx_graphic.html#gaa73253e08ae47e6870457faf9a1c9bf0", null ],
+    [ "orxGraphic_GetOrientation", "group__orx_graphic.html#ga434c07a9182d79ac22d7252be1e39592", null ],
     [ "orxGraphic_GetOrigin", "group__orx_graphic.html#ga73fdf1dabd67f298501141c0f87103d4", null ],
     [ "orxGraphic_GetPivot", "group__orx_graphic.html#gac78ee4e14e603a5c36f9ebb1eb536317", null ],
     [ "orxGraphic_GetRepeat", "group__orx_graphic.html#gaa3963fa7de80ff1321217fc253f740ec", null ],
