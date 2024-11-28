@@ -50,12 +50,13 @@ var NAVTREEINDEX =
 "group__orx_resource.html#ga0318f5abe598c70018a72aa0cb5952a5",
 "group__orx_sound.html#ga2cfbffcbac76f2fdec6efc2882b956de",
 "group__orx_sound_system.html#ga58775cf8ff89666d38c83234811caf56",
-"group__orx_spawner.html#gga757d724e3601950fccbb85d625991400aa92a98f746dc945cbc9c77a867f580ee",
-"group__orx_structure.html#gga04bab78daaa41a0cc0803570a9142bb9a0cf2ba3615a0f4705ab7907b86c5d59a",
-"group__orx_thread.html#gabd3d4c3162d2b1312722b987ad41973f",
-"group__orx_vector.html#ga3b61ba77225f4bbac5e852bcd0f606b8",
-"orx_keyboard_8h.html",
-"structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html#a43768f29fd84462567cb4f82840a7338"
+"group__orx_spawner.html#gga757d724e3601950fccbb85d625991400a9cf7ad4f3ae7cdea36086a4f5d757d3b",
+"group__orx_structure.html#gaef389b9623f5550ce4f2c55304d0c9e5",
+"group__orx_thread.html#gaafd1ef08638a36023f0332703d3fb6dd",
+"group__orx_vector.html#ga38098d5ee02edc7e19fc1140f31dbfa6",
+"orx_joystick_8h.html",
+"structorx_d_i_s_p_l_a_y___t_r_a_n_s_f_o_r_m.html",
+"structorx_v_e_r_s_i_o_n.html#aca66ab9da0ad5dee526e1ad16b604d26"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
