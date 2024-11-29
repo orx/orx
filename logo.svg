@@ -2,8 +2,8 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="297mm"
-   height="210mm"
+   width="248.70833mm"
+   height="119.0625mm"
    id="svg2407"
    sodipodi:version="0.32"
    inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
@@ -21,10 +21,10 @@
      id="defs2409">
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 269.85825 : 1"
+       inkscape:vp_x="0 : -73.842537 : 1"
        inkscape:vp_y="0 : 1137.7778 : 0"
-       inkscape:vp_z="846.61417 : 269.85825 : 1"
-       inkscape:persp3d-origin="423.30708 : 70.299202 : 1"
+       inkscape:vp_z="846.61417 : -73.842537 : 1"
+       inkscape:persp3d-origin="423.30708 : -273.40159 : 1"
        id="perspective2415" />
   </defs>
   <sodipodi:namedview
@@ -34,9 +34,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.28"
-     inkscape:cx="705.85938"
-     inkscape:cy="299.21875"
+     inkscape:zoom="0.64"
+     inkscape:cx="529.6875"
+     inkscape:cy="234.375"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -53,8 +53,8 @@
        type="xygrid"
        id="grid480"
        empspacing="10"
-       originx="0"
-       originy="0" />
+       originx="-10"
+       originy="-60" />
   </sodipodi:namedview>
   <metadata
      id="metadata2412">
@@ -71,18 +71,19 @@
      inkscape:label="orx"
      inkscape:groupmode="layer"
      id="layer1"
-     sodipodi:insensitive="true">
+     sodipodi:insensitive="true"
+     transform="translate(-10,-60)">
     <path
-       d="m 690,60 -60,60 100,100 -100,100 60,60 100,-100 100,100 60,-60 -100,-100 100,-100 -60,-60 -100,100 -100,-100 z"
+       d="M 690,60 630,120 730,220 630,320 690,380 790,280 890,380 950,320 850,220 950,120 890,60 790,160 Z"
        id="x"
-       style="fill:#000000" />
+       style="fill:#F5A525" />
     <path
-       d="m 530,60 -260,260 60,60 200,-200 40,40 -100,100 190,190 60,-60 -130,-130 100,-100 z"
+       d="M 530,60 270,320 330,380 530,180 570,220 470,320 660,510 720,450 590,320 690,220 Z"
        id="r"
-       style="fill:#000000" />
+       style="fill:#F5A525" />
     <path
-       d="m 170,60 -160,160 160,160 160,-160 z m 0,120 40,40 -40,40 -40,-40 z"
+       d="M 170,60 10,220 170,380 330,220 Z m 0,120 40,40 -40,40 -40,-40 z"
        id="o"
-       style="fill:#000000" />
+       style="fill:#F5A525" />
   </g>
 </svg>

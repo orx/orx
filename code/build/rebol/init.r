@@ -15,6 +15,7 @@ params: compose/deep [
   inspector   {Object debug GUI inspector}                                                      -         [+imgui]
   mod         {Audio MOD, XM & S3M support}                                                     -         []
   movie       {Movie (MPEG-1) support}                                                          -         []
+  noisetex    {Noise texture generation support}                                                -         []
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}                  -         []
   python      {Python support (https://pocketpy.dev)}                                           -         []
   remote      {Web-served resources support, HTTP/1.1 only, proof of concept)}                  -         []

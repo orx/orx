@@ -1165,57 +1165,66 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
  */
 static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  const orxSTRING zCommand;
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Depends on event type */
   switch(_pstEvent->eType)
   {
     case orxEVENT_TYPE_ANIM:
     {
-      orxCOMMAND_VAR          stResult;
-      orxANIM_EVENT_PAYLOAD  *pstPayload;
+      orxANIM_EVENT_PAYLOAD *pstPayload;
 
       /* Gets payload */
       pstPayload = (orxANIM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      /* Processes command */
-      orxCommand_Process(pstPayload->stCustom.zName, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
+      /* Stores command */
+      zCommand = pstPayload->stCustom.zName;
 
       break;
     }
 
     case orxEVENT_TYPE_TIMELINE:
     {
-      orxCOMMAND_VAR              stResult;
-      orxTIMELINE_EVENT_PAYLOAD  *pstPayload;
+      orxTIMELINE_EVENT_PAYLOAD *pstPayload;
 
       /* Gets payload */
       pstPayload = (orxTIMELINE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      /* Processes command */
-      orxCommand_Process(pstPayload->zEvent, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
+      /* Stores command */
+      zCommand = pstPayload->zEvent;
 
       break;
     }
 
     case orxEVENT_TYPE_TRIGGER:
     {
-      orxCOMMAND_VAR            stResult;
       orxTRIGGER_EVENT_PAYLOAD *pstPayload;
 
       /* Gets payload */
       pstPayload = (orxTRIGGER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-      /* Processes command */
-      orxCommand_Process(pstPayload->zEvent, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
+      /* Stores command */
+      zCommand = pstPayload->zEvent;
 
       break;
     }
 
     default:
     {
+      /* Clears command */
+      zCommand = orxNULL;
       break;
     }
+  }
+
+  /* Has command? */
+  if(zCommand != orxNULL)
+  {
+    orxCOMMAND_VAR stResult;
+
+    /* Processes it */
+    orxCommand_Process(zCommand, orxStructure_GetGUID(orxSTRUCTURE(_pstEvent->hSender)), &stResult, orxTRUE);
   }
 
   /* Done! */

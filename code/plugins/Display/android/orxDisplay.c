@@ -46,11 +46,8 @@
 
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
-#define STBI_NO_PSD
-#define STBI_NO_GIF
 #define STBI_NO_HDR
 #define STBI_NO_PIC
-#define STBI_NO_PNM
 #define STBI_MALLOC(sz)         orxMemory_Allocate((orxU32)sz, orxMEMORY_TYPE_VIDEO)
 #define STBI_REALLOC(p, newsz)  orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_VIDEO)
 #define STBI_FREE(p)            orxMemory_Free(p)
@@ -58,11 +55,8 @@
 #undef STBI_FREE
 #undef STBI_REALLOC
 #undef STBI_MALLOC
-#undef STBI_NO_PNM
 #undef STBI_NO_PIC
 #undef STBI_NO_HDR
-#undef STBI_NO_GIF
-#undef STBI_NO_PSD
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
 
@@ -1816,16 +1810,19 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmapData(void *_pContext)
   return eResult;
 }
 
-static orxINLINE orxDISPLAY_MATRIX *orxDisplay_Android_InitMatrix(orxDISPLAY_MATRIX *_pmMatrix, orxFLOAT _fPosX, orxFLOAT _fPosY, orxFLOAT _fScaleX, orxFLOAT _fScaleY, orxFLOAT _fRotation, orxFLOAT _fPivotX, orxFLOAT _fPivotY)
+static orxINLINE orxDISPLAY_MATRIX *orxDisplay_Android_InitMatrix(orxDISPLAY_MATRIX *_pmMatrix, const orxDISPLAY_TRANSFORM *_pstTransform, const orxBITMAP *_pstBitmap)
 {
-  orxFLOAT fCos, fSin, fSCosX, fSCosY, fSSinX, fSSinY, fTX, fTY;
+  orxFLOAT fCos, fSin, fSCosX, fSCosY, fSSinX, fSSinY, fTX, fTY, fRotation, fSrcX, fSrcY;
+
+  /* Updates rotation */
+  fRotation = _pstTransform->fRotation + orxU2F(_pstTransform->eOrientation) * orxMATH_KF_PI_BY_2;
 
   /* Has rotation? */
-  if(_fRotation != orxFLOAT_0)
+  if(fRotation != orxFLOAT_0)
   {
     /* Gets its cos/sin */
-    fCos = orxMath_Cos(_fRotation);
-    fSin = orxMath_Sin(_fRotation);
+    fCos = orxMath_Cos(fRotation);
+    fSin = orxMath_Sin(fRotation);
   }
   else
   {
@@ -1834,13 +1831,61 @@ static orxINLINE orxDISPLAY_MATRIX *orxDisplay_Android_InitMatrix(orxDISPLAY_MAT
     fSin = orxFLOAT_0;
   }
 
+  /* Has bitmap? */
+  if(_pstBitmap != orxNULL)
+  {
+    orxFLOAT fWidth, fHeight;
+
+    /* Gets bitmap size */
+    fWidth  = _pstBitmap->stClip.vBR.fX - _pstBitmap->stClip.vTL.fX;
+    fHeight = _pstBitmap->stClip.vBR.fY - _pstBitmap->stClip.vTL.fY;
+
+    /* Depending on orientation */
+    switch(_pstTransform->eOrientation)
+    {
+      default:
+      case orxDISPLAY_ORIENTATION_UP:
+      {
+        fSrcX = _pstTransform->fSrcX;
+        fSrcY = _pstTransform->fSrcY;
+        break;
+      }
+
+      case orxDISPLAY_ORIENTATION_LEFT:
+      {
+        fSrcX = _pstTransform->fSrcY;
+        fSrcY = fHeight - _pstTransform->fSrcX;
+        break;
+      }
+
+      case orxDISPLAY_ORIENTATION_DOWN:
+      {
+        fSrcX = fWidth - _pstTransform->fSrcX;
+        fSrcY = fHeight - _pstTransform->fSrcY;
+        break;
+      }
+
+      case orxDISPLAY_ORIENTATION_RIGHT:
+      {
+        fSrcX = fWidth - _pstTransform->fSrcY;
+        fSrcY = _pstTransform->fSrcX;
+        break;
+      }
+    }
+  }
+  else
+  {
+    fSrcX = _pstTransform->fSrcX;
+    fSrcY = _pstTransform->fSrcY;
+  }
+
   /* Computes values */
-  fSCosX = _fScaleX * fCos;
-  fSCosY = _fScaleY * fCos;
-  fSSinX = _fScaleX * fSin;
-  fSSinY = _fScaleY * fSin;
-  fTX = _fPosX - (_fPivotX * fSCosX) + (_fPivotY * fSSinY);
-  fTY = _fPosY - (_fPivotX * fSSinX) - (_fPivotY * fSCosY);
+  fSCosX  = _pstTransform->fScaleX * fCos;
+  fSCosY  = _pstTransform->fScaleY * fCos;
+  fSSinX  = _pstTransform->fScaleX * fSin;
+  fSSinY  = _pstTransform->fScaleY * fSin;
+  fTX     = _pstTransform->fDstX - (fSrcX * fSCosX) + (fSrcY * fSSinY);
+  fTY     = _pstTransform->fDstY - (fSrcX * fSSinX) - (fSrcY * fSCosY);
 
   /* Updates matrix */
   orxVector_Set(&(_pmMatrix->vX), fSCosX, -fSSinY, fTX);
@@ -2446,7 +2491,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformText(const orxSTRING _zString,
   orxASSERT(_pstTransform != orxNULL);
 
   /* Inits matrix */
-  orxDisplay_Android_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
+  orxDisplay_Android_InitMatrix(&mTransform, _pstTransform, orxNULL);
 
   /* Gets character's height */
   fHeight = _pstMap->fCharacterHeight;
@@ -3629,7 +3674,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformBitmap(const orxBITMAP *_pstSr
     orxDISPLAY_MATRIX mTransform;
 
     /* Inits matrix */
-    orxDisplay_Android_InitMatrix(&mTransform, _pstTransform->fDstX, _pstTransform->fDstY, _pstTransform->fScaleX, _pstTransform->fScaleY, _pstTransform->fRotation, _pstTransform->fSrcX, _pstTransform->fSrcY);
+    orxDisplay_Android_InitMatrix(&mTransform, _pstTransform, _pstSrc);
 
     /* No repeat? */
     if((_pstTransform->fRepeatX == orxFLOAT_1) && (_pstTransform->fRepeatY == orxFLOAT_1))

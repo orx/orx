@@ -939,7 +939,7 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Camera currently only supports 2d.");
 
-        /* Fress partially allocated camera */
+        /* Frees partially allocated camera */
         orxFrame_Delete(pstFrame);
         orxStructure_Delete(pstCamera);
 
@@ -952,7 +952,7 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Failed to create camera's frame.");
 
-      /* Fress partially allocated camera */
+      /* Frees partially allocated camera */
       orxStructure_Delete(pstCamera);
 
       /* Updates result */

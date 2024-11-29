@@ -111,8 +111,8 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
   const orxSTRING zDirectory;
   const orxSTRING zBaseName;
   const orxSTRING zExtension;
-  orxU32    u32Digits;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxU32          u32Digits;
+  orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY)
@@ -131,33 +131,33 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
     orxU32          u32Value;
 
     /* Gets directory name */
-    zValue = orxString_Store(orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_DIRECTORY));
+    zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_DIRECTORY);
 
     /* Valid? */
     if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
     {
       /* Stores it */
-      zDirectory = zValue;
+      zDirectory = orxString_Store(zValue);
     }
 
     /* Gets screenshot base name */
-    zValue = orxString_Store(orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_BASE_NAME));
+    zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_BASE_NAME);
 
     /* Valid? */
     if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
     {
       /* Stores it */
-      zBaseName = zValue;
+      zBaseName = orxString_Store(zValue);
     }
 
     /* Gets screenshot extension */
-    zValue = orxString_Store(orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_EXTENSION));
+    zValue = orxConfig_GetString(orxSCREENSHOT_KZ_CONFIG_EXTENSION);
 
     /* Valid? */
     if((zValue != orxNULL) && (zValue != orxSTRING_EMPTY))
     {
       /* Stores it */
-      zExtension = zValue;
+      zExtension = orxString_Store(zValue);
     }
 
     /* Gets digit number */
@@ -204,6 +204,9 @@ static orxINLINE void orxScreenshot_RegisterCommands()
 {
   /* Command: Capture */
   orxCOMMAND_REGISTER_CORE_COMMAND(Screenshot, Capture, "File", orxCOMMAND_VAR_TYPE_STRING, 0, 0);
+
+  /* Done! */
+  return;
 }
 
 /** Unregisters all the screenshot commands
@@ -212,6 +215,9 @@ static orxINLINE void orxScreenshot_UnregisterCommands()
 {
   /* Command: Capture */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Screenshot, Capture);
+
+  /* Done! */
+  return;
 }
 
 /***************************************************************************
@@ -230,6 +236,7 @@ void orxFASTCALL orxScreenshot_Setup()
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_SCREENSHOT, orxMODULE_ID_DISPLAY);
 
+  /* Done! */
   return;
 }
 
@@ -281,6 +288,7 @@ void orxFASTCALL orxScreenshot_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_SCREENSHOT, "Tried to exit from Screenshot module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 
