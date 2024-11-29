@@ -8,10 +8,10 @@
 
 // clang-format off
 
-#define PK_VERSION				"2.0.0"
+#define PK_VERSION				"2.0.3"
 #define PK_VERSION_MAJOR            2
 #define PK_VERSION_MINOR            0
-#define PK_VERSION_PATCH            0
+#define PK_VERSION_PATCH            3
 
 /*************** feature settings ***************/
 
@@ -513,6 +513,11 @@ PK_API void py_bind(py_Ref obj, const char* sig, py_CFunction f);
 /// @param name name of the method.
 /// @param f function to bind.
 PK_API void py_bindmethod(py_Type type, const char* name, py_CFunction f);
+/// Bind a static method to type via "argc-based" style.
+/// @param type the target type.
+/// @param name name of the method.
+/// @param f function to bind.
+PK_API void py_bindstaticmethod(py_Type type, const char* name, py_CFunction f);
 /// Bind a function to the object via "argc-based" style.
 /// @param obj the target object.
 /// @param name name of the function.
@@ -601,7 +606,7 @@ PK_API bool py_pushmethod(py_Name name);
 /// `argc` is the number of positional arguments excluding `self`.
 /// `kwargc` is the number of keyword arguments, i.e. the number of key-value pairs.
 /// The result will be set to `py_retval()`.
-/// The stack size will be reduced by `argc + kwargc`.
+/// The stack size will be reduced by `2 + argc + kwargc * 2`.
 PK_API bool py_vectorcall(uint16_t argc, uint16_t kwargc) PY_RAISE PY_RETURN;
 /// Evaluate an expression and push the result to the stack.
 /// This function is used for testing.
@@ -843,6 +848,9 @@ MAGIC_METHOD(__package__)
 MAGIC_METHOD(__path__)
 MAGIC_METHOD(__class__)
 MAGIC_METHOD(__abs__)
+MAGIC_METHOD(__float__)
+MAGIC_METHOD(__int__)
+MAGIC_METHOD(__round__)
 MAGIC_METHOD(__getattr__)
 MAGIC_METHOD(__missing__)
 
@@ -868,7 +876,7 @@ enum py_PredefinedTypes {
     tp_module,
     tp_function,
     tp_nativefunc,
-    tp_boundmethod,
+    tp_boundmethod,    // 2 slots (self, func)
     tp_super,          // 1 slot + py_Type
     tp_BaseException,  // 2 slots (arg + inner_exc)
     tp_Exception,
