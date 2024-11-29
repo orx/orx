@@ -1143,14 +1143,13 @@ extern "C"
     ARG_STR(zName, 1);
 
     orxU32 u32RefinementListLength = 0;
-    orxSTRING azRefinementList[u32RefinementListLength];
+    const orxSTRING azRefinementList[32];
 
     if (py_islist(py_arg(2)))
     {
       PY_CHECK_ARG_TYPE(2, tp_list);
       py_ObjectRef pyRefinementList = py_arg(2);
       orxU32 u32RefinementListLength = py_list_len(pyRefinementList);
-      orxSTRING azRefinementList[u32RefinementListLength];
       for (orxS32 i = 0; i < u32RefinementListLength; ++i)
       {
         py_ObjectRef pyRefinement = py_list_getitem(pyRefinementList, i);
@@ -1165,11 +1164,11 @@ extern "C"
     ARG_BOOL(bRecursive, 3);
     if (bRecursive)
     {
-      orxObject_FireTriggerRecursive(pstObject, zName, u32RefinementListLength > 0 ? azRefinementList : orxNULL, u32RefinementListLength);
+      orxObject_FireTriggerRecursive(pstObject, zName, u32RefinementListLength > 0 ? (const orxSTRING *)azRefinementList : orxNULL, u32RefinementListLength);
     }
     else
     {
-      orxObject_FireTrigger(pstObject, zName, u32RefinementListLength > 0 ? azRefinementList : orxNULL, u32RefinementListLength);
+      orxObject_FireTrigger(pstObject, zName, u32RefinementListLength > 0 ? (const orxSTRING *)azRefinementList : orxNULL, u32RefinementListLength);
     }
     RETURN_NONE;
   }
