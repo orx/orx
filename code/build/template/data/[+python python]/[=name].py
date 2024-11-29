@@ -1,7 +1,8 @@
 import orx
 
 def orx_init():
-  orx.object.create_from_config("Scene")
+  # Create the [-movie scene][+movie splash screen]
+  orx.object.create_from_config("[-movie Scene][+movie Splash]");
 
 def orx_update(_dt: float):
   pass
