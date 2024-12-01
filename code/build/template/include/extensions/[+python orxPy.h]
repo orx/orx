@@ -1149,7 +1149,7 @@ extern "C"
     {
       PY_CHECK_ARG_TYPE(2, tp_list);
       py_ObjectRef pyRefinementList = py_arg(2);
-      orxU32 u32RefinementListLength = py_list_len(pyRefinementList);
+      u32RefinementListLength = py_list_len(pyRefinementList);
       for (orxS32 i = 0; i < u32RefinementListLength; ++i)
       {
         py_ObjectRef pyRefinement = py_list_getitem(pyRefinementList, i);
@@ -1297,6 +1297,21 @@ extern "C"
 
   // Config functions
 
+  BIND(Config, get_parent)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_STR(zSection, 0);
+    const orxSTRING zParent = orxConfig_GetParent(zSection);
+    if (zParent == orxNULL || zParent == orxSTRING_EMPTY)
+    {
+      RETURN_NONE;
+    }
+    else
+    {
+      RETURN_STR(zParent);
+    }
+  }
+
   BIND(Config, push_section)
   {
     PY_CHECK_ARGC(1);
@@ -1310,6 +1325,34 @@ extern "C"
     PY_CHECK_ARGC(0);
     orxConfig_PopSection();
     RETURN_NONE;
+  }
+
+  BIND(Config, get_sections)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
+    py_Ref pyResult = py_retval();
+    orxU32 u32Count = orxConfig_GetSectionCount();
+    py_newlistn(pyResult, u32Count);
+    for (orxU32 u32Index = 0; u32Index < u32Count; ++u32Index)
+    {
+      py_newstr(py_offset(pyResult, u32Index), orxConfig_GetSection(u32Index));
+    }
+    return true;
+  }
+
+  BIND(Config, get_keys)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
+    py_Ref pyResult = py_retval();
+    orxU32 u32Count = orxConfig_GetKeyCount();
+    py_newlistn(pyResult, u32Count);
+    for (orxU32 u32Index = 0; u32Index < u32Count; ++u32Index)
+    {
+      py_newstr(py_offset(pyResult, u32Index), orxConfig_GetKey(u32Index));
+    }
+    return true;
   }
 
 #define BIND_CONFIG_SET_GET(type, argtype, name)                         \
@@ -1462,6 +1505,19 @@ extern "C"
     PY_CHECK_ARGC(1);
     ARG_STR(zName, 0);
     RETURN_BOOL(orxInput_IsSetEnabled(zName));
+  }
+
+  BIND(Input, get_all)
+  {
+    PY_CHECK_ARGC(0);
+    py_Ref pyResult = py_retval();
+    py_newlist(pyResult);
+    for (const orxSTRING zInput = orxInput_GetNext(orxNULL); zInput; zInput = orxInput_GetNext(zInput))
+    {
+      py_newstr(py_r0(), zInput);
+      py_list_append(pyResult, py_r0());
+    }
+    return true;
   }
 
   BIND(Input, is_active)
@@ -1913,8 +1969,12 @@ extern "C"
 #define BIND_FUNC(sig, name) py_bind(pyMod, sig, BINDING_NAME(Config, name))
 
     // Bind config functions
+    BIND_FUNC("get_parent(name: str) -> str | None", get_parent);
     BIND_FUNC("push_section(name: str) -> None", push_section);
     BIND_FUNC("pop_section() -> None", pop_section);
+
+    BIND_FUNC("get_sections() -> list[str]", get_sections);
+    BIND_FUNC("get_keys() -> list[str]", get_keys);
 
     BIND_FUNC("set_bool(key: str, value: bool) -> None", set_bool);
     BIND_FUNC("get_bool(key: str, index: int | None = None) -> bool", get_bool);
@@ -1963,6 +2023,8 @@ extern "C"
     BIND_FUNC("pop_set() -> None", pop_set);
     BIND_FUNC("enable_set(name: str, enable: bool = True) -> None", enable_set);
     BIND_FUNC("is_set_enabled(name: str) -> bool", is_set_enabled);
+
+    BIND_FUNC("get_all() -> list[str]", get_all);
 
     BIND_FUNC("is_active(name: str) -> bool", is_active);
     BIND_FUNC("has_been_activated(name: str) -> bool", has_been_activated);
