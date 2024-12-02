@@ -73,7 +73,7 @@ Some notable features of the engine are:
 - 3D positioning using "scene nodes"
 - custom bitmap font support
 - automatic differential scrolling and depth scaling upon request
-- fully featured and extensible sound system (WAV/MP3/OGG support, streams, hierarchical buses, filters, spatialization, etc.)
+- fully featured and extensible sound system (WAV/MP3/OGG/QOA support, streams, hierarchical buses, filters, spatialization, etc.)
 - clock system that provides time consistency and allows time stretching + high precision timers
 - event manager
 - unicode support with UTF-8 encoding
