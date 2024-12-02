@@ -287,6 +287,8 @@ extern "C"
       return TypeError("expected %d arguments, got %d", 1, argc);
     }
 
+    // Are we being called as an object constructor from a class?
+    bool bIsConstructor = argc == 2;
     orxU16 u16ArgIndex = argc - 1;
 
     if (py_istype(py_arg(u16ArgIndex), tp_str))
@@ -294,28 +296,33 @@ extern "C"
       // Create from a config section name
       ARG_STR(zName, u16ArgIndex);
       orxOBJECT *pstObject = orxObject_CreateFromConfig(zName);
-      if (pstObject == orxNULL)
+      if (pstObject == orxNULL && bIsConstructor)
       {
+        // Object constructor, so raise an exception if an object cannot be created
         return ValueError("Unable to create object from config section %s", zName);
       }
-      py_neworxobject(py_retval(), pstObject);
+      // Object successfully created or this is a function call. Return result either way.
+      RETURN_OBJECT_OR_NONE(pstObject);
     }
     else if (py_istype(py_arg(u16ArgIndex), tp_int))
     {
       // Retrieve from a GUID
       ARG_INT(s64GUID, u16ArgIndex);
       orxOBJECT *pstObject = orxOBJECT(orxStructure_Get(s64GUID));
-      if (pstObject == orxNULL)
+      if (pstObject == orxNULL && bIsConstructor)
       {
+        // Object constructor, so raise an exception if an object cannot be created
         return ValueError("Unable to create object from GUID 0x%016llX", s64GUID);
       }
-      py_neworxobject(py_retval(), pstObject);
+      // Object successfully created or this is a function call. Return result either way.
+      RETURN_OBJECT_OR_NONE(pstObject);
     }
     else
     {
       return ValueError("An orx object can only be constructed from a config section name or GUID");
     }
-    return true;
+    // Should be impossible to reach this point
+    return RuntimeError("Impossible object creation state reached");
   }
 
   BIND(Object, __eq__)
@@ -1355,6 +1362,13 @@ extern "C"
     return true;
   }
 
+  BIND(Config, get_list_count)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
+    RETURN_INT(orxConfig_GetListCount(zName));
+  }
+
 #define BIND_CONFIG_SET_GET(type, argtype, name)                         \
   BIND(Config, set_##type)                                               \
   {                                                                      \
@@ -1975,6 +1989,8 @@ extern "C"
 
     BIND_FUNC("get_sections() -> list[str]", get_sections);
     BIND_FUNC("get_keys() -> list[str]", get_keys);
+
+    BIND_FUNC("get_list_count() -> int", get_list_count);
 
     BIND_FUNC("set_bool(key: str, value: bool) -> None", set_bool);
     BIND_FUNC("get_bool(key: str, index: int | None = None) -> bool", get_bool);
