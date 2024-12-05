@@ -1334,6 +1334,29 @@ extern "C"
     RETURN_NONE;
   }
 
+  BIND(Config, context__new__)
+  {
+    PY_CHECK_ARGC(2);
+    PY_CHECK_ARG_TYPE(1, tp_str);
+    py_newobject(py_retval(), py_totype(py_arg(0)), 1, 0);
+    py_setslot(py_retval(), 0, py_arg(1));
+    return true;
+  }
+
+  BIND(Config, context__enter__)
+  {
+    PY_CHECK_ARGC(1);
+    orxConfig_PushSection(py_tostr(py_getslot(py_arg(0), 0)));
+    RETURN_NONE;
+  }
+
+  BIND(Config, context__exit__)
+  {
+    PY_CHECK_ARGC(1);
+    orxConfig_PopSection();
+    RETURN_NONE;
+  }
+
   BIND(Config, get_sections)
   {
     PY_CHECK_ARGC(1);
@@ -1981,6 +2004,12 @@ extern "C"
     py_Ref pyMod = py_newmodule("orx.config");
 
 #define BIND_FUNC(sig, name) py_bind(pyMod, sig, BINDING_NAME(Config, name))
+
+    py_Type pyContextType = py_newtype("Section", tp_object, pyMod, orxNULL);
+
+    py_bindmagic(pyContextType, __new__, BINDING_NAME(Config, context__new__));
+    py_bindmagic(pyContextType, __enter__, BINDING_NAME(Config, context__enter__));
+    py_bindmagic(pyContextType, __exit__, BINDING_NAME(Config, context__exit__));
 
     // Bind config functions
     BIND_FUNC("get_parent(name: str) -> str | None", get_parent);
