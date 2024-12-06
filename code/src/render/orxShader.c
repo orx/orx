@@ -375,6 +375,22 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
           {
             /* Adds texture param */
             orxShader_AddTextureParam(_pstShader, zParamName, s32ParamListCount, (const orxTEXTURE **)astValueBuffer);
+
+            /* For all textures */
+            for(j = 0; j < orxMAX(s32ParamListCount, 1); j++)
+            {
+              orxTEXTURE *pstTexture;
+
+              /* Gets it */
+              pstTexture = ((orxTEXTURE **)astValueBuffer)[j];
+
+              /* Valid? */
+              if(pstTexture != orxNULL)
+              {
+                /* Deletes it */
+                orxTexture_Delete(pstTexture);
+              }
+            }
           }
         }
       }
@@ -1366,6 +1382,12 @@ orxSTATUS orxFASTCALL orxShader_AddTextureParam(orxSHADER *_pstShader, const orx
           pstParamValue->pstParam = pstParam;
           pstParamValue->s32Index = i;
           pstParamValue->pstValue = _apstValueList[orxMAX(i, 0)];
+
+          /* Updates its texture's reference counter */
+          if(pstParamValue->pstValue != orxNULL)
+          {
+            orxStructure_IncreaseCount((orxTEXTURE *)pstParamValue->pstValue);
+          }
 
           /* Adds it to list */
           orxLinkList_AddEnd(&(_pstShader->stParamValueList), &(pstParamValue->stNode));
