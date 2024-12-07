@@ -3,7 +3,7 @@
  *  Distributed Under The MIT License
  *  https://github.com/pocketpy/pocketpy
  */
-
+ 
 #include "pocketpy.h"
 // interpreter/modules.h
 
@@ -1742,7 +1742,7 @@ void VM__ctor(VM* self) {
     // INJECT_BUILTIN_EXC(StopIteration, tp_Exception);
     validate(tp_StopIteration, pk_StopIteration__register());
     py_setdict(&self->builtins, py_name("StopIteration"), py_tpobject(tp_StopIteration));
-
+    
     INJECT_BUILTIN_EXC(SyntaxError, tp_Exception);
     INJECT_BUILTIN_EXC(StackOverflowError, tp_Exception);
     INJECT_BUILTIN_EXC(IOError, tp_Exception);
@@ -2516,7 +2516,7 @@ static bool stack_format_object(VM* self, c11_sv spec);
             case RES_RETURN: PUSH(&self->last_retval); break;                                      \
             case RES_CALL: frame = self->top_frame; goto __NEXT_FRAME;                             \
             case RES_ERROR: goto __ERROR;                                                          \
-            default: c11__unreachable();                                                         \
+            default: c11__unreachable();                                                           \
         }                                                                                          \
     } while(0)
 
@@ -3430,8 +3430,13 @@ FrameResult VM__run_top_frame(VM* self) {
             case OP_STORE_CLASS_ATTR: {
                 assert(self->__curr_class);
                 py_Name name = byte.arg;
-                if(py_istype(TOP(), tp_function)) {
-                    Function* ud = py_touserdata(TOP());
+                // TOP() can be a function, classmethod or custom decorator
+                py_Ref actual_func = TOP();
+                if(actual_func->type == tp_classmethod) {
+                    actual_func = py_getslot(actual_func, 0);
+                }
+                if(actual_func->type == tp_function) {
+                    Function* ud = py_touserdata(actual_func);
                     ud->clazz = self->__curr_class->_obj;
                 }
                 py_setdict(self->__curr_class, name, TOP());
@@ -3471,6 +3476,7 @@ FrameResult VM__run_top_frame(VM* self) {
                     goto __ERROR;
                 }
                 if(!py_vectorcall(0, 0)) goto __ERROR;
+                POP();
                 DISPATCH();
             }
             ///////////
@@ -6926,33 +6932,47 @@ py_Type pk_nativefunc__register() {
 }
 
 static bool super__new__(int argc, py_Ref argv) {
-    py_Type* class_arg = py_newobject(py_retval(), tp_super, 1, sizeof(py_Type));
+    py_Type class_arg = 0;
     Frame* frame = pk_current_vm->top_frame;
-    *class_arg = 0;
     py_Ref self_arg = NULL;
     if(argc == 1) {
         // super()
         if(frame->has_function) {
-            Function* func = py_touserdata(frame->p0);
-            *class_arg = *(py_Type*)PyObject__userdata(func->clazz);
-            if(frame->co->nlocals > 0) self_arg = &frame->locals[0];
+            py_TValue* callable = frame->p0;
+            if(callable->type == tp_boundmethod) callable = py_getslot(frame->p0, 1);
+            if(callable->type == tp_function) {
+                Function* func = py_touserdata(callable);
+                if(func->clazz != NULL) {
+                    class_arg = *(py_Type*)PyObject__userdata(func->clazz);
+                    if(frame->co->nlocals > 0) self_arg = &frame->locals[0];
+                }
+            }
         }
         if(class_arg == 0 || self_arg == NULL) return RuntimeError("super(): no arguments");
+        if(self_arg->type == tp_type) {
+            // f(cls, ...)
+            class_arg = pk__type_info(class_arg)->base;
+            if(class_arg == 0) return RuntimeError("super(): base class is invalid");
+            py_assign(py_retval(), py_tpobject(class_arg));
+            return true;
+        }
     } else if(argc == 3) {
-        // super(type, obj)
+        // super(type[T], obj)
         PY_CHECK_ARG_TYPE(1, tp_type);
-        *class_arg = py_totype(py_arg(1));
+        class_arg = py_totype(py_arg(1));
         self_arg = py_arg(2);
-        if(!py_isinstance(self_arg, *class_arg)) {
+        if(!py_isinstance(self_arg, class_arg)) {
             return TypeError("super(type, obj): obj must be an instance of type");
         }
     } else {
         return TypeError("super() takes 0 or 2 arguments");
     }
 
-    *class_arg = pk__type_info(*class_arg)->base;
-    if(*class_arg == 0) return RuntimeError("super(): base class is invalid");
+    class_arg = pk__type_info(class_arg)->base;
+    if(class_arg == 0) return RuntimeError("super(): base class is invalid");
 
+    py_Type* p_class_arg = py_newobject(py_retval(), tp_super, 1, sizeof(py_Type));
+    *p_class_arg = class_arg;
     py_setslot(py_retval(), 0, self_arg);
     return true;
 }
@@ -9021,9 +9041,6 @@ bool pk_loadmethod(py_StackRef self, py_Name name) {
         if(py_istype(self, tp_type)) {
             // T.__new__(...)
             type = py_totype(self);
-        } else if(py_istype(self, tp_super)) {
-            // super().__new__(...)
-            type = *(py_Type*)py_touserdata(self);
         } else {
             // invalid usage of `__new__`
             return false;
@@ -10396,12 +10413,6 @@ int py_next(py_Ref val) {
 bool py_getattr(py_Ref self, py_Name name) {
     // https://docs.python.org/3/howto/descriptor.html#invocation-from-an-instance
     py_Type type = self->type;
-    // handle super() proxy (disabled)
-    // if(py_istype(self, tp_super)) {
-    //     self = py_getslot(self, 0);
-    //     type = *(py_Type*)py_touserdata(self);
-    // }
-
     py_Ref cls_var = py_tpfindname(type, name);
     if(cls_var) {
         // handle descriptor
@@ -10492,12 +10503,6 @@ bool py_getattr(py_Ref self, py_Name name) {
 
 bool py_setattr(py_Ref self, py_Name name, py_Ref val) {
     py_Type type = self->type;
-    // handle super() proxy (disabled)
-    // if(py_istype(self, tp_super)) {
-    //     self = py_getslot(self, 0);
-    //     type = *(py_Type*)py_touserdata(self);
-    // }
-
     py_Ref cls_var = py_tpfindname(type, name);
     if(cls_var) {
         // handle descriptor
@@ -17917,6 +17922,7 @@ static Error* compile_stmt(Compiler* self) {
                 vtdelete((Expr*)as_name);
                 if(!ok) return SyntaxError(self, "invalid syntax");
             } else {
+                // discard `__enter__()`'s return value
                 Ctx__emit_(ctx(), OP_POP_TOP, BC_NOARG, BC_KEEPLINE);
             }
             check(compile_block_body(self, compile_stmt));

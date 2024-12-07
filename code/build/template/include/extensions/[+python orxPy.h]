@@ -340,6 +340,15 @@ extern "C"
     RETURN_INT((py_i64)pstObject);
   }
 
+  BIND(Object, __str__)
+  {
+    PY_CHECK_ARGC(1);
+    OBJECT;
+    orxCHAR acInstanceName[20];
+    orxString_NPrint(acInstanceName, sizeof(acInstanceName), "0x%016llX", orxStructure_GetGUID(pstObject));
+    RETURN_STR(acInstanceName);
+  }
+
   BIND(Object, delete)
   {
     PY_CHECK_ARGC(1);
@@ -1528,6 +1537,29 @@ extern "C"
     RETURN_NONE;
   }
 
+  BIND(Input, context__new__)
+  {
+    PY_CHECK_ARGC(2);
+    PY_CHECK_ARG_TYPE(1, tp_str);
+    py_newobject(py_retval(), py_totype(py_arg(0)), 1, 0);
+    py_setslot(py_retval(), 0, py_arg(1));
+    return true;
+  }
+
+  BIND(Input, context__enter__)
+  {
+    PY_CHECK_ARGC(1);
+    orxInput_PushSet(py_tostr(py_getslot(py_arg(0), 0)));
+    RETURN_NONE;
+  }
+
+  BIND(Input, context__exit__)
+  {
+    PY_CHECK_ARGC(1);
+    orxInput_PopSet();
+    RETURN_NONE;
+  }
+
   BIND(Input, enable_set)
   {
     PY_CHECK_ARGC(2);
@@ -2062,6 +2094,12 @@ extern "C"
     py_Ref pyMod = py_newmodule("orx.input");
 
 #define BIND_FUNC(sig, name) py_bind(pyMod, sig, BINDING_NAME(Input, name))
+
+    py_Type pyContextType = py_newtype("Set", tp_object, pyMod, orxNULL);
+
+    py_bindmagic(pyContextType, __new__, BINDING_NAME(Input, context__new__));
+    py_bindmagic(pyContextType, __enter__, BINDING_NAME(Input, context__enter__));
+    py_bindmagic(pyContextType, __exit__, BINDING_NAME(Input, context__exit__));
 
     // Bind input functions
     BIND_FUNC("push_set(name: str) -> None", push_set);
