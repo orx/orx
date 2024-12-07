@@ -234,11 +234,13 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedSibling(const orxO
  * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
  * Paths are composed by object names separated by '.'.
  * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * If a name is prefixed by '@', then the name will be tested against all the config ancestry of the object's name, in addition to object's name itself.
  * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
  * For example:
  * @code
  * orxObject_FindOwnedChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
  * orxObject_FindOwnedChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "*.@Parent"); will find the first child (depth-first search) of pstObject which is either named Parent or has Parent in its config ancestry
  * orxObject_FindOwnedChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
  * orxObject_FindOwnedChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
  * @endcode
@@ -551,11 +553,13 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetNextChild(const orxOBJE
  * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
  * Paths are composed by object names separated by '.'.
  * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * If a name is prefixed by '@', then the name will be tested against all the config ancestry of the object's name, in addition to object's name itself.
  * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
  * For example:
  * @code
  * orxObject_FindChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
  * orxObject_FindChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "*.@Parent"); will find the first child (depth-first search) of pstObject which is either named Parent or has Parent in its config ancestry
  * orxObject_FindChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
  * orxObject_FindChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
  * @endcode
