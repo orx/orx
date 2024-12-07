@@ -17,7 +17,7 @@ params: compose/deep [
   movie       {Movie (MPEG-1) support}                                                          -         []
   noisetex    {Noise texture generation support}                                                -         []
   nuklear     {Nuklear support (https://github.com/immediate-mode-ui/nuklear)}                  -         []
-  python      {Python support (https://pocketpy.dev)}                                           -         []
+  python      {Python support (https://pocketpy.dev)}                                           -         [-c++]
   remote      {Web-served resources support, HTTP/1.1 only, proof of concept)}                  -         []
   scroll      {C++ convenience layer with config-object binding}                                +         [+c++]
   sndh        {Audio SNDH (Atari ST) support}                                                   -         [+c++]
