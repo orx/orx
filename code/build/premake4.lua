@@ -114,6 +114,7 @@ solution "orx"
         "../../extern/stb_vorbis",
         "../../extern/libwebp/src",
         "../../extern/basisu/include",
+        "../../extern/qoa",
         "../../extern/qoi"
     }
 

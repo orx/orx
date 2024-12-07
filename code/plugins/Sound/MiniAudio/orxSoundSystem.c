@@ -40,6 +40,13 @@
 #undef STB_VORBIS_HEADER_ONLY
 #undef FILE
 
+#ifdef __orxMSVC__
+
+  #pragma warning(push)
+  #pragma warning(disable : 4200)
+
+#endif /* __orxMSVC__ */
+
 #ifdef __APPLE__
   #define MA_NO_RUNTIME_LINKING
 #endif /* __APPLE__ */
@@ -58,16 +65,16 @@
   #if (__GNUC__ >= 7)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wstringop-overflow"
-  #endif // (__GNUC__ >= 7)
-#endif // __orxGCC__
+  #endif /* (__GNUC__ >= 7) */
+#endif /* __orxGCC__ */
 
 #include "miniaudio.h"
 
 #ifdef __orxGCC__
   #if (__GNUC__ >= 7)
     #pragma GCC diagnostic pop
-  #endif // (__GNUC__ >= 7)
-#endif // __orxGCC__
+  #endif /* (__GNUC__ >= 7) */
+#endif /* __orxGCC__ */
 
 #undef MA_NO_RUNTIME_LINKING
 #undef MA_ON_THREAD_ENTRY
@@ -111,6 +118,19 @@
 #undef fopen_s
 
 
+#define QOA_IMPLEMENTATION
+#define QOA_NO_STDIO
+#define QOA_MALLOC(SIZE)                  orxMemory_Allocate((orxU32)SIZE, orxMEMORY_TYPE_AUDIO)
+#define QOA_FREE(MEMORY)                  orxMemory_Free(MEMORY)
+
+#include "qoa.h"
+
+#undef QOA_FREE
+#undef QOA_MALLOC
+#undef QOA_NO_STDIO
+#undef QOA_IMPLEMENTATION
+
+
 /** Module flags
  */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE              0x00000000 /**< No flags */
@@ -146,6 +166,22 @@
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
+/** Internal QOA data source
+ */
+typedef struct __orxSOUNDSYSTEM_QOA_t
+{
+  ma_data_source_base             stBase;
+  orxU64                          u64Cursor;
+  ma_read_proc                    pfnRead;
+  ma_seek_proc                    pfnSeek;
+  ma_tell_proc                    pfnTell;
+  void                           *pUserData;
+  orxU32                          u32HeaderSize;
+  qoa_desc                        stDesc;
+  orxS16                          as16Data[0];
+
+} orxSOUNDSYSTEM_QOA;
 
 /** Internal sample structure
  */
@@ -321,8 +357,10 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   ma_context                      stCaptureContext;       /**< Context */
   ma_device                       stCaptureDevice;        /**< Caoture device */
   ma_data_source_vtable           stStreamVTable;         /**< Stream VTable */
+  ma_data_source_vtable           stQOADataSourceVTable;  /**< QOA data source VTable */
+  ma_decoding_backend_vtable      stQOAVTable;            /**< QOA decoding backend VTable */
   ma_decoding_backend_vtable      stVorbisVTable;         /**< Vorbis decoding backend VTable */
-  ma_decoding_backend_vtable     *apstVTable[1];          /**< Decoding backend VTable */
+  ma_decoding_backend_vtable     *apstVTable[2];          /**< Decoding backend VTable */
   ma_node_vtable                  stCustomNodeVTable;     /**< Custom node VTable */
   orxBANK                        *pstSampleBank;          /**< Sample bank */
   orxBANK                        *pstSoundBank;           /**< Sound bank */
@@ -1281,6 +1319,253 @@ static ma_result orxSoundSystem_MiniAudio_Stream_SetLooping(ma_data_source* _pst
   return hResult;
 }
 
+static ma_result orxSoundSystem_MiniAudio_QOA_Read(ma_data_source *_pstDataSource, void *_pFramesOut, ma_uint64 _u64FrameCount, ma_uint64 *_pu64FramesRead)
+{
+  ma_result hResult;
+
+  /* Valid? */
+  if((_pstDataSource != NULL) && (_u64FrameCount != 0))
+  {
+    orxSOUNDSYSTEM_QOA *pstQOA;
+    orxU8              *pu8FrameData;
+    orxU64              u64FrameRead = 0;
+    orxU32              u32FrameSize, u32FrameRemainder;
+
+    /* Gets QOA */
+    pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
+
+    /* Gets frame size */
+    u32FrameSize = qoa_max_frame_size(&(pstQOA->stDesc));
+
+    /* Gets frame remainder */
+    u32FrameRemainder = (orxU32)pstQOA->u64Cursor % QOA_FRAME_LEN;
+
+    /* Has pending data? */
+    if(u32FrameRemainder != 0)
+    {
+      /* Gets frame read count */
+      u64FrameRead = (orxU64)orxMIN(QOA_FRAME_LEN - u32FrameRemainder, (orxU32)_u64FrameCount);
+      u64FrameRead = orxMIN(u64FrameRead, (orxU64)pstQOA->stDesc.samples - pstQOA->u64Cursor);
+
+      /* Copies data */
+      orxMemory_Copy(_pFramesOut, pstQOA->as16Data + u32FrameRemainder * pstQOA->stDesc.channels, (orxU32)u64FrameRead * pstQOA->stDesc.channels * sizeof(orxS16));
+
+      /* Updates cursor */
+      pstQOA->u64Cursor += u64FrameRead;
+    }
+
+    /* Allocates temporary buffer */
+    pu8FrameData = (orxU8 *)alloca(u32FrameSize);
+    orxASSERT(pu8FrameData != orxNULL);
+
+    /* For all frames */
+    while((u64FrameRead < _u64FrameCount) && (pstQOA->u64Cursor < pstQOA->stDesc.samples))
+    {
+      size_t sSizeRead;
+      orxU64 u64FrameCopied;
+      orxU32 u32FrameLength, u32DecodedSize;
+
+      /* Checks */
+      orxASSERT(pstQOA->u64Cursor % QOA_FRAME_LEN == 0);
+
+      /* Reads & decodes a frame */
+      hResult = pstQOA->pfnRead(pstQOA->pUserData, pu8FrameData, u32FrameSize, &sSizeRead);
+      orxASSERT(hResult == MA_SUCCESS);
+      u32DecodedSize = qoa_decode_frame(pu8FrameData, (orxU32)sSizeRead, &(pstQOA->stDesc), pstQOA->as16Data, &u32FrameLength);
+      orxASSERT(u32DecodedSize == (orxU32)sSizeRead);
+
+      /* Gets copy size */
+      u64FrameCopied = orxMIN(_u64FrameCount - u64FrameRead, (orxU64)u32FrameLength);
+
+      /* Copies data */
+      orxMemory_Copy((orxS16 *)_pFramesOut + u64FrameRead * pstQOA->stDesc.channels, pstQOA->as16Data, (orxU32)u64FrameCopied * pstQOA->stDesc.channels * sizeof(orxS16));
+
+      /* Updates frames read */
+      u64FrameRead += u64FrameCopied;
+
+      /* Updates cursor */
+      pstQOA->u64Cursor += u64FrameCopied;
+    }
+
+    /* Updates read frames count */
+    if(_pu64FramesRead != NULL)
+    {
+      *_pu64FramesRead = (orxU64)u64FrameRead;
+    }
+
+    /* Checks */
+    orxASSERT(pstQOA->u64Cursor <= pstQOA->stDesc.samples);
+
+    /* Updates result */
+    hResult = (pstQOA->u64Cursor == pstQOA->stDesc.samples) ? MA_AT_END : MA_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_INVALID_ARGS;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static ma_result orxSoundSystem_MiniAudio_QOA_Seek(ma_data_source *_pstDataSource, ma_uint64 _u64FrameIndex)
+{
+  ma_result hResult;
+
+  /* Valid? */
+  if(_pstDataSource != NULL)
+  {
+    orxSOUNDSYSTEM_QOA *pstQOA;
+    orxU64              u64FrameCount;
+    size_t              sSizeRead;
+    orxU32              u32FrameSize, u32FrameLength;
+
+    /* Gets QOA */
+    pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
+
+    /* Gets frame size */
+    u32FrameSize = qoa_max_frame_size(&(pstQOA->stDesc));
+
+    /* Gets frame count */
+    u64FrameCount = _u64FrameIndex / QOA_FRAME_LEN;
+
+    /* Seeks to frame */
+    hResult = pstQOA->pfnSeek(pstQOA->pUserData, pstQOA->u32HeaderSize + u64FrameCount * u32FrameSize, ma_seek_origin_start);
+
+    /* Updates cursor */
+    pstQOA->u64Cursor = orxMIN(_u64FrameIndex, pstQOA->stDesc.samples);
+
+    /* Should read a frame (not at a frame boundary)? */
+    if((pstQOA->u64Cursor < pstQOA->stDesc.samples) && (pstQOA->u64Cursor % QOA_FRAME_LEN != 0))
+    {
+      orxU8 *pu8FrameData;
+
+      /* Allocates temporary buffer */
+      pu8FrameData = (orxU8 *)alloca(u32FrameSize);
+      orxASSERT(pu8FrameData != orxNULL);
+
+      /* Reads & decodes a frame */
+      hResult = pstQOA->pfnRead(pstQOA->pUserData, pu8FrameData, u32FrameSize, &sSizeRead);
+      orxASSERT(hResult == MA_SUCCESS);
+      qoa_decode_frame(pu8FrameData, (orxU32)sSizeRead, &(pstQOA->stDesc), pstQOA->as16Data, &u32FrameLength);
+    }
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_INVALID_ARGS;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static ma_result orxSoundSystem_MiniAudio_QOA_GetDataFormat(ma_data_source *_pstDataSource, ma_format *_peFormat, ma_uint32 *_pu32Channels, ma_uint32* _pu32SampleRate, ma_channel *_peChannelMap, size_t _sChannelMapCap)
+{
+  ma_result hResult;
+
+  /* Valid? */
+  if(_pstDataSource != NULL)
+  {
+    orxSOUNDSYSTEM_QOA *pstQOA;
+
+    /* Gets QOA */
+    pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
+
+    /* Updates format */
+    if(_peFormat != NULL)
+    {
+      *_peFormat = ma_format_s16;
+    }
+
+    /* Updates channels */
+    if(_pu32Channels != NULL)
+    {
+      *_pu32Channels = pstQOA->stDesc.channels;
+    }
+
+    /* Updates sample rate */
+    if(_pu32SampleRate != NULL)
+    {
+      *_pu32SampleRate = pstQOA->stDesc.samplerate;
+    }
+
+    /* Updates channel map */
+    if(_peChannelMap != NULL)
+    {
+      ma_channel_map_init_standard(ma_standard_channel_map_default, _peChannelMap, _sChannelMapCap, pstQOA->stDesc.channels);
+    }
+
+    /* Updates result */
+    hResult = MA_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_INVALID_OPERATION;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static ma_result orxSoundSystem_MiniAudio_QOA_GetCursor(ma_data_source *_pstDataSource, ma_uint64 *_pu64Cursor)
+{
+  ma_result hResult;
+
+  /* Valid? */
+  if((_pstDataSource != NULL) && (_pu64Cursor != NULL))
+  {
+    orxSOUNDSYSTEM_QOA *pstQOA;
+
+    /* Gets QOA */
+    pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
+
+    /* Updates result */
+    *_pu64Cursor = pstQOA->u64Cursor;
+
+    /* Updates result */
+    hResult = MA_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_INVALID_ARGS;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static ma_result orxSoundSystem_MiniAudio_QOA_GetLength(ma_data_source *_pstDataSource, ma_uint64 *_pu64Length)
+{
+  ma_result hResult;
+
+  /* Valid? */
+  if(_pstDataSource != NULL)
+  {
+    orxSOUNDSYSTEM_QOA *pstQOA;
+
+    /* Gets QOA */
+    pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
+
+    /* Updates result */
+    *_pu64Length = pstQOA->stDesc.samples;
+
+    /* Updates result */
+    hResult = MA_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_INVALID_ARGS;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
 /*
  * This function's logic has been lifted straight from 'ma_stbvorbis_init_file', replacing the internal call to `stb_vorbis_open_filename` with `stb_vorbis_open_file`, bypassing the use of the pushdata API.
  */
@@ -1309,7 +1594,7 @@ static ma_result orxSoundSystem_MiniAudio_InitVorbis(ma_read_proc _pfnRead, ma_s
       ma_allocation_callbacks_init_copy(&(_pstVorbis->allocationCallbacks), _pstAllocationCallbacks);
 
       /* Inits vorbis decoder */
-      _pstVorbis->stb = stb_vorbis_open_file(((ma_decoder*)_pReadSeekTellUserData)->data.vfs.file, FALSE, NULL, NULL);
+      _pstVorbis->stb = stb_vorbis_open_file(((ma_decoder *)_pReadSeekTellUserData)->data.vfs.file, FALSE, NULL, NULL);
 
       /* Success? */
       if(_pstVorbis->stb != NULL)
@@ -1387,6 +1672,97 @@ static void orxSoundSystem_MiniAudio_UninitVorbisBackend(void *_pUserData, ma_da
 {
   /* Uninits decoder backend */
   ma_stbvorbis_uninit((ma_stbvorbis *)_pstBackend, _pstAllocationCallbacks);
+
+  /* Frees it */
+  ma_free(_pstBackend, _pstAllocationCallbacks);
+
+  /* Done! */
+  return;
+}
+
+static ma_result orxSoundSystem_MiniAudio_InitQOABackend(void *_pUserData, ma_read_proc _pfnRead, ma_seek_proc _pfnSeek, ma_tell_proc _pfnTell, void *_pReadSeekTellUserData, const ma_decoding_backend_config *_pstConfig, const ma_allocation_callbacks *_pstAllocationCallbacks, ma_data_source **_ppstBackend)
+{
+  ma_result hResult;
+
+  /* VFS? */
+  if(((ma_decoder *)_pReadSeekTellUserData)->onRead == &ma_decoder__on_read_vfs)
+  {
+    qoa_desc  stDesc;
+    size_t    sSize;
+    orxU32    u32HeaderSize;
+    orxU8     au8Buffer[QOA_MIN_FILESIZE];
+
+    /* Is a valid QOA? */
+    if((_pfnRead(_pReadSeekTellUserData, au8Buffer, QOA_MIN_FILESIZE, &sSize) == MA_SUCCESS)
+    && (sSize == QOA_MIN_FILESIZE)
+    && (u32HeaderSize = qoa_decode_header(au8Buffer, QOA_MIN_FILESIZE, &stDesc), u32HeaderSize != 0))
+    {
+      orxSOUNDSYSTEM_QOA *pstQOA;
+
+      /* Allocates the decoder backend */
+      pstQOA = (orxSOUNDSYSTEM_QOA *)ma_malloc(sizeof(orxSOUNDSYSTEM_QOA) + QOA_FRAME_LEN * stDesc.channels * sizeof(orxS16), _pstAllocationCallbacks);
+
+      /* Success? */
+      if(pstQOA != NULL)
+      {
+        ma_data_source_config stDataSourceConfig;
+
+        /* Inits its base */
+        stDataSourceConfig        = ma_data_source_config_init();
+        stDataSourceConfig.vtable = &(sstSoundSystem.stQOADataSourceVTable);
+        hResult                   = ma_data_source_init(&stDataSourceConfig, &(pstQOA->stBase));
+        orxASSERT(hResult == MA_SUCCESS);
+
+        /* Inits its descriptor */
+        orxMemory_Copy(&(pstQOA->stDesc), &stDesc, sizeof(qoa_desc));
+
+        /* Inits its header size */
+        pstQOA->u32HeaderSize = u32HeaderSize;
+
+        /* Inits its cursor */
+        pstQOA->u64Cursor = 0;
+        _pfnSeek(_pReadSeekTellUserData, pstQOA->u32HeaderSize, ma_seek_origin_start);
+
+        /* Inits its callbacks */
+        pstQOA->pfnRead   = _pfnRead;
+        pstQOA->pfnSeek   = _pfnSeek;
+        pstQOA->pfnTell   = _pfnTell;
+        pstQOA->pUserData = _pReadSeekTellUserData;
+
+        /* Stores it */
+        *_ppstBackend = pstQOA;
+      }
+      else
+      {
+        /* Updates result */
+        hResult = MA_OUT_OF_MEMORY;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      hResult = MA_INVALID_FILE;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_ERROR;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static void orxSoundSystem_MiniAudio_UninitQOABackend(void *_pUserData, ma_data_source *_pstBackend, const ma_allocation_callbacks *_pstAllocationCallbacks)
+{
+  orxSOUNDSYSTEM_QOA *pstQOA;
+
+  /* Retrieves QOA data source */
+  pstQOA = (orxSOUNDSYSTEM_QOA *)_pstBackend;
+
+  /* Uninits its data source */
+  ma_data_source_uninit(&(pstQOA->stBase));
 
   /* Frees it */
   ma_free(_pstBackend, _pstAllocationCallbacks);
@@ -2845,18 +3221,28 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     /* Gets reciprocal dimension ratio */
     sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
 
-    /* Inits vorbis decoding backend VTable */
+    /* Inits custom decoding backend VTables */
     sstSoundSystem.stVorbisVTable.onInit                                  = &orxSoundSystem_MiniAudio_InitVorbisBackend;
     sstSoundSystem.stVorbisVTable.onUninit                                = &orxSoundSystem_MiniAudio_UninitVorbisBackend;
     sstSoundSystem.apstVTable[0]                                          = &(sstSoundSystem.stVorbisVTable);
 
-    /* Inits data source VTable */
+    sstSoundSystem.stQOAVTable.onInit                                     = &orxSoundSystem_MiniAudio_InitQOABackend;
+    sstSoundSystem.stQOAVTable.onUninit                                   = &orxSoundSystem_MiniAudio_UninitQOABackend;
+    sstSoundSystem.apstVTable[1]                                          = &(sstSoundSystem.stQOAVTable);
+
+    /* Inits data source VTables */
     sstSoundSystem.stStreamVTable.onRead                                  = &orxSoundSystem_MiniAudio_Stream_Read;
     sstSoundSystem.stStreamVTable.onSeek                                  = &orxSoundSystem_MiniAudio_Stream_Seek;
     sstSoundSystem.stStreamVTable.onGetDataFormat                         = &orxSoundSystem_MiniAudio_Stream_GetDataFormat;
     sstSoundSystem.stStreamVTable.onGetCursor                             = &orxSoundSystem_MiniAudio_Stream_GetCursor;
     sstSoundSystem.stStreamVTable.onGetLength                             = &orxSoundSystem_MiniAudio_Stream_GetLength;
     sstSoundSystem.stStreamVTable.onSetLooping                            = &orxSoundSystem_MiniAudio_Stream_SetLooping;
+
+    sstSoundSystem.stQOADataSourceVTable.onRead                           = &orxSoundSystem_MiniAudio_QOA_Read;
+    sstSoundSystem.stQOADataSourceVTable.onSeek                           = &orxSoundSystem_MiniAudio_QOA_Seek;
+    sstSoundSystem.stQOADataSourceVTable.onGetDataFormat                  = &orxSoundSystem_MiniAudio_QOA_GetDataFormat;
+    sstSoundSystem.stQOADataSourceVTable.onGetCursor                      = &orxSoundSystem_MiniAudio_QOA_GetCursor;
+    sstSoundSystem.stQOADataSourceVTable.onGetLength                      = &orxSoundSystem_MiniAudio_QOA_GetLength;
 
     /* Inits custom node VTable */
     sstSoundSystem.stCustomNodeVTable.onProcess                           = &orxSoundSystem_MiniAudio_ProcessCustomNode;
@@ -5277,6 +5663,12 @@ orxVECTOR *orxFASTCALL orxSoundSystem_MiniAudio_GetListenerPosition(orxU32 _u32I
   /* Done! */
   return pvResult;
 }
+
+#ifdef __orxMSVC__
+
+  #pragma warning(pop)
+
+#endif /* __orxMSVC__ */
 
 
 /***************************************************************************
