@@ -2766,7 +2766,7 @@ var searchData=
   ['orxspawner_5fisenabled',['orxSpawner_IsEnabled',['../group__orx_spawner.html#ga64d22cba58280cc097133aaaec19ea57',1,'orxSpawner.h']]],
   ['orxspawner_5fku32_5fflag_5fauto_5fdelete',['orxSPAWNER_KU32_FLAG_AUTO_DELETE',['../group__orx_spawner.html#gae85d9762c0af0efefd9371c8bf81f6af',1,'orxSpawner.h']]],
   ['orxspawner_5fku32_5fflag_5fauto_5freset_5fcount',['orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT',['../group__orx_spawner.html#gaad5ab57006a7302904a0c1985ce11fd1',1,'orxSpawner.h']]],
-  ['orxspawner_5fku32_5fflag_5fauto_5freset_5ftimer',['orxSPAWNER_KU32_FLAG_AUTO_RESET_TIMER',['../group__orx_spawner.html#gac14e2d6c81a20b6eae848876c9f036fa',1,'orxSpawner.h']]],
+  ['orxspawner_5fku32_5fflag_5fauto_5freset_5fdelay',['orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY',['../group__orx_spawner.html#ga0bad409dc049f37bad2f4da2fca1b606',1,'orxSpawner.h']]],
   ['orxspawner_5fku32_5fflag_5fclean_5fon_5fdelete',['orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE',['../group__orx_spawner.html#gae94f7631defe7e169359fba6c27bab93',1,'orxSpawner.h']]],
   ['orxspawner_5fku32_5fflag_5finterpolate',['orxSPAWNER_KU32_FLAG_INTERPOLATE',['../group__orx_spawner.html#ga1fcde744796769d444210e53ccdf61c0',1,'orxSpawner.h']]],
   ['orxspawner_5fku32_5fflag_5fnone',['orxSPAWNER_KU32_FLAG_NONE',['../group__orx_spawner.html#ga7539c41c2c9e9b50e49e9198f65ddaac',1,'orxSpawner.h']]],
