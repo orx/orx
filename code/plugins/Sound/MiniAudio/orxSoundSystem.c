@@ -1329,13 +1329,14 @@ static ma_result orxSoundSystem_MiniAudio_QOA_Read(ma_data_source *_pstDataSourc
     orxSOUNDSYSTEM_QOA *pstQOA;
     orxU8              *pu8FrameData;
     orxU64              u64FrameRead = 0;
-    orxU32              u32FrameSize, u32FrameRemainder;
+    orxU32              u32FrameRemainder;
+    unsigned int        uiFrameSize;
 
     /* Gets QOA */
     pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
 
     /* Gets frame size */
-    u32FrameSize = qoa_max_frame_size(&(pstQOA->stDesc));
+    uiFrameSize = qoa_max_frame_size(&(pstQOA->stDesc));
 
     /* Gets frame remainder */
     u32FrameRemainder = (orxU32)pstQOA->u64Cursor % QOA_FRAME_LEN;
@@ -1355,7 +1356,7 @@ static ma_result orxSoundSystem_MiniAudio_QOA_Read(ma_data_source *_pstDataSourc
     }
 
     /* Allocates temporary buffer */
-    pu8FrameData = (orxU8 *)alloca(u32FrameSize);
+    pu8FrameData = (orxU8 *)alloca(uiFrameSize);
     orxASSERT(pu8FrameData != orxNULL);
 
     /* For all frames */
@@ -1363,19 +1364,19 @@ static ma_result orxSoundSystem_MiniAudio_QOA_Read(ma_data_source *_pstDataSourc
     {
       size_t sSizeRead;
       orxU64 u64FrameCopied;
-      orxU32 u32FrameLength, u32DecodedSize;
+      unsigned int uiFrameLength, uiDecodedSize;
 
       /* Checks */
       orxASSERT(pstQOA->u64Cursor % QOA_FRAME_LEN == 0);
 
       /* Reads & decodes a frame */
-      hResult = pstQOA->pfnRead(pstQOA->pUserData, pu8FrameData, u32FrameSize, &sSizeRead);
+      hResult = pstQOA->pfnRead(pstQOA->pUserData, pu8FrameData, uiFrameSize, &sSizeRead);
       orxASSERT(hResult == MA_SUCCESS);
-      u32DecodedSize = qoa_decode_frame(pu8FrameData, (orxU32)sSizeRead, &(pstQOA->stDesc), pstQOA->as16Data, &u32FrameLength);
-      orxASSERT(u32DecodedSize == (orxU32)sSizeRead);
+      uiDecodedSize = qoa_decode_frame(pu8FrameData, (orxU32)sSizeRead, &(pstQOA->stDesc), pstQOA->as16Data, &uiFrameLength);
+      orxASSERT(uiDecodedSize == (orxU32)sSizeRead);
 
       /* Gets copy size */
-      u64FrameCopied = orxMIN(_u64FrameCount - u64FrameRead, (orxU64)u32FrameLength);
+      u64FrameCopied = orxMIN(_u64FrameCount - u64FrameRead, (orxU64)uiFrameLength);
 
       /* Copies data */
       orxMemory_Copy((orxS16 *)_pFramesOut + u64FrameRead * pstQOA->stDesc.channels, pstQOA->as16Data, (orxU32)u64FrameCopied * pstQOA->stDesc.channels * sizeof(orxS16));
@@ -1419,19 +1420,19 @@ static ma_result orxSoundSystem_MiniAudio_QOA_Seek(ma_data_source *_pstDataSourc
     orxSOUNDSYSTEM_QOA *pstQOA;
     orxU64              u64FrameCount;
     size_t              sSizeRead;
-    orxU32              u32FrameSize, u32FrameLength;
+    unsigned int        uiFrameSize, uiFrameLength;
 
     /* Gets QOA */
     pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
 
     /* Gets frame size */
-    u32FrameSize = qoa_max_frame_size(&(pstQOA->stDesc));
+    uiFrameSize = qoa_max_frame_size(&(pstQOA->stDesc));
 
     /* Gets frame count */
     u64FrameCount = _u64FrameIndex / QOA_FRAME_LEN;
 
     /* Seeks to frame */
-    hResult = pstQOA->pfnSeek(pstQOA->pUserData, pstQOA->u32HeaderSize + u64FrameCount * u32FrameSize, ma_seek_origin_start);
+    hResult = pstQOA->pfnSeek(pstQOA->pUserData, pstQOA->u32HeaderSize + u64FrameCount * uiFrameSize, ma_seek_origin_start);
 
     /* Updates cursor */
     pstQOA->u64Cursor = orxMIN(_u64FrameIndex, pstQOA->stDesc.samples);
@@ -1442,13 +1443,13 @@ static ma_result orxSoundSystem_MiniAudio_QOA_Seek(ma_data_source *_pstDataSourc
       orxU8 *pu8FrameData;
 
       /* Allocates temporary buffer */
-      pu8FrameData = (orxU8 *)alloca(u32FrameSize);
+      pu8FrameData = (orxU8 *)alloca(uiFrameSize);
       orxASSERT(pu8FrameData != orxNULL);
 
       /* Reads & decodes a frame */
-      hResult = pstQOA->pfnRead(pstQOA->pUserData, pu8FrameData, u32FrameSize, &sSizeRead);
+      hResult = pstQOA->pfnRead(pstQOA->pUserData, pu8FrameData, uiFrameSize, &sSizeRead);
       orxASSERT(hResult == MA_SUCCESS);
-      qoa_decode_frame(pu8FrameData, (orxU32)sSizeRead, &(pstQOA->stDesc), pstQOA->as16Data, &u32FrameLength);
+      qoa_decode_frame(pu8FrameData, (orxU32)sSizeRead, &(pstQOA->stDesc), pstQOA->as16Data, &uiFrameLength);
     }
   }
   else
