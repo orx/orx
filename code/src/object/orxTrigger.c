@@ -1093,7 +1093,7 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
     orxTRIGGER_EVENT_PAYLOAD  stPayload;
     orxSTRUCTURE             *pstOwner;
     const orxSTRING          *azPreviousRefinementList;
-    const orxSTRING           zPreviousTrigger;
+    const orxSTRING           zPreviousEvent;
     orxCHAR                   acBuffer[orxTRIGGER_KU32_BUFFER_SIZE], *pc = acBuffer;
     orxS32                    i, s32StopDepth;
     orxU32                    u32PreviousRefinementListSize;
@@ -1105,7 +1105,7 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
   #endif /* __orxMSVC__ */
 
     /* Backups current event & refinement list */
-    zPreviousTrigger              = sstTrigger.zCurrentEvent;
+    zPreviousEvent                = sstTrigger.zCurrentEvent;
     azPreviousRefinementList      = sstTrigger.azCurrentRefinementList;
     u32PreviousRefinementListSize = sstTrigger.u32CurrentRefinementListSize;
 
@@ -1185,7 +1185,7 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
     }
 
     /* Restores previous event & refinement list */
-    sstTrigger.zCurrentEvent                = zPreviousTrigger;
+    sstTrigger.zCurrentEvent                = zPreviousEvent;
     sstTrigger.azCurrentRefinementList      = azPreviousRefinementList;
     sstTrigger.u32CurrentRefinementListSize = u32PreviousRefinementListSize;
   }

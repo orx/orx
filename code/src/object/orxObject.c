@@ -5103,10 +5103,13 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
   else
   {
     orxPHYSICS_EVENT_PAYLOAD *pstPayload;
-    const orxSTRING           azRefinementList[2];
+    const orxSTRING           azRefinementList[4];
     const orxSTRING           zEvent;
     const orxSTRING           zPartEvent;
     orxOBJECT                *pstSender, *pstRecipient;
+    orxCOMMAND_VAR            stVar;
+    orxCHAR                   acBuffer1[64], acBuffer2[64];
+    orxU32                    u32RefinementCount = 2;
 
     /* Checks */
     orxASSERT(_pstEvent->eType == orxEVENT_TYPE_PHYSICS);
@@ -5130,19 +5133,40 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
       zPartEvent  = orxOBJECT_KZ_PART_SEPARATE;
     }
 
-    /* Fires triggers on sender */
+    /* Fires collide triggers */
+    stVar.eType         = orxCOMMAND_VAR_TYPE_U64;
+    azRefinementList[1] = acBuffer1;
+
     azRefinementList[0] = orxObject_GetName(pstRecipient);
-    orxObject_FireTrigger(pstSender, zEvent, azRefinementList, 1);
+    stVar.u64Value      = orxStructure_GetGUID(pstRecipient);
+    orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
+    orxObject_FireTrigger(pstSender, zEvent, azRefinementList, u32RefinementCount);
+
+    azRefinementList[0] = orxObject_GetName(pstSender);
+    stVar.u64Value      = orxStructure_GetGUID(pstSender);
+    orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
+    orxObject_FireTrigger(pstRecipient, zEvent, azRefinementList, u32RefinementCount);
+
+    /* Fires part collide triggers */
+    if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+    {
+      stVar.eType = orxCOMMAND_VAR_TYPE_VECTOR;
+      orxVector_Copy(&(stVar.vValue), &(pstPayload->vPosition));
+      orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
+      orxVector_Copy(&(stVar.vValue), &(pstPayload->vNormal));
+      orxCommand_PrintVar(acBuffer2, sizeof(acBuffer2), &stVar);
+      azRefinementList[2] = acBuffer1;
+      azRefinementList[3] = acBuffer2;
+      u32RefinementCount  = 4;
+    }
+
     azRefinementList[0] = orxBody_GetPartName(pstPayload->pstSenderPart);
     azRefinementList[1] = orxBody_GetPartName(pstPayload->pstRecipientPart);
-    orxObject_FireTrigger(pstSender, zPartEvent, azRefinementList, 2);
+    orxObject_FireTrigger(pstSender, zPartEvent, azRefinementList, u32RefinementCount);
 
-    /* Fires triggers on recipient */
-    azRefinementList[0] = orxObject_GetName(pstSender);
-    orxObject_FireTrigger(pstRecipient, zEvent, azRefinementList, 1);
     azRefinementList[0] = orxBody_GetPartName(pstPayload->pstRecipientPart);
     azRefinementList[1] = orxBody_GetPartName(pstPayload->pstSenderPart);
-    orxObject_FireTrigger(pstRecipient, zPartEvent, azRefinementList, 2);
+    orxObject_FireTrigger(pstRecipient, zPartEvent, azRefinementList, u32RefinementCount);
   }
 
   /* Done! */
