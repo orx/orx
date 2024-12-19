@@ -104,13 +104,6 @@ extern const orxSTRING orxiOS_GetDocumentsPath();
  * Structure declaration                                                   *
  ***************************************************************************/
 
-/** File structure
- */
-struct __orxFILE_t
-{
-  FILE stFile;
-};
-
 /** Static structure
  */
 typedef struct __orxFILE_STATIC_t
