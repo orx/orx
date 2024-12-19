@@ -45,7 +45,8 @@
   #define rpmalloc_thread_initialize()
   #define rpmalloc_thread_finalize(RELEASE)
 
-  #undef __orxPROFILER__
+  #define rpmalloc_usable_size(MEM)             0
+
 #else /* __orxWEB__ */
   #ifdef __orxLLVM__
     #if defined(__orxMAC__) || defined(__orxIOS__)
