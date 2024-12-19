@@ -112,8 +112,8 @@
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac / iOS / Android */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
+  /* Linux / Mac / iOS / Android / Web */
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxWEB__)
 
     #ifdef __orx64__
 
@@ -159,7 +159,7 @@
 
     #define orxENUM_NONE          0xFFFFFFFF
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxWEB__ */
 
 #endif /* __orxWINDOWS__ */
 
