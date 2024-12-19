@@ -78,7 +78,7 @@
 #include "../plugins/Mouse/Dummy/orxMouse.c"
 #include "../plugins/Physics/Dummy/orxPhysics.c"
 #include "../plugins/Render/Home/orxRender.c"
-#include "../plugins/Sound/Dummy/orxSoundSystem.c"
+#include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
 
 /* Others */
 #else /* __orxANDROID__ */

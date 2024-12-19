@@ -61,6 +61,10 @@
 
 #define MINIAUDIO_IMPLEMENTATION
 
+#ifdef __orxWEB__
+  #define MA_ENABLE_AUDIO_WORKLETS
+#endif /* __orxWEB__ */
+
 #ifdef __orxGCC__
   #if (__GNUC__ >= 7)
     #pragma GCC diagnostic push
@@ -81,6 +85,7 @@
 #undef MA_ON_THREAD_EXIT
 #undef MA_NO_FLAC
 #undef MINIAUDIO_IMPLEMENTATION
+#undef MA_ENABLE_AUDIO_WORKLETS
 
 #define FILE                              void
 #define fopen(NAME, MODE)                 orxResource_Open(NAME, orxFALSE)
