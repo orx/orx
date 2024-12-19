@@ -328,22 +328,15 @@
     /** The null address */
     #define orxNULL             (0)
 
-    #if defined(__orxIOS__) || defined(__orxANDROID__)
+    #if defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxWEB__)
 
       /* iOS versions can only be embedded due to the lack of dlfcn presence */
       #define __orxEMBEDDED__
 
-      /* Always use static on iOS & Android */
+      /* Always use static on iOS, Android & Web */
       #define __orxSTATIC__
 
-    #endif /* __orxIOS__ || __orxANDROID__ */
-
-    #if defined(__orxWEB__)
-
-      /* Always use static on Web */
-      #define __orxSTATIC__
-
-    #endif /* __orxWEB__ */
+    #endif /* __orxIOS__ || __orxANDROID__ || __orxWEB__ */
 
   #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxWEB__ */
 

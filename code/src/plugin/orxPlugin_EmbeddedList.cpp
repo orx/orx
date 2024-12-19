@@ -69,6 +69,17 @@
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
 
+/* Web? */
+#elif defined (__orxWEB__)
+
+#include "../plugins/Display/Dummy/orxDisplay.c"
+#include "../plugins/Joystick/Dummy/orxJoystick.c"
+#include "../plugins/Keyboard/Dummy/orxKeyboard.c"
+#include "../plugins/Mouse/Dummy/orxMouse.c"
+#include "../plugins/Physics/Dummy/orxPhysics.c"
+#include "../plugins/Render/Home/orxRender.c"
+#include "../plugins/Sound/Dummy/orxSoundSystem.c"
+
 /* Others */
 #else /* __orxANDROID__ */
 
