@@ -506,7 +506,8 @@ static orxDISPLAY_STATIC sstDisplay;
 #define glLinkProgramARB            glLinkProgram
 #define glGetShaderiv               glGetShaderiv
 #define glGetParameteriv            glGetProgramiv
-#define glGetInfoLogARB             glGetProgramInfoLog
+#define glGetShaderInfoLog          glGetShaderInfoLog
+#define glGetProgramInfoLog         glGetProgramInfoLog
 #define glUseProgramObjectARB       glUseProgram
 #define glGetUniformLocationARB     glGetUniformLocation
 #define glBindAttribLocationARB     glBindAttribLocation
@@ -549,8 +550,11 @@ static orxDISPLAY_STATIC sstDisplay;
 #else /* __orxDISPLAY_OPENGL_ES__ */
 
 #define glDeleteProgram             glDeleteObjectARB
+
 #define glGetShaderiv               glGetObjectParameterivARB
 #define glGetProgramiv              glGetObjectParameterivARB
+#define glGetShaderInfoLog          glGetInfoLogARB
+#define glGetProgramInfoLog         glGetInfoLogARB
 
 /** Shader-related OpenGL extension functions
  */
@@ -2539,7 +2543,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
         orxCHAR acBuffer[4096];
 
         /* Gets log */
-        glGetInfoLogARB(hProgram, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
+        glGetProgramInfoLog(hProgram, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
         glASSERT();
         acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
@@ -2556,7 +2560,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       orxCHAR acBuffer[4096];
 
       /* Gets log */
-      glGetInfoLogARB(hFragmentShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
+      glGetShaderInfoLog(hFragmentShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
       glASSERT();
       acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
@@ -2577,7 +2581,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     orxCHAR acBuffer[4096];
 
     /* Gets log */
-    glGetInfoLogARB(hVertexShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
+    glGetShaderInfoLog(hVertexShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
     glASSERT();
     acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
@@ -5287,12 +5291,17 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVideoModeAvailable(const orxDISPLAY_VIDEO_
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
 {
+#ifdef __orxWEB__
+
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+#else /* __orxWEB__ */
+
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
 
-#ifndef __orxWEB__
   /* Enable? */
   if(_bEnable != orxFALSE)
   {
@@ -5319,7 +5328,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
     /* Updates status */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_VSYNC);
   }
-#endif /* !__orxWEB__ */
+#endif /* __orxWEB__ */
 
   /* Done! */
   return eResult;
@@ -5641,6 +5650,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Sets content scale */
       orxVector_Set(&(sstDisplay.vContentScale), orxS2F(iFramebufferWidth) / orxS2F(iWidth), orxS2F(iFramebufferHeight) / orxS2F(iHeight), orxFLOAT_1);
 
+#ifndef __orxWEB__
       /* Is fullscreen? */
       if(_pstVideoMode->bFullScreen != orxFALSE)
       {
@@ -5648,6 +5658,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN, orxDISPLAY_KU32_STATIC_FLAG_NONE);
       }
       else
+#endif /* !__orxWEB__ */
       {
         /* Updates status */
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN);
@@ -6012,6 +6023,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
 {
+#ifdef __orxWEB__
+
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+#else /* __orxWEB__ */
+
   orxBOOL   bUpdate = orxFALSE;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -6066,6 +6083,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
       orxDisplay_GLFW_SetVideoMode(&stVideoMode);
     }
   }
+
+#endif /* __orxWEB__ */
 
   /* Done! */
   return eResult;
@@ -6163,7 +6182,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           stVideoMode.u32Height       = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : sstDisplay.u32DefaultHeight;
           stVideoMode.u32Depth        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : sstDisplay.u32DefaultDepth;
           stVideoMode.u32RefreshRate  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) : sstDisplay.u32DefaultRefreshRate;
+        #ifdef __orxWEB__
+          stVideoMode.bFullScreen     = orxFALSE;
+        #else /* __orxWEB__ */
           stVideoMode.bFullScreen     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN);
+        #endif /* __orxWEB__ */
 
           /* Sets module as ready */
           sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
