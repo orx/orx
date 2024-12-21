@@ -198,6 +198,11 @@
 
 #define orxDISPLAY_KU32_MAX_SHADER_VERSION          410
 
+#define orxDISPLAY_KU32_DEFAULT_WIDTH               1920
+#define orxDISPLAY_KU32_DEFAULT_HEIGHT              1080
+#define orxDISPLAY_KU32_DEFAULT_DEPTH               32
+#define orxDISPLAY_KU32_DEFAULT_REFRESH_RATE        60
+
 
 /**  Misc defines
  */
@@ -824,10 +829,10 @@ static orxINLINE void orxDisplay_GLFW_UpdateDefaultMode()
     else
     {
       /* Updates default mode */
-      sstDisplay.u32DefaultWidth        = 1920;
-      sstDisplay.u32DefaultHeight       = 1080;
-      sstDisplay.u32DefaultDepth        = 32;
-      sstDisplay.u32DefaultRefreshRate  = 60;
+      sstDisplay.u32DefaultWidth        = orxDISPLAY_KU32_DEFAULT_WIDTH;
+      sstDisplay.u32DefaultHeight       = orxDISPLAY_KU32_DEFAULT_HEIGHT;
+      sstDisplay.u32DefaultDepth        = orxDISPLAY_KU32_DEFAULT_DEPTH;
+      sstDisplay.u32DefaultRefreshRate  = orxDISPLAY_KU32_DEFAULT_REFRESH_RATE;
     }
   }
 
