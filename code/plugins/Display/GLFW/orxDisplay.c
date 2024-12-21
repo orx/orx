@@ -201,7 +201,7 @@
 #define orxDISPLAY_KU32_DEFAULT_WIDTH               1920
 #define orxDISPLAY_KU32_DEFAULT_HEIGHT              1080
 #define orxDISPLAY_KU32_DEFAULT_DEPTH               32
-#define orxDISPLAY_KU32_DEFAULT_REFRESH_RATE        60
+#define orxDISPLAY_KU32_DEFAULT_REFRESH_RATE        0
 
 
 /**  Misc defines
