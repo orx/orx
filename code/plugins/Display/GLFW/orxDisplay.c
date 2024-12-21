@@ -68,9 +68,9 @@
 #undef GLFW_INCLUDE_ES3
 #undef GLFW_INCLUDE_GLEXT
 
-#if (!defined(__orxMSVC__) || (_MSC_VER > 1600)) && !defined(__orxWEB__)
+#if !defined(__orxMSVC__) || (_MSC_VER > 1600)
   #include "webp/decode.h"
-#endif /* (!__orxMSVC__ || (_MSC_VER > 1600)) && !defined(__orxWEB__) */
+#endif /* !__orxMSVC__ || (_MSC_VER > 1600) */
 
 #ifdef __orxGCC__
   #pragma GCC diagnostic push
