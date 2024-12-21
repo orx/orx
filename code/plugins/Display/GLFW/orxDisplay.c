@@ -828,11 +828,17 @@ static orxINLINE void orxDisplay_GLFW_UpdateDefaultMode()
     }
     else
     {
+      /* Pushes display section */
+      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+
       /* Updates default mode */
-      sstDisplay.u32DefaultWidth        = orxDISPLAY_KU32_DEFAULT_WIDTH;
-      sstDisplay.u32DefaultHeight       = orxDISPLAY_KU32_DEFAULT_HEIGHT;
-      sstDisplay.u32DefaultDepth        = orxDISPLAY_KU32_DEFAULT_DEPTH;
-      sstDisplay.u32DefaultRefreshRate  = orxDISPLAY_KU32_DEFAULT_REFRESH_RATE;
+      sstDisplay.u32DefaultWidth        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : orxDISPLAY_KU32_DEFAULT_WIDTH;
+      sstDisplay.u32DefaultHeight       = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : orxDISPLAY_KU32_DEFAULT_HEIGHT;
+      sstDisplay.u32DefaultDepth        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : orxDISPLAY_KU32_DEFAULT_DEPTH;
+      sstDisplay.u32DefaultRefreshRate  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) : orxDISPLAY_KU32_DEFAULT_REFRESH_RATE;
+
+      /* Pops config section */
+      orxConfig_PopSection();
     }
   }
 
