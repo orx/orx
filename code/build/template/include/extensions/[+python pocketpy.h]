@@ -8,10 +8,10 @@
 
 // clang-format off
 
-#define PK_VERSION				"2.0.3"
+#define PK_VERSION				"2.0.4"
 #define PK_VERSION_MAJOR            2
 #define PK_VERSION_MINOR            0
-#define PK_VERSION_PATCH            3
+#define PK_VERSION_PATCH            4
 
 /*************** feature settings ***************/
 
@@ -42,6 +42,9 @@
 // This is the maximum number of local variables in a function
 // (not recommended to change this)
 #define PK_MAX_CO_VARNAMES          64
+
+// This is the maximum character length of a module path
+#define PK_MAX_MODULE_PATH_LEN      63
 
 #ifdef _WIN32
     #define PK_PLATFORM_SEP '\\'
@@ -388,6 +391,8 @@ PK_API const char* py_tostrn(py_Ref, int* size);
 PK_API c11_sv py_tosv(py_Ref);
 /// Convert a `bytes` object in python to char array.
 PK_API unsigned char* py_tobytes(py_Ref, int* size);
+/// Resize a `bytes` object. It can only be resized down.
+PK_API void py_bytes_resize(py_Ref, int size);
 /// Convert a user-defined object to its userdata.
 PK_API void* py_touserdata(py_Ref);
 
@@ -650,7 +655,7 @@ PK_API void py_clearexc(py_StackRef p0);
 #define NameError(n) py_exception(tp_NameError, "name '%n' is not defined", (n))
 #define TypeError(...) py_exception(tp_TypeError, __VA_ARGS__)
 #define RuntimeError(...) py_exception(tp_RuntimeError, __VA_ARGS__)
-#define IOError(...) py_exception(tp_IOError, __VA_ARGS__)
+#define OSError(...) py_exception(tp_OSError, __VA_ARGS__)
 #define ValueError(...) py_exception(tp_ValueError, __VA_ARGS__)
 #define IndexError(...) py_exception(tp_IndexError, __VA_ARGS__)
 #define ImportError(...) py_exception(tp_ImportError, __VA_ARGS__)
@@ -717,7 +722,10 @@ PK_API bool py_len(py_Ref val) PY_RAISE PY_RETURN;
 PK_API bool py_json_dumps(py_Ref val) PY_RAISE PY_RETURN;
 /// Python equivalent to `json.loads(val)`.
 PK_API bool py_json_loads(const char* source) PY_RAISE PY_RETURN;
-
+/// Python equivalent to `pickle.dumps(val)`.
+PK_API bool py_pickle_dumps(py_Ref val) PY_RAISE PY_RETURN;
+/// Python equivalent to `pickle.loads(val)`.
+PK_API bool py_pickle_loads(const unsigned char* data, int size) PY_RAISE PY_RETURN;
 /************* Unchecked Functions *************/
 
 PK_API py_ObjectRef py_tuple_data(py_Ref self);
@@ -742,12 +750,20 @@ PK_API int py_dict_getitem(py_Ref self, py_Ref key) PY_RAISE PY_RETURN;
 PK_API bool py_dict_setitem(py_Ref self, py_Ref key, py_Ref val) PY_RAISE;
 /// -1: error, 0: not found, 1: found (and deleted)
 PK_API int py_dict_delitem(py_Ref self, py_Ref key) PY_RAISE;
+
 /// -1: error, 0: not found, 1: found
 PK_API int py_dict_getitem_by_str(py_Ref self, const char* key) PY_RAISE PY_RETURN;
+/// -1: error, 0: not found, 1: found
+PK_API int py_dict_getitem_by_int(py_Ref self, py_i64 key) PY_RAISE PY_RETURN;
 /// true: success, false: error
 PK_API bool py_dict_setitem_by_str(py_Ref self, const char* key, py_Ref val) PY_RAISE;
+/// true: success, false: error
+PK_API bool py_dict_setitem_by_int(py_Ref self, py_i64 key, py_Ref val) PY_RAISE;
 /// -1: error, 0: not found, 1: found (and deleted)
 PK_API int py_dict_delitem_by_str(py_Ref self, const char* key) PY_RAISE;
+/// -1: error, 0: not found, 1: found (and deleted)
+PK_API int py_dict_delitem_by_int(py_Ref self, py_i64 key) PY_RAISE;
+
 /// true: success, false: error
 PK_API bool
     py_dict_apply(py_Ref self, bool (*f)(py_Ref key, py_Ref val, void* ctx), void* ctx) PY_RAISE;
@@ -852,6 +868,7 @@ MAGIC_METHOD(__float__)
 MAGIC_METHOD(__int__)
 MAGIC_METHOD(__round__)
 MAGIC_METHOD(__getattr__)
+MAGIC_METHOD(__reduce__)
 MAGIC_METHOD(__missing__)
 
 #endif
@@ -900,7 +917,6 @@ enum py_PredefinedTypes {
     tp_StopIteration,
     tp_SyntaxError,
     tp_StackOverflowError,
-    tp_IOError,
     tp_OSError,
     tp_NotImplementedError,
     tp_TypeError,
