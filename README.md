@@ -14,7 +14,7 @@
 
 <p align="center">
     <a href="https://orx-project.org"><img src="https://img.shields.io/website?url=https%3A%2F%2Forx-project.org" alt="site"></a>
-    <a href="https://wiki.orx-project.org"><img src="https://img.shields.io/badge/platforms-windows%20%7C%20linux%20%7C%20mac%20%7C%20android%20%7C%20ios-red" alt="platforms"></a>
+    <a href="https://wiki.orx-project.org"><img src="https://img.shields.io/badge/platforms-windows%20%7C%20linux%20%7C%20mac%20%7C%20web/html5%20%7C%20android%20%7C%20ios-red" alt="platforms"></a>
     <a href="https://github.com/orx/orx/releases"><img src="https://img.shields.io/github/v/release/orx/orx?color=orange" alt="releases"></a>
 </p>
 
@@ -102,6 +102,7 @@ The engine compiles for, and is tested on:
 - Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
 - Windows (x86/x86-64 with vs2017, vs2019 & vs2022, x86/x86-64 mingw-w64 (14.2.0) with codelite, codeblocks and GNU makefile)
 - MacOS X (x86/x86-64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.6+
+- Web/HTML5 (Emscripten)
 - Android (Gradle build files, simulator & device)
 - iOS (iPhone/iPod Touch/iPad, simulator & device with xcode)
 
@@ -269,6 +270,7 @@ for which you're compiling. Here's a quick list of these flags:
   `__orxWINDOWS__`        | orx is being compiled for Windows
   `__orxMAC__`            | orx is being compiled for MacOS X
   `__orxLINUX__`          | orx is being compiled for Linux
+  `__orxWEB__`            | orx is being compiled for Web/HTML5
   `__orxIOS__`            | orx is being compiled for iOS
   `__orxANDROID__`        | orx is being compiled for Android
   `__orxCPP__`            | orx is being compiled with a C++ compiler

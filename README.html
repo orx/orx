@@ -1234,7 +1234,7 @@ body {
 </p>
 <p align="center">
     <a href="https://orx-project.org" rel="nofollow"><img src="https://camo.githubusercontent.com/8a4af2e34c57dde5f954dca6e40b51223dfa01dba5a49670ef1b7965474147d0/68747470733a2f2f696d672e736869656c64732e696f2f776562736974653f75726c3d68747470732533412532462532466f72782d70726f6a6563742e6f7267" alt="site" data-canonical-src="https://img.shields.io/website?url=https%3A%2F%2Forx-project.org" style="max-width: 100%;"></a>
-    <a href="https://wiki.orx-project.org" rel="nofollow"><img src="https://camo.githubusercontent.com/c8c225d76fd37faa8289c0d2b8826722b528c81ec393977399817210f2dee694/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f706c6174666f726d732d77696e646f77732532302537432532306c696e75782532302537432532306d6163253230253743253230616e64726f6964253230253743253230696f732d726564" alt="platforms" data-canonical-src="https://img.shields.io/badge/platforms-windows%20%7C%20linux%20%7C%20mac%20%7C%20android%20%7C%20ios-red" style="max-width: 100%;"></a>
+    <a href="https://wiki.orx-project.org" rel="nofollow"><img src="https://camo.githubusercontent.com/38124bd081453633b8d3500c2194ed1bcbdc183143019827e3197b30d589579e/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f706c6174666f726d732d77696e646f77732532302537432532306c696e75782532302537432532306d61632532302537432532307765622f68746d6c35253230253743253230616e64726f6964253230253743253230696f732d726564" alt="platforms" data-canonical-src="https://img.shields.io/badge/platforms-windows%20%7C%20linux%20%7C%20mac%20%7C%20web/html5%20%7C%20android%20%7C%20ios-red" style="max-width: 100%;"></a>
     <a href="https://github.com/orx/orx/releases"><img src="https://camo.githubusercontent.com/ab9053b92c4edff02ed5a3467a714ae400ccffc26a6aa42dfb011ad2d6ce142a/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f762f72656c656173652f6f72782f6f72783f636f6c6f723d6f72616e6765" alt="releases" data-canonical-src="https://img.shields.io/github/v/release/orx/orx?color=orange" style="max-width: 100%;"></a>
 </p>
 <p align="center">
@@ -1303,6 +1303,7 @@ transparency (alpha blending), different blending modes, coloring, tiling and mi
 <li>Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)</li>
 <li>Windows (x86/x86-64 with vs2017, vs2019 &amp; vs2022, x86/x86-64 mingw-w64 (14.2.0) with codelite, codeblocks and GNU makefile)</li>
 <li>MacOS X (x86/x86-64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.6+</li>
+<li>Web/HTML5 (Emscripten)</li>
 <li>Android (Gradle build files, simulator &amp; device)</li>
 <li>iOS (iPhone/iPod Touch/iPad, simulator &amp; device with xcode)</li>
 </ul>
@@ -1532,6 +1533,10 @@ for which you're compiling. Here's a quick list of these flags:</p>
 <tr>
 <td align="center"><code>__orxLINUX__</code></td>
 <td>orx is being compiled for Linux</td>
+</tr>
+<tr>
+<td align="center"><code>__orxWEB__</code></td>
+<td>orx is being compiled for Web/HTML5</td>
 </tr>
 <tr>
 <td align="center"><code>__orxIOS__</code></td>
