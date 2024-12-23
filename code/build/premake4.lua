@@ -465,7 +465,7 @@ project "orxLIB"
         ["misc"] = {"../../.editorconfig", "../../.extern"}
     }
 
-    configuration {"not *Core*", "not web"}
+    configuration {"not *Core*"}
         defines
         {
             "__orxEMBEDDED__"
