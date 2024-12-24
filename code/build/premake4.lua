@@ -148,6 +148,8 @@ solution "orx"
             "../../extern/emscripten-glfw/external",
             "../../extern/emscripten-glfw/include"
         }
+        buildoptions {"-pthread"}
+        linkoptions {"-pthread"}
 
     configuration {"not web"}
         flags {"StaticRuntime"}

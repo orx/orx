@@ -153,7 +153,8 @@ solution "[name]"
         targetdir "../bin/web"
         buildoptions
         {
-            "-DorxWEB_EXECUTABLE_NAME='\"[name].wasm\"'"
+            "-DorxWEB_EXECUTABLE_NAME='\"[name].wasm\"'",
+            "-pthread"
         }
         linkoptions
         {
@@ -165,6 +166,7 @@ solution "[name]"
             "-sALLOW_MEMORY_GROWTH",
             "-sMIN_WEBGL_VERSION=2",
             "-sMAX_WEBGL_VERSION=2",
+            "-pthread",
             "-lidbfs.js",
             "$(ORX)/../extern/emscripten-glfw/lib/libglfw3.a",
             "--js-library $(ORX)/../extern/emscripten-glfw/lib/lib_emscripten_glfw3.js"
