@@ -186,15 +186,16 @@ solution "[name]"
             "$(ORX)/../extern/libwebp/lib/web",
             "$(ORX)/../extern/LiquidFun-1.1.0/lib/web"
         }
-        prelinkcommands {copybase .. "/bin/[name] -b ../build/[name].obr"}
 
     configuration {"web", "*Release*"}
         linkoptions {"-O2"}
 
     configuration {"web", "Windows"}
+        prelinkcommands {"cd " .. copybase .. "/bin && [name] -b ../build/[name].obr"}
         postbuildcommands {"del " .. path.translate(copybase, "\\") .. "\\build\\[name].obr"}
 
     configuration {"web", "not Windows"}
+        prelinkcommands {"cd " .. copybase .. "/bin && ./[name] -b ../build/[name].obr"}
         postbuildcommands {"rm " .. copybase .. "/build/[name].obr"}
 
 
