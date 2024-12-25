@@ -6494,6 +6494,15 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
           }
         }
 
+#ifdef __orxWEB__
+
+        /* Uses draw buffers extension by default */
+        s32Offset  = orxString_NPrint(pc, s32Free, "#extension GL_EXT_draw_buffers : enable\n");
+        pc        += s32Offset;
+        s32Free   -= s32Offset;
+
+#endif /* __orxWEB__ */
+
         /* Has shader extension list? */
         if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST) != orxFALSE)
         {

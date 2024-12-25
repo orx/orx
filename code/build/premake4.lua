@@ -341,6 +341,7 @@ project "orx"
 
     configuration {"web"}
         targetextension ".html"
+        targetsuffix ""
         targetdir "../bin/web"
         buildoptions
         {
@@ -353,8 +354,7 @@ project "orx"
             "-sWASM_WORKERS=1",
             "-sASYNCIFY",
             "-sALLOW_MEMORY_GROWTH",
-            "-sMIN_WEBGL_VERSION=2",
-            "-sMAX_WEBGL_VERSION=2",
+            "-sFULL_ES3=1",
             "-lidbfs.js",
             "../../../../extern/emscripten-glfw/lib/libglfw3.a",
             "--js-library ../../../../extern/emscripten-glfw/lib/lib_emscripten_glfw3.js"
@@ -372,6 +372,15 @@ project "orx"
             "../../extern/libwebp/lib/web",
             "../../extern/LiquidFun-1.1.0/lib/web"
         }
+
+    configuration {"web", "*Release*"}
+        linkoptions {"-O2"}
+
+    configuration {"web", "*Profile*"}
+        linkoptions {"-O2"}
+
+    configuration {"web", "*Debug*"}
+        linkoptions {"-gsource-map"}
 
 
 -- Linux

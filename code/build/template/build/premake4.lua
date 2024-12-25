@@ -149,7 +149,8 @@ solution "[name]"
         kind ("WindowedApp")
 
     configuration {"web"}
-        targetname "[name].html"
+        targetextension ".html"
+        targetsuffix ""
         targetdir "../bin/web"
         buildoptions
         {
@@ -164,8 +165,7 @@ solution "[name]"
             "-sWASM_WORKERS=1",
             "-sASYNCIFY",
             "-sALLOW_MEMORY_GROWTH",
-            "-sMIN_WEBGL_VERSION=2",
-            "-sMAX_WEBGL_VERSION=2",
+            "-sFULL_ES3=1",
             "-pthread",
             "-lidbfs.js",
             "$(ORX)/../extern/emscripten-glfw/lib/libglfw3.a",
@@ -173,7 +173,6 @@ solution "[name]"
         }
         links
         {
-            "orx",
             "basisu",
             "webpdecoder",
             "liquidfun"
@@ -188,7 +187,16 @@ solution "[name]"
         }
 
     configuration {"web", "*Release*"}
+        links {"orx"}
         linkoptions {"-O2"}
+
+    configuration {"web", "*Profile*"}
+        links {"orxp"}
+        linkoptions {"-O2"}
+
+    configuration {"web", "*Debug*"}
+        links {"orxd"}
+        linkoptions {"-gsource-map"}
 
     configuration {"web", "Windows"}
         prelinkcommands {"cd " .. copybase .. "/bin && [name] -b ../build/[name].obr"}
