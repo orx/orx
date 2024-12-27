@@ -509,9 +509,8 @@ static orxINLINE orxSTATUS orxBundle_Process()
       // Gets it
       zSection = orxConfig_GetSection(i);
 
-      // Not resource nor bundle?
-      if((orxString_Compare(zSection, "Resource") != 0)
-      && (orxString_Compare(zSection, orxBUNDLE_KZ_CONFIG_SECTION) != 0))
+      // Not resource?
+      if(orxString_Compare(zSection, "Resource") != 0)
       {
         // Selects it
         orxConfig_SelectSection(zSection);
@@ -520,46 +519,52 @@ static orxINLINE orxSTATUS orxBundle_Process()
         for(j = 0, jCount = orxConfig_GetKeyCount(); j < jCount; j++)
         {
           const orxSTRING zKey;
-          orxU32          k, kCount;
 
           // Gets it
           zKey = orxConfig_GetKey(j);
 
-          // For all its values
-          for(k = 0, kCount = orxConfig_GetListCount(zKey); k < kCount; k++)
+          // Not in bundle or is include list?
+          if((orxString_Compare(zSection, orxBUNDLE_KZ_CONFIG_SECTION) != 0)
+          || (orxString_Compare(zKey, orxBUNDLE_KZ_CONFIG_INCLUDE_LIST) == 0))
           {
-            const orxSTRING zValue;
-            orxU32          u32GroupIndex;
-
-            // Gets it
-            zValue = orxConfig_GetListString(zKey, k);
-
-            // For all resource groups
-            for(u32GroupIndex = 0; u32GroupIndex < u32GroupCount; u32GroupIndex++)
+            orxU32 k, kCount;
+            
+            // For all its values
+            for(k = 0, kCount = orxConfig_GetListCount(zKey); k < kCount; k++)
             {
-              const orxSTRING zGroup;
-              const orxSTRING zLocation;
+              const orxSTRING zValue;
+              orxU32          u32GroupIndex;
 
-              // Gets group
-              zGroup = orxResource_GetGroup(u32GroupIndex);
+              // Gets it
+              zValue = orxConfig_GetListString(zKey, k);
 
-              // Locates it
-              zLocation = orxResource_Locate(zGroup, zValue);
-
-              // Valid?
-              if(zLocation != orxNULL)
+              // For all resource groups
+              for(u32GroupIndex = 0; u32GroupIndex < u32GroupCount; u32GroupIndex++)
               {
-                // Not an internal resource & not already discovered?
-                if(((orxString_Compare(orxResource_GetType(zLocation)->zTag, orxRESOURCE_KZ_TYPE_TAG_MEMORY) != 0)
-                 || (orxString_SearchString(zValue, "orx:") != zValue))
-                && (orxHashTable_Add(pstDiscoveryTable, orxString_Hash(zLocation), (void *)orxTRUE) != orxSTATUS_FAILURE))
-                {
-                  // Logs message
-                  orxLOG(orxBUNDLE_KZ_LOG_TAG "Discovered " orxBUNDLE_KZ_RESOURCE_FORMAT, zGroup, zValue);
-                }
+                const orxSTRING zGroup;
+                const orxSTRING zLocation;
 
-                // Stops
-                break;
+                // Gets group
+                zGroup = orxResource_GetGroup(u32GroupIndex);
+
+                // Locates it
+                zLocation = orxResource_Locate(zGroup, zValue);
+
+                // Valid?
+                if(zLocation != orxNULL)
+                {
+                  // Not an internal resource & not already discovered?
+                  if(((orxString_Compare(orxResource_GetType(zLocation)->zTag, orxRESOURCE_KZ_TYPE_TAG_MEMORY) != 0)
+                   || (orxString_SearchString(zValue, "orx:") != zValue))
+                  && (orxHashTable_Add(pstDiscoveryTable, orxString_Hash(zLocation), (void *)orxTRUE) != orxSTATUS_FAILURE))
+                  {
+                    // Logs message
+                    orxLOG(orxBUNDLE_KZ_LOG_TAG "Discovered " orxBUNDLE_KZ_RESOURCE_FORMAT, zGroup, zValue);
+                  }
+
+                  // Stops
+                  break;
+                }
               }
             }
           }
