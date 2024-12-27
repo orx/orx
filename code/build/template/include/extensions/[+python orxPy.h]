@@ -1313,6 +1313,24 @@ extern "C"
 
   // Config functions
 
+  BIND(Config, set_parent)
+  {
+    PY_CHECK_ARGC(2);
+    ARG_STR(zSection, 0);
+    const orxSTRING zParent;
+    if (py_isnone(py_arg(1)))
+    {
+      zParent = orxNULL;
+    }
+    else
+    {
+      ARG_STR(zParentArg, 1);
+      zParent = zParentArg;
+    }
+    orxConfig_SetParent(zSection, zParent);
+    RETURN_NONE;
+  }
+
   BIND(Config, get_parent)
   {
     PY_CHECK_ARGC(1);
@@ -2044,6 +2062,7 @@ extern "C"
     py_bindmagic(pyContextType, __exit__, BINDING_NAME(Config, context__exit__));
 
     // Bind config functions
+    BIND_FUNC("set_parent(name: str, parent: str | None) -> None", set_parent);
     BIND_FUNC("get_parent(name: str) -> str | None", get_parent);
     BIND_FUNC("push_section(name: str) -> None", push_section);
     BIND_FUNC("pop_section() -> None", pop_section);
