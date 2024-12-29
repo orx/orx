@@ -55,6 +55,7 @@ public:
                 orxOBJECT *             GetOrxObject() const                                      {return mpstObject;}
                 const orxSTRING         GetName() const                                           {return mzName;}
                 const orxSTRING         GetInstanceName() const                                   {return macInstanceName;}
+                const orxSTRING         GetInputSet() const                                       {return mzInputSet;}
                 orxU64                  GetGUID() const                                           {return orxStructure_GetGUID(mpstObject);}
 
                 orxSTRINGID             GetGroupID() const;
