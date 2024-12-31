@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://orx-project.org"><img src="./logo.svg" alt="Orx Engine" width="400" height="auto"></a>
+    <a href="https://orx-project.org"><img src="./logo.png" alt="Orx Engine" width="400" height="auto"></a>
     <br />
     <strong>A (HEAVILY) DATA-DRIVEN 2D GAME ENGINE</strong>
 </p>
