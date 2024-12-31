@@ -1,7 +1,8 @@
-name: BuildAll
+name: Build All
 on: push
+env:
+  ORX: ${{github.workspace}}/code
 jobs:
-  
   # Visual Studio
   build-vs:
     name: Visual Studio
@@ -99,9 +100,6 @@ jobs:
         run: echo ORX=%CD%\code>> %GITHUB_ENV%
         shell: cmd
         if: matrix.os == 'windows'
-      - name: Set ORX environment variable
-        run: echo ORX=$PWD/code>> $GITHUB_ENV
-        if: matrix.os != 'windows'
       - name: Setup
         run: ./${{matrix.setup}}
       - name: Build engine
@@ -164,8 +162,6 @@ jobs:
           distribution: 'temurin'
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-      - name: Set ORX environment variable
-        run: echo ORX=$PWD/code>> $GITHUB_ENV
       - name: Setup
         run: ./setup.sh
       - name: Build engine
@@ -174,3 +170,67 @@ jobs:
       - name: Build demo
         working-directory: code/demo/android
         run: ./gradlew clean assemble
+
+  # Web
+  build-web:
+    name: Web (HTML5)
+    strategy:
+      matrix:
+        os:
+          # - windows # Skipping Windows as Emscripten isn't found after installation/activation
+          - linux
+          - mac
+        config:
+          - debug
+          - profile
+          - release
+        include:
+          # - os: windows
+          #   runner: windows-latest
+          #   setup: setup.bat
+          #   init: init.bat
+          #   make: mingw32-make
+          #   emsdk_env: emsdk/emsdk_env.bat
+          - os: linux
+            runner: ubuntu-latest
+            setup: setup.sh
+            init: init.sh
+            make: make
+            emsdk_env: emsdk/emsdk_env.sh
+          - os: mac
+            runner: macos-latest
+            setup: setup.sh
+            init: init.sh
+            make: make
+            emsdk_env: emsdk/emsdk_env.sh
+    runs-on:
+      - ${{matrix.runner}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install deps
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get -y install freeglut3-dev libxrandr-dev
+        if: matrix.os == 'linux'
+      - name: Install Emscripten
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          ./emsdk install latest
+          ./emsdk activate latest
+      - name: Setup
+        run: ./${{matrix.setup}}
+      - name: Build engine
+        working-directory: code/build/${{matrix.os}}/gmake
+        run: |
+          . ../../../../${{matrix.emsdk_env}}
+          ${{matrix.make}} config=release64 CFLAGS=-D__orxHEADLESS__
+          emmake make config=${{matrix.config}}web
+      - name: Create project
+        run: ./${{matrix.init}} test
+      - name: Build project
+        working-directory: test/build/${{matrix.os}}/gmake
+        run: |
+          . ../../../../${{matrix.emsdk_env}}
+          ${{matrix.make}} config=release64
+          emmake make config=${{matrix.config}}web
