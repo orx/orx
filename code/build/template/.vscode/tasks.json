@@ -122,15 +122,7 @@
       ],
       "group": "build",
       "type": "shell",
-      "linux": {
-        "command": "make -j config=releaseweb"
-      },
-      "osx": {
-        "command": "make -j config=releaseweb"
-      },
-      "windows": {
-        "command": "mingw32-make.exe -j config=releaseweb"
-      }
+      "command": "emmake make -j config=releaseweb",
     },
     {
       "label": "Run [name] (debug)",
