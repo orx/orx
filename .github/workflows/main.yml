@@ -1,11 +1,14 @@
 name: BuildAll
 on: push
 jobs:
+  
+  # Visual Studio
   build-vs:
     name: Visual Studio
     strategy:
       matrix:
         version:
+          # - 2017 # Not supported by GitHub hosted runners
           - 2019
           - 2022
         config:
@@ -42,6 +45,7 @@ jobs:
       - name: Build tool - orxFontGen
         run: msbuild tools\orxFontGen\build\windows\vs${{matrix.version}}\orxFontGen.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
 
+  # Make
   build-gmake:
     name: Make
     strategy:
@@ -122,3 +126,51 @@ jobs:
         working-directory: tools/orxFontGen/build/${{matrix.os}}/gmake
         run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
         if: matrix.os != 'windows' && matrix.platform != '32' # Skipping Windows & 32bit builds
+
+  # iOS
+  build-ios:
+    name: iOS
+    strategy:
+      matrix:
+        config:
+          - Debug
+          - Profile
+          - Release
+        platform:
+          - os
+          - simulator
+        include:
+          - platform: simulator
+            extra: -destination 'platform=iOS Simulator,name=iPhone 15'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup
+        run: ./setup.sh
+      - name: Build engine
+        working-directory: code/build/ios/xcode/orx-ios.xcodeproj
+        run: xcodebuild -workspace project.xcworkspace -scheme orxLIB -configuration=${{matrix.config}} -sdk iphone${{matrix.platform}} ${{matrix.extra}}
+
+  # Android
+  build-android:
+    name: Android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Set ORX environment variable
+        run: echo ORX=$PWD/code>> $GITHUB_ENV
+      - name: Setup
+        run: ./setup.sh
+      - name: Build engine
+        working-directory: code/build/android
+        run: ./gradlew clean assemble publishAllPublicationsToOrxRepository
+      - name: Build demo
+        working-directory: code/demo/android
+        run: ./gradlew clean assemble
