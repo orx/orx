@@ -1,46 +1,117 @@
 name: BuildAll
 on: push
 jobs:
-  # Visual Studio - Windows only
   build-vs:
+    name: Visual Studio
     strategy:
       matrix:
-        vs-version:
+        version:
           # - 2017
           - 2019
           - 2022
-        vs-config:
+        config:
           - Debug
           - Profile
           - Release
-        vs-platform:
+        platform:
           # - x86
           - x64
-
     runs-on:
-      - windows-${{matrix.vs-version}}
-      
+      - windows-${{matrix.version}}
     steps:
       - uses: actions/checkout@v4
       - uses: microsoft/setup-msbuild@v2
         with:
-          msbuild-architecture: ${{matrix.vs-platform}}
+          msbuild-architecture: ${{matrix.platform}}
       - name: Set ORX environment variable
         run: echo ORX=%CD%\code>> %GITHUB_ENV%
         shell: cmd
       - name: Setup
         run: ./setup.bat
       - name: Build engine
-        run: msbuild code\build\windows\vs${{matrix.vs-version}}\orx.sln -m -t:rebuild -property:Configuration=${{matrix.vs-config}}
+        run: msbuild code\build\windows\vs${{matrix.version}}\orx.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
       - name: Build tutorials
-        run: msbuild tutorial\build\windows\vs${{matrix.vs-version}}\tutorial.sln -m -t:rebuild -property:Configuration=${{matrix.vs-config}}
+        run: msbuild tutorial\build\windows\vs${{matrix.version}}\tutorial.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
       - name: Create project
         run: ./init.bat test
       - name: Build project
-        run: msbuild test\build\windows\vs${{matrix.vs-version}}\test.sln -m -t:rebuild -property:Configuration=${{matrix.vs-config}}
+        run: msbuild test\build\windows\vs${{matrix.version}}\test.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
       - name: Build core
-        run: msbuild code\build\windows\vs${{matrix.vs-version}}\orx.sln -m -t:rebuild "-property:Configuration=Core ${{matrix.vs-config}}"
+        run: msbuild code\build\windows\vs${{matrix.version}}\orx.sln -m -t:rebuild "-property:Configuration=Core ${{matrix.config}}"
       - name: Build tool - orxCrypt
-        run: msbuild tools\orxCrypt\build\windows\vs${{matrix.vs-version}}\orxCrypt.sln -m -t:rebuild -property:Configuration=${{matrix.vs-config}}
+        run: msbuild tools\orxCrypt\build\windows\vs${{matrix.version}}\orxCrypt.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
       - name: Build tool - orxFontGen
-        run: msbuild tools\orxFontGen\build\windows\vs${{matrix.vs-version}}\orxFontGen.sln -m -t:rebuild -property:Configuration=${{matrix.vs-config}}
+        run: msbuild tools\orxFontGen\build\windows\vs${{matrix.version}}\orxFontGen.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
+
+  build-gmake:
+    name: Make
+    strategy:
+      matrix:
+        os:
+          - windows
+          - linux
+          - mac
+        config:
+          - debug
+          - profile
+          - release
+        platform:
+          # - 32
+          - 64
+        include:
+          - os: windows
+            runner: windows-latest
+            setup: setup.bat
+            init: init.bat
+            make: mingw32-make
+          - os: linux
+            runner: ubuntu-latest
+            setup: setup.sh
+            init: init.sh
+            make: make
+          - os: mac
+            runner: macos-latest
+            setup: setup.sh
+            init: init.sh
+            make: make
+    runs-on:
+      - ${{matrix.runner}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update OS (apt)
+        run: sudo apt-get -qq update
+        if: matrix.os == 'linux'
+      - name: Install OS deps
+        run: sudo apt-get -y install freeglut3-dev libxrandr-dev
+        if: matrix.os == 'linux'
+      - name: Set ORX environment variable
+        run: echo ORX=%CD%\code>> %GITHUB_ENV%
+        shell: cmd
+        if: matrix.os == 'windows'
+      - name: Set ORX environment variable
+        run: echo ORX=$PWD/code>> $GITHUB_ENV
+        if: matrix.os != 'windows'
+      - name: Setup
+        run: ./${{matrix.setup}}
+      - name: Build engine
+        working-directory: code/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
+      - name: Build tutorials
+        working-directory: tutorial/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}} verbose=1
+        if: matrix.os != 'mac'
+      - name: Create project
+        run: ./${{matrix.init}} test
+      - name: Build project
+        working-directory: test/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
+      - name: Build core
+        working-directory: code/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=core_${{matrix.config}}${{matrix.platform}}
+      - name: Build tool - orxCrypt
+        working-directory: tools/orxCrypt/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
+      - name: Build tool - orxFontGen
+        working-directory: tools/orxFontGen/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
+        if: matrix.os != 'windows'
