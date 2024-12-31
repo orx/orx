@@ -1,93 +1,46 @@
-# This is a basic workflow to help you get started with Actions
-
-name: CI
-
-# Controls when the workflow will run
-on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
+name: BuildAll
+on: push
 jobs:
-  # Visual Studio build - Windows only
+  # Visual Studio - Windows only
   build-vs:
-    runs-on: windows-latest
-
     strategy:
       matrix:
-        vsversion:
-          - 2017
+        vs-version:
+          # - 2017
           - 2019
-        vsconfig:
+          - 2022
+        vs-config:
           - Debug
           - Profile
           - Release
-        vsplatform:
+        vs-platform:
+          # - x86
           - x64
 
+    runs-on:
+      - windows-${{matrix.vs-version}}
+      
     steps:
-      - uses: actions/checkout@v2
-
-      - name: orx setup
+      - uses: actions/checkout@v4
+      - uses: microsoft/setup-msbuild@v2
+        with:
+          msbuild-architecture: ${{matrix.vs-platform}}
+      - name: Set ORX environment variable
+        run: echo ORX=%CD%\code>> %GITHUB_ENV%
+        shell: cmd
+      - name: Setup
         run: ./setup.bat
-
-      - uses: microsoft/setup-msbuild@v1.1
-
-      - name: orx build (msbuild)
-        run: msbuild code/build/windows/vs${{ matrix.vsversion }}/orx.sln /p:Platform=${{ matrix.vsplatform }} /p:Configuration=${{ matrix.vsconfig }}
-
-  # gmake build - All OSs
-  build-gmake:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-        gmakeconfig:
-          - debug
-          - profile
-          - release
-        gmakeplatform:
-          - 64
-
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Update apt repo
-        run: sudo apt-get -qq update
-        if: matrix.os == 'ubuntu-latest'
-
-      - name: Install extra OS deps for orx
-        run: sudo apt-get -y install freeglut3-dev libxrandr-dev
-        if: matrix.os == 'ubuntu-latest'
-
-      - name: orx setup
-        run: ./setup.sh
-        if: matrix.os != 'windows-latest'
-
-      - name: orx setup
-        run: ./setup.bat
-        if: matrix.os == 'windows-latest'
-
-      - name: orx build (gmake)
-        working-directory: code/build/linux/gmake
-        run: make config=${{ matrix.gmakeconfig }}${{ matrix.gmakeplatform }}
-        if: matrix.os == 'ubuntu-latest'
-
-      - name: orx build (gmake)
-        working-directory: code/build/mac/gmake
-        run: make config=${{ matrix.gmakeconfig }}${{ matrix.gmakeplatform }}
-        if: matrix.os == 'macos-latest'
-
-      - name: orx build (gmake)
-        working-directory: code/build/windows/gmake
-        run: make config=${{ matrix.gmakeconfig }}${{ matrix.gmakeplatform }}
-        if: matrix.os == 'windows-latest'
+      - name: Build engine
+        run: msbuild code\build\windows\vs${{matrix.vs-version}}\orx.sln -m -t:rebuild -property:Configuration=${{matrix.vs-config}}
+      - name: Build tutorials
+        run: msbuild tutorial\build\windows\vs${{matrix.vs-version}}\tutorial.sln -m -t:rebuild -property:Configuration=${{matrix.vs-config}}
+      - name: Create project
+        run: ./init.bat test
+      - name: Build project
+        run: msbuild test\build\windows\vs${{matrix.vs-version}}\test.sln -m -t:rebuild -property:Configuration=${{matrix.vs-config}}
+      - name: Build core
+        run: msbuild code\build\windows\vs${{matrix.vs-version}}\orx.sln -m -t:rebuild "-property:Configuration=Core ${{matrix.vs-config}}"
+      - name: Build tool - orxCrypt
+        run: msbuild tools\orxCrypt\build\windows\vs${{matrix.vs-version}}\orxCrypt.sln -m -t:rebuild -property:Configuration=${{matrix.vs-config}}
+      - name: Build tool - orxFontGen
+        run: msbuild tools\orxFontGen\build\windows\vs${{matrix.vs-version}}\orxFontGen.sln -m -t:rebuild -property:Configuration=${{matrix.vs-config}}
