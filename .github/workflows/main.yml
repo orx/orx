@@ -6,7 +6,6 @@ jobs:
     strategy:
       matrix:
         version:
-          # - 2017
           - 2019
           - 2022
         config:
@@ -14,7 +13,7 @@ jobs:
           - Profile
           - Release
         platform:
-          # - x86
+          # - x86 # Not supported by GitHub hosted runners
           - x64
     runs-on:
       - windows-${{matrix.version}}
@@ -56,7 +55,7 @@ jobs:
           - profile
           - release
         platform:
-          # - 32
+          - 32
           - 64
         include:
           - os: windows
@@ -74,15 +73,23 @@ jobs:
             setup: setup.sh
             init: init.sh
             make: make
+        exclude:
+          - os: windows
+            platform: 32 # Not supported by GitHub hosted runners
+          - os: mac
+            platform: 32 # Not supported by GitHub hosted runners
     runs-on:
       - ${{matrix.runner}}
     steps:
       - uses: actions/checkout@v4
+      - name: Add 32bit architecture
+        run: sudo dpkg --add-architecture i386
+        if: matrix.os == 'linux'
       - name: Update OS (apt)
         run: sudo apt-get -qq update
         if: matrix.os == 'linux'
       - name: Install OS deps
-        run: sudo apt-get -y install freeglut3-dev libxrandr-dev
+        run: sudo apt-get -y install gcc-multilib g++-multilib freeglut3-dev freeglut3-dev:i386 libxrandr-dev libxrandr-dev:i386
         if: matrix.os == 'linux'
       - name: Set ORX environment variable
         run: echo ORX=%CD%\code>> %GITHUB_ENV%
@@ -99,7 +106,7 @@ jobs:
       - name: Build tutorials
         working-directory: tutorial/build/${{matrix.os}}/gmake
         run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}} verbose=1
-        if: matrix.os != 'mac'
+        if: matrix.os != 'mac' # Skipping MacOS as copying the library returns a value that stops the build
       - name: Create project
         run: ./${{matrix.init}} test
       - name: Build project
@@ -114,4 +121,4 @@ jobs:
       - name: Build tool - orxFontGen
         working-directory: tools/orxFontGen/build/${{matrix.os}}/gmake
         run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
-        if: matrix.os != 'windows'
+        if: matrix.os != 'windows' && matrix.platform != '32' # Skipping Windows & 32bit builds
