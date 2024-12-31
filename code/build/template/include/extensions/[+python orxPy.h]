@@ -9,7 +9,16 @@ extern "C"
 #define _orxPY_H_
 
 #include "orx.h"
+
+#define PK_MALLOC(size)       orxMemory_Allocate((orxU32)(size), orxMEMORY_TYPE_MAIN)
+#define PK_REALLOC(ptr, size) orxMemory_Reallocate((ptr), (orxU32)(size), orxMEMORY_TYPE_MAIN)
+#define PK_FREE(ptr)          orxMemory_Free((ptr))
+
 #include "pocketpy.h"
+
+#undef PK_MALLOC
+#undef PK_REALLOC
+#undef PK_FREE
 
   //! Defines
 
