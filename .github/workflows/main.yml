@@ -29,6 +29,11 @@ jobs:
       - name: Set ORX environment variable
         run: echo ORX=%CD%\code>> %GITHUB_ENV%
         shell: cmd
+      - name: Cache extern
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: orx-extern
       - name: Setup
         run: ./setup.bat
       - name: Build engine
@@ -100,6 +105,11 @@ jobs:
         run: echo ORX=%CD%\code>> %GITHUB_ENV%
         shell: cmd
         if: matrix.os == 'windows'
+      - name: Cache extern
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: orx-extern
       - name: Setup
         run: ./${{matrix.setup}}
       - name: Build engine
@@ -143,6 +153,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Cache extern
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: orx-extern
       - name: Setup
         run: ./setup.sh
       - name: Build engine
@@ -162,6 +177,11 @@ jobs:
           distribution: 'temurin'
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+      - name: Cache extern
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: orx-extern
       - name: Setup
         run: ./setup.sh
       - name: Build engine
@@ -177,7 +197,7 @@ jobs:
     strategy:
       matrix:
         os:
-          # - windows # Skipping Windows as Emscripten isn't found after installation/activation
+          - windows
           - linux
           - mac
         config:
@@ -185,12 +205,12 @@ jobs:
           - profile
           - release
         include:
-          # - os: windows
-          #   runner: windows-latest
-          #   setup: setup.bat
-          #   init: init.bat
-          #   make: mingw32-make
-          #   emsdk_env: emsdk/emsdk_env.bat
+          - os: windows
+            runner: windows-latest
+            setup: setup.bat
+            init: init.bat
+            make: mingw32-make
+            emsdk_env: emsdk/emsdk_env.ps1
           - os: linux
             runner: ubuntu-latest
             setup: setup.sh
@@ -218,6 +238,15 @@ jobs:
           cd emsdk
           ./emsdk install latest
           ./emsdk activate latest
+      - name: Set ORX environment variable
+        run: echo ORX=%CD%\code>> %GITHUB_ENV%
+        shell: cmd
+        if: matrix.os == 'windows'
+      - name: Cache extern
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: orx-extern
       - name: Setup
         run: ./${{matrix.setup}}
       - name: Build engine
