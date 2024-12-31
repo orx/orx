@@ -73,6 +73,7 @@ ORX_INCLUDES := \
   $(ORX_EXTERN)/xxHash \
   $(ORX_EXTERN)/miniaudio \
   $(ORX_EXTERN)/stb_image \
+  $(ORX_EXTERN)/qoa \
   $(ORX_EXTERN)/qoi \
   $(ORX_EXTERN)/stb_vorbis \
   $(ORX_EXTERN)/LiquidFun-1.1.0/include \

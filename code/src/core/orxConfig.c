@@ -4559,6 +4559,9 @@ static orxINLINE void orxConfig_RegisterCommands()
 
   /* Alias: @ */
   orxCommand_AddAlias("@", "Config.GetCurrentSection", orxNULL);
+
+  /* Done! */
+  return;
 }
 
 /** Unregisters all the config commands
@@ -4632,6 +4635,9 @@ static orxINLINE void orxConfig_UnregisterCommands()
 
   /* Command: GetSystem */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetSystem);
+
+  /* Done! */
+  return;
 }
 
 /** Sets system values

@@ -3079,16 +3079,20 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Swap()
   /* Draws remaining items */
   orxDisplay_Android_DrawArrays();
 
-  /* Swaps buffers */
-  if(sstDisplay.bSwappyEnabled)
+  /* Has valid surface? */
+  if(sstDisplay.surface != EGL_NO_SURFACE)
   {
-    SwappyGL_swap(sstDisplay.display, sstDisplay.surface);
+    /* Swaps buffers */
+    if(sstDisplay.bSwappyEnabled)
+    {
+      SwappyGL_swap(sstDisplay.display, sstDisplay.surface);
+    }
+    else
+    {
+      eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
+    }
+    eglASSERT();
   }
-  else
-  {
-    eglSwapBuffers(sstDisplay.display, sstDisplay.surface);
-  }
-  eglASSERT();
 
   /* Done! */
   return eResult;

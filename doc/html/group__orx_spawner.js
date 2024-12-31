@@ -2,7 +2,7 @@ var group__orx_spawner =
 [
     [ "orxSPAWNER_KU32_FLAG_AUTO_DELETE", "group__orx_spawner.html#gae85d9762c0af0efefd9371c8bf81f6af", null ],
     [ "orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT", "group__orx_spawner.html#gaad5ab57006a7302904a0c1985ce11fd1", null ],
-    [ "orxSPAWNER_KU32_FLAG_AUTO_RESET_TIMER", "group__orx_spawner.html#gac14e2d6c81a20b6eae848876c9f036fa", null ],
+    [ "orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY", "group__orx_spawner.html#ga0bad409dc049f37bad2f4da2fca1b606", null ],
     [ "orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE", "group__orx_spawner.html#gae94f7631defe7e169359fba6c27bab93", null ],
     [ "orxSPAWNER_KU32_FLAG_INTERPOLATE", "group__orx_spawner.html#ga1fcde744796769d444210e53ccdf61c0", null ],
     [ "orxSPAWNER_KU32_FLAG_NONE", "group__orx_spawner.html#ga7539c41c2c9e9b50e49e9198f65ddaac", null ],

@@ -100,7 +100,7 @@
 #define orxSPAWNER_KZ_OBJECT                      "object"
 #define orxSPAWNER_KZ_SPAWNER                     "spawner"
 #define orxSPAWNER_KZ_COUNT                       "count"
-#define orxSPAWNER_KZ_TIMER                       "timer"
+#define orxSPAWNER_KZ_DELAY                       "delay"
 
 
 #define orxSPAWNER_KU32_BANK_SIZE                 128         /**< Bank size */
@@ -389,17 +389,17 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
           /* Updates status */
           orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT, orxSPAWNER_KU32_FLAG_NONE);
         }
-        /* Timer only? */
-        else if(orxString_ICompare(zAutoRest, orxSPAWNER_KZ_TIMER) == 0)
+        /* Delay only? */
+        else if(orxString_ICompare(zAutoRest, orxSPAWNER_KZ_DELAY) == 0)
         {
           /* Updates status */
-          orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_TIMER, orxSPAWNER_KU32_FLAG_NONE);
+          orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY, orxSPAWNER_KU32_FLAG_NONE);
         }
         /* Both? */
         else if(orxString_ICompare(zAutoRest, orxSPAWNER_KZ_BOTH) == 0)
         {
           /* Updates status */
-          orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT | orxSPAWNER_KU32_FLAG_AUTO_RESET_TIMER, orxSPAWNER_KU32_FLAG_NONE);
+          orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT | orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY, orxSPAWNER_KU32_FLAG_NONE);
         }
         else
         {
@@ -409,7 +409,7 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
           if((orxString_ToBool(zAutoRest, &bAutoReset, orxNULL) != orxSTATUS_FAILURE) && (bAutoReset != orxFALSE))
           {
             /* Updates status */
-            orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT | orxSPAWNER_KU32_FLAG_AUTO_RESET_TIMER, orxSPAWNER_KU32_FLAG_NONE);
+            orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT | orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY, orxSPAWNER_KU32_FLAG_NONE);
           }
         }
       }
@@ -726,7 +726,7 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
           if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_MASK_AUTO_RESET))
           {
             /* Resets spawner */
-            orxSpawner_Reset(_pstSpawner, orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT), orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_TIMER));
+            orxSpawner_Reset(_pstSpawner, orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT), orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY));
           }
           /* Disables */
           else
@@ -1587,7 +1587,7 @@ void orxFASTCALL orxSpawner_Enable(orxSPAWNER *_pstSpawner, orxBOOL _bEnable)
     if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_MASK_AUTO_RESET))
     {
       /* Resets spawner */
-      orxSpawner_Reset(_pstSpawner, orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT), orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_TIMER));
+      orxSpawner_Reset(_pstSpawner, orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT), orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY));
     }
     else
     {

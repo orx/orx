@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-    <a href="https://app.travis-ci.com/github/orx/orx"><img src="https://api.travis-ci.com/orx/orx.svg?branch=master" alt="build-travis"></a>
+    <a href="https://github.com/orx/orx/actions/workflows/main.yml"><img src="https://img.shields.io/github/actions/workflow/status/orx/orx/main.yml" alt="build-travis"></a>
     <a href="https://ci.appveyor.com/project/iarwain/orx"><img src="https://ci.appveyor.com/api/projects/status/alwm4il7x1w6g1o4?svg=true" alt="build-appveyor"></a>
     <a href="https://github.com/orx/orx/commits/master"><img src="https://img.shields.io/github/last-commit/orx/orx/master" alt="last-commit"></a>
     <a href="https://github.com/orx/orx/graphs/commit-activity"><img src="https://img.shields.io/github/commit-activity/m/orx/orx/master" alt="monthly-commit-activity"></a>

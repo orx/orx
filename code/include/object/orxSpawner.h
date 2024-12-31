@@ -57,7 +57,7 @@
 
 #define orxSPAWNER_KU32_FLAG_AUTO_DELETE                0x00000001  /**< Auto delete flag */
 #define orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT           0x00000002  /**< Auto reset count flag */
-#define orxSPAWNER_KU32_FLAG_AUTO_RESET_TIMER           0x00000004  /**< Auto reset timer flag */
+#define orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY           0x00000004  /**< Auto reset delay flag */
 #define orxSPAWNER_KU32_MASK_AUTO_RESET                 0x00000006  /**< Auto reset mask */
 
 #define orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE            0x00000008  /**< Clean on delete flag */

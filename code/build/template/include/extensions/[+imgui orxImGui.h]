@@ -13,6 +13,7 @@
 
 #define orxIMGUI_KZ_CONFIG_SECTION          "ImGui"
 #define orxIMGUI_KZ_CONFIG_FONT_LIST        "FontList"
+#define orxIMGUI_KZ_CONFIG_FONT_SCALE       "FontScale"
 
 #define orxIMGUI_KU32_DEFAULT_FONT_SIZE     13.0f
 
@@ -78,6 +79,13 @@ static orxSTATUS orxFASTCALL orxImGui_BeginFrame(const orxEVENT *_pstEvent)
   orxConfig_PopSection();
   rstIO.DisplayFramebufferScale.x = vFramebufferSize.fX / rstIO.DisplaySize.x;
   rstIO.DisplayFramebufferScale.y = vFramebufferSize.fY / rstIO.DisplaySize.y;
+  orxConfig_PushSection(orxIMGUI_KZ_CONFIG_SECTION);
+  orxFLOAT fFontScale = orxConfig_GetFloat(orxIMGUI_KZ_CONFIG_FONT_SCALE);
+  orxConfig_PopSection();
+  if(fFontScale > orxFLOAT_0)
+  {
+    rstIO.FontGlobalScale = fFontScale;
+  }
 
   orxVECTOR vMousePos;
   orxMouse_GetPosition(&vMousePos);

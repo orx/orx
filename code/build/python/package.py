@@ -205,6 +205,7 @@ iosfolderinfolist = docfolderinfolist + [
     {'src': '../extern/LiquidFun-1.1.0/lib/ios',                        'dst': None},
     {'src': '../extern/LiquidFun-1.1.0/src/liquidfun/Box2D/Box2D',      'dst': None},
     {'src': '../extern/miniaudio',                                      'dst': None},
+    {'src': '../extern/qoa',                                            'dst': None},
     {'src': '../extern/qoi',                                            'dst': None},
     {'src': '../extern/rpmalloc/rpmalloc',                              'dst': None},
     {'src': '../extern/stb_image',                                      'dst': None},
