@@ -10,9 +10,9 @@ extern "C"
 
 #include "orx.h"
 
-#define PK_MALLOC(size)       orxMemory_Allocate((orxU32)(size), orxMEMORY_TYPE_MAIN)
+#define PK_MALLOC(size) orxMemory_Allocate((orxU32)(size), orxMEMORY_TYPE_MAIN)
 #define PK_REALLOC(ptr, size) orxMemory_Reallocate((ptr), (orxU32)(size), orxMEMORY_TYPE_MAIN)
-#define PK_FREE(ptr)          orxMemory_Free((ptr))
+#define PK_FREE(ptr) orxMemory_Free((ptr))
 
 #include "pocketpy.h"
 
@@ -27,26 +27,23 @@ extern "C"
 #define orxPY_KZ_CONFIG_SECTION "Python"
 #define orxPY_KZ_CONFIG_MAIN "Main"
 
-#define orxPY_KZ_CONFIG_INIT "Init"
-#define orxPY_KZ_CONFIG_UPDATE "Update"
-#define orxPY_KZ_CONFIG_EXIT "Exit"
-
 #define orxPY_KZ_COMMAND_EXEC "Python.Exec"
 
-#define orxPY_KZ_DEFAULT_INIT "orx_init"
-#define orxPY_KZ_DEFAULT_UPDATE "orx_update"
-#define orxPY_KZ_DEFAULT_EXIT "orx_exit"
+#define orxPY_KZ_DEFAULT_INIT "on_init"
+#define orxPY_KZ_DEFAULT_UPDATE "on_update"
+#define orxPY_KZ_DEFAULT_EXIT "on_exit"
 
-#define orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER "orx_on_create"
-#define orxPY_KZ_DEFAULT_OBJECT_DELETE_EVENT_HANDLER "orx_on_delete"
-#define orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER "orx_on_collide"
-#define orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER "orx_on_separate"
-#define orxPY_KZ_DEFAULT_SHADER_PARAM_EVENT_HANDLER "orx_on_shader_param"
+#define orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER "on_create"
+#define orxPY_KZ_DEFAULT_OBJECT_DELETE_EVENT_HANDLER "on_delete"
+#define orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER "on_collide"
+#define orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER "on_separate"
+#define orxPY_KZ_DEFAULT_SHADER_PARAM_EVENT_HANDLER "on_shader_param"
 
   //! Custom Python types
 
   static py_Type tp_orxvector;
   static py_Type tp_orxobject;
+  static py_Type tp_orxclock;
 
 #ifdef orxPY_IMPL
 
@@ -55,6 +52,7 @@ extern "C"
   typedef struct __orxPY_t
   {
     orxBOOL bInitialized;    // Initialized state
+    py_GlobalRef pyMod;      // Module containing callbacks
     py_Name pyInit;          // Engine init callback
     py_Name pyUpdate;        // Engine update callback
     py_Name pyExit;          // Engine exit callback
@@ -68,6 +66,8 @@ extern "C"
   static orxPY sstPy;
 
   //! Code
+
+#define orxPy_GetCallback(field) py_getdict(sstPy.pyMod, field)
 
 #define orxPY_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_YELLOW "[PYTHON] " orxANSI_KZ_COLOR_RESET
 
@@ -178,7 +178,7 @@ extern "C"
     orxPROFILER_PUSH_MARKER(__FUNCTION__);
     py_Ref pyArg = py_r0();
     py_newfloat(pyArg, _pstClockInfo->fDT);
-    orxPy_Call1(py_getglobal(sstPy.pyUpdate), pyArg);
+    orxPy_Call1(orxPy_GetCallback(sstPy.pyUpdate), pyArg);
     orxPROFILER_POP_MARKER();
   }
 
@@ -233,6 +233,14 @@ extern "C"
       name = *p##name;                        \
     }                                         \
   } while (0)
+#define ARG_CLOCK(name, index)             \
+  orxCLOCK *name;                          \
+  do                                       \
+  {                                        \
+    PY_CHECK_ARG_TYPE(index, tp_orxclock); \
+    ARG_PTR(orxCLOCK *, p##name, index);   \
+    name = *p##name;                       \
+  } while (0)
 
 // Binding return value handling
 #define RETURN_VALUE(CONV, RET) \
@@ -270,6 +278,12 @@ extern "C"
     py_neworxvector(py_retval(), VEC); \
     return true;                       \
   } while (0)
+#define RETURN_CLOCK(CLOCK)             \
+  do                                    \
+  {                                     \
+    py_neworxclock(py_retval(), CLOCK); \
+    return true;                        \
+  } while (0)
 
   // Function wrappers
 
@@ -285,6 +299,12 @@ extern "C"
   {
     orxVECTOR *pvVector = (orxVECTOR *)py_newobject(pyOut, tp_orxvector, 0, sizeof(orxVECTOR));
     orxVector_Copy(pvVector, _pvVector);
+  }
+
+  void py_neworxclock(py_OutRef pyOut, orxCLOCK *_pstClock)
+  {
+    orxCLOCK **ppstClock = (orxCLOCK **)py_newobject(pyOut, tp_orxclock, 0, sizeof(orxCLOCK *));
+    *ppstClock = _pstClock;
   }
 
   // Object functions
@@ -445,6 +465,35 @@ extern "C"
     ARG_STR(zPath, 1);
     orxOBJECT *pstChild = orxObject_FindOwnedChild(pstObject, zPath);
     RETURN_OBJECT_OR_NONE(pstChild);
+  }
+
+  BIND(Object, set_clock)
+  {
+    PY_CHECK_ARGC(3);
+    OBJECT;
+    ARG_CLOCK(pstClock, 1);
+    ARG_BOOL(bRecursive, 2);
+    if (bRecursive)
+    {
+      orxObject_SetClockRecursive(pstObject, pstClock);
+    }
+    else
+    {
+      orxObject_SetClock(pstObject, pstClock);
+    }
+    RETURN_NONE;
+  }
+
+  BIND(Object, get_clock)
+  {
+    PY_CHECK_ARGC(1);
+    OBJECT;
+    orxCLOCK *pstClock = orxObject_GetClock(pstObject);
+    if (pstClock == orxNULL)
+    {
+      RETURN_NONE;
+    }
+    RETURN_CLOCK(pstClock);
   }
 
   BIND(Object, set_flip)
@@ -1833,6 +1882,24 @@ extern "C"
     RETURN_VECTOR(&vRes);
   }
 
+  BIND(Clock, compute_dt)
+  {
+    PY_CHECK_ARGC(2);
+    ARG_CLOCK(pstClock, 0);
+    ARG_FLOAT(fDT, 1);
+    RETURN_FLOAT(orxClock_ComputeDT(pstClock, fDT));
+  }
+
+  void orxPy_AddModuleClock()
+  {
+    py_Ref pyMod = py_newmodule("orx.clock");
+    py_Type pyType = py_newtype("Clock", tp_object, pyMod, orxNULL);
+
+    tp_orxclock = pyType;
+
+    py_bindmethod(pyType, "compute_dt", BINDING_NAME(Clock, compute_dt));
+  }
+
   void orxPy_AddModuleVector()
   {
     py_Ref pyMod = py_newmodule("orx.vector");
@@ -1890,6 +1957,9 @@ extern "C"
     BIND_METHOD("get_owner(self) -> Object | None", get_owner);
 
     BIND_METHOD("find_owned_child(self, path: str) -> Object | None", find_owned_child);
+
+    BIND_METHOD("set_clock(self, clock: Clock, recursive: bool = False)", set_clock);
+    BIND_METHOD("get_clock(self) -> Clock | None", get_clock);
 
     BIND_METHOD("set_flip(self, flip_x: bool, flip_y: bool) -> None", set_flip);
     BIND_METHOD("get_flip(self) -> tuple[bool, bool]", get_flip);
@@ -2153,6 +2223,7 @@ extern "C"
   void orxPy_AddModules()
   {
     orxPy_AddModuleOrx();
+    orxPy_AddModuleClock();
     orxPy_AddModuleVector();
     orxPy_AddModuleConfig();
     orxPy_AddModuleCommand();
@@ -2178,7 +2249,7 @@ extern "C"
         {
           py_neworxobject(py_r0(), (orxOBJECT *)_pstEvent->hSender);
           // Call handler
-          orxPy_Call1(py_getglobal(sstPy.pyOnCreate), py_r0());
+          orxPy_Call1(orxPy_GetCallback(sstPy.pyOnCreate), py_r0());
         }
         break;
       }
@@ -2188,7 +2259,7 @@ extern "C"
         {
           py_neworxobject(py_r0(), (orxOBJECT *)_pstEvent->hSender);
           // Call handler
-          orxPy_Call1(py_getglobal(sstPy.pyOnDelete), py_r0());
+          orxPy_Call1(orxPy_GetCallback(sstPy.pyOnDelete), py_r0());
         }
         break;
       }
@@ -2224,7 +2295,7 @@ extern "C"
           py_neworxvector(py_offset(pyArgv, 5), &pstPayload->vNormal);
 
           // Call handler
-          orxPy_CallN(py_getglobal(sstPy.pyOnCollide), s32Argc, pyArgv);
+          orxPy_CallN(orxPy_GetCallback(sstPy.pyOnCollide), s32Argc, pyArgv);
         }
         break;
       }
@@ -2243,7 +2314,7 @@ extern "C"
           py_neworxobject(py_offset(pyArgv, 2), (orxOBJECT *)_pstEvent->hRecipient);
           py_newstr(py_offset(pyArgv, 3), orxBody_GetPartName(pstPayload->pstRecipientPart));
           // Call handler
-          orxPy_CallN(py_getglobal(sstPy.pyOnSeparate), s32Argc, pyArgv);
+          orxPy_CallN(orxPy_GetCallback(sstPy.pyOnSeparate), s32Argc, pyArgv);
         }
         break;
       }
@@ -2274,7 +2345,7 @@ extern "C"
         py_assign(py_offset(pyArgv, 3), pstPayload->eParamType == orxSHADER_PARAM_TYPE_FLOAT ? py_tpobject(tp_float) : py_tpobject(tp_orxvector));
 
         // Call handler
-        orxSTATUS eShaderResult = orxPy_CallN(py_getglobal(sstPy.pyOnShaderParam), s32Argc, pyArgv);
+        orxSTATUS eShaderResult = orxPy_CallN(orxPy_GetCallback(sstPy.pyOnShaderParam), s32Argc, pyArgv);
         if (eShaderResult == orxSTATUS_SUCCESS && (py_isfloat(py_retval()) || py_isint(py_retval()) || py_istype(py_retval(), tp_orxvector)))
         {
           switch (pstPayload->eParamType)
@@ -2351,71 +2422,40 @@ extern "C"
     return eResult;
   }
 
+#define SET_CALLBACK(target, name)                     \
+  pyName = py_name(name);                              \
+  pyCallback = py_getdict(pyMod, pyName);              \
+  if (pyCallback != orxNULL && !py_isnone(pyCallback)) \
+  {                                                    \
+    target = pyName;                                   \
+  }                                                    \
+  else                                                 \
+  {                                                    \
+    target = 0;                                        \
+  }
+
   void orxPy_InitCallbacks()
   {
-    // Get functions by name
-    orxConfig_PushSection(orxPY_KZ_CONFIG_SECTION);
-    const orxSTRING zName = orxSTRING_EMPTY;
+    // Get orx module
+    py_GlobalRef pyMod = py_getmodule("orx");
     py_Name pyName;
+    py_ItemRef pyCallback = orxNULL;
 
-    zName = orxConfig_HasValue(orxPY_KZ_CONFIG_INIT) ? orxConfig_GetString(orxPY_KZ_CONFIG_INIT) : orxPY_KZ_DEFAULT_INIT;
-    pyName = py_name(zName);
-    if (py_getglobal(pyName))
-    {
-      sstPy.pyInit = pyName;
-    }
+    // Set module reference
+    sstPy.pyMod = pyMod;
 
-    zName = orxConfig_HasValue(orxPY_KZ_CONFIG_UPDATE) ? orxConfig_GetString(orxPY_KZ_CONFIG_UPDATE) : orxPY_KZ_DEFAULT_UPDATE;
-    pyName = py_name(zName);
-    if (py_getglobal(pyName))
-    {
-      sstPy.pyUpdate = pyName;
-    }
-
-    zName = orxConfig_HasValue(orxPY_KZ_CONFIG_EXIT) ? orxConfig_GetString(orxPY_KZ_CONFIG_EXIT) : orxPY_KZ_DEFAULT_EXIT;
-    pyName = py_name(zName);
-    if (py_getglobal(pyName))
-    {
-      sstPy.pyExit = pyName;
-    }
-
-    zName = orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER;
-    pyName = py_name(zName);
-    if (py_getglobal(pyName))
-    {
-      sstPy.pyOnCreate = pyName;
-    }
-
-    zName = orxPY_KZ_DEFAULT_OBJECT_DELETE_EVENT_HANDLER;
-    pyName = py_name(zName);
-    if (py_getglobal(pyName))
-    {
-      sstPy.pyOnDelete = pyName;
-    }
-
-    zName = orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER;
-    pyName = py_name(zName);
-    if (py_getglobal(pyName))
-    {
-      sstPy.pyOnCollide = pyName;
-    }
-
-    zName = orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER;
-    pyName = py_name(zName);
-    if (py_getglobal(pyName))
-    {
-      sstPy.pyOnSeparate = pyName;
-    }
-
-    zName = orxPY_KZ_DEFAULT_SHADER_PARAM_EVENT_HANDLER;
-    pyName = py_name(zName);
-    if (py_getglobal(pyName))
-    {
-      sstPy.pyOnShaderParam = pyName;
-    }
-
-    orxConfig_PopSection();
+    // Get function names for functions which are defined
+    SET_CALLBACK(sstPy.pyInit, orxPY_KZ_DEFAULT_INIT)
+    SET_CALLBACK(sstPy.pyUpdate, orxPY_KZ_DEFAULT_UPDATE)
+    SET_CALLBACK(sstPy.pyExit, orxPY_KZ_DEFAULT_EXIT)
+    SET_CALLBACK(sstPy.pyOnCreate, orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER)
+    SET_CALLBACK(sstPy.pyOnDelete, orxPY_KZ_DEFAULT_OBJECT_DELETE_EVENT_HANDLER)
+    SET_CALLBACK(sstPy.pyOnCollide, orxPY_KZ_DEFAULT_PHYSICS_COLLIDE_EVENT_HANDLER)
+    SET_CALLBACK(sstPy.pyOnSeparate, orxPY_KZ_DEFAULT_PHYSICS_SEPARATE_EVENT_HANDLER)
+    SET_CALLBACK(sstPy.pyOnShaderParam, orxPY_KZ_DEFAULT_SHADER_PARAM_EVENT_HANDLER)
   }
+
+#undef SET_CALLBACK
 
   void orxPy_Init()
   {
@@ -2424,6 +2464,7 @@ extern "C"
     {
       // Init variables
       orxMemory_Zero(&(sstPy), sizeof(orxPY));
+      sstPy.pyMod = orxNULL;
       sstPy.pyInit = 0;
       sstPy.pyUpdate = 0;
       sstPy.pyExit = 0;
@@ -2470,7 +2511,7 @@ extern "C"
         }
 
         // Call Python init function
-        orxPy_Call(py_getglobal(sstPy.pyInit));
+        orxPy_Call(orxPy_GetCallback(sstPy.pyInit));
 
         // Update status
         sstPy.bInitialized = orxTRUE;
@@ -2490,12 +2531,13 @@ extern "C"
     if (sstPy.bInitialized == orxTRUE)
     {
       // Call Python exit function if it's registered
-      orxPy_Call(py_getglobal(sstPy.pyExit));
+      orxPy_Call(orxPy_GetCallback(sstPy.pyExit));
 
       // Free Python VM memory
       py_finalize();
 
       // Reset callback references
+      sstPy.pyMod = orxNULL;
       sstPy.pyInit = 0;
       sstPy.pyUpdate = 0;
       sstPy.pyExit = 0;
