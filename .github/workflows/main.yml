@@ -1,7 +1,7 @@
-name: BuildAll
+name: Build All
 on: push
 jobs:
-  
+
   # Visual Studio
   build-vs:
     name: Visual Studio
