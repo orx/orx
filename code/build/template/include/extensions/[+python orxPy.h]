@@ -10,15 +10,7 @@ extern "C"
 
 #include "orx.h"
 
-#define PK_MALLOC(size) orxMemory_Allocate((orxU32)(size), orxMEMORY_TYPE_MAIN)
-#define PK_REALLOC(ptr, size) orxMemory_Reallocate((ptr), (orxU32)(size), orxMEMORY_TYPE_MAIN)
-#define PK_FREE(ptr) orxMemory_Free((ptr))
-
 #include "pocketpy.h"
-
-#undef PK_MALLOC
-#undef PK_REALLOC
-#undef PK_FREE
 
   //! Defines
 
@@ -47,6 +39,20 @@ extern "C"
 
 #ifdef orxPY_IMPL
 
+#undef PK_MALLOC
+#undef PK_REALLOC
+#undef PK_FREE
+
+#define PK_MALLOC(size) orxMemory_Allocate((orxU32)(size), orxMEMORY_TYPE_MAIN)
+#define PK_REALLOC(ptr, size) orxMemory_Reallocate((ptr), (orxU32)(size), orxMEMORY_TYPE_MAIN)
+#define PK_FREE(ptr) orxMemory_Free((ptr))
+
+#include "pocketpy.c"
+
+#undef PK_MALLOC
+#undef PK_REALLOC
+#undef PK_FREE
+
   //! Variables / Structures
 
   typedef struct __orxPY_t
@@ -71,6 +77,18 @@ extern "C"
 
 #define orxPY_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_YELLOW "[PYTHON] " orxANSI_KZ_COLOR_RESET
 
+  void orxPy_Print(const orxSTRING zData)
+  {
+    orxLOG("%s", zData);
+  }
+
+  void orxPy_LogException()
+  {
+    orxSTRING zMessage = py_formatexc();
+    orxLOG("%s", zMessage);
+    orxMemory_Free(zMessage);
+  }
+
   orxCHAR *orxPy_ReadSource(const orxSTRING zPath)
   {
     orxCHAR *pBuffer = orxNULL;
@@ -84,7 +102,7 @@ extern "C"
       orxASSERT(hResource != orxHANDLE_UNDEFINED);
 
       orxS64 s64Size = orxResource_GetSize(hResource) + 1;
-      pBuffer = (orxCHAR *)malloc(s64Size);
+      pBuffer = (orxCHAR *)orxMemory_Allocate(s64Size, orxMEMORY_TYPE_MAIN);
       orxASSERT(pBuffer != orxNULL);
 
       orxS64 s64Read = orxResource_Read(hResource, s64Size, pBuffer, orxNULL, orxNULL);
@@ -108,7 +126,7 @@ extern "C"
       }
       else
       {
-        py_printexc();
+        orxPy_LogException();
       }
     }
 
@@ -130,7 +148,7 @@ extern "C"
       }
       else
       {
-        py_printexc();
+        orxPy_LogException();
       }
     }
 
@@ -149,7 +167,7 @@ extern "C"
       }
       else
       {
-        py_printexc();
+        orxPy_LogException();
       }
     }
 
@@ -158,12 +176,18 @@ extern "C"
 
   void orxPy_CommandPyExec(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
   {
-    /* Execute source */
-    bool bResult = py_exec(_astArgList[0].zValue, "<command>", EXEC_MODE, orxNULL);
+    py_StackRef pyStackPos = py_peek(0);
 
-    if (!bResult && _u32ArgNumber > 1 && _astArgList[1].bValue == orxFALSE)
+    /* Execute source */
+    bool bResult = py_exec(_astArgList[0].zValue, "<command>", SINGLE_MODE, orxNULL);
+
+    if (!bResult)
     {
-      py_printexc();
+      if (_u32ArgNumber == 1 || _u32ArgNumber > 1 && _astArgList[1].bValue == orxTRUE)
+      {
+        orxPy_LogException();
+      }
+      py_clearexc(pyStackPos);
     }
 
     /* Set result */
@@ -176,9 +200,12 @@ extern "C"
   void orxPy_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
   {
     orxPROFILER_PUSH_MARKER(__FUNCTION__);
-    py_Ref pyArg = py_r0();
-    py_newfloat(pyArg, _pstClockInfo->fDT);
-    orxPy_Call1(orxPy_GetCallback(sstPy.pyUpdate), pyArg);
+    if (sstPy.pyUpdate != 0)
+    {
+      py_Ref pyArg = py_r0();
+      py_newfloat(pyArg, _pstClockInfo->fDT);
+      orxPy_Call1(orxPy_GetCallback(sstPy.pyUpdate), pyArg);
+    }
     orxPROFILER_POP_MARKER();
   }
 
@@ -2077,6 +2104,13 @@ extern "C"
     RETURN_NONE;
   }
 
+  BIND(Orx, close)
+  {
+    PY_CHECK_ARGC(0);
+    orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+    RETURN_NONE;
+  }
+
 #undef BIND
 #undef ARG
 #undef ARG_OR_NONE
@@ -2104,17 +2138,19 @@ extern "C"
 
     if (pBuffer != orxNULL)
     {
+      py_StackRef pyStackPos = py_peek(0);
+
       if (py_exec(pBuffer, zPath, EXEC_MODE, orxNULL))
       {
         eResult = orxSTATUS_SUCCESS;
       }
+      else
+      {
+        orxPy_LogException();
+        py_clearexc(pyStackPos);
+      }
 
-      free(pBuffer);
-    }
-
-    if (eResult != orxSTATUS_SUCCESS)
-    {
-      py_printexc();
+      orxMemory_Free((void *)pBuffer);
     }
 
     return eResult;
@@ -2125,6 +2161,7 @@ extern "C"
     py_Ref pyMod = py_newmodule("orx");
 
     py_bind(pyMod, "log(message: str) -> None", BINDING_NAME(Orx, log));
+    py_bind(pyMod, "close() -> None", BINDING_NAME(Orx, close));
   }
 
   void orxPy_AddModuleConfig()
@@ -2404,6 +2441,7 @@ extern "C"
     // Setup hooks for imports
     py_Callbacks *pstCallbacks = py_callbacks();
     pstCallbacks->importfile = orxPy_ReadSource;
+    pstCallbacks->print = orxPy_Print;
 
     // Add core orx modules to the VM
     orxPy_AddModules();
@@ -2483,7 +2521,7 @@ extern "C"
         orxPy_InitCallbacks();
 
         // Register commands
-        orxCOMMAND_REGISTER(orxPY_KZ_COMMAND_EXEC, orxPy_CommandPyExec, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Source", orxCOMMAND_VAR_TYPE_STRING}, {"HideException? = true", orxCOMMAND_VAR_TYPE_BOOL});
+        orxCOMMAND_REGISTER(orxPY_KZ_COMMAND_EXEC, orxPy_CommandPyExec, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 1, {"Source", orxCOMMAND_VAR_TYPE_STRING}, {"HideException? = false", orxCOMMAND_VAR_TYPE_BOOL});
 
         // Register event handler for events with handlers
         orxU32 u32ObjectAddFlags = orxEVENT_KU32_FLAG_ID_NONE;
@@ -2510,8 +2548,11 @@ extern "C"
           orxEvent_SetHandlerIDFlags(orxPy_EventHandler, orxEVENT_TYPE_SHADER, orxNULL, u32ShaderAddFlags, orxEVENT_KU32_MASK_ID_ALL);
         }
 
-        // Call Python init function
-        orxPy_Call(orxPy_GetCallback(sstPy.pyInit));
+        if (sstPy.pyInit != 0)
+        {
+          // Call Python init function
+          orxPy_Call(orxPy_GetCallback(sstPy.pyInit));
+        }
 
         // Update status
         sstPy.bInitialized = orxTRUE;
@@ -2530,8 +2571,11 @@ extern "C"
   {
     if (sstPy.bInitialized == orxTRUE)
     {
-      // Call Python exit function if it's registered
-      orxPy_Call(orxPy_GetCallback(sstPy.pyExit));
+      if (sstPy.pyExit != 0)
+      {
+        // Call Python exit function if it's registered
+        orxPy_Call(orxPy_GetCallback(sstPy.pyExit));
+      }
 
       // Free Python VM memory
       py_finalize();

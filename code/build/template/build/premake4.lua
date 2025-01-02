@@ -105,6 +105,12 @@ solution "[name]"
         "Symbols",
         "StaticRuntime"
     }
+[+python
+
+    defines
+    {
+        "PK_ENABLE_OS=0"
+    }]
 
     configuration {"not xcode*"}
         includedirs {"$(ORX)/include"}
@@ -127,7 +133,7 @@ solution "[name]"
 
     configuration {"*Profile*"}
         targetsuffix ("p")
-        defines {"__orxPROFILER__"}
+        defines {"__orxPROFILER__"[+python  ,"NDEBUG"]}
         flags {"Optimize", "NoRTTI"}
         links {"orxp"}
 
