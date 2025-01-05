@@ -524,7 +524,6 @@ orxU32 orxFASTCALL orxGraphic_GetAlignFlags(const orxSTRING _zAlign)
   orxU32  u32Result = orxGRAPHIC_KU32_FLAG_ALIGN_CENTER;
 
   /* Checks */
-  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
   orxASSERT(_zAlign != orxNULL);
 
   /* Gets lower case value */
@@ -581,6 +580,10 @@ orxU32 orxFASTCALL orxGraphic_GetAlignFlags(const orxSTRING _zAlign)
 orxVECTOR *orxFASTCALL orxGraphic_AlignVector(orxU32 _u32AlignFlags, const orxAABOX *_pstBox, orxVECTOR *_pvValue)
 {
   orxVECTOR *pvResult = _pvValue;
+
+  /* Checks */
+  orxASSERT(_pstBox != orxNULL);
+  orxASSERT(_pvValue != orxNULL);
 
   /* Align left? */
   if(orxFLAG_TEST(_u32AlignFlags, orxGRAPHIC_KU32_FLAG_ALIGN_LEFT))
