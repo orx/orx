@@ -1968,6 +1968,7 @@ extern "C"
     py_bindmagic(pyType, __new__, BINDING_NAME(Object, __new__));
     py_bindmagic(pyType, __eq__, BINDING_NAME(Object, __eq__));
     py_bindmagic(pyType, __hash__, BINDING_NAME(Object, __hash__));
+    py_bindmagic(pyType, __str__, BINDING_NAME(Object, __str__));
 
 #define BIND_METHOD(sig, name) py_bind(py_tpobject(pyType), sig, BINDING_NAME(Object, name))
 
