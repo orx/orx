@@ -70,11 +70,6 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [+scroll orxSTATUS [!name]::Init()]
 [-scroll orxSTATUS orxFASTCALL Init()]
 {
-  // Display a small hint in console
-  orxLOG("\n* This template project creates a simple scene"
-  "\n* You can play with the config parameters in ../data/config/[name].ini"
-  "\n* After changing them, relaunch the executable to see the changes.");
-
   // Init extensions
   InitExtensions();
 
@@ -89,8 +84,15 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Create the [-movie scene][+movie splash screen]
   orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");
 ]
-  // Create the viewport
-  orxViewport_CreateFromConfig("MainViewport");
+
+  // Push [Main] as the default section
+  orxConfig_PushSection("Main");
+
+  // Create the viewports
+  for(orxS32 i = 0, iCount = orxConfig_GetListCount("ViewportList"); i < iCount; i++)
+  {
+    orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
+  }
 
   // Done!
   return orxSTATUS_SUCCESS;
