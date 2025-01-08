@@ -86,7 +86,7 @@
 /** Includes all plugins to embed
  */
 
-/* GLFW, Box2D, MiniAudio, stb_image, libsndfile & stb_vorbis */
+/* GLFW, LiquidFun & MiniAudio */
 #include "../plugins/Display/GLFW/orxDisplay.c"
 #include "../plugins/Joystick/GLFW/orxJoystick.c"
 #include "../plugins/Keyboard/GLFW/orxKeyboard.c"
