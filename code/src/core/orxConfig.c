@@ -1797,10 +1797,10 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
           {
             /* Inits value */
             eResult = orxConfig_InitValue(&(pstEntry->stValue), _zValue, _eSetMode);
-
-            /* Stores origin */
-            pstEntry->stOriginID = sstConfig.stLoadFileID;
           }
+
+          /* Stores origin */
+          pstEntry->stOriginID = sstConfig.stLoadFileID;
         }
       }
       else
@@ -3990,6 +3990,17 @@ void orxFASTCALL orxConfig_CommandGetOrigin(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
+/** Command: SetOrigin
+ */
+void orxFASTCALL orxConfig_CommandSetOrigin(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = (orxConfig_SetOrigin(_astArgList[0].zValue, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL) != orxSTATUS_FAILURE) ? _astArgList[0].zValue : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
 /** Command: GetParent
  */
 void orxFASTCALL orxConfig_CommandGetParent(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -4501,6 +4512,8 @@ static orxINLINE void orxConfig_RegisterCommands()
 
   /* Command: GetOrigin */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetOrigin, "Origin", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: SetOrigin */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetOrigin, "Section", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Origin = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetParent */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetParent, "Parent", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: SetParent */
@@ -4599,6 +4612,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
 
   /* Command: GetOrigin */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetOrigin);
+  /* Command: SetOrigin */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, SetOrigin);
   /* Command: GetParent */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetParent);
   /* Command: SetParent */
@@ -6474,6 +6489,41 @@ orxSTRINGID orxFASTCALL orxConfig_GetOriginID(const orxSTRING _zSectionName)
 
   /* Done! */
   return stResult;
+}
+
+/** Sets (overrides) section origin
+ * @param[in] _zSectionName     Concerned section name
+ * @param[in] _zOrigin          Origin name to set, orxNULL for none
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxConfig_SetOrigin(const orxSTRING _zSectionName, const orxSTRING _zOrigin)
+{
+  orxCONFIG_SECTION  *pstSection;
+  orxSTRINGID         stID;
+  orxSTATUS           eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
+  orxASSERT(_zSectionName != orxNULL);
+
+  /* Gets section name ID */
+  stID = orxString_Hash(_zSectionName);
+
+  /* Gets it from table */
+  pstSection = (orxCONFIG_SECTION *)orxHashTable_Get(sstConfig.pstSectionTable, stID);
+
+  /* Valid? */
+  if(pstSection != orxNULL)
+  {
+    /* Updates its origin */
+    pstSection->stOriginID = (_zOrigin != orxNULL) ? orxString_GetID(_zOrigin) : orxSTRINGID_UNDEFINED;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
 }
 
 /** Gets section count
