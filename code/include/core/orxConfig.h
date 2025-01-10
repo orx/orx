@@ -204,6 +204,13 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxConfig_GetOrigin(const orxSTRIN
  */
 extern orxDLLAPI orxSTRINGID orxFASTCALL      orxConfig_GetOriginID(const orxSTRING _zSectionName);
 
+/** Sets (overrides) section origin
+ * @param[in] _zSectionName     Concerned section name
+ * @param[in] _zOrigin          Origin name to set, orxNULL for none
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxConfig_SetOrigin(const orxSTRING _zSectionName, const orxSTRING _zOrigin);
+
 /** Sets a section's parent
  * @param[in] _zSectionName     Concerned section, if the section doesn't exist, it will be created
  * @param[in] _zParentName      Parent section's name, if the section doesn't exist, it will be created, if orxNULL is provided, the former parent will be erased, if orxSTRING_EMPTY is provided, "no default parent" will be enforced
