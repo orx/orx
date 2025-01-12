@@ -1,0 +1,32 @@
+# Enable GZIP compression for static files
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/wasm
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+</IfModule>
+
+# Set MIME type for WebAssembly files
+<IfModule mod_mime.c>
+    AddType application/wasm .wasm
+    AddType application/javascript .js
+</IfModule>
+
+# Enable caching for static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType application/wasm "access plus 1 year"
+    ExpiresByType application/json "access plus 1 year"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType text/html "access plus 1 hour"
+</IfModule>
+
+# Set CORS headers for cross-origin access
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|js|wasm|data|json|txt)$">
+        Header always set Cross-Origin-Opener-Policy "same-origin"
+        Header always set Cross-Origin-Embedder-Policy "require-corp"
+    </FilesMatch>
+</IfModule>

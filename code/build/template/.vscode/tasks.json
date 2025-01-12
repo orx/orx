@@ -116,6 +116,15 @@
       }
     },
     {
+      "label": "Build [name] (web)",
+      "dependsOn": [
+        "Build [name] (release)"
+      ],
+      "group": "build",
+      "type": "shell",
+      "command": "emmake make -j config=releaseweb",
+    },
+    {
       "label": "Run [name] (debug)",
       "dependsOn": [
         "Build [name] (debug)"
@@ -128,6 +137,24 @@
       "command": "[name]d",
       "windows": {
         "command": "[name]d.exe"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/bin/"
+      }
+    },
+    {
+      "label": "Run [name] (profile)",
+      "dependsOn": [
+        "Build [name] (profile)"
+      ],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "type": "process",
+      "command": "[name]p",
+      "windows": {
+        "command": "[name]p.exe"
       },
       "options": {
         "cwd": "${workspaceFolder}/bin/"
@@ -152,21 +179,18 @@
       }
     },
     {
-      "label": "Run [name] (profile)",
+      "label": "Run [name] (web)",
       "dependsOn": [
-        "Build [name] (profile)"
+        "Build [name] (web)"
       ],
       "group": {
         "kind": "test",
         "isDefault": false
       },
-      "type": "process",
-      "command": "[name]p",
-      "windows": {
-        "command": "[name]p.exe"
-      },
+      "type": "shell",
+      "command": "emrun [name].html",
       "options": {
-        "cwd": "${workspaceFolder}/bin/"
+        "cwd": "${workspaceFolder}/bin/web/"
       }
     }
   ]

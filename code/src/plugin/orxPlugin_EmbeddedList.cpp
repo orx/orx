@@ -69,13 +69,24 @@
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
 
+/* Web? */
+#elif defined (__orxWEB__)
+
+#include "../plugins/Display/GLFW/orxDisplay.c"
+#include "../plugins/Joystick/GLFW/orxJoystick.c"
+#include "../plugins/Keyboard/GLFW/orxKeyboard.c"
+#include "../plugins/Mouse/GLFW/orxMouse.c"
+#include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
+#include "../plugins/Render/Home/orxRender.c"
+#include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
+
 /* Others */
 #else /* __orxANDROID__ */
 
 /** Includes all plugins to embed
  */
 
-/* GLFW, Box2D, MiniAudio, stb_image, libsndfile & stb_vorbis */
+/* GLFW, LiquidFun & MiniAudio */
 #include "../plugins/Display/GLFW/orxDisplay.c"
 #include "../plugins/Joystick/GLFW/orxJoystick.c"
 #include "../plugins/Keyboard/GLFW/orxKeyboard.c"

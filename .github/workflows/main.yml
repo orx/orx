@@ -1,12 +1,15 @@
 name: Build All
 on: push
+env:
+  ORX: ${{github.workspace}}/code
 jobs:
-
   # Visual Studio
   build-vs:
     name: Visual Studio
     strategy:
       matrix:
+        os:
+          - windows
         version:
           # - 2017 # Not supported by GitHub hosted runners
           - 2019
@@ -18,18 +21,21 @@ jobs:
         platform:
           # - x86 # Not supported by GitHub hosted runners
           - x64
-    runs-on:
-      - windows-${{matrix.version}}
+        include:
+          - os: windows
+            runner: windows-latest
+            setup: setup.bat
+    runs-on: ${{matrix.runner}}
     steps:
       - uses: actions/checkout@v4
       - uses: microsoft/setup-msbuild@v2
         with:
           msbuild-architecture: ${{matrix.platform}}
-      - name: Set ORX environment variable
-        run: echo ORX=%CD%\code>> %GITHUB_ENV%
-        shell: cmd
       - name: Setup
-        run: ./setup.bat
+        uses: ./.github/workflows/setup
+        with:
+          os: ${{matrix.os}}
+          setup: ${{matrix.setup}}
       - name: Build engine
         run: msbuild code\build\windows\vs${{matrix.version}}\orx.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
       - name: Build tutorials
@@ -82,28 +88,14 @@ jobs:
             platform: 32 # Not supported by GitHub hosted runners
           - os: mac
             platform: 32 # Not supported by GitHub hosted runners
-    runs-on:
-      - ${{matrix.runner}}
+    runs-on: ${{matrix.runner}}
     steps:
       - uses: actions/checkout@v4
-      - name: Add 32bit architecture
-        run: sudo dpkg --add-architecture i386
-        if: matrix.os == 'linux'
-      - name: Update OS (apt)
-        run: sudo apt-get -qq update
-        if: matrix.os == 'linux'
-      - name: Install OS deps
-        run: sudo apt-get -y install gcc-multilib g++-multilib freeglut3-dev freeglut3-dev:i386 libxrandr-dev libxrandr-dev:i386
-        if: matrix.os == 'linux'
-      - name: Set ORX environment variable
-        run: echo ORX=%CD%\code>> %GITHUB_ENV%
-        shell: cmd
-        if: matrix.os == 'windows'
-      - name: Set ORX environment variable
-        run: echo ORX=$PWD/code>> $GITHUB_ENV
-        if: matrix.os != 'windows'
       - name: Setup
-        run: ./${{matrix.setup}}
+        uses: ./.github/workflows/setup
+        with:
+          os: ${{matrix.os}}
+          setup: ${{matrix.setup}}
       - name: Build engine
         working-directory: code/build/${{matrix.os}}/gmake
         run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
@@ -132,6 +124,8 @@ jobs:
     name: iOS
     strategy:
       matrix:
+        os:
+          - mac
         config:
           - Debug
           - Profile
@@ -140,13 +134,19 @@ jobs:
           - os
           - simulator
         include:
+          - os: mac
+            runner: macos-latest
+            setup: setup.sh
           - platform: simulator
             extra: -destination 'platform=iOS Simulator,name=iPhone 15'
-    runs-on: macos-latest
+    runs-on: ${{matrix.runner}}
     steps:
       - uses: actions/checkout@v4
       - name: Setup
-        run: ./setup.sh
+        uses: ./.github/workflows/setup
+        with:
+          os: ${{matrix.os}}
+          setup: ${{matrix.setup}}
       - name: Build engine
         working-directory: code/build/ios/xcode/orx-ios.xcodeproj
         run: xcodebuild -workspace project.xcworkspace -scheme orxLIB -configuration=${{matrix.config}} -sdk iphone${{matrix.platform}} ${{matrix.extra}}
@@ -154,7 +154,15 @@ jobs:
   # Android
   build-android:
     name: Android
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+          - linux
+        include:
+          - os: linux
+            runner: ubuntu-latest
+            setup: setup.sh
+    runs-on: ${{matrix.runner}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
@@ -164,13 +172,75 @@ jobs:
           distribution: 'temurin'
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-      - name: Set ORX environment variable
-        run: echo ORX=$PWD/code>> $GITHUB_ENV
       - name: Setup
-        run: ./setup.sh
+        uses: ./.github/workflows/setup
+        with:
+          os: ${{matrix.os}}
+          setup: ${{matrix.setup}}
       - name: Build engine
         working-directory: code/build/android
         run: ./gradlew clean assemble publishAllPublicationsToOrxRepository
       - name: Build demo
         working-directory: code/demo/android
         run: ./gradlew clean assemble
+
+  # Web
+  build-web:
+    name: Web (HTML5)
+    strategy:
+      matrix:
+        os:
+          - windows
+          - linux
+          - mac
+        config:
+          - debug
+          - profile
+          - release
+        include:
+          - os: windows
+            runner: windows-latest
+            setup: setup.bat
+            init: init.bat
+            make: mingw32-make
+            emsdk_env: emsdk/emsdk_env.ps1
+          - os: linux
+            runner: ubuntu-latest
+            setup: setup.sh
+            init: init.sh
+            make: make
+            emsdk_env: emsdk/emsdk_env.sh
+          - os: mac
+            runner: macos-latest
+            setup: setup.sh
+            init: init.sh
+            make: make
+            emsdk_env: emsdk/emsdk_env.sh
+    runs-on: ${{matrix.runner}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Emscripten
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          ./emsdk install latest
+          ./emsdk activate latest
+      - name: Setup
+        uses: ./.github/workflows/setup
+        with:
+          os: ${{matrix.os}}
+          setup: ${{matrix.setup}}
+      - name: Build engine
+        working-directory: code/build/${{matrix.os}}/gmake
+        run: |
+          . ../../../../${{matrix.emsdk_env}}
+          ${{matrix.make}} config=release64 CFLAGS=-D__orxHEADLESS__
+          emmake make config=${{matrix.config}}web
+      - name: Create project
+        run: ./${{matrix.init}} test
+      - name: Build project
+        working-directory: test/build/${{matrix.os}}/gmake
+        run: |
+          . ../../../../${{matrix.emsdk_env}}
+          ${{matrix.make}} config=release64
+          emmake make config=${{matrix.config}}web

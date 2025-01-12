@@ -63,7 +63,11 @@
 
     #include "main/android/orxAndroid.h"
 
-  #endif /* __orxANDROID__ */
+  #elif defined(__orxWEB__)
+
+    #include <emscripten.h>
+
+  #endif
 
   #include <dirent.h>
   #include <fnmatch.h>
@@ -96,6 +100,10 @@
 #elif defined(__orxIOS__)
 
 extern const orxSTRING orxiOS_GetDocumentsPath();
+
+#elif defined(__orxWEB__)
+
+#define orxFILE_KZ_APPLICATION_FOLDER           "/save"
 
 #endif
 
@@ -244,12 +252,28 @@ orxSTATUS orxFASTCALL orxFile_Init()
     /* Cleans static controller */
     orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
 
-#ifdef __orxWINDOWS__
+#if defined(__orxWINDOWS__)
 
     /* Increases C runtime stdio limit */
     _setmaxstdio(2048);
 
-#endif /* __orxWINDOWS__ */
+#elif defined(__orxWEB__)
+
+  EM_ASM({
+    /* Mounts application save directory with IDBFS */
+    FS.mkdir('/save');
+    FS.mount(IDBFS, {autoPersist: true}, '/save');
+    FS.syncfs(true, function(error) {
+      if (error)
+      {
+        console.error("Error loading application save directory from IndexedDB:", error);
+      } else {
+        console.log("Application save directory loaded from IndexedDB.");
+      }
+    });
+  });
+
+#endif
 
     /* Updates status */
     sstFile.u32Flags |= orxFILE_KU32_STATIC_FLAG_READY;
@@ -454,6 +478,11 @@ const orxSTRING orxFASTCALL orxFile_GetApplicationSaveDirectory(const orxSTRING 
 
   /* Prints internal storage directory */
   s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory), "%s", orxAndroid_GetInternalStoragePath());
+
+#elif defined(__orxWEB__)
+
+  /* Prints internal storage directory */
+  s32Index = orxString_NPrint(sstFile.acWorkDirectory, sizeof(sstFile.acWorkDirectory), "%s", orxFILE_KZ_APPLICATION_FOLDER);
 
 #endif
 

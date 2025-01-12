@@ -193,6 +193,10 @@
 
   #define orxCONFIG_KZ_PLATFORM                   "android"
 
+#elif defined(__orxWEB__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "web"
+
 #endif
 
 #if defined(__orxARM__) || defined(__orxARM64__)

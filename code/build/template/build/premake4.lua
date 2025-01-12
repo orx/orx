@@ -23,20 +23,23 @@ function initplatforms ()
             return
             {
                 "x64",
-                "x32"
+                "x32",
+                "web"
             }
         else
             return
             {
                 "x32",
-                "x64"
+                "x64",
+                "web"
             }
         end
     elseif os.is ("macosx") then
         return
         {
             "universal64",
-            "x64"
+            "x64",
+            "web"
         }
     end
 end
@@ -102,15 +105,17 @@ solution "[name]"
         "NoIncrementalLink",
         "NoEditAndContinue",
         "NoMinimalRebuild",
-        "Symbols",
-        "StaticRuntime"
+        "Symbols"
     }
 
-    configuration {"not xcode*"}
+    configuration {"not web"}
+        flags {"StaticRuntime"}
+
+    configuration {"not xcode*", "not web"}
         includedirs {"$(ORX)/include"}
         libdirs {"$(ORX)/lib/dynamic"}
 
-    configuration {"xcode*"}
+    configuration {"xcode*", "not web"}
         includedirs {"[code-path]/include"}
         libdirs {"[code-path]/lib/dynamic"}
 
@@ -140,13 +145,71 @@ solution "[name]"
         flags {"Optimize", "NoRTTI"}
         links {"orx"}]
 
-    configuration {"windows", "*Release*"}
+    configuration {"windows", "*Release*", "not web"}
         kind ("WindowedApp")
+
+    configuration {"web"}
+        targetextension ".html"
+        targetsuffix ""
+        targetdir "../bin/web"
+        buildoptions
+        {
+            "-DorxWEB_EXECUTABLE_NAME='\"[name].wasm\"'",
+            "-pthread"
+        }
+        linkoptions
+        {
+            "--preload-file " .. copybase .. "/build/[name].obr@/",
+            "-sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency",
+            "-sAUDIO_WORKLET=1",
+            "-sWASM_WORKERS=1",
+            "-sASYNCIFY",
+            "-sALLOW_MEMORY_GROWTH",
+            "-sFULL_ES3=1",
+            "-pthread",
+            "-lidbfs.js",
+            "$(ORX)/../extern/emscripten-glfw/lib/libglfw3.a",
+            "--js-library $(ORX)/../extern/emscripten-glfw/lib/lib_emscripten_glfw3.js"
+        }
+        links
+        {
+            "basisu",
+            "webpdecoder",
+            "liquidfun"
+        }
+        includedirs {"$(ORX)/include"}
+        libdirs {
+            "$(ORX)/lib/static/web",
+            "$(ORX)/../extern/emscripten-glfw/lib",
+            "$(ORX)/../extern/basisu/lib/web",
+            "$(ORX)/../extern/libwebp/lib/web",
+            "$(ORX)/../extern/LiquidFun-1.1.0/lib/web"
+        }
+
+    configuration {"web", "*Release*"}
+        links {"orx"}
+        linkoptions {"-O2"}
+
+    configuration {"web", "*Profile*"}
+        links {"orxp"}
+        linkoptions {"-O2"}
+
+    configuration {"web", "*Debug*"}
+        links {"orxd"}
+        linkoptions {"-gsource-map"}
+
+    configuration {"web", "Windows"}
+        prelinkcommands {"cd " .. copybase .. "/bin && [name] -b ../build/[name].obr"}
+        postbuildcommands {"del " .. path.translate(copybase, "\\") .. "\\build\\[name].obr"}
+
+    configuration {"web", "not Windows"}
+        prelinkcommands {"cd " .. copybase .. "/bin && ./[name] -b ../build/[name].obr"}
+        postbuildcommands {"rm " .. copybase .. "/build/[name].obr"}
 
 
 -- Linux
 
-    configuration {"linux"}
+    configuration {"linux", "not web"}
         buildoptions
         {
 [+imgui +sndh
@@ -165,13 +228,13 @@ solution "[name]"
         }
 
     -- This prevents an optimization bug from happening with some versions of gcc on linux
-    configuration {"linux", "not *Debug*"}
+    configuration {"linux", "not *Debug*", "not web"}
         buildoptions {"-fschedule-insns"}
 
 
 -- Mac OS X
 
-    configuration {"macosx"}
+    configuration {"macosx", "not web"}
         buildoptions
         {
             "-stdlib=libc++",
@@ -189,21 +252,21 @@ solution "[name]"
             "-dead_strip"
         }
 
-    configuration {"macosx", "not codelite", "not codeblocks"}
+    configuration {"macosx", "not codelite", "not codeblocks", "not web"}
         links
         {
             "Foundation.framework",
             "AppKit.framework"
         }
 
-    configuration {"macosx", "codelite or codeblocks"}
+    configuration {"macosx", "codelite or codeblocks", "not web"}
         linkoptions
         {
             "-framework Foundation",
             "-framework AppKit"
         }
 
-    configuration {"macosx", "x32"}
+    configuration {"macosx", "x32", "not web"}
         buildoptions
         {
             "-mfix-and-continue"
@@ -213,13 +276,13 @@ solution "[name]"
 -- Windows
 
 [+remote
-    configuration {"windows"}
+    configuration {"windows", "not web"}
         links
         {
             "ws2_32"
         }
 ]
-    configuration {"windows", "vs*"}
+    configuration {"windows", "vs*", "not web"}
         buildoptions
         {
             "/MP",
@@ -295,26 +358,26 @@ project "[name]"
     }
 [+bundle
 
-    configuration {"*Bundle*"}
+    configuration {"*Bundle*", "not web"}
         debugargs {"-b", "[name].obr"}]
 
 
 -- Linux
 
-    configuration {"linux"}
+    configuration {"linux", "not web"}
         postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
 
 
 -- Mac OS X
 
-    configuration {"macosx", "xcode*"}
+    configuration {"macosx", "xcode*", "not web"}
         postbuildcommands {"cp -f [code-path]/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
 
-    configuration {"macosx", "not xcode*"}
+    configuration {"macosx", "not xcode*", "not web"}
         postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
 
 
 -- Windows
 
-    configuration {"windows"}
+    configuration {"windows", "not web"}
         postbuildcommands {"cmd /c copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}

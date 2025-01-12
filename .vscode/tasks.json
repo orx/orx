@@ -71,12 +71,13 @@
       }
     },
     {
-      "label": "Build orx (debug, profile, release)",
+      "label": "Build orx (debug, profile, release, web)",
       "dependsOrder": "sequence",
       "dependsOn": [
         "Build orx (debug)",
         "Build orx (profile)",
-        "Build orx (release)"
+        "Build orx (release)",
+        "Build orx (web)"
       ],
       "problemMatcher": "$gcc"
     },
@@ -123,6 +124,15 @@
       "windows": {
         "command": "mingw32-make.exe -j config=release64"
       }
+    },
+    {
+      "label": "Build orx (web)",
+      "dependsOn": [
+        "Build orx (release)"
+      ],
+      "group": "build",
+      "type": "shell",
+      "command": "emmake make -j config=releaseweb"
     },
     {
       "label": "Run bounce demo (debug)",

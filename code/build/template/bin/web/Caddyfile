@@ -1,0 +1,9 @@
+localhost:80 {
+    file_server browse
+
+    # Set COOP and COEP headers
+    header {
+        Cross-Origin-Opener-Policy same-origin
+        Cross-Origin-Embedder-Policy require-corp
+    }
+}
