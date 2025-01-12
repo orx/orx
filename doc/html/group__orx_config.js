@@ -81,6 +81,7 @@ var group__orx_config =
     [ "orxConfig_SetEncryptionKey", "group__orx_config.html#ga2e4004560e7f01598757abd390b89220", null ],
     [ "orxConfig_SetFloat", "group__orx_config.html#gae177467bb1383c1f442f77107a6858d6", null ],
     [ "orxConfig_SetListString", "group__orx_config.html#gade383ea5e495c3bd8743972904f6c779", null ],
+    [ "orxConfig_SetOrigin", "group__orx_config.html#ga37bc4a7f35c3cd437705893dadc7dbfc", null ],
     [ "orxConfig_SetParent", "group__orx_config.html#ga896fbb4078e19b04136589050f27488d", null ],
     [ "orxConfig_SetS32", "group__orx_config.html#ga63e87a86f8f9228bfd43f549fe8d0fcc", null ],
     [ "orxConfig_SetS64", "group__orx_config.html#ga4364104aa37903ccb207a76622e2644d", null ],

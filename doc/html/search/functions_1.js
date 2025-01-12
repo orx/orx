@@ -324,6 +324,7 @@ var searchData=
   ['orxconfig_5fsetencryptionkey',['orxConfig_SetEncryptionKey',['../group__orx_config.html#ga2e4004560e7f01598757abd390b89220',1,'orxConfig.h']]],
   ['orxconfig_5fsetfloat',['orxConfig_SetFloat',['../group__orx_config.html#gae177467bb1383c1f442f77107a6858d6',1,'orxConfig.h']]],
   ['orxconfig_5fsetliststring',['orxConfig_SetListString',['../group__orx_config.html#gade383ea5e495c3bd8743972904f6c779',1,'orxConfig.h']]],
+  ['orxconfig_5fsetorigin',['orxConfig_SetOrigin',['../group__orx_config.html#ga37bc4a7f35c3cd437705893dadc7dbfc',1,'orxConfig.h']]],
   ['orxconfig_5fsetparent',['orxConfig_SetParent',['../group__orx_config.html#ga896fbb4078e19b04136589050f27488d',1,'orxConfig.h']]],
   ['orxconfig_5fsets32',['orxConfig_SetS32',['../group__orx_config.html#ga63e87a86f8f9228bfd43f549fe8d0fcc',1,'orxConfig.h']]],
   ['orxconfig_5fsets64',['orxConfig_SetS64',['../group__orx_config.html#ga4364104aa37903ccb207a76622e2644d',1,'orxConfig.h']]],
