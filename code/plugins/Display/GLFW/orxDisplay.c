@@ -41,12 +41,12 @@
 /* No OpenGL/ES defines? */
 #if !defined(__orxDISPLAY_OPENGL__) && !defined(__orxDISPLAY_OPENGL_ES__)
   /* Linux ARM/ARM64 platforms default to OpenGL ES */
-  #if defined(__orxLINUX__) && (defined(__orxARM__) || defined(__orxARM64__))
+  #if (defined(__orxLINUX__) && (defined(__orxARM__) || defined(__orxARM64__))) || defined(__orxWEB__)
 #define __orxDISPLAY_OPENGL_ES__
   /* All other platforms default to OpenGL */
-  #else /* __orxLINUX__ && (__orxARM__ || __orxARM64__) */
+  #else /* (__orxLINUX__ && (__orxARM__ || __orxARM64__)) || __orxWEB__ */
 #define __orxDISPLAY_OPENGL__
-  #endif /* __orxLINUX__ && (__orxARM__ || __orxARM64__) */
+  #endif /* (__orxLINUX__ && (__orxARM__ || __orxARM64__)) || __orxWEB__ */
 #endif /* !__orxDISPLAY_OPENGL__ && !__orxDISPLAY_OPENGL_ES__ */
 
 #ifdef __orxDISPLAY_OPENGL_ES__
@@ -59,6 +59,9 @@
   #pragma warning(disable : 4819)
 #endif /* __orxMSVC__ */
 #include "GLFW/glfw3.h"
+#ifdef __orxWEB__
+#include "GLFW/emscripten_glfw3.h"
+#endif /* __orxWEB__ */
 #ifdef __orxMSVC__
   #pragma warning(pop)
 #endif /* __orxMSVC__ */
@@ -194,6 +197,11 @@
 #define orxDISPLAY_KU32_MAX_ICON_NUMBER             16
 
 #define orxDISPLAY_KU32_MAX_SHADER_VERSION          410
+
+#define orxDISPLAY_KU32_DEFAULT_WIDTH               1920
+#define orxDISPLAY_KU32_DEFAULT_HEIGHT              1080
+#define orxDISPLAY_KU32_DEFAULT_DEPTH               32
+#define orxDISPLAY_KU32_DEFAULT_REFRESH_RATE        0
 
 
 /**  Misc defines
@@ -496,17 +504,19 @@ static orxDISPLAY_STATIC sstDisplay;
 #define glCompileShaderARB          glCompileShader
 #define glAttachObjectARB           glAttachShader
 #define glLinkProgramARB            glLinkProgram
-#define glGetObjectParameterivARB   glGetProgramiv
-#define glGetInfoLogARB             glGetProgramInfoLog
+#define glGetShaderiv               glGetShaderiv
+#define glGetParameteriv            glGetProgramiv
+#define glGetShaderInfoLog          glGetShaderInfoLog
+#define glGetProgramInfoLog         glGetProgramInfoLog
 #define glUseProgramObjectARB       glUseProgram
 #define glGetUniformLocationARB     glGetUniformLocation
-#define glBindAttribLocationARB     glBindAttribLocation;
-#define glEnableVertexAttribArrayARB glEnableVertexAttribArray;
-#define glVertexAttribPointerARB    glVertexAttribPointer;
+#define glBindAttribLocationARB     glBindAttribLocation
+#define glEnableVertexAttribArrayARB glEnableVertexAttribArray
+#define glVertexAttribPointerARB    glVertexAttribPointer
 #define glUniform1fARB              glUniform1f
 #define glUniform3fARB              glUniform3f
 #define glUniform1iARB              glUniform1i
-#define glUniformMatrix4fvARB       glUniformMatrix4fv;
+#define glUniformMatrix4fvARB       glUniformMatrix4fv
 
 #define glGenBuffersARB             glGenBuffers
 #define glDeleteBuffersARB          glDeleteBuffers
@@ -540,6 +550,11 @@ static orxDISPLAY_STATIC sstDisplay;
 #else /* __orxDISPLAY_OPENGL_ES__ */
 
 #define glDeleteProgram             glDeleteObjectARB
+
+#define glGetShaderiv               glGetObjectParameterivARB
+#define glGetProgramiv              glGetObjectParameterivARB
+#define glGetShaderInfoLog          glGetInfoLogARB
+#define glGetProgramInfoLog         glGetInfoLogARB
 
 /** Shader-related OpenGL extension functions
  */
@@ -703,7 +718,7 @@ static orxINLINE GLFWmonitor *orxDisplay_GLFW_GetMonitor()
                 pstMode = glfwGetVideoMode(apstMonitors[i]);
 
                 /* Success? */
-                if(glfwGetError(NULL) == GLFW_NO_ERROR)
+                if((glfwGetError(NULL) == GLFW_NO_ERROR) && (pstMode != NULL))
                 {
                   /* Inside? */
                   if((iWindowX >= iX)
@@ -774,42 +789,60 @@ static orxINLINE void orxDisplay_GLFW_UpdateDefaultMode()
     /* Gets desktop mode */
     pstDesktopMode = glfwGetVideoMode(pstMonitor);
 
-    /* Updates default mode */
-    sstDisplay.u32DefaultWidth  = (orxU32)pstDesktopMode->width;
-    sstDisplay.u32DefaultHeight = (orxU32)pstDesktopMode->height;
-    sstDisplay.u32DefaultDepth  = (orxU32)(pstDesktopMode->redBits + pstDesktopMode->greenBits + pstDesktopMode->blueBits);
-
-    /* 24-bit? */
-    if(sstDisplay.u32DefaultDepth == 24)
+    /* Valid? */
+    if((glfwGetError(NULL) == GLFW_NO_ERROR) && (pstDesktopMode != NULL))
     {
-      /* Gets 32-bit instead */
-      sstDisplay.u32DefaultDepth = 32;
+      /* Updates default mode */
+      sstDisplay.u32DefaultWidth  = (orxU32)pstDesktopMode->width;
+      sstDisplay.u32DefaultHeight = (orxU32)pstDesktopMode->height;
+      sstDisplay.u32DefaultDepth  = (orxU32)(pstDesktopMode->redBits + pstDesktopMode->greenBits + pstDesktopMode->blueBits);
+
+      /* 24-bit? */
+      if(sstDisplay.u32DefaultDepth == 24)
+      {
+        /* Gets 32-bit instead */
+        sstDisplay.u32DefaultDepth = 32;
+      }
+
+      /* Hack: Corrects imprecise refresh rate reports for default mode */
+      switch(pstDesktopMode->refreshRate)
+      {
+        case 59:
+        case 60:
+        case 61:
+        {
+          sstDisplay.u32DefaultRefreshRate = 60;
+          break;
+        }
+
+        case 49:
+        case 50:
+        case 51:
+        {
+          sstDisplay.u32DefaultRefreshRate = 50;
+          break;
+        }
+
+        default:
+        {
+          sstDisplay.u32DefaultRefreshRate = pstDesktopMode->refreshRate;
+          break;
+        }
+      }
     }
-
-    /* Hack: Corrects imprecise refresh rate reports for default mode */
-    switch(pstDesktopMode->refreshRate)
+    else
     {
-      case 59:
-      case 60:
-      case 61:
-      {
-        sstDisplay.u32DefaultRefreshRate = 60;
-        break;
-      }
+      /* Pushes display section */
+      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
 
-      case 49:
-      case 50:
-      case 51:
-      {
-        sstDisplay.u32DefaultRefreshRate = 50;
-        break;
-      }
+      /* Updates default mode */
+      sstDisplay.u32DefaultWidth        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_WIDTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_WIDTH) : orxDISPLAY_KU32_DEFAULT_WIDTH;
+      sstDisplay.u32DefaultHeight       = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : orxDISPLAY_KU32_DEFAULT_HEIGHT;
+      sstDisplay.u32DefaultDepth        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : orxDISPLAY_KU32_DEFAULT_DEPTH;
+      sstDisplay.u32DefaultRefreshRate  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) : orxDISPLAY_KU32_DEFAULT_REFRESH_RATE;
 
-      default:
-      {
-        sstDisplay.u32DefaultRefreshRate = pstDesktopMode->refreshRate;
-        break;
-      }
+      /* Pops config section */
+      orxConfig_PopSection();
     }
   }
 
@@ -817,7 +850,7 @@ static orxINLINE void orxDisplay_GLFW_UpdateDefaultMode()
   return;
 }
 
-#ifndef __orxMAC__
+#if !defined(__orxMAC__) && !defined(__orxDISPLAY_OPENGL_ES__)
 static void GLAPIENTRY orxDisplay_GLFW_MessageCallback(GLenum _eSource, GLenum _eType, GLuint _uID, GLenum _eSeverity, GLsizei _iLength, const GLchar *_zMessage, const void *_pContext)
 {
   /* Relevant type? */
@@ -846,7 +879,12 @@ static void GLAPIENTRY orxDisplay_GLFW_MessageCallback(GLenum _eSource, GLenum _
   /* Done! */
   return;
 }
-#endif /* __orxMAC__ */
+#endif /* !__orxMAC__ && !__orxDISPLAY_OPENGL_ES__ */
+
+void orxDisplay_GLFW_ErrorCallback(int _iError, const char *_zDescription)
+{
+  orxLOG("[GLFW %d]: %s", _iError, _zDescription);
+}
 
 static void orxDisplay_GLFW_ResizeCallback(GLFWwindow *_pstWindow, int _iWidth, int _iHeight)
 {
@@ -929,7 +967,7 @@ static void orxDisplay_GLFW_PosCallback(GLFWwindow *_pstWindow, int _iX, int _iY
           pstMode = glfwGetVideoMode(apstMonitors[i]);
 
           /* Success? */
-          if(glfwGetError(NULL) == GLFW_NO_ERROR)
+          if((glfwGetError(NULL) == GLFW_NO_ERROR) && (pstMode != NULL))
           {
             /* Inside? */
             if((_iX >= iX)
@@ -2441,14 +2479,14 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
   glASSERT();
 
   /* Gets vertex shader compiling status */
-  glGetObjectParameterivARB(hVertexShader, GL_OBJECT_COMPILE_STATUS_ARB, &iSuccess);
+  glGetShaderiv(hVertexShader, GL_OBJECT_COMPILE_STATUS_ARB, &iSuccess);
   glASSERT();
 
   /* Success? */
   if(iSuccess != GL_FALSE)
   {
     /* Gets fragment shader compiling status */
-    glGetObjectParameterivARB(hFragmentShader, GL_OBJECT_COMPILE_STATUS_ARB, &iSuccess);
+    glGetShaderiv(hFragmentShader, GL_OBJECT_COMPILE_STATUS_ARB, &iSuccess);
     glASSERT();
 
     /* Success? */
@@ -2487,7 +2525,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       glASSERT();
 
       /* Gets linking status */
-      glGetObjectParameterivARB(hProgram, GL_OBJECT_LINK_STATUS_ARB, &iSuccess);
+      glGetProgramiv(hProgram, GL_OBJECT_LINK_STATUS_ARB, &iSuccess);
       glASSERT();
 
       /* Success? */
@@ -2505,7 +2543,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
         orxCHAR acBuffer[4096];
 
         /* Gets log */
-        glGetInfoLogARB(hProgram, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
+        glGetProgramInfoLog(hProgram, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
         glASSERT();
         acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
@@ -2522,7 +2560,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
       orxCHAR acBuffer[4096];
 
       /* Gets log */
-      glGetInfoLogARB(hFragmentShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
+      glGetShaderInfoLog(hFragmentShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
       glASSERT();
       acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
@@ -2543,7 +2581,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_CompileShader(orxDISPLAY_SHADER *_p
     orxCHAR acBuffer[4096];
 
     /* Gets log */
-    glGetInfoLogARB(hVertexShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
+    glGetShaderInfoLog(hVertexShader, sizeof(acBuffer) - 1, NULL, (GLchar *)acBuffer);
     glASSERT();
     acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
 
@@ -2906,9 +2944,11 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
   }
   else
   {
+#ifndef __orxWEB__
     /* Disables texturing */
     glDisable(GL_TEXTURE_2D);
     glASSERT();
+#endif /* !__orxWEB__ */
   }
 
   /* Has alpha? */
@@ -2989,9 +3029,11 @@ static void orxFASTCALL orxDisplay_GLFW_DrawPrimitive(orxU32 _u32VertexNumber, o
   }
   else
   {
+#ifndef __orxWEB__
     /* Reenables texturing */
     glEnable(GL_TEXTURE_2D);
     glASSERT();
+#endif /* !__orxWEB__ */
   }
 
   /* Profiles */
@@ -5249,6 +5291,12 @@ orxBOOL orxFASTCALL orxDisplay_GLFW_IsVideoModeAvailable(const orxDISPLAY_VIDEO_
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
 {
+#ifdef __orxWEB__
+
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+#else /* __orxWEB__ */
+
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -5280,6 +5328,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_EnableVSync(orxBOOL _bEnable)
     /* Updates status */
     orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_VSYNC);
   }
+#endif /* __orxWEB__ */
 
   /* Done! */
   return eResult;
@@ -5601,6 +5650,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Sets content scale */
       orxVector_Set(&(sstDisplay.vContentScale), orxS2F(iFramebufferWidth) / orxS2F(iWidth), orxS2F(iFramebufferHeight) / orxS2F(iHeight), orxFLOAT_1);
 
+#ifndef __orxWEB__
       /* Is fullscreen? */
       if(_pstVideoMode->bFullScreen != orxFALSE)
       {
@@ -5608,6 +5658,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN, orxDISPLAY_KU32_STATIC_FLAG_NONE);
       }
       else
+#endif /* !__orxWEB__ */
       {
         /* Updates status */
         orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN);
@@ -5642,8 +5693,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       orxVector_Set(&(sstDisplay.pstScreen->stClip.vBR), sstDisplay.pstScreen->fWidth, sstDisplay.pstScreen->fHeight, orxFLOAT_0);
 
       /* Inits OpenGL */
+#ifndef __orxWEB__
       glEnable(GL_TEXTURE_2D);
       glASSERT();
+#endif /* !__orxWEB__ */
       glEnable(GL_SCISSOR_TEST);
       glASSERT();
       glDisable(GL_DITHER);
@@ -5652,11 +5705,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glASSERT();
       glDisable(GL_STENCIL_TEST);
       glASSERT();
-      glDisable(GL_MULTISAMPLE);
-      glASSERT();
 
 #ifndef __orxDISPLAY_OPENGL_ES__
 
+      glDisable(GL_MULTISAMPLE);
+      glASSERT();
       glDisable(GL_ALPHA_TEST);
       glASSERT();
       glDisable(GL_LIGHTING);
@@ -5732,6 +5785,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     orxVECTOR vFramebufferSize;
     int       iFramebufferWidth, iFramebufferHeight;
 
+#ifndef __orxWEB__
     /* Isn't fullscreen? */
     if(!orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FULLSCREEN))
     {
@@ -5763,6 +5817,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         }
       }
     }
+#endif /* !__orxWEB__ */
 
     /* Updates cursor */
     orxDisplay_GLFW_UpdateCursor();
@@ -5786,9 +5841,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
         glActiveTextureARB(GL_TEXTURE0_ARB + i);
         glASSERT();
 
+#ifndef __orxWEB__
         /* Resets it */
         glEnable(GL_TEXTURE_2D);
         glASSERT();
+#endif /* !__orxWEB__ */
       }
 
       /* Selects first texture unit */
@@ -5923,7 +5980,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       glDisable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
       glASSERT();
     }
-#endif /* __orxMAC__ */
+#endif /* !__orxMAC__ */
 
 #endif /* !__orxDISPLAY_OPENGL_ES__ */
 
@@ -5966,6 +6023,12 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
 
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
 {
+#ifdef __orxWEB__
+
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+#else /* __orxWEB__ */
+
   orxBOOL   bUpdate = orxFALSE;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -6021,6 +6084,8 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetFullScreen(orxBOOL _bFullScreen)
     }
   }
 
+#endif /* __orxWEB__ */
+
   /* Done! */
   return eResult;
 }
@@ -6072,6 +6137,9 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
       sstDisplay.au16IndexList[i + 5] = u16Index + 2;
     }
 
+    /* Sets error callback */
+    glfwSetErrorCallback(orxDisplay_GLFW_ErrorCallback);
+
     /* Inits GLFW */
     eResult = (glfwInit() != GLFW_FALSE) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
@@ -6114,7 +6182,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           stVideoMode.u32Height       = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_HEIGHT) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_HEIGHT) : sstDisplay.u32DefaultHeight;
           stVideoMode.u32Depth        = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_DEPTH) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_DEPTH) : sstDisplay.u32DefaultDepth;
           stVideoMode.u32RefreshRate  = orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) ? orxConfig_GetU32(orxDISPLAY_KZ_CONFIG_REFRESH_RATE) : sstDisplay.u32DefaultRefreshRate;
+        #ifdef __orxWEB__
+          stVideoMode.bFullScreen     = orxFALSE;
+        #else /* __orxWEB__ */
           stVideoMode.bFullScreen     = orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_FULLSCREEN);
+        #endif /* __orxWEB__ */
 
           /* Sets module as ready */
           sstDisplay.u32Flags = orxDISPLAY_KU32_STATIC_FLAG_READY;
@@ -6421,6 +6493,15 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
             s32Free  -= s32Offset;
           }
         }
+
+#ifdef __orxWEB__
+
+        /* Uses draw buffers extension by default */
+        s32Offset  = orxString_NPrint(pc, s32Free, "#extension GL_EXT_draw_buffers : enable\n");
+        pc        += s32Offset;
+        s32Free   -= s32Offset;
+
+#endif /* __orxWEB__ */
 
         /* Has shader extension list? */
         if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_SHADER_EXTENSION_LIST) != orxFALSE)

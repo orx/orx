@@ -33,38 +33,53 @@
 #include "memory/orxMemory.h"
 #include "debug/orxDebug.h"
 
+#ifdef __orxWEB__
+  #include <stdlib.h>
 
-#ifdef __orxLLVM__
-  #if defined(__orxMAC__) || defined(__orxIOS__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wunknown-attributes"
-  #endif /* __orxMAC__ || __orxIOS__ */
+  #define rpmalloc(SIZE)                        malloc(SIZE)
+  #define rprealloc(MEM, SIZE)                  realloc(MEM, SIZE)
+  #define rpfree(MEM)                           free(MEM)
 
-  #if defined(__orxANDROID__) || defined(__orxIOS__)
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wstatic-in-inline"
-  #endif /* __orxANDROID__ || __orxIOS__ */
-#endif /* __orxLLVM__ */
+  #define rpmalloc_initialize()                 0
+  #define rpmalloc_finalize()
+  #define rpmalloc_thread_initialize()
+  #define rpmalloc_thread_finalize(RELEASE)
 
-#ifdef __orxIOS__
-  #define ENABLE_PRELOAD 1
-#endif /* __orxIOS__ */
+  #define rpmalloc_usable_size(MEM)             0
 
-#include "rpmalloc.c"
+#else /* __orxWEB__ */
+  #ifdef __orxLLVM__
+    #if defined(__orxMAC__) || defined(__orxIOS__)
+      #pragma clang diagnostic push
+      #pragma clang diagnostic ignored "-Wunknown-attributes"
+    #endif /* __orxMAC__ || __orxIOS__ */
 
-#ifdef __orxIOS__
-  #undef ENABLE_PRELOAD
-#endif /* __orxIOS__ */
+    #if defined(__orxANDROID__) || defined(__orxIOS__)
+      #pragma clang diagnostic push
+      #pragma clang diagnostic ignored "-Wstatic-in-inline"
+    #endif /* __orxANDROID__ || __orxIOS__ */
+  #endif /* __orxLLVM__ */
 
-#ifdef __orxLLVM__
-  #if defined(__orxANDROID__) || defined(__orxIOS__)
-    #pragma clang diagnostic pop
-  #endif /* __orxANDROID__ || __orxIOS__ */
+  #ifdef __orxIOS__
+    #define ENABLE_PRELOAD 1
+  #endif /* __orxIOS__ */
 
-  #if defined(__orxMAC__) || defined(__orxIOS__)
-    #pragma clang diagnostic pop
-  #endif /* __orxMAC__ || __orxIOS__ */
-#endif /* __orxLLVM__ */
+  #include "rpmalloc.c"
+
+  #ifdef __orxIOS__
+    #undef ENABLE_PRELOAD
+  #endif /* __orxIOS__ */
+
+  #ifdef __orxLLVM__
+    #if defined(__orxANDROID__) || defined(__orxIOS__)
+      #pragma clang diagnostic pop
+    #endif /* __orxANDROID__ || __orxIOS__ */
+
+    #if defined(__orxMAC__) || defined(__orxIOS__)
+      #pragma clang diagnostic pop
+    #endif /* __orxMAC__ || __orxIOS__ */
+  #endif /* __orxLLVM__ */
+#endif /* __orxWEB__ */
 
 #define orxMEMORY_KU32_STATIC_FLAG_NONE         0x00000000  /**< No flags have been set */
 #define orxMEMORY_KU32_STATIC_FLAG_READY        0x00000001  /**< The module has been initialized */

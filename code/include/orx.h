@@ -38,6 +38,10 @@
  * @{
  */
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif /* __EMSCRIPTEN__ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -103,7 +107,8 @@ static void orxFASTCALL orx_MainSetup()
   return;
 }
 
-#ifdef __orxIOS__
+/* iOS */
+#if defined(__orxIOS__)
 
   #ifdef __orxOBJC__
 
@@ -173,9 +178,8 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
 
   #endif /* __orxOBJC__ */
 
-#else /* __orxIOS__ */
-
-  #if defined(__orxANDROID__)
+/* Android */
+#elif defined(__orxANDROID__)
 
 #include "main/android/orxAndroid.h"
 
@@ -253,7 +257,104 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxDEBUG_EXIT();
 }
 
-  #else /* __orxANDROID__ */
+/* Web */
+#elif defined(__orxWEB__)
+
+static orxSTATUS (orxFASTCALL *spfnRun)();
+
+static void orx_MainLoop()
+{
+  orxSTATUS                       eMainStatus, eClockStatus;
+  static orxSYSTEM_EVENT_PAYLOAD  sstPayload = {};
+
+  /* Sends frame start event */
+  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &sstPayload);
+
+  /* Runs game specific code */
+  eMainStatus = spfnRun();
+
+  /* Updates clock system */
+  eClockStatus = orxClock_Update();
+
+  /* Sends frame stop event */
+  orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_STOP, orxNULL, orxNULL, &sstPayload);
+
+  /* Updates frame count */
+  sstPayload.u32FrameCount++;
+
+  /* Should stop? */
+  if((sbStopByEvent != orxFALSE) || (eMainStatus == orxSTATUS_FAILURE) || (eClockStatus == orxSTATUS_FAILURE))
+  {
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+
+    /* Exits from the engine */
+    orxModule_Exit(orxMODULE_ID_MAIN);
+
+    /* Clears params */
+    orxParam_SetArgs(0, orxNULL);
+
+    /* Exits from the Debug system */
+    orxDEBUG_EXIT();
+
+    /* Cancels main loop */
+    emscripten_cancel_main_loop();
+  }
+}
+
+/** Orx main execution function
+ * @param[in]   _u32NbParams                  Main function parameters number (argc)
+ * @param[in]   _azParams                     Main function parameter list (argv)
+ * @param[in]   _pfnInit                      Main init function (should init all the main stuff and register the main event handler to override the default one)
+ * @param[in]   _pfnRun                       Main run function (will be called once per frame, should return orxSTATUS_SUCCESS to continue processing)
+ * @param[in]   _pfnExit                      Main exit function (should clean all the main stuff)
+ */
+static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], const orxMODULE_INIT_FUNCTION _pfnInit, const orxMODULE_RUN_FUNCTION _pfnRun, const orxMODULE_EXIT_FUNCTION _pfnExit)
+{
+  /* Inits the Debug System */
+  orxDEBUG_INIT();
+
+  /* Checks */
+  orxASSERT(_u32NbParams > 0);
+  orxASSERT(_azParams != orxNULL);
+  orxASSERT(_pfnRun != orxNULL);
+
+  /* Registers main module */
+  orxModule_Register(orxMODULE_ID_MAIN, "MAIN", orx_MainSetup, _pfnInit, _pfnExit);
+
+  /* Replaces the executable name */
+  _azParams[0] = (orxSTRING)orxWEB_EXECUTABLE_NAME;
+
+  /* Stores run callback */
+  spfnRun = _pfnRun;
+
+  /* Sends the command line arguments to orxParam module */
+  if(orxParam_SetArgs(_u32NbParams, _azParams) != orxSTATUS_FAILURE)
+  {
+    /* Inits the engine */
+    if(orxModule_Init(orxMODULE_ID_MAIN) != orxSTATUS_FAILURE)
+    {
+      /* Registers default event handler */
+      orxEvent_AddHandler(orxEVENT_TYPE_SYSTEM, orx_DefaultEventHandler);
+      orxEvent_SetHandlerIDFlags(orx_DefaultEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_CLOSE), orxEVENT_KU32_MASK_ID_ALL);
+
+      /* Runs main loop */
+      emscripten_set_main_loop(orx_MainLoop, 0, true);
+
+      /* Should never be reached! */
+      orxASSERT(orxFALSE);
+    }
+
+    /* Clears params */
+    orxParam_SetArgs(0, orxNULL);
+  }
+
+  /* Exits from the Debug system */
+  orxDEBUG_EXIT();
+}
+
+/* Others */
+#else
 
 /** Orx main execution function
  * @param[in]   _u32NbParams                  Main function parameters number (argc)
@@ -334,9 +435,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
   orxDEBUG_EXIT();
 }
 
-  #endif /* __orxANDROID__ */
-
-#endif /* __orxIOS__ */
+#endif /* __orxIOS__ || __orxANDROID__ || __orxWEB__ */
 
 #endif /* !__orxPLUGIN__ */
 

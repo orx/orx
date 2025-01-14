@@ -1896,7 +1896,7 @@ void orxFASTCALL orxSound_Setup()
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_RESOURCE);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_COMMAND);
-  orxModule_AddOptionalDependency(orxMODULE_ID_SOUND, orxMODULE_ID_LOCALE);
+  orxModule_AddDependency(orxMODULE_ID_SOUND, orxMODULE_ID_LOCALE);
 
   /* Done! */
   return;

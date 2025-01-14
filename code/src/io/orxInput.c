@@ -1139,7 +1139,10 @@ static void orxFASTCALL orxInput_Update(const orxCLOCK_INFO *_pstClockInfo, void
   orxPROFILER_PUSH_MARKER("orxInput_Update");
 
   /* Updates mouse move */
-  orxMouse_GetMoveDelta(&(sstInput.vMouseMove));
+  if(orxModule_IsInitialized(orxMODULE_ID_MOUSE) != orxFALSE)
+  {
+    orxMouse_GetMoveDelta(&(sstInput.vMouseMove));
+  }
 
   /* For all the sets */
   for(pstSet = (orxINPUT_SET *)orxBank_GetNext(sstInput.pstSetBank, orxNULL);
