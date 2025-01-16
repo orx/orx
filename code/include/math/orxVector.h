@@ -303,6 +303,28 @@ static orxINLINE orxVECTOR *                  orxVector_Mod(orxVECTOR *_pvRes, c
   return _pvRes;
 }
 
+/** Gets the power of a vector by another vector and stores result in a third one
+ * @param[out]  _pvRes                        Vector where to store the result (can be one of the two operands)
+ * @param[in]   _pvOp1                        First operand
+ * @param[in]   _pvOp2                        Second operand
+ * @return      Resulting vector (Op1 / Op2)
+ */
+static orxINLINE orxVECTOR *                  orxVector_Pow(orxVECTOR *_pvRes, const orxVECTOR *_pvOp1, const orxVECTOR *_pvOp2)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp1 != orxNULL);
+  orxASSERT(_pvOp2 != orxNULL);
+
+  /* Powers all */
+  _pvRes->fX = orxMath_Pow(_pvOp1->fX, _pvOp2->fX);
+  _pvRes->fY = orxMath_Pow(_pvOp1->fY, _pvOp2->fY);
+  _pvRes->fZ = orxMath_Pow(_pvOp1->fZ, _pvOp2->fZ);
+
+  /* Done! */
+  return _pvRes;
+}
+
 /** Lerps from one vector to another one using a coefficient
  * @param[out]  _pvRes                        Vector where to store the result (can be one of the two operands)
  * @param[in]   _pvOp1                        First operand
