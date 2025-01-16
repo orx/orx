@@ -1459,6 +1459,7 @@ var searchData=
   ['orxvector_5fmulf',['orxVector_Mulf',['../group__orx_vector.html#gaa9269252d414e37fa6b994752443b384',1,'orxVector.h']]],
   ['orxvector_5fneg',['orxVector_Neg',['../group__orx_vector.html#ga41e797864da57ed8951c4e64828aba7d',1,'orxVector.h']]],
   ['orxvector_5fnormalize',['orxVector_Normalize',['../group__orx_vector.html#gacec0e26920a34277bd6f4c50c69af740',1,'orxVector.h']]],
+  ['orxvector_5fpow',['orxVector_Pow',['../group__orx_vector.html#ga14a6890663acecc7b2ca0a92062ffd46',1,'orxVector.h']]],
   ['orxvector_5frec',['orxVector_Rec',['../group__orx_vector.html#ga9412b01bd07f9397b8239c477848e606',1,'orxVector.h']]],
   ['orxvector_5fremap',['orxVector_Remap',['../group__orx_vector.html#ga6541f02cf52c0bcc6a5d41fbe074d044',1,'orxVector.h']]],
   ['orxvector_5fround',['orxVector_Round',['../group__orx_vector.html#ga38098d5ee02edc7e19fc1140f31dbfa6',1,'orxVector.h']]],
