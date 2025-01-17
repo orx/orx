@@ -1862,7 +1862,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             if(orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_GRID, &vFrameGrid) != orxNULL)
             {
               /* Valid? */
-              if ((vFrameGrid.fX > orxFLOAT_0) && (vFrameGrid.fY > orxFLOAT_0))
+              if((vFrameGrid.fX > orxFLOAT_0) && (vFrameGrid.fY > orxFLOAT_0))
               {
                 /* Updates frame size */
                 vFrameSize.fX = orxMath_Floor(vTextureSize.fX / vFrameGrid.fX);

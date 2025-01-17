@@ -510,7 +510,7 @@ orxBOOL orxFASTCALL orxJoystick_Android_IsButtonPressed(orxJOYSTICK_BUTTON _eBut
       /* Gets button */
       s32Button = _eButton % orxJOYSTICK_BUTTON_SINGLE_NUMBER;
 
-      if (controllerData.buttonsDown)
+      if(controllerData.buttonsDown)
       {
         orxDEBUG_PRINT(orxDEBUG_LEVEL_JOYSTICK, "Joystick buttons DOWN: <%d>", controllerData.buttonsDown);
       }

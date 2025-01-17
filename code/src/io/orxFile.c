@@ -263,11 +263,14 @@ orxSTATUS orxFASTCALL orxFile_Init()
     /* Mounts application save directory with IDBFS */
     FS.mkdir('/save');
     FS.mount(IDBFS, {autoPersist: true}, '/save');
-    FS.syncfs(true, function(error) {
-      if (error)
+    FS.syncfs(true, function(error)
+    {
+      if(error)
       {
         console.error("Error loading application save directory from IndexedDB:", error);
-      } else {
+      }
+      else
+      {
         console.log("Application save directory loaded from IndexedDB.");
       }
     });
