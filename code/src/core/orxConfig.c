@@ -3301,11 +3301,15 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           }
           else
           {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete include name %c%.*s: '%c' terminator not found, skipping!", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+            /* Not at end of buffer */
+            if(pc < _acBuffer + _u32Size)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete include name %c%.*s: '%c' terminator not found, skipping!", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
-            /* Updates new line start */
-            pcLineStart = pc + 1;
+              /* Updates new line start */
+              pcLineStart = pc + 1;
+            }
           }
 
           break;
