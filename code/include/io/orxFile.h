@@ -61,11 +61,11 @@
 /** File info structure */
 typedef struct __orxFILE_INFO_t
 {
-  orxS64    s64Size;                                    /**< File's size (in bytes) */
+  orxS64    s64Size;                                    /**< File size (in bytes) */
   orxS64    s64TimeStamp;                               /**< Timestamp of the last modification */
   orxU32    u32Flags;                                   /**< File attributes (cf. list of available flags) */
   orxHANDLE hInternal;                                  /**< Internal use handle */
-  orxCHAR   zName[256];                                 /**< File's name */
+  orxCHAR   zName[256];                                 /**< File name */
   orxCHAR   zPattern[256];                              /**< Search pattern */
   orxCHAR   zPath[1024];                                /**< Directory's name where is stored the file */
   orxCHAR   zFullName[1280];                            /**< Full file name */
@@ -145,32 +145,32 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Remove(const orxSTRING _zFil
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_MakeDirectory(const orxSTRING _zName);
 
 /** Opens a file for later read or write operation
- * @param[in] _zFileName           Full file's path to open
+ * @param[in] _zFileName           Full file path to open
  * @param[in] _u32OpenFlags        List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occurred)
  */
 extern orxDLLAPI orxFILE *orxFASTCALL       orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFlags);
 
 /** Reads data from a file
- * @param[out] _pReadData          Buffer that will contain read data
+ * @param[out] _pBuffer            Buffer that will contain read data
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer to the file descriptor
- * @return Returns the number of read elements (not bytes)
+ * @return The number of read elements (not bytes)
  */
-extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Read(void *_pBuffer, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
 
 /** Writes data to a file
- * @param[in] _pDataToWrite        Buffer that contains the data to write
+ * @param[in] _pBuffer             Buffer that contains the data to write
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer to the file descriptor
- * @return Returns the number of written elements (not bytes)
+ * @return The number of written elements (not bytes)
  */
-extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
+extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Write(const void *_pBuffer, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile);
 
 /** Deletes a file
- * @param[in] _zFileName           Full file's path to delete
+ * @param[in] _zFileName           Full file path to delete
  * @return orxSTATUS_SUCCESS upon success, orxSTATUS_FAILURE otherwise
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Delete(const orxSTRING _zFileName);
@@ -185,32 +185,32 @@ extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Seek(orxFILE *_pstFile, orxS
 
 /** Tells the current position of the indicator in a file
  * @param[in] _pstFile              Concerned file
- * @return Returns the current position of the file indicator, -1 is invalid
+ * @return The current position of the file indicator, -1 is invalid
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_Tell(const orxFILE *_pstFile);
 
-/** Retrieves a file's size
+/** Retrieves the size of a file
  * @param[in] _pstFile              Concerned file
- * @return Returns the length of the file, <= 0 if invalid
+ * @return The length of the file, <= 0 if invalid
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_GetSize(const orxFILE *_pstFile);
 
-/** Retrieves a file's time of last modification
+/** Retrieves the last modification time of a file
  * @param[in] _pstFile              Concerned file
- * @return Returns the time of the last modification, in seconds, since epoch
+ * @return The time of the last modification, in seconds, since epoch
  */
 extern orxDLLAPI orxS64 orxFASTCALL         orxFile_GetTime(const orxFILE *_pstFile);
 
 /** Prints a formatted string to a file
  * @param[in] _pstFile             Pointer to the file descriptor
  * @param[in] _zString             Formatted string
- * @return Returns the number of written characters
+ * @return The number of written characters
  */
 extern orxDLLAPI orxS32 orxCDECL            orxFile_Print(orxFILE *_pstFile, const orxSTRING _zString, ...);
 
-/** Closes an oppened file
- * @param[in] _pstFile             File's pointer to close
- * @return Returns the status of the operation
+/** Closes an opened file
+ * @param[in] _pstFile             Concerned file
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxFile_Close(orxFILE *_pstFile);
 

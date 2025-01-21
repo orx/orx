@@ -2727,7 +2727,7 @@ orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
 /** Reads data from a resource
  * @param[in] _hResource        Concerned resource
  * @param[in] _s64Size          Size to read (in bytes)
- * @param[out] _pBuffer         Buffer that will be filled by the read data
+ * @param[out] _pBuffer         Buffer that will be filled with the read data
  * @param[in] _pfnCallback      Callback that will get called after asynchronous operation; if orxNULL, operation will be synchronous
  * @param[in] _pContext         Context that will be transmitted to the callback when called
  * @return Size of the read data, in bytes or -1 for successful asynchronous call

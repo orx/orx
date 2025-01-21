@@ -221,6 +221,7 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   _pstFileInfo->s64Size       = (orxS64)stStat.st_size;
   _pstFileInfo->s64TimeStamp  = (orxS64)stStat.st_mtime;
 
+  /* Done! */
   return;
 }
 
@@ -237,6 +238,7 @@ void orxFASTCALL orxFile_Setup()
   orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_FILE, orxMODULE_ID_STRING);
 
+  /* Done! */
   return;
 }
 
@@ -297,6 +299,7 @@ void orxFASTCALL orxFile_Exit()
     orxMemory_Zero(&sstFile, sizeof(orxFILE_STATIC));
   }
 
+  /* Done! */
   return;
 }
 
@@ -897,7 +900,7 @@ orxSTATUS orxFASTCALL orxFile_MakeDirectory(const orxSTRING _zName)
 }
 
 /** Opens a file for later read or write operation
- * @param[in] _zFileName           Full file's path to open
+ * @param[in] _zFileName           Full file path to open
  * @param[in] _u32OpenFlags        List of used flags when opened
  * @return a File pointer (or orxNULL if an error has occurred)
  */
@@ -1062,13 +1065,13 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
 }
 
 /** Reads data from a file
- * @param[out] _pReadData          Buffer that will contain read data
+ * @param[out] _pBuffer            Buffer that will contain read data
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer to the file descriptor
- * @return Returns the number of read elements (not bytes)
+ * @return The number of read elements (not bytes)
  */
-orxS64 orxFASTCALL orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
+orxS64 orxFASTCALL orxFile_Read(void *_pBuffer, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
 {
   /* Default return value */
   orxS64 s64Ret = 0;
@@ -1079,7 +1082,7 @@ orxS64 orxFASTCALL orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-    s64Ret = (orxS64)fread(_pReadData, (size_t)_s64ElemSize, (size_t)_s64NbElem, (FILE *)_pstFile);
+    s64Ret = (orxS64)fread(_pBuffer, (size_t)_s64ElemSize, (size_t)_s64NbElem, (FILE *)_pstFile);
   }
 
   /* Returns the number of read elements */
@@ -1087,13 +1090,13 @@ orxS64 orxFASTCALL orxFile_Read(void *_pReadData, orxS64 _s64ElemSize, orxS64 _s
 }
 
 /** Writes data to a file
- * @param[in] _pDataToWrite        Buffer that contains the data to write
+ * @param[in] _pBuffer             Buffer that contains the data to write
  * @param[in] _s64ElemSize         Size of 1 element
  * @param[in] _s64NbElem           Number of elements
  * @param[in] _pstFile             Pointer to the file descriptor
- * @return Returns the number of written elements (not bytes)
+ * @return The number of written elements (not bytes)
  */
-orxS64 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
+orxS64 orxFASTCALL orxFile_Write(const void *_pBuffer, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
 {
   /* Default return value */
   orxS64 s64Ret = 0;
@@ -1107,7 +1110,7 @@ orxS64 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize,
   /* Valid input ? */
   if(_pstFile != orxNULL)
   {
-    s64Ret = (orxS64)fwrite(_pDataToWrite, (size_t)_s64ElemSize, (size_t)_s64NbElem, (FILE *)_pstFile);
+    s64Ret = (orxS64)fwrite(_pBuffer, (size_t)_s64ElemSize, (size_t)_s64NbElem, (FILE *)_pstFile);
   }
 
   /* Returns the number of read elements */
@@ -1115,7 +1118,7 @@ orxS64 orxFASTCALL orxFile_Write(const void *_pDataToWrite, orxS64 _s64ElemSize,
 }
 
 /** Deletes a file
- * @param[in] _zFileName           Full file's path to delete
+ * @param[in] _zFileName           Full file path to delete
  * @return orxSTATUS_SUCCESS upon success, orxSTATUS_FAILURE otherwise
  */
 orxSTATUS orxFASTCALL orxFile_Delete(const orxSTRING _zFileName)
@@ -1172,7 +1175,7 @@ orxS64 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_
 
 /** Tells the current position of the indicator in a file
  * @param[in] _pstFile              Concerned file
- * @return Returns the current position of the file indicator, -1 if invalid
+ * @return The current position of the file indicator, -1 is invalid
  */
 orxS64 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
 {
@@ -1197,9 +1200,9 @@ orxS64 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
   return s64Result;
 }
 
-/** Retrieves a file's size
+/** Retrieves the size of a file
  * @param[in] _pstFile              Concerned file
- * @return Returns the length of the file, <= 0 if invalid
+ * @return The length of the file, <= 0 if invalid
  */
 orxS64 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
 {
@@ -1240,9 +1243,9 @@ orxS64 orxFASTCALL orxFile_GetSize(const orxFILE *_pstFile)
   return s64Result;
 }
 
-/** Retrieves a file's time of last modification
+/** Retrieves the last modification time of a file
  * @param[in] _pstFile              Concerned file
- * @return Returns the time of the last modification, in seconds, since epoch
+ * @return The time of the last modification, in seconds, since epoch
  */
 orxS64 orxFASTCALL orxFile_GetTime(const orxFILE *_pstFile)
 {
@@ -1286,11 +1289,11 @@ orxS64 orxFASTCALL orxFile_GetTime(const orxFILE *_pstFile)
 /** Prints a formatted string to a file
  * @param[in] _pstFile             Pointer to the file descriptor
  * @param[in] _zString             Formatted string
- * @return Returns the number of written characters
+ * @return The number of written characters
  */
 orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, const orxSTRING _zString, ...)
 {
-  orxS32 s32Result = 0;
+  orxS32 s32Result;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -1306,39 +1309,33 @@ orxS32 orxCDECL orxFile_Print(orxFILE *_pstFile, const orxSTRING _zString, ...)
     s32Result = vfprintf((FILE *)_pstFile, _zString, stArgs);
     va_end(stArgs);
   }
+  else
+  {
+    /* Updates result */
+    s32Result = 0;
+  }
 
   /* Done! */
   return s32Result;
 }
 
-/** Closes an oppened file
- * @param[in] _pstFile             File's pointer to close
- * @return Returns the status of the operation
+/** Closes an opened file
+ * @param[in] _pstFile             Concerned file
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxFile_Close(orxFILE *_pstFile)
 {
-  /* Default return value */
-  orxSTATUS eRet = orxSTATUS_FAILURE;
+  orxSTATUS eResult;
 
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
-
-  /* Checks inputs */
   orxASSERT(_pstFile != orxNULL);
 
-  /* valid ? */
-  if(_pstFile != orxNULL)
-  {
-    /* Close file pointer */
-    if(fclose((FILE *)_pstFile) == 0)
-    {
-      /* Success ! */
-      eRet = orxSTATUS_SUCCESS;
-    }
-  }
+  /* Closes it */
+  eResult = (fclose((FILE *)_pstFile) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
 
-  /* return success status */
-  return eRet;
+  /* Done! */
+  return eResult;
 }
 
 #ifdef __orxMSVC__
