@@ -3987,6 +3987,17 @@ void orxFASTCALL orxConfig_CommandReload(orxU32 _u32ArgNumber, const orxCOMMAND_
   return;
 }
 
+/** Command: Clear
+ */
+void orxFASTCALL orxConfig_CommandClear(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxConfig_Clear(orxNULL) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
 /** Command: GetOrigin
  */
 void orxFASTCALL orxConfig_CommandGetOrigin(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -4514,9 +4525,10 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, Load, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"FileName", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: Save */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 2, {"FileName", orxCOMMAND_VAR_TYPE_STRING}, {"OnlyOrigin = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Encrypt = false", orxCOMMAND_VAR_TYPE_BOOL});
-
   /* Command: Reload */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, Reload, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
+  /* Command: Clear */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, Clear, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
 
   /* Command: GetOrigin */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetOrigin, "Origin", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
@@ -4565,6 +4577,8 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCommand_AddAlias("Save", "Config.Save", orxNULL);
   /* Alias: Reload */
   orxCommand_AddAlias("Reload", "Config.Reload", orxNULL);
+  /* Alias: Clear */
+  orxCommand_AddAlias("Clear", "Config.Clear", orxNULL);
 
   /* Alias: Set */
   orxCommand_AddAlias("Set", "Config.SetValue", orxNULL);
@@ -4595,6 +4609,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCommand_RemoveAlias("Save");
   /* Alias: Reload */
   orxCommand_RemoveAlias("Reload");
+  /* Alias: Clear */
+  orxCommand_RemoveAlias("Clear");
 
   /* Alias: Set */
   orxCommand_RemoveAlias("Set");
@@ -4617,6 +4633,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Save);
   /* Command: Reload */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Reload);
+  /* Command: Clear */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Clear);
 
   /* Command: GetOrigin */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetOrigin);
