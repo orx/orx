@@ -3992,7 +3992,7 @@ void orxFASTCALL orxConfig_CommandReload(orxU32 _u32ArgNumber, const orxCOMMAND_
 void orxFASTCALL orxConfig_CommandClear(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->bValue = (orxConfig_Clear(orxNULL) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+  _pstResult->bValue = (orxConfig_Clear(((_u32ArgNumber > 0) && (_astArgList[0].bValue != orxFALSE)) ? orxConfig_OriginClearCallback : orxNULL) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
 
   /* Done! */
   return;
@@ -4528,7 +4528,7 @@ static orxINLINE void orxConfig_RegisterCommands()
   /* Command: Reload */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, Reload, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
   /* Command: Clear */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, Clear, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, Clear, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"OnlyWithOrigin = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: GetOrigin */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetOrigin, "Origin", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
