@@ -3301,11 +3301,15 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
           }
           else
           {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete include name %c%.*s: '%c' terminator not found, skipping!", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
+            /* Not at end of buffer */
+            if(pc < _acBuffer + _u32Size)
+            {
+              /* Logs message */
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[%s]: Incomplete include name %c%.*s: '%c' terminator not found, skipping!", _zName, orxCONFIG_KC_INHERITANCE_MARKER, pc - (pcLineStart + 1), pcLineStart + 1, orxCONFIG_KC_INHERITANCE_MARKER);
 
-            /* Updates new line start */
-            pcLineStart = pc + 1;
+              /* Updates new line start */
+              pcLineStart = pc + 1;
+            }
           }
 
           break;
@@ -3983,6 +3987,17 @@ void orxFASTCALL orxConfig_CommandReload(orxU32 _u32ArgNumber, const orxCOMMAND_
   return;
 }
 
+/** Command: Clear
+ */
+void orxFASTCALL orxConfig_CommandClear(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->bValue = (orxConfig_Clear(((_u32ArgNumber > 0) && (_astArgList[0].bValue != orxFALSE)) ? orxConfig_OriginClearCallback : orxNULL) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return;
+}
+
 /** Command: GetOrigin
  */
 void orxFASTCALL orxConfig_CommandGetOrigin(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -4510,9 +4525,10 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, Load, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"FileName", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: Save */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, Save, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 1, 2, {"FileName", orxCOMMAND_VAR_TYPE_STRING}, {"OnlyOrigin = false", orxCOMMAND_VAR_TYPE_BOOL}, {"Encrypt = false", orxCOMMAND_VAR_TYPE_BOOL});
-
   /* Command: Reload */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, Reload, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 0);
+  /* Command: Clear */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, Clear, "Success?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"OnlyWithOrigin = false", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: GetOrigin */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetOrigin, "Origin", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING});
@@ -4561,6 +4577,8 @@ static orxINLINE void orxConfig_RegisterCommands()
   orxCommand_AddAlias("Save", "Config.Save", orxNULL);
   /* Alias: Reload */
   orxCommand_AddAlias("Reload", "Config.Reload", orxNULL);
+  /* Alias: Clear */
+  orxCommand_AddAlias("Clear", "Config.Clear", orxNULL);
 
   /* Alias: Set */
   orxCommand_AddAlias("Set", "Config.SetValue", orxNULL);
@@ -4591,6 +4609,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCommand_RemoveAlias("Save");
   /* Alias: Reload */
   orxCommand_RemoveAlias("Reload");
+  /* Alias: Clear */
+  orxCommand_RemoveAlias("Clear");
 
   /* Alias: Set */
   orxCommand_RemoveAlias("Set");
@@ -4613,6 +4633,8 @@ static orxINLINE void orxConfig_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Save);
   /* Command: Reload */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Reload);
+  /* Command: Clear */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, Clear);
 
   /* Command: GetOrigin */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Config, GetOrigin);

@@ -241,6 +241,7 @@ static orxRESOURCE_STATIC sstResource;
 static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
   orxFILE_INFO    stInfo;
+  orxFILE        *pstFile = orxNULL;
   const orxSTRING zResult = orxNULL;
 
   /* Default storage? */
@@ -255,13 +256,22 @@ static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGro
     orxString_NPrint(sstResource.acFileLocationBuffer, sizeof(sstResource.acFileLocationBuffer), "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
   }
 
-  /* Exists or doesn't require existence? */
-  if((_bRequireExistence == orxFALSE)
-  || ((orxFile_GetInfo(sstResource.acFileLocationBuffer, &stInfo) != orxSTATUS_FAILURE)
-   && !orxFLAG_TEST(stInfo.u32Flags, orxFILE_KU32_FLAG_INFO_DIRECTORY)))
+  /* Exists or doesn't require existence and can be created? */
+  if(((orxFile_GetInfo(sstResource.acFileLocationBuffer, &stInfo) != orxSTATUS_FAILURE)
+   && !orxFLAG_TEST(stInfo.u32Flags, orxFILE_KU32_FLAG_INFO_DIRECTORY))
+  || ((_bRequireExistence == orxFALSE)
+   && ((pstFile = orxFile_Open(sstResource.acFileLocationBuffer, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL)))
   {
     /* Updates result */
     zResult = sstResource.acFileLocationBuffer;
+
+    /* Has temporary file? */
+    if(pstFile != orxNULL)
+    {
+      /* Removes it */
+      orxFile_Close(pstFile);
+      orxFile_Delete(sstResource.acFileLocationBuffer);
+    }
   }
 
   /* Done! */
@@ -2717,7 +2727,7 @@ orxS64 orxFASTCALL orxResource_Tell(orxHANDLE _hResource)
 /** Reads data from a resource
  * @param[in] _hResource        Concerned resource
  * @param[in] _s64Size          Size to read (in bytes)
- * @param[out] _pBuffer         Buffer that will be filled by the read data
+ * @param[out] _pBuffer         Buffer that will be filled with the read data
  * @param[in] _pfnCallback      Callback that will get called after asynchronous operation; if orxNULL, operation will be synchronous
  * @param[in] _pContext         Context that will be transmitted to the callback when called
  * @return Size of the read data, in bytes or -1 for successful asynchronous call

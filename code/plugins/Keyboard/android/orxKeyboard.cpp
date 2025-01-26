@@ -285,7 +285,7 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
     case orxANDROID_EVENT_KEY_DOWN:
     {
       eKey = orxKeyboard_Android_GetKey(pstPayload->stKey.u32KeyCode);
-      if (eKey != orxKEYBOARD_KEY_NONE)
+      if(eKey != orxKEYBOARD_KEY_NONE)
       {
         sstKeyboard.abKeyPressed[eKey] = orxTRUE;
 
@@ -295,7 +295,7 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
                 (sstKeyboard.u32KeyWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
 
         /* Full? */
-        if (sstKeyboard.u32KeyReadIndex == sstKeyboard.u32KeyWriteIndex)
+        if(sstKeyboard.u32KeyReadIndex == sstKeyboard.u32KeyWriteIndex)
         {
           /* Bounces read index */
           sstKeyboard.u32KeyReadIndex =

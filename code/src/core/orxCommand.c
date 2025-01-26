@@ -2039,6 +2039,58 @@ void orxFASTCALL orxCommand_CommandModulo(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
+/* Command: Power */
+void orxFASTCALL orxCommand_CommandPower(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxCOMMAND_VAR astOperandList[2];
+
+  /* Parses numerical arguments */
+  if(orxCommand_ParseNumericalArguments(_u32ArgNumber, _astArgList, astOperandList) != orxSTATUS_FAILURE)
+  {
+    /* Both floats? */
+    if((astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+    && (astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT))
+    {
+      /* Prints value */
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%g", orxMath_Pow(astOperandList[0].fValue, astOperandList[1].fValue));
+    }
+    else
+    {
+      orxVECTOR vResult;
+
+      /* Is operand1 a float? */
+      if(astOperandList[0].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[0].vValue), astOperandList[0].fValue);
+      }
+      /* Is operand2 a float? */
+      else if(astOperandList[1].eType == orxCOMMAND_VAR_TYPE_FLOAT)
+      {
+        /* Converts it */
+        orxVector_SetAll(&(astOperandList[1].vValue), astOperandList[1].fValue);
+      }
+
+      /* Updates intermediate result */
+      orxVector_Pow(&vResult, &(astOperandList[0].vValue), &(astOperandList[1].vValue));
+
+      /* Prints it */
+      orxString_NPrint(sstCommand.acResultBuffer, sizeof(sstCommand.acResultBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+    }
+
+    /* Updates result */
+    _pstResult->zValue = sstCommand.acResultBuffer;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = orxSTRING_EMPTY;
+  }
+
+  /* Done! */
+  return;
+}
+
 /* Command: Absolute */
 void orxFASTCALL orxCommand_CommandAbsolute(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -2951,6 +3003,8 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Divide, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
   /* Command: Modulo */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Modulo, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
+  /* Command: Power */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, Power, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 2, 0, {"Operand1", orxCOMMAND_VAR_TYPE_NUMERIC}, {"Operand2", orxCOMMAND_VAR_TYPE_NUMERIC});
   /* Command: Absolute */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, Absolute, "Result", orxCOMMAND_VAR_TYPE_NUMERIC, 1, 0, {"Operand", orxCOMMAND_VAR_TYPE_NUMERIC});
   /* Command: Negate */
@@ -3093,6 +3147,8 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("Math.Div", "Command.Divide", orxNULL);
   /* Alias: Math.Mod */
   orxCommand_AddAlias("Math.Mod", "Command.Modulo", orxNULL);
+  /* Alias: Math.Pow */
+  orxCommand_AddAlias("Math.Pow", "Command.Power", orxNULL);
   /* Alias: Math.Abs */
   orxCommand_AddAlias("Math.Abs", "Command.Absolute", orxNULL);
   /* Alias: Math.Neg */
@@ -3108,6 +3164,8 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("/", "Math.Div", orxNULL);
   /* Alias: Mod */
   orxCommand_AddAlias("Mod", "Math.Mod", orxNULL);
+  /* Alias: Pow */
+  orxCommand_AddAlias("Pow", "Math.Pow", orxNULL);
   /* Alias: Abs */
   orxCommand_AddAlias("Abs", "Math.Abs", orxNULL);
   /* Alias: Neg */
@@ -3292,6 +3350,8 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("Math.Div");
   /* Alias: Math.Mod */
   orxCommand_RemoveAlias("Math.Mod");
+  /* Alias: Math.Pow */
+  orxCommand_RemoveAlias("Math.Pow");
   /* Alias: Math.Abs */
   orxCommand_RemoveAlias("Math.Abs");
   /* Alias: Math.Neg */
@@ -3307,6 +3367,8 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("/");
   /* Alias: Mod */
   orxCommand_RemoveAlias("Mod");
+  /* Alias: Pow */
+  orxCommand_RemoveAlias("Pow");
   /* Alias: Abs */
   orxCommand_RemoveAlias("Abs");
   /* Alias: Neg */
@@ -3473,6 +3535,8 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Divide);
   /* Command: Modulo */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Modulo);
+  /* Command: Power */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Power);
   /* Command: Absolute */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, Absolute);
   /* Command: Negate */
