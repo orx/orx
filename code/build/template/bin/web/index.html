@@ -101,7 +101,19 @@
         fullscreenBtn.addEventListener('click', function() {
             Module.requestFullscreen(false, true);
         });
+
+        // Listen for the F11 key (or Ctrl + F11) for fullscreen toggle
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'F11' || (event.ctrlKey && event.key === 'F11')) {
+                event.preventDefault();
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else {
+                    Module.requestFullscreen(false, true);
+                }
+            }
+        });
     </script>
-    <script async src=[name].js></script>
+    <script async src="[name].js"></script>
 </body>
 </html>
