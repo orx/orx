@@ -25,6 +25,15 @@
             position: relative;
         }
 
+        #canvas-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
         #canvas {
             display: block;
             max-width: 100%;
@@ -55,12 +64,13 @@
     </style>
 </head>
 <body>
-    <!-- Canvas that Emscripten uses -->
-    <canvas id="canvas"></canvas>
+    <!-- Canvas -->
+    <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
 
     <!-- Fullscreen Button -->
     <button id="fullscreen-btn">
-        <!-- Font Awesome maximize icon -->
         <i class="fas fa-expand"></i>
     </button>
 
@@ -70,30 +80,14 @@
             canvas: document.getElementById('canvas'),
             totalMemory: 268435456,     // Adjust memory size based on your game
             crossOriginIsolated: true,  // Make sure this is set
-            onresize: function() {
-                var canvas = Module.canvas;
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
+            glfwOnWindowCreated: (glfwWindow, selector) => {
+                Module.glfwMakeCanvasResizable(glfwWindow, "#canvas-container");
+            },
         };
 
-        // Resize canvas to fit screen on load
-        window.addEventListener("resize", function() {
-            if (Module.canvas) {
-                Module.canvas.width = window.innerWidth;
-                Module.canvas.height = window.innerHeight;
-            }
-        });
-
-        // Add cross-origin isolation headers when page is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof SharedArrayBuffer !== 'undefined') {
-                try {
-                    document.domain = location.hostname;
-                } catch (e) {
-                    console.error("Error setting cross-origin isolation", e);
-                }
-            }
+        // Prevent context menu on right-click over the canvas
+        Module.canvas.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
         });
 
         // Fullscreen button
@@ -106,11 +100,7 @@
         document.addEventListener('keydown', function(event) {
             if (event.key === 'F11' || (event.ctrlKey && event.key === 'F11')) {
                 event.preventDefault();
-                if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                } else {
-                    Module.requestFullscreen(false, true);
-                }
+                Module.requestFullscreen(false, true);
             }
         });
     </script>

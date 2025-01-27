@@ -81,7 +81,7 @@
 #include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
 
 /* Others */
-#else /* __orxANDROID__ */
+#else
 
 /** Includes all plugins to embed
  */
