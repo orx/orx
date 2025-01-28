@@ -58,8 +58,8 @@ apply-template: function [
     set var append copy [{-=dummy=-}] collect [foreach entry templates [if with context? 'entry condition [keep reduce ['| to-string entry]]]]
   ]
   clean-chars: charset [#"0" - #"9" #"a" - #"z" #"A" - #"Z" #"_"]
-  template-rule: [(sanitize: no) begin-template: {[} opt [{!} (sanitize: yes)] [{=} (override: false) copy value to {]} | copy value template] {]} end-template: (
-      if find templates value: load trim value [value: copy get value]
+  template-rule: [(sanitize: no) begin-template: {[} opt [{!} (sanitize: yes)] [{=} (value: copy {}) opt [copy value template] {]} (override: false) | copy value template {]}] end-template: (
+      if find templates value: load to-string trim value [value: copy get value]
       if sanitize [parse value [some [clean-chars | char: skip (change char #"_")]]]
       end-template: change/part begin-template value end-template
     ) :end-template
