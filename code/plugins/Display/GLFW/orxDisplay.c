@@ -5374,6 +5374,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     iDepth        = (int)((_pstVideoMode->u32Depth != 0) ? _pstVideoMode->u32Depth : sstDisplay.u32DefaultDepth);
     iRefreshRate  = (int)((_pstVideoMode->u32RefreshRate != 0) ? _pstVideoMode->u32RefreshRate : sstDisplay.u32DefaultRefreshRate);
 
+#ifndef __orxWEB__
     /* Doesn't allow resize? */
     if(orxConfig_GetBool(orxDISPLAY_KZ_CONFIG_ALLOW_RESIZE) == orxFALSE)
     {
@@ -5381,6 +5382,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE, orxDISPLAY_KU32_STATIC_FLAG_NONE);
     }
     else
+#endif /* __orxWEB__ */
     {
       /* Updates flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE);

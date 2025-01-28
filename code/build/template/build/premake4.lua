@@ -157,7 +157,7 @@ solution "[name]"
         kind ("WindowedApp")
 
     configuration {"web"}
-        targetextension ".html"
+        targetextension ".js"
         targetsuffix ""
         targetdir "../bin/web"
         buildoptions

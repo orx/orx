@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[name]</title>
+    
+    <!-- Required headers for cross-origin isolation -->
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #canvas-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #canvas {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        /* Fullscreen button styling */
+        #fullscreen-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Font Awesome icon styling */
+        #fullscreen-btn i {
+            color: white;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Canvas -->
+    <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <!-- Fullscreen Button -->
+    <button id="fullscreen-btn">
+        <i class="fas fa-expand"></i>
+    </button>
+
+    <script>
+        // Emscripten's Module settings
+        var Module = {
+            canvas: document.getElementById('canvas'),
+            totalMemory: 268435456,     // Adjust memory size based on your game
+            crossOriginIsolated: true,  // Make sure this is set
+            glfwOnWindowCreated: (glfwWindow, selector) => {
+                Module.glfwMakeCanvasResizable(glfwWindow, "#canvas-container");
+            },
+        };
+
+        // Prevent context menu on right-click over the canvas
+        Module.canvas.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+        });
+
+        // Fullscreen button
+        document.getElementById('fullscreen-btn').addEventListener('click', function() {
+            Module.requestFullscreen(false, true);
+        });
+
+        // Listen for the F11 key (or Ctrl + F11) for fullscreen toggle
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'F11' || (event.ctrlKey && event.key === 'F11')) {
+                event.preventDefault();
+                Module.requestFullscreen(false, true);
+            }
+        });
+    </script>
+    <script async src="[name].js"></script>
+</body>
+</html>

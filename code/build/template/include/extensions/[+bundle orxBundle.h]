@@ -515,6 +515,22 @@ static orxINLINE orxSTATUS orxBundle_Process()
         // Selects it
         orxConfig_SelectSection(zSection);
 
+        // Has an animation set?
+        if(orxConfig_HasValue("AnimationSet") != orxFALSE)
+        {
+          orxOBJECT *pstObject;
+
+          // Creates the object
+          pstObject = orxObject_CreateFromConfig(zSection);
+
+          // Success?
+          if(pstObject != orxNULL)
+          {
+            // Deletes it
+            orxObject_Delete(pstObject);
+          }
+        }
+
         // For all keys
         for(j = 0, jCount = orxConfig_GetKeyCount(); j < jCount; j++)
         {
@@ -528,7 +544,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
           || (orxString_Compare(zKey, orxBUNDLE_KZ_CONFIG_INCLUDE_LIST) == 0))
           {
             orxU32 k, kCount;
-            
+
             // For all its values
             for(k = 0, kCount = orxConfig_GetListCount(zKey); k < kCount; k++)
             {
@@ -970,7 +986,7 @@ static orxSTATUS orxFASTCALL orxBundle_EventHandler(const orxEVENT *_pstEvent)
   {
     // Checks
     orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
-    
+
     // Param ready?
     if(_pstEvent->eID == orxSYSTEM_EVENT_PARAM_READY)
     {
