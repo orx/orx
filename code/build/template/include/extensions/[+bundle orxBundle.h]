@@ -37,6 +37,7 @@ const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 #define orxBUNDLE_KZ_CONFIG_SECTION         "Bundle"
 #define orxBUNDLE_KZ_CONFIG_INCLUDE_LIST    "IncludeList"
 #define orxBUNDLE_KZ_CONFIG_EXCLUDE_LIST    "ExcludeList"
+#define orxBUNDLE_KZ_CONFIG_EXTENSIVE       "Extensive"
 #define orxBUNDLE_KZ_LOG_TAG                orxANSI_KZ_COLOR_FG_YELLOW "[BUNDLE] " orxANSI_KZ_COLOR_RESET
 #define orxBUNDLE_KZ_RESOURCE_FORMAT        orxANSI_KZ_COLOR_FG_MAGENTA "[%s|%s]" orxANSI_KZ_COLOR_RESET
 #define orxBUNDLE_KU32_BUFFER_SIZE          16384
@@ -458,7 +459,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
     orxBANK      *pstResourceBank;
     orxHASHTABLE *pstRuleTable, *pstDiscoveryTable;
     orxU32        i, j, iCount, jCount, u32GroupCount, u32ConfigHistoryExtensionLength;
-    orxBOOL       bBinary;
+    orxBOOL       bBinary, bExtensive;
 
     // Gets begin time
     dBeginTime = orxSystem_GetSystemTime();
@@ -478,6 +479,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
 
     // Pushes bundle section
     orxConfig_PushSection(orxBUNDLE_KZ_CONFIG_SECTION);
+
+    // Updates status
+    bExtensive = orxConfig_GetBool(orxBUNDLE_KZ_CONFIG_EXTENSIVE);
 
     // For all rule lists
     for(i = 0, iCount = orxARRAY_GET_ITEM_COUNT(astRuleInfoList); i < iCount; i++)
@@ -515,8 +519,8 @@ static orxINLINE orxSTATUS orxBundle_Process()
         // Selects it
         orxConfig_SelectSection(zSection);
 
-        // Has an animation set?
-        if(orxConfig_HasValue("AnimationSet") != orxFALSE)
+        // Extensive mode & has an animation set?
+        if((bExtensive != orxFALSE) && (orxConfig_HasValue("AnimationSet") != orxFALSE))
         {
           orxOBJECT *pstObject;
 
