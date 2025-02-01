@@ -5783,6 +5783,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxOBJECT *pstResult;
 
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxObject_CreateFromConfig");
+
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxASSERT(_zConfigID != orxNULL);
@@ -7278,6 +7281,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
     /* Updates result */
     pstResult = orxNULL;
   }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return pstResult;
