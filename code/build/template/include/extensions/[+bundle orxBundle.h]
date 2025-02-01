@@ -1042,7 +1042,7 @@ static orxSTATUS orxFASTCALL orxBundle_EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
-// Locate function, returns NULL if it can't handle the storage or if the resource can't be found in this storage
+// Locate: returns NULL if it can't handle the storage or if the resource can't be found in this storage
 const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
   static orxCHAR  sacBuffer[512];
@@ -1221,7 +1221,7 @@ const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, const orxS
   return zResult;
 }
 
-// Open function: returns an opaque handle for subsequent function calls (GetSize, Seek, Tell, Read and Close) upon success, orxHANDLE_UNDEFINED otherwise
+// Open: returns an handle for subsequent function calls (GetSize, Seek, Tell, Read and Close) upon success, orxHANDLE_UNDEFINED otherwise
 orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
@@ -1362,7 +1362,7 @@ orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL _bErase
   return hResult;
 }
 
-// Close function: releases all that has been allocated in Open
+// Close: releases all that has been allocated in Open
 void orxFASTCALL orxBundle_Close(orxHANDLE _hResource)
 {
   BundleResource *pstResource;
@@ -1384,7 +1384,7 @@ void orxFASTCALL orxBundle_Close(orxHANDLE _hResource)
   return;
 }
 
-// GetSize function: simply returns the size of the extracted resource, in bytes
+// GetSize: returns the size of the resource, in bytes
 orxS64 orxFASTCALL orxBundle_GetSize(orxHANDLE _hResource)
 {
   BundleResource *pstResource;
@@ -1400,7 +1400,7 @@ orxS64 orxFASTCALL orxBundle_GetSize(orxHANDLE _hResource)
   return s64Result;
 }
 
-// Seek function: position the read cursor inside the data and returns the offset from start upon success or -1 upon failure
+// Seek: position the read cursor inside the data and returns the offset from start upon success or -1 otherwise
 orxS64 orxFASTCALL orxBundle_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence)
 {
   BundleResource *pstResource;
@@ -1457,7 +1457,7 @@ orxS64 orxFASTCALL orxBundle_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSE
   return s64Cursor;
 }
 
-// Tell function: returns current read cursor
+// Tell: returns current read cursor
 orxS64 orxFASTCALL orxBundle_Tell(orxHANDLE _hResource)
 {
   orxS64 s64Result;
@@ -1469,7 +1469,7 @@ orxS64 orxFASTCALL orxBundle_Tell(orxHANDLE _hResource)
   return s64Result;
 }
 
-// Read function: copies the requested amount of data, in bytes, to the given buffer and returns the amount of bytes copied
+// Read: copies the requested amount of data, in bytes, to the given buffer and returns the amount of copied bytes
 orxS64 orxFASTCALL orxBundle_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pu8Buffer)
 {
   BundleResource *pstResource;
