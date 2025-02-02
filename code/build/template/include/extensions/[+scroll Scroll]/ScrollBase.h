@@ -289,7 +289,7 @@ public:
 
                 ScrollObject *  PickObject(const orxVECTOR &_rvPosition, orxSTRINGID _stGroupID = orxSTRINGID_UNDEFINED) const;
                 ScrollObject *  PickObject(const orxVECTOR &_rvPosition, const orxVECTOR *_avOffsetList, orxU32 _u32ListSize, orxSTRINGID _stGroupID = orxSTRINGID_UNDEFINED) const;
-                ScrollObject *  PickObject(const orxVECTOR &_rvPosition, const orxVECTOR &_rvExtent, orxSTRINGID _u32GroupID = orxSTRINGID_UNDEFINED) const;
+                ScrollObject *  PickObject(const orxVECTOR &_rvPosition, const orxVECTOR &_rvExtent, orxSTRINGID _stGroupID = orxSTRINGID_UNDEFINED) const;
                 ScrollObject *  PickObject(const orxOBOX &_rstBox, orxSTRINGID _stGroupID = orxSTRINGID_UNDEFINED) const;
 
 
