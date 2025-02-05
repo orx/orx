@@ -39,23 +39,22 @@ void	SteDac::Write8(int ad, uint8_t data)
 		switch (ad)
 		{
 		case 0x1:
-		{
 			if ((data & 1) && ((data^m_regs[1]) & 1))
 			{
 				// replay just started
 				FetchSamplePtr();
 			}
-		}
-		break;
+			break;
 		case 0x7:
 		case 0xd:
 			data &= 0xfe;
-			case 0x21:
-				if ((data & 3) != (m_regs[0x21]&3))
-				{
-					m_50Acc = 0;
-					m_50to25 = false;
-				}
+			break;
+		case 0x21:
+			if ((data & 3) != (m_regs[0x21]&3))
+			{
+				m_50Acc = 0;
+				m_50to25 = false;
+			}
 			break;
 		default:
 			break;
