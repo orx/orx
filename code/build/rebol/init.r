@@ -103,8 +103,8 @@ apply-template: function [
 change-dir root: system/options/path
 code-path: {..}
 date: to-string now/date
-switch platform: system/build/os [
-  macos [platform: 'mac code-path: to-local-file root/code]
+switch platform: system/platform [
+  macos [platform: 'Mac code-path: to-local-file root/code]
 ]
 platform-info: platforms/:platform
 premake-source: rejoin [%../ platform-info/premake]
