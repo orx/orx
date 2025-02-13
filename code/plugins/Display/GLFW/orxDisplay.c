@@ -4409,7 +4409,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBit
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_apstBitmapList != orxNULL)
+  orxASSERT(_apstBitmapList != orxNULL);
 
   /* Has framebuffer support? */
   if(orxFLAG_TEST(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_FRAMEBUFFER))

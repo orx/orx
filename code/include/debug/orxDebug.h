@@ -316,20 +316,26 @@ while(orxFALSE)
 
   /* Assert */
   #if defined(__orxGCC__) || defined(__orxLLVM__)
-    #define orxASSERT(TEST, ...)                                                                                                                                          \
-      if(!(TEST))                                                                                                                                                         \
-      {                                                                                                                                                                   \
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, orxANSI_KZ_COLOR_BG_RED orxANSI_KZ_COLOR_FG_WHITE orxANSI_KZ_COLOR_BLINK_ON "FAILED ASSERTION [" #TEST "]", ##__VA_ARGS__); \
-        orxBREAK();                                                                                                                                                       \
-      }
+    #define orxASSERT(TEST, ...)                                                                                                                                            \
+      do                                                                                                                                                                    \
+      {                                                                                                                                                                     \
+        if(!(TEST))                                                                                                                                                         \
+        {                                                                                                                                                                   \
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, orxANSI_KZ_COLOR_BG_RED orxANSI_KZ_COLOR_FG_WHITE orxANSI_KZ_COLOR_BLINK_ON "FAILED ASSERTION [" #TEST "]", ##__VA_ARGS__); \
+          orxBREAK();                                                                                                                                                       \
+        }                                                                                                                                                                   \
+      } while(orxFALSE)
   #else /* __orxGCC__ || __orxLLVM__ */
     #ifdef __orxMSVC__
-      #define orxASSERT(TEST, ...)                                                                                                                                        \
-        if(!(TEST))                                                                                                                                                       \
-        {                                                                                                                                                                 \
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, orxANSI_KZ_COLOR_BG_RED orxANSI_KZ_COLOR_FG_WHITE orxANSI_KZ_COLOR_BLINK_ON "FAILED ASSERTION [" #TEST "]", __VA_ARGS__); \
-          orxBREAK();                                                                                                                                                     \
-        }
+      #define orxASSERT(TEST, ...)                                                                                                                                          \
+        do                                                                                                                                                                  \
+        {                                                                                                                                                                   \
+          if(!(TEST))                                                                                                                                                       \
+          {                                                                                                                                                                 \
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, orxANSI_KZ_COLOR_BG_RED orxANSI_KZ_COLOR_FG_WHITE orxANSI_KZ_COLOR_BLINK_ON "FAILED ASSERTION [" #TEST "]", __VA_ARGS__); \
+            orxBREAK();                                                                                                                                                     \
+          }                                                                                                                                                                 \
+        } while(orxFALSE)
     #endif /* __orxMSVC__ */
   #endif /* __orcGCC__ || __orxLLVM__ */
 

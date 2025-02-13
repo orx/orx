@@ -115,7 +115,7 @@ static orxINLINE orxSTATUS orxScreenshot_ComputeIndex()
   orxSTATUS       eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
-  orxASSERT(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY)
+  orxASSERT(sstScreenshot.u32Flags & orxSCREENSHOT_KU32_STATIC_FLAG_READY);
 
   /* Uses default directory, base name, extension & digits */
   zDirectory  = orxSCREENSHOT_KZ_DEFAULT_DIRECTORY_NAME;
