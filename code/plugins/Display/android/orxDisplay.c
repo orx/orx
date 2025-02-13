@@ -3316,7 +3316,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_apstBitmapList != orxNULL)
+  orxASSERT(_apstBitmapList != orxNULL);
 
   /* Too many destinations? */
   if(_u32Number > (orxU32)sstDisplay.iDrawBufferNumber)
