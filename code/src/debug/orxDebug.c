@@ -473,7 +473,7 @@ void orxFASTCALL _orxDebug_Break()
     #ifdef __orxGCC__
 
       /* Requires GCC >= 4.2.4 */
-      orxASSERT((__GNUC__ > 4) || ((__GNUC__ == 4) && ((__GNUC_MINOR__ > 2) || ((__GNUC_MINOR__ == 2) && (__GNUC_PATCHLEVEL__ > 3)))))
+      orxASSERT((__GNUC__ > 4) || ((__GNUC__ == 4) && ((__GNUC_MINOR__ > 2) || ((__GNUC_MINOR__ == 2) && (__GNUC_PATCHLEVEL__ > 3)))));
 
     #endif /* __orxGCC__ */
 
