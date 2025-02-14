@@ -6403,6 +6403,16 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
             /* Gets world space values */
             orxVector_Mul(&vScale, orxVector_Div(&vScale, &vScale, &vSize), &vParentSize);
+
+            /* Updates uniform scaling if needed */
+            if(vScale.fX == orxFLOAT_0)
+            {
+              vScale.fX = vScale.fY;
+            }
+            else if(vScale.fY == orxFLOAT_0)
+            {
+              vScale.fY = vScale.fX;
+            }
           }
 
           /* Updates object scale */
