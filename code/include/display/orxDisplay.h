@@ -928,7 +928,7 @@ extern orxDLLAPI void orxFASTCALL                     orxDisplay_DeleteBitmap(or
 
 /** Loads a bitmap from file (an event of ID orxDISPLAY_EVENT_BITMAP_LOAD will be sent upon completion, whether the loading is asynchronous or not)
  * @param[in]   _zFileName                            Name of the file to load
- * @return orxBITMAP * / orxNULL
+ * @return orxBITMAP / orxNULL
  */
 extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadBitmap(const orxSTRING _zFileName);
 
