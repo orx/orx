@@ -66,10 +66,6 @@
 
 #define orxFRAME_KU32_FLAG_DEPTH_SCALE                0x00000004  /**< Relative depth scaling flag */
 
-#define orxFRAME_KU32_FLAG_FLIP_X                     0x00000010  /**< X axis flipping flag */
-#define orxFRAME_KU32_FLAG_FLIP_Y                     0x00000020  /**< Y axis flipping flag */
-#define orxFRAME_KU32_MASK_FLIP_BOTH                  0x00000030  /**< Both axis flippinf mask */
-
 #define orxFRAME_KU32_FLAG_IGNORE_NONE                0x00000000  /**< Rotation, scale and position are affected by parent */
 #define orxFRAME_KU32_FLAG_IGNORE_ROTATION            0x00000100  /**< Rotation is unaffected by parent */
 #define orxFRAME_KU32_FLAG_IGNORE_SCALE_X             0x00000200  /**< Scale is unaffected by parent on X axis */

@@ -5863,7 +5863,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         orxVECTOR       vValue, vParentSize, vPosition, vScale, vPivotOverride;
         orxAABOX        stParentBox;
         const orxSTRING zAutoScrolling;
-        const orxSTRING zFlipping;
+        const orxSTRING zFlip;
         const orxSTRING zBodyName;
         const orxSTRING zClockName;
         const orxSTRING zSpawnerName;
@@ -5977,28 +5977,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         {
           /* Updates frame flags */
           u32FrameFlags = orxFRAME_KU32_FLAG_NONE;
-        }
-
-        /* Gets flipping value */
-        zFlipping = orxConfig_GetString(orxOBJECT_KZ_CONFIG_FLIP);
-
-        /* X flipping? */
-        if(orxString_ICompare(zFlipping, orxOBJECT_KZ_X) == 0)
-        {
-          /* Updates frame flags */
-          u32FrameFlags  |= orxFRAME_KU32_FLAG_FLIP_X;
-        }
-        /* Y flipping? */
-        else if(orxString_ICompare(zFlipping, orxOBJECT_KZ_Y) == 0)
-        {
-          /* Updates frame flags */
-          u32FrameFlags  |= orxFRAME_KU32_FLAG_FLIP_Y;
-        }
-        /* Both flipping? */
-        else if(orxString_ICompare(zFlipping, orxOBJECT_KZ_BOTH) == 0)
-        {
-          /* Updates frame flags */
-          u32FrameFlags  |= orxFRAME_KU32_FLAG_FLIP_X | orxFRAME_KU32_FLAG_FLIP_Y;
         }
 
         /* Depth scaling active? */
@@ -6326,7 +6304,39 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
-        /* *** Origin/Size/Pivot *** */
+        /* *** Flip/Origin/Size/Pivot *** */
+
+        /* Gets flip value */
+        zFlip = orxConfig_GetString(orxOBJECT_KZ_CONFIG_FLIP);
+
+        /* Valid? */
+        if(*zFlip != orxCHAR_NULL)
+        {
+          orxBOOL bFlipX = orxFALSE, bFlipY = orxFALSE;
+
+          /* X flipping? */
+          if(orxString_ICompare(zFlip, orxOBJECT_KZ_X) == 0)
+          {
+            /* Updates status */
+            bFlipX = orxTRUE;
+          }
+          /* Y flipping? */
+          else if(orxString_ICompare(zFlip, orxOBJECT_KZ_Y) == 0)
+          {
+            /* Updates status */
+            bFlipY = orxTRUE;
+          }
+          /* Both flipping? */
+          else if(orxString_ICompare(zFlip, orxOBJECT_KZ_BOTH) == 0)
+          {
+            /* Updates status */
+            bFlipX = orxTRUE;
+            bFlipY = orxTRUE;
+          }
+
+          /* Updates object flip */
+          orxObject_SetFlip(pstResult, bFlipX, bFlipY);
+        }
 
         /* Has origin? */
         if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_ORIGIN, &vValue) != orxNULL)
@@ -7939,70 +7949,21 @@ orxCLOCK *orxFASTCALL orxObject_GetClock(const orxOBJECT *_pstObject)
  */
 orxSTATUS orxFASTCALL orxObject_SetFlip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY)
 {
-  orxFRAME *pstFrame;
-  orxSTATUS eResult;
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets its frame */
-  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
 
   /* Valid? */
-  if(pstFrame != orxNULL)
+  if(pstGraphic != orxNULL)
   {
-    orxU32 u32Flags;
-
-    /* Updates flags */
-    u32Flags  = (_bFlipX != orxFALSE) ? orxFRAME_KU32_FLAG_FLIP_X : orxFRAME_KU32_FLAG_NONE;
-    u32Flags |= (_bFlipY != orxFALSE) ? orxFRAME_KU32_FLAG_FLIP_Y : orxFRAME_KU32_FLAG_NONE;
-
-    /* Updates frame */
-    orxStructure_SetFlags(pstFrame, u32Flags, orxFRAME_KU32_FLAG_FLIP_X | orxFRAME_KU32_FLAG_FLIP_Y);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Gets object flipping.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _pbFlipX        X axis flipping
- * @param[in]   _pbFlipY        Y axis flipping
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)
-{
-  orxFRAME *pstFrame;
-  orxSTATUS eResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pbFlipX != orxNULL);
-  orxASSERT(_pbFlipY != orxNULL);
-
-  /* Gets its frame */
-  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
-
-  /* Valid? */
-  if(pstFrame != orxNULL)
-  {
-    /* Updates flipping mode */
-    *_pbFlipX = orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_FLIP_X) ? orxTRUE : orxFALSE;
-    *_pbFlipY = orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_FLIP_Y) ? orxTRUE : orxFALSE;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    /* Sets graphic flip */
+    eResult = orxGraphic_SetFlip(pstGraphic, _bFlipX, _bFlipY);
   }
   else
   {
@@ -8023,7 +7984,7 @@ orxSTATUS orxFASTCALL orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_p
 orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR *_pvPivot)
 {
   orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxSTATUS   eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -8036,8 +7997,8 @@ orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR 
   /* Valid? */
   if(pstGraphic != orxNULL)
   {
-    /* Sets object pivot */
-    orxGraphic_SetPivot(pstGraphic, _pvPivot);
+    /* Sets graphic pivot */
+    eResult = orxGraphic_SetPivot(pstGraphic, _pvPivot);
   }
   else
   {
@@ -8112,7 +8073,7 @@ orxSTATUS orxFASTCALL orxObject_SetRelativePivot(orxOBJECT *_pstObject, orxU32 _
 orxSTATUS orxFASTCALL orxObject_SetOrigin(orxOBJECT *_pstObject, const orxVECTOR *_pvOrigin)
 {
   orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxSTATUS   eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -8125,8 +8086,8 @@ orxSTATUS orxFASTCALL orxObject_SetOrigin(orxOBJECT *_pstObject, const orxVECTOR
   /* Valid? */
   if(pstGraphic != orxNULL)
   {
-    /* Sets object origin */
-    orxGraphic_SetOrigin(pstGraphic, _pvOrigin);
+    /* Sets graphic origin */
+    eResult = orxGraphic_SetOrigin(pstGraphic, _pvOrigin);
   }
   else
   {
@@ -8153,7 +8114,7 @@ orxSTATUS orxFASTCALL orxObject_SetOrigin(orxOBJECT *_pstObject, const orxVECTOR
 orxSTATUS orxFASTCALL orxObject_SetSize(orxOBJECT *_pstObject, const orxVECTOR *_pvSize)
 {
   orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxSTATUS   eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -8166,8 +8127,8 @@ orxSTATUS orxFASTCALL orxObject_SetSize(orxOBJECT *_pstObject, const orxVECTOR *
   /* Valid? */
   if(pstGraphic != orxNULL)
   {
-    /* Sets object size */
-    orxGraphic_SetSize(pstGraphic, _pvSize);
+    /* Sets graphic size */
+    eResult = orxGraphic_SetSize(pstGraphic, _pvSize);
   }
   else
   {
@@ -8176,6 +8137,41 @@ orxSTATUS orxFASTCALL orxObject_SetSize(orxOBJECT *_pstObject, const orxVECTOR *
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Gets object flipping.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pbFlipX        X axis flipping
+ * @param[in]   _pbFlipY        Y axis flipping
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pbFlipX != orxNULL);
+  orxASSERT(_pbFlipY != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    eResult = orxGraphic_GetFlip(pstGraphic, _pbFlipX, _pbFlipY);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */

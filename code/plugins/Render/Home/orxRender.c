@@ -1562,7 +1562,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
         orxVECTOR         vPivot;
         orxSHADERPOINTER *pstShaderPointer;
         orxCOLOR          stColor;
-        orxBOOL           bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY;
+        orxBOOL           bGraphicFlipX, bGraphicFlipY;
 
         /* Gets its shader pointer */
         pstShaderPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstObject), SHADERPOINTER);
@@ -1581,16 +1581,15 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
         /* Gets graphic's pivot */
         orxGraphic_GetPivot(pstGraphic, &vPivot);
 
-        /* Gets object & graphic flipping */
-        orxObject_GetFlip(pstObject, &bObjectFlipX, &bObjectFlipY);
+        /* Gets graphic flip status */
         orxGraphic_GetFlip(pstGraphic, &bGraphicFlipX, &bGraphicFlipY);
 
-        /* Updates using combined flipping */
-        if(bObjectFlipX ^ bGraphicFlipX)
+        /* Updates scale */
+        if(bGraphicFlipX)
         {
           stPayload.stObject.pstTransform->fScaleX *= -orxFLOAT_1;
         }
-        if(bObjectFlipY ^ bGraphicFlipY)
+        if(bGraphicFlipY)
         {
           stPayload.stObject.pstTransform->fScaleY *= -orxFLOAT_1;
         }
