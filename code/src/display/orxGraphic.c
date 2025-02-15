@@ -52,22 +52,23 @@
 /** Graphic flags
  */
 #define orxGRAPHIC_KU32_FLAG_INTERNAL             0x10000000  /**< Internal structure handling flag  */
-#define orxGRAPHIC_KU32_FLAG_HAS_COLOR            0x20000000  /**< Has color flag  */
-#define orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE       0x40000000  /**< Has color flag  */
-#define orxGRAPHIC_KU32_FLAG_HAS_PIVOT            0x80000000  /**< Has pivot flag  */
-#define orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT       0x01000000  /**< Relative pivot flag */
-#define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x02000000  /**< Smoothing on flag  */
-#define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x04000000  /**< Smoothing off flag  */
-#define orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE        0x08000000  /**< Keep in cache flag */
+#define orxGRAPHIC_KU32_FLAG_HAS_FLIP             0x01000000  /**< Has flip flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_COLOR            0x02000000  /**< Has color flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_BLEND_MODE       0x04000000  /**< Has blend mode flag  */
+#define orxGRAPHIC_KU32_FLAG_HAS_PIVOT            0x08000000  /**< Has pivot flag  */
+#define orxGRAPHIC_KU32_FLAG_RELATIVE_PIVOT       0x00100000  /**< Relative pivot flag */
+#define orxGRAPHIC_KU32_FLAG_SMOOTHING_ON         0x00200000  /**< Smoothing on flag  */
+#define orxGRAPHIC_KU32_FLAG_SMOOTHING_OFF        0x00400000  /**< Smoothing off flag  */
+#define orxGRAPHIC_KU32_FLAG_KEEP_IN_CACHE        0x00800000  /**< Keep in cache flag */
 
 #define orxGRAPHIC_KU32_FLAG_BLEND_MODE_NONE      0x00000000  /**< Blend mode no flags */
 
-#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA     0x00100000  /**< Blend mode alpha flag */
-#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY  0x00200000  /**< Blend mode multiply flag */
-#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD       0x00400000  /**< Blend mode add flag */
-#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL    0x00800000  /**< Blend mode premul flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ALPHA     0x00010000  /**< Blend mode alpha flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_MULTIPLY  0x00020000  /**< Blend mode multiply flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_ADD       0x00040000  /**< Blend mode add flag */
+#define orxGRAPHIC_KU32_FLAG_BLEND_MODE_PREMUL    0x00080000  /**< Blend mode premul flag */
 
-#define orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL       0x00F00000  /**< Blend mode mask */
+#define orxGRAPHIC_KU32_MASK_BLEND_MODE_ALL       0x000F0000  /**< Blend mode mask */
 
 #define orxGRAPHIC_KU32_MASK_ALL                  0xFFFFFFFF  /**< All flags */
 
@@ -885,23 +886,30 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         /* Gets flipping value */
         zFlipping = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_FLIP);
 
-        /* X flipping? */
-        if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_X) == 0)
+        /* Valid? */
+        if(*zFlipping != orxCHAR_NULL)
         {
-          /* Updates frame flags */
-          u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X;
-        }
-        /* Y flipping? */
-        else if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_Y) == 0)
-        {
-          /* Updates frame flags */
-          u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_Y;
-        }
-        /* Both flipping? */
-        else if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_BOTH) == 0)
-        {
-          /* Updates frame flags */
-          u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X | orxGRAPHIC_KU32_FLAG_FLIP_Y;
+          /* X flipping? */
+          if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_X) == 0)
+          {
+            /* Updates flags */
+            u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X;
+          }
+          /* Y flipping? */
+          else if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_Y) == 0)
+          {
+            /* Updates flags */
+            u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_Y;
+          }
+          /* Both flipping? */
+          else if(orxString_ICompare(zFlipping, orxGRAPHIC_KZ_BOTH) == 0)
+          {
+            /* Updates flags */
+            u32Flags |= orxGRAPHIC_KU32_FLAG_FLIP_X | orxGRAPHIC_KU32_FLAG_FLIP_Y;
+          }
+
+          /* Updates flags */
+          u32Flags |= orxGRAPHIC_KU32_FLAG_HAS_FLIP;
         }
 
         /* Has color? */
@@ -914,7 +922,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
             orxVector_Mulf(&(pstResult->stColor.vRGB), &(pstResult->stColor.vRGB), orxCOLOR_NORMALIZER);
 
             /* Updates status */
-            orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+            u32Flags |= orxGRAPHIC_KU32_FLAG_HAS_COLOR;
           }
         }
         /* Has RGB values? */
@@ -924,7 +932,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_RGB, &(pstResult->stColor.vRGB));
 
           /* Updates status */
-          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+          u32Flags |= orxGRAPHIC_KU32_FLAG_HAS_COLOR;
         }
         /* Has HSL values? */
         else if(orxConfig_HasValueNoCheck(orxGRAPHIC_KZ_CONFIG_HSL) != orxFALSE)
@@ -936,7 +944,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           orxColor_FromHSLToRGB(&(pstResult->stColor), &(pstResult->stColor));
 
           /* Updates status */
-          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+          u32Flags |= orxGRAPHIC_KU32_FLAG_HAS_COLOR;
         }
         /* Has HSV values? */
         else if(orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_HSV) != orxFALSE)
@@ -948,7 +956,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           orxColor_FromHSVToRGB(&(pstResult->stColor), &(pstResult->stColor));
 
           /* Updates status */
-          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+          u32Flags |= orxGRAPHIC_KU32_FLAG_HAS_COLOR;
         }
 
         /* Has alpha? */
@@ -958,7 +966,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           orxColor_SetAlpha(&(pstResult->stColor), orxConfig_GetFloat(orxGRAPHIC_KZ_CONFIG_ALPHA));
 
           /* Updates status */
-          orxStructure_SetFlags(pstResult, orxGRAPHIC_KU32_FLAG_HAS_COLOR, orxGRAPHIC_KU32_FLAG_NONE);
+          u32Flags |= orxGRAPHIC_KU32_FLAG_HAS_COLOR;
         }
 
         /* Should repeat? */
@@ -1272,10 +1280,48 @@ orxSTATUS orxFASTCALL orxGraphic_SetFlip(orxGRAPHIC *_pstGraphic, orxBOOL _bFlip
   u32Flags |= (_bFlipY != orxFALSE) ? orxGRAPHIC_KU32_FLAG_FLIP_Y : orxGRAPHIC_KU32_FLAG_NONE;
 
   /* Updates status */
-  orxStructure_SetFlags(_pstGraphic, u32Flags, orxGRAPHIC_KU32_MASK_FLIP_BOTH);
+  orxStructure_SetFlags(_pstGraphic, u32Flags | orxGRAPHIC_KU32_FLAG_HAS_FLIP, orxGRAPHIC_KU32_MASK_FLIP_BOTH);
 
   /* Done! */
   return eResult;
+}
+
+/** Clears graphic flipping
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxGraphic_ClearFlip(orxGRAPHIC *_pstGraphic)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates status */
+  orxStructure_SetFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_NONE, orxGRAPHIC_KU32_MASK_FLIP_BOTH | orxGRAPHIC_KU32_FLAG_HAS_FLIP);
+
+  /* Done! */
+  return eResult;
+}
+
+/** Graphic has flip accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxGraphic_HasFlip(const orxGRAPHIC *_pstGraphic)
+{
+  orxBOOL bResult;
+
+  /* Checks */
+  orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstGraphic);
+
+  /* Updates result */
+  bResult = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_FLIP);
+
+  /* Done! */
+  return bResult;
 }
 
 /** Gets graphic flipping
@@ -1286,7 +1332,7 @@ orxSTATUS orxFASTCALL orxGraphic_SetFlip(orxGRAPHIC *_pstGraphic, orxBOOL _bFlip
  */
 orxSTATUS orxFASTCALL orxGraphic_GetFlip(const orxGRAPHIC *_pstGraphic, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstGraphic.u32Flags & orxGRAPHIC_KU32_STATIC_FLAG_READY);
@@ -1294,9 +1340,25 @@ orxSTATUS orxFASTCALL orxGraphic_GetFlip(const orxGRAPHIC *_pstGraphic, orxBOOL 
   orxASSERT(_pbFlipX != orxNULL);
   orxASSERT(_pbFlipY != orxNULL);
 
-  /* Updates flipping mode */
-  *_pbFlipX = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_X) ? orxTRUE : orxFALSE;
-  *_pbFlipY = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_Y) ? orxTRUE : orxFALSE;
+  /* Has flip? */
+  if(orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_HAS_FLIP) != orxFALSE)
+  {
+    /* Updates flipping mode */
+    *_pbFlipX = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_X) ? orxTRUE : orxFALSE;
+    *_pbFlipY = orxStructure_TestFlags(_pstGraphic, orxGRAPHIC_KU32_FLAG_FLIP_Y) ? orxTRUE : orxFALSE;
+
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Clears flipping mode */
+    *_pbFlipX = orxFALSE;
+    *_pbFlipY = orxFALSE;
+
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
 
   /* Done! */
   return eResult;

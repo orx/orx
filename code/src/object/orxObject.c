@@ -7975,6 +7975,106 @@ orxSTATUS orxFASTCALL orxObject_SetFlip(orxOBJECT *_pstObject, orxBOOL _bFlipX, 
   return eResult;
 }
 
+/** Clears object flipping.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_ClearFlip(orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Clears graphic flip */
+    eResult = orxGraphic_ClearFlip(pstGraphic);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Object has flip accessor?
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxObject_HasFlip(const orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstGraphic;
+  orxBOOL     bResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Has graphic flip? */
+    bResult = orxGraphic_HasFlip(pstGraphic);
+  }
+  else
+  {
+    /* Updates result */
+    bResult = orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
+}
+
+/** Gets object flipping.
+ * @param[in]   _pstObject      Concerned object
+ * @param[in]   _pbFlipX        X axis flipping
+ * @param[in]   _pbFlipY        Y axis flipping
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+  orxASSERT(_pbFlipX != orxNULL);
+  orxASSERT(_pbFlipY != orxNULL);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Gets graphic flip */
+    eResult = orxGraphic_GetFlip(pstGraphic, _pbFlipX, _pbFlipY);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
 /** Sets object pivot. This is a convenience wrapper around orxGraphic_SetPivot(). The "pivot" is essentially
  * what is indicated by the "Pivot" field of a config graphic section.
  * @param[in]   _pstObject      Concerned object
@@ -8137,41 +8237,6 @@ orxSTATUS orxFASTCALL orxObject_SetSize(orxOBJECT *_pstObject, const orxVECTOR *
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Gets object flipping.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _pbFlipX        X axis flipping
- * @param[in]   _pbFlipY        Y axis flipping
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)
-{
-  orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT(_pbFlipX != orxNULL);
-  orxASSERT(_pbFlipY != orxNULL);
-
-  /* Gets graphic */
-  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
-
-  /* Valid? */
-  if(pstGraphic != orxNULL)
-  {
-    eResult = orxGraphic_GetFlip(pstGraphic, _pbFlipX, _pbFlipY);
-  }
-  else
-  {
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
