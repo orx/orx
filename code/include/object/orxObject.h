@@ -312,6 +312,18 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  _orxObject_GetStructure(const orxOBJ
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetFlip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY);
 
+/** Clears object flipping.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ClearFlip(orxOBJECT *_pstObject);
+
+/** Object has flip accessor?
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasFlip(const orxOBJECT *_pstObject);
+
 /** Gets object flipping.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pbFlipX        X axis flipping

@@ -184,7 +184,19 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxGraphic_GetData(const orxGRAPHI
  * @param[in]   _bFlipY         Flip it on Y axis
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxGraphic_SetFlip(orxGRAPHIC *_pstGraphic, orxBOOL _bFlipX, orxBOOL _bFlipY);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetFlip(orxGRAPHIC *_pstGraphic, orxBOOL _bFlipX, orxBOOL _bFlipY);
+
+/** Clears graphic flipping
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_ClearFlip(orxGRAPHIC *_pstGraphic);
+
+/** Graphic has flip accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasFlip(const orxGRAPHIC *_pstGraphic);
 
 /** Gets graphic flipping
  * @param[in]   _pstGraphic     Concerned graphic
@@ -192,7 +204,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxGraphic_SetFlip(orxGRAPHIC *_pstG
  * @param[in]   _pbFlipY        Y axis flipping
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxGraphic_GetFlip(const orxGRAPHIC *_pstGraphic, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_GetFlip(const orxGRAPHIC *_pstGraphic, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY);
 
 
 /** Sets graphic pivot
