@@ -112,6 +112,7 @@ solution "orx"
         "../../extern/xxHash",
         "../../extern/LiquidFun-1.1.0/include",
         "../../extern/stb_image",
+        "../../extern/stb_truetype",
         "../../extern/miniaudio",
         "../../extern/stb_vorbis",
         "../../extern/libwebp/src",

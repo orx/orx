@@ -209,6 +209,7 @@ iosfolderinfolist = docfolderinfolist + [
     {'src': '../extern/qoi',                                            'dst': None},
     {'src': '../extern/rpmalloc/rpmalloc',                              'dst': None},
     {'src': '../extern/stb_image',                                      'dst': None},
+    {'src': '../extern/stb_truetype',                                   'dst': None},
     {'src': '../extern/stb_vorbis',                                     'dst': None},
     {'src': '../extern/xxHash',                                         'dst': None},
     {'src': 'plugins/Display/iOS',                                      'dst': None},
