@@ -91,6 +91,12 @@ orxSTATUS orxFASTCALL orxDisplay_Dummy_SaveBitmap(const orxBITMAP *_pstBitmap, c
   return orxSTATUS_SUCCESS;
 }
 
+orxBITMAP *orxFASTCALL orxDisplay_Dummy_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, orxFLOAT _fHeight, const orxVECTOR *_pvCharacterSpacing, orxFLOAT *_afCharacterWidthList)
+{
+  /* Done! */
+  return (orxBITMAP *)orxHANDLE_UNDEFINED;
+}
+
 orxSTATUS orxFASTCALL orxDisplay_Dummy_SetTempBitmap(const orxBITMAP *_pstBitmap)
 {
   /* Done! */
@@ -331,6 +337,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Dummy_CreateBitmap, DISPLAY, CREATE_
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Dummy_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Dummy_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Dummy_SaveBitmap, DISPLAY, SAVE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Dummy_LoadFont, DISPLAY, LOAD_FONT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Dummy_SetTempBitmap, DISPLAY, SET_TEMP_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Dummy_GetTempBitmap, DISPLAY, GET_TEMP_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_Dummy_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);

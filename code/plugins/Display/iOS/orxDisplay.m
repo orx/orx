@@ -3986,6 +3986,15 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFileName)
   return pstBitmap;
 }
 
+orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, orxFLOAT _fHeight, const orxVECTOR *_pvCharacterSpacing, orxFLOAT *_afCharacterWidthList)
+{
+  orxBITMAP *pstResult = orxNULL;
+
+  //! TODO
+
+  /* Done! */
+  return pstResult;
+}
 
 orxSTATUS orxFASTCALL orxDisplay_iOS_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
@@ -5187,6 +5196,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_CreateBitmap, DISPLAY, CREATE_BI
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SaveBitmap, DISPLAY, SAVE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_LoadFont, DISPLAY, LOAD_FONT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetTempBitmap, DISPLAY, SET_TEMP_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_GetTempBitmap, DISPLAY, GET_TEMP_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_iOS_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);

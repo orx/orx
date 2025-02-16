@@ -130,6 +130,40 @@
 #undef QOI_IMPLEMENTATION
 #undef QOI_NO_STDIO
 
+#define STBTT_STATIC
+#define STB_TRUETYPE_IMPLEMENTATION
+#define STBTT_ifloor(x)         ((int)orxMath_Floor((orxFLOAT)(x)))
+#define STBTT_iceil(x)          ((int)orxMath_Ceil((orxFLOAT)(x)))
+#define STBTT_sqrt(x)           orxMath_Sqrt((orxFLOAT)(x))
+#define STBTT_pow(x, y)         orxMath_Pow((orxFLOAT)(x), (orxFLOAT)(y))
+#define STBTT_fmod(x, y)        orxMath_Mod((orxFLOAT)(x), (orxFLOAT)(y))
+#define STBTT_cos(x)            orxMath_Cos((orxFLOAT)(x))
+#define STBTT_acos(x)           orxMath_ACos((orxFLOAT)(x))
+#define STBTT_fabs(x)           orxMath_Abs((orxFLOAT)(x))
+#define STBTT_malloc(sz, u)     orxMemory_Allocate((orxU32)(sz), orxMEMORY_TYPE_VIDEO)
+#define STBTT_free(p, u)        orxMemory_Free(p)
+#define STBTT_assert(x)         orxASSERT(x)
+#define STBTT_strlen(x)         orxString_GetLength(x)
+#define STBTT_memcpy            orxMemory_Copy
+#define STBTT_memset            orxMemory_Set
+#include "stb_truetype.h"
+#undef STBTT_memset
+#undef STBTT_memcpy
+#undef STBTT_strlen
+#undef STBTT_assert
+#undef STBTT_free
+#undef STBTT_malloc
+#undef STBTT_fabs
+#undef STBTT_acos
+#undef STBTT_cos
+#undef STBTT_fmod
+#undef STBTT_pow
+#undef STBTT_sqrt
+#undef STBTT_iceil
+#undef STBTT_ifloor
+#undef STB_TRUETYPE_IMPLEMENTATION
+#undef STBTT_STATIC
+
 #include "basisu.h"
 
 
@@ -5044,6 +5078,23 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadBitmap(const orxSTRING _zFileName)
   return pstResult;
 }
 
+orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, orxFLOAT _fHeight, const orxVECTOR *_pvCharacterSpacing, orxFLOAT *_afCharacterWidthList)
+{
+  orxBITMAP *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zCharacterList != orxNULL);
+  orxASSERT(_fHeight > orxFLOAT_0);
+  orxASSERT(_pvCharacterSpacing != orxNULL);
+  orxASSERT(_afCharacterWidthList != orxNULL);
+
+  //! TODO
+
+  /* Done! */
+  return pstResult;
+}
+
 orxSTATUS orxFASTCALL orxDisplay_GLFW_GetBitmapSize(const orxBITMAP *_pstBitmap, orxFLOAT *_pfWidth, orxFLOAT *_pfHeight)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
@@ -7210,6 +7261,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_CreateBitmap, DISPLAY, CREATE_B
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_DeleteBitmap, DISPLAY, DELETE_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_LoadBitmap, DISPLAY, LOAD_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SaveBitmap, DISPLAY, SAVE_BITMAP);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_LoadFont, DISPLAY, LOAD_FONT);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetTempBitmap, DISPLAY, SET_TEMP_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_GetTempBitmap, DISPLAY, GET_TEMP_BITMAP);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxDisplay_GLFW_SetDestinationBitmaps, DISPLAY, SET_DESTINATION_BITMAPS);
