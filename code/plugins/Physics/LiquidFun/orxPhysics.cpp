@@ -3508,7 +3508,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       /* Valid? */
       if(pstClock != orxNULL)
       {
-        /* Registers rendering function */
+        /* Registers update function */
         eResult = orxClock_Register(pstClock, orxPhysics_LiquidFun_Update, orxNULL, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
 
         /* Valid? */
@@ -3551,18 +3551,25 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
             if(sstPhysics.pstEventBank != orxNULL)
             {
               orxBank_Delete(sstPhysics.pstEventBank);
+              sstPhysics.pstEventBank = orxNULL;
             }
 
             if(sstPhysics.pstBodyBank != orxNULL)
             {
               orxBank_Delete(sstPhysics.pstBodyBank);
+              sstPhysics.pstBodyBank = orxNULL;
             }
+
+            /* Unregisters update function */
+            orxClock_Unregister(pstClock, orxPhysics_LiquidFun_Update);
 
             /* Deletes listeners */
             delete sstPhysics.poContactListener;
+            sstPhysics.poContactListener = orxNULL;
 
             /* Deletes world */
             delete sstPhysics.poWorld;
+            sstPhysics.poWorld = orxNULL;
 
             /* Updates result */
             eResult = orxSTATUS_FAILURE;
@@ -3572,9 +3579,11 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
         {
           /* Deletes listeners */
           delete sstPhysics.poContactListener;
+          sstPhysics.poContactListener = orxNULL;
 
           /* Deletes world */
           delete sstPhysics.poWorld;
+          sstPhysics.poWorld = orxNULL;
 
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
@@ -3584,9 +3593,11 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       {
         /* Deletes listeners */
         delete sstPhysics.poContactListener;
+        sstPhysics.poContactListener = orxNULL;
 
         /* Deletes world */
         delete sstPhysics.poWorld;
+        sstPhysics.poWorld = orxNULL;
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
