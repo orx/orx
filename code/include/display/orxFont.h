@@ -52,6 +52,7 @@
 /** Misc defines
  */
 #define orxFONT_KZ_DEFAULT_FONT_NAME                  "orx:font:default"
+#define orxFONT_KZ_RESOURCE_GROUP                     "Font"
 
 
 /** Internal font structure */
@@ -89,6 +90,10 @@ extern orxDLLAPI orxFONT *orxFASTCALL                 orxFont_CreateFromConfig(c
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_Delete(orxFONT *_pstFont);
 
+/** Clears cache (if any Font is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_ClearCache();
 
 /** Gets default font
  * @return      Default font / orxNULL
