@@ -161,10 +161,10 @@ static orxINLINE void orxPhysics_UnregisterCommands()
   /* Command: EnableSimulation */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, EnableSimulation);
 
-  /* Command: GetCOllisionFlagName */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, GetCOllisionFlagName);
-  /* Command: GetCOllisionFlagValue */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, GetCOllisionFlagValue);
+  /* Command: GetCollisionFlagName */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, GetCollisionFlagName);
+  /* Command: GetCollisionFlagValue */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, GetCollisionFlagValue);
 }
 
 
