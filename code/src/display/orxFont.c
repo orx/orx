@@ -438,7 +438,8 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_NONE, orxFONT_KU32_FLAG_CAN_UPDATE_MAP);
 
             /* Already set or sets it */
-            if((_pstFont->pstTexture == pstTexture) || (orxFont_SetTexture(_pstFont, pstTexture) != orxSTATUS_FAILURE))
+            if(((_pstFont->pstTexture == pstTexture) && (_pstFont->fTop = _pstFont->fLeft, orxTexture_GetSize(pstTexture, &(_pstFont->fWidth), &(_pstFont->fHeight)) != orxSTATUS_FAILURE))
+            || (orxFont_SetTexture(_pstFont, pstTexture) != orxSTATUS_FAILURE))
             {
               /* Sets its owner */
               orxStructure_SetOwner(pstTexture, _pstFont);
