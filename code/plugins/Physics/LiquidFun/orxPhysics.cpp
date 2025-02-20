@@ -3551,25 +3551,21 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
             if(sstPhysics.pstEventBank != orxNULL)
             {
               orxBank_Delete(sstPhysics.pstEventBank);
-              sstPhysics.pstEventBank = orxNULL;
             }
 
             if(sstPhysics.pstBodyBank != orxNULL)
             {
               orxBank_Delete(sstPhysics.pstBodyBank);
-              sstPhysics.pstBodyBank = orxNULL;
             }
-
-            /* Unregisters update function */
-            orxClock_Unregister(pstClock, orxPhysics_LiquidFun_Update);
 
             /* Deletes listeners */
             delete sstPhysics.poContactListener;
-            sstPhysics.poContactListener = orxNULL;
 
             /* Deletes world */
             delete sstPhysics.poWorld;
-            sstPhysics.poWorld = orxNULL;
+
+            /* Unregisters update function */
+            orxClock_Unregister(pstClock, orxPhysics_LiquidFun_Update);
 
             /* Updates result */
             eResult = orxSTATUS_FAILURE;
@@ -3579,11 +3575,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
         {
           /* Deletes listeners */
           delete sstPhysics.poContactListener;
-          sstPhysics.poContactListener = orxNULL;
 
           /* Deletes world */
           delete sstPhysics.poWorld;
-          sstPhysics.poWorld = orxNULL;
 
           /* Updates result */
           eResult = orxSTATUS_FAILURE;
@@ -3593,11 +3587,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       {
         /* Deletes listeners */
         delete sstPhysics.poContactListener;
-        sstPhysics.poContactListener = orxNULL;
 
         /* Deletes world */
         delete sstPhysics.poWorld;
-        sstPhysics.poWorld = orxNULL;
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
