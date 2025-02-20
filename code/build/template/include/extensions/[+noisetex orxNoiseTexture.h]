@@ -31,9 +31,10 @@ void orxFASTCALL                                      orxNoiseTexture_Exit();
 //! Defines
 
 #define orxNOISETEXTURE_KZ_RESOURCE_TAG               "noisetex"
-#define orxNOISETEXTURE_KZ_RESOURCE_PREFIX            "noise "
+#define orxNOISETEXTURE_KZ_RESOURCE_PREFIX            "noise:"
 
 #define orxNOISETEXTURE_KZ_CONFIG_SIZE                "Size"
+#define orxNOISETEXTURE_KZ_CONFIG_ORIGIN              "Origin"
 #define orxNOISETEXTURE_KZ_CONFIG_TYPE                "Type"
 #define orxNOISETEXTURE_KZ_CONFIG_SEED                "Seed"
 #define orxNOISETEXTURE_KZ_CONFIG_FREQUENCY           "Frequency"
@@ -88,6 +89,7 @@ typedef struct NoiseTextureResource
   orxS64        s64Size;
   orxU32        u32Width;
   orxU32        u32Height;
+  orxVECTOR     vOrigin;
   fnl_state     stState;
   orxS32        s32HeaderSize;
   orxU8         au8Data[0];
@@ -162,16 +164,15 @@ static orxSTATUS orxFASTCALL orxNoiseTexture_EventHandler(const orxEVENT *_pstEv
   return eResult;
 }
 
-[+bundle orxBOOL orxFASTCALL orxBundle_IsProcessing();
-]
+orxBOOL orxFASTCALL orxBundle_IsProcessing();
+
 // Locate function, returns NULL if it can't handle the storage or if the resource can't be found in this storage
 static const orxSTRING orxFASTCALL orxNoiseTexture_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
   const orxSTRING zResult = orxNULL;
 
-[+bundle
   if(orxBundle_IsProcessing()) {return zResult;}
-]
+
   // Is a texture?
   if((orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
   && (orxString_Compare(_zGroup, orxTEXTURE_KZ_RESOURCE_GROUP) == 0))
@@ -253,6 +254,7 @@ static orxHANDLE orxFASTCALL orxNoiseTexture_Open(const orxSTRING _zLocation, or
       pstResource->stState        = fnlCreateState();
       pstResource->s32HeaderSize  = s32HeaderSize;
       orxMemory_Copy(&(pstResource->au8Data), acHeader, s32HeaderSize);
+      orxConfig_GetVector(orxNOISETEXTURE_KZ_CONFIG_ORIGIN, &(pstResource->vOrigin));
 
       // Gets seed
       pstResource->stState.seed = (orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_SEED) != orxFALSE) ? orxConfig_GetU32(orxNOISETEXTURE_KZ_CONFIG_SEED) : orxMath_GetRandomU32(1, 0xFFFFFFFF);
@@ -567,7 +569,7 @@ static orxS64 orxFASTCALL orxNoiseTexture_Read(orxHANDLE _hResource, orxS64 _s64
       // For all columns
       for(i = 0; i < pstResource->u32Width; i++)
       {
-        *(pu8Pixel++) = (orxU8)(255.0f * 0.5f * (1.0f + fnlGetNoise2D(&(pstResource->stState), (float)i, (float)j)));
+        *(pu8Pixel++) = (orxU8)(255.0f * 0.5f * (1.0f + fnlGetNoise2D(&(pstResource->stState), (float)i + pstResource->vOrigin.fX, (float)j + pstResource->vOrigin.fY)));
       }
     }
 
