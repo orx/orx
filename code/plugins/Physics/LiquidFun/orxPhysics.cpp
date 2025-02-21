@@ -3508,20 +3508,21 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       /* Valid? */
       if(pstClock != orxNULL)
       {
-        /* Registers rendering function */
-        eResult = orxClock_Register(pstClock, orxPhysics_LiquidFun_Update, orxNULL, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
+        /* Creates event bank */
+        sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-        /* Valid? */
-        if(eResult != orxSTATUS_FAILURE)
+        /* Creates body bank */
+        sstPhysics.pstBodyBank  = orxBank_Create(orxPhysics::su32BodyBankSize, sizeof(orxPHYSICS_BODY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+        /* Success? */
+        if((sstPhysics.pstEventBank != orxNULL)
+        && (sstPhysics.pstBodyBank != orxNULL))
         {
-          /* Creates event bank */
-          sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          /* Registers update function */
+          eResult = orxClock_Register(pstClock, orxPhysics_LiquidFun_Update, orxNULL, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
 
-          /* Creates body bank */
-          sstPhysics.pstBodyBank  = orxBank_Create(orxPhysics::su32BodyBankSize, sizeof(orxPHYSICS_BODY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-          if((sstPhysics.pstEventBank != orxNULL)
-          && (sstPhysics.pstBodyBank != orxNULL))
+          /* Valid? */
+          if(eResult != orxSTATUS_FAILURE)
           {
 #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
@@ -3548,28 +3549,29 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
           }
           else
           {
-            if(sstPhysics.pstEventBank != orxNULL)
-            {
-              orxBank_Delete(sstPhysics.pstEventBank);
-            }
-
-            if(sstPhysics.pstBodyBank != orxNULL)
-            {
-              orxBank_Delete(sstPhysics.pstBodyBank);
-            }
+            /* Deletes banks */
+            orxBank_Delete(sstPhysics.pstEventBank);
+            orxBank_Delete(sstPhysics.pstBodyBank);
 
             /* Deletes listeners */
             delete sstPhysics.poContactListener;
 
             /* Deletes world */
             delete sstPhysics.poWorld;
-
-            /* Updates result */
-            eResult = orxSTATUS_FAILURE;
           }
         }
         else
         {
+          /* Deletes banks */
+          if(sstPhysics.pstEventBank != orxNULL)
+          {
+            orxBank_Delete(sstPhysics.pstEventBank);
+          }
+          if(sstPhysics.pstBodyBank != orxNULL)
+          {
+            orxBank_Delete(sstPhysics.pstBodyBank);
+          }
+
           /* Deletes listeners */
           delete sstPhysics.poContactListener;
 
