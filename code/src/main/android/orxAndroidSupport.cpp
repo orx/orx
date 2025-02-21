@@ -744,13 +744,17 @@ extern int main(int argc, char *argv[]);
 
 void android_main(android_app *_pstState)
 {
-  char *argv[orxANDROID_KU32_MAX_ARGUMENT_COUNT];
+  Paddleboat_ErrorCode paddleboatError;
+  bool                 bSwappyInitialized;
+  char                *azArgumentList[orxANDROID_KU32_MAX_ARGUMENT_COUNT];
+  int                  iArgumentCount;
+  char                *pc;
 
   /* Inits Java VM */
   jVM = _pstState->activity->vm;
 
   JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
-  if (pstEnv == NULL)
+  if(pstEnv == NULL)
   {
     /* Exits gracefully */
     return;
@@ -779,31 +783,34 @@ void android_main(android_app *_pstState)
 
   _pstState->onAppCmd = orxAndroid_handleCmd;
 
-  /* Inits joystick support */
-  Paddleboat_init(pstEnv, _pstState->activity->javaGameActivity);
+  /* Inits Paddleboat */
+  paddleboatError = Paddleboat_init(pstEnv, _pstState->activity->javaGameActivity);
   android_app_set_motion_event_filter(_pstState, NULL);
 
   /* Inits SwappyGL */
-  SwappyGL_init(pstEnv, _pstState->activity->javaGameActivity);
-  SwappyGL_setAutoSwapInterval(false);
-  SwappyGL_setAutoPipelineMode(false);
+  bSwappyInitialized = SwappyGL_init(pstEnv, _pstState->activity->javaGameActivity);
+  if(bSwappyInitialized)
+  {
+    SwappyGL_setAutoSwapInterval(false);
+    SwappyGL_setAutoPipelineMode(false);
+  }
 
   /* Gets arguments from manifest */
   orxAndroid_JNI_GetArguments();
 
   /* Parses the arguments */
-  int argc = 0;
+  iArgumentCount = 0;
 
-  char *pc = strtok(sstAndroid.zArguments, " ");
-  while(pc && argc < orxANDROID_KU32_MAX_ARGUMENT_COUNT - 1)
+  pc = strtok(sstAndroid.zArguments, " ");
+  while(pc && iArgumentCount < orxANDROID_KU32_MAX_ARGUMENT_COUNT - 1)
   {
-    argv[argc++] = pc;
+    azArgumentList[iArgumentCount++] = pc;
     pc = strtok(0, " ");
   }
-  argv[argc] = NULL;
+  azArgumentList[iArgumentCount] = NULL;
 
   /* Runs the application code */
-  main(argc, argv);
+  main(iArgumentCount, azArgumentList);
 
   if(_pstState->destroyRequested == 0)
   {
@@ -831,8 +838,17 @@ void android_main(android_app *_pstState)
     }
   }
 
-  Paddleboat_destroy(pstEnv);
-  SwappyGL_destroy();
+  if(paddleboatError == PADDLEBOAT_NO_ERROR)
+  {
+    /* Destroys Paddleboat */
+    Paddleboat_destroy(pstEnv);
+  }
+
+  if(bSwappyInitialized)
+  {
+    /* Destroys SwappyGL */
+    SwappyGL_destroy();
+  }
 }
 
 /* APK orxRESOURCE */
