@@ -746,19 +746,18 @@ void android_main(android_app *_pstState)
 {
   char *argv[orxANDROID_KU32_MAX_ARGUMENT_COUNT];
 
-  _pstState->onAppCmd = orxAndroid_handleCmd;
+  /* Inits Java VM */
+  jVM = _pstState->activity->vm;
 
-  android_app_set_motion_event_filter(_pstState, NULL);
+  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
+  if (pstEnv == NULL)
+  {
+    /* Exits gracefully */
+    return;
+  }
 
   /* Cleans static controller */
   orxMemory_Zero(&sstAndroid, sizeof(orxANDROID_STATIC));
-
-  sstAndroid.app = _pstState;
-  sstAndroid.bPaused = orxTRUE;
-  sstAndroid.bHasFocus = orxFALSE;
-  sstAndroid.fSurfaceScale = orxFLOAT_0;
-
-  jVM = _pstState->activity->vm;
 
   /*
    * Create sThreadKey so we can keep track of the JNIEnv assigned to each thread
@@ -774,11 +773,17 @@ void android_main(android_app *_pstState)
     orxAndroid_JNI_SetupThread(orxNULL);
   }
 
-  /* Initializes joystick support */
-  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
-  Paddleboat_init(pstEnv, _pstState->activity->javaGameActivity);
+  /* Inits structure */
+  sstAndroid.app = _pstState;
+  sstAndroid.bPaused = orxTRUE;
 
-  /* Initializes SwappyGL */
+  _pstState->onAppCmd = orxAndroid_handleCmd;
+
+  /* Inits joystick support */
+  Paddleboat_init(pstEnv, _pstState->activity->javaGameActivity);
+  android_app_set_motion_event_filter(_pstState, NULL);
+
+  /* Inits SwappyGL */
   SwappyGL_init(pstEnv, _pstState->activity->javaGameActivity);
   SwappyGL_setAutoSwapInterval(false);
   SwappyGL_setAutoPipelineMode(false);
@@ -797,14 +802,14 @@ void android_main(android_app *_pstState)
   }
   argv[argc] = NULL;
 
-  /* Run the application code! */
+  /* Runs the application code */
   main(argc, argv);
 
   if(_pstState->destroyRequested == 0)
   {
     GameActivity_finish(_pstState->activity);
 
-    /* pumps final events */
+    /* Pumps final events */
     int id;
     android_poll_source *source;
 
@@ -812,13 +817,13 @@ void android_main(android_app *_pstState)
 
     while((id = ALooper_pollOnce(-1, NULL, NULL, (void **)&source)) >= 0)
     {
-      /* Process this event. */
+      /* Process this event */
       if(source != NULL)
       {
         source->process(_pstState, source);
       }
 
-      /* Check if we are exiting. */
+      /* Check if we are exiting */
       if(_pstState->destroyRequested != 0)
       {
         break;
