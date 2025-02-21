@@ -3508,7 +3508,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       /* Valid? */
       if(pstClock != orxNULL)
       {
-        /* Registers rendering function */
+        /* Registers update function */
         eResult = orxClock_Register(pstClock, orxPhysics_LiquidFun_Update, orxNULL, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
 
         /* Valid? */
@@ -3563,6 +3563,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
 
             /* Deletes world */
             delete sstPhysics.poWorld;
+
+            /* Unregisters update function */
+            orxClock_Unregister(pstClock, orxPhysics_LiquidFun_Update);
 
             /* Updates result */
             eResult = orxSTATUS_FAILURE;
