@@ -744,21 +744,24 @@ extern int main(int argc, char *argv[]);
 
 void android_main(android_app *_pstState)
 {
-  char *argv[orxANDROID_KU32_MAX_ARGUMENT_COUNT];
+  Paddleboat_ErrorCode paddleboatError;
+  bool                 bSwappyInitialized;
+  char                *azArgumentList[orxANDROID_KU32_MAX_ARGUMENT_COUNT];
+  int                  iArgumentCount;
+  char                *pc;
 
-  _pstState->onAppCmd = orxAndroid_handleCmd;
+  /* Inits Java VM */
+  jVM = _pstState->activity->vm;
 
-  android_app_set_motion_event_filter(_pstState, NULL);
+  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
+  if(pstEnv == NULL)
+  {
+    /* Exits gracefully */
+    return;
+  }
 
   /* Cleans static controller */
   orxMemory_Zero(&sstAndroid, sizeof(orxANDROID_STATIC));
-
-  sstAndroid.app = _pstState;
-  sstAndroid.bPaused = orxTRUE;
-  sstAndroid.bHasFocus = orxFALSE;
-  sstAndroid.fSurfaceScale = orxFLOAT_0;
-
-  jVM = _pstState->activity->vm;
 
   /*
    * Create sThreadKey so we can keep track of the JNIEnv assigned to each thread
@@ -774,37 +777,46 @@ void android_main(android_app *_pstState)
     orxAndroid_JNI_SetupThread(orxNULL);
   }
 
-  /* Initializes joystick support */
-  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
-  Paddleboat_init(pstEnv, _pstState->activity->javaGameActivity);
+  /* Inits structure */
+  sstAndroid.app = _pstState;
+  sstAndroid.bPaused = orxTRUE;
 
-  /* Initializes SwappyGL */
-  SwappyGL_init(pstEnv, _pstState->activity->javaGameActivity);
-  SwappyGL_setAutoSwapInterval(false);
-  SwappyGL_setAutoPipelineMode(false);
+  _pstState->onAppCmd = orxAndroid_handleCmd;
+
+  /* Inits Paddleboat */
+  paddleboatError = Paddleboat_init(pstEnv, _pstState->activity->javaGameActivity);
+  android_app_set_motion_event_filter(_pstState, NULL);
+
+  /* Inits SwappyGL */
+  bSwappyInitialized = SwappyGL_init(pstEnv, _pstState->activity->javaGameActivity);
+  if(bSwappyInitialized)
+  {
+    SwappyGL_setAutoSwapInterval(false);
+    SwappyGL_setAutoPipelineMode(false);
+  }
 
   /* Gets arguments from manifest */
   orxAndroid_JNI_GetArguments();
 
   /* Parses the arguments */
-  int argc = 0;
+  iArgumentCount = 0;
 
-  char *pc = strtok(sstAndroid.zArguments, " ");
-  while(pc && argc < orxANDROID_KU32_MAX_ARGUMENT_COUNT - 1)
+  pc = strtok(sstAndroid.zArguments, " ");
+  while(pc && iArgumentCount < orxANDROID_KU32_MAX_ARGUMENT_COUNT - 1)
   {
-    argv[argc++] = pc;
+    azArgumentList[iArgumentCount++] = pc;
     pc = strtok(0, " ");
   }
-  argv[argc] = NULL;
+  azArgumentList[iArgumentCount] = NULL;
 
-  /* Run the application code! */
-  main(argc, argv);
+  /* Runs the application code */
+  main(iArgumentCount, azArgumentList);
 
   if(_pstState->destroyRequested == 0)
   {
     GameActivity_finish(_pstState->activity);
 
-    /* pumps final events */
+    /* Pumps final events */
     int id;
     android_poll_source *source;
 
@@ -812,13 +824,13 @@ void android_main(android_app *_pstState)
 
     while((id = ALooper_pollOnce(-1, NULL, NULL, (void **)&source)) >= 0)
     {
-      /* Process this event. */
+      /* Process this event */
       if(source != NULL)
       {
         source->process(_pstState, source);
       }
 
-      /* Check if we are exiting. */
+      /* Check if we are exiting */
       if(_pstState->destroyRequested != 0)
       {
         break;
@@ -826,8 +838,17 @@ void android_main(android_app *_pstState)
     }
   }
 
-  Paddleboat_destroy(pstEnv);
-  SwappyGL_destroy();
+  if(paddleboatError == PADDLEBOAT_NO_ERROR)
+  {
+    /* Destroys Paddleboat */
+    Paddleboat_destroy(pstEnv);
+  }
+
+  if(bSwappyInitialized)
+  {
+    /* Destroys SwappyGL */
+    SwappyGL_destroy();
+  }
 }
 
 /* APK orxRESOURCE */
