@@ -71,7 +71,7 @@
 #define orxFONT_KU32_BANK_SIZE                  16          /**< Bank size */
 
 #define orxFONT_KV_DEFAULT_CHARACTER_SPACING    orx2F(2.0f), orx2F(2.0f), orxFLOAT_0
-#define orxFONT_KF_DEFAULT_CHARACTER_HEIGHT     orx2F(32.0f)
+#define orxFONT_KV_DEFAULT_CHARACTER_SIZE       orxFLOAT_0, orx2F(32.0f), orxFLOAT_0
 
 #define orxFONT_KZ_CONFIG_TEXTURE_NAME          "Texture"
 #define orxFONT_KZ_CONFIG_CHARACTER_LIST        "CharacterList"
@@ -365,9 +365,8 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
     /* Valid? */
     if((zName != orxNULL) && (zName != orxSTRING_EMPTY))
     {
-      orxVECTOR       vCharacterSpacing;
+      orxVECTOR       vCharacterSize, vCharacterSpacing;
       const orxSTRING zCharacterList;
-      orxFLOAT        fCharacterHeight;
       orxBITMAP      *pstBitmap;
       orxFLOAT       *afCharacterWidthList;
       orxU32          u32CharacterCount;
@@ -375,8 +374,24 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
       /* Retrieves character spacing */
       if(orxConfig_GetVector(orxFONT_KZ_CONFIG_CHARACTER_SPACING, &vCharacterSpacing) == orxNULL)
       {
-        /* Sets default spacing */
+        /* Uses default spacing */
         orxVector_Set(&vCharacterSpacing, orxFONT_KV_DEFAULT_CHARACTER_SPACING);
+      }
+
+      /* Has character size? */
+      if(orxConfig_HasValue(orxFONT_KZ_CONFIG_CHARACTER_SIZE) != orxFALSE)
+      {
+        /* Isn't a vector? */
+        if(orxConfig_GetVector(orxFONT_KZ_CONFIG_CHARACTER_SIZE, &vCharacterSize) == orxNULL)
+        {
+          /* Gets float value */
+          orxVector_Set(&vCharacterSize, orxFLOAT_0, orxConfig_GetFloat(orxFONT_KZ_CONFIG_CHARACTER_SIZE), orxFLOAT_0);
+        }
+      }
+      else
+      {
+        /* Uses default size */
+        orxVector_Set(&vCharacterSize, orxFONT_KV_DEFAULT_CHARACTER_SIZE);
       }
 
       /* Gets character list */
@@ -395,16 +410,6 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
         zCharacterList = sstFont.zANSICharacterList;
       }
 
-      /* Gets character height */
-      fCharacterHeight = orxConfig_GetFloat(orxFONT_KZ_CONFIG_CHARACTER_HEIGHT);
-
-      /* Invalid? */
-      if(fCharacterHeight <= orxFLOAT_0)
-      {
-        /* Uses default height */
-        fCharacterHeight = orxFONT_KF_DEFAULT_CHARACTER_HEIGHT;
-      }
-
       /* Gets character count */
       u32CharacterCount = orxString_GetCharacterCount(zCharacterList);
 
@@ -413,7 +418,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
       orxASSERT(afCharacterWidthList != orxNULL);
 
       /* Loads font bitmap */
-      pstBitmap = orxDisplay_LoadFont(zName, zCharacterList, fCharacterHeight, &vCharacterSpacing, afCharacterWidthList);
+      pstBitmap = orxDisplay_LoadFont(zName, zCharacterList, &vCharacterSize, &vCharacterSpacing, afCharacterWidthList);
 
       /* Success? */
       if(pstBitmap != orxNULL)
@@ -451,7 +456,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
               orxFont_SetCharacterList(_pstFont, zCharacterList);
 
               /* Sets character height & width list */
-              orxFont_SetCharacterHeight(_pstFont, fCharacterHeight);
+              orxFont_SetCharacterHeight(_pstFont, vCharacterSize.fY);
               orxFont_SetCharacterWidthList(_pstFont, u32CharacterCount, afCharacterWidthList);
 
               /* Updates flags */

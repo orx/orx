@@ -943,12 +943,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SaveBitmap(cons
 /** Loads a font from a TrueType/OpenType file (an event of ID orxDISPLAY_EVENT_BITMAP_LOAD will be sent upon completion, whether the loading is asynchronous or not)
  * @param[in]   _zFileName                            Name of the file to load
  * @param[in]   _zCharacterList                       Ordered list of characters for which to create glyphs
- * @param[in]   _fHeight                              Height of characters
+ * @param[in]   _pvCharacterSize                      Size of characters, X = 0 for variable width
  * @param[in]   _pvCharacterSpacing                   Spacing to be kept between glyphs in the font bitmap
  * @param[out]  _afCharacterWidthList                 Resulting list of character/glyph widths
  * @return orxBITMAP / orxNULL
  */
-extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, orxFLOAT _fHeight, const orxVECTOR *_pvCharacterSpacing, orxFLOAT *_afCharacterWidthList);
+extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, orxFLOAT *_afCharacterWidthList);
 
 
 /** Sets temp bitmap, if a valid temp bitmap is given, load operations will be asynchronous

@@ -91,7 +91,7 @@ orxSTATUS orxFASTCALL orxDisplay_Dummy_SaveBitmap(const orxBITMAP *_pstBitmap, c
   return orxSTATUS_SUCCESS;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_Dummy_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, orxFLOAT _fHeight, const orxVECTOR *_pvCharacterSpacing, orxFLOAT *_afCharacterWidthList)
+orxBITMAP *orxFASTCALL orxDisplay_Dummy_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, orxFLOAT *_afCharacterWidthList)
 {
   /* Done! */
   return (orxBITMAP *)orxHANDLE_UNDEFINED;
