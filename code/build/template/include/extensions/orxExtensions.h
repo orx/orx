@@ -98,7 +98,7 @@ void InitExtensions()
 ]
 [+python
   // Initialize Python support
-  orxPy_Init();
+  orxPy_InitVM();
 ]
 }
 

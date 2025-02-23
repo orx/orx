@@ -76,6 +76,9 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [+scroll orxSTATUS [!name]::Init()]
 [-scroll orxSTATUS orxFASTCALL Init()]
 {
+[+python
+  orxSTATUS eStatus = orxSTATUS_SUCCESS;
+]
   // Init extensions
   InitExtensions();
 
@@ -103,9 +106,18 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   {
     orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
   }
+[+python
+  // Call Python init function
+  eStatus = orxPy_Init();
+]
 
   // Done!
+[+python
+  return eStatus;
+]
+[-python
   return orxSTATUS_SUCCESS;
+]
 }
 
 /** Run function, it should not contain any game logic
