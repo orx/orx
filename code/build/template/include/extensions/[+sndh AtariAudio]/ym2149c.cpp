@@ -24,13 +24,13 @@ void	Ym2149c::Reset(uint32_t hostReplayRate, uint32_t ymClock)
 		m_toneCounter[v] = 0;
 		m_tonePeriod[v] = 0;
 	}
-	m_toneEdges = (stdLibRand()&0x111)*0xf;		// YM internal edge state are un-predictable
+	m_toneEdges = (stdLibRand()&((1<<10)|(1<<5)|(1<<0)))*0x1f;		// YM internal edge state are un-predictable
 	m_insideTimerIrq = false;
 	m_hostReplayRate = hostReplayRate;
 	m_ymClockOneEighth = ymClock/8;
 	m_resamplingDividor = (hostReplayRate << 12) / m_ymClockOneEighth;
 	m_noiseRndRack = 1;
-	m_noiseEnvHalf = 0;
+	m_noiseHalf = 0;
 	for (int r=0;r<14;r++)
 		WriteReg(r, (7==r)?0x3f:0);
 	m_selectedReg = 0;
@@ -89,7 +89,7 @@ void	Ym2149c::WriteReg(int reg, uint8_t value)
 			break;
 		case 7:
 		{
-			static const uint32_t masks[8] = { 0x000,0x00f,0x0f0, 0x0ff, 0xf00, 0xf0f, 0xff0, 0xfff };
+			static const uint32_t masks[8] = { 0x0000,0x001f,0x03e0,0x03ff,0x7c00,0x7c1f,0x7fe0,0x7fff };
 			m_toneMask = masks[value & 0x7];
 			m_noiseMask = masks[(value >> 3) & 0x7];
 		}
@@ -101,8 +101,8 @@ void	Ym2149c::WriteReg(int reg, uint8_t value)
 		case 13:
 		{
 			static const uint8_t shapeToEnv[16] = { 0,0,0,0,1,1,1,1,2,3,4,5,6,7,8,9 };
-			m_pCurrentEnv = s_envData + shapeToEnv[m_regs[13]] * 64;
-			m_envPos = -32;
+			m_pCurrentEnv = s_envData + (shapeToEnv[m_regs[13]] * 32 * 4);
+			m_envPos = -64;
 			m_envCounter = 0;
 			break;
 		}
@@ -144,14 +144,23 @@ uint16_t Ym2149c::Tick()
 		m_toneCounter[v]++;
 		if (m_toneCounter[v] >= m_tonePeriod[v])
 		{
-			m_toneEdges ^= 0xf<<(v*4);
+			m_toneEdges ^= 0x1f<<(v*5);
 			m_toneCounter[v] = 0;
 		}
 	}
 
-	// noise & env state machine is running half speed
-	m_noiseEnvHalf ^= 1;
-	if (m_noiseEnvHalf)
+	m_envCounter++;
+	if ( m_envCounter >= m_envPeriod )
+	{
+		m_envPos++;
+		if (m_envPos > 0)
+			m_envPos &= 63;
+		m_envCounter = 0;
+	}
+
+	// noise state machine is running half speed
+	m_noiseHalf ^= 1;
+	if (m_noiseHalf)
 	{
 		// noise
 		m_noiseCounter++;
@@ -160,15 +169,6 @@ uint16_t Ym2149c::Tick()
 			m_currentNoiseMask = ((m_noiseRndRack ^ (m_noiseRndRack >> 2))&1) ? ~0 : 0;
 			m_noiseRndRack = (m_noiseRndRack >> 1) | ((m_currentNoiseMask&1) << 16);
 			m_noiseCounter = 0;
-		}
-
-		m_envCounter++;
-		if ( m_envCounter >= m_envPeriod )
-		{
-			m_envPos++;
-			if (m_envPos > 0)
-				m_envPos &= 31;
-			m_envCounter = 0;
 		}
 	}
 	return vmask;
@@ -187,20 +187,24 @@ int16_t Ym2149c::ComputeNextSample(uint32_t* pSampleDebugInfo)
 	while (m_innerCycle < m_ymClockOneEighth);
 	m_innerCycle -= m_ymClockOneEighth;
 
-	const uint32_t envLevel = m_pCurrentEnv[m_envPos + 32];
+	const uint32_t envLevel = m_pCurrentEnv[m_envPos + 64];
 	uint32_t levels;
-	levels  = ((m_regs[8] & 0x10) ? envLevel : m_regs[8]) << 0;
-	levels |= ((m_regs[9] & 0x10) ? envLevel : m_regs[9]) << 4;
-	levels |= ((m_regs[10] & 0x10) ? envLevel : m_regs[10]) << 8;
+	levels  = ((m_regs[8] & 0x10) ? envLevel : (m_regs[8]<<1)) << 0;
+	levels |= ((m_regs[9] & 0x10) ? envLevel : (m_regs[9]<<1)) << 5;
+	levels |= ((m_regs[10] & 0x10) ? envLevel : (m_regs[10]<<1)) << 10;
 	levels &= highMask;
-	assert(levels < 0x1000);
+	assert(levels < 0x8000);
 
-	const uint32_t indexA = ((levels >> 0) & 15) + ((m_tonePeriod[0] > 1)?0:16);
-	const uint32_t indexB = ((levels >> 4) & 15) + ((m_tonePeriod[1] > 1)?0:16);
-	const uint32_t indexC = ((levels >> 8) & 15) + ((m_tonePeriod[2] > 1)?0:16);
-	uint32_t levelA = s_ym2149LogLevels[indexA];
-	uint32_t levelB = s_ym2149LogLevels[indexB];
-	uint32_t levelC = s_ym2149LogLevels[indexC];
+	const int halfShiftA = (m_tonePeriod[0] > 1)?0:1;
+	const int halfShiftB = (m_tonePeriod[1] > 1)?0:1;
+	const int halfShiftC = (m_tonePeriod[2] > 1)?0:1;
+
+	const uint32_t indexA = (levels >> 0) & 31;
+	const uint32_t indexB = (levels >> 5) & 31;
+	const uint32_t indexC = (levels >> 10) & 31;
+	uint32_t levelA = s_ym2149LogLevels[indexA] >> halfShiftA;
+	uint32_t levelB = s_ym2149LogLevels[indexB] >> halfShiftB;
+	uint32_t levelC = s_ym2149LogLevels[indexC] >> halfShiftC;
 
 	int16_t out = dcAdjust(levelA + levelB + levelC);
 	if (pSampleDebugInfo)
@@ -218,7 +222,7 @@ void	Ym2149c::InsideTimerIrq(bool inside)
 		{
 			if (m_edgeNeedReset[v])
 			{
-				m_toneEdges ^= 0xf<<(v*4);
+				m_toneEdges ^= 0x1f<<(v*5);
 				m_toneCounter[v] = 0;
 				m_edgeNeedReset[v] = false;
 			}

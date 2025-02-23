@@ -2820,12 +2820,6 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 <li>orxFRAME_KU32_FLAG_DEPTH_SCALE
 : <a class="el" href="group__orx_frame.html#ga4f209742a45e5d6866ac60ab74857c90">orxFrame.h</a>
 </li>
-<li>orxFRAME_KU32_FLAG_FLIP_X
-: <a class="el" href="group__orx_frame.html#ga4ba8fc4ce9e8e72961401741bda7cef1">orxFrame.h</a>
-</li>
-<li>orxFRAME_KU32_FLAG_FLIP_Y
-: <a class="el" href="group__orx_frame.html#ga6719372aeb79ba435667135a237f27a7">orxFrame.h</a>
-</li>
 <li>orxFRAME_KU32_FLAG_IGNORE_NONE
 : <a class="el" href="group__orx_frame.html#gac305e84be5aed831b3331f4d543aa98c">orxFrame.h</a>
 </li>
@@ -2870,9 +2864,6 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 </li>
 <li>orxFRAME_KU32_FLAG_SCROLL_Y
 : <a class="el" href="group__orx_frame.html#ga89b6bc7f7eb8f2ffeec57a55d37c9939">orxFrame.h</a>
-</li>
-<li>orxFRAME_KU32_MASK_FLIP_BOTH
-: <a class="el" href="group__orx_frame.html#gafefc9d46ee49c6126639f0cd28ab54ec">orxFrame.h</a>
 </li>
 <li>orxFRAME_KU32_MASK_IGNORE_ALL
 : <a class="el" href="group__orx_frame.html#ga58a80f966add465a1f892560a569ffd9">orxFrame.h</a>
@@ -3303,6 +3294,9 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 <li>orxGraphic_ClearColor()
 : <a class="el" href="group__orx_graphic.html#ga23f4eb005f820bf37f464ea9e21c0f9e">orxGraphic.h</a>
 </li>
+<li>orxGraphic_ClearFlip()
+: <a class="el" href="group__orx_graphic.html#ga6a482a4301ddc322ca9a9eeb4d32a192">orxGraphic.h</a>
+</li>
 <li>orxGraphic_Clone()
 : <a class="el" href="group__orx_graphic.html#gae3f420e9b48b4bca2f96c4aae4e83e1d">orxGraphic.h</a>
 </li>
@@ -3359,6 +3353,9 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 </li>
 <li>orxGraphic_HasColor()
 : <a class="el" href="group__orx_graphic.html#gac275abb353d7dd1f4f92328434a47792">orxGraphic.h</a>
+</li>
+<li>orxGraphic_HasFlip()
+: <a class="el" href="group__orx_graphic.html#ga9960decb949359f5fc08957a1b01a96a">orxGraphic.h</a>
 </li>
 <li>orxGraphic_Init()
 : <a class="el" href="group__orx_graphic.html#gab92e21a8d5877e1c7c825afd955f8dac">orxGraphic.h</a>
@@ -5119,8 +5116,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 : <a class="el" href="group__orx_mouse.html#ga3ca2003c5818fc247b164d3f17fa0874">orxMouse.h</a>
 </li>
 <li>orxOBJECT
-: <a class="el" href="group__orx_structure.html#ga6bb0b1f1c248bc67e117c4b58183a51d">orxStructure.h</a>
-, <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxObject.h</a>
+: <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxObject.h</a>
+, <a class="el" href="group__orx_structure.html#ga6bb0b1f1c248bc67e117c4b58183a51d">orxStructure.h</a>
 </li>
 <li>orxObject_AddFilter()
 : <a class="el" href="group__orx_object.html#gad21a2ff69f5fde55e2ce2457494bec61">orxObject.h</a>
@@ -5172,6 +5169,9 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 </li>
 <li>orxObject_BoxPick()
 : <a class="el" href="group__orx_object.html#gaaf70ba8a146be3b1948af70a1bc8990c">orxObject.h</a>
+</li>
+<li>orxObject_ClearFlip()
+: <a class="el" href="group__orx_object.html#ga7a1bec640d68477d108463394d51d7a5">orxObject.h</a>
 </li>
 <li>orxObject_Create()
 : <a class="el" href="group__orx_object.html#gad3b66ac32e71acb27c079057ee2c88a7">orxObject.h</a>
@@ -5406,6 +5406,9 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 </li>
 <li>orxObject_HasColor()
 : <a class="el" href="group__orx_object.html#ga11619a4851d3c57e768301fce73da901">orxObject.h</a>
+</li>
+<li>orxObject_HasFlip()
+: <a class="el" href="group__orx_object.html#ga82f25609652449de23ca3dc1d0c162d4">orxObject.h</a>
 </li>
 <li>orxObject_Init()
 : <a class="el" href="group__orx_object.html#ga3675869d71f33d2670ce92836b681775">orxObject.h</a>
@@ -6004,8 +6007,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 <li>orxPLUGIN_CORE_REGISTER_FUNCTION_NAME
 : <a class="el" href="group__orx_plugin.html#ga87c12bc67d2607a888c7d01cb1199676">orxPlugin_CoreDefine.h</a>
 </li>
-<li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION
-: <a class="el" href="group__orx_plugin.html#ga8dad35f3108817818eb52f76fad9ee7b">orxPlugin_CoreDefine.h</a>
+<li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION()
+: <a class="el" href="group__orx_plugin.html#gaae3867a190c9d37c6439fb596ba0d8fe">orxPlugin_CoreDefine.h</a>
 </li>
 <li>orxPLUGIN_DECLARE_ENTRY_POINT
 : <a class="el" href="group__orx_plugin.html#ga17b343caadc221ca751c44dc99e7213d">orxPluginUser.h</a>
@@ -7217,8 +7220,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 : <a class="el" href="group__orx_type.html#gga08815b27cb2e29018e06e3d847116915a9124c1e63f03128103809b24937832ba">orxType.h</a>
 </li>
 <li>orxSHADER
-: <a class="el" href="group__orx_structure.html#ga46846f3629aa7afbd9ddbb7654d9787e">orxStructure.h</a>
-, <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
+: <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxShader.h</a>
+, <a class="el" href="group__orx_structure.html#ga46846f3629aa7afbd9ddbb7654d9787e">orxStructure.h</a>
 </li>
 <li>orxShader_AddFloatParam()
 : <a class="el" href="group__orx_shader.html#gaee59c669a705b28e66cc8ff5f2c0ae48">orxShader.h</a>
@@ -7658,8 +7661,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 : <a class="el" href="group__orx_sound.html#ga8ef5677928b5f15668767b56c5e5ccd4">orxSound.h</a>
 </li>
 <li>orxSOUNDPOINTER
-: <a class="el" href="group__orx_sound_pointer.html#ga9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
-, <a class="el" href="group__orx_structure.html#gac20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#gac20399c64578aa16770a74e89ca3f2c5">orxStructure.h</a>
+, <a class="el" href="group__orx_sound_pointer.html#ga9c8f0e07eb954b9e5f49115ca5ef0812">orxSoundPointer.h</a>
 </li>
 <li>orxSoundPointer_AddFilter()
 : <a class="el" href="group__orx_sound_pointer.html#ga69f0135c6ed3577399af58e45a0b8ab9">orxSoundPointer.h</a>
@@ -7962,8 +7965,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 : <a class="el" href="group__orx_sound_system.html#gga93d8a3a6be4aaaa909f767a79a90fe92a77d842de4194a0641a6f114a3147b570">orxSoundSystem.h</a>
 </li>
 <li>orxSPAWNER
-: <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
-, <a class="el" href="group__orx_structure.html#ga2f75b29afe14141e718e04b6a484a3d6">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga2f75b29afe14141e718e04b6a484a3d6">orxStructure.h</a>
+, <a class="el" href="group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31">orxSpawner.h</a>
 </li>
 <li>orxSpawner_Create()
 : <a class="el" href="group__orx_spawner.html#ga23d51c61919201df9385c5bac486ecd1">orxSpawner.h</a>
@@ -8154,9 +8157,9 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 <li>orxSpawner_Spawn()
 : <a class="el" href="group__orx_spawner.html#gad08003006dc08bcb3f3916a2c234e9af">orxSpawner.h</a>
 </li>
-<li>orxSTATUS()
-: <a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxModule.h</a>
-, <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
+<li>orxSTATUS
+: <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxType.h</a>
+, <a class="el" href="group__orx_module.html#gaf44141f0bc45f319187952b4629b862c">orxModule.h</a>
 </li>
 <li>orxSTATUS_FAILURE
 : <a class="el" href="group__orx_type.html#gga18b11c4d0ed79ac2f8542e3bcfac340dafae353e8d94bb99a79ae23475ec112b7">orxType.h</a>
@@ -8727,8 +8730,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 : <a class="el" href="group__orx_text.html#gabaf8ba36746f278176c2efec5a0a14d4">orxText.h</a>
 </li>
 <li>orxTEXTURE
-: <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTexture.h</a>
-, <a class="el" href="group__orx_structure.html#gab685dba592726aeaf3d56698935df449">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#gab685dba592726aeaf3d56698935df449">orxStructure.h</a>
+, <a class="el" href="group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a">orxTexture.h</a>
 </li>
 <li>orxTexture_ClearCache()
 : <a class="el" href="group__orx_texture.html#ga04225363daa53b5135126794e4cf60de">orxTexture.h</a>
@@ -8884,8 +8887,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 : <a class="el" href="group__orx_thread.html#ga6a8253534ba47b5fa621396223e6522f">orxThread.h</a>
 </li>
 <li>orxTIMELINE
-: <a class="el" href="group__orx_time_line.html#gac2c4221766f0911011ba09609fddac32">orxTimeLine.h</a>
-, <a class="el" href="group__orx_structure.html#gaef389b9623f5550ce4f2c55304d0c9e5">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#gaef389b9623f5550ce4f2c55304d0c9e5">orxStructure.h</a>
+, <a class="el" href="group__orx_time_line.html#gac2c4221766f0911011ba09609fddac32">orxTimeLine.h</a>
 </li>
 <li>orxTimeLine_AddTrackFromConfig()
 : <a class="el" href="group__orx_time_line.html#ga1281081fa8cb1913b4b769a2a7343157">orxTimeLine.h</a>
@@ -8993,8 +8996,8 @@ $(document).ready(function(){initNavTree('globals_o.html','');});
 : <a class="el" href="group__orx_tree.html#ga26ed9987077dc6e4918205ac3dac360a">orxTree.h</a>
 </li>
 <li>orxTRIGGER
-: <a class="el" href="group__orx_trigger.html#ga89aa931d53dafadd4935af41e72cbdc2">orxTrigger.h</a>
-, <a class="el" href="group__orx_structure.html#ga225910e71e80d5d48c2465e26dfeea74">orxStructure.h</a>
+: <a class="el" href="group__orx_structure.html#ga225910e71e80d5d48c2465e26dfeea74">orxStructure.h</a>
+, <a class="el" href="group__orx_trigger.html#ga89aa931d53dafadd4935af41e72cbdc2">orxTrigger.h</a>
 </li>
 <li>orxTrigger_AddSetFromConfig()
 : <a class="el" href="group__orx_trigger.html#gafe9638702df629d07d22476efe27bcae">orxTrigger.h</a>

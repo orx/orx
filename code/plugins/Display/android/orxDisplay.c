@@ -574,28 +574,28 @@ static orxU32 orxAndroid_Display_GetPhysicalRefreshRate()
 
 static void orxAndroid_Display_InitSupportedRefreshRates()
 {
-  orxU32 u32NativeRateCount;
+  orxS32 s32NativeRateCount;
 
   /* Clears supported refresh rates */
   orxMemory_Zero(sstDisplay.acSupportedRates, sizeof(sstDisplay.acSupportedRates) * sizeof(char));
 
-  u32NativeRateCount = SwappyGL_getSupportedRefreshPeriodsNS(nullptr, 0);
+  s32NativeRateCount = SwappyGL_getSupportedRefreshPeriodsNS(nullptr, 0);
 
   /* Checks */
-  orxASSERT(u32NativeRateCount > 0);
   orxASSERT(sstDisplay.u32PhysicalRefreshRate > 0);
 
-  if(u32NativeRateCount > 0)
+  if(s32NativeRateCount > 0)
   {
-    orxU32 d, i;
+    orxS32 i;
+    orxU32 d;
     uint64_t *pu64RefreshPeriods;
 
     /* Gets natively supported refresh periods (ns) */
-    pu64RefreshPeriods = (uint64_t*)orxMemory_Allocate(u32NativeRateCount * sizeof(uint64_t), orxMEMORY_TYPE_TEMP);
-    SwappyGL_getSupportedRefreshPeriodsNS(pu64RefreshPeriods, u32NativeRateCount);
+    pu64RefreshPeriods = (uint64_t*)orxMemory_Allocate(s32NativeRateCount * sizeof(uint64_t), orxMEMORY_TYPE_TEMP);
+    SwappyGL_getSupportedRefreshPeriodsNS(pu64RefreshPeriods, s32NativeRateCount);
 
     /* Finds all supported rates */
-    for(i = 0; i < u32NativeRateCount; i++)
+    for(i = 0; i < s32NativeRateCount; i++)
     {
       orxU32 u32RefreshRate = orxDISPLAY_NANO_INVERSE(pu64RefreshPeriods[i]);
       if(u32RefreshRate > sstDisplay.u32PhysicalRefreshRate)
@@ -3316,7 +3316,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_SetDestinationBitmaps(orxBITMAP **_apst
 
   /* Checks */
   orxASSERT((sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY) == orxDISPLAY_KU32_STATIC_FLAG_READY);
-  orxASSERT(_apstBitmapList != orxNULL)
+  orxASSERT(_apstBitmapList != orxNULL);
 
   /* Too many destinations? */
   if(_u32Number > (orxU32)sstDisplay.iDrawBufferNumber)

@@ -472,8 +472,8 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
                 /* Logs message */
                 orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid character size (%f, %f) for font (%s).", vCharacterSize.fX, vCharacterSize.fY, _pstFont->zReference);
 
-                /* Deletes texture */
-                orxTexture_Delete(pstTexture);
+                /* Unlinks texture */
+                orxFont_SetTexture(_pstFont, orxNULL);
 
                 /* Updates result */
                 eResult = orxSTATUS_FAILURE;
@@ -481,8 +481,8 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             }
             else
             {
-              /* Deletes texture */
-              orxTexture_Delete(pstTexture);
+              /* Unlinks texture */
+              orxFont_SetTexture(_pstFont, orxNULL);
             }
 
             /* Has character width list? */
@@ -497,8 +497,8 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             /* Logs message */
             orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid character list (%s) for font (%s).", zCharacterList, _pstFont->zReference);
 
-            /* Deletes texture */
-            orxTexture_Delete(pstTexture);
+            /* Unlinks texture */
+            orxFont_SetTexture(_pstFont, orxNULL);
           }
         }
         else

@@ -59,8 +59,6 @@
 
 #define MA_NO_FLAC
 
-#define MINIAUDIO_IMPLEMENTATION
-
 #ifdef __orxWEB__
   #define MA_ENABLE_AUDIO_WORKLETS
 #endif /* __orxWEB__ */
@@ -72,7 +70,7 @@
   #endif /* (__GNUC__ >= 7) */
 #endif /* __orxGCC__ */
 
-#include "miniaudio.h"
+#include "miniaudio.c"
 
 #ifdef __orxGCC__
   #if (__GNUC__ >= 7)

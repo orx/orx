@@ -30,7 +30,7 @@ platform-data:  compose/deep [
 begin: now/time
 new-env: skip-env: skip-hook: false
 switch platform: system/platform [
-  macos [platform: 'mac]
+  macos [platform: 'Mac]
 ]
 platform-info: platform-data/:platform
 
@@ -172,9 +172,9 @@ either skip-env [
 ; Runs premake
 premake-path: dirize rejoin [premake-root platform-info/premake]
 premake: first read premake-path
-print [{== Generating build files for [} platform {]}]
+print [{== Generating build files for [} platform {]:}]
 foreach config platform-info/config [
-  print [{== Generating [} config {]}]
+  print [{  * } config {}]
   foreach [type folder] builds [
     if exists? folder [
       in-dir rejoin [root folder] [
@@ -189,7 +189,9 @@ foreach config platform-info/config [
   ]
 ]
 print [{== You can now build orx in [} builds/code/:platform {]}]
-print [{== For more details, please refer to [ https://orx-project.org/wiki/ ]}]
+print [{== For more details, please refer to:} newline
+       {  * https://orx-project.org/wiki} newline
+       {  * https://orx-project.org/discord/learning}]
 
 ; Mercurial hook
 if exists? hg [

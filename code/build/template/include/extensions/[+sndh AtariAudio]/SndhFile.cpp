@@ -242,7 +242,7 @@ int	SndhFile::AudioRender(int16_t* buffer, int count, uint32_t* pSampleViewInfo)
 			m_frame++;
 			if (m_frameCount != 0 && m_frame >= m_frameCount)
 			{
-        m_frame -= m_frameCount;
+				m_frame -= m_frameCount;
 				m_loopCount++;
 			}
 		}

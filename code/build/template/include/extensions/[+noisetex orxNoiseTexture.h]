@@ -31,9 +31,10 @@ void orxFASTCALL                                      orxNoiseTexture_Exit();
 //! Defines
 
 #define orxNOISETEXTURE_KZ_RESOURCE_TAG               "noisetex"
-#define orxNOISETEXTURE_KZ_RESOURCE_PREFIX            "noise "
+#define orxNOISETEXTURE_KZ_RESOURCE_PREFIX            "noise:"
 
 #define orxNOISETEXTURE_KZ_CONFIG_SIZE                "Size"
+#define orxNOISETEXTURE_KZ_CONFIG_ORIGIN              "Origin"
 #define orxNOISETEXTURE_KZ_CONFIG_TYPE                "Type"
 #define orxNOISETEXTURE_KZ_CONFIG_SEED                "Seed"
 #define orxNOISETEXTURE_KZ_CONFIG_FREQUENCY           "Frequency"
@@ -88,6 +89,7 @@ typedef struct NoiseTextureResource
   orxS64        s64Size;
   orxU32        u32Width;
   orxU32        u32Height;
+  orxVECTOR     vOrigin;
   fnl_state     stState;
   orxS32        s32HeaderSize;
   orxU8         au8Data[0];
@@ -162,16 +164,15 @@ static orxSTATUS orxFASTCALL orxNoiseTexture_EventHandler(const orxEVENT *_pstEv
   return eResult;
 }
 
-[+bundle orxBOOL orxFASTCALL orxBundle_IsProcessing();
-]
+orxBOOL orxFASTCALL orxBundle_IsProcessing();
+
 // Locate function, returns NULL if it can't handle the storage or if the resource can't be found in this storage
-const orxSTRING orxFASTCALL orxNoiseTexture_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
+static const orxSTRING orxFASTCALL orxNoiseTexture_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
   const orxSTRING zResult = orxNULL;
 
-[+bundle
   if(orxBundle_IsProcessing()) {return zResult;}
-]
+
   // Is a texture?
   if((orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
   && (orxString_Compare(_zGroup, orxTEXTURE_KZ_RESOURCE_GROUP) == 0))
@@ -209,7 +210,7 @@ const orxSTRING orxFASTCALL orxNoiseTexture_Locate(const orxSTRING _zGroup, cons
 }
 
 // Open function: returns an opaque handle for subsequent function calls (GetSize, Seek, Tell, Read and Close) upon success, orxHANDLE_UNDEFINED otherwise
-orxHANDLE orxFASTCALL orxNoiseTexture_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
+static orxHANDLE orxFASTCALL orxNoiseTexture_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
 {
   orxHANDLE hResult = orxHANDLE_UNDEFINED;
 
@@ -253,6 +254,7 @@ orxHANDLE orxFASTCALL orxNoiseTexture_Open(const orxSTRING _zLocation, orxBOOL _
       pstResource->stState        = fnlCreateState();
       pstResource->s32HeaderSize  = s32HeaderSize;
       orxMemory_Copy(&(pstResource->au8Data), acHeader, s32HeaderSize);
+      orxConfig_GetVector(orxNOISETEXTURE_KZ_CONFIG_ORIGIN, &(pstResource->vOrigin));
 
       // Gets seed
       pstResource->stState.seed = (orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_SEED) != orxFALSE) ? orxConfig_GetU32(orxNOISETEXTURE_KZ_CONFIG_SEED) : orxMath_GetRandomU32(1, 0xFFFFFFFF);
@@ -447,7 +449,7 @@ orxHANDLE orxFASTCALL orxNoiseTexture_Open(const orxSTRING _zLocation, orxBOOL _
 }
 
 // Close function: releases all that has been allocated in Open
-void orxFASTCALL orxNoiseTexture_Close(orxHANDLE _hResource)
+static void orxFASTCALL orxNoiseTexture_Close(orxHANDLE _hResource)
 {
   NoiseTextureResource *pstResource;
 
@@ -462,7 +464,7 @@ void orxFASTCALL orxNoiseTexture_Close(orxHANDLE _hResource)
 }
 
 // GetSize function: simply returns the size of the extracted resource, in bytes
-orxS64 orxFASTCALL orxNoiseTexture_GetSize(orxHANDLE _hResource)
+static orxS64 orxFASTCALL orxNoiseTexture_GetSize(orxHANDLE _hResource)
 {
   NoiseTextureResource *pstResource;
   orxS64          s64Result;
@@ -478,7 +480,7 @@ orxS64 orxFASTCALL orxNoiseTexture_GetSize(orxHANDLE _hResource)
 }
 
 // Seek function: position the read cursor inside the data and returns the offset from start upon success or -1 upon failure
-orxS64 orxFASTCALL orxNoiseTexture_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence)
+static orxS64 orxFASTCALL orxNoiseTexture_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence)
 {
   NoiseTextureResource *pstResource;
   orxS64                s64Cursor;
@@ -535,7 +537,7 @@ orxS64 orxFASTCALL orxNoiseTexture_Seek(orxHANDLE _hResource, orxS64 _s64Offset,
 }
 
 // Tell function: returns current read cursor
-orxS64 orxFASTCALL orxNoiseTexture_Tell(orxHANDLE _hResource)
+static orxS64 orxFASTCALL orxNoiseTexture_Tell(orxHANDLE _hResource)
 {
   orxS64 s64Result;
 
@@ -547,7 +549,7 @@ orxS64 orxFASTCALL orxNoiseTexture_Tell(orxHANDLE _hResource)
 }
 
 // Read function: copies the requested amount of data, in bytes, to the given buffer and returns the amount of bytes copied
-orxS64 orxFASTCALL orxNoiseTexture_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pu8Buffer)
+static orxS64 orxFASTCALL orxNoiseTexture_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pu8Buffer)
 {
   NoiseTextureResource *pstResource;
   orxS64                s64CopySize;
@@ -567,7 +569,7 @@ orxS64 orxFASTCALL orxNoiseTexture_Read(orxHANDLE _hResource, orxS64 _s64Size, v
       // For all columns
       for(i = 0; i < pstResource->u32Width; i++)
       {
-        *(pu8Pixel++) = (orxU8)(255.0f * 0.5f * (1.0f + fnlGetNoise2D(&(pstResource->stState), (float)i, (float)j)));
+        *(pu8Pixel++) = (orxU8)(255.0f * 0.5f * (1.0f + fnlGetNoise2D(&(pstResource->stState), (float)i + pstResource->vOrigin.fX, (float)j + pstResource->vOrigin.fY)));
       }
     }
 

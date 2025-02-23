@@ -97,7 +97,6 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Create the [-movie scene][+movie splash screen]
   orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");
 ]
-
   // Push [Main] as the default section
   orxConfig_PushSection("Main");
 

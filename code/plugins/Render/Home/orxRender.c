@@ -70,7 +70,7 @@
 #define orxRENDER_KF_PROFILER_SEPARATOR_WIDTH       orx2F(0.5f)
 #define orxRENDER_KF_PROFILER_SEPARATOR_HEIGHT      orx2F(0.25f)
 #define orxRENDER_KF_PROFILER_BAR_MIN_HEIGHT        orx2F(5.0f)
-#define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT        orx2F(24.0f)
+#define orxRENDER_KF_PROFILER_BAR_MAX_HEIGHT        orx2F(20.0f)
 #define orxRENDER_KF_PROFILER_BAR_ALPHA             orx2F(0.8f)
 #define orxRENDER_KF_PROFILER_BAR_HIGH_L            orx2F(0.7f)
 #define orxRENDER_KF_PROFILER_BAR_LOW_L             orx2F(0.3f)
@@ -1562,7 +1562,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
         orxVECTOR         vPivot;
         orxSHADERPOINTER *pstShaderPointer;
         orxCOLOR          stColor;
-        orxBOOL           bGraphicFlipX, bGraphicFlipY, bObjectFlipX, bObjectFlipY;
+        orxBOOL           bFlipX, bFlipY;
 
         /* Gets its shader pointer */
         pstShaderPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstObject), SHADERPOINTER);
@@ -1581,16 +1581,30 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
         /* Gets graphic's pivot */
         orxGraphic_GetPivot(pstGraphic, &vPivot);
 
-        /* Gets object & graphic flipping */
-        orxObject_GetFlip(pstObject, &bObjectFlipX, &bObjectFlipY);
-        orxGraphic_GetFlip(pstGraphic, &bGraphicFlipX, &bGraphicFlipY);
+        /* Has graphic flip? */
+        if(orxGraphic_HasFlip(pstGraphic) != orxFALSE)
+        {
+          /* Gets graphic flip status */
+          orxGraphic_GetFlip(pstGraphic, &bFlipX, &bFlipY);
+        }
+        /* Has object flip? */
+        else if(orxObject_HasFlip(pstObject) != orxFALSE)
+        {
+          /* Updates display color */
+          orxObject_GetFlip(pstObject, &bFlipX, &bFlipY);
+        }
+        else
+        {
+          /* No flipping */
+          bFlipX = bFlipY = orxFALSE;
+        }
 
-        /* Updates using combined flipping */
-        if(bObjectFlipX ^ bGraphicFlipX)
+        /* Updates scale */
+        if(bFlipX)
         {
           stPayload.stObject.pstTransform->fScaleX *= -orxFLOAT_1;
         }
-        if(bObjectFlipY ^ bGraphicFlipY)
+        if(bFlipY)
         {
           stPayload.stObject.pstTransform->fScaleY *= -orxFLOAT_1;
         }

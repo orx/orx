@@ -836,70 +836,65 @@ static orxSTATUS orxFASTCALL orxPlugin_ProcessParams(orxU32 _u32ParamCount, cons
  */
 static orxSTATUS orxFASTCALL orxPlugin_EventHandler(const orxEVENT *_pstEvent)
 {
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                   eResult = orxSTATUS_SUCCESS;
 
-  /* Add or update? */
-  if((_pstEvent->eID == orxRESOURCE_EVENT_ADD) || (_pstEvent->eID == orxRESOURCE_EVENT_UPDATE))
+  /* Gets payload */
+  pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  /* Is plugin group? */
+  if(pstPayload->stGroupID == sstPlugin.stResourceGroupID)
   {
-    orxRESOURCE_EVENT_PAYLOAD *pstPayload;
+    orxPLUGIN_INFO *pstPluginInfo;
 
-    /* Gets payload */
-    pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Is plugin group? */
-    if(pstPayload->stGroupID == sstPlugin.stResourceGroupID)
+    /* For all plugin info */
+    for(pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
+        pstPluginInfo != orxNULL;
+        pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, pstPluginInfo))
     {
-      orxPLUGIN_INFO *pstPluginInfo;
-
-      /* For all plugin info */
-      for(pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
-          pstPluginInfo != orxNULL;
-          pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, pstPluginInfo))
+      /* Found? */
+      if(pstPluginInfo->stResourceID == pstPayload->stNameID)
       {
+        orxPLUGIN_SWAP_FUNCTION pfnSwap;
+
+        /* Gets swap function */
+        pfnSwap = (orxPLUGIN_SWAP_FUNCTION)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
+
         /* Found? */
-        if(pstPluginInfo->stResourceID == pstPayload->stNameID)
+        if(pfnSwap != orxNULL)
         {
-          orxPLUGIN_SWAP_FUNCTION pfnSwap;
+          /* Updates status */
+          orxFLAG_SET(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_SWAP, orxPLUGIN_KU32_STATIC_FLAG_NONE);
 
-          /* Gets swap function */
-          pfnSwap = (orxPLUGIN_SWAP_FUNCTION)orxPlugin_GetFunctionAddress(pstPluginInfo->pstSysPlugin, orxPLUGIN_KZ_SWAP_FUNCTION_NAME);
+          /* Pushes config swap section */
+          orxConfig_PushSection(orxPLUGIN_KZ_CONFIG_SWAP_SECTION);
 
-          /* Found? */
-          if(pfnSwap != orxNULL)
-          {
-            /* Updates status */
-            orxFLAG_SET(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_SWAP, orxPLUGIN_KU32_STATIC_FLAG_NONE);
-
-            /* Pushes config swap section */
-            orxConfig_PushSection(orxPLUGIN_KZ_CONFIG_SWAP_SECTION);
-
-            /* Can unload it? */
-            if(orxPlugin_Unload(pstPluginInfo->hPluginHandle) != orxSTATUS_FAILURE)
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Hotloading plugin [%s]", orxString_GetFromID(pstPluginInfo->stNameID));
-
-              /* Reloads it */
-              orxPlugin_Load(orxString_GetFromID(pstPluginInfo->stNameID));
-            }
-
-            /* Pops config section */
-            orxConfig_PopSection();
-
-            /* Clears config swap section */
-            orxConfig_ClearSection(orxPLUGIN_KZ_CONFIG_SWAP_SECTION);
-
-            /* Updates status */
-            orxFLAG_SET(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_NONE, orxPLUGIN_KU32_STATIC_FLAG_SWAP);
-          }
-          else
+          /* Can unload it? */
+          if(orxPlugin_Unload(pstPluginInfo->hPluginHandle) != orxSTATUS_FAILURE)
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Can't hotload plugin [%]: no swap entry point found, aborting!", orxString_GetFromID(pstPluginInfo->stNameID));
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Hotloading plugin [%s]", orxString_GetFromID(pstPluginInfo->stNameID));
+
+            /* Reloads it */
+            orxPlugin_Load(orxString_GetFromID(pstPluginInfo->stNameID));
           }
 
-          break;
+          /* Pops config section */
+          orxConfig_PopSection();
+
+          /* Clears config swap section */
+          orxConfig_ClearSection(orxPLUGIN_KZ_CONFIG_SWAP_SECTION);
+
+          /* Updates status */
+          orxFLAG_SET(sstPlugin.u32Flags, orxPLUGIN_KU32_STATIC_FLAG_NONE, orxPLUGIN_KU32_STATIC_FLAG_SWAP);
         }
+        else
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Can't hotload plugin [%]: no swap entry point found, aborting!", orxString_GetFromID(pstPluginInfo->stNameID));
+        }
+
+        break;
       }
     }
   }
@@ -987,6 +982,7 @@ orxSTATUS orxFASTCALL orxPlugin_Init()
 
       /* Adds event handler */
       orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxPlugin_EventHandler);
+      orxEvent_SetHandlerIDFlags(orxPlugin_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
 
       /* Successful */
       eResult = orxSTATUS_SUCCESS;

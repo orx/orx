@@ -1753,8 +1753,8 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
         /* Locally appending? */
         if(bReuse != orxFALSE)
         {
-          /* Not self or inheritance? */
-          if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE))
+          /* Not self, inheritance or block mode? */
+          if(!orxFLAG_TEST(pstEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE | orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
           {
             /* Appends value */
             eResult = orxConfig_AppendValue(&(pstEntry->stValue), _zValue);
@@ -1762,7 +1762,7 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to append [%s] to config entry <%s.%s>: can't append list item(s) to a value that contains an inheritance marker <%s>.", _zValue, sstConfig.pstCurrentSection->zName, _zKey, pstEntry->stValue.zValue);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to append [%s] to config entry <%s.%s>: can't append list item(s) to a value that is either a block or contains an inheritance marker <%s>.", _zValue, sstConfig.pstCurrentSection->zName, _zKey, pstEntry->stValue.zValue);
           }
         }
         else
@@ -1775,8 +1775,8 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
           /* Found? */
           if(pstParentEntry != orxNULL)
           {
-            /* Not self or inheritance? */
-            if(!orxFLAG_TEST(pstParentEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE))
+            /* Not self, inheritance or block mode? */
+            if(!orxFLAG_TEST(pstParentEntry->stValue.u16Flags, orxCONFIG_VALUE_KU16_FLAG_SELF_VALUE | orxCONFIG_VALUE_KU16_FLAG_INHERITANCE | orxCONFIG_VALUE_KU16_FLAG_BLOCK_MODE))
             {
               /* Restores string */
               orxConfig_RestoreLiteralValue(&(pstParentEntry->stValue));
@@ -1794,7 +1794,7 @@ static orxINLINE orxSTATUS orxConfig_SetEntry(const orxSTRING _zKey, const orxST
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to append [%s] to config entry <%s.%s>: can't append list item(s) to a value that contains an inheritance marker <%s>.", _zValue, orxSTRUCT_GET_FROM_FIELD(orxCONFIG_SECTION, stEntryList, orxLinkList_GetList(&(pstParentEntry->stNode)))->zName, _zKey, pstParentEntry->stValue.zValue);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "Failed to append [%s] to config entry <%s.%s>: can't append list item(s) to a value that is either a block or contains an inheritance marker <%s>.", _zValue, orxSTRUCT_GET_FROM_FIELD(orxCONFIG_SECTION, stEntryList, orxLinkList_GetList(&(pstParentEntry->stNode)))->zName, _zKey, pstParentEntry->stValue.zValue);
             }
           }
           else

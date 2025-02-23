@@ -171,6 +171,7 @@ solution "[name]"
             "-sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency",
             "-sAUDIO_WORKLET=1",
             "-sWASM_WORKERS=1",
+            "-sSTACK_SIZE=1048576",
             "-sASYNCIFY",
             "-sALLOW_MEMORY_GROWTH",
             "-sFULL_ES3=1",

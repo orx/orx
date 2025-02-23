@@ -121,7 +121,6 @@ typedef struct __orxFONTGEN_STATIC_t
   orxSTRING       zFontName;
   orxVECTOR       vCharacterSize;
   orxVECTOR       vCharacterSpacing;
-  orxFLOAT        fFontScale;
   orxFLOAT        fPadding;
   orxHASHTABLE   *pstCharacterTable;
   orxBANK        *pstGlyphBank;
@@ -518,11 +517,8 @@ static orxSTATUS orxFASTCALL ProcessFontParams(orxU32 _u32ParamCount, const orxS
           sstFontGen.vCharacterSpacing.fX = orx2F(2.0f);
           sstFontGen.vCharacterSpacing.fY = orx2F(2.0f);
 
-          // Stores scale
-          sstFontGen.fFontScale = sstFontGen.vCharacterSize.fY / orxS2F(sstFontGen.pstFontFace->bbox.yMax - sstFontGen.pstFontFace->bbox.yMin);
-
-          // Sets pixel's size
-          eResult = FT_Set_Pixel_Sizes(sstFontGen.pstFontFace, (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fX) - 2, (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fY) - 2) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
+          // Sets pixel sizes
+          eResult = FT_Set_Pixel_Sizes(sstFontGen.pstFontFace, (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fX), (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fY)) ? orxSTATUS_FAILURE : orxSTATUS_SUCCESS;
         }
       }
     }
@@ -777,6 +773,16 @@ static void Run()
       {
         sstFontGen.vCharacterSize.fY = orxS2F(s32MaxAscend + s32MaxDescend + 1);
       }
+      else if (sstFontGen.vCharacterSize.fY < s32MaxAscend + s32MaxDescend + 1)
+      {
+        orxFLOAT fFontScale;
+
+        // Gets font scaling factor
+        fFontScale = sstFontGen.vCharacterSize.fY / orxS2F(s32MaxAscend + s32MaxDescend + 1);
+
+        // Updates pixel sizes
+        FT_Set_Pixel_Sizes(sstFontGen.pstFontFace, (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fX * fFontScale), (FT_UInt)orxF2U(sstFontGen.vCharacterSize.fY * fFontScale));
+      }
 
       // Gets width & height
       fHeight   = orxMath_Ceil((sstFontGen.u32Rows > 0) ? sstFontGen.u32Rows : orxMath_Sqrt(orxU2F(u32Counter)));
@@ -787,10 +793,10 @@ static void Run()
       // Is not monospaced?
       if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
       {
-        orxS32 s32X, s32Y;
+        orxS32 s32X, s32Y, s32MaxX;
 
         // For all defined glyphs
-        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), s32X = 0, s32Y = 0;
+        for(pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetFirst(&sstFontGen.stGlyphList), s32X = 0, s32Y = 0, s32MaxAscend = 0, s32MaxDescend = 0, s32MaxX = 0;
             pstGlyph;
             pstGlyph = (orxFONTGEN_GLYPH *)orxLinkList_GetNext(&pstGlyph->stNode))
         {
@@ -800,6 +806,20 @@ static void Run()
           // Loads rendered glyph
           eError = FT_Load_Glyph(sstFontGen.pstFontFace, (FT_UInt)pstGlyph->u32Index, FT_LOAD_RENDER);
           orxASSERT(!eError);
+
+          // Is ascend bigger than any previous?
+          if(sstFontGen.pstFontFace->glyph->bitmap_top > s32MaxAscend)
+          {
+            // Stores it
+            s32MaxAscend = sstFontGen.pstFontFace->glyph->bitmap_top;
+          }
+
+          // Is descend bigger than any previous?
+          if((orxS32)sstFontGen.pstFontFace->glyph->bitmap.rows - sstFontGen.pstFontFace->glyph->bitmap_top - 1 > s32MaxDescend)
+          {
+            // Stores it
+            s32MaxDescend = sstFontGen.pstFontFace->glyph->bitmap.rows - sstFontGen.pstFontFace->glyph->bitmap_top - 1;
+          }
 
           // Use original advance value?
           if(orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_ADVANCE))
@@ -832,7 +852,13 @@ static void Run()
 
           // Updates position
           s32X += s32CharacterWidth + orxF2S(sstFontGen.vCharacterSpacing.fX);
+
+          // Keeps widest value
+          s32MaxX = orxMAX(s32MaxX, s32X);
         }
+
+        // Updates width
+        s32Width = s32MaxX + orxF2S(sstFontGen.fPadding);
 
         // Updates height
         s32Height = s32Y + orxF2S(sstFontGen.vCharacterSize.fY + sstFontGen.fPadding);
