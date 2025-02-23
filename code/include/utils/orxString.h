@@ -1135,18 +1135,18 @@ static orxINLINE orxSTATUS                                orxString_ToFloat(cons
   orxASSERT(_pfOutValue != orxNULL);
   orxASSERT(_zString != orxNULL);
 
-  /* Linux / Mac / iOS / Android / MSVC? */
-#if defined(__orxLINUX__) || defined(__orxMAC__) || defined (__orxIOS__) || defined(__orxMSVC__) || defined(__orxANDROID__)
+  /* Linux / Mac / FreeBSD / iOS / Android / MSVC? */
+#if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxFREEBSD__) || defined (__orxIOS__) || defined(__orxMSVC__) || defined(__orxANDROID__)
 
   /* Converts it */
   *_pfOutValue = (orxFLOAT)strtod(_zString, &pcEnd);
 
-#else /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxMSVC__ || __orxANDROID__ */
+#else /* __orxLINUX__ || __orxMAC__ || __orxFREEBSD__ || __orxIOS__ || __orxMSVC__ || __orxANDROID__ */
 
   /* Converts it */
   *_pfOutValue = strtof(_zString, &pcEnd);
 
-#endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxMSVC__ || __orxANDROID__ */
+#endif /* __orxLINUX__ || __orxMAC__ || __orxFREEBSD__ || __orxIOS__ || __orxMSVC__ || __orxANDROID__ */
 
   /* Valid conversion ? */
   if((pcEnd != _zString) && (_zString[0] != orxCHAR_NULL))

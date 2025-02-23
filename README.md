@@ -270,6 +270,7 @@ for which you're compiling. Here's a quick list of these flags:
   `__orxWINDOWS__`        | orx is being compiled for Windows
   `__orxMAC__`            | orx is being compiled for MacOS X
   `__orxLINUX__`          | orx is being compiled for Linux
+  `__orxFREEBSD__`        | orx is being compiled for FreeBSD
   `__orxWEB__`            | orx is being compiled for Web/HTML5
   `__orxIOS__`            | orx is being compiled for iOS
   `__orxANDROID__`        | orx is being compiled for Android

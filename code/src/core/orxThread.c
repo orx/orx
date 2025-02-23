@@ -51,11 +51,11 @@
   #include <sys/types.h>
   #include <unistd.h>
 
-  #if defined(__orxLINUX__)
+  #if defined(__orxLINUX__) || defined(__orxFREEBSD__)
 
     #include <sched.h>
 
-  #endif /* __orxLINUX__ */
+  #endif /* __orxLINUX__ || __orxFREEBSD__ */
 
 #endif /* __orxWINDOWS__ */
 

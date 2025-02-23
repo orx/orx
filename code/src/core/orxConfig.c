@@ -181,6 +181,10 @@
 
   #define orxCONFIG_KZ_PLATFORM                   "mac"
 
+#elif defined(__orxFREEBSD__)
+
+  #define orxCONFIG_KZ_PLATFORM                   "freebsd"
+
 #elif defined(__orxWINDOWS__)
 
   #define orxCONFIG_KZ_PLATFORM                   "windows"

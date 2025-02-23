@@ -459,8 +459,8 @@ void orxFASTCALL _orxDebug_Exit()
 /** Software break function */
 void orxFASTCALL _orxDebug_Break()
 {
-  /* Windows / Linux / Mac / iOS / Android */
-#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
+  /* Windows / Linux / Mac / FreeBSD / iOS / Android */
+#if defined(__orxWINDOWS__) || defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxFREEBSD__) || defined(__orxIOS__) || defined(__orxANDROID__)
 
   /* Compiler specific */
 
@@ -481,7 +481,7 @@ void orxFASTCALL _orxDebug_Break()
 
   #endif /* __orxMSVC__ */
 
-#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
+#endif /* __orxWINDOWS__ || __orxLINUX__ || __orxMAC__ || __orxFREEBSD__ || __orxIOS__ || __orxANDROID__ */
 
   /* Done! */
   return;

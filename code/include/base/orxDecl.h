@@ -174,7 +174,7 @@
 #endif /* __orxX86_64__ || __orxPPC64__ || __orxARM64__ */
 
 /* No platform defines? */
-#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxIOS__) && !defined(__orxANDROID__)
+#if !defined(__orxWINDOWS__) && !defined(__orxMAC__) && !defined(__orxLINUX__) && !defined(__orxFREEBSD__) && !defined(__orxIOS__) && !defined(__orxANDROID__)
 
   /* Windows? */
   #if defined(_WIN32) || defined(WIN32)
@@ -203,6 +203,11 @@
 
     #define __orxMAC__
 
+  /* FreeBSD? */
+  #elif defined(__FreeBSD__)
+
+    #define __orxFREEBSD__
+
   /* Web? */
   #elif defined(EMSCRIPTEN) || defined(__EMSCRIPTEN__)
 
@@ -210,11 +215,11 @@
 
   #else
 
-    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxMAC__/__orxLINUX__/__orxIOS__/__orxANDROID__/__orxWEB__)"
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxMAC__/__orxLINUX__/__orxFREEBSD__/__orxIOS__/__orxANDROID__/__orxWEB__)"
 
   #endif
 
-#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxWEB__ */
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxFREEBSD__ && !__orxIOS__ && !__orxANDROID__ && !__orxWEB__ */
 
 
 #ifdef __cplusplus
@@ -282,8 +287,8 @@
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac / iOS / Android / Web */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxWEB__)
+  /* Linux / Mac / FreeBSD / iOS / Android / Web */
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxFREEBSD__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxWEB__)
 
     /* ARM / ARM64 / LLVM / PPC / PPC64 / X86_64 / iOS / Android / Web */
     #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxARM64__) || defined(__orxWEB__)
@@ -344,7 +349,7 @@
 
     #endif /* __orxIOS__ || __orxANDROID__ */
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxWEB__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxFREEBSD__ || __orxIOS__ || __orxANDROID__ || __orxWEB__ */
 
 #endif /* __orxWINDOWS__ */
 

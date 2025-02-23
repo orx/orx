@@ -195,7 +195,7 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
   return (orxU32)((usLineSize != 0) ? usLineSize : orxMEMORY_KU32_DEFAULT_CACHE_LINE_SIZE);
 }
 
-#elif defined(__orxLINUX__)
+#elif defined(__orxLINUX__) || defined(__orxFREEBSD__)
 
 #include <unistd.h>
 
