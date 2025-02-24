@@ -24,14 +24,15 @@ platform-data:  compose/deep [
   windows     [premake {windows}                                              config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]                                                                 env-msg {Please restart your favorite IDE before using orx.}]
   mac         [premake {mac}                                                  config [{gmake} {codelite} {codeblocks} {xcode4}                  ]                                                                 env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
   linux       [premake (pick [{linux64} {linux32}] system/build/arch = 'x64)  config [{gmake} {codelite} {codeblocks}                           ]   deps [{libgl1-mesa-dev} {libxrandr-dev} {libstdc++-static}]   env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
-  freebsd     [premake {freebsd}                                              config [{gmake} {codelite} {codeblocks}                           ]   deps [{mesa-libs} {libXrandr}]                                env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
+  bsd         [premake {freebsd}                                              config [{gmake} {codelite} {codeblocks}                           ]   deps [{mesa-libs} {libXrandr}]                                env-msg {Please logout/login to refresh your environment if you're using an IDE.}]
 ]
 
 ; Inits
 begin: now/time
 new-env: skip-env: skip-hook: false
 switch platform: system/platform [
-  macos [platform: 'Mac]
+  macos   [platform: 'Mac]
+  freebsd [platform: 'BSD]
 ]
 platform-info: platform-data/:platform
 
@@ -189,7 +190,7 @@ foreach config platform-info/config [
     ]
   ]
 ]
-print [{== You can now build orx in [} builds/code/:platform {]}]
+print [{== You can now build orx in [} builds/code/(lowercase to-string platform) {]}]
 print [{== For more details, please refer to:} newline
        {  * https://orx-project.org/wiki} newline
        {  * https://orx-project.org/discord/learning}]
