@@ -5378,6 +5378,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadFont(const orxSTRING _zFileName, cons
                     if(pstLoadInfo->astGlyphList != orxNULL)
                     {
                       const orxSTRING zRemainder;
+                      const orxSTRING zCharacterList;
                       orxU32          u32CharacterCodePoint, i;
                       int             iX0, iX1, iY0, iY1;
                       orxFLOAT        fCurrentWidth, fWidth, fHeight, fBaseLine;
@@ -5385,8 +5386,25 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadFont(const orxSTRING _zFileName, cons
                       /* Stores source buffer */
                       pstLoadInfo->pu8Buffer = pu8Buffer;
 
-                      /* Gets font bounding box */
-                      stbtt_GetFontBoundingBox(&(pstLoadInfo->stFontInfo), &iX0, &iY0, &iX1, &iY1);
+                      /* For all characters */
+                      for(zCharacterList = _zCharacterList, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &zRemainder), i = iX0 = iX1 = iY0 = iY1 = 0;
+                          *zCharacterList != orxCHAR_NULL;
+                          zCharacterList = zRemainder, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &zRemainder), i++)
+                      {
+                        int iGlyphX0, iGlyphX1, iGlyphY0, iGlyphY1;
+
+                        /* Stores its glyph index */
+                        pstLoadInfo->astGlyphList[i].s32Index = stbtt_FindGlyphIndex(&(pstLoadInfo->stFontInfo), u32CharacterCodePoint);
+
+                        /* Gets glyph bitmap box */
+                        stbtt_GetGlyphBitmapBox(&(pstLoadInfo->stFontInfo), pstLoadInfo->astGlyphList[i].s32Index, 1.0f, 1.0f, (int *)&iGlyphX0, (int *)&iGlyphY0, (int *)&iGlyphX1, (int *)&iGlyphY1);
+
+                        /* Updates global bounding box */
+                        iX0 = orxMIN(iX0, iGlyphX0);
+                        iX1 = orxMAX(iX1, iGlyphX1);
+                        iY0 = orxMIN(iY0, -iGlyphY1);
+                        iY1 = orxMAX(iY1, -iGlyphY0);
+                      }
 
                       /* Gets font scale */
                       pstLoadInfo->vFontScale.fY = (_pvCharacterSize->fY - orxFLOAT_1) / (iY1 - iY0);
@@ -5400,15 +5418,12 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadFont(const orxSTRING _zFileName, cons
                       orxVector_Copy(&(pstLoadInfo->vCharacterSpacing), _pvCharacterSpacing);
 
                       /* For all characters */
-                      for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zCharacterList, &zRemainder), i = 0, fCurrentWidth = fWidth = orxFLOAT_0, fHeight = pstLoadInfo->vCharacterSize.fY;
-                          *_zCharacterList != orxCHAR_NULL;
-                          _zCharacterList = zRemainder, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zCharacterList, &zRemainder), i++)
+                      for(zCharacterList = _zCharacterList, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &zRemainder), i = 0, fCurrentWidth = fWidth = orxFLOAT_0, fHeight = pstLoadInfo->vCharacterSize.fY;
+                          *zCharacterList != orxCHAR_NULL;
+                          zCharacterList = zRemainder, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &zRemainder), i++)
                       {
                         int       iGlyphWidth, iGlyphX0, iGlyphX1, iGlyphY0, iGlyphY1;
                         orxFLOAT  fAdvance;
-
-                        /* Stores its index */
-                        pstLoadInfo->astGlyphList[i].s32Index = stbtt_FindGlyphIndex(&(pstLoadInfo->stFontInfo), u32CharacterCodePoint);
 
                         /* Gets its metrics */
                         stbtt_GetGlyphHMetrics(&(pstLoadInfo->stFontInfo), pstLoadInfo->astGlyphList[i].s32Index, &iGlyphWidth, NULL);
@@ -5417,13 +5432,13 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadFont(const orxSTRING _zFileName, cons
                         stbtt_GetGlyphBitmapBox(&(pstLoadInfo->stFontInfo), pstLoadInfo->astGlyphList[i].s32Index, pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY, (int *)&iGlyphX0, (int *)&iGlyphY0, (int *)&iGlyphX1, (int *)&iGlyphY1);
 
                         /* Updates glyph values */
-                        pstLoadInfo->astGlyphList[i].stGlyph.fX = orxMAX(0, orxS2F(iGlyphX0));
-                        pstLoadInfo->astGlyphList[i].stGlyph.fY = fBaseLine + orxS2F(iGlyphY0);
                         pstLoadInfo->astGlyphList[i].stGlyph.fWidth = orxMath_Floor((_pvCharacterSize->fX > orxFLOAT_0)
                                                                                     ? _pvCharacterSize->fX
                                                                                     : (_pvCharacterSize->fX == orxFLOAT_0)
                                                                                       ? orxMAX(pstLoadInfo->vFontScale.fX * orxS2F(iGlyphWidth), orxS2F(iGlyphX1 - iGlyphX0))
                                                                                       : pstLoadInfo->vFontScale.fX * (iX1 - iX0));
+                        pstLoadInfo->astGlyphList[i].stGlyph.fX = (_pvCharacterSize->fX == orxFLOAT_0) ? orxMAX(0, orxS2F(iGlyphX0)) : orx2F(0.5f) * (pstLoadInfo->astGlyphList[i].stGlyph.fWidth - orxS2F(iGlyphX1 - iGlyphX0));
+                        pstLoadInfo->astGlyphList[i].stGlyph.fY = fBaseLine + orxS2F(iGlyphY0);
 
                         /* Gets horizontal advance */
                         fAdvance = pstLoadInfo->astGlyphList[i].stGlyph.fWidth + ((i == 0) ? orxFLOAT_0 : _pvCharacterSpacing->fX);
