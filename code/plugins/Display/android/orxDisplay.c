@@ -4279,12 +4279,12 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, c
                         stbtt_GetGlyphBitmapBox(&(pstLoadInfo->stFontInfo), pstLoadInfo->astGlyphList[i].s32Index, pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY, (int *)&iGlyphX0, (int *)&iGlyphY0, (int *)&iGlyphX1, (int *)&iGlyphY1);
 
                         /* Updates glyph values */
-                        pstLoadInfo->astGlyphList[i].stGlyph.fWidth = orxMath_Floor((_pvCharacterSize->fX > orxFLOAT_0)
-                                                                                    ? _pvCharacterSize->fX
-                                                                                    : (_pvCharacterSize->fX == orxFLOAT_0)
-                                                                                      ? orxMAX(pstLoadInfo->vFontScale.fX * orxS2F(iGlyphWidth), orxS2F(iGlyphX1 - iGlyphX0))
-                                                                                      : pstLoadInfo->vFontScale.fX * (iX1 - iX0));
-                        pstLoadInfo->astGlyphList[i].stGlyph.fX = (_pvCharacterSize->fX == orxFLOAT_0) ? orxMAX(0, orxS2F(iGlyphX0)) : orx2F(0.5f) * (pstLoadInfo->astGlyphList[i].stGlyph.fWidth - orxS2F(iGlyphX1 - iGlyphX0));
+                        pstLoadInfo->astGlyphList[i].stGlyph.fWidth = orxMath_Ceil((_pvCharacterSize->fX > orxFLOAT_0)
+                                                                                   ? _pvCharacterSize->fX
+                                                                                   : (_pvCharacterSize->fX == orxFLOAT_0)
+                                                                                     ? orxMAX(pstLoadInfo->vFontScale.fX * orxS2F(iGlyphWidth), orxS2F(iGlyphX1 - iGlyphX0))
+                                                                                     : pstLoadInfo->vFontScale.fX * (iX1 - iX0));
+                        pstLoadInfo->astGlyphList[i].stGlyph.fX = (_pvCharacterSize->fX == orxFLOAT_0) ? orxMAX(0, orxS2F(iGlyphX0)) : orxMath_Floor(orx2F(0.5f) * (pstLoadInfo->astGlyphList[i].stGlyph.fWidth - orxS2F(iGlyphX1 - iGlyphX0)));
                         pstLoadInfo->astGlyphList[i].stGlyph.fY = fBaseLine + orxS2F(iGlyphY0);
 
                         /* Gets horizontal advance */
