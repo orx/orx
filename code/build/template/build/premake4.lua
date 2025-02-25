@@ -107,6 +107,12 @@ solution "[name]"
         "NoMinimalRebuild",
         "Symbols"
     }
+[+python
+
+    defines
+    {
+        "PK_ENABLE_OS=0"
+    }]
 
     configuration {"not web"}
         flags {"StaticRuntime"}
@@ -132,11 +138,13 @@ solution "[name]"
 
     configuration {"*Profile*"}
         targetsuffix ("p")
-        defines {"__orxPROFILER__"}
+        defines {"__orxPROFILER__"[+python  ,"NDEBUG"]}
         flags {"Optimize", "NoRTTI"}
         links {"orxp"}
 
     configuration {"*Release*"}
+[+python
+        defines {"NDEBUG"}]
         flags {"Optimize", "NoRTTI"}
         links {"orx"}
 [+bundle
@@ -213,6 +221,8 @@ solution "[name]"
     configuration {"linux", "not web"}
         buildoptions
         {
+[-c++ [+python
+            "-std=c11",]]
 [+imgui +sndh
             "-std=c++11",]
 [+sndh
@@ -238,9 +248,12 @@ solution "[name]"
     configuration {"macosx", "not web"}
         buildoptions
         {
-            "-stdlib=libc++",
+[+c++
+            "-stdlib=libc++",]
 [+imgui +sndh
             "-std=c++11",]
+[-c++ [+python
+            "-std=c11",]]
 [+sndh
             "-Wno-multichar",]
             "-gdwarf-2",
@@ -249,7 +262,8 @@ solution "[name]"
         }
         linkoptions
         {
-            "-stdlib=libc++",
+[+c++
+            "-stdlib=libc++",]
             "-dead_strip"
         }
 
@@ -286,6 +300,8 @@ solution "[name]"
     configuration {"windows", "vs*", "not web"}
         buildoptions
         {
+[+python
+            "/utf-8",]
             "/MP",
             "/EHsc"
         }
