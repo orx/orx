@@ -167,14 +167,24 @@
 #include "basisu.h"
 
 #define MSDFGEN_NO_FREETYPE
-#ifdef __orxMSVC__
+#if defined(__orxMSVC__)
   #pragma warning(push)
   #pragma warning(disable : 4530)
-#endif /* __orxMSVC__ */
+#elif defined(__orxGCC__)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wlocal-type-template-args"
+#elif defined(__orxCLANG__)
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wlocal-type-template-args"
+#endif
 #include "msdfgen.cpp"
-#ifdef __orxMSVC__
+#if defined(__orxMSVC__)
   #pragma warning(pop)
-#endif /* __orxMSVC__ */
+#elif defined(__orxGCC__)
+  #pragma GCC diagnostic pop
+#elif defined(__orxCLANG__)
+  #pragma clang diagnostic pop
+#endif
 
 
 #ifndef __orxEMBEDDED__
@@ -2240,6 +2250,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_ProcessFont(void *_pContext)
                 default:
                 case STBTT_vmove:
                 {
+                  stShape.contours.reserve(s32VertexCount - i);
                   stShape.addContour();
                   break;
                 }
@@ -2277,15 +2288,15 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_ProcessFont(void *_pContext)
             stShape.orientContours();
 
             /* Colors its edges */
-            msdfgen::edgeColoringSimple(stShape, 3.0);
+            msdfgen::edgeColoringByDistance(stShape, 3.0);
 
             /* Allocates temp bitmap */
             msdfgen::Bitmap<float, 4> oBitmap((int)pstLoadInfo->astGlyphList[i].stGlyph.fWidth, (int)pstLoadInfo->vCharacterSize.fY);
 
             /* Inits transformation */
-            msdfgen::SDFTransformation stTransformation(msdfgen::Projection({pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY},
-                                                                            {pstLoadInfo->astGlyphList[i].stGlyph.fX / pstLoadInfo->vFontScale.fX, orxMath_Ceil(-pstLoadInfo->s32GlyphHeight * pstLoadInfo->vFontScale.fY) / pstLoadInfo->vFontScale.fY}),
-                                                        msdfgen::Range(0.25f * pstLoadInfo->vCharacterSize.fY / pstLoadInfo->vFontScale.fY));
+            msdfgen::Vector2 vScale(pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY);
+            msdfgen::Vector2 vOffset(pstLoadInfo->astGlyphList[i].stGlyph.fX / pstLoadInfo->vFontScale.fX, orxMath_Ceil(-pstLoadInfo->s32GlyphHeight * pstLoadInfo->vFontScale.fY) / pstLoadInfo->vFontScale.fY);
+            msdfgen::SDFTransformation stTransformation(msdfgen::Projection(vScale, vOffset), msdfgen::Range(0.25f * pstLoadInfo->vCharacterSize.fY / pstLoadInfo->vFontScale.fY));
 
             /* Renders the MTSDF Glyph */
             msdfgen::generateMTSDF(oBitmap, stShape, stTransformation);

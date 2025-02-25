@@ -1288,7 +1288,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../../lib/static/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_truetype ../../../../extern/qoa ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/src ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
+				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_truetype ../../../../extern/msdfgen ../../../../extern/qoa ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/src ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
 				WARNING_CFLAGS = "-Wno-unused-value";
 			};
 			name = Debug;
