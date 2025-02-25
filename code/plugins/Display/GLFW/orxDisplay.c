@@ -167,7 +167,14 @@
 #include "basisu.h"
 
 #define MSDFGEN_NO_FREETYPE
+#ifdef __orxMSVC__
+  #pragma warning(push)
+  #pragma warning(disable : 4530)
+#endif /* __orxMSVC__ */
 #include "msdfgen.cpp"
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif /* __orxMSVC__ */
 
 
 #ifndef __orxEMBEDDED__
@@ -2238,17 +2245,26 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_ProcessFont(void *_pContext)
                 }
                 case STBTT_vline:
                 {
-                  stShape.contours.back().addEdge({{(double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y)}, {(double)(astVertexList[i].x), (double)(astVertexList[i].y)}});
+                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
+                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+                  stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stCurrent));
                   break;
                 }
                 case STBTT_vcurve:
                 {
-                  stShape.contours.back().addEdge({{(double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y)}, {(double)(astVertexList[i].cx), (double)(astVertexList[i].cy)}, {(double)(astVertexList[i].x), (double)(astVertexList[i].y)}});
+                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
+                  msdfgen::Point2 stC0((double)(astVertexList[i].cx), (double)(astVertexList[i].cy));
+                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+                  stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stC0, stCurrent));
                   break;
                 }
                 case STBTT_vcubic:
                 {
-                  stShape.contours.back().addEdge({{(double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y)}, {(double)(astVertexList[i].cx), (double)(astVertexList[i].cy)}, {(double)(astVertexList[i].cx1), (double)(astVertexList[i].cy1)}, {(double)(astVertexList[i].x), (double)(astVertexList[i].y)}});
+                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
+                  msdfgen::Point2 stC0((double)(astVertexList[i].cx), (double)(astVertexList[i].cy));
+                  msdfgen::Point2 stC1((double)(astVertexList[i].cx1), (double)(astVertexList[i].cy1));
+                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+                  stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stC0, stC1, stCurrent));
                   break;
                 }
               }
