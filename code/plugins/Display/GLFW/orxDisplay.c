@@ -170,21 +170,11 @@
 #if defined(__orxMSVC__)
   #pragma warning(push)
   #pragma warning(disable : 4530)
-#elif defined(__orxGCC__)
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wlocal-type-template-args"
-#elif defined(__orxCLANG__)
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wlocal-type-template-args"
-#endif
+#endif /* __orxMSVC__ */
 #include "msdfgen.cpp"
 #if defined(__orxMSVC__)
   #pragma warning(pop)
-#elif defined(__orxGCC__)
-  #pragma GCC diagnostic pop
-#elif defined(__orxCLANG__)
-  #pragma clang diagnostic pop
-#endif
+#endif /* __orxMSVC__ */
 
 
 #ifndef __orxEMBEDDED__
