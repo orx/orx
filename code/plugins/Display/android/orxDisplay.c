@@ -1558,22 +1558,32 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_ProcessFont(void *_pContext)
                 default:
                 case STBTT_vmove:
                 {
+                  stShape.contours.reserve(s32VertexCount - i);
                   stShape.addContour();
                   break;
                 }
                 case STBTT_vline:
                 {
-                  stShape.contours.back().addEdge({{(double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y)}, {(double)(astVertexList[i].x), (double)(astVertexList[i].y)}});
+                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
+                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+                  stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stCurrent));
                   break;
                 }
                 case STBTT_vcurve:
                 {
-                  stShape.contours.back().addEdge({{(double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y)}, {(double)(astVertexList[i].cx), (double)(astVertexList[i].cy)}, {(double)(astVertexList[i].x), (double)(astVertexList[i].y)}});
+                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
+                  msdfgen::Point2 stC0((double)(astVertexList[i].cx), (double)(astVertexList[i].cy));
+                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+                  stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stC0, stCurrent));
                   break;
                 }
                 case STBTT_vcubic:
                 {
-                  stShape.contours.back().addEdge({{(double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y)}, {(double)(astVertexList[i].cx), (double)(astVertexList[i].cy)}, {(double)(astVertexList[i].cx1), (double)(astVertexList[i].cy1)}, {(double)(astVertexList[i].x), (double)(astVertexList[i].y)}});
+                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
+                  msdfgen::Point2 stC0((double)(astVertexList[i].cx), (double)(astVertexList[i].cy));
+                  msdfgen::Point2 stC1((double)(astVertexList[i].cx1), (double)(astVertexList[i].cy1));
+                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+                  stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stC0, stC1, stCurrent));
                   break;
                 }
               }
@@ -1586,15 +1596,15 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_ProcessFont(void *_pContext)
             stShape.orientContours();
 
             /* Colors its edges */
-            msdfgen::edgeColoringSimple(stShape, 3.0);
+            msdfgen::edgeColoringByDistance(stShape, 3.0);
 
             /* Allocates temp bitmap */
             msdfgen::Bitmap<float, 4> oBitmap((int)pstLoadInfo->astGlyphList[i].stGlyph.fWidth, (int)pstLoadInfo->vCharacterSize.fY);
 
             /* Inits transformation */
-            msdfgen::SDFTransformation stTransformation(msdfgen::Projection({pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY},
-                                                                            {pstLoadInfo->astGlyphList[i].stGlyph.fX / pstLoadInfo->vFontScale.fX, orxMath_Ceil(-pstLoadInfo->s32GlyphHeight * pstLoadInfo->vFontScale.fY) / pstLoadInfo->vFontScale.fY}),
-                                                        msdfgen::Range(0.25f * pstLoadInfo->vCharacterSize.fY / pstLoadInfo->vFontScale.fY));
+            msdfgen::Vector2 vScale(pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY);
+            msdfgen::Vector2 vOffset(pstLoadInfo->astGlyphList[i].stGlyph.fX / pstLoadInfo->vFontScale.fX, orxMath_Ceil(-pstLoadInfo->s32GlyphHeight * pstLoadInfo->vFontScale.fY) / pstLoadInfo->vFontScale.fY);
+            msdfgen::SDFTransformation stTransformation(msdfgen::Projection(vScale, vOffset), msdfgen::Range(0.25f * pstLoadInfo->vCharacterSize.fY / pstLoadInfo->vFontScale.fY));
 
             /* Renders the MTSDF Glyph */
             msdfgen::generateMTSDF(oBitmap, stShape, stTransformation);
