@@ -528,16 +528,16 @@ project "orxLIB"
     end
 
     configuration {"not *Core*", "not web"}
-        links {"msdfgen", "webpdecoder"}
+        links {"webpdecoder"}
 
     configuration {"not *Core*", "not vs*", "not web"}
-        links {"basisu"}
+        links {"msdfgen", "basisu"}
 
     configuration {"not *Debug*", "not *Core*", "vs*", "not web"}
-        links {"basisu"}
+        links {"msdfgen", "basisu"}
 
     configuration {"*Debug*", "not *Core*", "vs*", "not web"}
-        links {"basisud"}
+        links {"msdfgend", "basisud"}
 
     configuration {"not *Debug*", "not *Core*", "not web"}
         links {"liquidfun"}
