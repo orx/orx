@@ -458,7 +458,7 @@ typedef struct __orxDISPLAY_STATIC_t
  */
 static orxDISPLAY_STATIC    sstDisplay;
 
-static orxCHAR              sacPVRTextureTag[4] = "PVR!";
+static orxCHAR              sacPVRTextureTag[5] = "PVR!";
 
 
 /***************************************************************************
@@ -1513,7 +1513,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_GetPVRTCInfo(orxHANDLE _hResource, i
       *_piHeight  = (int)stHeader.height;
 
       /* Updates result */
-      eResult = orxTRUE;
+      eResult = orxSTATUS_SUCCESS;
     }
     else
     {
