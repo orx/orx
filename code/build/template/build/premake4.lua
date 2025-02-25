@@ -174,7 +174,6 @@ solution "[name]"
         }
         links
         {
-            "basisu",
             "webpdecoder",
             "liquidfun"
         }
@@ -182,7 +181,6 @@ solution "[name]"
         libdirs {
             "$(ORX)/lib/static/web",
             "$(ORX)/../extern/emscripten-glfw/lib",
-            "$(ORX)/../extern/basisu/lib/web",
             "$(ORX)/../extern/libwebp/lib/web",
             "$(ORX)/../extern/LiquidFun-1.1.0/lib/web"
         }

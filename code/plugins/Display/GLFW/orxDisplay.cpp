@@ -165,6 +165,9 @@
 #undef STBTT_STATIC
 
 #include "basisu.h"
+#include "basisu_transcoder.h"
+#include "basisu_transcoder.cpp"
+#include "zstd/zstddeclib.c"
 
 #define MSDFGEN_NO_FREETYPE
 #if defined(__orxMSVC__)
@@ -364,6 +367,18 @@ typedef enum __orxDISPLAY_BUFFER_MODE_t
 
 } orxDISPLAY_BUFFER_MODE;
 
+/** Internal Basis Universal format
+ */
+typedef enum __orxDISPLAY_BASISU_FORMAT_t
+{
+  orxDISPLAY_BASISU_FORMAT_ASTC         = (orxU32)basist::transcoder_texture_format::cTFASTC_4x4_RGBA,
+  orxDISPLAY_BASISU_FORMAT_BC7          = (orxU32)basist::transcoder_texture_format::cTFBC7_RGBA,
+  orxDISPLAY_BASISU_FORMAT_UNCOMPRESSED = (orxU32)basist::transcoder_texture_format::cTFRGBA32,
+
+  orxDISPLAY_BASISU_FORMAT_NONE         = 0xFFFFFFFFU
+
+} orxDISPLAY_BASISU_FORMAT;
+
 /** Internal matrix structure
  */
 typedef struct __orxDISPLAY_MATRIX_t
@@ -541,7 +556,7 @@ typedef struct __orxDISPLAY_STATIC_t
   orxU32                    u32DefaultRefreshRate;
   orxS32                    s32ActiveTextureUnit;
   stbi_io_callbacks         stSTBICallbacks;
-  BasisUFormat              eBasisUFormat;
+  orxDISPLAY_BASISU_FORMAT  eBasisUFormat;
   GLenum                    aeDrawBufferList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   orxBITMAP                *apstDestinationBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
   const orxBITMAP          *apstBoundBitmapList[orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER];
@@ -551,6 +566,7 @@ typedef struct __orxDISPLAY_STATIC_t
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
   orxDISPLAY_VIDEO_MODE     stRequestVideoMode;
+  basist::ktx2_transcoder  *spoKTX2Transcoder;
 
 } orxDISPLAY_STATIC;
 
@@ -685,6 +701,33 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetBlendMode(orxDISPLAY_BLEND_MODE _eBlend
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetDestinationBitmaps(orxBITMAP **_apstBitmapList, orxU32 _u32Number);
 orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *_pstVideoMode);
 
+
+int orxDisplay_GetBasisUInfo(void *_pInput, unsigned int _uiInputSize, orxDISPLAY_BASISU_FORMAT _eFormat, unsigned int *_puiWidth, unsigned int *_puiHeight, unsigned int *_puiSize)
+{
+  basist::ktx2_header  *pstHeader = (basist::ktx2_header *)_pInput;
+  unsigned int          uiResult = 0;
+
+  // Valid?
+  if(_uiInputSize >= sizeof(basist::ktx2_header))
+  {
+    // Valid?
+    if((memcmp(pstHeader, basist::g_ktx2_file_identifier, sizeof(basist::g_ktx2_file_identifier)) == 0)
+    && (pstHeader->m_vk_format == basist::KTX2_VK_FORMAT_UNDEFINED)
+    && (pstHeader->m_type_size == 1))
+    {
+      // Store width, height and size
+      *_puiWidth   = pstHeader->m_pixel_width;
+      *_puiHeight  = pstHeader->m_pixel_height;
+      *_puiSize    = basist::basis_get_bytes_per_block_or_pixel((basist::transcoder_texture_format)_eFormat) * ((basist::basis_transcoder_format_is_uncompressed((basist::transcoder_texture_format)_eFormat)) ? pstHeader->m_pixel_width * pstHeader->m_pixel_height : ((pstHeader->m_pixel_width + 3) >> 2) * ((pstHeader->m_pixel_height + 3) >> 2));
+
+      // Update result
+      uiResult = *_puiSize;
+    }
+  }
+
+  // Done!
+  return uiResult;
+}
 
 /** Render inhibitor
  */
@@ -1690,7 +1733,7 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     if(glfwExtensionSupported("GL_ARB_texture_compression_bptc") != GLFW_FALSE)
     {
       /* Selects format */
-      sstDisplay.eBasisUFormat = BasisUFormat_BC7;
+      sstDisplay.eBasisUFormat = orxDISPLAY_BASISU_FORMAT_BC7;
     }
     else
 #endif /* GL_COMPRESSED_RGBA_BPTC_UNORM */
@@ -1699,19 +1742,19 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
     if(glfwExtensionSupported("GL_KHR_texture_compression_astc_ldr") != GLFW_FALSE)
     {
       /* Selects format */
-      sstDisplay.eBasisUFormat = BasisUFormat_ASTC;
+      sstDisplay.eBasisUFormat = orxDISPLAY_BASISU_FORMAT_ASTC;
     }
     else
 #endif /* GL_COMPRESSED_RGBA_ASTC_4x4_KHR */
     /* Defaults to uncompressed */
     {
       /* Selects format */
-      sstDisplay.eBasisUFormat = BasisUFormat_Uncompressed;
+      sstDisplay.eBasisUFormat = orxDISPLAY_BASISU_FORMAT_UNCOMPRESSED;
     }
 
 #if !defined(__orxDISPLAY_OPENGL_ES__) && !defined(__orxLINUX__) && !defined(__orxMAC__)
     /* Has texture compression support? */
-    if(sstDisplay.eBasisUFormat != BasisUFormat_Uncompressed)
+    if(sstDisplay.eBasisUFormat != orxDISPLAY_BASISU_FORMAT_UNCOMPRESSED)
     {
       /* Loads related extension function */
       orxDISPLAY_LOAD_EXTENSION_FUNCTION(PFNGLCOMPRESSEDTEXIMAGE2DPROC, glCompressedTexImage2D);
@@ -1902,7 +1945,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
       glASSERT();
 
       /* Compressed Basis Universal? */
-      if((pstInfo->bIsBasisU != orxFALSE) && (sstDisplay.eBasisUFormat != BasisUFormat_Uncompressed))
+      if((pstInfo->bIsBasisU != orxFALSE) && (sstDisplay.eBasisUFormat != orxDISPLAY_BASISU_FORMAT_UNCOMPRESSED))
       {
         GLenum eInternalFormat;
 
@@ -1910,7 +1953,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
         switch(sstDisplay.eBasisUFormat)
         {
 #ifdef GL_COMPRESSED_RGBA_ASTC_4x4_KHR
-          case BasisUFormat_ASTC:
+          case orxDISPLAY_BASISU_FORMAT_ASTC:
           {
             /* Gets internal format */
             eInternalFormat = GL_COMPRESSED_RGBA_ASTC_4x4_KHR;
@@ -1918,7 +1961,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmapCallback(void *_pCo
           }
 #endif /* GL_COMPRESSED_RGBA_ASTC_4x4_KHR */
 #ifdef GL_COMPRESSED_RGBA_BPTC_UNORM
-          case BasisUFormat_BC7:
+          case orxDISPLAY_BASISU_FORMAT_BC7:
           {
             /* Gets internal format */
             eInternalFormat = GL_COMPRESSED_RGBA_BPTC_UNORM;
@@ -2042,16 +2085,16 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
   /* Hasn't exited yet? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    unsigned char  *pu8ImageData = orxNULL;
-    unsigned int    uiDataSize;
-    int             iIndex = 0;
-    BasisUFormat    eFormat;
+    unsigned char            *pu8ImageData = orxNULL;
+    unsigned int              uiDataSize;
+    int                       iIndex = 0;
+    orxDISPLAY_BASISU_FORMAT  eFormat;
 
     /* Gets format based on image type */
-    eFormat = orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_CURSOR | orxDISPLAY_KU32_BITMAP_FLAG_ICON) ? BasisUFormat_Uncompressed : sstDisplay.eBasisUFormat;
+    eFormat = orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_CURSOR | orxDISPLAY_KU32_BITMAP_FLAG_ICON) ? orxDISPLAY_BASISU_FORMAT_UNCOMPRESSED : sstDisplay.eBasisUFormat;
 
     /* Is Basis Universal texture? */
-    if((uiDataSize = BasisU_GetInfo(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size, eFormat, &(pstInfo->uiWidth), &(pstInfo->uiHeight), (unsigned int *)&(pstInfo->u32DataSize))) != 0)
+    if((uiDataSize = orxDisplay_GetBasisUInfo(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size, eFormat, &(pstInfo->uiWidth), &(pstInfo->uiHeight), (unsigned int *)&(pstInfo->u32DataSize))) != 0)
     {
       /* Allocates image data */
       pu8ImageData = (orxU8 *)orxMemory_Allocate(uiDataSize, orxMEMORY_TYPE_TEMP);
@@ -2059,8 +2102,44 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
       /* Valid? */
       if(pu8ImageData != orxNULL)
       {
-        /* Transcode it? */
-        if(BasisU_Transcode(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size, eFormat, pu8ImageData, uiDataSize) != 0)
+        unsigned int uiResult = 0;
+
+        /* Valid transcoder? */
+        if(sstDisplay.spoKTX2Transcoder)
+        {
+          /* Inits it */
+          if(sstDisplay.spoKTX2Transcoder->init(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size))
+          {
+            basist::ktx2_image_level_info sstInfo;
+
+            /* Retrieves image info */
+            if(sstDisplay.spoKTX2Transcoder->get_image_level_info(sstInfo, 0, 0, 0))
+            {
+              unsigned int uiRealSize;
+
+              /* Gets its real size */
+              uiRealSize = basis_get_bytes_per_block_or_pixel((basist::transcoder_texture_format)eFormat) * ((basis_transcoder_format_is_uncompressed((basist::transcoder_texture_format)eFormat)) ? sstInfo.m_orig_width * sstInfo.m_orig_height : sstInfo.m_total_blocks);
+
+              /* Has enough room? */
+              if(uiDataSize >= uiRealSize)
+              {
+                /* Starts transcoding */
+                if(sstDisplay.spoKTX2Transcoder->start_transcoding())
+                {
+                  /* Transcodes image */
+                  if(sstDisplay.spoKTX2Transcoder->transcode_image_level(0, 0, 0, pu8ImageData, uiRealSize / basis_get_bytes_per_block_or_pixel((basist::transcoder_texture_format)eFormat), (basist::transcoder_texture_format)eFormat))
+                  {
+                    /* Updates result */
+                    uiResult = uiRealSize;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        /* Success it? */
+        if(uiResult != 0)
         {
           /* Updates its status */
           pstInfo->bIsBasisU = orxTRUE;
@@ -2568,7 +2647,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitma
         int           iWidth, iHeight, iDummy = 0;
 
         /* Retrieves header for Basis Universal & QOI */
-        uiHeaderSize  = orxMAX(BasisU_GetHeaderSize(), QOI_HEADER_SIZE);
+        uiHeaderSize  = orxMAX((unsigned int)sizeof(basist::ktx2_header), QOI_HEADER_SIZE);
         pu8Header     = (orxU8 *)alloca(uiHeaderSize);
         orxResource_Read(hResource, uiHeaderSize, pu8Header, orxNULL, orxNULL);
         orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
@@ -2580,7 +2659,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitma
              iDummy   = (int)pu8Header[iDummy],
              (iDummy == 3)
           || (iDummy == 4)))
-        || (BasisU_GetInfo(pu8Header, uiHeaderSize, sstDisplay.eBasisUFormat, (unsigned int *)&iWidth, (unsigned int*)&iHeight, (unsigned int*)&iDummy) != 0)
+        || (orxDisplay_GetBasisUInfo(pu8Header, uiHeaderSize, sstDisplay.eBasisUFormat, (unsigned int *)&iWidth, (unsigned int*)&iHeight, (unsigned int*)&iDummy) != 0)
         || (stbi_info_from_callbacks(&(sstDisplay.stSTBICallbacks), (void *)hResource, &iWidth, &iHeight, &iDummy) != 0))
         {
           /* Resets resource cursor */
@@ -6687,8 +6766,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
         {
           orxDISPLAY_VIDEO_MODE stVideoMode;
 
-          /* Inits Basis Universal */
-          BasisU_Init();
+          /* Inits Basis Universal transcoder */
+          basist::basisu_transcoder_init();
+
+          /* Creates KTX2 transcoder */
+          sstDisplay.spoKTX2Transcoder = new basist::ktx2_transcoder();
 
           /* Updates default mode */
           orxDisplay_GLFW_UpdateDefaultMode();
@@ -6822,6 +6904,10 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
             /* Frees screen bitmap */
             orxBank_Free(sstDisplay.pstBitmapBank, sstDisplay.pstScreen);
 
+            /* Deletes KTX2 transcoder */
+            delete sstDisplay.spoKTX2Transcoder;
+            sstDisplay.spoKTX2Transcoder = orxNULL;
+
             /* Deletes banks */
             orxBank_Delete(sstDisplay.pstBitmapBank);
             sstDisplay.pstBitmapBank = orxNULL;
@@ -6889,8 +6975,9 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    /* Exits from Basis Universal */
-    BasisU_Exit();
+    /* Deletes KTX2 transcoder */
+    delete sstDisplay.spoKTX2Transcoder;
+    sstDisplay.spoKTX2Transcoder = orxNULL;
 
     /* Removes VSync fix (to account for rapid exit) */
     orxClock_RemoveGlobalTimer(orxDisplay_GLFW_VSyncFix, -orxFLOAT_1, orxNULL);
