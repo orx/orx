@@ -116,6 +116,7 @@ solution "orx"
         "../../extern/miniaudio",
         "../../extern/stb_vorbis",
         "../../extern/libwebp/src",
+        "../../extern/msdfgen/include",
         "../../extern/basisu/include",
         "../../extern/qoa",
         "../../extern/qoi"
@@ -182,6 +183,7 @@ solution "orx"
             "../../extern/glfw-3/lib/linux",
             "../../extern/LiquidFun-1.1.0/lib/linux",
             "../../extern/libwebp/lib/linux",
+            "../../extern/msdfgen/lib/linux/32",
             "../../extern/basisu/lib/linux/32",
         }
         buildoptions
@@ -196,6 +198,7 @@ solution "orx"
             "../../extern/glfw-3/lib/linux64",
             "../../extern/LiquidFun-1.1.0/lib/linux64",
             "../../extern/libwebp/lib/linux64",
+            "../../extern/msdfgen/lib/linux/64",
             "../../extern/basisu/lib/linux/64",
         }
         buildoptions
@@ -213,6 +216,7 @@ solution "orx"
             "../../extern/glfw-3/lib/mac",
             "../../extern/LiquidFun-1.1.0/lib/mac",
             "../../extern/libwebp/lib/mac",
+            "../../extern/msdfgen/lib/mac",
             "../../extern/basisu/lib/mac",
         }
         buildoptions
@@ -251,6 +255,7 @@ solution "orx"
             "../../extern/glfw-3/lib/vc2015/32",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/32",
             "../../extern/libwebp/lib/vc2015/32",
+            "../../extern/msdfgen/lib/vc2015/32",
             "../../extern/basisu/lib/vc2015/32",
         }
 
@@ -260,6 +265,7 @@ solution "orx"
             "../../extern/glfw-3/lib/vc2015/64",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/64",
             "../../extern/libwebp/lib/vc2015/64",
+            "../../extern/msdfgen/lib/vc2015/64",
             "../../extern/basisu/lib/vc2015/64",
         }
 
@@ -269,6 +275,7 @@ solution "orx"
             "../../extern/glfw-3/lib/mingw/32",
             "../../extern/LiquidFun-1.1.0/lib/mingw/32",
             "../../extern/libwebp/lib/mingw/32",
+            "../../extern/msdfgen/lib/mingw/32",
             "../../extern/basisu/lib/mingw/32",
         }
 
@@ -278,6 +285,7 @@ solution "orx"
             "../../extern/glfw-3/lib/mingw/64",
             "../../extern/LiquidFun-1.1.0/lib/mingw/64",
             "../../extern/libwebp/lib/mingw/64",
+            "../../extern/msdfgen/lib/mingw/64",
             "../../extern/basisu/lib/mingw/64",
         }
 
@@ -369,6 +377,7 @@ project "orx"
         includedirs {"../include"}
         libdirs {
             "../lib/static/web",
+            "../../extern/msdfgen/lib/web",
             "../../extern/basisu/lib/web",
             "../../extern/libwebp/lib/web",
             "../../extern/LiquidFun-1.1.0/lib/web"
@@ -519,7 +528,7 @@ project "orxLIB"
     end
 
     configuration {"not *Core*", "not web"}
-        links {"webpdecoder"}
+        links {"msdfgen", "webpdecoder"}
 
     configuration {"not *Core*", "not vs*", "not web"}
         links {"basisu"}

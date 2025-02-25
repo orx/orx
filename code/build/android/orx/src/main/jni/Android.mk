@@ -78,6 +78,7 @@ ORX_INCLUDES := \
   $(ORX_EXTERN)/stb_vorbis \
   $(ORX_EXTERN)/stb_truetype \
   $(ORX_EXTERN)/LiquidFun-1.1.0/include \
+  $(ORX_EXTERN)/msdfgen/include \
   $(ORX_EXTERN)/libwebp/include
 
 include $(CLEAR_VARS)
