@@ -83,7 +83,8 @@
 #define orxFONT_KZ_CONFIG_TEXTURE_SIZE          "TextureSize"
 #define orxFONT_KZ_CONFIG_TEXTURE_CORNER        "TextureCorner" /**< Kept for retro-compatibility reason */
 #define orxFONT_KZ_CONFIG_KEEP_IN_CACHE         "KeepInCache"
-#define orxFONT_KZ_CONFIG_TYPEFACE_NAME         "Typeface"
+#define orxFONT_KZ_CONFIG_TYPEFACE              "Typeface"
+#define orxFONT_KZ_CONFIG_SDF                   "SDF"
 
 #define orxFONT_KZ_ASCII                        "ascii"
 #define orxFONT_KZ_ANSI                         "ansi"
@@ -360,7 +361,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
     orxConfig_PushSection(_pstFont->zReference);
 
     /* Gets typeface name */
-    zName = orxConfig_GetString(orxFONT_KZ_CONFIG_TYPEFACE_NAME);
+    zName = orxConfig_GetString(orxFONT_KZ_CONFIG_TYPEFACE);
 
     /* Valid? */
     if((zName != orxNULL) && (zName != orxSTRING_EMPTY))
@@ -418,7 +419,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
       orxASSERT(afCharacterWidthList != orxNULL);
 
       /* Loads font bitmap */
-      pstBitmap = orxDisplay_LoadFont(zName, zCharacterList, &vCharacterSize, &vCharacterSpacing, afCharacterWidthList);
+      pstBitmap = orxDisplay_LoadFont(zName, zCharacterList, &vCharacterSize, &vCharacterSpacing, orxConfig_GetBool(orxFONT_KZ_CONFIG_SDF), afCharacterWidthList);
 
       /* Success? */
       if(pstBitmap != orxNULL)

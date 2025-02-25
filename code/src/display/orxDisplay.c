@@ -124,7 +124,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_DeleteBitmap, void, orxBITMAP *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadBitmap, orxBITMAP *, const orxSTRING);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SaveBitmap, orxSTATUS, const orxBITMAP *, const orxSTRING);
 
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadFont, orxBITMAP *, const orxSTRING, const orxSTRING, const orxVECTOR *, const orxVECTOR *, orxFLOAT *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_LoadFont, orxBITMAP *, const orxSTRING, const orxSTRING, const orxVECTOR *, const orxVECTOR *, orxBOOL, orxFLOAT *);
 
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_SetTempBitmap, orxSTATUS, const orxBITMAP *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxDisplay_GetTempBitmap, const orxBITMAP *);
@@ -318,9 +318,9 @@ orxSTATUS orxFASTCALL orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const o
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_SaveBitmap)(_pstBitmap, _zFileName);
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, orxFLOAT *_afCharacterWidthList)
+orxBITMAP *orxFASTCALL orxDisplay_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, orxBOOL _bSDF, orxFLOAT *_afCharacterWidthList)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_LoadFont)(_zFileName, _zCharacterList, _pvCharacterSize, _pvCharacterSpacing, _afCharacterWidthList);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxDisplay_LoadFont)(_zFileName, _zCharacterList, _pvCharacterSize, _pvCharacterSpacing, _bSDF, _afCharacterWidthList);
 }
 
 orxBITMAP *orxFASTCALL orxDisplay_GetScreenBitmap()

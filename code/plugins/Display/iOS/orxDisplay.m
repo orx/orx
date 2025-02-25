@@ -127,6 +127,8 @@
 #undef STB_TRUETYPE_IMPLEMENTATION
 #undef STBTT_STATIC
 
+#include "msdfgen.h"
+
 
 #ifdef __orxLLVM__
   #pragma clang diagnostic pop
@@ -346,7 +348,9 @@ typedef struct __orxDISPLAY_FONT_LOAD_INFO_t
   orxVECTOR                 vCharacterSize;
   orxVECTOR                 vCharacterSpacing;
   orxVECTOR                 vFontScale;
+  orxS32                    s32GlyphHeight;
   orxU32                    u32GlyphCount;
+  orxBOOL                   bSDF;
 
 } orxDISPLAY_FONT_LOAD_INFO;
 
@@ -1950,24 +1954,33 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_ProcessFont(void *_pContext)
   /* Hasn't exited yet? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    orxU8          *pu8Buffer;
-    unsigned char  *pu8ImageData = orxNULL;
-    orxU32          u32Size;
+    orxU8  *pu8Buffer;
+    orxU8  *pu8ImageData = orxNULL;
+    orxU32  u32Size;
 
     /* Gets buffer size */
     u32Size = orxF2U(pstLoadInfo->stLoadInfo.pstBitmap->fWidth * pstLoadInfo->stLoadInfo.pstBitmap->fHeight);
 
-    /* Allocates image buffer */
-    pu8Buffer     = (orxU8 *)orxMemory_Allocate(u32Size, orxMEMORY_TYPE_TEMP);
+    /* Allocates image buffers */
+    pu8Buffer     = (pstLoadInfo->bSDF != orxFALSE) ? orxNULL : (orxU8 *)orxMemory_Allocate(u32Size, orxMEMORY_TYPE_TEMP);
     pu8ImageData  = (orxU8 *)orxMemory_Allocate(4 * u32Size, orxMEMORY_TYPE_TEMP);
 
     /* Valid? */
-    if((pu8Buffer != orxNULL) && (pu8ImageData != orxNULL))
+    if((pu8ImageData != orxNULL)
+    && ((pstLoadInfo->bSDF != orxFALSE)
+     || (pu8Buffer != orxNULL)))
     {
       orxS32 i, s32X, s32Y, s32Count, s32TextureWidth;
 
       /* Clears buffer */
-      orxMemory_Zero(pu8Buffer, u32Size);
+      if(pstLoadInfo->bSDF != orxFALSE)
+      {
+        orxMemory_Zero(pu8ImageData, 4 * u32Size);
+      }
+      else
+      {
+        orxMemory_Zero(pu8Buffer, u32Size);
+      }
 
       /* For all glyphs */
       for(i = s32X = s32Y = 0, s32Count = (orxS32)pstLoadInfo->u32GlyphCount, s32TextureWidth = orxF2S(pstLoadInfo->stLoadInfo.pstBitmap->fWidth);
@@ -1988,7 +2001,27 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_ProcessFont(void *_pContext)
         }
 
         /* Renders glyph */
-        stbtt_MakeGlyphBitmap(&(pstLoadInfo->stFontInfo), pu8Buffer + s32X + orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fX) + ((s32Y + orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fY)) * s32TextureWidth), s32Width - orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fX), orxF2S(pstLoadInfo->vCharacterSize.fY - pstLoadInfo->astGlyphList[i].stGlyph.fY), s32TextureWidth, pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY, pstLoadInfo->astGlyphList[i].s32Index);
+        if(pstLoadInfo->bSDF != orxFALSE)
+        {
+          stbtt_vertex *astVertexList;
+          orxS32        s32VertexCount;
+
+          s32VertexCount = stbtt_GetGlyphShape(&(pstLoadInfo->stFontInfo), pstLoadInfo->astGlyphList[i].s32Index, &astVertexList);
+          if(s32VertexCount > 0)
+          {
+            MSDFGen_RenderGlyph((MSDFGen_Vertex *)astVertexList, s32VertexCount,
+                                (int)pstLoadInfo->astGlyphList[i].stGlyph.fWidth, (int)pstLoadInfo->vCharacterSize.fY,
+                                0.25f * pstLoadInfo->vCharacterSize.fY / pstLoadInfo->vFontScale.fY,
+                                pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY,
+                                pstLoadInfo->astGlyphList[i].stGlyph.fX / pstLoadInfo->vFontScale.fX, orxMath_Ceil(-pstLoadInfo->s32GlyphHeight * pstLoadInfo->vFontScale.fY) / pstLoadInfo->vFontScale.fY,
+                                pu8ImageData + (s32X + s32Y * s32TextureWidth) * 4, s32TextureWidth * 4);
+          }
+          stbtt_FreeShape(&(pstLoadInfo->stFontInfo), astVertexList);
+        }
+        else
+        {
+          stbtt_MakeGlyphBitmap(&(pstLoadInfo->stFontInfo), pu8Buffer + s32X + orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fX) + ((s32Y + orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fY)) * s32TextureWidth), s32Width - orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fX), orxF2S(pstLoadInfo->vCharacterSize.fY - pstLoadInfo->astGlyphList[i].stGlyph.fY), s32TextureWidth, pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY, pstLoadInfo->astGlyphList[i].s32Index);
+        }
         s32X += s32Width + orxF2S(pstLoadInfo->vCharacterSpacing.fX);
       }
 
@@ -2007,16 +2040,20 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_ProcessFont(void *_pContext)
       pstLoadInfo->stLoadInfo.eTextureType    = GL_UNSIGNED_BYTE;
       pstLoadInfo->stLoadInfo.uiDepth         = 32;
 
-      /* For all pixels */
-      for(i = 0;
-          i < (orxS32)u32Size;
-          i++)
+      /* Not SDF? */
+      if(pstLoadInfo->bSDF == orxFALSE)
       {
-        /* Sets it as white pixel with varying opacity */
-        pu8ImageData[i * 4 + 0] =
-        pu8ImageData[i * 4 + 1] =
-        pu8ImageData[i * 4 + 2] = 0xFF;
-        pu8ImageData[i * 4 + 3] = pu8Buffer[i];
+        /* For all pixels */
+        for(i = 0;
+            i < (orxS32)u32Size;
+            i++)
+        {
+          /* Sets it as white pixel with varying opacity */
+          pu8ImageData[i * 4 + 0] =
+          pu8ImageData[i * 4 + 1] =
+          pu8ImageData[i * 4 + 2] = 0xFF;
+          pu8ImageData[i * 4 + 3] = pu8Buffer[i];
+        }
       }
 
       /* Stores uncompressed data as new source */
@@ -4192,7 +4229,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadBitmap(const orxSTRING _zFileName)
   return pstBitmap;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, orxFLOAT *_afCharacterWidthList)
+orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, orxBOOL _bSDF, orxFLOAT *_afCharacterWidthList)
 {
   orxBITMAP *pstResult = orxNULL;
 
@@ -4310,6 +4347,12 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadFont(const orxSTRING _zFileName, const
                       /* Gets font scale */
                       pstLoadInfo->vFontScale.fY = (_pvCharacterSize->fY - orxFLOAT_1) / (iY1 - iY0);
                       pstLoadInfo->vFontScale.fX = (_pvCharacterSize->fX > orxFLOAT_0) ? ((_pvCharacterSize->fX - orxFLOAT_1) / (iX1 - iX0)) : pstLoadInfo->vFontScale.fY;
+
+                      /* Stores glyph height */
+                      pstLoadInfo->s32GlyphHeight = iY0;
+
+                      /* Stores SDF status */
+                      pstLoadInfo->bSDF = _bSDF;
 
                       /* Gets base line */
                       fBaseLine = orxMath_Ceil(pstLoadInfo->vFontScale.fY * orxS2F(iY1));
