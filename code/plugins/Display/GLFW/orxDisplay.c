@@ -164,8 +164,10 @@
 #undef STB_TRUETYPE_IMPLEMENTATION
 #undef STBTT_STATIC
 
-#include "msdfgen.h"
 #include "basisu.h"
+
+#define MSDFGEN_NO_FREETYPE
+#include "msdfgen.cpp"
 
 
 #ifndef __orxEMBEDDED__
@@ -2211,18 +2213,78 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_ProcessFont(void *_pContext)
         /* Renders glyph */
         if(pstLoadInfo->bSDF != orxFALSE)
         {
-          stbtt_vertex *astVertexList;
+          stbtt_vertex *astVertexList = NULL;
           orxS32        s32VertexCount;
 
           s32VertexCount = stbtt_GetGlyphShape(&(pstLoadInfo->stFontInfo), pstLoadInfo->astGlyphList[i].s32Index, &astVertexList);
           if(s32VertexCount > 0)
           {
-            MSDFGen_RenderGlyph((MSDFGen_Vertex *)astVertexList, s32VertexCount,
-                                (int)pstLoadInfo->astGlyphList[i].stGlyph.fWidth, (int)pstLoadInfo->vCharacterSize.fY,
-                                0.25f * pstLoadInfo->vCharacterSize.fY / pstLoadInfo->vFontScale.fY,
-                                pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY,
-                                pstLoadInfo->astGlyphList[i].stGlyph.fX / pstLoadInfo->vFontScale.fX, orxMath_Ceil(-pstLoadInfo->s32GlyphHeight * pstLoadInfo->vFontScale.fY) / pstLoadInfo->vFontScale.fY,
-                                pu8ImageData + (s32X + s32Y * s32TextureWidth) * 4, s32TextureWidth * 4);
+            msdfgen::Shape stShape;
+
+            /* Inverses Y axis */
+            stShape.inverseYAxis = true;
+
+            /* For all vertices */
+            for(int i = 0; i < s32VertexCount; ++i)
+            {
+              /* Depending on type */
+              switch(astVertexList[i].type)
+              {
+                default:
+                case STBTT_vmove:
+                {
+                  stShape.addContour();
+                  break;
+                }
+                case STBTT_vline:
+                {
+                  stShape.contours.back().addEdge({{(double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y)}, {(double)(astVertexList[i].x), (double)(astVertexList[i].y)}});
+                  break;
+                }
+                case STBTT_vcurve:
+                {
+                  stShape.contours.back().addEdge({{(double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y)}, {(double)(astVertexList[i].cx), (double)(astVertexList[i].cy)}, {(double)(astVertexList[i].x), (double)(astVertexList[i].y)}});
+                  break;
+                }
+                case STBTT_vcubic:
+                {
+                  stShape.contours.back().addEdge({{(double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y)}, {(double)(astVertexList[i].cx), (double)(astVertexList[i].cy)}, {(double)(astVertexList[i].cx1), (double)(astVertexList[i].cy1)}, {(double)(astVertexList[i].x), (double)(astVertexList[i].y)}});
+                  break;
+                }
+              }
+            }
+
+            /* Normalizes the shape */
+            stShape.normalize();
+
+            /* Orients its contours */
+            stShape.orientContours();
+
+            /* Colors its edges */
+            msdfgen::edgeColoringSimple(stShape, 3.0);
+
+            /* Allocates temp bitmap */
+            msdfgen::Bitmap<float, 4> oBitmap((int)pstLoadInfo->astGlyphList[i].stGlyph.fWidth, (int)pstLoadInfo->vCharacterSize.fY);
+
+            /* Inits transformation */
+            msdfgen::SDFTransformation stTransformation(msdfgen::Projection({pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY},
+                                                                            {pstLoadInfo->astGlyphList[i].stGlyph.fX / pstLoadInfo->vFontScale.fX, orxMath_Ceil(-pstLoadInfo->s32GlyphHeight * pstLoadInfo->vFontScale.fY) / pstLoadInfo->vFontScale.fY}),
+                                                        msdfgen::Range(0.25f * pstLoadInfo->vCharacterSize.fY / pstLoadInfo->vFontScale.fY));
+
+            /* Renders the MTSDF Glyph */
+            msdfgen::generateMTSDF(oBitmap, stShape, stTransformation);
+
+            /* Copies it to output */
+            for(int y = 0; y < oBitmap.height(); y++)
+            {
+              for(int x = 0; x < oBitmap.width(); x++)
+              {
+                pu8ImageData[((s32X + x) + (s32Y + y) * s32TextureWidth) * 4 + 0] = msdfgen::pixelFloatToByte(oBitmap(x, y)[0]);
+                pu8ImageData[((s32X + x) + (s32Y + y) * s32TextureWidth) * 4 + 1] = msdfgen::pixelFloatToByte(oBitmap(x, y)[1]);
+                pu8ImageData[((s32X + x) + (s32Y + y) * s32TextureWidth) * 4 + 2] = msdfgen::pixelFloatToByte(oBitmap(x, y)[2]);
+                pu8ImageData[((s32X + x) + (s32Y + y) * s32TextureWidth) * 4 + 3] = msdfgen::pixelFloatToByte(oBitmap(x, y)[3]);
+              }
+            }
           }
           stbtt_FreeShape(&(pstLoadInfo->stFontInfo), astVertexList);
         }
