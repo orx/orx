@@ -87,9 +87,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_HDR
 #define STBI_NO_PIC
-#define STBI_MALLOC(sz)         orxMemory_Allocate((orxU32)sz, orxMEMORY_TYPE_TEMP)
-#define STBI_REALLOC(p, newsz)  orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_TEMP)
-#define STBI_FREE(p)            orxMemory_Free(p)
+#define STBI_MALLOC(sz)                             orxMemory_Allocate((orxU32)sz, orxMEMORY_TYPE_TEMP)
+#define STBI_REALLOC(p, newsz)                      orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_TEMP)
+#define STBI_FREE(p)                                orxMemory_Free(p)
 #include "stb_image.h"
 #undef STBI_FREE
 #undef STBI_REALLOC
@@ -104,11 +104,11 @@
 
 #define STBI_WRITE_NO_STDIO
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#define STBIW_MALLOC(sz)        orxMemory_Allocate(sz, orxMEMORY_TYPE_TEMP)
-#define STBIW_REALLOC(p, newsz) orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_TEMP)
-#define STBIW_FREE(p)           orxMemory_Free(p)
-#define STBIW_MEMMOVE(a, b, sz) orxMemory_Move(a, b, sz)
-#define STBIW_ASSERT(x)         orxASSERT(x)
+#define STBIW_MALLOC(sz)                            orxMemory_Allocate(sz, orxMEMORY_TYPE_TEMP)
+#define STBIW_REALLOC(p, newsz)                     orxMemory_Reallocate(p, newsz, orxMEMORY_TYPE_TEMP)
+#define STBIW_FREE(p)                               orxMemory_Free(p)
+#define STBIW_MEMMOVE(a, b, sz)                     orxMemory_Move(a, b, sz)
+#define STBIW_ASSERT(x)                             orxASSERT(x)
 #include "stb_image_write.h"
 #undef STBIW_ASSERT
 #undef STBIW_MEMMOVE
@@ -120,9 +120,9 @@
 
 #define QOI_NO_STDIO
 #define QOI_IMPLEMENTATION
-#define QOI_MALLOC(sz)          orxMemory_Allocate(sz, orxMEMORY_TYPE_TEMP)
-#define QOI_FREE(p)             orxMemory_Free(p)
-#define QOI_ZEROARR(a)          orxMemory_Zero(a, sizeof(a))
+#define QOI_MALLOC(sz)                              orxMemory_Allocate(sz, orxMEMORY_TYPE_TEMP)
+#define QOI_FREE(p)                                 orxMemory_Free(p)
+#define QOI_ZEROARR(a)                              orxMemory_Zero(a, sizeof(a))
 #include "qoi.h"
 #undef QOI_ZEROARR
 #undef QOI_FREE
@@ -130,22 +130,22 @@
 #undef QOI_IMPLEMENTATION
 #undef QOI_NO_STDIO
 
-#define STBTT_STATIC
 #define STB_TRUETYPE_IMPLEMENTATION
-#define STBTT_ifloor(x)         ((int)orxMath_Floor((orxFLOAT)(x)))
-#define STBTT_iceil(x)          ((int)orxMath_Ceil((orxFLOAT)(x)))
-#define STBTT_sqrt(x)           orxMath_Sqrt((orxFLOAT)(x))
-#define STBTT_pow(x, y)         orxMath_Pow((orxFLOAT)(x), (orxFLOAT)(y))
-#define STBTT_fmod(x, y)        orxMath_Mod((orxFLOAT)(x), (orxFLOAT)(y))
-#define STBTT_cos(x)            orxMath_Cos((orxFLOAT)(x))
-#define STBTT_acos(x)           orxMath_ACos((orxFLOAT)(x))
-#define STBTT_fabs(x)           orxMath_Abs((orxFLOAT)(x))
-#define STBTT_malloc(sz, u)     orxMemory_Allocate((orxU32)(sz), orxMEMORY_TYPE_TEMP)
-#define STBTT_free(p, u)        orxMemory_Free(p)
-#define STBTT_assert(x)         orxASSERT(x)
-#define STBTT_strlen(x)         orxString_GetLength(x)
-#define STBTT_memcpy            orxMemory_Copy
-#define STBTT_memset            orxMemory_Set
+#define STBTT_STATIC
+#define STBTT_ifloor(x)                             ((int)orxMath_Floor((orxFLOAT)(x)))
+#define STBTT_iceil(x)                              ((int)orxMath_Ceil((orxFLOAT)(x)))
+#define STBTT_sqrt(x)                               orxMath_Sqrt((orxFLOAT)(x))
+#define STBTT_pow(x, y)                             orxMath_Pow((orxFLOAT)(x), (orxFLOAT)(y))
+#define STBTT_fmod(x, y)                            orxMath_Mod((orxFLOAT)(x), (orxFLOAT)(y))
+#define STBTT_cos(x)                                orxMath_Cos((orxFLOAT)(x))
+#define STBTT_acos(x)                               orxMath_ACos((orxFLOAT)(x))
+#define STBTT_fabs(x)                               orxMath_Abs((orxFLOAT)(x))
+#define STBTT_malloc(sz, u)                         orxMemory_Allocate((orxU32)(sz), orxMEMORY_TYPE_TEMP)
+#define STBTT_free(p, u)                            orxMemory_Free(p)
+#define STBTT_assert(x)                             orxASSERT(x)
+#define STBTT_strlen(x)                             orxString_GetLength(x)
+#define STBTT_memcpy                                orxMemory_Copy
+#define STBTT_memset                                orxMemory_Set
 #include "stb_truetype.h"
 #undef STBTT_memset
 #undef STBTT_memcpy
@@ -161,13 +161,35 @@
 #undef STBTT_sqrt
 #undef STBTT_iceil
 #undef STBTT_ifloor
-#undef STB_TRUETYPE_IMPLEMENTATION
 #undef STBTT_STATIC
+#undef STB_TRUETYPE_IMPLEMENTATION
+
+
+#define BASISD_SUPPORT_DXT1                         0
+#define BASISD_SUPPORT_FXT1                         0
+#define BASISD_SUPPORT_ETC2_EAC_A8                  0
+#define BASISD_SUPPORT_ETC2_EAC_RG11                0
+#define BASISD_SUPPORT_ATC                          0
+#define BASISD_SUPPORT_PVRTC1                       0
+#define BASISD_SUPPORT_PVRTC2                       0
+#define BASISD_SUPPORT_BC7_MODE5                    0
+#define BASISD_SUPPORT_ASTC_HIGHER_OPAQUE_QUALITY   0
 
 #include "basisu.h"
 #include "basisu_transcoder.h"
 #include "basisu_transcoder.cpp"
 #include "zstd/zstddeclib.c"
+
+#undef BASISD_SUPPORT_ASTC_HIGHER_OPAQUE_QUALITY
+#undef BASISD_SUPPORT_BC7_MODE5
+#undef BASISD_SUPPORT_PVRTC2
+#undef BASISD_SUPPORT_PVRTC1
+#undef BASISD_SUPPORT_ATC
+#undef BASISD_SUPPORT_ETC2_EAC_RG11
+#undef BASISD_SUPPORT_ETC2_EAC_A8
+#undef BASISD_SUPPORT_FXT1
+#undef BASISD_SUPPORT_DXT1
+
 
 #define MSDFGEN_NO_FREETYPE
 #if defined(__orxMSVC__)
