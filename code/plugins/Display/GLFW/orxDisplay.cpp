@@ -60,7 +60,7 @@
 #endif /* __orxMSVC__ */
 #include "GLFW/glfw3.h"
 #ifdef __orxWEB__
-#include "GLFW/emscripten_glfw3.h"
+  #include "GLFW/emscripten_glfw3.h"
 #endif /* __orxWEB__ */
 #ifdef __orxMSVC__
   #pragma warning(pop)
@@ -78,6 +78,11 @@
   #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
   #pragma GCC diagnostic ignored "-Wmisleading-indentation"
 #endif /* __orxGCC__ */
+
+#ifdef __orxWEB__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wnontrivial-memcall"
+#endif /* __orxWEB__ */
 
 #ifdef __orxMSVC__
   #pragma warning(push)
@@ -7879,3 +7884,7 @@ orxPLUGIN_USER_CORE_FUNCTION_END();
 #ifdef __orxGCC__
   #pragma GCC diagnostic pop
 #endif /* __orxGCC__ */
+
+#ifdef __orxWEB__
+  #pragma clang diagnostic pop
+#endif /* __orxWEB__ */
