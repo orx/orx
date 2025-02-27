@@ -237,8 +237,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga3347a87e9f0b798d12e42c3d7b397ee7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad92cb4c1520aa40cb2af3332807bbc81"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gad92cb4c1520aa40cb2af3332807bbc81">orxResource_Seek</a> (<a class="el" href="group__orx_type.html#ga10ad864319a9d9f12196e133707cae8a">orxHANDLE</a> _hResource, orxS64 _s64Offset, <a class="el" href="group__orx_type.html#ga08815b27cb2e29018e06e3d847116915">orxSEEK_OFFSET_WHENCE</a> _eWhence)</td></tr>
 <tr class="separator:gad92cb4c1520aa40cb2af3332807bbc81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad28f61be70c6fb3dd44755efe08d8b6d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gad28f61be70c6fb3dd44755efe08d8b6d">orxResource_SetMemoryResource</a> (const orxSTRING _zName, orxS64 _s64Size, const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer)</td></tr>
-<tr class="separator:gad28f61be70c6fb3dd44755efe08d8b6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2bde02036b31f44c4e99a27c798d9302"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga2bde02036b31f44c4e99a27c798d9302">orxResource_SetMemoryResource</a> (const orxSTRING _zName, orxS64 _s64Size, const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pBuffer, orxBOOL _bTransferOwnership)</td></tr>
+<tr class="separator:ga2bde02036b31f44c4e99a27c798d9302"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabe07fd5cad2cda2a6c91b303d55cace3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#gabe07fd5cad2cda2a6c91b303d55cace3">orxResource_Setup</a> ()</td></tr>
 <tr class="separator:gabe07fd5cad2cda2a6c91b303d55cace3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga20287ebe556f1d39a20bebca66e4f25c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_resource.html#ga20287ebe556f1d39a20bebca66e4f25c">orxResource_Sync</a> (const orxSTRING _zGroup)</td></tr>
@@ -1310,7 +1310,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gad28f61be70c6fb3dd44755efe08d8b6d"></a>
+<a class="anchor" id="ga2bde02036b31f44c4e99a27c798d9302"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1330,7 +1330,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
-          <td class="paramname"><em>_pBuffer</em>&#160;</td>
+          <td class="paramname"><em>_pBuffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bTransferOwnership</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1344,6 +1350,7 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zName</td><td>Name of the resource to set/unset </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_s64Size</td><td>Size of the resource's data (0 to unset) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pBuffer</td><td>Data of the resource (orxNULL to unset) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bTransferOwnership</td><td>If set to true, the buffer will be owned by the resource system and will be freed with <a class="el" href="group__orx_memory.html#ga46afc4965b86e4aa25fc3ddf1befa02d">orxMemory_Free()</a> when not referenced anymore </td></tr>
   </table>
   </dd>
 </dl>
