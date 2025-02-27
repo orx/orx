@@ -348,9 +348,10 @@ extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCac
  * @param[in] _zName            Name of the resource to set/unset
  * @param[in] _s64Size          Size of the resource's data (0 to unset)
  * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
+ * @param[in] _bTransferOwnership If set to true, the buffer will be owned by the resource system and will be freed with orxMemory_Free() when not referenced anymore
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer, orxBOOL _bTransferOwnership);
 
 #endif /* _orxRESOURCE_H_ */
 

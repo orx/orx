@@ -184,7 +184,8 @@ typedef struct __orxRESOURCE_MEMORY_DATA_t
   orxS64                    s64Size;                                                  /**< Memory Data Size */
   orxS64                    s64Time;                                                  /**< Memory Data Time */
   const orxU8              *pu8Buffer;                                                /**< Memory Data Buffer */
-  orxU32                    u32RefCount;                                              /**< Memory Data Ref count */
+  orxU32                    u32RefCount : 31;                                         /**< Memory Data Ref Count */
+  orxU32                    bOwned      :  1;                                         /**< Memory Data Ownership Flag */
 
 } orxRESOURCE_MEMORY_DATA;
 
@@ -3428,9 +3429,10 @@ orxHANDLE orxFASTCALL orxResource_GetNextCachedLocation(const orxSTRING _zGroup,
  * @param[in] _zName            Name of the resource to set/unset
  * @param[in] _s64Size          Size of the resource's data (0 to unset)
  * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
+ * @param[in] _bTransferOwnership If set to true, the buffer will be owned by the resource system and will be freed with orxMemory_Free() when not referenced anymore
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer)
+orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer, orxBOOL _bTransferOwnership)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -3467,8 +3469,17 @@ orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS
       /* Set? */
       if((_s64Size > 0) && (_pBuffer != orxNULL))
       {
-        /* No data? */
-        if(pstData == orxNULL)
+        /* Has data? */
+        if(pstData != orxNULL)
+        {
+          /* Was owned? */
+          if(pstData->bOwned != orxFALSE)
+          {
+            /* Frees it */
+            orxMemory_Free((void *)pstData->pu8Buffer);
+          }
+        }
+        else
         {
           /* Allocates its internal data */
           pstData = (orxRESOURCE_MEMORY_DATA *)orxBank_Allocate(sstResource.pstMemoryDataBank);
@@ -3483,6 +3494,7 @@ orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS
           pstData->s64Size    = _s64Size;
           pstData->s64Time    = (orxS64)(1000000 * orxSystem_GetSystemTime());
           pstData->pu8Buffer  = (orxU8 *)_pBuffer;
+          pstData->bOwned     = _bTransferOwnership;
 
           /* Stores it */
           eResult = orxHashTable_Set(sstResource.pstMemoryDataTable, stNameID, pstData);
@@ -3501,6 +3513,13 @@ orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS
         {
           /* Checks */
           orxASSERT(pstData->u32RefCount == 0);
+
+          /* Was owned? */
+          if(pstData->bOwned != orxFALSE)
+          {
+            /* Frees it */
+            orxMemory_Free((void *)pstData->pu8Buffer);
+          }
 
           /* Removes it */
           orxHashTable_Remove(sstResource.pstMemoryDataTable, stNameID);
