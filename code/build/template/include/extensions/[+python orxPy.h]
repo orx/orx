@@ -2193,7 +2193,7 @@ extern "C"
     BIND_FUNC("get_sections() -> list[str]", get_sections);
     BIND_FUNC("get_keys() -> list[str]", get_keys);
 
-    BIND_FUNC("get_list_count() -> int", get_list_count);
+    BIND_FUNC("get_list_count(key: str) -> int", get_list_count);
 
     BIND_FUNC("set_bool(key: str, value: bool) -> None", set_bool);
     BIND_FUNC("get_bool(key: str, index: int | None = None) -> bool", get_bool);
