@@ -346,12 +346,12 @@ extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCac
 /** Sets an internal memory resource
  * !IMPORTANT! The content of _pBuffer is *required* to remain valid until this resource has been successfully unset (by passing _s64Size=0 or _pBuffer=orxNULL), no internal copies will be made!
  * @param[in] _zName            Name of the resource to set/unset
+ * @param[in] _zStorage         Storage of the resource to set/unset, orxNULL for the default storage
  * @param[in] _s64Size          Size of the resource's data (0 to unset)
  * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
- * @param[in] _bTransferOwnership If set to true, the buffer will be owned by the resource system and will be freed with orxMemory_Free() when not referenced anymore
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer, orxBOOL _bTransferOwnership);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_SetMemoryResource(const orxSTRING _zName, const orxSTRING _zStorage, orxS64 _s64Size, const void *_pBuffer);
 
 #endif /* _orxRESOURCE_H_ */
 

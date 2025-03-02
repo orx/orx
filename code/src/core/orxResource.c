@@ -184,8 +184,7 @@ typedef struct __orxRESOURCE_MEMORY_DATA_t
   orxS64                    s64Size;                                                  /**< Memory Data Size */
   orxS64                    s64Time;                                                  /**< Memory Data Time */
   const orxU8              *pu8Buffer;                                                /**< Memory Data Buffer */
-  orxU32                    u32RefCount : 31;                                         /**< Memory Data Ref Count */
-  orxU32                    bOwned      :  1;                                         /**< Memory Data Ownership Flag */
+  orxU32                    u32RefCount;                                              /**< Memory Data Ref Count */
 
 } orxRESOURCE_MEMORY_DATA;
 
@@ -215,7 +214,6 @@ typedef struct __orxRESOURCE_STATIC_t
   orxBANK                  *pstMemoryDataBank;                                        /**< Memory data bank */
   orxBANK                  *pstMemoryResourceBank;                                    /**< Memory resource bank */
   volatile orxSTATUS        eThreadResult;                                            /**< Thread result */
-  orxCHAR                   acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];       /**< File location buffer size */
   volatile orxRESOURCE_REQUEST astRequestList[orxRESOURCE_KU32_REQUEST_LIST_SIZE];    /**< Request list */
   volatile orxU32           u32RequestInIndex;                                        /**< Request in index */
   volatile orxU32           u32RequestProcessIndex;                                   /**< Request process index */
@@ -241,6 +239,7 @@ static orxRESOURCE_STATIC sstResource;
 
 static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
+  static orxCHAR  sacFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];
   orxFILE_INFO    stInfo;
   orxFILE        *pstFile = orxNULL;
   const orxSTRING zResult = orxNULL;
@@ -249,29 +248,29 @@ static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGro
   if(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
   {
     /* Uses name as path */
-    orxString_NPrint(sstResource.acFileLocationBuffer, sizeof(sstResource.acFileLocationBuffer), "%s", _zName);
+    orxString_NPrint(sacFileLocationBuffer, sizeof(sacFileLocationBuffer), "%s", _zName);
   }
   else
   {
     /* Composes full name */
-    orxString_NPrint(sstResource.acFileLocationBuffer, sizeof(sstResource.acFileLocationBuffer), "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+    orxString_NPrint(sacFileLocationBuffer, sizeof(sacFileLocationBuffer), "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
   }
 
   /* Exists or doesn't require existence and can be created? */
-  if(((orxFile_GetInfo(sstResource.acFileLocationBuffer, &stInfo) != orxSTATUS_FAILURE)
+  if(((orxFile_GetInfo(sacFileLocationBuffer, &stInfo) != orxSTATUS_FAILURE)
    && !orxFLAG_TEST(stInfo.u32Flags, orxFILE_KU32_FLAG_INFO_DIRECTORY))
   || ((_bRequireExistence == orxFALSE)
-   && ((pstFile = orxFile_Open(sstResource.acFileLocationBuffer, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL)))
+   && ((pstFile = orxFile_Open(sacFileLocationBuffer, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL)))
   {
     /* Updates result */
-    zResult = sstResource.acFileLocationBuffer;
+    zResult = sacFileLocationBuffer;
 
     /* Has temporary file? */
     if(pstFile != orxNULL)
     {
       /* Removes it */
       orxFile_Close(pstFile);
-      orxFile_Delete(sstResource.acFileLocationBuffer);
+      orxFile_Delete(sacFileLocationBuffer);
     }
   }
 
@@ -3427,12 +3426,12 @@ orxHANDLE orxFASTCALL orxResource_GetNextCachedLocation(const orxSTRING _zGroup,
 /** Sets an internal memory resource
  * !IMPORTANT! The content of _pBuffer is *required* to remain valid until this resource has been successfully unset (by passing _s64Size=0 or _pBuffer=orxNULL), no internal copies will be made!
  * @param[in] _zName            Name of the resource to set/unset
+ * @param[in] _zStorage         Storage of the resource to set/unset, orxNULL for the default storage
  * @param[in] _s64Size          Size of the resource's data (0 to unset)
  * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
- * @param[in] _bTransferOwnership If set to true, the buffer will be owned by the resource system and will be freed with orxMemory_Free() when not referenced anymore
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer, orxBOOL _bTransferOwnership)
+orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, const orxSTRING _zStorage, orxS64 _s64Size, const void *_pBuffer)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -3446,8 +3445,22 @@ orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS
     orxRESOURCE_MEMORY_DATA  *pstData;
     orxSTRINGID               stNameID;
 
-    /* Gets its ID */
-    stNameID = orxString_Hash(_zName);
+    /* Default storage? */
+    if((_zStorage == orxNULL) || (orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0))
+    {
+      /* Gets its ID */
+      stNameID = orxString_Hash(_zName);
+    }
+    else
+    {
+      orxCHAR acBuffer[orxRESOURCE_KU32_BUFFER_SIZE];
+
+      /* Composes full name */
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+
+      /* Gets its ID */
+      stNameID = orxString_Hash(acBuffer);
+    }
 
     /* Gets its data */
     pstData = (orxRESOURCE_MEMORY_DATA *)orxHashTable_Get(sstResource.pstMemoryDataTable, stNameID);
@@ -3469,17 +3482,8 @@ orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS
       /* Set? */
       if((_s64Size > 0) && (_pBuffer != orxNULL))
       {
-        /* Has data? */
-        if(pstData != orxNULL)
-        {
-          /* Was owned? */
-          if(pstData->bOwned != orxFALSE)
-          {
-            /* Frees it */
-            orxMemory_Free((void *)pstData->pu8Buffer);
-          }
-        }
-        else
+        /* No data? */
+        if(pstData == orxNULL)
         {
           /* Allocates its internal data */
           pstData = (orxRESOURCE_MEMORY_DATA *)orxBank_Allocate(sstResource.pstMemoryDataBank);
@@ -3494,7 +3498,6 @@ orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS
           pstData->s64Size    = _s64Size;
           pstData->s64Time    = (orxS64)(1000000 * orxSystem_GetSystemTime());
           pstData->pu8Buffer  = (orxU8 *)_pBuffer;
-          pstData->bOwned     = _bTransferOwnership;
 
           /* Stores it */
           eResult = orxHashTable_Set(sstResource.pstMemoryDataTable, stNameID, pstData);
@@ -3513,13 +3516,6 @@ orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS
         {
           /* Checks */
           orxASSERT(pstData->u32RefCount == 0);
-
-          /* Was owned? */
-          if(pstData->bOwned != orxFALSE)
-          {
-            /* Frees it */
-            orxMemory_Free((void *)pstData->pu8Buffer);
-          }
 
           /* Removes it */
           orxHashTable_Remove(sstResource.pstMemoryDataTable, stNameID);

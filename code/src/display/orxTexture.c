@@ -692,7 +692,7 @@ orxSTATUS orxFASTCALL orxTexture_Init()
                       orxEvent_SetHandlerIDFlags(orxTexture_EventHandler, orxEVENT_TYPE_DISPLAY, orxNULL, orxEVENT_GET_FLAG(orxDISPLAY_EVENT_LOAD_BITMAP), orxEVENT_KU32_MASK_ID_ALL);
 
                       /* Sets logo memory resource */
-                      orxResource_SetMemoryResource(orxTEXTURE_KZ_LOGO_NAME, sstLogo.s64Size, sstLogo.pu8Data, orxFALSE);
+                      orxResource_SetMemoryResource(orxTEXTURE_KZ_LOGO_NAME, orxNULL, sstLogo.s64Size, sstLogo.pu8Data);
 
                       /* Updates result */
                       eResult = orxSTATUS_SUCCESS;
@@ -791,7 +791,7 @@ void orxFASTCALL orxTexture_Exit()
     orxStructure_Unregister(orxSTRUCTURE_ID_TEXTURE);
 
     /* Unsets logo memory resource */
-    orxResource_SetMemoryResource(orxTEXTURE_KZ_LOGO_NAME, 0, orxNULL, orxFALSE);
+    orxResource_SetMemoryResource(orxTEXTURE_KZ_LOGO_NAME, orxNULL, 0, orxNULL);
 
     /* Updates flags */
     sstTexture.u32Flags &= ~orxTEXTURE_KU32_STATIC_FLAG_READY;
