@@ -423,17 +423,26 @@ static orxSTATUS orxFASTCALL orxResource_File_Delete(const orxSTRING _zLocation)
 
 static const orxSTRING orxFASTCALL orxResource_Memory_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
+  static orxCHAR  sacFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];
   const orxSTRING zResult = orxNULL;
 
   /* Default storage? */
   if(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
   {
-    /* Found? */
-    if(orxHashTable_Get(sstResource.pstMemoryDataTable, orxString_Hash(_zName)) != orxNULL)
-    {
-      /* Updates result */
-      zResult = _zName;
-    }
+    /* Uses name as path */
+    orxString_NPrint(sacFileLocationBuffer, sizeof(sacFileLocationBuffer), "%s", _zName);
+  }
+  else
+  {
+    /* Composes full name */
+    orxString_NPrint(sacFileLocationBuffer, sizeof(sacFileLocationBuffer), "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+  }
+
+  /* Found? */
+  if(orxHashTable_Get(sstResource.pstMemoryDataTable, orxString_Hash(sacFileLocationBuffer)) != orxNULL)
+  {
+    /* Updates result */
+    zResult = sacFileLocationBuffer;
   }
 
   /* Done! */
