@@ -1039,7 +1039,7 @@ var searchData=
   ['orxresource_5freloadstorage',['orxResource_ReloadStorage',['../group__orx_resource.html#gadba8c905ff1d9f9f7a68858e8805d694',1,'orxResource.h']]],
   ['orxresource_5fremovestorage',['orxResource_RemoveStorage',['../group__orx_resource.html#ga3347a87e9f0b798d12e42c3d7b397ee7',1,'orxResource.h']]],
   ['orxresource_5fseek',['orxResource_Seek',['../group__orx_resource.html#gad92cb4c1520aa40cb2af3332807bbc81',1,'orxResource.h']]],
-  ['orxresource_5fsetmemoryresource',['orxResource_SetMemoryResource',['../group__orx_resource.html#ga8c362ffe294b9148fa68005024b7767f',1,'orxResource.h']]],
+  ['orxresource_5fsetmemoryresource',['orxResource_SetMemoryResource',['../group__orx_resource.html#ga7a92059236a7fa5aa82c6c05f4e1c644',1,'orxResource.h']]],
   ['orxresource_5fsetup',['orxResource_Setup',['../group__orx_resource.html#gabe07fd5cad2cda2a6c91b303d55cace3',1,'orxResource.h']]],
   ['orxresource_5fsync',['orxResource_Sync',['../group__orx_resource.html#ga20287ebe556f1d39a20bebca66e4f25c',1,'orxResource.h']]],
   ['orxresource_5ftell',['orxResource_Tell',['../group__orx_resource.html#ga727617afed34519f0d94189f252a7de3',1,'orxResource.h']]],
