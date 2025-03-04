@@ -230,7 +230,7 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
 static orxINLINE void orxFont_CreateDefaultFont()
 {
   /* Sets its texture as memory resource */
-  if(orxResource_SetMemoryResource(orxFONT_KZ_DEFAULT_FONT_NAME, orxNULL, sstDefaultFont.s64Size, sstDefaultFont.pu8Data) != orxSTATUS_FAILURE)
+  if(orxResource_SetMemoryResource(orxTEXTURE_KZ_RESOURCE_GROUP, orxNULL, orxFONT_KZ_DEFAULT_FONT_NAME, sstDefaultFont.s64Size, sstDefaultFont.pu8Data) != orxSTATUS_FAILURE)
   {
     orxTEXTURE *pstTexture;
 
@@ -716,7 +716,7 @@ void orxFASTCALL orxFont_Exit()
       pstTexture = orxFont_GetTexture(sstFont.pstDefaultFont);
       orxFont_Delete(sstFont.pstDefaultFont);
       orxTexture_Delete(pstTexture);
-      orxResource_SetMemoryResource(orxFONT_KZ_DEFAULT_FONT_NAME, orxNULL, 0, orxNULL);
+      orxResource_SetMemoryResource(orxTEXTURE_KZ_RESOURCE_GROUP, orxNULL, orxFONT_KZ_DEFAULT_FONT_NAME, 0, orxNULL);
     }
 
     /* Deletes font list */

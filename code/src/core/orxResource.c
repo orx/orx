@@ -426,23 +426,28 @@ static const orxSTRING orxFASTCALL orxResource_Memory_Locate(const orxSTRING _zG
   static orxCHAR  sacFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];
   const orxSTRING zResult = orxNULL;
 
-  /* Default storage? */
-  if(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
-  {
-    /* Uses name as path */
-    orxString_NPrint(sacFileLocationBuffer, sizeof(sacFileLocationBuffer), "%s", _zName);
-  }
-  else
-  {
-    /* Composes full name */
-    orxString_NPrint(sacFileLocationBuffer, sizeof(sacFileLocationBuffer), "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
-  }
+  /* Composes full name */
+  orxString_NPrint(sacFileLocationBuffer, sizeof(sacFileLocationBuffer), "%s%c%s%c%s", (_zGroup != orxNULL) ? _zGroup : orxSTRING_EMPTY, orxRESOURCE_KC_LOCATION_SEPARATOR, ((_zStorage != orxNULL) && (orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) != 0)) ? _zStorage : orxSTRING_EMPTY, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
 
-  /* Found? */
+  /* Found in group? */
   if(orxHashTable_Get(sstResource.pstMemoryDataTable, orxString_Hash(sacFileLocationBuffer)) != orxNULL)
   {
     /* Updates result */
     zResult = sacFileLocationBuffer;
+  }
+  else
+  {
+    orxCHAR *zGenericName;
+
+    /* Gets generic name */
+    zGenericName = sacFileLocationBuffer + orxString_GetLength(_zGroup);
+
+    /* Found? */
+    if(orxHashTable_Get(sstResource.pstMemoryDataTable, orxString_Hash(zGenericName)) != orxNULL)
+    {
+      /* Updates result */
+      zResult = zGenericName;
+    }
   }
 
   /* Done! */
@@ -3434,42 +3439,34 @@ orxHANDLE orxFASTCALL orxResource_GetNextCachedLocation(const orxSTRING _zGroup,
 
 /** Sets an internal memory resource
  * !IMPORTANT! The content of _pBuffer is *required* to remain valid until this resource has been successfully unset (by passing _s64Size=0 or _pBuffer=orxNULL), no internal copies will be made!
- * @param[in] _zName            Name of the resource to set/unset
+ * @param[in] _zGroup           Group of the resource to set/unset, orxNULL to be available for all groups
  * @param[in] _zStorage         Storage of the resource to set/unset, orxNULL for the default storage
+ * @param[in] _zName            Name of the resource to set/unset
  * @param[in] _s64Size          Size of the resource's data (0 to unset)
  * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, const orxSTRING _zStorage, orxS64 _s64Size, const void *_pBuffer)
+orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zName != orxNULL);
+  orxASSERT(_s64Size >= 0);
 
   /* Valid name? */
   if(*_zName != orxCHAR_NULL)
   {
+    orxCHAR                   acBuffer[orxRESOURCE_KU32_BUFFER_SIZE];
     orxRESOURCE_MEMORY_DATA  *pstData;
     orxSTRINGID               stNameID;
 
-    /* Default storage? */
-    if((_zStorage == orxNULL) || (orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0))
-    {
-      /* Gets its ID */
-      stNameID = orxString_Hash(_zName);
-    }
-    else
-    {
-      orxCHAR acBuffer[orxRESOURCE_KU32_BUFFER_SIZE];
+    /* Composes full name */
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%s%c%s%c%s", (_zGroup != orxNULL) ? _zGroup : orxSTRING_EMPTY, orxRESOURCE_KC_LOCATION_SEPARATOR, ((_zStorage != orxNULL) && (orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) != 0)) ? _zStorage : orxSTRING_EMPTY, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
 
-      /* Composes full name */
-      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
-
-      /* Gets its ID */
-      stNameID = orxString_Hash(acBuffer);
-    }
+    /* Gets its ID */
+    stNameID = orxString_Hash(acBuffer);
 
     /* Gets its data */
     pstData = (orxRESOURCE_MEMORY_DATA *)orxHashTable_Get(sstResource.pstMemoryDataTable, stNameID);
