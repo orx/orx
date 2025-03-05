@@ -155,6 +155,7 @@ solution "[name]"
         buildoptions
         {
             "-DorxWEB_EXECUTABLE_NAME='\"[name].wasm\"'",
+            "--use-port=contrib.glfw3",
             "-pthread"
         }
         linkoptions
@@ -167,10 +168,9 @@ solution "[name]"
             "-sASYNCIFY",
             "-sALLOW_MEMORY_GROWTH",
             "-sFULL_ES3=1",
+            "--use-port=contrib.glfw3",
             "-pthread",
-            "-lidbfs.js",
-            "$(ORX)/../extern/emscripten-glfw/lib/libglfw3.a",
-            "--js-library $(ORX)/../extern/emscripten-glfw/lib/lib_emscripten_glfw3.js"
+            "-lidbfs.js"
         }
         links
         {
@@ -180,7 +180,6 @@ solution "[name]"
         includedirs {"$(ORX)/include"}
         libdirs {
             "$(ORX)/lib/static/web",
-            "$(ORX)/../extern/emscripten-glfw/lib",
             "$(ORX)/../extern/libwebp/lib/web",
             "$(ORX)/../extern/LiquidFun-1.1.0/lib/web"
         }

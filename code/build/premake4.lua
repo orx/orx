@@ -145,11 +145,6 @@ solution "orx"
         includedirs {"../../extern/glfw-3/include"}
 
     configuration {"web"}
-        includedirs
-        {
-            "../../extern/emscripten-glfw/external",
-            "../../extern/emscripten-glfw/include"
-        }
         buildoptions {"-pthread"}
         linkoptions {"-pthread"}
 
@@ -351,8 +346,7 @@ project "orx"
             "-sALLOW_MEMORY_GROWTH",
             "-sFULL_ES3=1",
             "-lidbfs.js",
-            "../../../../extern/emscripten-glfw/lib/libglfw3.a",
-            "--js-library ../../../../extern/emscripten-glfw/lib/lib_emscripten_glfw3.js"
+            "--use-port=contrib.glfw3"
         }
         links
         {
@@ -491,6 +485,7 @@ project "orxLIB"
     configuration {"web"}
         targetdir ("../lib/static/web")
         kind ("StaticLib")
+        buildoptions {"--use-port=contrib.glfw3"}
         targetprefix ("lib")
         targetextension (".a")
 

@@ -94,6 +94,9 @@ public:
                 void                    GetFlip(orxBOOL &_rbFlipX, orxBOOL &_rbFlipY) const;
                 void                    SetFlip(orxBOOL _bFlipX, orxBOOL _bFlipY, orxBOOL _bRecursive = orxTRUE);
 
+                const orxSTRING         GetText() const;
+                void                    SetText(const orxSTRING _zText);
+
                 orxBOOL                 IsAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE);
                 void                    SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE, orxBOOL _bRecursive = orxTRUE);
 
@@ -540,6 +543,23 @@ void ScrollObject::SetFlip(orxBOOL _bFlipX, orxBOOL _bFlipY, orxBOOL _bRecursive
       }
     }
   }
+}
+
+const orxSTRING ScrollObject::GetText() const
+{
+  const orxSTRING zResult;
+  
+  // Updates result
+  zResult = orxObject_GetTextString(mpstObject);
+  
+  // Done!
+  return zResult;
+}
+
+void ScrollObject::SetText(const orxSTRING _zText)
+{
+  // Updates object's text
+  orxObject_SetTextString(mpstObject, _zText);
 }
 
 orxBOOL ScrollObject::IsAnim(const orxSTRING _zAnim, orxBOOL _bCurrent)
