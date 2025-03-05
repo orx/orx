@@ -1197,23 +1197,6 @@ orxSTATUS orxFASTCALL orxFont_ClearCache()
   return eResult;
 }
 
-/** Gets default font
- * @return      Default font / orxNULL
- */
-const orxFONT *orxFASTCALL orxFont_GetDefaultFont()
-{
-  orxFONT *pstResult;
-
-  /* Checks */
-  orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
-
-  /* Updates result */
-  pstResult = sstFont.pstDefaultFont;
-
-  /* Done ! */
-  return pstResult;
-}
-
 /** Sets font's texture
  * @param[in]   _pstFont      Concerned font
  * @param[in]   _pstTexture   Texture to set

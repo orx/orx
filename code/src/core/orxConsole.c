@@ -1319,7 +1319,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         /* Sets default font */
         if(orxModule_IsInitialized(orxMODULE_ID_FONT) != orxFALSE)
         {
-          orxConsole_SetFont(orxFont_GetDefaultFont());
+          orxConsole_SetFont(orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
         }
 
         /* Disables config logs */

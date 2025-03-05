@@ -290,7 +290,7 @@ static orxINLINE void orxRender_Home_RenderFPS()
   orxProfiler_EnableMarkerOperations(orxFALSE);
 
   /* Gets default font */
-  pstFont = orxFont_GetDefaultFont();
+  pstFont = orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME);
 
   /* Valid? */
   if(pstFont != orxNULL)
@@ -414,7 +414,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame, sstRender.u32SelectedThread);
 
   /* Gets default font */
-  pstFont = orxFont_GetDefaultFont();
+  pstFont = orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME);
 
   /* Gets its bitmap */
   pstFontBitmap = orxTexture_GetBitmap(orxFont_GetTexture(pstFont));

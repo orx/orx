@@ -165,7 +165,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't set font (%s) for text (%s).", zName, _pstText->zReference);
 
         /* Sets default font */
-        orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
+        orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
       }
     }
     else
@@ -174,13 +174,13 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't create font (%s) for text (%s).", zName, _pstText->zReference);
 
       /* Sets default font */
-      orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
+      orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
     }
   }
   else
   {
     /* Sets default font */
-    orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
+    orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
   }
 
   /* Gets its string */
@@ -278,7 +278,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
             else
             {
               /* Sets default font */
-              orxText_SetFont(pstText, orxFONT(orxFont_GetDefaultFont()));
+              orxText_SetFont(pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
             }
           }
         }

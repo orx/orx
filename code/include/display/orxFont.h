@@ -96,11 +96,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_Delete(orxFONT *_p
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_ClearCache();
 
-/** Gets default font
- * @return      Default font / orxNULL
- */
-extern orxDLLAPI const orxFONT *orxFASTCALL           orxFont_GetDefaultFont();
-
 
 /** Sets font's texture
  * @param[in]   _pstFont      Concerned font
