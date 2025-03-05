@@ -52,6 +52,7 @@
 /** Misc defines
  */
 #define orxFONT_KZ_DEFAULT_FONT_NAME                  "orx:font:default"
+#define orxFONT_KZ_DEFAULT_TEXTURE_NAME               "orx:texture:font:default"
 #define orxFONT_KZ_RESOURCE_GROUP                     "Font"
 
 
@@ -205,6 +206,12 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetSize(const orxF
  */
 extern orxDLLAPI const orxCHARACTER_MAP *orxFASTCALL  orxFont_GetMap(const orxFONT *_pstFont);
 
+
+/** Gets font given its name
+ * @param[in]   _zName        Font name
+ * @return      orxFONT / orxNULL
+ */
+extern orxDLLAPI orxFONT *orxFASTCALL                 orxFont_Get(const orxSTRING _zName);
 
 /** Gets font name
  * @param[in]   _pstFont      Concerned font

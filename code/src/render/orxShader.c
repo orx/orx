@@ -747,7 +747,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
   /* Gets shader ID */
   stID = orxString_Hash(_zConfigID);
 
-  /* Search for reference */
+  /* Searches for reference */
   pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, stID);
 
   /* Found? */
@@ -1878,6 +1878,25 @@ orxBOOL orxFASTCALL orxShader_IsEnabled(const orxSHADER *_pstShader)
 
   /* Done! */
   return(orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_ENABLED));
+}
+
+/** Gets shader given its name
+ * @param[in]   _zName                Shader name
+ * @return      orxSHADER / orxNULL
+ */
+orxSHADER *orxFASTCALL orxShader_Get(const orxSTRING _zName)
+{
+  orxSHADER *pstResult;
+
+  /* Checks */
+  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Updates result */
+  pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, orxString_Hash(_zName));
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Gets shader name

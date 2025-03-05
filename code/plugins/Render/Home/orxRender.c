@@ -426,7 +426,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   fMarkerWidth = ((orxCHARACTER_GLYPH *)orxHashTable_Get(pstMap->pstCharacterTable, orxRENDER_KC_PROFILER_DEPTH_MARKER))->fWidth;
 
   /* Creates pixel texture */
-  pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL);
+  pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL_NAME);
 
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
@@ -1256,7 +1256,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   fCharacterWidth   = sstRender.fConsoleFontScale * orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
 
   /* Gets pixel texture */
-  pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL);
+  pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL_NAME);
 
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);

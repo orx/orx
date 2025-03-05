@@ -89,7 +89,7 @@
 
 #define orxFONT_KZ_ASCII                        "ascii"
 #define orxFONT_KZ_ANSI                         "ansi"
-#define orxFONT_KZ_FONT_NAME_PREFIX             "orx:font"
+#define orxFONT_KZ_TEXTURE_FONT_PREFIX          "orx:texture:font"
 
 
 /***************************************************************************
@@ -249,12 +249,12 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
 static orxINLINE void orxFont_CreateDefaultFont()
 {
   /* Sets its texture as memory resource */
-  if(orxResource_SetMemoryResource(orxTEXTURE_KZ_RESOURCE_GROUP, orxNULL, orxFONT_KZ_DEFAULT_FONT_NAME, sstDefaultFont.s64Size, sstDefaultFont.pu8Data) != orxSTATUS_FAILURE)
+  if(orxResource_SetMemoryResource(orxTEXTURE_KZ_RESOURCE_GROUP, orxNULL, orxFONT_KZ_DEFAULT_TEXTURE_NAME, sstDefaultFont.s64Size, sstDefaultFont.pu8Data) != orxSTATUS_FAILURE)
   {
     orxTEXTURE *pstTexture;
 
     /* Loads it */
-    pstTexture = orxTexture_Load(orxFONT_KZ_DEFAULT_FONT_NAME, orxFALSE);
+    pstTexture = orxTexture_Load(orxFONT_KZ_DEFAULT_TEXTURE_NAME, orxFALSE);
 
     /* Success? */
     if(pstTexture != orxNULL)
@@ -439,7 +439,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
           orxCHAR acBuffer[256];
 
           /* Creates texture name */
-          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%s", orxFONT_KZ_FONT_NAME_PREFIX, _pstFont->zReference);
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s:%s", orxFONT_KZ_TEXTURE_FONT_PREFIX, _pstFont->zReference);
 
           /* Links them */
           if(orxTexture_LinkBitmap(pstTexture, pstBitmap, acBuffer, orxTRUE) != orxSTATUS_FAILURE)
@@ -893,7 +893,7 @@ void orxFASTCALL orxFont_Exit()
       pstTexture = orxFont_GetTexture(sstFont.pstDefaultFont);
       orxFont_Delete(sstFont.pstDefaultFont);
       orxTexture_Delete(pstTexture);
-      orxResource_SetMemoryResource(orxTEXTURE_KZ_RESOURCE_GROUP, orxNULL, orxFONT_KZ_DEFAULT_FONT_NAME, 0, orxNULL);
+      orxResource_SetMemoryResource(orxTEXTURE_KZ_RESOURCE_GROUP, orxNULL, orxFONT_KZ_DEFAULT_TEXTURE_NAME, 0, orxNULL);
     }
 
     /* Deletes font list */
@@ -1026,14 +1026,18 @@ orxFONT *orxFASTCALL orxFont_Create()
  */
 orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxFONT *pstResult;
+  orxSTRINGID stID;
+  orxFONT    *pstResult;
 
   /* Checks */
   orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
   orxASSERT(_zConfigID != orxNULL);
 
-  /* Search for font */
-  pstResult = (orxFONT *)orxHashTable_Get(sstFont.pstReferenceTable, orxString_Hash(_zConfigID));
+  /* Gets font ID */
+  stID = orxString_Hash(_zConfigID);
+
+  /* Searches for font */
+  pstResult = (orxFONT *)orxHashTable_Get(sstFont.pstReferenceTable, stID);
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -1060,7 +1064,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
         if(orxFont_ProcessConfigData(pstResult) != orxSTATUS_FAILURE)
         {
           /* Adds it to reference table */
-          orxHashTable_Add(sstFont.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
+          orxHashTable_Add(sstFont.pstReferenceTable, stID, pstResult);
 
           /* Should keep it in cache? */
           if(orxConfig_GetBool(orxFONT_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
@@ -1663,6 +1667,25 @@ const orxCHARACTER_MAP *orxFASTCALL orxFont_GetMap(const orxFONT *_pstFont)
 
   /* Updates result */
   pstResult = _pstFont->pstMap;
+
+  /* Done! */
+  return pstResult;
+}
+
+/** Gets font given its name
+ * @param[in]   _zName        Font name
+ * @return      orxFONT / orxNULL
+ */
+orxFONT *orxFASTCALL orxFont_Get(const orxSTRING _zName)
+{
+  orxFONT *pstResult;
+
+  /* Checks */
+  orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Updates result */
+  pstResult = (orxFONT *)orxHashTable_Get(sstFont.pstReferenceTable, orxString_Hash(_zName));
 
   /* Done! */
   return pstResult;

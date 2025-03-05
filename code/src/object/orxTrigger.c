@@ -922,13 +922,9 @@ orxSTATUS orxFASTCALL orxTrigger_AddSetFromConfig(orxTRIGGER *_pstTrigger, const
   if(u32Index < orxTRIGGER_KU32_SET_NUMBER)
   {
     orxTRIGGER_SET *pstSet;
-    orxSTRINGID     stID;
 
-    /* Gets set ID */
-    stID = orxString_Hash(_zConfigID);
-
-    /* Search for reference */
-    pstSet = (orxTRIGGER_SET *)orxHashTable_Get(sstTrigger.pstSetTable, stID);
+    /* Searches for reference */
+    pstSet = (orxTRIGGER_SET *)orxHashTable_Get(sstTrigger.pstSetTable, orxString_Hash(_zConfigID));
 
     /* Found? */
     if(pstSet != orxNULL)

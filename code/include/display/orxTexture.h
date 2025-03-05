@@ -54,9 +54,9 @@
 #define orxTEXTURE_KZ_RESOURCE_GROUP      "Texture"
 #define orxTEXTURE_KZ_LOCALE_GROUP        "Texture"
 
-#define orxTEXTURE_KZ_SCREEN              "screen"
-#define orxTEXTURE_KZ_PIXEL               "pixel"
-#define orxTEXTURE_KZ_TRANSPARENT         "transparent"
+#define orxTEXTURE_KZ_SCREEN_NAME         "orx:texture:screen"
+#define orxTEXTURE_KZ_PIXEL_NAME          "orx:texture:pixel"
+#define orxTEXTURE_KZ_TRANSPARENT_NAME    "orx:texture:transparent"
 
 #define orxTEXTURE_KZ_LOGO_NAME           "orx:texture:logo"
 
