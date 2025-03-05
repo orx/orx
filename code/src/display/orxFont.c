@@ -79,6 +79,7 @@
 #define orxFONT_KZ_CONFIG_CHARACTER_HEIGHT      "CharacterHeight"
 #define orxFONT_KZ_CONFIG_CHARACTER_WIDTH_LIST  "CharacterWidthList"
 #define orxFONT_KZ_CONFIG_CHARACTER_SPACING     "CharacterSpacing"
+#define orxFONT_KZ_CONFIG_CHARACTER_PADDING     "CharacterPadding"
 #define orxFONT_KZ_CONFIG_TEXTURE_ORIGIN        "TextureOrigin"
 #define orxFONT_KZ_CONFIG_TEXTURE_SIZE          "TextureSize"
 #define orxFONT_KZ_CONFIG_TEXTURE_CORNER        "TextureCorner" /**< Kept for retro-compatibility reason */
@@ -369,7 +370,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
       orxVECTOR       vCharacterSize, vCharacterSpacing;
       const orxSTRING zCharacterList;
       orxBITMAP      *pstBitmap;
-      orxFLOAT       *afCharacterWidthList;
+      orxFLOAT       *afCharacterWidthList, fCharacterPadding;
       orxU32          u32CharacterCount;
 
       /* Retrieves character spacing */
@@ -378,6 +379,9 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
         /* Uses default spacing */
         orxVector_Set(&vCharacterSpacing, orxFONT_KV_DEFAULT_CHARACTER_SPACING);
       }
+
+      /* Gets character padding */
+      fCharacterPadding = orxConfig_GetFloat(orxFONT_KZ_CONFIG_CHARACTER_PADDING);
 
       /* Has character size? */
       if(orxConfig_HasValue(orxFONT_KZ_CONFIG_CHARACTER_SIZE) != orxFALSE)
@@ -419,7 +423,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
       orxASSERT(afCharacterWidthList != orxNULL);
 
       /* Loads font bitmap */
-      pstBitmap = orxDisplay_LoadFont(zName, zCharacterList, &vCharacterSize, &vCharacterSpacing, orxConfig_GetBool(orxFONT_KZ_CONFIG_SDF), afCharacterWidthList);
+      pstBitmap = orxDisplay_LoadFont(zName, zCharacterList, &vCharacterSize, &vCharacterSpacing, fCharacterPadding, orxConfig_GetBool(orxFONT_KZ_CONFIG_SDF), afCharacterWidthList);
 
       /* Success? */
       if(pstBitmap != orxNULL)
