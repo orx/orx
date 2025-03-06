@@ -11981,14 +11981,14 @@ orxSTATUS orxFASTCALL orxObject_RemoveTrigger(orxOBJECT *_pstObject, const orxST
  */
 orxOBJECT_MAKE_RECURSIVE(RemoveTrigger, const orxSTRING);
 
-/** Fire an object's trigger.
+/** Fires an object's trigger.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count         Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
+orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -11996,7 +11996,7 @@ orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRI
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT((_zEvent != orxNULL) && (_zEvent != orxSTRING_EMPTY));
-  orxASSERT((_u32Size == 0) || (_azRefinementList != orxNULL));
+  orxASSERT((_u32Count == 0) || (_azRefinementList != orxNULL));
 
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
@@ -12010,7 +12010,7 @@ orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRI
     if(pstTrigger != orxNULL)
     {
       /* Fires it */
-      eResult = orxTrigger_Fire(pstTrigger, _zEvent, _azRefinementList, _u32Size);
+      eResult = orxTrigger_Fire(pstTrigger, _zEvent, _azRefinementList, _u32Count);
     }
   }
 
@@ -12018,14 +12018,14 @@ orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRI
   return eResult;
 }
 
-/** Fire a trigger on an object and its owned children.
+/** Fires a trigger on an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count         Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
+void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count)
 {
   orxOBJECT *pstChild;
 
@@ -12033,10 +12033,10 @@ void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orx
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT((_zEvent != orxNULL) && (_zEvent != orxSTRING_EMPTY));
-  orxASSERT((_u32Size == 0) || (_azRefinementList != orxNULL));
+  orxASSERT((_u32Count == 0) || (_azRefinementList != orxNULL));
 
   /* Fires trigger */
-  orxObject_FireTrigger(_pstObject, _zEvent, _azRefinementList, _u32Size);
+  orxObject_FireTrigger(_pstObject, _zEvent, _azRefinementList, _u32Count);
 
   /* For all its owned children */
   for(pstChild = orxObject_GetOwnedChild(_pstObject);
@@ -12044,7 +12044,7 @@ void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orx
       pstChild = orxObject_GetOwnedSibling(pstChild))
   {
     /* Fires its trigger */
-    orxObject_FireTriggerRecursive(pstChild, _zEvent, _azRefinementList, _u32Size);
+    orxObject_FireTriggerRecursive(pstChild, _zEvent, _azRefinementList, _u32Count);
   }
 
   /* Done! */

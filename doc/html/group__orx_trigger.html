@@ -161,8 +161,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga5e3855dde15675f428a7ec1da5ae7b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabab6f759f91de4ee7c5218eeda2577bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_trigger.html#gabab6f759f91de4ee7c5218eeda2577bd">orxTrigger_Exit</a> ()</td></tr>
 <tr class="separator:gabab6f759f91de4ee7c5218eeda2577bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6eaa8c9914994cf18dd23cad4a99eabb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_trigger.html#ga6eaa8c9914994cf18dd23cad4a99eabb">orxTrigger_Fire</a> (<a class="el" href="group__orx_trigger.html#ga89aa931d53dafadd4935af41e72cbdc2">orxTRIGGER</a> *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)</td></tr>
-<tr class="separator:ga6eaa8c9914994cf18dd23cad4a99eabb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0a070cfbfec1919b212b8fb604f3e41e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_trigger.html#ga0a070cfbfec1919b212b8fb604f3e41e">orxTrigger_Fire</a> (<a class="el" href="group__orx_trigger.html#ga89aa931d53dafadd4935af41e72cbdc2">orxTRIGGER</a> *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count)</td></tr>
+<tr class="separator:ga0a070cfbfec1919b212b8fb604f3e41e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafcd961c40531c97b7c061169a659115b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_trigger.html#gafcd961c40531c97b7c061169a659115b">orxTrigger_GetCount</a> (const <a class="el" href="group__orx_trigger.html#ga89aa931d53dafadd4935af41e72cbdc2">orxTRIGGER</a> *_pstTrigger)</td></tr>
 <tr class="separator:gafcd961c40531c97b7c061169a659115b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9c7554bc9925411caa0adecd8dcac21d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_trigger.html#ga9c7554bc9925411caa0adecd8dcac21d">orxTrigger_Init</a> ()</td></tr>
@@ -391,7 +391,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga6eaa8c9914994cf18dd23cad4a99eabb"></a>
+<a class="anchor" id="ga0a070cfbfec1919b212b8fb604f3e41e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -417,7 +417,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Size</em>&#160;</td>
+          <td class="paramname"><em>_u32Count</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -430,8 +430,8 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstTrigger</td><td>Concerned Trigger </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zEvent</td><td>Event to fire </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_azRefinementList</td><td>List of refinements for this event, unused if _u32Size == 0 </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of the refinement list, 0 for none </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_azRefinementList</td><td>List of refinements for this event, unused if _u32Count == 0 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Count</td><td>Number of refinements in the list, 0 for none </td></tr>
   </table>
   </dd>
 </dl>
