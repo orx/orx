@@ -532,6 +532,22 @@ void orxFASTCALL orxObject_CommandFindNext(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: Pick
+ */
+void orxFASTCALL orxObject_CommandPick(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Picks object */
+  pstObject = orxObject_Pick(&(_astArgList[0].vValue), (_u32ArgNumber > 1) ? orxString_GetID(_astArgList[1].zValue) : sstObject.stDefaultGroupID);
+
+  /* Updates result */
+  _pstResult->u64Value = (pstObject != orxNULL) ? orxStructure_GetGUID(pstObject) : orxU64_UNDEFINED;
+
+  /* Done! */
+  return;
+}
+
 /** Command: GetCount
  */
 void orxFASTCALL orxObject_CommandGetCount(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -4070,6 +4086,8 @@ static orxINLINE void orxObject_RegisterCommands()
 
   /* Command: FindNext */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, FindNext, "Object", orxCOMMAND_VAR_TYPE_U64, 0, 2, {"Name = *", orxCOMMAND_VAR_TYPE_STRING}, {"Previous = <void>", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: Pick */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Pick, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Position", orxCOMMAND_VAR_TYPE_VECTOR}, {"Group = <default>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: GetCount */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetCount, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 2, {"Name = <empty>", orxCOMMAND_VAR_TYPE_STRING}, {"EnabledOnly = false", orxCOMMAND_VAR_TYPE_BOOL});
@@ -4327,6 +4345,8 @@ static orxINLINE void orxObject_UnregisterCommands()
 
   /* Command: FindNext */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, FindNext);
+  /* Command: Pick */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Pick);
 
   /* Command: GetCount */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetCount);
@@ -13259,38 +13279,34 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID 
   orxASSERT(_pvPosition != orxNULL);
 
   /* For all objects */
-  for(pstObject = orxObject_GetNext(orxNULL, _stGroupID), fSelectedZ = _pvPosition->fZ;
+  for(pstObject = orxObject_GetNextEnabled(orxNULL, _stGroupID), fSelectedZ = _pvPosition->fZ;
       pstObject != orxNULL;
-      pstObject = orxObject_GetNext(pstObject, _stGroupID))
+      pstObject = orxObject_GetNextEnabled(pstObject, _stGroupID))
   {
-    /* Is enabled? */
-    if(orxObject_IsEnabled(pstObject) != orxFALSE)
+    orxVECTOR vObjectPos;
+
+    /* Gets object position */
+    if(orxObject_GetWorldPosition(pstObject, &vObjectPos) != orxNULL)
     {
-      orxVECTOR vObjectPos;
-
-      /* Gets object position */
-      if(orxObject_GetWorldPosition(pstObject, &vObjectPos) != orxNULL)
+      /* Is under position? */
+      if(vObjectPos.fZ >= _pvPosition->fZ)
       {
-        /* Is under position? */
-        if(vObjectPos.fZ >= _pvPosition->fZ)
+        /* No selection or above it? */
+        if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
         {
-          /* No selection or above it? */
-          if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
+          orxOBOX stObjectBox;
+
+          /* Gets its bounding box */
+          if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
           {
-            orxOBOX stObjectBox;
-
-            /* Gets its bounding box */
-            if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+            /* Is position in 2D box? */
+            if(orxOBox_2DIsInside(&stObjectBox, _pvPosition) != orxFALSE)
             {
-              /* Is position in 2D box? */
-              if(orxOBox_2DIsInside(&stObjectBox, _pvPosition) != orxFALSE)
-              {
-                /* Updates result */
-                pstResult = pstObject;
+              /* Updates result */
+              pstResult = pstObject;
 
-                /* Updates selected position */
-                fSelectedZ = vObjectPos.fZ;
-              }
+              /* Updates selected position */
+              fSelectedZ = vObjectPos.fZ;
             }
           }
         }
@@ -13318,35 +13334,31 @@ orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox, orxSTRINGID _st
   orxASSERT(_pstBox != orxNULL);
 
   /* For all objects */
-  for(pstObject = orxObject_GetNext(orxNULL, _stGroupID), fSelectedZ = _pstBox->vPosition.fZ;
+  for(pstObject = orxObject_GetNextEnabled(orxNULL, _stGroupID), fSelectedZ = _pstBox->vPosition.fZ;
       pstObject != orxNULL;
-      pstObject = orxObject_GetNext(pstObject, _stGroupID))
+      pstObject = orxObject_GetNextEnabled(pstObject, _stGroupID))
   {
-    /* Is enabled? */
-    if(orxObject_IsEnabled(pstObject) != orxFALSE)
+    orxVECTOR vObjectPos;
+
+    /* Gets object position */
+    if(orxObject_GetWorldPosition(pstObject, &vObjectPos) != orxNULL)
     {
-      orxVECTOR vObjectPos;
-
-      /* Gets object position */
-      if(orxObject_GetWorldPosition(pstObject, &vObjectPos) != orxNULL)
+      /* No selection or above it? */
+      if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
       {
-        /* No selection or above it? */
-        if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
+        orxOBOX stObjectBox;
+
+        /* Gets its bounding box */
+        if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
         {
-          orxOBOX stObjectBox;
-
-          /* Gets its bounding box */
-          if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+          /* Does it intersect with box? */
+          if(orxOBox_ZAlignedTestIntersection(_pstBox, &stObjectBox) != orxFALSE)
           {
-            /* Does it intersect with box? */
-            if(orxOBox_ZAlignedTestIntersection(_pstBox, &stObjectBox) != orxFALSE)
-            {
-              /* Updates result */
-              pstResult = pstObject;
+            /* Updates result */
+            pstResult = pstObject;
 
-              /* Updates selected position */
-              fSelectedZ = vObjectPos.fZ;
-            }
+            /* Updates selected position */
+            fSelectedZ = vObjectPos.fZ;
           }
         }
       }
