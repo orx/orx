@@ -3025,7 +3025,9 @@ void orxFASTCALL orxObject_CommandFireTrigger(orxU32 _u32ArgNumber, const orxCOM
 
     /* For all characters in event */
     for(pcSrc = _astArgList[1].zValue, pcDst = acBuffer, u32RefinementCount = 0;
-        (*pcSrc != orxCHAR_NULL) && ((orxU32)(pcDst - acBuffer) < sizeof(acBuffer) - 1);
+        (*pcSrc != orxCHAR_NULL)
+     && ((orxU32)(pcDst - acBuffer) < sizeof(acBuffer) - 1)
+     && (u32RefinementCount < orxARRAY_GET_ITEM_COUNT(azRefinementList));
         pcSrc++, pcDst++)
     {
       /* Depending on character */
@@ -3062,12 +3064,12 @@ void orxFASTCALL orxObject_CommandFireTrigger(orxU32 _u32ArgNumber, const orxCOM
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
       /* Fires trigger */
-      orxObject_FireTriggerRecursive(pstObject, acBuffer, (const orxSTRING *)azRefinementList, u32RefinementCount);
+      orxObject_FireTriggerRecursive(pstObject, acBuffer, (u32RefinementCount > 0) ? (const orxSTRING *)azRefinementList : orxNULL, u32RefinementCount);
     }
     else
     {
       /* Fires trigger */
-      orxObject_FireTrigger(pstObject, acBuffer, (const orxSTRING *)azRefinementList, u32RefinementCount);
+      orxObject_FireTrigger(pstObject, acBuffer, (u32RefinementCount > 0) ? (const orxSTRING *)azRefinementList : orxNULL, u32RefinementCount);
     }
 
     /* Updates result */
