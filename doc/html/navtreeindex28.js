@@ -1,5 +1,9 @@
 var NAVTREEINDEX28 =
 {
+"structorx_v_e_c_t_o_r.html#a844a4d1f9ed96ceb6984a63eb165fe94":[1,59,0,3],
+"structorx_v_e_c_t_o_r.html#a916fac6ccddca92d7906da0431b51ecc":[1,59,0,0],
+"structorx_v_e_c_t_o_r.html#aae1449dbf6d2bcd9ad6eb610cba1f02c":[1,59,0,4],
+"structorx_v_e_c_t_o_r.html#abb5e46d592ab0949006deae6b03225dc":[1,59,0,10],
 "structorx_v_e_c_t_o_r.html#ac9220a9ef9f0dd6c2fa0d5de31e04a97":[1,59,0,12],
 "structorx_v_e_c_t_o_r.html#adf55c54496245db6acc7c81de0b930a1":[1,59,0,7],
 "structorx_v_e_c_t_o_r.html#ae723216e45777b79556bcf664d9a9246":[1,59,0,1],
