@@ -531,6 +531,13 @@ void orxFASTCALL orxTrigger_CommandGetRefinement(orxU32 _u32ArgNumber, const orx
                          ? sstTrigger.azCurrentRefinementList[_astArgList[0].u32Value - 1]
                          : orxSTRING_EMPTY;
 
+  /* Has stop marker? */
+  if(_pstResult->zValue[0] == orxTRIGGER_KC_STOP_MARKER)
+  {
+    /* Skips it */
+    _pstResult->zValue++;
+  }
+
   /* Done! */
   return;
 }
