@@ -1181,20 +1181,20 @@ extern orxDLLAPI void orxFASTCALL           orxObject_RemoveTriggerRecursive(orx
 /** Fires an object's trigger.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count         Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count);
 
 /** Fires a trigger on an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count         Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+extern orxDLLAPI void orxFASTCALL           orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count);
 /** @} */
 
 

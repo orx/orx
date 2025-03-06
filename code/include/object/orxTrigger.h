@@ -77,10 +77,13 @@ typedef enum __orxTRIGGER_EVENT_t
  */
 typedef struct __orxTRIGGER_EVENT_PAYLOAD_t
 {
-  orxTRIGGER     *pstTrigger;                   /**< Trigger reference : 4 / 8 */
-  const orxSTRING zSetName;                     /**< Set name : 8 / 16 */
-  const orxSTRING zEvent;                       /**< Event : 12 / 24 */
-
+  orxTRIGGER       *pstTrigger;                 /**< Trigger reference : 4 / 8 */
+  const orxSTRING   zSetName;                   /**< Set name : 8 / 16 */
+  const orxSTRING   zEventName;                 /**< Event name : 12 / 24 */
+  const orxSTRING   zEventValue;                /**< Event value : 16 / 32 */
+  const orxSTRING  *azRefinementList;           /**< Event refinement list : 20 / 40 */
+  orxU32            u32RefinementCount;         /**< Number of event refinements in the list : 24 / 48 */
+  orxU32            u32RefinementIndex;         /**< Index of the current refinement : 28 / 56 */
 } orxTRIGGER_EVENT_PAYLOAD;
 
 
@@ -148,11 +151,11 @@ extern orxDLLAPI orxU32 orxFASTCALL             orxTrigger_GetCount(const orxTRI
 /** Fire a Trigger's event
  * @param[in]   _pstTrigger           Concerned Trigger
  * @param[in]   _zEvent               Event to fire
- * @param[in]   _azRefinementList     List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size              Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList     List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count             Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL          orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+extern orxDLLAPI orxSTATUS orxFASTCALL          orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count);
 
 #endif /* _orxTRIGGER_H_ */
 
