@@ -85,6 +85,7 @@ typedef struct __orxANDROID_STATIC_t
 {
   orxBOOL              bPaused;
   orxBOOL              bHasFocus;
+  orxU32               u32TouchCount;
   orxFLOAT             fSurfaceScale;
   uint64_t             activeAxisIds;
   orxCHAR              zArguments[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
@@ -524,7 +525,9 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
             stPayload.stTouch.u32ID = event->pointers[iIndex].id;
             stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
             stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+            sstAndroid.u32TouchCount++;
             break;
           }
           case AMOTION_EVENT_ACTION_POINTER_UP:
@@ -533,17 +536,31 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
             stPayload.stTouch.u32ID = event->pointers[iIndex].id;
             stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
             stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+            sstAndroid.u32TouchCount--;
             break;
           }
-          case AMOTION_EVENT_ACTION_DOWN:
+          case AMOTION_EVENT_ACTION_DOWN: /* Always first finger! */
           {
+            /** OrxMouse pressed status depends on the orxSYSTEM_EVENT_TOUCH_BEGIN and orxSYSTEM_EVENT_TOUCH_END events.
+             * In the rare case Android fails to deliver the Up/Cancel event we must emulate the Up event.
+             * Otherwise orx would indefinitely assume that the mouse is pressed.
+             */
+            while(sstAndroid.u32TouchCount > 0)
+            {
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+              sstAndroid.u32TouchCount--;
+            }
+
             for(iIndex = 0; iIndex < event->pointerCount; iIndex++)
             {
               stPayload.stTouch.u32ID = event->pointers[iIndex].id;
               stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
               stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+              sstAndroid.u32TouchCount++;
             }
             break;
           }
@@ -555,8 +572,11 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
               stPayload.stTouch.u32ID = event->pointers[iIndex].id;
               stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
               stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+              sstAndroid.u32TouchCount--;
             }
+            orxASSERT(sstAndroid.u32TouchCount == 0);
             break;
           }
           case AMOTION_EVENT_ACTION_MOVE:
