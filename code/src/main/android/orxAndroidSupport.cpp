@@ -41,6 +41,7 @@
 
 #define MODULE "orxAndroidSupport"
 #define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, MODULE, __VA_ARGS__)
+#define LOGW(...)  __android_log_print(ANDROID_LOG_WARN, MODULE, __VA_ARGS__)
 #define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, MODULE, __VA_ARGS__)
 #define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, MODULE, __VA_ARGS__)
 #define LOGV(...)  __android_log_print(ANDROID_LOG_VERBOSE, MODULE, __VA_ARGS__)
@@ -48,6 +49,7 @@
 #else /* __orxDEBUG__ */
 
 #define LOGE(...)
+#define LOGW(...)
 #define LOGD(...)
 #define LOGI(...)
 #define LOGV(...)
@@ -243,7 +245,7 @@ extern "C" ANativeWindow *orxAndroid_GetNativeWindow()
 
   while((sstAndroid.app->window == NULL) && !sstAndroid.app->destroyRequested)
   {
-    LOGI("no window received yet");
+    LOGI("No window received yet");
     orxAndroid_PumpEvents();
   }
 
@@ -549,11 +551,16 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
              *
              * See https://issuetracker.google.com/issues/401872146
              */
-            for(iIndex = 0; iIndex < orxANDROID_KU32_MAX_MOTION_POINTERS && sstAndroid.au32PendingMotionActions[iIndex] == orxTRUE; iIndex++)
+            for(iIndex = 0; iIndex < orxANDROID_KU32_MAX_MOTION_POINTERS; iIndex++)
             {
-              stPayload.stTouch.u32ID = iIndex;
-              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
-              sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxFALSE;
+              if(sstAndroid.au32PendingMotionActions[iIndex] == orxTRUE)
+              {
+                LOGW("Emulating ACTION_UP for pointer %d", iIndex);
+
+                stPayload.stTouch.u32ID = iIndex;
+                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+                sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxFALSE;
+              }
             }
 
             for(iIndex = 0; iIndex < event->pointerCount; iIndex++)
