@@ -41,6 +41,7 @@
 
 #define MODULE "orxAndroidSupport"
 #define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, MODULE, __VA_ARGS__)
+#define LOGW(...)  __android_log_print(ANDROID_LOG_WARN, MODULE, __VA_ARGS__)
 #define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, MODULE, __VA_ARGS__)
 #define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, MODULE, __VA_ARGS__)
 #define LOGV(...)  __android_log_print(ANDROID_LOG_VERBOSE, MODULE, __VA_ARGS__)
@@ -48,6 +49,7 @@
 #else /* __orxDEBUG__ */
 
 #define LOGE(...)
+#define LOGW(...)
 #define LOGD(...)
 #define LOGI(...)
 #define LOGV(...)
@@ -65,6 +67,7 @@
 #define orxANDROID_KU32_ARGUMENT_BUFFER_SIZE    256    /**< Argument buffer size */
 #define orxANDROID_KU32_MAX_ARGUMENT_COUNT      16     /**< Maximum number of arguments */
 #define orxANDROID_KU32_KEY_BUFFER_SIZE         (AKEYCODE_PROFILE_SWITCH + 1)
+#define orxANDROID_KU32_MAX_MOTION_POINTERS     GAMEACTIVITY_MAX_NUM_POINTERS_IN_MOTION_EVENT /**< Maximum number of pointers, default to 8 */
 
 #define orxANDROID_GET_ACTION_INDEX(ACTION)     (((ACTION) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT)
 #define orxANDROID_GET_AXIS_X(EV, INDEX)        GameActivityPointerAxes_getX(&(EV)->pointers[INDEX])
@@ -89,6 +92,7 @@ typedef struct __orxANDROID_STATIC_t
   uint64_t             activeAxisIds;
   orxCHAR              zArguments[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
   orxU32               au32PendingKeyActions[orxANDROID_KU32_KEY_BUFFER_SIZE];
+  orxBOOL              au32PendingMotionActions[orxANDROID_KU32_MAX_MOTION_POINTERS];
   struct android_app  *app;
 } orxANDROID_STATIC;
 
@@ -241,7 +245,7 @@ extern "C" ANativeWindow *orxAndroid_GetNativeWindow()
 
   while((sstAndroid.app->window == NULL) && !sstAndroid.app->destroyRequested)
   {
-    LOGI("no window received yet");
+    LOGI("No window received yet");
     orxAndroid_PumpEvents();
   }
 
@@ -500,8 +504,11 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
       if(Paddleboat_processGameActivityMotionInputEvent(event, sizeof(GameActivityMotionEvent)) == 0)
       {
         /* Didn't belong to a game controller, let's process it ourselves. */
-
+        int32_t iIndex;
         orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+        /* Inits event payload */
+        orxMemory_Zero(&stPayload, sizeof(orxANDROID_EVENT_PAYLOAD));
 
         if(sstAndroid.fSurfaceScale == orxFLOAT_0)
         {
@@ -510,13 +517,7 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
           orxConfig_PopSection();
         }
 
-        /* Inits event payload */
-        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-        stPayload.stTouch.fPressure = orxFLOAT_0;
-
-        int32_t iIndex;
-
-        switch (event->action & AMOTION_EVENT_ACTION_MASK)
+        switch(event->action & AMOTION_EVENT_ACTION_MASK)
         {
           case AMOTION_EVENT_ACTION_POINTER_DOWN:
           {
@@ -525,6 +526,9 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
             stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
             stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+
+            orxASSERT(stPayload.stTouch.u32ID < orxANDROID_KU32_MAX_MOTION_POINTERS);
+            sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxTRUE;
             break;
           }
           case AMOTION_EVENT_ACTION_POINTER_UP:
@@ -534,16 +538,40 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
             stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
             stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+
+            orxASSERT(stPayload.stTouch.u32ID < orxANDROID_KU32_MAX_MOTION_POINTERS);
+            sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxFALSE;
             break;
           }
-          case AMOTION_EVENT_ACTION_DOWN:
+          case AMOTION_EVENT_ACTION_DOWN: /* Always first finger! */
           {
+            /** In orx, pressed status depends on the orxSYSTEM_EVENT_TOUCH_BEGIN and orxSYSTEM_EVENT_TOUCH_END events.
+             * In the rare case Android fails to deliver the Up/Cancel event we must emulate the Up event.
+             * Otherwise orx would indefinitely assume pressed state.
+             *
+             * See https://issuetracker.google.com/issues/401872146
+             */
+            for(iIndex = 0; iIndex < orxANDROID_KU32_MAX_MOTION_POINTERS; iIndex++)
+            {
+              if(sstAndroid.au32PendingMotionActions[iIndex] == orxTRUE)
+              {
+                LOGW("Emulating ACTION_UP for pointer %d", iIndex);
+
+                stPayload.stTouch.u32ID = iIndex;
+                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+                sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxFALSE;
+              }
+            }
+
             for(iIndex = 0; iIndex < event->pointerCount; iIndex++)
             {
               stPayload.stTouch.u32ID = event->pointers[iIndex].id;
               stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
               stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+
+              orxASSERT(stPayload.stTouch.u32ID < orxANDROID_KU32_MAX_MOTION_POINTERS);
+              sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxTRUE;
             }
             break;
           }
@@ -556,6 +584,9 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
               stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
               stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
               orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+
+              orxASSERT(stPayload.stTouch.u32ID < orxANDROID_KU32_MAX_MOTION_POINTERS);
+              sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxFALSE;
             }
             break;
           }
