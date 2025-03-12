@@ -2131,7 +2131,7 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_SaveBitmapData(void *_pContext)
 
 static orxINLINE orxDISPLAY_MATRIX *orxDisplay_Android_InitMatrix(orxDISPLAY_MATRIX *_pmMatrix, const orxDISPLAY_TRANSFORM *_pstTransform, const orxBITMAP *_pstBitmap)
 {
-  orxFLOAT fCos, fSin, fSCosX, fSCosY, fSSinX, fSSinY, fTX, fTY, fRotation, fSrcX, fSrcY;
+  orxFLOAT fCos, fSin, fSCosX, fSCosY, fSSinX, fSSinY, fTX, fTY, fRotation, fSrcX, fSrcY, fScaleX, fScaleY;
 
   /* Updates rotation */
   fRotation = _pstTransform->fRotation + orxU2F(_pstTransform->eOrientation) * orxMATH_KF_PI_BY_2;
@@ -2165,44 +2165,54 @@ static orxINLINE orxDISPLAY_MATRIX *orxDisplay_Android_InitMatrix(orxDISPLAY_MAT
       default:
       case orxDISPLAY_ORIENTATION_UP:
       {
-        fSrcX = _pstTransform->fSrcX;
-        fSrcY = _pstTransform->fSrcY;
+        fSrcX   = _pstTransform->fSrcX;
+        fSrcY   = _pstTransform->fSrcY;
+        fScaleX = _pstTransform->fScaleX;
+        fScaleY = _pstTransform->fScaleY;
         break;
       }
 
       case orxDISPLAY_ORIENTATION_LEFT:
       {
-        fSrcX = _pstTransform->fSrcY;
-        fSrcY = fHeight - _pstTransform->fSrcX;
+        fSrcX   = _pstTransform->fSrcY;
+        fSrcY   = fHeight - _pstTransform->fSrcX;
+        fScaleX = _pstTransform->fScaleY;
+        fScaleY = _pstTransform->fScaleX;
         break;
       }
 
       case orxDISPLAY_ORIENTATION_DOWN:
       {
-        fSrcX = fWidth - _pstTransform->fSrcX;
-        fSrcY = fHeight - _pstTransform->fSrcY;
+        fSrcX   = fWidth - _pstTransform->fSrcX;
+        fSrcY   = fHeight - _pstTransform->fSrcY;
+        fScaleX = _pstTransform->fScaleX;
+        fScaleY = _pstTransform->fScaleY;
         break;
       }
 
       case orxDISPLAY_ORIENTATION_RIGHT:
       {
-        fSrcX = fWidth - _pstTransform->fSrcY;
-        fSrcY = _pstTransform->fSrcX;
+        fSrcX   = fWidth - _pstTransform->fSrcY;
+        fSrcY   = _pstTransform->fSrcX;
+        fScaleX = _pstTransform->fScaleY;
+        fScaleY = _pstTransform->fScaleX;
         break;
       }
     }
   }
   else
   {
-    fSrcX = _pstTransform->fSrcX;
-    fSrcY = _pstTransform->fSrcY;
+    fSrcX   = _pstTransform->fSrcX;
+    fSrcY   = _pstTransform->fSrcY;
+    fScaleX = _pstTransform->fScaleX;
+    fScaleY = _pstTransform->fScaleY;
   }
 
   /* Computes values */
-  fSCosX  = _pstTransform->fScaleX * fCos;
-  fSCosY  = _pstTransform->fScaleY * fCos;
-  fSSinX  = _pstTransform->fScaleX * fSin;
-  fSSinY  = _pstTransform->fScaleY * fSin;
+  fSCosX  = fScaleX * fCos;
+  fSCosY  = fScaleY * fCos;
+  fSSinX  = fScaleX * fSin;
+  fSSinY  = fScaleY * fSin;
   fTX     = _pstTransform->fDstX - (fSrcX * fSCosX) + (fSrcY * fSSinY);
   fTY     = _pstTransform->fDstY - (fSrcX * fSSinX) - (fSrcY * fSCosY);
 
