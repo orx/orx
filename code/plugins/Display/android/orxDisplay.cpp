@@ -4264,7 +4264,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadBitmap(const orxSTRING _zFileName)
   return pstResult;
 }
 
-orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, orxFLOAT _fCharacterPadding, orxBOOL _bSDF, orxFLOAT *_afCharacterWidthList)
+orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, const orxVECTOR *_pvCharacterPadding, orxBOOL _bSDF, orxFLOAT *_afCharacterWidthList)
 {
   orxBITMAP *pstResult = orxNULL;
 
@@ -4274,7 +4274,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, c
   orxASSERT(_pvCharacterSize != orxNULL);
   orxASSERT(_pvCharacterSize->fY > orxFLOAT_0);
   orxASSERT(_pvCharacterSpacing != orxNULL);
-  orxASSERT(_fCharacterPadding >= orxFLOAT_0);
+  orxASSERT(_pvCharacterPadding != orxNULL);
   orxASSERT(_afCharacterWidthList != orxNULL);
 
   /* Valid? */
@@ -4354,7 +4354,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, c
                       const orxSTRING zRemainder;
                       const orxSTRING zCharacterList;
                       orxU32          u32CharacterCodePoint, i;
-                      int             iX0, iX1, iY0, iY1;
+                      int             iX0, iX1, iY0, iY1, iXPadding, iYPadding;
                       orxFLOAT        fCurrentWidth, fWidth, fHeight, fBaseLine;
 
                       /* Stores source buffer */
@@ -4380,20 +4380,15 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, c
                         iY1 = orxMAX(iY1, -iGlyphY0);
                       }
 
-                      /* Has padding? */
-                      if(_fCharacterPadding > orxFLOAT_0)
-                      {
-                        int iPadding;
+                      /* Gets padding in font space */
+                      iXPadding = orxF2S(orxMAX(orxFLOAT_0, _pvCharacterPadding->fX) * (orxS2F(iY1 - iY0) / _pvCharacterSize->fY));
+                      iYPadding = orxF2S(orxMAX(orxFLOAT_0, _pvCharacterPadding->fY) * (orxS2F(iY1 - iY0) / _pvCharacterSize->fY));
 
-                        /* Gets padding in font space */
-                        iPadding = orxF2S(_fCharacterPadding * (orxS2F(iY1 - iY0) / _pvCharacterSize->fY));
-
-                        /* Updates extent to include padding */
-                        iX0 -= iPadding;
-                        iX1 += iPadding;
-                        iY0 -= iPadding;
-                        iY1 += iPadding;
-                      }                      
+                      /* Updates extent to include padding */
+                      iX0 -= iXPadding;
+                      iX1 += iXPadding;
+                      iY0 -= iYPadding;
+                      iY1 += iYPadding;
 
                       /* Gets font scale */
                       pstLoadInfo->vFontScale.fY = (_pvCharacterSize->fY - orxFLOAT_1) / (iY1 - iY0);
@@ -4427,13 +4422,13 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, c
                         stbtt_GetGlyphBitmapBox(&(pstLoadInfo->stFontInfo), pstLoadInfo->astGlyphList[i].s32Index, pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY, (int *)&iGlyphX0, (int *)&iGlyphY0, (int *)&iGlyphX1, (int *)&iGlyphY1);
 
                         /* Updates glyph values */
-                        pstLoadInfo->astGlyphList[i].stGlyph.fWidth = orx2F(2.0f) * _fCharacterPadding + orxMath_Ceil((_pvCharacterSize->fX > orxFLOAT_0)
+                        pstLoadInfo->astGlyphList[i].stGlyph.fWidth = orx2F(2.0f) * _pvCharacterPadding->fX + orxMath_Ceil((_pvCharacterSize->fX > orxFLOAT_0)
                                                                                                                       ? _pvCharacterSize->fX
                                                                                                                       : (_pvCharacterSize->fX == orxFLOAT_0)
                                                                                                                         ? orxMAX(pstLoadInfo->vFontScale.fX * orxS2F(iGlyphWidth), orxS2F(iGlyphX1 - iGlyphX0))
                                                                                                                         : pstLoadInfo->vFontScale.fX * (iX1 - iX0));
-                        pstLoadInfo->astGlyphList[i].stGlyph.fX = _fCharacterPadding + ((_pvCharacterSize->fX == orxFLOAT_0) ? orxMAX(0, orxS2F(iGlyphX0)) : orxMath_Floor(orx2F(0.5f) * (pstLoadInfo->astGlyphList[i].stGlyph.fWidth - orxS2F(iGlyphX1 - iGlyphX0))));
-                        pstLoadInfo->astGlyphList[i].stGlyph.fY = _fCharacterPadding + fBaseLine + orxS2F(iGlyphY0);
+                        pstLoadInfo->astGlyphList[i].stGlyph.fX = _pvCharacterPadding->fX + ((_pvCharacterSize->fX == orxFLOAT_0) ? orxMAX(0, orxS2F(iGlyphX0)) : orxMath_Floor(orx2F(0.5f) * (pstLoadInfo->astGlyphList[i].stGlyph.fWidth - orxS2F(iGlyphX1 - iGlyphX0))));
+                        pstLoadInfo->astGlyphList[i].stGlyph.fY = _pvCharacterPadding->fY + fBaseLine + orxS2F(iGlyphY0);
 
                         /* Gets horizontal advance */
                         fAdvance = pstLoadInfo->astGlyphList[i].stGlyph.fWidth + ((i == 0) ? orxFLOAT_0 : _pvCharacterSpacing->fX);

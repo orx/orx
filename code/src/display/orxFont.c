@@ -367,10 +367,10 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
     /* Valid? */
     if((zName != orxNULL) && (zName != orxSTRING_EMPTY))
     {
-      orxVECTOR       vCharacterSize, vCharacterSpacing;
+      orxVECTOR       vCharacterSize, vCharacterSpacing, vCharacterPadding;
       const orxSTRING zCharacterList;
       orxBITMAP      *pstBitmap;
-      orxFLOAT       *afCharacterWidthList, fCharacterPadding;
+      orxFLOAT       *afCharacterWidthList;
       orxU32          u32CharacterCount;
 
       /* Retrieves character spacing */
@@ -381,7 +381,10 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
       }
 
       /* Gets character padding */
-      fCharacterPadding = orxConfig_GetFloat(orxFONT_KZ_CONFIG_CHARACTER_PADDING);
+      if(orxConfig_GetVector(orxFONT_KZ_CONFIG_CHARACTER_PADDING, &vCharacterPadding) == orxNULL)
+      {
+        orxVector_SetAll(&vCharacterPadding, orxConfig_GetFloat(orxFONT_KZ_CONFIG_CHARACTER_PADDING));
+      }
 
       /* Has character size? */
       if(orxConfig_HasValue(orxFONT_KZ_CONFIG_CHARACTER_SIZE) != orxFALSE)
@@ -423,7 +426,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
       orxASSERT(afCharacterWidthList != orxNULL);
 
       /* Loads font bitmap */
-      pstBitmap = orxDisplay_LoadFont(zName, zCharacterList, &vCharacterSize, &vCharacterSpacing, fCharacterPadding, orxConfig_GetBool(orxFONT_KZ_CONFIG_SDF), afCharacterWidthList);
+      pstBitmap = orxDisplay_LoadFont(zName, zCharacterList, &vCharacterSize, &vCharacterSpacing, &vCharacterPadding, orxConfig_GetBool(orxFONT_KZ_CONFIG_SDF), afCharacterWidthList);
 
       /* Success? */
       if(pstBitmap != orxNULL)

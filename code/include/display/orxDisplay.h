@@ -945,12 +945,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SaveBitmap(cons
  * @param[in]   _zCharacterList                       Ordered list of characters for which to create glyphs
  * @param[in]   _pvCharacterSize                      Size of characters, X = 0 for variable width
  * @param[in]   _pvCharacterSpacing                   Spacing to be kept between glyphs in the font bitmap
- * @param[in]   _fCharacterPadding                    Padding added in all directions, inside a glyph
+ * @param[in]   _pvCharacterPadding                   Padding added on all sides, inside a glyph
  * @param[in]   _bSDF                                 Will generate a SDF (Signed Distance Field) texture if set to true or a regular texture otherwise
  * @param[out]  _afCharacterWidthList                 Resulting list of character/glyph widths
  * @return orxBITMAP / orxNULL
  */
-extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, orxFLOAT _fCharacterPadding, orxBOOL _bSDF, orxFLOAT *_afCharacterWidthList);
+extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, const orxVECTOR *_pvCharacterPadding, orxBOOL _bSDF, orxFLOAT *_afCharacterWidthList);
 
 
 /** Sets temp bitmap, if a valid temp bitmap is given, load operations will be asynchronous
