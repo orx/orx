@@ -40,10 +40,7 @@ static orxU32       su32VideoModeIndex                    = 0;
 static orxBOOL      sbShaderEnabled                       = orxFALSE;
 static orxSPAWNER  *spstBallSpawner                       = orxNULL;
 static orxOBJECT   *spstWalls                             = orxNULL;
-static orxFLOAT     sfShaderAmplitude                     = orx2F(0.0f);
-static orxFLOAT     sfShaderFrequency                     = orx2F(1.0f);
-static orxVECTOR    svColor                               = {0};
-static orxFLOAT     sfColorTime                           = orx2F(0.0f);
+static orxVECTOR    svColor                               = orxVECTOR_RED;
 static orxFLOAT     sfTrailTimer                          = orx2F(0.0f);
 static orxBOOL      sbRecord                              = orxFALSE;
 static orxU32       su32TrailIndex                        = 0;
@@ -175,6 +172,15 @@ static void orxFASTCALL orxBounce_UpdateTrail(const orxCLOCK_INFO *_pstClockInfo
   }
 }
 
+/** Update color callback
+ */
+static void orxFASTCALL orxBounce_UpdateColor(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+{
+  orxConfig_PushSection("BounceShader");
+  orxConfig_GetVector("color", &svColor);
+  orxConfig_PopSection();
+}
+
 /** Bounce event handler
  * @param[in]   _pstEvent                     Sent event
  * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
@@ -247,18 +253,6 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       else if(!orxString_Compare(pstPayload->zParamName, "color"))
       {
         orxVector_Copy(&pstPayload->vValue, &svColor);
-      }
-      /* Frequency? */
-      else if(!orxString_Compare(pstPayload->zParamName, "frequency"))
-      {
-        /* Updates its value */
-        pstPayload->fValue = sfShaderFrequency;
-      }
-      /* Amplitude? */
-      else if(!orxString_Compare(pstPayload->zParamName, "amplitude"))
-      {
-        /* Updates its value */
-        pstPayload->fValue = sfShaderAmplitude;
       }
 
       /* Profiles */
@@ -456,23 +450,6 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   /* Pushes config section */
   orxConfig_PushSection("Bounce");
 
-  /* Updates shader values */
-  sfShaderFrequency = orxConfig_GetFloat("ShaderMaxFrequency") * orxMath_Sin(orxConfig_GetFloat("ShaderFrequencySpeed") * _pstClockInfo->fTime);
-  sfShaderAmplitude = orxConfig_GetFloat("ShaderMaxAmplitude") * orxMath_Sin(orxConfig_GetFloat("ShaderAmplitudeSpeed") * _pstClockInfo->fTime);
-
-  /* Updates color time */
-  sfColorTime -= _pstClockInfo->fDT;
-
-  /* Should update color */
-  if(sfColorTime <= orxFLOAT_0)
-  {
-    orxConfig_PushSection("BounceShader");
-    orxConfig_GetVector("color", &svColor);
-    orxConfig_PopSection();
-
-    sfColorTime += orx2F(3.0f);
-  }
-
   /* Gets mouse world position */
   orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), orxNULL, &vMousePos);
 
@@ -615,6 +592,9 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
         {
           orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
         }
+        
+        /* Adds color timer */
+        orxClock_AddGlobalTimer(orxBounce_UpdateColor, orxConfig_GetFloat("ShaderColorTimer"), -1, orxNULL);
       }
       /* Swapping in */
       else

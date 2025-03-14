@@ -58,7 +58,6 @@ typedef enum __orxSHADER_PARAM_TYPE_t
   orxSHADER_PARAM_TYPE_FLOAT = 0,
   orxSHADER_PARAM_TYPE_TEXTURE,
   orxSHADER_PARAM_TYPE_VECTOR,
-  orxSHADER_PARAM_TYPE_TIME,
 
   orxSHADER_PARAM_TYPE_NUMBER,
 
@@ -197,7 +196,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddVectorParam(orxSHAD
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _fWrap                  Time will wrap around after that amount of seconds, <= 0 to ignore
- * @param[in] _zFXName                FX to apply as transformation (should be of type FLOAT), orxNULL for none
+ * @param[in] _zFXName                FX to apply as transformation (should be of type FLOAT or VECTOR), orxNULL for none
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fWrap, const orxSTRING _zFXName);
