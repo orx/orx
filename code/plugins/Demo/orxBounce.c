@@ -40,8 +40,6 @@ static orxU32       su32VideoModeIndex                    = 0;
 static orxBOOL      sbShaderEnabled                       = orxFALSE;
 static orxSPAWNER  *spstBallSpawner                       = orxNULL;
 static orxOBJECT   *spstWalls                             = orxNULL;
-static orxFLOAT     sfShaderAmplitude                     = orx2F(0.0f);
-static orxFLOAT     sfShaderFrequency                     = orx2F(1.0f);
 static orxVECTOR    svColor                               = {0};
 static orxFLOAT     sfColorTime                           = orx2F(0.0f);
 static orxFLOAT     sfTrailTimer                          = orx2F(0.0f);
@@ -248,18 +246,6 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
       {
         orxVector_Copy(&pstPayload->vValue, &svColor);
       }
-      /* Frequency? */
-      else if(!orxString_Compare(pstPayload->zParamName, "frequency"))
-      {
-        /* Updates its value */
-        pstPayload->fValue = sfShaderFrequency;
-      }
-      /* Amplitude? */
-      else if(!orxString_Compare(pstPayload->zParamName, "amplitude"))
-      {
-        /* Updates its value */
-        pstPayload->fValue = sfShaderAmplitude;
-      }
 
       /* Profiles */
       orxPROFILER_POP_MARKER();
@@ -455,10 +441,6 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
 
   /* Pushes config section */
   orxConfig_PushSection("Bounce");
-
-  /* Updates shader values */
-  sfShaderFrequency = orxConfig_GetFloat("ShaderMaxFrequency") * orxMath_Sin(orxConfig_GetFloat("ShaderFrequencySpeed") * _pstClockInfo->fTime);
-  sfShaderAmplitude = orxConfig_GetFloat("ShaderMaxAmplitude") * orxMath_Sin(orxConfig_GetFloat("ShaderAmplitudeSpeed") * _pstClockInfo->fTime);
 
   /* Updates color time */
   sfColorTime -= _pstClockInfo->fDT;
