@@ -2406,7 +2406,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_ProcessFont(void *_pContext)
             msdfgen::Vector2 vOffset(pstLoadInfo->astGlyphList[i].stGlyph.fX / pstLoadInfo->vFontScale.fX, pstLoadInfo->astGlyphList[i].stGlyph.fY / pstLoadInfo->vFontScale.fY);
             msdfgen::SDFTransformation stTransformation(msdfgen::Projection(vScale, vOffset), msdfgen::Range(0.25f * pstLoadInfo->vCharacterSize.fY / pstLoadInfo->vFontScale.fY));
 
-            /* Renders the MTSDF Glyph */
+            /* Renders the MTSDF glyph */
             msdfgen::generateMTSDF(oBitmap, stShape, stTransformation);
 
             /* Copies it to output */
@@ -2422,12 +2422,12 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_ProcessFont(void *_pContext)
             }
           }
 
-          /* Renders glyph */
+          /* Frees the shape */
           stbtt_FreeShape(&(pstLoadInfo->stFontInfo), astVertexList);
         }
         else
         {
-          /* Renders glyph */
+          /* Renders the glyph */
           stbtt_MakeGlyphBitmap(&(pstLoadInfo->stFontInfo), pu8Buffer + s32X + orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fX) + ((s32Y + orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fY)) * s32TextureWidth), s32Width - orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fX), orxF2S(pstLoadInfo->vCharacterSize.fY - pstLoadInfo->astGlyphList[i].stGlyph.fY), s32TextureWidth, pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY, pstLoadInfo->astGlyphList[i].s32Index);
         }
         
