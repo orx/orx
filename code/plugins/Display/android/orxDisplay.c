@@ -4855,10 +4855,9 @@ orxHANDLE orxFASTCALL orxDisplay_Android_CreateShader(const orxSTRING *_azCodeLi
             switch(pstParam->eType)
             {
               case orxSHADER_PARAM_TYPE_FLOAT:
-              case orxSHADER_PARAM_TYPE_TIME:
               {
                 /* Adds its literal value */
-                s32Offset = ((pstParam->eType != orxSHADER_PARAM_TYPE_TIME) && (pstParam->u32ArraySize >= 1)) ? orxString_NPrint(pc, s32Free, "uniform float %s[%u];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
+                s32Offset = (pstParam->u32ArraySize >= 1) ? orxString_NPrint(pc, s32Free, "uniform float %s[%u];\n", pstParam->zName, pstParam->u32ArraySize) : orxString_NPrint(pc, s32Free, "uniform float %s;\n", pstParam->zName);
                 pc       += s32Offset;
                 s32Free  -= s32Offset;
 

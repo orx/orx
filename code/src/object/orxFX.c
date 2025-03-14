@@ -2111,6 +2111,7 @@ orxVECTOR *orxFASTCALL orxFX_GetVector(const orxFX *_pstFX, orxFLOAT _fPreviousT
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFX);
   orxASSERT(_fTime >= _fPreviousTime);
+  orxASSERT(_pvVector != orxNULL);
 
   /* Is time valid? */
   if(_fTime >= orxFLOAT_0)
