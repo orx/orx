@@ -40,8 +40,7 @@ static orxU32       su32VideoModeIndex                    = 0;
 static orxBOOL      sbShaderEnabled                       = orxFALSE;
 static orxSPAWNER  *spstBallSpawner                       = orxNULL;
 static orxOBJECT   *spstWalls                             = orxNULL;
-static orxVECTOR    svColor                               = {0};
-static orxFLOAT     sfColorTime                           = orx2F(0.0f);
+static orxVECTOR    svColor                               = orxVECTOR_RED;
 static orxFLOAT     sfTrailTimer                          = orx2F(0.0f);
 static orxBOOL      sbRecord                              = orxFALSE;
 static orxU32       su32TrailIndex                        = 0;
@@ -171,6 +170,15 @@ static void orxFASTCALL orxBounce_UpdateTrail(const orxCLOCK_INFO *_pstClockInfo
     /* Updates its position */
     orxVector_Add(&savTrailPointList[i], &savTrailPointList[i], orxVector_Mulf(&vTemp, &savTrailSpeedList[i], _pstClockInfo->fDT));
   }
+}
+
+/** Update color callback
+ */
+static void orxFASTCALL orxBounce_UpdateColor(const orxCLOCK_INFO *_pstClockInfo, void *_pstContext)
+{
+  orxConfig_PushSection("BounceShader");
+  orxConfig_GetVector("color", &svColor);
+  orxConfig_PopSection();
 }
 
 /** Bounce event handler
@@ -442,19 +450,6 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   /* Pushes config section */
   orxConfig_PushSection("Bounce");
 
-  /* Updates color time */
-  sfColorTime -= _pstClockInfo->fDT;
-
-  /* Should update color */
-  if(sfColorTime <= orxFLOAT_0)
-  {
-    orxConfig_PushSection("BounceShader");
-    orxConfig_GetVector("color", &svColor);
-    orxConfig_PopSection();
-
-    sfColorTime += orx2F(3.0f);
-  }
-
   /* Gets mouse world position */
   orxRender_GetWorldPosition(orxMouse_GetPosition(&vMousePos), orxNULL, &vMousePos);
 
@@ -597,6 +592,9 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
         {
           orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
         }
+        
+        /* Adds color timer */
+        orxClock_AddGlobalTimer(orxBounce_UpdateColor, orxConfig_GetFloat("ShaderColorTimer"), -1, orxNULL);
       }
       /* Swapping in */
       else
