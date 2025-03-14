@@ -5533,8 +5533,12 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadFont(const orxSTRING _zFileName, cons
                                                                                                                       : (_pvCharacterSize->fX == orxFLOAT_0)
                                                                                                                         ? orxMAX(pstLoadInfo->vFontScale.fX * orxS2F(iGlyphWidth), orxS2F(iGlyphX1 - iGlyphX0))
                                                                                                                         : pstLoadInfo->vFontScale.fX * (iX1 - iX0));
-                        pstLoadInfo->astGlyphList[i].stGlyph.fX = _pvCharacterPadding->fX + ((_pvCharacterSize->fX == orxFLOAT_0) ? orxMAX(0, orxS2F(iGlyphX0)) : orxMath_Floor(orx2F(0.5f) * (pstLoadInfo->astGlyphList[i].stGlyph.fWidth - orxS2F(iGlyphX1 - iGlyphX0))));
+                        pstLoadInfo->astGlyphList[i].stGlyph.fX = _pvCharacterPadding->fX + ((_pvCharacterSize->fX == orxFLOAT_0) ? orxMAX(0, orxS2F(iGlyphX0)) : orxMath_Floor(orx2F(0.5f) * (pstLoadInfo->astGlyphList[i].stGlyph.fWidth - orx2F(2.0f) * _pvCharacterPadding->fX - orxS2F(iGlyphX1 - iGlyphX0))));
                         pstLoadInfo->astGlyphList[i].stGlyph.fY = _pvCharacterPadding->fY + fBaseLine + orxS2F(iGlyphY0);
+                        if(pstLoadInfo->bSDF != orxFALSE)
+                        {
+                          pstLoadInfo->astGlyphList[i].stGlyph.fX -= iGlyphX0;
+                        }
 
                         /* Gets horizontal advance */
                         fAdvance = pstLoadInfo->astGlyphList[i].stGlyph.fWidth + ((i == 0) ? orxFLOAT_0 : _pvCharacterSpacing->fX);
