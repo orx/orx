@@ -328,6 +328,16 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
                 /* Gets FX name */
                 zFXName = orxString_SkipWhiteSpaces(zValue);
 
+                /* Is not using custom param? */
+                if(!orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM))
+                {
+                  /* Forces it */
+                  orxStructure_SetFlags(_pstShader, orxSHADER_KU32_FLAG_USE_CUSTOM_PARAM, orxSHADER_KU32_FLAG_NONE);
+
+                  /* Logs message */
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Shader [%s/%x]: Using time parameter for <%s> -> forcing config property \"%s\" to true.", _pstShader->zReference, _pstShader, zParamName, orxSHADER_KZ_CONFIG_USE_CUSTOM_PARAM);
+                }
+
                 /* Is list? */
                 if(bIsList != orxFALSE)
                 {

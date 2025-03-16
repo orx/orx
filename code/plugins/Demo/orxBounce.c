@@ -463,8 +463,11 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
     orxSpawner_SetPosition(spstBallSpawner, &vMousePos);
   }
 
-  /* Clears ray hit */
-  orxConfig_SetString("RayHit", orxSTRING_EMPTY);
+  if(*orxConfig_GetString("RayHit") != orxCHAR_NULL)
+  {
+    /* Clears ray hit */
+    orxConfig_SetString("RayHit", orxSTRING_EMPTY);
+  }
 
   /* Spawning */
   if(orxInput_IsActive("Spawn"))
