@@ -1583,7 +1583,7 @@ orxSTATUS orxFASTCALL orxFont_SetSize(orxFONT *_pstFont, const orxVECTOR *_pvSiz
   return eResult;
 }
 
-orxSTATUS orxINLINE orxFont_SetShader(orxFONT *_pstFont, const orxSTRING _zShader)
+orxSTATUS orxFASTCALL orxFont_SetShader(orxFONT *_pstFont, const orxSTRING _zShader)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
