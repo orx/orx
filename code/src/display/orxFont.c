@@ -517,19 +517,21 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
               /* Stores its typeface */
               _pstFont->zTypeface = orxString_Store(zName);
 
+              /* Has shader */
+              if(orxConfig_HasValue(orxFONT_KZ_CONFIG_SHADER) != orxFALSE)
+              {
+                /* Stores it */
+                _pstFont->zShader = orxString_Store(orxConfig_GetString(orxFONT_KZ_CONFIG_SHADER));
+              }
+
               /* SDF? */
               if(bSDF != orxFALSE)
               {
                 /* Updates flags */
                 orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_SDF, orxFONT_KU32_FLAG_NONE);
 
-                /* Has shader */
-                if(orxConfig_HasValue(orxFONT_KZ_CONFIG_SHADER) != orxFALSE)
-                {
-                  /* Stores it */
-                  _pstFont->zShader = orxString_Store(orxConfig_GetString(orxFONT_KZ_CONFIG_SHADER));
-                }
-                else
+                /* No custom shader? */
+                if(_pstFont->zShader == orxNULL)
                 {
                   orxCHAR acBuffer[256];
                   const orxSTRING azSectionList[2];
@@ -557,12 +559,16 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
                   orxConfig_PushSection(orxFONT_KZ_SDF_SHADER_NAME);
                   orxConfig_ForAllKeys(orxFont_InheritProperty, orxTRUE, azSectionList);
                   orxConfig_PopSection();
-
-                  /* Forces shader to be cached */
-                  orxConfig_PushSection(_pstFont->zShader);
-                  orxConfig_SetBool(orxFONT_KZ_CONFIG_KEEP_IN_CACHE, orxTRUE);
-                  orxConfig_PopSection();
                 }
+              }
+
+              /* Has shader? */
+              if(_pstFont->zShader != orxNULL)
+              {
+                /* Forces shader to be cached */
+                orxConfig_PushSection(_pstFont->zShader);
+                orxConfig_SetBool(orxFONT_KZ_CONFIG_KEEP_IN_CACHE, orxTRUE);
+                orxConfig_PopSection();
               }
 
               /* Updates its map */
