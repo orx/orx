@@ -1494,7 +1494,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
     orxGRAPHIC *pstGraphic;
     orxTEXTURE *pstTexture;
     orxTEXT    *pstText;
-    orxFONT    *pstFont;
+    orxFONT    *pstFont = orxNULL;
     orxBITMAP  *pstBitmap = orxNULL;
     orxBOOL     bIsQuad;
 
@@ -1561,6 +1561,21 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
       {
         orxSHADERPOINTER *pstShaderPointer;
         orxCOLOR          stColor;
+        const orxSTRING   zFontShader = orxNULL;
+
+        /* Has font? */
+        if(pstFont != orxNULL)
+        {
+          /* Gets font shader */
+          zFontShader = orxFont_GetShader(pstFont);
+
+          /* Valid? */
+          if(zFontShader != orxNULL)
+          {
+            /* Adds it to the object */
+            orxObject_AddShader(pstObject, zFontShader);
+          }
+        }
 
         /* Gets its shader pointer */
         pstShaderPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstObject), SHADERPOINTER);
@@ -1611,6 +1626,13 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
         {
           /* Stops it */
           orxShaderPointer_Stop(pstShaderPointer);
+        }
+
+        /* Has font shader? */
+        if(zFontShader != orxNULL)
+        {
+          /* Removes it from the object */
+          orxObject_RemoveShader(pstObject, zFontShader);
         }
       }
       else

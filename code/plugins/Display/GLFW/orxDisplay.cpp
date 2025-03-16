@@ -196,15 +196,7 @@
 #undef BASISD_SUPPORT_DXT1
 
 
-#define MSDFGEN_NO_FREETYPE
-#if defined(__orxMSVC__)
-  #pragma warning(push)
-  #pragma warning(disable : 4530)
-#endif /* __orxMSVC__ */
 #include "msdfgen.cpp"
-#if defined(__orxMSVC__)
-  #pragma warning(pop)
-#endif /* __orxMSVC__ */
 
 
 #ifndef __orxEMBEDDED__

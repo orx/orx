@@ -127,7 +127,7 @@
 #undef STB_TRUETYPE_IMPLEMENTATION
 #undef STBTT_STATIC
 
-#define MSDFGEN_NO_FREETYPE
+
 #include "msdfgen.cpp"
 
 

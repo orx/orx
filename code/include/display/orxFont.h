@@ -53,6 +53,7 @@
  */
 #define orxFONT_KZ_DEFAULT_FONT_NAME                  "orx:font:default"
 #define orxFONT_KZ_DEFAULT_TEXTURE_NAME               "orx:texture:font:default"
+#define orxFONT_KZ_SDF_SHADER_NAME                    "orx:shader:font:sdf"
 #define orxFONT_KZ_RESOURCE_GROUP                     "Font"
 
 
@@ -200,6 +201,19 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetSize(const orxF
  * @return      orxCHARACTER_MAP / orxNULL
  */
 extern orxDLLAPI const orxCHARACTER_MAP *orxFASTCALL  orxFont_GetMap(const orxFONT *_pstFont);
+
+
+/** Is Font SDF?
+ * @param[in]   _pstFont      Concerned font
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxFont_IsSDF(const orxFONT *_pstFont);
+
+/** Gets font's shader
+ * @param[in]   _pstFont      Concerned font
+ * @return     Shader's name if any, orxNULL otherwise
+ */
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxFont_GetShader(const orxFONT *_pstFont);
 
 
 /** Gets font given its name

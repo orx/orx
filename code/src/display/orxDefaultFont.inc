@@ -161,3 +161,40 @@ static const struct
     0x30, 0x31, 0x30, 0x30, 0x00, 0x00, 0x00, 0x00,
   }
 };
+
+/** Default SDF font shader config
+ */
+static const orxSTRING szDefaultFontSDFShader = "[" orxFONT_KZ_SDF_SHADER_NAME "]\n"
+"Functions=\"\n"
+"float orxSDF(sampler2D T,vec2 C){return texture2D(T,C).a;}\n"
+"float orxMSDF(sampler2D T,vec2 C){vec3 V=texture2D(T,C).rgb;return max(min(V.r,V.g),min(max(V.r,V.g),V.b));}\"\n"
+"Main=\"\n"
+"void main(){\n"
+"  vec4 C=gl_Color;\n"
+"  float S=orxMSDF(Texture,gl_TexCoord[0].xy);\n"
+"  C.a=SoftEdgeMin>=0.0?C.a*smoothstep(SoftEdgeMin,SoftEdgeMax,S):step(0.5,S);\n"
+"  if(S>=OutlineOuterMin&&S<=OutlineInnerMax){\n"
+"    float F=S<=OutlineOuterMax?smoothstep(OutlineOuterMin,OutlineOuterMax,S):smoothstep(OutlineInnerMax,OutlineInnerMin,S);\n"
+"    C.rgb=mix(C.rgb,OutlineColor,F);\n"
+"  }\n"
+"  if(GlowMin>=0.0){\n"
+"    vec2 P=gl_TexCoord[0].xy-GlowOffset.xy/textureSize(Texture,0);\n"
+"    vec4 G=vec4(GlowColor,GlowAlpha)*smoothstep(GlowMin,GlowMax,orxSDF(Texture,P));\n"
+"    C=mix(G,C,C.a);\n"
+"  }\n"
+"  gl_FragColor=C;\n"
+"}\"\n"
+"ParamList=Texture#OutlineOuterMin#OutlineOuterMax#OutlineInnerMin#OutlineInnerMax#OutlineColor#SoftEdgeMin#SoftEdgeMax#GlowMin#GlowMax#GlowColor#GlowAlpha#GlowOffset\n"
+"OutlineOuterMin=0\n"
+"OutlineOuterMax=0\n"
+"OutlineInnerMin=-1\n"
+"OutlineInnerMax=0.8\n"
+"OutlineColor=(1,0,0)\n"
+"SoftEdgeMin=0.5\n"
+"SoftEdgeMax=0.5\n"
+"GlowMin=-1\n"
+"GlowMax=0.5\n"
+"GlowColor=(1,1,1)\n"
+"GlowAlpha=1\n"
+"GlowOffset=(0,0,0)\n"
+"CodeList=Functions#Main";
