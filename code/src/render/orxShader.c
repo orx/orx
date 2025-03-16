@@ -40,7 +40,6 @@
 #include "core/orxResource.h"
 #include "debug/orxProfiler.h"
 #include "display/orxFont.h"
-#include "display/orxGraphic.h"
 #include "display/orxText.h"
 #include "object/orxFX.h"
 #include "object/orxStructure.h"
@@ -560,7 +559,6 @@ void orxFASTCALL orxShader_Setup()
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_DISPLAY);
-  orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_GRAPHIC);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_FX);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_TEXTURE);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_PROFILER);

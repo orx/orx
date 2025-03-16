@@ -1561,21 +1561,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
       {
         orxSHADERPOINTER *pstShaderPointer;
         orxCOLOR          stColor;
-        const orxSTRING   zFontShader = orxNULL;
-
-        /* Has font? */
-        if(pstFont != orxNULL)
-        {
-          /* Gets font shader */
-          zFontShader = orxFont_GetShader(pstFont);
-
-          /* Valid? */
-          if(zFontShader != orxNULL)
-          {
-            /* Adds it to the object */
-            orxObject_AddShader(pstObject, zFontShader);
-          }
-        }
+        const orxSHADER  *pstFontShader = orxNULL;
 
         /* Gets its shader pointer */
         pstShaderPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstObject), SHADERPOINTER);
@@ -1588,6 +1574,20 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
           {
             /* Cancels it */
             pstShaderPointer = orxNULL;
+          }
+        }
+
+        /* Has font? */
+        if(pstFont != orxNULL)
+        {
+          /* Gets its shader */
+          pstFontShader = orxFont_GetShader(pstFont);
+
+          /* Valid? */
+          if(pstFontShader != orxNULL)
+          {
+            /* Starts it */
+            orxShader_Start(pstFontShader, orxSTRUCTURE(pstObject));
           }
         }
 
@@ -1629,10 +1629,10 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
         }
 
         /* Has font shader? */
-        if(zFontShader != orxNULL)
+        if(pstFontShader != orxNULL)
         {
-          /* Removes it from the object */
-          orxObject_RemoveShader(pstObject, zFontShader);
+          /* Stops it */
+          orxShader_Stop(pstFontShader);
         }
       }
       else

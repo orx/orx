@@ -47,6 +47,7 @@
 
 #include "display/orxTexture.h"
 #include "math/orxVector.h"
+#include "render/orxShader.h"
 
 
 /** Misc defines
@@ -148,6 +149,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetOrigin(orxFONT 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetSize(orxFONT *_pstFont, const orxVECTOR *_pvSize);
 
+/** Sets font's shader
+ * @param[in]   _pstFont      Concerned font
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetShader(orxFONT *_pstFont, const orxSTRING _zShader);
+
 
 /** Gets font's texture
  * @param[in]   _pstFont      Concerned font
@@ -195,13 +202,11 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetOrigin(const or
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetSize(const orxFONT *_pstFont, orxVECTOR *_pvSize);
 
-
-/** Gets font's map
+/** Gets font's shader
  * @param[in]   _pstFont      Concerned font
- * @return      orxCHARACTER_MAP / orxNULL
+ * @return     orxSHADER / orxNULL
  */
-extern orxDLLAPI const orxCHARACTER_MAP *orxFASTCALL  orxFont_GetMap(const orxFONT *_pstFont);
-
+extern orxDLLAPI const orxSHADER *orxFASTCALL         orxFont_GetShader(const orxFONT *_pstFont);
 
 /** Is Font SDF?
  * @param[in]   _pstFont      Concerned font
@@ -209,11 +214,12 @@ extern orxDLLAPI const orxCHARACTER_MAP *orxFASTCALL  orxFont_GetMap(const orxFO
  */
 extern orxDLLAPI orxBOOL orxFASTCALL                  orxFont_IsSDF(const orxFONT *_pstFont);
 
-/** Gets font's shader
+
+/** Gets font's map
  * @param[in]   _pstFont      Concerned font
- * @return     Shader's name if any, orxNULL otherwise
+ * @return      orxCHARACTER_MAP / orxNULL
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL          orxFont_GetShader(const orxFONT *_pstFont);
+extern orxDLLAPI const orxCHARACTER_MAP *orxFASTCALL  orxFont_GetMap(const orxFONT *_pstFont);
 
 
 /** Gets font given its name
