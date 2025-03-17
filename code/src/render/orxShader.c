@@ -40,7 +40,6 @@
 #include "core/orxResource.h"
 #include "debug/orxProfiler.h"
 #include "display/orxFont.h"
-#include "display/orxGraphic.h"
 #include "display/orxText.h"
 #include "object/orxFX.h"
 #include "object/orxStructure.h"
@@ -560,7 +559,6 @@ void orxFASTCALL orxShader_Setup()
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_EVENT);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_DISPLAY);
-  orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_GRAPHIC);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_FX);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_TEXTURE);
   orxModule_AddDependency(orxMODULE_ID_SHADER, orxMODULE_ID_PROFILER);
@@ -774,7 +772,7 @@ orxSHADER *orxFASTCALL orxShader_CreateFromConfig(const orxSTRING _zConfigID)
   /* Gets shader ID */
   stID = orxString_Hash(_zConfigID);
 
-  /* Search for reference */
+  /* Searches for reference */
   pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, stID);
 
   /* Found? */
@@ -1935,6 +1933,25 @@ orxBOOL orxFASTCALL orxShader_IsEnabled(const orxSHADER *_pstShader)
 
   /* Done! */
   return(orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_ENABLED));
+}
+
+/** Gets shader given its name
+ * @param[in]   _zName                Shader name
+ * @return      orxSHADER / orxNULL
+ */
+orxSHADER *orxFASTCALL orxShader_Get(const orxSTRING _zName)
+{
+  orxSHADER *pstResult;
+
+  /* Checks */
+  orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Updates result */
+  pstResult = (orxSHADER *)orxHashTable_Get(sstShader.pstReferenceTable, orxString_Hash(_zName));
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Gets shader name

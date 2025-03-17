@@ -112,10 +112,12 @@ solution "orx"
         "../../extern/xxHash",
         "../../extern/LiquidFun-1.1.0/include",
         "../../extern/stb_image",
+        "../../extern/stb_truetype",
         "../../extern/miniaudio",
         "../../extern/stb_vorbis",
         "../../extern/libwebp/src",
-        "../../extern/basisu/include",
+        "../../extern/msdfgen",
+        "../../extern/basisu",
         "../../extern/qoa",
         "../../extern/qoi"
     }
@@ -176,7 +178,6 @@ solution "orx"
             "../../extern/glfw-3/lib/linux",
             "../../extern/LiquidFun-1.1.0/lib/linux",
             "../../extern/libwebp/lib/linux",
-            "../../extern/basisu/lib/linux/32",
         }
         buildoptions
         {
@@ -190,7 +191,6 @@ solution "orx"
             "../../extern/glfw-3/lib/linux64",
             "../../extern/LiquidFun-1.1.0/lib/linux64",
             "../../extern/libwebp/lib/linux64",
-            "../../extern/basisu/lib/linux/64",
         }
         buildoptions
         {
@@ -207,7 +207,6 @@ solution "orx"
             "../../extern/glfw-3/lib/mac",
             "../../extern/LiquidFun-1.1.0/lib/mac",
             "../../extern/libwebp/lib/mac",
-            "../../extern/basisu/lib/mac",
         }
         buildoptions
         {
@@ -245,7 +244,6 @@ solution "orx"
             "../../extern/glfw-3/lib/vc2015/32",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/32",
             "../../extern/libwebp/lib/vc2015/32",
-            "../../extern/basisu/lib/vc2015/32",
         }
 
     configuration {"vs2017 or vs2019 or vs2022", "x64"}
@@ -254,7 +252,6 @@ solution "orx"
             "../../extern/glfw-3/lib/vc2015/64",
             "../../extern/LiquidFun-1.1.0/lib/vc2015/64",
             "../../extern/libwebp/lib/vc2015/64",
-            "../../extern/basisu/lib/vc2015/64",
         }
 
     configuration {"windows", "gmake or codelite or codeblocks", "x32"}
@@ -263,7 +260,6 @@ solution "orx"
             "../../extern/glfw-3/lib/mingw/32",
             "../../extern/LiquidFun-1.1.0/lib/mingw/32",
             "../../extern/libwebp/lib/mingw/32",
-            "../../extern/basisu/lib/mingw/32",
         }
 
     configuration {"windows", "gmake or codelite or codeblocks", "x64"}
@@ -272,7 +268,6 @@ solution "orx"
             "../../extern/glfw-3/lib/mingw/64",
             "../../extern/LiquidFun-1.1.0/lib/mingw/64",
             "../../extern/libwebp/lib/mingw/64",
-            "../../extern/basisu/lib/mingw/64",
         }
 
     configuration {"windows", "gmake", "x32"}
@@ -355,14 +350,12 @@ project "orx"
         }
         links
         {
-            "basisu",
             "webpdecoder",
             "liquidfun"
         }
         includedirs {"../include"}
         libdirs {
             "../lib/static/web",
-            "../../extern/basisu/lib/web",
             "../../extern/libwebp/lib/web",
             "../../extern/LiquidFun-1.1.0/lib/web"
         }
@@ -515,15 +508,6 @@ project "orxLIB"
     configuration {"not *Core*", "not web"}
         links {"webpdecoder"}
 
-    configuration {"not *Core*", "not vs*", "not web"}
-        links {"basisu"}
-
-    configuration {"not *Debug*", "not *Core*", "vs*", "not web"}
-        links {"basisu"}
-
-    configuration {"*Debug*", "not *Core*", "vs*", "not web"}
-        links {"basisud"}
-
     configuration {"not *Debug*", "not *Core*", "not web"}
         links {"liquidfun"}
 
@@ -612,7 +596,7 @@ project "orxLIB"
         }
 
     configuration{"macosx", "not web"}
-        buildoptions{"-Wno-deprecated-declarations", "-Wno-empty-body"}
+        buildoptions{"-Wno-deprecated-declarations", "-Wno-empty-body", "-std=c++11"}
 
     configuration {"macosx", "*Debug*", "not web"}
         linkoptions {"-install_name @executable_path/liborxd.dylib"}

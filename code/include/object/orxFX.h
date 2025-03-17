@@ -303,6 +303,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxFX_AddSlotFromConfig(orxFX *_
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL           orxFX_GetDuration(const orxFX *_pstFX);
 
+/** Gets FX given its name
+ * @param[in]   _zName          FX name
+ * @return      orxFX / orxNULL
+ */
+extern orxDLLAPI orxFX *orxFASTCALL             orxFX_Get(const orxSTRING _zName);
+
 /** Gets FX name
  * @param[in]   _pstFX          Concerned FX
  * @return      orxSTRING / orxSTRING_EMPTY

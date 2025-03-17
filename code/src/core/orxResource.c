@@ -1558,34 +1558,34 @@ orxSTATUS orxFASTCALL orxResource_Init()
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
           {
-          /* Inits thread result */
-          sstResource.eThreadResult = orxSTATUS_SUCCESS;
+            /* Inits thread result */
+            sstResource.eThreadResult = orxSTATUS_SUCCESS;
 
-          /* Waits for worker semaphore */
-          orxThread_WaitSemaphore(sstResource.pstWorkerSemaphore);
+            /* Waits for worker semaphore */
+            orxThread_WaitSemaphore(sstResource.pstWorkerSemaphore);
 
-          /* Starts request processing thread */
-          sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxRESOURCE_KZ_THREAD_NAME, orxNULL);
+            /* Starts request processing thread */
+            sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxRESOURCE_KZ_THREAD_NAME, orxNULL);
 
-          /* Success? */
-          if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
-          {
-            /* Registers commands */
-            orxResource_RegisterCommands();
+            /* Success? */
+            if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
+            {
+              /* Registers commands */
+              orxResource_RegisterCommands();
 
               /* Inits vars */
               sstResource.stLastWatchedGroupID = orxSTRINGID_UNDEFINED;
 
 #ifdef __orxANDROID__
 
-            /* Registers APK type */
-            eResult = orxAndroid_RegisterAPKResource();
+              /* Registers APK type */
+              eResult = orxAndroid_RegisterAPKResource();
 
 #endif /* __orxANDROID__ */
+            }
           }
         }
       }
-    }
     }
 
     /* Failed? */

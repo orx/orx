@@ -46,7 +46,7 @@
 #include "orxInclude.h"
 
 
-#define orxFPS_KZ_CLOCK_NAME                      "fps"
+#define orxFPS_KZ_CLOCK_NAME                      "orx:clock:fps"
 
 
 /** Setups FPS module */

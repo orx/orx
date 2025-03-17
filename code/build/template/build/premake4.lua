@@ -174,14 +174,12 @@ solution "[name]"
         }
         links
         {
-            "basisu",
             "webpdecoder",
             "liquidfun"
         }
         includedirs {"$(ORX)/include"}
         libdirs {
             "$(ORX)/lib/static/web",
-            "$(ORX)/../extern/basisu/lib/web",
             "$(ORX)/../extern/libwebp/lib/web",
             "$(ORX)/../extern/LiquidFun-1.1.0/lib/web"
         }

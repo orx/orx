@@ -3061,8 +3061,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
 
-  /* Search for reference */
-  pstResult = (orxANIMSET *)orxHashTable_Get(sstAnimSet.pstReferenceTable, orxString_Hash(_zConfigID));
+  /* Searches for animset */
+  pstResult = orxAnimSet_Get(_zConfigID);
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -3983,6 +3983,26 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimIDFromName(const orxANIMSET *_pstAnimSet, c
   /* Done! */
   return u32Result;
 }
+
+/** Gets AnimSet given its name
+ * @param[in]   _zName                              AnimSet name
+ * @return      orxANIMSET / orxNULL
+ */
+orxANIMSET *orxFASTCALL orxAnimSet_Get(const orxSTRING _zName)
+{
+  orxANIMSET *pstResult;
+
+  /* Checks */
+  orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Updates result */
+  pstResult = (orxANIMSET *)orxHashTable_Get(sstAnimSet.pstReferenceTable, orxString_Hash(_zName));
+
+  /* Done! */
+  return pstResult;
+}
+
 
 /** AnimSet name get accessor
  * @param[in]   _pstAnimSet                         Concerned AnimSet

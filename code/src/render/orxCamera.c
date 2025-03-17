@@ -975,13 +975,18 @@ orxCAMERA *orxFASTCALL orxCamera_Create(orxU32 _u32Flags)
  */
 orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxCAMERA *pstResult;
+  orxSTRINGID stID;
+  orxCAMERA  *pstResult;
 
   /* Checks */
   orxASSERT(sstCamera.u32Flags & orxCAMERA_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zConfigID != orxNULL);
 
-  /* Search for camera */
-  pstResult = orxCamera_Get(_zConfigID);
+  /* Gets camera ID */
+  stID = orxString_Hash(_zConfigID);
+
+  /* Searches for camera */
+  pstResult = (orxCAMERA *)orxHashTable_Get(sstCamera.pstReferenceTable, stID);
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -1130,7 +1135,7 @@ orxCAMERA *orxFASTCALL orxCamera_CreateFromConfig(const orxSTRING _zConfigID)
         pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* Adds it to reference table */
-        orxHashTable_Add(sstCamera.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
+        orxHashTable_Add(sstCamera.pstReferenceTable, stID, pstResult);
 
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, orxCAMERA_KU32_FLAG_REFERENCED, orxCAMERA_KU32_FLAG_NONE);

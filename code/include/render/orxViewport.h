@@ -296,7 +296,7 @@ extern orxDLLAPI void orxFASTCALL             orxViewport_GetRelativeSize(const 
 extern orxDLLAPI orxAABOX *orxFASTCALL        orxViewport_GetBox(const orxVIEWPORT *_pstViewport, orxAABOX *_pstBox);
 
 /** Get viewport correction ratio
- * @param[in]   _pstViewport  Concerned viewport
+ * @param[in]   _pstViewport    Concerned viewport
  * @return      Correction ratio value
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxViewport_GetCorrectionRatio(const orxVIEWPORT *_pstViewport);

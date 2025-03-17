@@ -1457,7 +1457,7 @@ orxHANDLE orxFASTCALL orxPlugin_GetHandle(const orxSTRING _zPluginName)
   /* Gets plugin ID */
   stPluginID = orxString_Hash(_zPluginName);
 
-  /* Search all plugin info */
+  /* Searches all plugin info */
   for(pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, orxNULL);
       pstPluginInfo != orxNULL;
       pstPluginInfo = (orxPLUGIN_INFO *)orxBank_GetNext(sstPlugin.pstPluginBank, pstPluginInfo))

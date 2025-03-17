@@ -290,7 +290,7 @@ static orxINLINE void orxRender_Home_RenderFPS()
   orxProfiler_EnableMarkerOperations(orxFALSE);
 
   /* Gets default font */
-  pstFont = orxFont_GetDefaultFont();
+  pstFont = orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME);
 
   /* Valid? */
   if(pstFont != orxNULL)
@@ -414,7 +414,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   orxProfiler_SelectQueryFrame(sstRender.u32SelectedFrame, sstRender.u32SelectedThread);
 
   /* Gets default font */
-  pstFont = orxFont_GetDefaultFont();
+  pstFont = orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME);
 
   /* Gets its bitmap */
   pstFontBitmap = orxTexture_GetBitmap(orxFont_GetTexture(pstFont));
@@ -426,7 +426,7 @@ static orxINLINE void orxRender_Home_RenderProfiler()
   fMarkerWidth = ((orxCHARACTER_GLYPH *)orxHashTable_Get(pstMap->pstCharacterTable, orxRENDER_KC_PROFILER_DEPTH_MARKER))->fWidth;
 
   /* Creates pixel texture */
-  pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL);
+  pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL_NAME);
 
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
@@ -1256,7 +1256,7 @@ static orxINLINE void orxRender_Home_RenderConsole()
   fCharacterWidth   = sstRender.fConsoleFontScale * orxFont_GetCharacterWidth(pstFont, orxString_GetFirstCharacterCodePoint(" ", orxNULL));
 
   /* Gets pixel texture */
-  pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL);
+  pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL_NAME);
 
   /* Gets its bitmap */
   pstBitmap = orxTexture_GetBitmap(pstTexture);
@@ -1494,7 +1494,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
     orxGRAPHIC *pstGraphic;
     orxTEXTURE *pstTexture;
     orxTEXT    *pstText;
-    orxFONT    *pstFont;
+    orxFONT    *pstFont = orxNULL;
     orxBITMAP  *pstBitmap = orxNULL;
     orxBOOL     bIsQuad;
 
@@ -1561,6 +1561,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
       {
         orxSHADERPOINTER *pstShaderPointer;
         orxCOLOR          stColor;
+        const orxSHADER  *pstFontShader = orxNULL;
 
         /* Gets its shader pointer */
         pstShaderPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstObject), SHADERPOINTER);
@@ -1573,6 +1574,20 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
           {
             /* Cancels it */
             pstShaderPointer = orxNULL;
+          }
+        }
+
+        /* Has font? */
+        if(pstFont != orxNULL)
+        {
+          /* Gets its shader */
+          pstFontShader = orxFont_GetShader(pstFont);
+
+          /* Valid? */
+          if(pstFontShader != orxNULL)
+          {
+            /* Starts it */
+            orxShader_Start(pstFontShader, orxSTRUCTURE(pstObject));
           }
         }
 
@@ -1611,6 +1626,13 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
         {
           /* Stops it */
           orxShaderPointer_Stop(pstShaderPointer);
+        }
+
+        /* Has font shader? */
+        if(pstFontShader != orxNULL)
+        {
+          /* Stops it */
+          orxShader_Stop(pstFontShader);
         }
       }
       else

@@ -87,6 +87,7 @@
 #define orxCLOCK_KZ_MODIFIER_MULTIPLY           "multiply"
 #define orxCLOCK_KZ_MODIFIER_MAXED              "maxed"
 #define orxCLOCK_KZ_MODIFIER_AVERAGE            "average"
+#define orxCLOCK_KZ_CORE_SHORT_NAME             "core"
 
 #define orxCLOCK_KZ_DISPLAY                     "display"
 
@@ -586,6 +587,9 @@ orxSTATUS orxFASTCALL orxClock_Init()
               /* Sets it as its own owner */
               orxStructure_SetOwner(sstClock.pstCore, sstClock.pstCore);
 
+              /* Adds core clock short name */
+              orxHashTable_Add(sstClock.pstReferenceTable, orxString_Hash(orxCLOCK_KZ_CORE_SHORT_NAME), sstClock.pstCore);
+
               /* Registers commands */
               orxClock_RegisterCommands();
 
@@ -1006,13 +1010,17 @@ orxCLOCK *orxFASTCALL orxClock_Create(orxFLOAT _fTickSize)
  */
 orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxCLOCK *pstResult;
+  orxSTRINGID stID;
+  orxCLOCK   *pstResult;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
 
-  /* Search for clock */
-  pstResult = orxClock_Get(_zConfigID);
+  /* Gets clock ID */
+  stID = orxString_Hash(_zConfigID);
+
+  /* Searches for clock */
+  pstResult = (orxCLOCK *)orxHashTable_Get(sstClock.pstReferenceTable, stID);
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -1136,7 +1144,7 @@ orxCLOCK *orxFASTCALL orxClock_CreateFromConfig(const orxSTRING _zConfigID)
         pstResult->zReference = orxConfig_GetCurrentSection();
 
         /* Adds it to reference table */
-        orxHashTable_Add(sstClock.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
+        orxHashTable_Add(sstClock.pstReferenceTable, stID, pstResult);
 
         /* Updates status flags */
         orxStructure_SetFlags(pstResult, u32Flags | orxCLOCK_KU32_FLAG_REFERENCED, orxCLOCK_KU32_FLAG_NONE);
@@ -1724,17 +1732,8 @@ orxCLOCK *orxFASTCALL orxClock_Get(const orxSTRING _zName)
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxASSERT(_zName != orxNULL);
 
-  /* Valid name? */
-  if(_zName != orxSTRING_EMPTY)
-  {
-    /* Updates result */
-    pstResult = (orxCLOCK *)orxHashTable_Get(sstClock.pstReferenceTable, orxString_Hash(_zName));
-  }
-  else
-  {
-    /* Clears result */
-    pstResult = orxNULL;
-  }
+  /* Updates result */
+  pstResult = (orxCLOCK *)orxHashTable_Get(sstClock.pstReferenceTable, orxString_Hash(_zName));
 
   /* Done! */
   return pstResult;

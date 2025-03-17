@@ -248,6 +248,12 @@ extern orxDLLAPI void orxFASTCALL               orxShader_Enable(orxSHADER *_pst
  */
 extern orxDLLAPI orxBOOL orxFASTCALL            orxShader_IsEnabled(const orxSHADER *_pstShader);
 
+/** Gets shader given its name
+ * @param[in]   _zName                Shader name
+ * @return      orxSHADER / orxNULL
+ */
+extern orxDLLAPI orxSHADER *orxFASTCALL         orxShader_Get(const orxSTRING _zName);
+
 /** Gets shader name
  * @param[in]   _pstShader            Concerned Shader
  * @return      orxSTRING / orxSTRING_EMPTY

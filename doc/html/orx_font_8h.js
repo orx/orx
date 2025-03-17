@@ -1,11 +1,15 @@
 var orx_font_8h =
 [
     [ "orxFONT_KZ_DEFAULT_FONT_NAME", "group__orx_font.html#ga5a600515960df2d48b224d2f44d057f8", null ],
+    [ "orxFONT_KZ_DEFAULT_TEXTURE_NAME", "group__orx_font.html#ga5192e6f52ed590bdece80ec07aca8db5", null ],
+    [ "orxFONT_KZ_RESOURCE_GROUP", "group__orx_font.html#ga7fba750ccd2f77ef400d805f112e1352", null ],
     [ "orxFONT", "group__orx_font.html#gab691adc491d2136ac68d160d1f14bc1d", null ],
+    [ "orxFont_ClearCache", "group__orx_font.html#gacf65ee6e9ec1e0844f7fa03e4e31576b", null ],
     [ "orxFont_Create", "group__orx_font.html#ga8e56191650ac7c5a713a01d5081243a9", null ],
     [ "orxFont_CreateFromConfig", "group__orx_font.html#ga2c0b05a012c9b10e55524432c2d1ad1e", null ],
     [ "orxFont_Delete", "group__orx_font.html#ga21228632b8122c4a83cf0d3ffabfd2b5", null ],
     [ "orxFont_Exit", "group__orx_font.html#ga44605b14708588c0ab44d61a060f8887", null ],
+    [ "orxFont_Get", "group__orx_font.html#ga550a346b396a90d0c8a01627f96813a6", null ],
     [ "orxFont_GetCharacterHeight", "group__orx_font.html#ga421f08f1f7b8931e694a2a82db0e7739", null ],
     [ "orxFont_GetCharacterList", "group__orx_font.html#ga017c9101872e0b814e510ae0ad7c4b0a", null ],
     [ "orxFont_GetCharacterSpacing", "group__orx_font.html#gaf626752956cbfedf00e0da2613e700a6", null ],

@@ -2,10 +2,10 @@ var group__orx_texture =
 [
     [ "orxTEXTURE_KZ_LOCALE_GROUP", "group__orx_texture.html#ga963f3fdd43a8734049fd0a10153ed510", null ],
     [ "orxTEXTURE_KZ_LOGO_NAME", "group__orx_texture.html#ga9b869d6a885f4b5c0a44b33cfc17370d", null ],
-    [ "orxTEXTURE_KZ_PIXEL", "group__orx_texture.html#gacdebed04aa465b92f1d753497687f551", null ],
+    [ "orxTEXTURE_KZ_PIXEL_NAME", "group__orx_texture.html#gab159e99c3b16f1574c328bb98269166a", null ],
     [ "orxTEXTURE_KZ_RESOURCE_GROUP", "group__orx_texture.html#gaca0712d36a90486d46a2d4c159e2444d", null ],
-    [ "orxTEXTURE_KZ_SCREEN", "group__orx_texture.html#gad4dc28990d43e356a822a9b79ab02725", null ],
-    [ "orxTEXTURE_KZ_TRANSPARENT", "group__orx_texture.html#ga1cb1842aaffa716c4b56457e4d0934b6", null ],
+    [ "orxTEXTURE_KZ_SCREEN_NAME", "group__orx_texture.html#gaaf12ea9274ab61238614c097cafb790d", null ],
+    [ "orxTEXTURE_KZ_TRANSPARENT_NAME", "group__orx_texture.html#ga8447d9f207e8e779da1857e72925db98", null ],
     [ "orxTEXTURE", "group__orx_texture.html#gacdeb7b348fc4cb4910155013b459ea4a", null ],
     [ "orxTEXTURE_EVENT", "group__orx_texture.html#gaf4b625f49855b667995b2ed8b9887a75", [
       [ "orxTEXTURE_EVENT_CREATE", "group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75a975df9001d501e57b12ac892cae64678", null ],

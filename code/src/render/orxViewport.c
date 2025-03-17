@@ -1200,73 +1200,216 @@ orxVIEWPORT *orxFASTCALL orxViewport_Create()
  */
 orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID)
 {
-  orxVIEWPORT *pstResult;
+  orxSTRINGID   stID;
+  orxVIEWPORT  *pstResult;
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
-  orxASSERT((_zConfigID != orxNULL) && (_zConfigID != orxSTRING_EMPTY));
+  orxASSERT(_zConfigID != orxNULL);
 
-  /* Pushes section */
-  if((orxConfig_HasSection(_zConfigID) != orxFALSE)
-  && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
+  /* Gets camera ID */
+  stID = orxString_Hash(_zConfigID);
+
+  /* Searches for camera */
+  pstResult = (orxVIEWPORT *)orxHashTable_Get(sstViewport.pstReferenceTable, stID);
+
+  /* Found? */
+  if(pstResult != orxNULL)
   {
-    /* Creates viewport */
-    pstResult = orxViewport_Create();
-
-    /* Valid? */
-    if(pstResult != orxNULL)
+    /* Increases count */
+    orxStructure_IncreaseCount(pstResult);
+  }
+  else
+  {
+    /* Pushes section */
+    if((orxConfig_HasSection(_zConfigID) != orxFALSE)
+    && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
     {
-      orxVECTOR       vSize;
-      const orxSTRING zCameraName;
-      orxS32          s32Number;
-      orxBOOL         bFixedSize = orxFALSE, bFixedPosition = orxFALSE;
+      /* Creates viewport */
+      pstResult = orxViewport_Create();
 
-      /* No debug? */
-      if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_NO_DEBUG) != orxFALSE)
+      /* Valid? */
+      if(pstResult != orxNULL)
       {
-        /* Updates flags */
-        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_NO_DEBUG, orxVIEWPORT_KU32_FLAG_NONE);
-      }
+        orxVECTOR       vSize;
+        const orxSTRING zCameraName;
+        orxS32          s32Number;
+        orxBOOL         bFixedSize = orxFALSE, bFixedPosition = orxFALSE;
 
-      /* Has plain size */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
-      {
-        /* Gets it */
-        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize) != orxNULL)
+        /* No debug? */
+        if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_NO_DEBUG) != orxFALSE)
         {
-          /* Don't use relative size? */
-          if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) == orxFALSE)
+          /* Updates flags */
+          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_NO_DEBUG, orxVIEWPORT_KU32_FLAG_NONE);
+        }
+
+        /* Has plain size */
+        if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_SIZE) != orxFALSE)
+        {
+          /* Gets it */
+          if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_SIZE, &vSize) != orxNULL)
           {
-            /* Applies it */
-            orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
+            /* Don't use relative size? */
+            if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) == orxFALSE)
+            {
+              /* Applies it */
+              orxViewport_SetSize(pstResult, vSize.fX, vSize.fY);
+            }
+
+            /* Updates status */
+            bFixedSize = orxTRUE;
+          }
+        }
+
+        /* *** Textures *** */
+
+        /* Has texture list? */
+        if((s32Number = orxConfig_GetListCount(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST)) > 0)
+        {
+          orxS32      i, s32TextureCount;
+          orxU32      u32OwnerFlags = 0;
+          orxTEXTURE *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER];
+
+          /* For all entries */
+          for(i = 0, s32TextureCount = 0; i < s32Number; i++)
+          {
+            const orxSTRING zTextureName;
+
+            /* Gets its name */
+            zTextureName = orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST, i);
+
+            /* Valid? */
+            if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
+            {
+              orxTEXTURE *pstTexture;
+              orxBOOL     bDisplayLevelEnabled;
+
+              /* Gets display debug level state */
+              bDisplayLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
+
+              /* Deactivates display debug level */
+              orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
+
+              /* Loads texture */
+              pstTexture = orxTexture_Load(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
+
+              /* Restores display debug level state */
+              orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
+
+              /* Not found? */
+              if(pstTexture == orxNULL)
+              {
+                orxBITMAP *pstBitmap;
+
+                /* Creates new bitmap */
+                pstBitmap = orxDisplay_CreateBitmap(orxF2U(pstResult->fWidth), orxF2U(pstResult->fHeight));
+
+                /* Valid? */
+                if(pstBitmap != orxNULL)
+                {
+                  /* Clears it */
+                  orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
+
+                  /* Creates new texture */
+                  pstTexture = orxTexture_Create();
+
+                  /* Valid? */
+                  if(pstTexture != orxNULL)
+                  {
+                    /* Links them */
+                    if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zTextureName, orxTRUE) != orxSTATUS_FAILURE)
+                    {
+                      /* Updates owner flags */
+                      u32OwnerFlags |= 1 << i;
+                    }
+                    else
+                    {
+                      /* Deletes texture */
+                      orxTexture_Delete(pstTexture);
+                      pstTexture = orxNULL;
+
+                      /* Deletes bitmap */
+                      orxDisplay_DeleteBitmap(pstBitmap);
+                    }
+                  }
+                  else
+                  {
+                    /* Deletes bitmap */
+                    orxDisplay_DeleteBitmap(pstBitmap);
+                  }
+                }
+              }
+
+              /* Valid? */
+              if(pstTexture != orxNULL)
+              {
+                /* Updates its owner */
+                orxStructure_SetOwner(pstTexture, pstResult);
+
+                /* Stores it */
+                apstTextureList[s32TextureCount++] = pstTexture;
+              }
+              else
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't link texture [%s] to viewport [%s], skipping.", zTextureName, _zConfigID);
+              }
+            }
           }
 
-          /* Updates status */
-          bFixedSize = orxTRUE;
+          /* Has valid textures? */
+          if(s32TextureCount > 0)
+          {
+            orxS32 j;
+
+            /* Stores them */
+            orxViewport_SetTextureList(pstResult, (orxU32)s32TextureCount, apstTextureList);
+
+            /* For all secondary textures */
+            for(j = 1; j < s32TextureCount; j++)
+            {
+              orxU32  k;
+              orxBOOL bStored = orxFALSE;
+
+              for(k = 1; k < pstResult->u32TextureCount; k++)
+              {
+                /* Found? */
+                if(pstResult->apstTextureList[k] == apstTextureList[j])
+                {
+                  /* Updates status */
+                  bStored = orxTRUE;
+
+                  break;
+                }
+              }
+
+              /* Wasn't stored? */
+              if(bStored == orxFALSE)
+              {
+                /* Deletes it */
+                orxTexture_Delete(apstTextureList[j]);
+              }
+            }
+
+            /* Stores texture owner flags */
+            pstResult->u32TextureOwnerFlags = u32OwnerFlags;
+
+            /* Updates status flags */
+            orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES, orxVIEWPORT_KU32_FLAG_NONE);
+          }
         }
-      }
-
-      /* *** Textures *** */
-
-      /* Has texture list? */
-      if((s32Number = orxConfig_GetListCount(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST)) > 0)
-      {
-        orxS32      i, s32TextureCount;
-        orxU32      u32OwnerFlags = 0;
-        orxTEXTURE *apstTextureList[orxVIEWPORT_KU32_MAX_TEXTURE_NUMBER];
-
-        /* For all entries */
-        for(i = 0, s32TextureCount = 0; i < s32Number; i++)
+        else
         {
           const orxSTRING zTextureName;
 
-          /* Gets its name */
-          zTextureName = orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_TEXTURE_LIST, i);
+          /* Gets old-style texture name */
+          zTextureName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_TEXTURE);
 
           /* Valid? */
           if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
           {
             orxTEXTURE *pstTexture;
+            orxU32      u32OwnerFlags = 0;
             orxBOOL     bDisplayLevelEnabled;
 
             /* Gets display debug level state */
@@ -1305,7 +1448,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
                   if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zTextureName, orxTRUE) != orxSTATUS_FAILURE)
                   {
                     /* Updates owner flags */
-                    u32OwnerFlags |= 1 << i;
+                    u32OwnerFlags = 1;
                   }
                   else
                   {
@@ -1328,443 +1471,316 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
             /* Valid? */
             if(pstTexture != orxNULL)
             {
+              /* Sets it */
+              orxViewport_SetTextureList(pstResult, 1, &pstTexture);
+
+              /* Stores texture owner flags */
+              pstResult->u32TextureOwnerFlags = u32OwnerFlags;
+
               /* Updates its owner */
               orxStructure_SetOwner(pstTexture, pstResult);
 
-              /* Stores it */
-              apstTextureList[s32TextureCount++] = pstTexture;
-            }
-            else
-            {
-              /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Can't link texture [%s] to viewport [%s], skipping.", zTextureName, _zConfigID);
+              /* Updates status flags */
+              orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES, orxVIEWPORT_KU32_FLAG_NONE);
             }
           }
         }
 
-        /* Has valid textures? */
-        if(s32TextureCount > 0)
+        /* *** Shader *** */
+
+        /* Has shader? */
+        if((s32Number = orxConfig_GetListCount(orxVIEWPORT_KZ_CONFIG_SHADER_LIST)) > 0)
         {
-          orxS32 j;
+          orxS32 i;
 
-          /* Stores them */
-          orxViewport_SetTextureList(pstResult, (orxU32)s32TextureCount, apstTextureList);
-
-          /* For all secondary textures */
-          for(j = 1; j < s32TextureCount; j++)
+          /* For all defined shaders */
+          for(i = 0; i < s32Number; i++)
           {
-            orxU32  k;
-            orxBOOL bStored = orxFALSE;
+            const orxSTRING zShader;
 
-            for(k = 1; k < pstResult->u32TextureCount; k++)
-            {
-              /* Found? */
-              if(pstResult->apstTextureList[k] == apstTextureList[j])
-              {
-                /* Updates status */
-                bStored = orxTRUE;
-
-                break;
-              }
-            }
-
-            /* Wasn't stored? */
-            if(bStored == orxFALSE)
-            {
-              /* Deletes it */
-              orxTexture_Delete(apstTextureList[j]);
-            }
-          }
-
-          /* Stores texture owner flags */
-          pstResult->u32TextureOwnerFlags = u32OwnerFlags;
-
-          /* Updates status flags */
-          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES, orxVIEWPORT_KU32_FLAG_NONE);
-        }
-      }
-      else
-      {
-        const orxSTRING zTextureName;
-
-        /* Gets old-style texture name */
-        zTextureName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_TEXTURE);
-
-        /* Valid? */
-        if((zTextureName != orxNULL) && (zTextureName != orxSTRING_EMPTY))
-        {
-          orxTEXTURE *pstTexture;
-          orxU32      u32OwnerFlags = 0;
-          orxBOOL     bDisplayLevelEnabled;
-
-          /* Gets display debug level state */
-          bDisplayLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_DISPLAY);
-
-          /* Deactivates display debug level */
-          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, orxFALSE);
-
-          /* Loads texture */
-          pstTexture = orxTexture_Load(zTextureName, orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_KEEP_IN_CACHE));
-
-          /* Restores display debug level state */
-          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_DISPLAY, bDisplayLevelEnabled);
-
-          /* Not found? */
-          if(pstTexture == orxNULL)
-          {
-            orxBITMAP *pstBitmap;
-
-            /* Creates new bitmap */
-            pstBitmap = orxDisplay_CreateBitmap(orxF2U(pstResult->fWidth), orxF2U(pstResult->fHeight));
+            /* Gets its name */
+            zShader = orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_SHADER_LIST, i);
 
             /* Valid? */
-            if(pstBitmap != orxNULL)
+            if(zShader != orxSTRING_EMPTY)
             {
-              /* Clears it */
-              orxDisplay_ClearBitmap(pstBitmap, orx2RGBA(0, 0, 0, 0));
-
-              /* Creates new texture */
-              pstTexture = orxTexture_Create();
-
-              /* Valid? */
-              if(pstTexture != orxNULL)
-              {
-                /* Links them */
-                if(orxTexture_LinkBitmap(pstTexture, pstBitmap, zTextureName, orxTRUE) != orxSTATUS_FAILURE)
-                {
-                  /* Updates owner flags */
-                  u32OwnerFlags = 1;
-                }
-                else
-                {
-                  /* Deletes texture */
-                  orxTexture_Delete(pstTexture);
-                  pstTexture = orxNULL;
-
-                  /* Deletes bitmap */
-                  orxDisplay_DeleteBitmap(pstBitmap);
-                }
-              }
-              else
-              {
-                /* Deletes bitmap */
-                orxDisplay_DeleteBitmap(pstBitmap);
-              }
+              /* Adds it */
+              orxViewport_AddShader(pstResult, zShader);
             }
           }
+        }
+
+        /* Has blend mode? */
+        if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BLEND_MODE) != orxFALSE)
+        {
+          const orxSTRING zBlendMode;
+
+          /* Gets blend mode value */
+          zBlendMode = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_BLEND_MODE);
+
+          /* Stores it */
+          orxViewport_SetBlendMode(pstResult, orxDisplay_GetBlendModeFromString(zBlendMode));
+        }
+        else
+        {
+          /* Defaults to none */
+          orxViewport_SetBlendMode(pstResult, orxDISPLAY_BLEND_MODE_NONE);
+        }
+
+        /* *** Camera *** */
+
+        /* Gets its name */
+        zCameraName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_CAMERA);
+
+        /* Valid? */
+        if((zCameraName != orxNULL) && (zCameraName != orxSTRING_EMPTY))
+        {
+          orxCAMERA *pstCamera;
+
+          /* Creates camera */
+          pstCamera = orxCamera_CreateFromConfig(zCameraName);
 
           /* Valid? */
-          if(pstTexture != orxNULL)
+          if(pstCamera != orxNULL)
           {
             /* Sets it */
-            orxViewport_SetTextureList(pstResult, 1, &pstTexture);
-
-            /* Stores texture owner flags */
-            pstResult->u32TextureOwnerFlags = u32OwnerFlags;
+            orxViewport_SetCamera(pstResult, pstCamera);
 
             /* Updates its owner */
-            orxStructure_SetOwner(pstTexture, pstResult);
+            orxStructure_SetOwner(pstCamera, pstResult);
 
-            /* Updates status flags */
-            orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES, orxVIEWPORT_KU32_FLAG_NONE);
+            /* Updates flags */
+            orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA, orxVIEWPORT_KU32_FLAG_NONE);
           }
         }
-      }
-
-      /* *** Shader *** */
-
-      /* Has shader? */
-      if((s32Number = orxConfig_GetListCount(orxVIEWPORT_KZ_CONFIG_SHADER_LIST)) > 0)
-      {
-        orxS32 i;
-
-        /* For all defined shaders */
-        for(i = 0; i < s32Number; i++)
+        else
         {
-          const orxSTRING zShader;
+          orxFLOAT fRatio;
 
-          /* Gets its name */
-          zShader = orxConfig_GetListString(orxVIEWPORT_KZ_CONFIG_SHADER_LIST, i);
+          /* Gets fixed ratio */
+          fRatio = orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_FIXED_RATIO);
 
           /* Valid? */
-          if(zShader != orxSTRING_EMPTY)
+          if(fRatio > orxFLOAT_0)
           {
-            /* Adds it */
-            orxViewport_AddShader(pstResult, zShader);
+            /* Stores it */
+            pstResult->fFixedRatio = fRatio;
+
+            /* Updates flags */
+            orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_FIXED_RATIO, orxVIEWPORT_KU32_FLAG_NONE);
           }
         }
-      }
 
-      /* Has blend mode? */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BLEND_MODE) != orxFALSE)
-      {
-        const orxSTRING zBlendMode;
-
-        /* Gets blend mode value */
-        zBlendMode = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_BLEND_MODE);
-
-        /* Stores it */
-        orxViewport_SetBlendMode(pstResult, orxDisplay_GetBlendModeFromString(zBlendMode));
-      }
-      else
-      {
-        /* Defaults to none */
-        orxViewport_SetBlendMode(pstResult, orxDISPLAY_BLEND_MODE_NONE);
-      }
-
-      /* *** Camera *** */
-
-      /* Gets its name */
-      zCameraName = orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_CAMERA);
-
-      /* Valid? */
-      if((zCameraName != orxNULL) && (zCameraName != orxSTRING_EMPTY))
-      {
-        orxCAMERA *pstCamera;
-
-        /* Creates camera */
-        pstCamera = orxCamera_CreateFromConfig(zCameraName);
-
-        /* Valid? */
-        if(pstCamera != orxNULL)
+        /* Has fixed size? */
+        if(bFixedSize != orxFALSE)
         {
-          /* Sets it */
-          orxViewport_SetCamera(pstResult, pstCamera);
-
-          /* Updates its owner */
-          orxStructure_SetOwner(pstCamera, pstResult);
-
-          /* Updates flags */
-          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA, orxVIEWPORT_KU32_FLAG_NONE);
-        }
-      }
-      else
-      {
-        orxFLOAT fRatio;
-
-        /* Gets fixed ratio */
-        fRatio = orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_FIXED_RATIO);
-
-        /* Valid? */
-        if(fRatio > orxFLOAT_0)
-        {
-          /* Stores it */
-          pstResult->fFixedRatio = fRatio;
-
-          /* Updates flags */
-          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_FIXED_RATIO, orxVIEWPORT_KU32_FLAG_NONE);
-        }
-      }
-
-      /* Has fixed size? */
-      if(bFixedSize != orxFALSE)
-      {
-        /* Use relative size? */
-        if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) != orxFALSE)
-        {
-          /* Applies it */
-          orxViewport_SetRelativeSize(pstResult, vSize.fX, vSize.fY);
-        }
-      }
-
-      /* Has relative size? */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE) != orxFALSE)
-      {
-        /* No fixed size? */
-        if(bFixedSize == orxFALSE)
-        {
-          orxVECTOR vRelSize;
-
-          /* Gets it */
-          if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE, &vRelSize) != orxNULL)
+          /* Use relative size? */
+          if(orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_USE_RELATIVE_SIZE) != orxFALSE)
           {
             /* Applies it */
-            orxViewport_SetRelativeSize(pstResult, vRelSize.fX, vRelSize.fY);
+            orxViewport_SetRelativeSize(pstResult, vSize.fX, vSize.fY);
           }
         }
-        else
+
+        /* Has relative size? */
+        if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE) != orxFALSE)
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport [%s]: Ignoring RelativeSize as Size was also defined.", _zConfigID);
+          /* No fixed size? */
+          if(bFixedSize == orxFALSE)
+          {
+            orxVECTOR vRelSize;
+
+            /* Gets it */
+            if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_RELATIVE_SIZE, &vRelSize) != orxNULL)
+            {
+              /* Applies it */
+              orxViewport_SetRelativeSize(pstResult, vRelSize.fX, vRelSize.fY);
+            }
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport [%s]: Ignoring RelativeSize as Size was also defined.", _zConfigID);
+          }
         }
-      }
 
-      /* Has plain position */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_POSITION) != orxFALSE)
-      {
-        orxVECTOR vPos;
-
-        /* Gets it */
-        if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_POSITION, &vPos) != orxNULL)
+        /* Has plain position */
+        if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_POSITION) != orxFALSE)
         {
-          /* Applies it */
-          orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
-
-          /* Updates status */
-          bFixedPosition = orxTRUE;
-        }
-        else
-        {
-          orxCHAR         acBuffer[64];
-          const orxSTRING zPos;
-          orxU32          u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
+          orxVECTOR vPos;
 
           /* Gets it */
-          orxString_NCopy(acBuffer, orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_POSITION), sizeof(acBuffer) - 1);
-          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-          zPos = orxString_SkipWhiteSpaces(orxString_LowerCase(acBuffer));
-
-          /* Not empty? */
-          if(*zPos != orxCHAR_NULL)
+          if(orxConfig_GetVector(orxVIEWPORT_KZ_CONFIG_POSITION, &vPos) != orxNULL)
           {
-            /* Left? */
-            if(orxString_SearchString(zPos, orxVIEWPORT_KZ_LEFT) != orxNULL)
-            {
-              /* Updates alignment flags */
-              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
-            }
-            /* Right? */
-            else if(orxString_SearchString(zPos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
-            {
-              /* Updates alignment flags */
-              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
-            }
-
-            /* Top? */
-            if(orxString_SearchString(zPos, orxVIEWPORT_KZ_TOP) != orxNULL)
-            {
-              /* Updates alignment flags */
-              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
-            }
-            /* Bottom? */
-            else if(orxString_SearchString(zPos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
-            {
-              /* Updates alignment flags */
-              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
-            }
-
             /* Applies it */
-            orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
+            orxViewport_SetPosition(pstResult, vPos.fX, vPos.fY);
 
             /* Updates status */
             bFixedPosition = orxTRUE;
           }
-        }
-      }
-
-      /* Auto resize */
-      if(((orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) == orxFALSE)
-       && (bFixedSize == orxFALSE))
-      || (orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) != orxFALSE))
-      {
-        /* Updates flags */
-        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_AUTO_RESIZE, orxVIEWPORT_KU32_FLAG_NONE);
-      }
-
-      /* Has relative position? */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION) != orxFALSE)
-      {
-        /* No fixed position? */
-        if(bFixedPosition == orxFALSE)
-        {
-          orxCHAR         acBuffer[64];
-          const orxSTRING zRelativePos;
-          orxU32          u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
-
-          /* Gets it */
-          orxString_NCopy(acBuffer, orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION), sizeof(acBuffer) - 1);
-          acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
-          zRelativePos = orxString_SkipWhiteSpaces(orxString_LowerCase(acBuffer));
-
-          /* Not empty? */
-          if(*zRelativePos != orxCHAR_NULL)
+          else
           {
-            /* Left? */
-            if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)
-            {
-              /* Updates alignment flags */
-              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
-            }
-            /* Right? */
-            else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
-            {
-              /* Updates alignment flags */
-              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
-            }
+            orxCHAR         acBuffer[64];
+            const orxSTRING zPos;
+            orxU32          u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
 
-            /* Top? */
-            if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_TOP) != orxNULL)
-            {
-              /* Updates alignment flags */
-              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
-            }
-            /* Bottom? */
-            else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
-            {
-              /* Updates alignment flags */
-              u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
-            }
+            /* Gets it */
+            orxString_NCopy(acBuffer, orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_POSITION), sizeof(acBuffer) - 1);
+            acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+            zPos = orxString_SkipWhiteSpaces(orxString_LowerCase(acBuffer));
 
-            /* Applies it */
-            orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
+            /* Not empty? */
+            if(*zPos != orxCHAR_NULL)
+            {
+              /* Left? */
+              if(orxString_SearchString(zPos, orxVIEWPORT_KZ_LEFT) != orxNULL)
+              {
+                /* Updates alignment flags */
+                u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
+              }
+              /* Right? */
+              else if(orxString_SearchString(zPos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
+              {
+                /* Updates alignment flags */
+                u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
+              }
+
+              /* Top? */
+              if(orxString_SearchString(zPos, orxVIEWPORT_KZ_TOP) != orxNULL)
+              {
+                /* Updates alignment flags */
+                u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
+              }
+              /* Bottom? */
+              else if(orxString_SearchString(zPos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
+              {
+                /* Updates alignment flags */
+                u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
+              }
+
+              /* Applies it */
+              orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
+
+              /* Updates status */
+              bFixedPosition = orxTRUE;
+            }
           }
         }
+
+        /* Auto resize */
+        if(((orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) == orxFALSE)
+         && (bFixedSize == orxFALSE))
+        || (orxConfig_GetBool(orxVIEWPORT_KZ_CONFIG_AUTO_RESIZE) != orxFALSE))
+        {
+          /* Updates flags */
+          orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_AUTO_RESIZE, orxVIEWPORT_KU32_FLAG_NONE);
+        }
+
+        /* Has relative position? */
+        if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION) != orxFALSE)
+        {
+          /* No fixed position? */
+          if(bFixedPosition == orxFALSE)
+          {
+            orxCHAR         acBuffer[64];
+            const orxSTRING zRelativePos;
+            orxU32          u32AlignmentFlags = orxVIEWPORT_KU32_FLAG_ALIGN_CENTER;
+
+            /* Gets it */
+            orxString_NCopy(acBuffer, orxConfig_GetString(orxVIEWPORT_KZ_CONFIG_RELATIVE_POSITION), sizeof(acBuffer) - 1);
+            acBuffer[sizeof(acBuffer) - 1] = orxCHAR_NULL;
+            zRelativePos = orxString_SkipWhiteSpaces(orxString_LowerCase(acBuffer));
+
+            /* Not empty? */
+            if(*zRelativePos != orxCHAR_NULL)
+            {
+              /* Left? */
+              if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_LEFT) != orxNULL)
+              {
+                /* Updates alignment flags */
+                u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_LEFT;
+              }
+              /* Right? */
+              else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_RIGHT) != orxNULL)
+              {
+                /* Updates alignment flags */
+                u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_RIGHT;
+              }
+
+              /* Top? */
+              if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_TOP) != orxNULL)
+              {
+                /* Updates alignment flags */
+                u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_TOP;
+              }
+              /* Bottom? */
+              else if(orxString_SearchString(zRelativePos, orxVIEWPORT_KZ_BOTTOM) != orxNULL)
+              {
+                /* Updates alignment flags */
+                u32AlignmentFlags |= orxVIEWPORT_KU32_FLAG_ALIGN_BOTTOM;
+              }
+
+              /* Applies it */
+              orxViewport_SetRelativePosition(pstResult, u32AlignmentFlags);
+            }
+          }
+          else
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport [%s]: Ignoring RelativePosition as Position was also defined.", _zConfigID);
+          }
+        }
+
+        /* Has background color? */
+        if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR) != orxFALSE)
+        {
+          orxCOLOR stColor;
+
+          /* Is a vector value? */
+          if(orxConfig_GetColorVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, orxCOLORSPACE_COMPONENT, &(stColor.vRGB)) != orxNULL)
+          {
+            /* Normalizes it */
+            orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
+          }
+          else
+          {
+            /* Defaults to black */
+            orxVector_SetAll(&(stColor.vRGB), orxFLOAT_0);
+          }
+
+          /* Gets alpha value */
+          stColor.fAlpha = (orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) != orxFALSE) ? orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) : orxFLOAT_1;
+
+          /* Applies it */
+          orxViewport_SetBackgroundColor(pstResult, &stColor);
+        }
         else
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Viewport [%s]: Ignoring RelativePosition as Position was also defined.", _zConfigID);
-        }
-      }
-
-      /* Has background color? */
-      if(orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR) != orxFALSE)
-      {
-        orxCOLOR stColor;
-
-        /* Is a vector value? */
-        if(orxConfig_GetColorVector(orxVIEWPORT_KZ_CONFIG_BACKGROUND_COLOR, orxCOLORSPACE_COMPONENT, &(stColor.vRGB)) != orxNULL)
-        {
-          /* Normalizes it */
-          orxVector_Mulf(&(stColor.vRGB), &(stColor.vRGB), orxCOLOR_NORMALIZER);
-        }
-        else
-        {
-          /* Defaults to black */
-          orxVector_SetAll(&(stColor.vRGB), orxFLOAT_0);
+          /* Clears background color */
+          orxViewport_ClearBackgroundColor(pstResult);
         }
 
-        /* Gets alpha value */
-        stColor.fAlpha = (orxConfig_HasValue(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) != orxFALSE) ? orxConfig_GetFloat(orxVIEWPORT_KZ_CONFIG_BACKGROUND_ALPHA) : orxFLOAT_1;
+        /* Stores its reference key */
+        pstResult->zReference = orxConfig_GetCurrentSection();
 
-        /* Applies it */
-        orxViewport_SetBackgroundColor(pstResult, &stColor);
-      }
-      else
-      {
-        /* Clears background color */
-        orxViewport_ClearBackgroundColor(pstResult);
+        /* Adds it to reference table */
+        orxHashTable_Add(sstViewport.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
+
+        /* Updates status flags */
+        orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_REFERENCED, orxVIEWPORT_KU32_FLAG_NONE);
       }
 
-      /* Stores its reference key */
-      pstResult->zReference = orxConfig_GetCurrentSection();
-
-      /* Adds it to reference table */
-      orxHashTable_Add(sstViewport.pstReferenceTable, orxString_Hash(pstResult->zReference), pstResult);
-
-      /* Updates status flags */
-      orxStructure_SetFlags(pstResult, orxVIEWPORT_KU32_FLAG_REFERENCED, orxVIEWPORT_KU32_FLAG_NONE);
+      /* Pops previous section */
+      orxConfig_PopSection();
     }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Couldn't find config section named (%s).", _zConfigID);
 
-    /* Pops previous section */
-    orxConfig_PopSection();
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Couldn't find config section named (%s).", _zConfigID);
-
-    /* Updates result */
-    pstResult = orxNULL;
+      /* Updates result */
+      pstResult = orxNULL;
+    }
   }
 
   /* Done! */
@@ -2668,7 +2684,7 @@ orxAABOX *orxFASTCALL orxViewport_GetBox(const orxVIEWPORT *_pstViewport, orxAAB
 }
 
 /** Get viewport correction ratio
- * @param[in]   _pstViewport  Concerned viewport
+ * @param[in]   _pstViewport    Concerned viewport
  * @return      Correction ratio value
  */
 orxFLOAT orxFASTCALL orxViewport_GetCorrectionRatio(const orxVIEWPORT *_pstViewport)
