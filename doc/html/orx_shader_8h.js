@@ -10,7 +10,6 @@ var orx_shader_8h =
       [ "orxSHADER_PARAM_TYPE_FLOAT", "group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a16c0efd019bd520dfef7cc1a19efc26a", null ],
       [ "orxSHADER_PARAM_TYPE_TEXTURE", "group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1aca1cd5084b7446611bf9da4f12825ab6", null ],
       [ "orxSHADER_PARAM_TYPE_VECTOR", "group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a36cbd46542870010116d81e44c5e1e44", null ],
-      [ "orxSHADER_PARAM_TYPE_TIME", "group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1ab26810b41b2fe47fc98399c7a213b584", null ],
       [ "orxSHADER_PARAM_TYPE_NUMBER", "group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a79b1160d3951ebf59306904384103932", null ],
       [ "orxSHADER_PARAM_TYPE_NONE", "group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1ae8c16c8688ffafb0fe266979acbdb235", null ]
     ] ],

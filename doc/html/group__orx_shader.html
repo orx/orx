@@ -139,10 +139,9 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a16c0efd019bd520dfef7cc1a19efc26a">orxSHADER_PARAM_TYPE_FLOAT</a> = 0, 
 <a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1aca1cd5084b7446611bf9da4f12825ab6">orxSHADER_PARAM_TYPE_TEXTURE</a>, 
 <a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a36cbd46542870010116d81e44c5e1e44">orxSHADER_PARAM_TYPE_VECTOR</a>, 
-<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1ab26810b41b2fe47fc98399c7a213b584">orxSHADER_PARAM_TYPE_TIME</a>, 
+<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a79b1160d3951ebf59306904384103932">orxSHADER_PARAM_TYPE_NUMBER</a>, 
 <br />
-&#160;&#160;<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1a79b1160d3951ebf59306904384103932">orxSHADER_PARAM_TYPE_NUMBER</a>, 
-<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1ae8c16c8688ffafb0fe266979acbdb235">orxSHADER_PARAM_TYPE_NONE</a> = orxENUM_NONE
+&#160;&#160;<a class="el" href="group__orx_shader.html#gga94512a95acea8de509b7346199eab3a1ae8c16c8688ffafb0fe266979acbdb235">orxSHADER_PARAM_TYPE_NONE</a> = orxENUM_NONE
 <br />
  }</td></tr>
 <tr class="separator:ga94512a95acea8de509b7346199eab3a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -208,7 +207,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Internal shader structure </p>
 
-<p>Definition at line <a class="el" href="orx_shader_8h_source.html#l00084">84</a> of file <a class="el" href="orx_shader_8h_source.html">orxShader.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_shader_8h_source.html#l00083">83</a> of file <a class="el" href="orx_shader_8h_source.html">orxShader.h</a>.</p>
 
 </div>
 </div>
@@ -233,7 +232,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_shader_8h_source.html#l00089">89</a> of file <a class="el" href="orx_shader_8h_source.html">orxShader.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_shader_8h_source.html#l00088">88</a> of file <a class="el" href="orx_shader_8h_source.html">orxShader.h</a>.</p>
 
 </div>
 </div>
@@ -253,8 +252,6 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga94512a95acea8de509b7346199eab3a1aca1cd5084b7446611bf9da4f12825ab6"></a>orxSHADER_PARAM_TYPE_TEXTURE&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga94512a95acea8de509b7346199eab3a1a36cbd46542870010116d81e44c5e1e44"></a>orxSHADER_PARAM_TYPE_VECTOR&#160;</td><td class="fielddoc">
-</td></tr>
-<tr><td class="fieldname"><a class="anchor" id="gga94512a95acea8de509b7346199eab3a1ab26810b41b2fe47fc98399c7a213b584"></a>orxSHADER_PARAM_TYPE_TIME&#160;</td><td class="fielddoc">
 </td></tr>
 <tr><td class="fieldname"><a class="anchor" id="gga94512a95acea8de509b7346199eab3a1a79b1160d3951ebf59306904384103932"></a>orxSHADER_PARAM_TYPE_NUMBER&#160;</td><td class="fielddoc">
 </td></tr>
@@ -403,7 +400,7 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstShader</td><td>Concerned Shader </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zName</td><td>Parameter's literal name </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_fWrap</td><td>Time will wrap around after that amount of seconds, &lt;= 0 to ignore </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zFXName</td><td>FX to apply as transformation (should be of type FLOAT), orxNULL for none </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zFXName</td><td>FX to apply as transformation (should be of type FLOAT or VECTOR), orxNULL for none </td></tr>
   </table>
   </dd>
 </dl>
