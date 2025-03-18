@@ -1576,9 +1576,8 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
             pstShaderPointer = orxNULL;
           }
         }
-
         /* Has font? */
-        if(pstFont != orxNULL)
+        else if(pstFont != orxNULL)
         {
           /* Gets its shader */
           pstFontShader = orxFont_GetShader(pstFont);
