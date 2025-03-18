@@ -964,7 +964,7 @@ orxSTATUS orxFASTCALL orxShader_ClearCache()
 
 /** Starts a shader
  * @param[in] _pstShader              Concerned Shader
- * @param[in] _pstOwner               Owner structure (orxOBJECT / orxVIEWPORT / orxNULL)
+ * @param[in] _pstOwner               Owner structure (orxOBJECT / orxVIEWPORT)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner)
@@ -974,15 +974,11 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
   /* Checks */
   orxASSERT(sstShader.u32Flags & orxSHADER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstShader);
+  orxSTRUCTURE_ASSERT(_pstOwner);
 
   /* Valid & enabled? */
   if((_pstShader->hData != orxHANDLE_UNDEFINED) && (orxStructure_TestFlags(_pstShader, orxSHADER_KU32_FLAG_ENABLED)))
   {
-    const orxSTRUCTURE *pstOwner;
-    
-    /* Gets actual owner */
-    pstOwner = (_pstOwner != orxNULL) ? _pstOwner : orxStructure_GetOwner((orxSTRUCTURE *)_pstShader);
-    
     /* Starts it */
     eResult = orxDisplay_StartShader(_pstShader->hData);
 
@@ -994,14 +990,14 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
       orxFLOAT                fTime = orxFLOAT_0;
 
       /* Depending on its type */
-      switch(orxStructure_GetID(pstOwner))
+      switch(orxStructure_GetID(_pstOwner))
       {
         case orxSTRUCTURE_ID_OBJECT:
         {
           orxOBJECT *pstObject;
 
           /* Gets cast owner */
-          pstObject = orxOBJECT(pstOwner);
+          pstObject = orxOBJECT(_pstOwner);
 
           /* Gets its working texture */
           pstOwnerTexture = orxObject_GetWorkingTexture(pstObject);
@@ -1015,7 +1011,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
         case orxSTRUCTURE_ID_VIEWPORT:
         {
           /* Updates owner texture */
-          orxViewport_GetTextureList(orxVIEWPORT(pstOwner), 1, &pstOwnerTexture);
+          orxViewport_GetTextureList(orxVIEWPORT(_pstOwner), 1, &pstOwnerTexture);
 
           /* Gets core time */
           fTime = sstShader.pstClockInfo->fTime;
@@ -1145,7 +1141,7 @@ orxSTATUS orxFASTCALL orxShader_Start(const orxSHADER *_pstShader, const orxSTRU
           orxSHADER_EVENT_PAYLOAD stPayload;
 
           /* Inits event */
-          orxEVENT_INIT(stEvent, orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, pstOwner, pstOwner, &stPayload);
+          orxEVENT_INIT(stEvent, orxEVENT_TYPE_SHADER, orxSHADER_EVENT_SET_PARAM, _pstOwner, _pstOwner, &stPayload);
 
           /* Inits payload */
           stPayload.pstShader     = _pstShader;

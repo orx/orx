@@ -153,7 +153,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_ClearCache();
 
 /** Starts a shader
  * @param[in] _pstShader              Concerned Shader
- * @param[in] _pstOwner               Owner structure (orxOBJECT / orxVIEWPORT / orxNULL)
+ * @param[in] _pstOwner               Owner structure (orxOBJECT / orxVIEWPORT)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Start(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner);
