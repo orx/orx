@@ -532,7 +532,8 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
                 /* No custom shader? */
                 if(*zShader == orxCHAR_NULL)
                 {
-                  orxCHAR acBuffer[256];
+                  orxVECTOR       vSize;
+                  orxCHAR         acBuffer[256];
                   const orxSTRING azSectionList[2] = {acBuffer, acShaderBuffer};
 
                   /* Gets shader config section */
@@ -553,6 +554,12 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
                   /* For all SDF shader properties, inherits the local ones */
                   orxConfig_PushSection(orxFONT_KZ_SDF_SHADER_NAME);
                   orxConfig_ForAllKeys(orxFont_InheritProperty, orxTRUE, azSectionList);
+                  orxConfig_PopSection();
+
+                  /* Sets its texture size */
+                  orxVector_Set(&vSize, _pstFont->fWidth, _pstFont->fHeight, orxFLOAT_0);
+                  orxConfig_PushSection(acShaderBuffer);
+                  orxConfig_SetVector(orxFONT_KZ_CONFIG_TEXTURE_SIZE, &vSize);
                   orxConfig_PopSection();
                 }
               }
