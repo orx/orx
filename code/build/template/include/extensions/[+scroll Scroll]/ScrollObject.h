@@ -647,8 +647,8 @@ void ScrollObject::RemoveFX(const orxSTRING _zFXName, orxBOOL _bRecursive)
 
 const orxSTRING ScrollObject::GetShader() const
 {
-  orxSHADER      *pstShader;
-  const orxSTRING zResult;
+  const orxSHADER  *pstShader;
+  const orxSTRING   zResult;
   
   // Gets shader
   pstShader = orxObject_GetShader(mpstObject);
@@ -666,12 +666,12 @@ void ScrollObject::SetShader(const orxSTRING _zShaderName, orxBOOL _bRecursive)
   if(_bRecursive)
   {
     // Sets shader to object
-    orxObject_SetShaderRecursive(mpstObject, _zShaderName);
+    orxObject_SetShaderFromConfigRecursive(mpstObject, _zShaderName);
   }
   else
   {
     // Sets shader to object
-    orxObject_SetShader(mpstObject, _zShaderName);
+    orxObject_SetShaderFromConfig(mpstObject, _zShaderName);
   }
 }
 

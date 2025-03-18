@@ -1095,6 +1095,12 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShaderFromConfig(orxOBJ
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetShaderFromConfigRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderID);
 
+/** Gets the shader of an object.
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxSTRING / orx
+ */
+extern orxDLLAPI const orxSHADER *orxFASTCALL orxObject_GetShader(const orxOBJECT *_pstObject);
+
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _bEnable          Enable / disable

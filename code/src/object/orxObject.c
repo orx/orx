@@ -3376,7 +3376,7 @@ void orxFASTCALL orxObject_CommandGetShader(orxU32 _u32ArgNumber, const orxCOMMA
   pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
 
   /* Updates result */
-  _pstResult->zValue = ((pstObject != orxNULL) && (orxOBJECT_GET_STRUCTURE(pstObject, SHADER) != orxNULL)) ? orxShader_GetName(orxOBJECT_GET_STRUCTURE(pstObject, SHADER)) : orxSTRING_EMPTY;
+  _pstResult->zValue = ((pstObject != orxNULL) && (orxObject_GetShader(pstObject) != orxNULL)) ? orxShader_GetName(orxObject_GetShader(pstObject)) : orxSTRING_EMPTY;
 
   /* Done! */
   return;
@@ -11628,6 +11628,25 @@ orxSTATUS orxFASTCALL orxObject_SetShaderFromConfig(orxOBJECT *_pstObject, const
  * @param[in]   _zShaderID  Config ID of the shader to add
  */
 orxOBJECT_MAKE_RECURSIVE(SetShaderFromConfig, const orxSTRING);
+
+/** Gets the shader of an object.
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxSTRING / orx
+ */
+const orxSHADER *orxFASTCALL orxObject_GetShader(const orxOBJECT *_pstObject)
+{
+  const orxSHADER *pstResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Updates result */
+  pstResult = orxOBJECT_GET_STRUCTURE(_pstObject, SHADER);
+
+  /* Done! */
+  return pstResult;
+}
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object

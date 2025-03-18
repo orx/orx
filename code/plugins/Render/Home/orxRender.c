@@ -1563,7 +1563,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
         const orxSHADER  *pstShader;
 
         /* Gets its shader */
-        pstShader = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstObject), SHADER);
+        pstShader = orxObject_GetShader(pstObject);
 
         /* Has font and no shader? */
         if((pstFont != orxNULL) && (pstShader == orxNULL))
@@ -2002,7 +2002,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                           const orxSHADER      *pstShader;
 
                           /* Gets shader */
-                          pstShader = orxOBJECT_GET_STRUCTURE(pstObject, SHADER);
+                          pstShader = orxObject_GetShader(pstObject);
 
                           /* Gets graphic smoothing */
                           eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
