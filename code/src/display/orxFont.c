@@ -1590,7 +1590,12 @@ orxSTATUS orxFASTCALL orxFont_SetSize(orxFONT *_pstFont, const orxVECTOR *_pvSiz
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxFont_SetShader(orxFONT *_pstFont, const orxSTRING _zShader)
+/** Sets font's shader
+ * @param[in]   _pstFont      Concerned font
+ * @param[in]   _zShaderID    Config ID of the shader to set, orxNULL to remove the current one
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFont_SetShader(orxFONT *_pstFont, const orxSTRING _zShaderID)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1615,10 +1620,10 @@ orxSTATUS orxFASTCALL orxFont_SetShader(orxFONT *_pstFont, const orxSTRING _zSha
   }
 
   /* New shader? */
-  if((_zShader != orxNULL) && (*_zShader != orxCHAR_NULL))
+  if((_zShaderID != orxNULL) && (*_zShaderID != orxCHAR_NULL))
   {
     /* Creates it */
-    _pstFont->pstShader = orxShader_CreateFromConfig(_zShader);
+    _pstFont->pstShader = orxShader_CreateFromConfig(_zShaderID);
 
     /* Success? */
     if(_pstFont->pstShader != orxNULL)
