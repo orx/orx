@@ -229,7 +229,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Sends frame start event */
         orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
 
-        /* Runs game specific code */
+        /* Runs non-game specific code (external middleware, platform SDKs, etc.) */
         eMainStatus = _pfnRun();
 
         /* Updates clock system */
@@ -270,7 +270,7 @@ static void orx_MainLoop()
   /* Sends frame start event */
   orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &sstPayload);
 
-  /* Runs game specific code */
+  /* Runs non-game specific code (external middleware, platform SDKs, etc.) */
   eMainStatus = spfnRun();
 
   /* Updates clock system */
@@ -407,7 +407,7 @@ static orxINLINE void orx_Execute(orxU32 _u32NbParams, orxSTRING _azParams[], co
         /* Sends frame start event */
         orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_GAME_LOOP_START, orxNULL, orxNULL, &stPayload);
 
-        /* Runs game specific code */
+        /* Runs non-game specific code (external middleware, platform SDKs, etc.) */
         eMainStatus = _pfnRun();
 
         /* Updates clock system */
