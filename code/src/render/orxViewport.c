@@ -61,7 +61,8 @@
 #define orxVIEWPORT_KU32_FLAG_FIXED_RATIO       0x00000010  /**< Fixed ratio flag */
 #define orxVIEWPORT_KU32_FLAG_REFERENCED        0x00000020  /**< Referenced flag */
 #define orxVIEWPORT_KU32_FLAG_INTERNAL_TEXTURES 0x00100000  /**< Internal texture handling flag  */
-#define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x00200000  /**< Internal camera handling flag  */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER   0x00200000  /**< Internal shader handling flag  */
+#define orxVIEWPORT_KU32_FLAG_INTERNAL_CAMERA   0x00400000  /**< Internal camera handling flag  */
 
 #define orxVIEWPORT_KU32_FLAG_DEFAULT           0x00000001  /**< Default flags */
 
@@ -650,7 +651,7 @@ void orxFASTCALL orxViewport_CommandSetShader(orxU32 _u32ArgNumber, const orxCOM
   if(pstViewport != orxNULL)
   {
     /* Sets its shader */
-    orxViewport_SetShader(pstViewport, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL);
+    orxViewport_SetShaderFromConfig(pstViewport, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL);
 
     /* Updates result */
     _pstResult->u64Value = _astArgList[0].u64Value;
@@ -660,6 +661,22 @@ void orxFASTCALL orxViewport_CommandSetShader(orxU32 _u32ArgNumber, const orxCOM
     /* Updates result */
     _pstResult->u64Value = orxU64_UNDEFINED;
   }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetShader
+ */
+void orxFASTCALL orxViewport_CommandGetShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* Gets viewport */
+  pstViewport = orxVIEWPORT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Updates result */
+  _pstResult->zValue = ((pstViewport != orxNULL) && (pstViewport->pstShader != orxNULL)) ? orxShader_GetName(pstViewport->pstShader) : orxSTRING_EMPTY;
 
   /* Done! */
   return;
@@ -790,6 +807,8 @@ static orxINLINE void orxViewport_RegisterCommands()
 
   /* Command: SetShader */
   orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, SetShader, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetShader */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, GetShader, "Shader", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
   /* Command: EnableShader */
   orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, EnableShader, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: IsShaderEnabled */
@@ -846,6 +865,8 @@ static orxINLINE void orxViewport_UnregisterCommands()
 
   /* Command: SetShader */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, SetShader);
+  /* Command: GetShader */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, GetShader);
   /* Command: EnableShader */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Viewport, EnableShader);
   /* Command: IsShaderEnabled */
@@ -1478,7 +1499,7 @@ orxVIEWPORT *orxFASTCALL orxViewport_CreateFromConfig(const orxSTRING _zConfigID
         if(*zShaderName != orxCHAR_NULL)
         {
           /* Sets it */
-          orxViewport_SetShader(pstResult, zShaderName);
+          orxViewport_SetShaderFromConfig(pstResult, zShaderName);
         }
 
         /* Has blend mode? */
@@ -2174,14 +2195,14 @@ orxCAMERA *orxFASTCALL orxViewport_GetCamera(const orxVIEWPORT *_pstViewport)
   return pstResult;
 }
 
-/** Sets a viewport shader using its config ID
+/** Sets a viewport shader
  * @param[in]   _pstViewport      Concerned Viewport
- * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxViewport_SetShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderID)
+orxSTATUS orxFASTCALL orxViewport_SetShader(orxVIEWPORT *_pstViewport, orxSHADER *_pstShader)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
@@ -2193,34 +2214,84 @@ orxSTATUS orxFASTCALL orxViewport_SetShader(orxVIEWPORT *_pstViewport, const orx
     /* Decreases its reference count */
     orxStructure_DecreaseCount(_pstViewport->pstShader);
 
-    /* Removes its owner */
-    orxStructure_SetOwner(_pstViewport->pstShader, orxNULL);
+    /* Internal? */
+    if(orxStructure_TestFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER))
+    {
+      /* Removes its owner */
+      orxStructure_SetOwner(_pstViewport->pstShader, orxNULL);
 
-    /* Deletes it */
-    orxShader_Delete(_pstViewport->pstShader);
+      /* Deletes it */
+      orxShader_Delete(_pstViewport->pstShader);
+
+      /* Updates status */
+      orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_NONE, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER);
+    }
 
     /* Cleans reference */
     _pstViewport->pstShader = orxNULL;
   }
 
   /* New shader? */
+  if(_pstShader != orxNULL)
+  {
+    /* Increases its reference count */
+    orxStructure_IncreaseCount(_pstShader);
+
+    /* Stores it */
+    _pstViewport->pstShader = _pstShader;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets a viewport shader using its config ID
+ * @param[in]   _pstViewport      Concerned Viewport
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxViewport_SetShaderFromConfig(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderID)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstViewport.u32Flags & orxVIEWPORT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstViewport);
+
+  /* New shader? */
   if((_zShaderID != orxNULL) && (*_zShaderID != orxCHAR_NULL))
   {
+    orxSHADER *pstShader;
+
     /* Creates it */
-    _pstViewport->pstShader = orxShader_CreateFromConfig(_zShaderID);
+    pstShader = orxShader_CreateFromConfig(_zShaderID);
 
     /* Success? */
-    if(_pstViewport->pstShader != orxNULL)
+    if(pstShader != orxNULL)
     {
-      /* Increases its reference count */
-      orxStructure_IncreaseCount(_pstViewport->pstShader);
+      /* Sets it */
+      eResult = orxViewport_SetShader(_pstViewport, pstShader);
 
-      /* Sets its owner */
-      orxStructure_SetOwner(_pstViewport->pstShader, _pstViewport);
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Sets its owner */
+        orxStructure_SetOwner(_pstViewport->pstShader, _pstViewport);
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+        /* Updates status */
+        orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER, orxVIEWPORT_KU32_FLAG_NONE);
+      }
+      else
+      {
+        /* Deletes shader */
+        orxShader_Delete(pstShader);
+      }
     }
+  }
+  else
+  {
+    /* Removes previous shader */
+    eResult = orxViewport_SetShader(_pstViewport, orxNULL);
   }
 
   /* Done! */

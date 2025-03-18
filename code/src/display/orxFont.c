@@ -1648,8 +1648,7 @@ orxSTATUS orxFASTCALL orxFont_SetShader(orxFONT *_pstFont, orxSHADER *_pstShader
  */
 orxSTATUS orxFASTCALL orxFont_SetShaderFromConfig(orxFONT *_pstFont, const orxSTRING _zShaderID)
 {
-  orxSHADER  *pstShader;
-  orxSTATUS   eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
@@ -1658,6 +1657,8 @@ orxSTATUS orxFASTCALL orxFont_SetShaderFromConfig(orxFONT *_pstFont, const orxST
   /* New shader? */
   if((_zShaderID != orxNULL) && (*_zShaderID != orxCHAR_NULL))
   {
+    orxSHADER *pstShader;
+
     /* Creates it */
     pstShader = orxShader_CreateFromConfig(_zShaderID);
 

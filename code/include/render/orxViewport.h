@@ -47,7 +47,7 @@
 #include "orxInclude.h"
 #include "core/orxClock.h"
 #include "render/orxCamera.h"
-#include "render/orxShaderPointer.h"
+#include "render/orxShader.h"
 #include "display/orxDisplay.h"
 #include "display/orxTexture.h"
 
@@ -191,19 +191,19 @@ extern orxDLLAPI void orxFASTCALL             orxViewport_SetCamera(orxVIEWPORT 
 extern orxDLLAPI orxCAMERA *orxFASTCALL       orxViewport_GetCamera(const orxVIEWPORT *_pstViewport);
 
 
+/** Sets a viewport shader
+ * @param[in]   _pstViewport      Concerned Viewport
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetShader(orxVIEWPORT *_pstViewport, orxSHADER *_pstShader);
+
 /** Sets a viewport shader using its config ID
  * @param[in]   _pstViewport      Concerned Viewport
  * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderID);
-
-/** Removes a shader using its config ID
- * @param[in]   _pstViewport      Concerned viewport
- * @param[in]   _zShaderConfigID Config ID of the shader to remove
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_RemoveShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetShaderFromConfig(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderID);
 
 /** Enables a viewport's shader
  * @param[in]   _pstViewport      Concerned viewport
