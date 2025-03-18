@@ -351,10 +351,10 @@ static orxINLINE void orxFont_CreateDefaultFont()
   }
 
   /* Sets SDF shader config as memory resource */
-  if(orxResource_SetMemoryResource(orxCONFIG_KZ_RESOURCE_GROUP, orxNULL, orxFONT_KZ_CONFIG_SDF, orxString_GetLength(szDefaultFontSDFShader), szDefaultFontSDFShader) != orxSTATUS_FAILURE)
+  if(orxResource_SetMemoryResource(orxCONFIG_KZ_RESOURCE_GROUP, orxNULL, orxFONT_KZ_CONFIG_SDF_NAME, orxString_GetLength(szDefaultFontSDFShader), szDefaultFontSDFShader) != orxSTATUS_FAILURE)
   {
     /* Loads it */
-    orxConfig_Load(orxFONT_KZ_CONFIG_SDF);
+    orxConfig_Load(orxFONT_KZ_CONFIG_SDF_NAME);
   }
 
   /* Done! */
