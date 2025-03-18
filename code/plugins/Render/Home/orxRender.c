@@ -2267,8 +2267,8 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           }
           else
           {
-            /* Doesn't the viewport have shaders? */
-            if(orxViewport_GetShaderPointer(_pstViewport) == orxNULL)
+            /* No shader on viewport? */
+            if(orxViewport_GetShader(_pstViewport) == orxNULL)
             {
               /* Logs message */
               orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "No valid camera or no shader attached to viewport.");
@@ -2288,25 +2288,25 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
       /* Sends it */
       if(orxEvent_Send(&stEvent) != orxSTATUS_FAILURE)
       {
-        const orxSHADERPOINTER *pstShaderPointer;
+        const orxSHADER *pstShader;
 
-        /* Gets viewport's shader pointer */
-        pstShaderPointer = orxViewport_GetShaderPointer(_pstViewport);
+        /* Gets viewport's shader */
+        pstShader = orxViewport_GetShader(_pstViewport);
 
         /* Valid and enabled? */
-        if((pstShaderPointer != orxNULL) && (orxShaderPointer_IsEnabled(pstShaderPointer) != orxFALSE))
+        if((pstShader != orxNULL) && (orxShader_IsEnabled(pstShader) != orxFALSE))
         {
           /* Updates blend mode */
           orxDisplay_SetBlendMode(orxViewport_GetBlendMode(_pstViewport));
 
           /* Starts shader */
-          if(orxShaderPointer_Start(pstShaderPointer) != orxSTATUS_FAILURE)
+          if(orxShader_Start(pstShader, orxNULL) != orxSTATUS_FAILURE)
           {
             /* Draws render target's content */
             orxDisplay_TransformBitmap(orxNULL, orxNULL, orx2RGBA(0x00, 0x00, 0x00, 0x00), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_NONE);
 
             /* Stops shader */
-            orxShaderPointer_Stop(pstShaderPointer);
+            orxShader_Stop(pstShader);
           }
         }
       }
