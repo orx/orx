@@ -58,6 +58,7 @@
 #define orxFONT_KU32_FLAG_CACHED                0x40000000  /**< Cached flag */
 #define orxFONT_KU32_FLAG_CAN_UPDATE_MAP        0x80000000  /**< Can update map flag */
 #define orxFONT_KU32_FLAG_SDF                   0x01000000  /**< SDF flag */
+#define orxFONT_KU32_FLAG_INTERNAL_SHADER       0x02000000  /**< Internal shader flag */
 
 #define orxFONT_KU32_MASK_ALL                   0xFFFFFFFF  /**< All mask */
 
@@ -565,7 +566,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
               }
 
               /* Sets shader */
-              orxFont_SetShader(_pstFont, zShader);
+              orxFont_SetShaderFromConfig(_pstFont, zShader);
 
               /* Updates its map */
               orxFont_UpdateMap(_pstFont);
@@ -1592,12 +1593,12 @@ orxSTATUS orxFASTCALL orxFont_SetSize(orxFONT *_pstFont, const orxVECTOR *_pvSiz
 
 /** Sets font's shader
  * @param[in]   _pstFont      Concerned font
- * @param[in]   _zShaderID    Config ID of the shader to set, orxNULL to remove the current one
+ * @param[in]   _pstShader    Shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxFont_SetShader(orxFONT *_pstFont, const orxSTRING _zShaderID)
+orxSTATUS orxFASTCALL orxFont_SetShader(orxFONT *_pstFont, orxSHADER *_pstShader)
 {
-  orxSTATUS eResult = orxSTATUS_FAILURE;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
@@ -1609,34 +1610,83 @@ orxSTATUS orxFASTCALL orxFont_SetShader(orxFONT *_pstFont, const orxSTRING _zSha
     /* Decreases its reference count */
     orxStructure_DecreaseCount(_pstFont->pstShader);
 
-    /* Removes its owner */
-    orxStructure_SetOwner(_pstFont->pstShader, orxNULL);
+    /* Internal? */
+    if(orxStructure_TestFlags(_pstFont, orxFONT_KU32_FLAG_INTERNAL_SHADER))
+    {
+      /* Removes its owner */
+      orxStructure_SetOwner(_pstFont->pstShader, orxNULL);
 
-    /* Deletes it */
-    orxShader_Delete(_pstFont->pstShader);
+      /* Deletes it */
+      orxShader_Delete(_pstFont->pstShader);
+
+      /* Updates status */
+      orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_NONE, orxFONT_KU32_FLAG_INTERNAL_SHADER);
+    }
 
     /* Cleans reference */
     _pstFont->pstShader = orxNULL;
   }
 
   /* New shader? */
+  if(_pstShader != orxNULL)
+  {
+    /* Increases its reference count */
+    orxStructure_IncreaseCount(_pstShader);
+
+    /* Stores it */
+    _pstFont->pstShader = _pstShader;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets font's shader from config
+ * @param[in]   _pstFont      Concerned font
+ * @param[in]   _zShaderID    Config ID of the shader to set, orxNULL to remove the current one
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxFont_SetShaderFromConfig(orxFONT *_pstFont, const orxSTRING _zShaderID)
+{
+  orxSHADER  *pstShader;
+  orxSTATUS   eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstFont.u32Flags & orxFONT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstFont);
+
+  /* New shader? */
   if((_zShaderID != orxNULL) && (*_zShaderID != orxCHAR_NULL))
   {
     /* Creates it */
-    _pstFont->pstShader = orxShader_CreateFromConfig(_zShaderID);
+    pstShader = orxShader_CreateFromConfig(_zShaderID);
 
     /* Success? */
-    if(_pstFont->pstShader != orxNULL)
+    if(pstShader != orxNULL)
     {
-      /* Increases its reference count */
-      orxStructure_IncreaseCount(_pstFont->pstShader);
+      /* Sets it */
+      eResult = orxFont_SetShader(_pstFont, pstShader);
 
-      /* Sets its owner */
-      orxStructure_SetOwner(_pstFont->pstShader, _pstFont);
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Sets its owner */
+        orxStructure_SetOwner(_pstFont->pstShader, _pstFont);
 
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
+        /* Updates status */
+        orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_INTERNAL_SHADER, orxFONT_KU32_FLAG_NONE);
+      }
+      else
+      {
+        /* Deletes shader */
+        orxShader_Delete(pstShader);
+      }
     }
+  }
+  else
+  {
+    /* Removes previous shader */
+    eResult = orxFont_SetShader(_pstFont, orxNULL);
   }
 
   /* Done! */

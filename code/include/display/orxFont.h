@@ -151,10 +151,17 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetSize(orxFONT *_
 
 /** Sets font's shader
  * @param[in]   _pstFont      Concerned font
+ * @param[in]   _pstShader    Shader to set, orxNULL to remove the current one
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetShader(orxFONT *_pstFont, orxSHADER *_pstShader);
+
+/** Sets font's shader from config
+ * @param[in]   _pstFont      Concerned font
  * @param[in]   _zShaderID    Config ID of the shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetShader(orxFONT *_pstFont, const orxSTRING _zShaderID);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetShaderFromConfig(orxFONT *_pstFont, const orxSTRING _zShaderID);
 
 
 /** Gets font's texture
