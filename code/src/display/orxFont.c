@@ -1672,7 +1672,7 @@ orxSTATUS orxFASTCALL orxFont_SetShaderFromConfig(orxFONT *_pstFont, const orxST
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Sets its owner */
-        orxStructure_SetOwner(_pstFont->pstShader, _pstFont);
+        orxStructure_SetOwner(pstShader, _pstFont);
 
         /* Updates status */
         orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_INTERNAL_SHADER, orxFONT_KU32_FLAG_NONE);

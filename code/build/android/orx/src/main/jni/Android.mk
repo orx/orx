@@ -54,7 +54,6 @@ ORX_SRC_FILES := \
   render/orxCamera.c        \
   render/orxRender.c        \
   render/orxShader.c        \
-  render/orxShaderPointer.c \
   render/orxViewport.c      \
   sound/orxSound.c          \
   sound/orxSoundPointer.c   \

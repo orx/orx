@@ -67,7 +67,6 @@
 		E059C65C1116BC610086879B /* orxCamera.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C5281116B8E70086879B /* orxCamera.c */; };
 		E059C65F1116BC610086879B /* orxRender.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C52B1116B8E70086879B /* orxRender.c */; };
 		E059C6601116BC610086879B /* orxShader.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C52C1116B8E70086879B /* orxShader.c */; };
-		E059C6611116BC610086879B /* orxShaderPointer.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C52D1116B8E70086879B /* orxShaderPointer.c */; };
 		E059C6621116BC610086879B /* orxViewport.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C52E1116B8E70086879B /* orxViewport.c */; };
 		E059C6631116BC610086879B /* orxSound.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C5301116B8E70086879B /* orxSound.c */; };
 		E059C6641116BC610086879B /* orxSoundPointer.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C5311116B8E70086879B /* orxSoundPointer.c */; };
@@ -167,7 +166,6 @@
 		E059C5281116B8E70086879B /* orxCamera.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxCamera.c; sourceTree = "<group>"; };
 		E059C52B1116B8E70086879B /* orxRender.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxRender.c; sourceTree = "<group>"; };
 		E059C52C1116B8E70086879B /* orxShader.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxShader.c; sourceTree = "<group>"; };
-		E059C52D1116B8E70086879B /* orxShaderPointer.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxShaderPointer.c; sourceTree = "<group>"; };
 		E059C52E1116B8E70086879B /* orxViewport.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxViewport.c; sourceTree = "<group>"; };
 		E059C5301116B8E70086879B /* orxSound.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxSound.c; sourceTree = "<group>"; };
 		E059C5311116B8E70086879B /* orxSoundPointer.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxSoundPointer.c; sourceTree = "<group>"; };
@@ -232,7 +230,6 @@
 		E059C5D11116BABE0086879B /* orxCamera.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxCamera.h; sourceTree = "<group>"; };
 		E059C5D41116BABE0086879B /* orxRender.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxRender.h; sourceTree = "<group>"; };
 		E059C5D51116BABE0086879B /* orxShader.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxShader.h; sourceTree = "<group>"; };
-		E059C5D61116BABE0086879B /* orxShaderPointer.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxShaderPointer.h; sourceTree = "<group>"; };
 		E059C5D71116BABE0086879B /* orxViewport.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxViewport.h; sourceTree = "<group>"; };
 		E059C5D91116BABE0086879B /* orxSound.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxSound.h; sourceTree = "<group>"; };
 		E059C5DA1116BABE0086879B /* orxSoundPointer.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxSoundPointer.h; sourceTree = "<group>"; };
@@ -591,7 +588,6 @@
 				E059C5281116B8E70086879B /* orxCamera.c */,
 				E059C52B1116B8E70086879B /* orxRender.c */,
 				E059C52C1116B8E70086879B /* orxShader.c */,
-				E059C52D1116B8E70086879B /* orxShaderPointer.c */,
 				E059C52E1116B8E70086879B /* orxViewport.c */,
 			);
 			path = render;
@@ -802,7 +798,6 @@
 				E059C5D11116BABE0086879B /* orxCamera.h */,
 				E059C5D41116BABE0086879B /* orxRender.h */,
 				E059C5D51116BABE0086879B /* orxShader.h */,
-				E059C5D61116BABE0086879B /* orxShaderPointer.h */,
 				E059C5D71116BABE0086879B /* orxViewport.h */,
 			);
 			path = render;
@@ -1058,7 +1053,6 @@
 				E04DA16E2737FADA0074735B /* orxSoundSystem.m in Sources */,
 				E059C65F1116BC610086879B /* orxRender.c in Sources */,
 				E059C6601116BC610086879B /* orxShader.c in Sources */,
-				E059C6611116BC610086879B /* orxShaderPointer.c in Sources */,
 				E059C6621116BC610086879B /* orxViewport.c in Sources */,
 				E059C6631116BC610086879B /* orxSound.c in Sources */,
 				E059C6641116BC610086879B /* orxSoundPointer.c in Sources */,

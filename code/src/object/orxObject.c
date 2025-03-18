@@ -48,7 +48,6 @@
 #include "object/orxTrigger.h"
 #include "physics/orxBody.h"
 #include "render/orxCamera.h"
-#include "render/orxShaderPointer.h"
 #include "sound/orxSoundPointer.h"
 
 
@@ -139,6 +138,7 @@
 #define orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST   "FXRecursiveList"
 #define orxOBJECT_KZ_CONFIG_FX_FREQUENCY        "FXFrequency"
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
+#define orxOBJECT_KZ_CONFIG_SHADER              "Shader" /**< Kept for retro-compatibility reason */
 #define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
 #define orxOBJECT_KZ_CONFIG_TRACK_LIST          "TrackList"
 #define orxOBJECT_KZ_CONFIG_TRIGGER_LIST        "TriggerList"
@@ -3329,9 +3329,9 @@ void orxFASTCALL orxObject_CommandGetFXTime(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
-/** Command: AddShader
+/** Command: SetShader
  */
-void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+void orxFASTCALL orxObject_CommandSetShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxOBJECT *pstObject;
 
@@ -3344,13 +3344,13 @@ void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMA
     /* Recursive? */
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
-      /* Adds shader */
-      orxObject_AddShaderRecursive(pstObject, _astArgList[1].zValue);
+      /* Sets shader */
+      orxObject_SetShaderFromConfigRecursive(pstObject, _astArgList[1].zValue);
     }
     else
     {
-      /* Adds shader */
-      orxObject_AddShader(pstObject, _astArgList[1].zValue);
+      /* Sets shader */
+      orxObject_SetShaderFromConfig(pstObject, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL);
     }
 
     /* Updates result */
@@ -3366,38 +3366,17 @@ void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
-/** Command: RemoveShader
+/** Command: GetShader
  */
-void orxFASTCALL orxObject_CommandRemoveShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+void orxFASTCALL orxObject_CommandGetShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxOBJECT *pstObject;
 
   /* Gets object */
   pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
 
-  /* Valid? */
-  if(pstObject != orxNULL)
-  {
-    /* Recursive? */
-    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
-    {
-      /* Removes shader */
-      orxObject_RemoveShaderRecursive(pstObject, _astArgList[1].zValue);
-    }
-    else
-    {
-      /* Removes shader */
-      orxObject_RemoveShader(pstObject, _astArgList[1].zValue);
-    }
-
-    /* Updates result */
-    _pstResult->u64Value = _astArgList[0].u64Value;
-  }
-  else
-  {
-    /* Updates result */
-    _pstResult->u64Value = orxU64_UNDEFINED;
-  }
+  /* Updates result */
+  _pstResult->zValue = ((pstObject != orxNULL) && (orxOBJECT_GET_STRUCTURE(pstObject, SHADER) != orxNULL)) ? orxShader_GetName(orxOBJECT_GET_STRUCTURE(pstObject, SHADER)) : orxSTRING_EMPTY;
 
   /* Done! */
   return;
@@ -4275,10 +4254,10 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetFXTime */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetFXTime, "Time", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
-  /* Command: AddShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
-  /* Command: RemoveShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: SetShader */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetShader, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader = <void>", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: GetShader */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetShader, "Object", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: AddSound */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddSound, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Sound", orxCOMMAND_VAR_TYPE_STRING});
@@ -4534,10 +4513,10 @@ static orxINLINE void orxObject_UnregisterCommands()
   /* Command: GetFXTime */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetFXTime);
 
-  /* Command: AddShader */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddShader);
-  /* Command: RemoveShader */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveShader);
+  /* Command: SetShader */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetShader);
+  /* Command: GetShader */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetShader);
 
   /* Command: AddSound */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddSound);
@@ -5482,7 +5461,7 @@ void orxFASTCALL orxObject_Setup()
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_ANIMPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BODY);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SHADERPOINTER);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SHADER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SOUNDPOINTER);
 
   /* Done! */
@@ -5889,6 +5868,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         const orxSTRING zBodyName;
         const orxSTRING zClockName;
         const orxSTRING zSpawnerName;
+        const orxSTRING zShaderName;
         const orxSTRING zParentName;
         const orxSTRING zIgnoreFromParent;
         const orxSTRING zPosition;
@@ -7037,26 +7017,28 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* *** Shader *** */
 
-        /* Has shader? */
-        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SHADER_LIST)) > 0)
+        /* Gets shader name */
+        zShaderName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_SHADER);
+
+        /* Not found? */
+        if(*zShaderName == orxCHAR_NULL)
         {
-          orxS32 i;
+          /* Gets first shader from list */
+          zShaderName = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SHADER_LIST, 0);
 
-          /* For all defined shaders */
-          for(i = 0; i < s32Count; i++)
+          /* Has multiple shaders? */
+          if(orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SHADER_LIST) > 1)
           {
-            const orxSTRING zShader;
-
-            /* Gets its name */
-            zShader = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SHADER_LIST, i);
-
-            /* Valid? */
-            if(*zShader != orxCHAR_NULL)
-            {
-              /* Adds it */
-              orxObject_AddShader(pstResult, zShader);
-            }
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": deprecated property <ShaderList> contains multiple entries, only the first one will be used.", _zConfigID);
           }
+        }
+
+        /* Has shader? */
+        if(*zShaderName != orxCHAR_NULL)
+        {
+          /* Sets it */
+          orxObject_SetShaderFromConfig(pstResult, zShaderName);
         }
 
         /* *** Timeline *** */
@@ -7441,9 +7423,9 @@ void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_I
           break;
         }
 
-        case orxSTRUCTURE_ID_SHADERPOINTER:
+        case orxSTRUCTURE_ID_SHADER:
         {
-          orxShaderPointer_Delete(orxSHADERPOINTER(pstStructure));
+          orxShader_Delete(orxSHADER(pstStructure));
           break;
         }
 
@@ -11550,67 +11532,90 @@ orxSTATUS orxFASTCALL orxObject_RemoveAllFilters(orxOBJECT *_pstObject)
   return eResult;
 }
 
-/** Adds a shader to an object using its config ID.
+/** Sets the shader of an object.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID)
+orxSTATUS orxFASTCALL orxObject_SetShader(orxOBJECT *_pstObject, orxSHADER *_pstShader)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Removes old one */
+  orxObject_UnlinkStructure(_pstObject, orxSTRUCTURE_ID_SHADER);
+
+  /* Has new one? */
+  if(_pstShader != orxNULL)
+  {
+    /* Links it */
+    eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(_pstShader));
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the shader of an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
+ * @param[in]   _zShaderID  Config ID of the shader to add
+ */
+orxOBJECT_MAKE_RECURSIVE(SetShader, orxSHADER *);
+
+/** Sets the shader of an object using its config ID.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetShaderFromConfig(orxOBJECT *_pstObject, const orxSTRING _zShaderID)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zShaderConfigID != orxNULL) && (*_zShaderConfigID != orxCHAR_NULL));
 
-  /* Is shaderpointer module initialized? */
-  if(orxModule_IsInitialized(orxMODULE_ID_SHADERPOINTER) != orxFALSE)
+  /* Is object active? */
+  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
   {
-    /* Is object active? */
-    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+    /* New shader? */
+    if((_zShaderID != orxNULL) && (*_zShaderID != orxCHAR_NULL))
     {
-      orxSHADERPOINTER *pstShaderPointer;
+      orxSHADER *pstShader;
 
-      /* Gets its ShaderPointer */
-      pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
+      /* Creates it */
+      pstShader = orxShader_CreateFromConfig(_zShaderID);
 
-      /* Doesn't exist? */
-      if(pstShaderPointer == orxNULL)
+      /* Success? */
+      if(pstShader != orxNULL)
       {
-        /* Creates one */
-        pstShaderPointer = orxShaderPointer_Create();
+        /* Sets it */
+        eResult = orxObject_SetShader(_pstObject, pstShader);
 
-        /* Valid? */
-        if(pstShaderPointer != orxNULL)
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
         {
-          /* Links it */
-          eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstShaderPointer));
+          /* Updates its owner */
+          orxStructure_SetOwner(pstShader, _pstObject);
 
-          /* Valid? */
-          if(eResult != orxSTATUS_FAILURE)
-          {
-            /* Updates status */
-            orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_SHADERPOINTER, orxOBJECT_KU32_FLAG_NONE);
-
-            /* Updates its owner */
-            orxStructure_SetOwner(pstShaderPointer, _pstObject);
-
-            /* Adds shader from config */
-            eResult = orxShaderPointer_AddShaderFromConfig(pstShaderPointer, _zShaderConfigID);
-          }
-          else
-          {
-            /* Deletes it */
-            orxShaderPointer_Delete(pstShaderPointer);
-          }
+          /* Updates status */
+          orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_SHADER, orxOBJECT_KU32_FLAG_NONE);
+        }
+        else
+        {
+          /* Deletes it */
+          orxShader_Delete(pstShader);
         }
       }
-      else
-      {
-        /* Adds shader from config */
-        eResult = orxShaderPointer_AddShaderFromConfig(pstShaderPointer, _zShaderConfigID);
-      }
+    }
+    else
+    {
+      /* Removes previous shader */
+      eResult = orxObject_SetShader(_pstObject, orxNULL);
     }
   }
 
@@ -11618,45 +11623,11 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
   return eResult;
 }
 
-/** Adds a shader to an object and its owned children.
+/** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @param[in]   _zShaderID  Config ID of the shader to add
  */
-orxOBJECT_MAKE_RECURSIVE(AddShader, const orxSTRING);
-
-/** Removes a shader using its config ID.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zShaderConfigID Config ID of the shader to remove
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID)
-{
-  orxSHADERPOINTER *pstShaderPointer;
-  orxSTATUS         eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstObject);
-
-  /* Gets its ShaderPointer */
-  pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
-
-  /* Valid? */
-  if(pstShaderPointer != orxNULL)
-  {
-    /* Removes shader from config */
-    eResult = orxShaderPointer_RemoveShaderFromConfig(pstShaderPointer, _zShaderConfigID);
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Removes a shader from an object and its owned children.
- * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to remove
- */
-orxOBJECT_MAKE_RECURSIVE(RemoveShader, const orxSTRING);
+orxOBJECT_MAKE_RECURSIVE(SetShaderFromConfig, const orxSTRING);
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object
@@ -11664,20 +11635,20 @@ orxOBJECT_MAKE_RECURSIVE(RemoveShader, const orxSTRING);
  */
 void orxFASTCALL orxObject_EnableShader(orxOBJECT *_pstObject, orxBOOL _bEnable)
 {
-  orxSHADERPOINTER *pstShaderPointer;
+  orxSHADER *pstShader;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets its ShaderPointer */
-  pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
+  /* Gets its shader */
+  pstShader = orxOBJECT_GET_STRUCTURE(_pstObject, SHADER);
 
   /* Valid? */
-  if(pstShaderPointer != orxNULL)
+  if(pstShader != orxNULL)
   {
     /* Enables it */
-    orxShaderPointer_Enable(pstShaderPointer, _bEnable);
+    orxShader_Enable(pstShader, _bEnable);
   }
 
   /* Done! */
@@ -11690,21 +11661,21 @@ void orxFASTCALL orxObject_EnableShader(orxOBJECT *_pstObject, orxBOOL _bEnable)
  */
 orxBOOL orxFASTCALL orxObject_IsShaderEnabled(const orxOBJECT *_pstObject)
 {
-  orxSHADERPOINTER *pstShaderPointer;
-  orxBOOL           bResult;
+  orxSHADER  *pstShader;
+  orxBOOL     bResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets its ShaderPointer */
-  pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
+  /* Gets its shader */
+  pstShader = orxOBJECT_GET_STRUCTURE(_pstObject, SHADER);
 
   /* Valid? */
-  if(pstShaderPointer != orxNULL)
+  if(pstShader != orxNULL)
   {
     /* Updates result */
-    bResult = orxShaderPointer_IsEnabled(pstShaderPointer);
+    bResult = orxShader_IsEnabled(pstShader);
   }
   else
   {

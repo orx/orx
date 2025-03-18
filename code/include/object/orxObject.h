@@ -54,6 +54,7 @@
 #include "display/orxTexture.h"
 #include "math/orxOBox.h"
 #include "object/orxStructure.h"
+#include "render/orxShader.h"
 #include "sound/orxSound.h"
 
 
@@ -1067,31 +1068,32 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFilters(orxOBJECT
 
 /** @name Shader
  * @{ */
-/** Adds a shader to an object using its config ID.
+/** Sets the shader of an object.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShader(orxOBJECT *_pstObject, orxSHADER *_pstShader);
 
-/** Adds a shader to an object and its owned children.
+/** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
+ * @param[in]   _zShaderID  Config ID of the shader to add
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_AddShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI void orxFASTCALL           orxObject_SetShaderRecursive(orxOBJECT *_pstObject, orxSHADER *_pstShader);
 
-/** Removes a shader using its config ID.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zShaderConfigID Config ID of the shader to remove
+/** Sets the shader of an object using its config ID.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShaderFromConfig(orxOBJECT *_pstObject, const orxSTRING _zShaderID);
 
-/** Removes a shader from an object and its owned children.
+/** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to remove
+ * @param[in]   _zShaderID  Config ID of the shader to add
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_RemoveShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI void orxFASTCALL           orxObject_SetShaderFromConfigRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderID);
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object

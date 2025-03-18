@@ -806,7 +806,7 @@ static orxINLINE void orxViewport_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, SetBlendMode, "Viewport", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"BlendMode", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: SetShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, SetShader, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, SetShader, "Viewport", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Viewport", orxCOMMAND_VAR_TYPE_U64}, {"Shader = <void>", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetShader */
   orxCOMMAND_REGISTER_CORE_COMMAND(Viewport, GetShader, "Shader", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Viewport", orxCOMMAND_VAR_TYPE_U64});
   /* Command: EnableShader */
@@ -2276,7 +2276,7 @@ orxSTATUS orxFASTCALL orxViewport_SetShaderFromConfig(orxVIEWPORT *_pstViewport,
       if(eResult != orxSTATUS_FAILURE)
       {
         /* Sets its owner */
-        orxStructure_SetOwner(_pstViewport->pstShader, _pstViewport);
+        orxStructure_SetOwner(pstShader, _pstViewport);
 
         /* Updates status */
         orxStructure_SetFlags(_pstViewport, orxVIEWPORT_KU32_FLAG_INTERNAL_SHADER, orxVIEWPORT_KU32_FLAG_NONE);

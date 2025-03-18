@@ -1559,34 +1559,27 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
       /* Valid scale? */
       if((stPayload.stObject.pstTransform->fScaleX != orxFLOAT_0) && (stPayload.stObject.pstTransform->fScaleY != orxFLOAT_0))
       {
-        orxSHADERPOINTER *pstShaderPointer;
         orxCOLOR          stColor;
-        const orxSHADER  *pstFontShader = orxNULL;
+        const orxSHADER  *pstShader;
 
-        /* Gets its shader pointer */
-        pstShaderPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstObject), SHADERPOINTER);
+        /* Gets its shader */
+        pstShader = orxOBJECT_GET_STRUCTURE(orxOBJECT(pstObject), SHADER);
 
-        /* Valid? */
-        if(pstShaderPointer != orxNULL)
-        {
-          /* Starts it */
-          if(orxShaderPointer_Start(pstShaderPointer) == orxSTATUS_FAILURE)
-          {
-            /* Cancels it */
-            pstShaderPointer = orxNULL;
-          }
-        }
-        /* Has font? */
-        else if(pstFont != orxNULL)
+        /* Has font and no shader? */
+        if((pstFont != orxNULL) && (pstShader == orxNULL))
         {
           /* Gets its shader */
-          pstFontShader = orxFont_GetShader(pstFont);
+          pstShader = orxFont_GetShader(pstFont);
+        }
 
-          /* Valid? */
-          if(pstFontShader != orxNULL)
+        /* Valid? */
+        if(pstShader != orxNULL)
+        {
+          /* Starts it */
+          if(orxShader_Start(pstShader, orxSTRUCTURE(pstObject)) == orxSTATUS_FAILURE)
           {
-            /* Starts it */
-            orxShader_Start(pstFontShader, orxSTRUCTURE(pstObject));
+            /* Cancels it */
+            pstShader = orxNULL;
           }
         }
 
@@ -1620,18 +1613,11 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
           eResult = orxDisplay_TransformText(orxText_GetString(pstText), pstBitmap, orxFont_GetMap(pstFont), stPayload.stObject.pstTransform, orxColor_ToRGBA(&stColor), _pstRenderNode->eSmoothing, _pstRenderNode->eBlendMode);
         }
 
-        /* Has shader pointer? */
-        if(pstShaderPointer != orxNULL)
+        /* Has shader? */
+        if(pstShader != orxNULL)
         {
           /* Stops it */
-          orxShaderPointer_Stop(pstShaderPointer);
-        }
-
-        /* Has font shader? */
-        if(pstFontShader != orxNULL)
-        {
-          /* Stops it */
-          orxShader_Stop(pstFontShader);
+          orxShader_Stop(pstShader);
         }
       }
       else
@@ -2014,22 +2000,9 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
                           orxDISPLAY_BLEND_MODE eBlendMode;
                           orxDISPLAY_SMOOTHING  eSmoothing;
                           const orxSHADER      *pstShader;
-                          orxSHADERPOINTER     *pstShaderPointer;
 
-                          /* Gets shader pointer */
-                          pstShaderPointer = orxOBJECT_GET_STRUCTURE(pstObject, SHADERPOINTER);
-
-                          /* Valid? */
-                          if(pstShaderPointer != orxNULL)
-                          {
-                            /* Gets first shader */
-                            pstShader = orxShaderPointer_GetShader(pstShaderPointer, 0);
-                          }
-                          else
-                          {
-                            /* Clears shader */
-                            pstShader = orxNULL;
-                          }
+                          /* Gets shader */
+                          pstShader = orxOBJECT_GET_STRUCTURE(pstObject, SHADER);
 
                           /* Gets graphic smoothing */
                           eSmoothing = orxGraphic_GetSmoothing(pstGraphic);
@@ -2300,7 +2273,7 @@ static orxINLINE void orxRender_Home_RenderViewport(const orxVIEWPORT *_pstViewp
           orxDisplay_SetBlendMode(orxViewport_GetBlendMode(_pstViewport));
 
           /* Starts shader */
-          if(orxShader_Start(pstShader, orxNULL) != orxSTATUS_FAILURE)
+          if(orxShader_Start(pstShader, orxSTRUCTURE(_pstViewport)) != orxSTATUS_FAILURE)
           {
             /* Draws render target's content */
             orxDisplay_TransformBitmap(orxNULL, orxNULL, orx2RGBA(0x00, 0x00, 0x00, 0x00), orxDISPLAY_SMOOTHING_NONE, orxDISPLAY_BLEND_MODE_NONE);
