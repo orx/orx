@@ -457,7 +457,7 @@ var searchData=
   ['orxfont_5fsetcharacterspacing',['orxFont_SetCharacterSpacing',['../group__orx_font.html#ga02b3674e5ca2faf4208f4dff86b59f56',1,'orxFont.h']]],
   ['orxfont_5fsetcharacterwidthlist',['orxFont_SetCharacterWidthList',['../group__orx_font.html#gaed14890bff7d5d4023873f0275746e3e',1,'orxFont.h']]],
   ['orxfont_5fsetorigin',['orxFont_SetOrigin',['../group__orx_font.html#ga1fd622d700599de60f4ec16b0ec524ed',1,'orxFont.h']]],
-  ['orxfont_5fsetshader',['orxFont_SetShader',['../group__orx_font.html#ga188a972e92aeee99f00e32bcb33e9aec',1,'orxFont.h']]],
+  ['orxfont_5fsetshader',['orxFont_SetShader',['../group__orx_font.html#gaaa02989d69abe2dbaebd1e170fe3a60f',1,'orxFont.h']]],
   ['orxfont_5fsetsize',['orxFont_SetSize',['../group__orx_font.html#ga031179787e10cc2b416cd4737eef85e2',1,'orxFont.h']]],
   ['orxfont_5fsettexture',['orxFont_SetTexture',['../group__orx_font.html#ga2dc09f19c7be6991d175289efd858f24',1,'orxFont.h']]],
   ['orxfont_5fsetup',['orxFont_Setup',['../group__orx_font.html#ga489a6d4a62d6cef54925d4a070257352',1,'orxFont.h']]],

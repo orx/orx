@@ -229,8 +229,6 @@ var NAVTREEINDEX7 =
 "group__orx_font.html#ga031179787e10cc2b416cd4737eef85e2":[3,0,0,4,2,29],
 "group__orx_font.html#ga0b952471e7b1c225b1eddcfd139cd2f3":[1,21,23],
 "group__orx_font.html#ga0b952471e7b1c225b1eddcfd139cd2f3":[3,0,0,4,2,23],
-"group__orx_font.html#ga188a972e92aeee99f00e32bcb33e9aec":[1,21,28],
-"group__orx_font.html#ga188a972e92aeee99f00e32bcb33e9aec":[3,0,0,4,2,28],
 "group__orx_font.html#ga1b20c31843664ad7c4d8542c00426f4a":[1,21,18],
 "group__orx_font.html#ga1b20c31843664ad7c4d8542c00426f4a":[3,0,0,4,2,18],
 "group__orx_font.html#ga1ba89979fcb1047295effd392c4fa8e9":[1,21,20],
@@ -249,5 +247,7 @@ var NAVTREEINDEX7 =
 "group__orx_font.html#ga3687283c3e2898d75be8bbf1b5e57b31":[3,0,0,4,2,17],
 "group__orx_font.html#ga421f08f1f7b8931e694a2a82db0e7739":[1,21,11],
 "group__orx_font.html#ga421f08f1f7b8931e694a2a82db0e7739":[3,0,0,4,2,11],
-"group__orx_font.html#ga44605b14708588c0ab44d61a060f8887":[1,21,9]
+"group__orx_font.html#ga44605b14708588c0ab44d61a060f8887":[1,21,9],
+"group__orx_font.html#ga44605b14708588c0ab44d61a060f8887":[3,0,0,4,2,9],
+"group__orx_font.html#ga489a6d4a62d6cef54925d4a070257352":[1,21,31]
 };

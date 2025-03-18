@@ -36,7 +36,7 @@ var NAVTREEINDEX =
 "group__orx_decl.html#ga84b626742aae48d3ca967e91a86cee5e",
 "group__orx_display.html#gaf8a80961deb17b680772616fe2fd7239",
 "group__orx_f_x.html#gga779d23887ec711c0553c9b7bd426d170a288065fe85ee94c5fb2ce940504df221",
-"group__orx_font.html#ga44605b14708588c0ab44d61a060f8887",
+"group__orx_font.html#ga489a6d4a62d6cef54925d4a070257352",
 "group__orx_graphic.html#gad0ea89789965f89177851d21ab0e3094",
 "group__orx_joystick.html#ggaac676f97aec33fc1dad588ae845d5642a23c21a601005bf0d1c3bcf54f5ca2cbf",
 "group__orx_keyboard.html#ga3d60dc20025f2febc61feec215dd4dbf",
