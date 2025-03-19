@@ -138,8 +138,8 @@
 #define orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST   "FXRecursiveList"
 #define orxOBJECT_KZ_CONFIG_FX_FREQUENCY        "FXFrequency"
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
-#define orxOBJECT_KZ_CONFIG_SHADER              "Shader" /**< Kept for retro-compatibility reason */
-#define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
+#define orxOBJECT_KZ_CONFIG_SHADER              "Shader"
+#define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList" /**< Kept for retro-compatibility reason */
 #define orxOBJECT_KZ_CONFIG_TRACK_LIST          "TrackList"
 #define orxOBJECT_KZ_CONFIG_TRIGGER_LIST        "TriggerList"
 #define orxOBJECT_KZ_CONFIG_CHILD_LIST          "ChildList"
