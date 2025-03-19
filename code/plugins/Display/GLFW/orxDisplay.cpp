@@ -169,7 +169,6 @@
 #undef STBTT_STATIC
 #undef STB_TRUETYPE_IMPLEMENTATION
 
-
 #define BASISD_SUPPORT_DXT1                         0
 #define BASISD_SUPPORT_FXT1                         0
 #define BASISD_SUPPORT_ETC2_EAC_A8                  0
@@ -179,12 +178,10 @@
 #define BASISD_SUPPORT_PVRTC2                       0
 #define BASISD_SUPPORT_BC7_MODE5                    0
 #define BASISD_SUPPORT_ASTC_HIGHER_OPAQUE_QUALITY   0
-
 #include "basisu.h"
 #include "basisu_transcoder.h"
 #include "basisu_transcoder.cpp"
 #include "zstd/zstddeclib.c"
-
 #undef BASISD_SUPPORT_ASTC_HIGHER_OPAQUE_QUALITY
 #undef BASISD_SUPPORT_BC7_MODE5
 #undef BASISD_SUPPORT_PVRTC2
@@ -194,7 +191,6 @@
 #undef BASISD_SUPPORT_ETC2_EAC_A8
 #undef BASISD_SUPPORT_FXT1
 #undef BASISD_SUPPORT_DXT1
-
 
 #include "msdfgen.cpp"
 
