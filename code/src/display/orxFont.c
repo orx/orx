@@ -180,7 +180,7 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
       orxVECTOR       vOrigin;
 
       /* For all defined characters */
-      for(s32Index = 0, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstFont->zCharacterList, &pc), orxVector_Set(&vOrigin, _pstFont->fLeft + (_pstFont->zTypeface != orxNULL) ? _pstFont->vCharacterSpacing.fX : orxFLOAT_0, _pstFont->fTop + (_pstFont->zTypeface != orxNULL) ? _pstFont->vCharacterSpacing.fY : orxFLOAT_0, orxFLOAT_0);
+      for(s32Index = 0, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstFont->zCharacterList, &pc), orxVector_Set(&vOrigin, _pstFont->fLeft + ((_pstFont->zTypeface != orxNULL) ? _pstFont->vCharacterSpacing.fX : orxFLOAT_0), _pstFont->fTop + ((_pstFont->zTypeface != orxNULL) ? _pstFont->vCharacterSpacing.fY : orxFLOAT_0), orxFLOAT_0);
           (u32CharacterCodePoint != orxCHAR_NULL) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight);
           s32Index++, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
       {
@@ -218,7 +218,7 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
         if(vOrigin.fX + pstGlyph->fWidth > _pstFont->fLeft + _pstFont->fWidth)
         {
           /* Reinits its X value */
-          vOrigin.fX = _pstFont->fLeft + (_pstFont->zTypeface != orxNULL) ? _pstFont->vCharacterSpacing.fX : orxFLOAT_0;
+          vOrigin.fX = _pstFont->fLeft + ((_pstFont->zTypeface != orxNULL) ? _pstFont->vCharacterSpacing.fX : orxFLOAT_0);
 
           /* Updates its Y value */
           vOrigin.fY += _pstFont->fCharacterHeight + _pstFont->vCharacterSpacing.fY;
