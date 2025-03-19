@@ -515,6 +515,9 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
               orxFont_SetCharacterHeight(_pstFont, vCharacterSize.fY);
               orxFont_SetCharacterWidthList(_pstFont, u32CharacterCount, afCharacterWidthList);
 
+              /* Removes shader */
+              orxFont_SetShaderFromConfig(_pstFont, orxNULL);
+
               /* Updates flags */
               orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_INTERNAL | orxFONT_KU32_FLAG_REFERENCED | orxFONT_KU32_FLAG_CAN_UPDATE_MAP, orxFONT_KU32_MASK_ALL);
 
