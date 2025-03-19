@@ -11579,43 +11579,47 @@ orxSTATUS orxFASTCALL orxObject_SetShaderFromConfig(orxOBJECT *_pstObject, const
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Is object active? */
-  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  /* Is shader module initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_SHADER) != orxFALSE)
   {
-    /* New shader? */
-    if((_zShaderID != orxNULL) && (*_zShaderID != orxCHAR_NULL))
+    /* Is object active? */
+    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
     {
-      orxSHADER *pstShader;
-
-      /* Creates it */
-      pstShader = orxShader_CreateFromConfig(_zShaderID);
-
-      /* Success? */
-      if(pstShader != orxNULL)
+      /* New shader? */
+      if((_zShaderID != orxNULL) && (*_zShaderID != orxCHAR_NULL))
       {
-        /* Sets it */
-        eResult = orxObject_SetShader(_pstObject, pstShader);
+        orxSHADER *pstShader;
+
+        /* Creates it */
+        pstShader = orxShader_CreateFromConfig(_zShaderID);
 
         /* Success? */
-        if(eResult != orxSTATUS_FAILURE)
+        if(pstShader != orxNULL)
         {
-          /* Updates its owner */
-          orxStructure_SetOwner(pstShader, _pstObject);
+          /* Sets it */
+          eResult = orxObject_SetShader(_pstObject, pstShader);
 
-          /* Updates status */
-          orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_SHADER, orxOBJECT_KU32_FLAG_NONE);
-        }
-        else
-        {
-          /* Deletes it */
-          orxShader_Delete(pstShader);
+          /* Success? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            /* Updates its owner */
+            orxStructure_SetOwner(pstShader, _pstObject);
+
+            /* Updates status */
+            orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_SHADER, orxOBJECT_KU32_FLAG_NONE);
+          }
+          else
+          {
+            /* Deletes it */
+            orxShader_Delete(pstShader);
+          }
         }
       }
-    }
-    else
-    {
-      /* Removes previous shader */
-      eResult = orxObject_SetShader(_pstObject, orxNULL);
+      else
+      {
+        /* Removes previous shader */
+        eResult = orxObject_SetShader(_pstObject, orxNULL);
+      }
     }
   }
 
