@@ -11562,7 +11562,6 @@ orxSTATUS orxFASTCALL orxObject_SetShader(orxOBJECT *_pstObject, orxSHADER *_pst
 /** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
- * @param[in]   _zShaderID  Config ID of the shader to add
  */
 orxOBJECT_MAKE_RECURSIVE(SetShader, orxSHADER *);
 
@@ -11629,7 +11628,7 @@ orxSTATUS orxFASTCALL orxObject_SetShaderFromConfig(orxOBJECT *_pstObject, const
 
 /** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderID  Config ID of the shader to add
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
  */
 orxOBJECT_MAKE_RECURSIVE(SetShaderFromConfig, const orxSTRING);
 

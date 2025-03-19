@@ -1078,7 +1078,6 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShader(orxOBJECT *_pstO
 /** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
- * @param[in]   _zShaderID  Config ID of the shader to add
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetShaderRecursive(orxOBJECT *_pstObject, orxSHADER *_pstShader);
 
@@ -1091,7 +1090,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShaderFromConfig(orxOBJ
 
 /** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderID  Config ID of the shader to add
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
  */
 extern orxDLLAPI void orxFASTCALL           orxObject_SetShaderFromConfigRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderID);
 
