@@ -1,5 +1,7 @@
 var NAVTREEINDEX11 =
 {
+"group__orx_keyboard.html#ga21ca03325eb7843d3f80214f6e9a0d2a":[1,27,1],
+"group__orx_keyboard.html#ga3d60dc20025f2febc61feec215dd4dbf":[3,0,0,5,3,5],
 "group__orx_keyboard.html#ga3d60dc20025f2febc61feec215dd4dbf":[1,27,5],
 "group__orx_keyboard.html#ga50a25da712297bb6cbbd47e66ac233fe":[3,0,0,5,3,0],
 "group__orx_keyboard.html#ga50a25da712297bb6cbbd47e66ac233fe":[1,27,0],
@@ -11,8 +13,8 @@ var NAVTREEINDEX11 =
 "group__orx_keyboard.html#gac30eff35e3dab48ed446d3d95cb5807c":[3,0,0,5,3,7],
 "group__orx_keyboard.html#gaca8a443b809e5d22280caf513b5be638":[3,0,0,5,3,3],
 "group__orx_keyboard.html#gaca8a443b809e5d22280caf513b5be638":[1,27,3],
-"group__orx_keyboard.html#gae02029be67f0066490ed87031c723988":[1,27,9],
 "group__orx_keyboard.html#gae02029be67f0066490ed87031c723988":[3,0,0,5,3,9],
+"group__orx_keyboard.html#gae02029be67f0066490ed87031c723988":[1,27,9],
 "group__orx_keyboard.html#gaf1783279d17107f2eaf05822ab5370ab":[3,0,0,5,3,10],
 "group__orx_keyboard.html#gaf1783279d17107f2eaf05822ab5370ab":[1,27,10],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea01bfff170c6773d41ca6cc627ab599c4":[3,0,0,5,3,0,122],
@@ -125,8 +127,8 @@ var NAVTREEINDEX11 =
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea6fa76897cff9bc038dea7335a967fd0c":[1,27,0,9],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea71910982255adb881753e8ec5490d9b2":[3,0,0,5,3,0,22],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea71910982255adb881753e8ec5490d9b2":[1,27,0,22],
-"group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea725387db4e5ab1cb06111eca89c7d164":[3,0,0,5,3,0,123],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea725387db4e5ab1cb06111eca89c7d164":[1,27,0,123],
+"group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea725387db4e5ab1cb06111eca89c7d164":[3,0,0,5,3,0,123],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea727b01ede333902edc09b4a7b6d248c4":[3,0,0,5,3,0,100],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea727b01ede333902edc09b4a7b6d248c4":[1,27,0,100],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea729326ccffa6b4358ed4add1e5922adf":[3,0,0,5,3,0,69],
@@ -169,8 +171,8 @@ var NAVTREEINDEX11 =
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea96c97b0da6c7dcadb9e60c4f0a10647c":[1,27,0,70],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea96eb533a99e1b899960127b93995c204":[3,0,0,5,3,0,37],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233fea96eb533a99e1b899960127b93995c204":[1,27,0,37],
-"group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaa00193d72e2fa1c164bed6595cd3a481":[3,0,0,5,3,0,114],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaa00193d72e2fa1c164bed6595cd3a481":[1,27,0,114],
+"group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaa00193d72e2fa1c164bed6595cd3a481":[3,0,0,5,3,0,114],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaa0ae0f75d2c1afbd0ed7fb7b04564ab5":[3,0,0,5,3,0,0],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaa0ae0f75d2c1afbd0ed7fb7b04564ab5":[1,27,0,0],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaa45152d7f7e61fdff81b58456de918e3":[3,0,0,5,3,0,81],
@@ -247,7 +249,5 @@ var NAVTREEINDEX11 =
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaed5d63067a4d13a8895386c74b5428bf":[1,27,0,51],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaee9dd6a6c5e42274ed0e44167cd88ab6":[3,0,0,5,3,0,110],
 "group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaee9dd6a6c5e42274ed0e44167cd88ab6":[1,27,0,110],
-"group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaef4abc3b3810086e3c68fe4a62ab16ae":[3,0,0,5,3,0,107],
-"group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaef4abc3b3810086e3c68fe4a62ab16ae":[1,27,0,107],
-"group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaefe1fd5a6236397a76765394b6ba5ac8":[3,0,0,5,3,0,95]
+"group__orx_keyboard.html#gga50a25da712297bb6cbbd47e66ac233feaef4abc3b3810086e3c68fe4a62ab16ae":[3,0,0,5,3,0,107]
 };

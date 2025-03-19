@@ -28,7 +28,8 @@ var orx_font_8h =
     [ "orxFont_SetCharacterSpacing", "group__orx_font.html#ga02b3674e5ca2faf4208f4dff86b59f56", null ],
     [ "orxFont_SetCharacterWidthList", "group__orx_font.html#gaed14890bff7d5d4023873f0275746e3e", null ],
     [ "orxFont_SetOrigin", "group__orx_font.html#ga1fd622d700599de60f4ec16b0ec524ed", null ],
-    [ "orxFont_SetShader", "group__orx_font.html#gaaa02989d69abe2dbaebd1e170fe3a60f", null ],
+    [ "orxFont_SetShader", "group__orx_font.html#ga07ab465238f595208f82252f66e1dda2", null ],
+    [ "orxFont_SetShaderFromConfig", "group__orx_font.html#ga8fb877c9ad79d3b4b92ffb77138749b5", null ],
     [ "orxFont_SetSize", "group__orx_font.html#ga031179787e10cc2b416cd4737eef85e2", null ],
     [ "orxFont_SetTexture", "group__orx_font.html#ga2dc09f19c7be6991d175289efd858f24", null ],
     [ "orxFont_Setup", "group__orx_font.html#ga489a6d4a62d6cef54925d4a070257352", null ]

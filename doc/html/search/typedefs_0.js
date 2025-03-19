@@ -51,7 +51,6 @@ var searchData=
   ['orxresource_5ffunction_5fwrite',['orxRESOURCE_FUNCTION_WRITE',['../group__orx_resource.html#ga842bf4a69d6e0323f8698fc122e66601',1,'orxResource.h']]],
   ['orxresource_5fop_5ffunction',['orxRESOURCE_OP_FUNCTION',['../group__orx_resource.html#ga52b2c3972e198befc9ea54eb105474f9',1,'orxResource.h']]],
   ['orxshader',['orxSHADER',['../group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51',1,'orxShader.h']]],
-  ['orxshaderpointer',['orxSHADERPOINTER',['../group__orx_shader_pointer.html#ga6c38462d8ef60b304c0926770750c211',1,'orxShaderPointer.h']]],
   ['orxsound',['orxSOUND',['../group__orx_sound.html#ga58e0a61f287672d13130384705fe6c87',1,'orxSound.h']]],
   ['orxsound_5ffilter_5ffunction',['orxSOUND_FILTER_FUNCTION',['../group__orx_sound_system.html#ga13f7a6679f99d05d767a074fe993c8b7',1,'orxSoundSystem.h']]],
   ['orxsound_5fsample',['orxSOUND_SAMPLE',['../group__orx_sound.html#gaa616fcfa39e844c2e7d5f6ca416f5d25',1,'orxSound.h']]],

@@ -1505,7 +1505,10 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 : <a class="el" href="group__orx_font.html#ga1fd622d700599de60f4ec16b0ec524ed">orxFont.h</a>
 </li>
 <li>orxFont_SetShader()
-: <a class="el" href="group__orx_font.html#gaaa02989d69abe2dbaebd1e170fe3a60f">orxFont.h</a>
+: <a class="el" href="group__orx_font.html#ga07ab465238f595208f82252f66e1dda2">orxFont.h</a>
+</li>
+<li>orxFont_SetShaderFromConfig()
+: <a class="el" href="group__orx_font.html#ga8fb877c9ad79d3b4b92ffb77138749b5">orxFont.h</a>
 </li>
 <li>orxFont_SetSize()
 : <a class="el" href="group__orx_font.html#ga031179787e10cc2b416cd4737eef85e2">orxFont.h</a>
@@ -2323,12 +2326,6 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 <li>orxObject_AddFXRecursive()
 : <a class="el" href="group__orx_object.html#ga29baa3307bc1fced506347984b61ea58">orxObject.h</a>
 </li>
-<li>orxObject_AddShader()
-: <a class="el" href="group__orx_object.html#ga33a1f3c52ad336cb7f0a1fc01db1d344">orxObject.h</a>
-</li>
-<li>orxObject_AddShaderRecursive()
-: <a class="el" href="group__orx_object.html#gaee569e0bc1169134b2c6c9d3ee5d7664">orxObject.h</a>
-</li>
 <li>orxObject_AddSound()
 : <a class="el" href="group__orx_object.html#gaf787464dae9b7b4ce4dda64ac8b60661">orxObject.h</a>
 </li>
@@ -2527,6 +2524,9 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 <li>orxObject_GetScale()
 : <a class="el" href="group__orx_object.html#ga95a741f5d56f535c1479016ee2e13753">orxObject.h</a>
 </li>
+<li>orxObject_GetShader()
+: <a class="el" href="group__orx_object.html#gab7a768eee5e295b1396a4f78271cadea">orxObject.h</a>
+</li>
 <li>orxObject_GetSibling()
 : <a class="el" href="group__orx_object.html#gaf2463839fb0133188f721afd6cd76e1d">orxObject.h</a>
 </li>
@@ -2634,12 +2634,6 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 </li>
 <li>orxObject_RemoveLastFilter()
 : <a class="el" href="group__orx_object.html#ga0aff3d25ef7b6b55d6e7bc7e956080a8">orxObject.h</a>
-</li>
-<li>orxObject_RemoveShader()
-: <a class="el" href="group__orx_object.html#gada022dc8a3ef36235ccb5b6cc6e6b06a">orxObject.h</a>
-</li>
-<li>orxObject_RemoveShaderRecursive()
-: <a class="el" href="group__orx_object.html#gad48e31b1c110f884bba7ad745777b203">orxObject.h</a>
 </li>
 <li>orxObject_RemoveSound()
 : <a class="el" href="group__orx_object.html#gab166e5f18d9efe2cb4c63a955cc6d4af">orxObject.h</a>
@@ -2787,6 +2781,18 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 </li>
 <li>orxObject_SetScale()
 : <a class="el" href="group__orx_object.html#gaa544cfd6d9db515d6ef46429b101bc4c">orxObject.h</a>
+</li>
+<li>orxObject_SetShader()
+: <a class="el" href="group__orx_object.html#gaeed8a5bee25f890a540f1fa654ebfbda">orxObject.h</a>
+</li>
+<li>orxObject_SetShaderFromConfig()
+: <a class="el" href="group__orx_object.html#gadb48578b4dd4f80a5b27ce9b641eeaa7">orxObject.h</a>
+</li>
+<li>orxObject_SetShaderFromConfigRecursive()
+: <a class="el" href="group__orx_object.html#gab448a33212da593640669090c6aa706d">orxObject.h</a>
+</li>
+<li>orxObject_SetShaderRecursive()
+: <a class="el" href="group__orx_object.html#ga2af59b62f3b0f33c883585bdc607d396">orxObject.h</a>
 </li>
 <li>orxObject_SetSize()
 : <a class="el" href="group__orx_object.html#gad38576090bef5ed7eaede3b8b62fe209">orxObject.h</a>
@@ -3059,7 +3065,7 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 : <a class="el" href="group__orx_plugin.html#gac2d80ed85322ebf239a94637e627fbef">orxPluginCore.h</a>
 </li>
 <li>orxPLUGIN_DECLARE_CORE_REGISTER_FUNCTION()
-: <a class="el" href="group__orx_plugin.html#ga2521b0142525880ca5a22a2f6d88cd7a">orxPlugin_CoreDefine.h</a>
+: <a class="el" href="group__orx_plugin.html#gad28aab12a50da506470a18d98116b43a">orxPlugin_CoreDefine.h</a>
 </li>
 <li>orxPlugin_DefaultCoreFunction()
 : <a class="el" href="group__orx_plugin.html#ga9533c138e64ba45a78b4f50fb819a919">orxPluginCore.h</a>
@@ -3369,48 +3375,6 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 </li>
 <li>orxShader_Stop()
 : <a class="el" href="group__orx_shader.html#ga650247fe0da8917b20b7f8c9e01e762d">orxShader.h</a>
-</li>
-<li>orxShaderPointer_AddShader()
-: <a class="el" href="group__orx_shader_pointer.html#ga74ad326fadbef929e1ebf41429674782">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_AddShaderFromConfig()
-: <a class="el" href="group__orx_shader_pointer.html#gabbae1b5cc2d008fd4d1c9f4fc3a7e987">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_Create()
-: <a class="el" href="group__orx_shader_pointer.html#ga84d30855be02bc7a986155f8574649a8">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_Delete()
-: <a class="el" href="group__orx_shader_pointer.html#ga6233ff716b16e5d9a5a90697c6f2dfb0">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_Enable()
-: <a class="el" href="group__orx_shader_pointer.html#ga1cf90e7557c2ffeba88892bbd0082f19">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_Exit()
-: <a class="el" href="group__orx_shader_pointer.html#gaa348a1d6822d7e6db915d304c2f537f5">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_GetShader()
-: <a class="el" href="group__orx_shader_pointer.html#ga320b9663504d2a437ac5bfa4a38477b7">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_Init()
-: <a class="el" href="group__orx_shader_pointer.html#ga27c8acce9f43df585e1376599608d838">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_IsEnabled()
-: <a class="el" href="group__orx_shader_pointer.html#gadea9d751461d3985b3bf9d8ec0327be5">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_RemoveShader()
-: <a class="el" href="group__orx_shader_pointer.html#ga6467e441b95b2d3c4fc6821199016e1b">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_RemoveShaderFromConfig()
-: <a class="el" href="group__orx_shader_pointer.html#ga7f9ed712c9be7b7ae522f9de99de5218">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_Setup()
-: <a class="el" href="group__orx_shader_pointer.html#ga02c4fedd28cf0bc4f7cc3f76cbe2c460">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_Start()
-: <a class="el" href="group__orx_shader_pointer.html#ga62346e36c00d0678c6428be5562c3631">orxShaderPointer.h</a>
-</li>
-<li>orxShaderPointer_Stop()
-: <a class="el" href="group__orx_shader_pointer.html#gaf3be19abb6110e0d89f5df118b7317b4">orxShaderPointer.h</a>
 </li>
 <li>orxSound_AddBusFilter()
 : <a class="el" href="group__orx_sound.html#gab4e4098feb9f5078ceb35aa54793cfc8">orxSound.h</a>
@@ -4567,9 +4531,6 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 <li>orxVector_Sub()
 : <a class="el" href="group__orx_vector.html#ga3bdb24b7f3f8fda8af8b034ad82db7ba">orxVector.h</a>
 </li>
-<li>orxViewport_AddShader()
-: <a class="el" href="group__orx_viewport.html#gafae98230b6e33fb16c5827b48db78b4b">orxViewport.h</a>
-</li>
 <li>orxViewport_ClearBackgroundColor()
 : <a class="el" href="group__orx_viewport.html#ga4d1f31dfcb2b9b1ea8efd000ea57c0e4">orxViewport.h</a>
 </li>
@@ -4618,8 +4579,8 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 <li>orxViewport_GetRelativeSize()
 : <a class="el" href="group__orx_viewport.html#gafc6d9a5c61ebb87c8e8c41252a09fa97">orxViewport.h</a>
 </li>
-<li>orxViewport_GetShaderPointer()
-: <a class="el" href="group__orx_viewport.html#gaf2a59486f07d77ec447a0ad2ae9bb9c0">orxViewport.h</a>
+<li>orxViewport_GetShader()
+: <a class="el" href="group__orx_viewport.html#gaa5e49bf696d1a5a0c00fb039a6a35b06">orxViewport.h</a>
 </li>
 <li>orxViewport_GetSize()
 : <a class="el" href="group__orx_viewport.html#ga3b6cbedca7b2e175e928bfe294b49960">orxViewport.h</a>
@@ -4642,9 +4603,6 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 <li>orxViewport_IsShaderEnabled()
 : <a class="el" href="group__orx_viewport.html#ga3bc8d8736d0e0e062fcbbbe8abdc086c">orxViewport.h</a>
 </li>
-<li>orxViewport_RemoveShader()
-: <a class="el" href="group__orx_viewport.html#ga9e61501eb278160f42fbb84d71b13b4b">orxViewport.h</a>
-</li>
 <li>orxViewport_SetBackgroundColor()
 : <a class="el" href="group__orx_viewport.html#ga5cfb7f46b86c3d89e34c066a05bb5e30">orxViewport.h</a>
 </li>
@@ -4662,6 +4620,12 @@ $(document).ready(function(){initNavTree('globals_func_o.html','');});
 </li>
 <li>orxViewport_SetRelativeSize()
 : <a class="el" href="group__orx_viewport.html#gaab5478e8f7a7fbcd581b45e06733e591">orxViewport.h</a>
+</li>
+<li>orxViewport_SetShader()
+: <a class="el" href="group__orx_viewport.html#ga9cbd74e2f807c38b0bb3cc78a57b4562">orxViewport.h</a>
+</li>
+<li>orxViewport_SetShaderFromConfig()
+: <a class="el" href="group__orx_viewport.html#ga63d0528990e1a949f71993b477e28eb0">orxViewport.h</a>
 </li>
 <li>orxViewport_SetSize()
 : <a class="el" href="group__orx_viewport.html#ga2a0c78b744ddad425c221c87e7caa9d1">orxViewport.h</a>
