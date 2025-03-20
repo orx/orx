@@ -247,12 +247,13 @@ static orxHANDLE orxFASTCALL orxNoiseTexture_Open(const orxSTRING _zLocation, or
 
       // Inits it
       orxMemory_Zero(pstResource, orxNOISETEXTURE_KU32_MAX_HEADER_SIZE);
-      pstResource->s64Cursor      = 0;
-      pstResource->s64Size        = (orxS64)(s32HeaderSize + u32Width * u32Height);
-      pstResource->u32Width       = u32Width;
-      pstResource->u32Height      = u32Height;
-      pstResource->stState        = fnlCreateState();
-      pstResource->s32HeaderSize  = s32HeaderSize;
+      pstResource->s64Cursor                = 0;
+      pstResource->s64Size                  = (orxS64)(s32HeaderSize + u32Width * u32Height);
+      pstResource->u32Width                 = u32Width;
+      pstResource->u32Height                = u32Height;
+      pstResource->stState                  = fnlCreateState();
+      pstResource->stState.rotation_type_3d = FNL_ROTATION_IMPROVE_XY_PLANES;
+      pstResource->s32HeaderSize            = s32HeaderSize;
       orxMemory_Copy(&(pstResource->au8Data), acHeader, s32HeaderSize);
       orxConfig_GetVector(orxNOISETEXTURE_KZ_CONFIG_ORIGIN, &(pstResource->vOrigin));
 
@@ -569,7 +570,7 @@ static orxS64 orxFASTCALL orxNoiseTexture_Read(orxHANDLE _hResource, orxS64 _s64
       // For all columns
       for(i = 0; i < pstResource->u32Width; i++)
       {
-        *(pu8Pixel++) = (orxU8)(255.0f * 0.5f * (1.0f + fnlGetNoise2D(&(pstResource->stState), (float)i + pstResource->vOrigin.fX, (float)j + pstResource->vOrigin.fY)));
+        *(pu8Pixel++) = (orxU8)(255.0f * 0.5f * (1.0f + fnlGetNoise3D(&(pstResource->stState), (float)i + pstResource->vOrigin.fX, (float)j + pstResource->vOrigin.fY, pstResource->vOrigin.fZ)));
       }
     }
 
