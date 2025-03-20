@@ -125,9 +125,10 @@ either req-ver = cur-ver [
   premake-path: dirize rejoin [premake-root platform-info/premake]
   premake: first read premake-path
   premake-file: read premake-path/:premake
+  print [{== Copying [} premake {] to:}]
   foreach [type folder] builds [
     if exists? folder [
-      print [{== Copying [} premake {] to [} folder {]}]
+      print [{  * } folder {}]
       write folder/:premake premake-file
       unless platform = 'windows [
         call/wait/shell form reduce [{chmod +x} folder/:premake]

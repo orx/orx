@@ -47,7 +47,7 @@
 #include "orxInclude.h"
 #include "core/orxClock.h"
 #include "render/orxCamera.h"
-#include "render/orxShaderPointer.h"
+#include "render/orxShader.h"
 #include "display/orxDisplay.h"
 #include "display/orxTexture.h"
 
@@ -191,19 +191,19 @@ extern orxDLLAPI void orxFASTCALL             orxViewport_SetCamera(orxVIEWPORT 
 extern orxDLLAPI orxCAMERA *orxFASTCALL       orxViewport_GetCamera(const orxVIEWPORT *_pstViewport);
 
 
-/** Adds a shader to a viewport using its config ID
- * @param[in]   _pstViewport      Concerned viewport
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+/** Sets a viewport shader
+ * @param[in]   _pstViewport      Concerned Viewport
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_AddShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetShader(orxVIEWPORT *_pstViewport, orxSHADER *_pstShader);
 
-/** Removes a shader using its config ID
- * @param[in]   _pstViewport      Concerned viewport
- * @param[in]   _zShaderConfigID Config ID of the shader to remove
+/** Sets a viewport shader using its config ID
+ * @param[in]   _pstViewport      Concerned Viewport
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_RemoveShader(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxViewport_SetShaderFromConfig(orxVIEWPORT *_pstViewport, const orxSTRING _zShaderID);
 
 /** Enables a viewport's shader
  * @param[in]   _pstViewport      Concerned viewport
@@ -217,11 +217,11 @@ extern orxDLLAPI void orxFASTCALL             orxViewport_EnableShader(orxVIEWPO
  */
 extern orxDLLAPI orxBOOL orxFASTCALL          orxViewport_IsShaderEnabled(const orxVIEWPORT *_pstViewport);
 
-/** Gets a viewport's shader pointer
+/** Gets a viewport's shader
  * @param[in]   _pstViewport      Concerned viewport
- * @return      orxSHADERPOINTER / orxNULL
+ * @return      orxSHADER / orxNULL
  */
-extern orxDLLAPI const orxSHADERPOINTER *orxFASTCALL orxViewport_GetShaderPointer(const orxVIEWPORT *_pstViewport);
+extern orxDLLAPI const orxSHADER *orxFASTCALL orxViewport_GetShader(const orxVIEWPORT *_pstViewport);
 
 
 /** Sets a viewport blend mode (only used when has active shaders attached)
@@ -296,7 +296,7 @@ extern orxDLLAPI void orxFASTCALL             orxViewport_GetRelativeSize(const 
 extern orxDLLAPI orxAABOX *orxFASTCALL        orxViewport_GetBox(const orxVIEWPORT *_pstViewport, orxAABOX *_pstBox);
 
 /** Get viewport correction ratio
- * @param[in]   _pstViewport  Concerned viewport
+ * @param[in]   _pstViewport    Concerned viewport
  * @return      Correction ratio value
  */
 extern orxDLLAPI orxFLOAT orxFASTCALL         orxViewport_GetCorrectionRatio(const orxVIEWPORT *_pstViewport);

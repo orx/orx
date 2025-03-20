@@ -184,7 +184,7 @@ typedef struct __orxRESOURCE_MEMORY_DATA_t
   orxS64                    s64Size;                                                  /**< Memory Data Size */
   orxS64                    s64Time;                                                  /**< Memory Data Time */
   const orxU8              *pu8Buffer;                                                /**< Memory Data Buffer */
-  orxU32                    u32RefCount;                                              /**< Memory Data Ref count */
+  orxU32                    u32RefCount;                                              /**< Memory Data Ref Count */
 
 } orxRESOURCE_MEMORY_DATA;
 
@@ -214,7 +214,6 @@ typedef struct __orxRESOURCE_STATIC_t
   orxBANK                  *pstMemoryDataBank;                                        /**< Memory data bank */
   orxBANK                  *pstMemoryResourceBank;                                    /**< Memory resource bank */
   volatile orxSTATUS        eThreadResult;                                            /**< Thread result */
-  orxCHAR                   acFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];       /**< File location buffer size */
   volatile orxRESOURCE_REQUEST astRequestList[orxRESOURCE_KU32_REQUEST_LIST_SIZE];    /**< Request list */
   volatile orxU32           u32RequestInIndex;                                        /**< Request in index */
   volatile orxU32           u32RequestProcessIndex;                                   /**< Request process index */
@@ -240,6 +239,7 @@ static orxRESOURCE_STATIC sstResource;
 
 static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
+  static orxCHAR  sacFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];
   orxFILE_INFO    stInfo;
   orxFILE        *pstFile = orxNULL;
   const orxSTRING zResult = orxNULL;
@@ -248,29 +248,29 @@ static const orxSTRING orxFASTCALL orxResource_File_Locate(const orxSTRING _zGro
   if(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
   {
     /* Uses name as path */
-    orxString_NPrint(sstResource.acFileLocationBuffer, sizeof(sstResource.acFileLocationBuffer), "%s", _zName);
+    orxString_NPrint(sacFileLocationBuffer, sizeof(sacFileLocationBuffer), "%s", _zName);
   }
   else
   {
     /* Composes full name */
-    orxString_NPrint(sstResource.acFileLocationBuffer, sizeof(sstResource.acFileLocationBuffer), "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+    orxString_NPrint(sacFileLocationBuffer, sizeof(sacFileLocationBuffer), "%s%c%s", _zStorage, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
   }
 
   /* Exists or doesn't require existence and can be created? */
-  if(((orxFile_GetInfo(sstResource.acFileLocationBuffer, &stInfo) != orxSTATUS_FAILURE)
+  if(((orxFile_GetInfo(sacFileLocationBuffer, &stInfo) != orxSTATUS_FAILURE)
    && !orxFLAG_TEST(stInfo.u32Flags, orxFILE_KU32_FLAG_INFO_DIRECTORY))
   || ((_bRequireExistence == orxFALSE)
-   && ((pstFile = orxFile_Open(sstResource.acFileLocationBuffer, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL)))
+   && ((pstFile = orxFile_Open(sacFileLocationBuffer, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_BINARY)) != orxNULL)))
   {
     /* Updates result */
-    zResult = sstResource.acFileLocationBuffer;
+    zResult = sacFileLocationBuffer;
 
     /* Has temporary file? */
     if(pstFile != orxNULL)
     {
       /* Removes it */
       orxFile_Close(pstFile);
-      orxFile_Delete(sstResource.acFileLocationBuffer);
+      orxFile_Delete(sacFileLocationBuffer);
     }
   }
 
@@ -423,16 +423,30 @@ static orxSTATUS orxFASTCALL orxResource_File_Delete(const orxSTRING _zLocation)
 
 static const orxSTRING orxFASTCALL orxResource_Memory_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
 {
+  static orxCHAR  sacFileLocationBuffer[orxRESOURCE_KU32_BUFFER_SIZE];
   const orxSTRING zResult = orxNULL;
 
-  /* Default storage? */
-  if(orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
+  /* Composes full name */
+  orxString_NPrint(sacFileLocationBuffer, sizeof(sacFileLocationBuffer), "%s%c%s%c%s", (_zGroup != orxNULL) ? _zGroup : orxSTRING_EMPTY, orxRESOURCE_KC_LOCATION_SEPARATOR, ((_zStorage != orxNULL) && (orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) != 0)) ? _zStorage : orxSTRING_EMPTY, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+
+  /* Found in group? */
+  if(orxHashTable_Get(sstResource.pstMemoryDataTable, orxString_Hash(sacFileLocationBuffer)) != orxNULL)
   {
+    /* Updates result */
+    zResult = sacFileLocationBuffer;
+  }
+  else
+  {
+    orxCHAR *zGenericName;
+
+    /* Gets generic name */
+    zGenericName = sacFileLocationBuffer + orxString_GetLength(_zGroup);
+
     /* Found? */
-    if(orxHashTable_Get(sstResource.pstMemoryDataTable, orxString_Hash(_zName)) != orxNULL)
+    if(orxHashTable_Get(sstResource.pstMemoryDataTable, orxString_Hash(zGenericName)) != orxNULL)
     {
       /* Updates result */
-      zResult = _zName;
+      zResult = zGenericName;
     }
   }
 
@@ -1544,34 +1558,34 @@ orxSTATUS orxFASTCALL orxResource_Init()
           /* Success? */
           if(eResult != orxSTATUS_FAILURE)
           {
-          /* Inits thread result */
-          sstResource.eThreadResult = orxSTATUS_SUCCESS;
+            /* Inits thread result */
+            sstResource.eThreadResult = orxSTATUS_SUCCESS;
 
-          /* Waits for worker semaphore */
-          orxThread_WaitSemaphore(sstResource.pstWorkerSemaphore);
+            /* Waits for worker semaphore */
+            orxThread_WaitSemaphore(sstResource.pstWorkerSemaphore);
 
-          /* Starts request processing thread */
-          sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxRESOURCE_KZ_THREAD_NAME, orxNULL);
+            /* Starts request processing thread */
+            sstResource.u32RequestThreadID = orxThread_Start(&orxResource_ProcessRequests, orxRESOURCE_KZ_THREAD_NAME, orxNULL);
 
-          /* Success? */
-          if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
-          {
-            /* Registers commands */
-            orxResource_RegisterCommands();
+            /* Success? */
+            if(sstResource.u32RequestThreadID != orxU32_UNDEFINED)
+            {
+              /* Registers commands */
+              orxResource_RegisterCommands();
 
               /* Inits vars */
               sstResource.stLastWatchedGroupID = orxSTRINGID_UNDEFINED;
 
 #ifdef __orxANDROID__
 
-            /* Registers APK type */
-            eResult = orxAndroid_RegisterAPKResource();
+              /* Registers APK type */
+              eResult = orxAndroid_RegisterAPKResource();
 
 #endif /* __orxANDROID__ */
+            }
           }
         }
       }
-    }
     }
 
     /* Failed? */
@@ -3425,27 +3439,34 @@ orxHANDLE orxFASTCALL orxResource_GetNextCachedLocation(const orxSTRING _zGroup,
 
 /** Sets an internal memory resource
  * !IMPORTANT! The content of _pBuffer is *required* to remain valid until this resource has been successfully unset (by passing _s64Size=0 or _pBuffer=orxNULL), no internal copies will be made!
+ * @param[in] _zGroup           Group of the resource to set/unset, orxNULL to be available for all groups
+ * @param[in] _zStorage         Storage of the resource to set/unset, orxNULL for the default storage
  * @param[in] _zName            Name of the resource to set/unset
  * @param[in] _s64Size          Size of the resource's data (0 to unset)
  * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer)
+orxSTATUS orxFASTCALL orxResource_SetMemoryResource(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
   orxASSERT(_zName != orxNULL);
+  orxASSERT(_s64Size >= 0);
 
   /* Valid name? */
   if(*_zName != orxCHAR_NULL)
   {
+    orxCHAR                   acBuffer[orxRESOURCE_KU32_BUFFER_SIZE];
     orxRESOURCE_MEMORY_DATA  *pstData;
     orxSTRINGID               stNameID;
 
+    /* Composes full name */
+    orxString_NPrint(acBuffer, sizeof(acBuffer), "%s%c%s%c%s", (_zGroup != orxNULL) ? _zGroup : orxSTRING_EMPTY, orxRESOURCE_KC_LOCATION_SEPARATOR, ((_zStorage != orxNULL) && (orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) != 0)) ? _zStorage : orxSTRING_EMPTY, orxCHAR_DIRECTORY_SEPARATOR_LINUX, _zName);
+
     /* Gets its ID */
-    stNameID = orxString_Hash(_zName);
+    stNameID = orxString_Hash(acBuffer);
 
     /* Gets its data */
     pstData = (orxRESOURCE_MEMORY_DATA *)orxHashTable_Get(sstResource.pstMemoryDataTable, stNameID);

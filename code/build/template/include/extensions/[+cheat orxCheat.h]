@@ -222,7 +222,7 @@ static orxBOOL orxFASTCALL orxCheat_ProcessCheat(const orxSTRING _zKeyName, cons
     pcState += orxString_NPrint(pcState, sizeof(acState) - (orxU32)(pcState - acState), "%s", acInput);
 
     // Store it
-    orxConfig_SetString(acInput, acState);
+    orxConfig_SetStringBlock(acInput, acState);
 
     // Pop current state's section
     orxConfig_PopSection();
@@ -293,6 +293,7 @@ orxSTATUS orxCheat_Init()
       const orxSTRING zName = orxKeyboard_GetKeyName(eKey);
       orxConfig_SetString(zName, zName + 11);
     }
+    orxConfig_SetStringBlock(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_SPACE), " ");
     orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_ENTER), "START");
     orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_NUMPAD_ENTER), "START");
     zButton = "LBUMPER", orxConfig_SetString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_LCTRL), zButton), orxConfig_AppendListString(orxKeyboard_GetKeyName(orxKEYBOARD_KEY_L), &zButton, 1);

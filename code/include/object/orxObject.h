@@ -54,6 +54,7 @@
 #include "display/orxTexture.h"
 #include "math/orxOBox.h"
 #include "object/orxStructure.h"
+#include "render/orxShader.h"
 #include "sound/orxSound.h"
 
 
@@ -1067,31 +1068,37 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFilters(orxOBJECT
 
 /** @name Shader
  * @{ */
-/** Adds a shader to an object using its config ID.
+/** Sets the shader of an object.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShader(orxOBJECT *_pstObject, orxSHADER *_pstShader);
 
-/** Adds a shader to an object and its owned children.
+/** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_AddShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI void orxFASTCALL           orxObject_SetShaderRecursive(orxOBJECT *_pstObject, orxSHADER *_pstShader);
 
-/** Removes a shader using its config ID.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zShaderConfigID Config ID of the shader to remove
+/** Sets the shader of an object using its config ID.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShaderFromConfig(orxOBJECT *_pstObject, const orxSTRING _zShaderID);
 
-/** Removes a shader from an object and its owned children.
+/** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to remove
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_RemoveShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI void orxFASTCALL           orxObject_SetShaderFromConfigRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderID);
+
+/** Gets the shader of an object.
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxSTRING / orx
+ */
+extern orxDLLAPI const orxSHADER *orxFASTCALL orxObject_GetShader(const orxOBJECT *_pstObject);
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object
@@ -1181,20 +1188,20 @@ extern orxDLLAPI void orxFASTCALL           orxObject_RemoveTriggerRecursive(orx
 /** Fires an object's trigger.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count         Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count);
 
 /** Fires a trigger on an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count         Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+extern orxDLLAPI void orxFASTCALL           orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count);
 /** @} */
 
 

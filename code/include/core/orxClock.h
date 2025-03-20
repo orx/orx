@@ -56,7 +56,7 @@
 #define orxCLOCK_KZ_CONFIG_FREQUENCY                  "Frequency"
 #define orxCLOCK_KZ_CONFIG_MODIFIER_LIST              "ModifierList"
 
-#define orxCLOCK_KZ_CORE                              "core"
+#define orxCLOCK_KZ_CORE                              "orx:clock:core"
 
 
 /** Clock modifier enum

@@ -98,8 +98,8 @@ static orxSTATUS orxFASTCALL orxMain_EventHandler(const orxEVENT *_pstEvent)
   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_SYSTEM);
   orxASSERT(_pstEvent->eID == orxSYSTEM_EVENT_CLOSE);
 
-      /* Updates status */
-      orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_EXIT, orxMAIN_KU32_STATIC_FLAG_NONE);
+  /* Updates status */
+  orxFLAG_SET(sstMain.u32Flags, orxMAIN_KU32_STATIC_FLAG_EXIT, orxMAIN_KU32_STATIC_FLAG_NONE);
 
   /* Done! */
   return eResult;

@@ -61,7 +61,7 @@
 /* Android? */
 #elif defined(__orxANDROID__)
 
-#include "../plugins/Display/android/orxDisplay.c"
+#include "../plugins/Display/android/orxDisplay.cpp"
 #include "../plugins/Joystick/android/orxJoystick.cpp"
 #include "../plugins/Keyboard/android/orxKeyboard.cpp"
 #include "../plugins/Mouse/android/orxMouse.c"
@@ -72,7 +72,7 @@
 /* Web? */
 #elif defined (__orxWEB__)
 
-#include "../plugins/Display/GLFW/orxDisplay.c"
+#include "../plugins/Display/GLFW/orxDisplay.cpp"
 #include "../plugins/Joystick/GLFW/orxJoystick.c"
 #include "../plugins/Keyboard/GLFW/orxKeyboard.c"
 #include "../plugins/Mouse/GLFW/orxMouse.c"
@@ -87,7 +87,7 @@
  */
 
 /* GLFW, LiquidFun & MiniAudio */
-#include "../plugins/Display/GLFW/orxDisplay.c"
+#include "../plugins/Display/GLFW/orxDisplay.cpp"
 #include "../plugins/Joystick/GLFW/orxJoystick.c"
 #include "../plugins/Keyboard/GLFW/orxKeyboard.c"
 #include "../plugins/Mouse/GLFW/orxMouse.c"

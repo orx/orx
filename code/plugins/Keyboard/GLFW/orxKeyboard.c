@@ -69,7 +69,7 @@ typedef int GLFWKey;
  */
 #define orxKEYBOARD_KU32_BUFFER_SIZE            64
 #define orxKEYBOARD_KU32_STRING_BUFFER_SIZE     (orxKEYBOARD_KU32_BUFFER_SIZE * 4 + 1)
-#define orxKEYBOARD_KU32_NAME_BUFFER_SIZE       8
+#define orxKEYBOARD_KU32_NAME_BUFFER_SIZE       32
 
 
 /***************************************************************************
@@ -545,8 +545,17 @@ const orxSTRING orxFASTCALL orxKeyboard_GLFW_GetKeyDisplayName(orxKEYBOARD_KEY _
       /* Gets uppercase version */
       orxString_UpperCase(sstKeyboard.acNameBuffer);
 
+#ifdef __orxWEB__
+
+      /* Updates result, skipping the DOM_PK_ prefix */
+      zResult = sstKeyboard.acNameBuffer + 7;
+
+#else /* __orxWEB__ */
+
       /* Updates result */
       zResult = sstKeyboard.acNameBuffer;
+
+#endif /* __orxWEB__ */
     }
   }
 

@@ -1468,7 +1468,7 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
       /* Backups current section */
       pstPreviousSection = sstConfig.pstCurrentSection;
 
-      /* Looks for inheritance index */
+      /* Looks for separator index */
       s32SeparatorIndex = orxString_SearchCharIndex(pstEntry->stValue.zValue, orxCONFIG_KC_SECTION_SEPARATOR, 0);
 
       /* Found? */

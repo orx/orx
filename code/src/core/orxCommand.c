@@ -1205,7 +1205,7 @@ static orxSTATUS orxFASTCALL orxCommand_EventHandler(const orxEVENT *_pstEvent)
       pstPayload = (orxTRIGGER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
       /* Stores command */
-      zCommand = pstPayload->zEvent;
+      zCommand = pstPayload->zEventValue;
 
       break;
     }

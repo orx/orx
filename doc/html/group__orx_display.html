@@ -360,6 +360,8 @@ Functions</h2></td></tr>
 <tr class="separator:gae71ba04631c1ac576300c5b97d083312"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9ab637c5b295fdd11024c270327db5e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga9ab637c5b295fdd11024c270327db5e4">orxDisplay_LoadBitmap</a> (const orxSTRING _zFileName)</td></tr>
 <tr class="separator:ga9ab637c5b295fdd11024c270327db5e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1bf9adae9911650bc212707c96a9134d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga1bf9adae9911650bc212707c96a9134d">orxDisplay_LoadFont</a> (const orxSTRING _zFileName, const orxSTRING _zCharacterList, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvCharacterSize, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvCharacterSpacing, const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvCharacterPadding, orxBOOL _bSDF, orxFLOAT *_afCharacterWidthList)</td></tr>
+<tr class="separator:ga1bf9adae9911650bc212707c96a9134d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae3acb236a4a537a86ff72091dc556829"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#gae3acb236a4a537a86ff72091dc556829">orxDisplay_SaveBitmap</a> (const <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, const orxSTRING _zFileName)</td></tr>
 <tr class="separator:gae3acb236a4a537a86ff72091dc556829"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6ed6d3266bdcd9baf06f65877c074100"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_display.html#ga6ed6d3266bdcd9baf06f65877c074100">orxDisplay_SetBitmapClipping</a> (<a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a> *_pstBitmap, orxU32 _u32TLX, orxU32 _u32TLY, orxU32 _u32BRX, orxU32 _u32BRY)</td></tr>
@@ -2461,6 +2463,75 @@ Functions</h2></td></tr>
 <p>Loads a bitmap from file (an event of ID orxDISPLAY_EVENT_BITMAP_LOAD will be sent upon completion, whether the loading is asynchronous or not) </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_zFileName</td><td>Name of the file to load </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxBITMAP / orxNULL </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga1bf9adae9911650bc212707c96a9134d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_display.html#ga9a24be81aa34ced7ce9ccefcb5c99415">orxBITMAP</a>* orxFASTCALL orxDisplay_LoadFont </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zFileName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zCharacterList</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvCharacterSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvCharacterSpacing</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *&#160;</td>
+          <td class="paramname"><em>_pvCharacterPadding</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bSDF</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT *&#160;</td>
+          <td class="paramname"><em>_afCharacterWidthList</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Loads a font from a TrueType/OpenType file (an event of ID orxDISPLAY_EVENT_BITMAP_LOAD will be sent upon completion, whether the loading is asynchronous or not) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zFileName</td><td>Name of the file to load </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zCharacterList</td><td>Ordered list of characters for which to create glyphs </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pvCharacterSize</td><td>Size of characters, X = 0 for variable width </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pvCharacterSpacing</td><td>Spacing to be kept between glyphs in the font bitmap </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pvCharacterPadding</td><td>Padding added on all sides, inside a glyph </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bSDF</td><td>Will generate a SDF (Signed Distance Field) texture if set to true or a regular texture otherwise </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">_afCharacterWidthList</td><td>Resulting list of character/glyph widths </td></tr>
   </table>
   </dd>
 </dl>

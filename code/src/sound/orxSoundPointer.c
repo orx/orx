@@ -84,7 +84,7 @@
  */
 typedef struct __orxSOUNDPOINTER_HOLDER_t
 {
-  orxSOUND       *pstSound;                                                 /**< Sound reference : 4/8 */
+  orxSOUND *pstSound;                                                       /**< Sound reference : 4/8 */
   orxU32    u32Flags;                                                       /**< Flags : 8/12 */
 
 } orxSOUNDPOINTER_HOLDER;

@@ -1,8 +1,12 @@
 var group__orx_trigger =
 [
     [ "orxTRIGGER_EVENT_PAYLOAD", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html", [
+      [ "azRefinementList", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a72ae523b240e5f823e9925a794bad49d", null ],
       [ "pstTrigger", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#abc89b1c017871a8662ccf6746131f6ea", null ],
-      [ "zEvent", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a7f3acf3e6ba8ec7a05ee8642f3904551", null ],
+      [ "u32RefinementCount", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a2da03cb058f1e3499412a8e27d23b43b", null ],
+      [ "u32RefinementIndex", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a4c625bead3725531999335cf05d23766", null ],
+      [ "zEventName", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a9f1283304dbf3b7afe05c4a46cbf920e", null ],
+      [ "zEventValue", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#aa73384b60d74851ee36dcd1f23edc9e4", null ],
       [ "zSetName", "structorx_t_r_i_g_g_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a3e6a0832b892f360b79f39baf8f5a409", null ]
     ] ],
     [ "orxTRIGGER_KC_SEPARATOR", "group__orx_trigger.html#ga179328316b1dce9aea61ebfeabc3d85e", null ],
@@ -21,7 +25,7 @@ var group__orx_trigger =
     [ "orxTrigger_Delete", "group__orx_trigger.html#ga48fea4b7d3f3003c339a472526d44d2c", null ],
     [ "orxTrigger_Enable", "group__orx_trigger.html#ga5e3855dde15675f428a7ec1da5ae7b28", null ],
     [ "orxTrigger_Exit", "group__orx_trigger.html#gabab6f759f91de4ee7c5218eeda2577bd", null ],
-    [ "orxTrigger_Fire", "group__orx_trigger.html#ga6eaa8c9914994cf18dd23cad4a99eabb", null ],
+    [ "orxTrigger_Fire", "group__orx_trigger.html#ga0a070cfbfec1919b212b8fb604f3e41e", null ],
     [ "orxTrigger_GetCount", "group__orx_trigger.html#gafcd961c40531c97b7c061169a659115b", null ],
     [ "orxTrigger_Init", "group__orx_trigger.html#ga9c7554bc9925411caa0adecd8dcac21d", null ],
     [ "orxTrigger_IsEnabled", "group__orx_trigger.html#gafea79fe170b9229bb77e76164844eb86", null ],

@@ -165,7 +165,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't set font (%s) for text (%s).", zName, _pstText->zReference);
 
         /* Sets default font */
-        orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
+        orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
       }
     }
     else
@@ -174,13 +174,13 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
       orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't create font (%s) for text (%s).", zName, _pstText->zReference);
 
       /* Sets default font */
-      orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
+      orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
     }
   }
   else
   {
     /* Sets default font */
-    orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
+    orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
   }
 
   /* Gets its string */
@@ -278,7 +278,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
             else
             {
               /* Sets default font */
-              orxText_SetFont(pstText, orxFONT(orxFont_GetDefaultFont()));
+              orxText_SetFont(pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
             }
           }
         }
@@ -1218,45 +1218,41 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstText);
 
-  /* Different? */
-  if(_pstText->pstFont != _pstFont)
+  /* Has current font? */
+  if(_pstText->pstFont != orxNULL)
   {
-    /* Has current font? */
-    if(_pstText->pstFont != orxNULL)
+    /* Updates structure reference count *indirectly*, as deletion needs to be handled for non-internal fonts */
+    orxFont_Delete(_pstText->pstFont);
+
+    /* Internally handled? */
+    if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL) != orxFALSE)
     {
-      /* Updates structure reference count *indirectly*, as deletion needs to be handled for non-internal fonts */
+      /* Removes its owner */
+      orxStructure_SetOwner(_pstText->pstFont, orxNULL);
+
+      /* Deletes it */
       orxFont_Delete(_pstText->pstFont);
 
-      /* Internally handled? */
-      if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL) != orxFALSE)
-      {
-        /* Removes its owner */
-        orxStructure_SetOwner(_pstText->pstFont, orxNULL);
-
-        /* Deletes it */
-        orxFont_Delete(_pstText->pstFont);
-
-        /* Updates flags */
-        orxStructure_SetFlags(_pstText, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_FLAG_INTERNAL);
-      }
-
-      /* Cleans it */
-      _pstText->pstFont = orxNULL;
+      /* Updates flags */
+      orxStructure_SetFlags(_pstText, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_FLAG_INTERNAL);
     }
 
-    /* Has new font? */
-    if(_pstFont != orxNULL)
-    {
-      /* Stores it */
-      _pstText->pstFont = _pstFont;
-
-      /* Updates its reference count */
-      orxStructure_IncreaseCount(_pstFont);
-    }
-
-    /* Updates text's size */
-    orxText_UpdateSize(_pstText);
+    /* Cleans it */
+    _pstText->pstFont = orxNULL;
   }
+
+  /* Has new font? */
+  if(_pstFont != orxNULL)
+  {
+    /* Stores it */
+    _pstText->pstFont = _pstFont;
+
+    /* Updates its reference count */
+    orxStructure_IncreaseCount(_pstFont);
+  }
+
+  /* Updates text's size */
+  orxText_UpdateSize(_pstText);
 
   /* Done! */
   return eResult;

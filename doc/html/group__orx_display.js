@@ -191,6 +191,7 @@ var group__orx_display =
     [ "orxDisplay_IsVideoModeAvailable", "group__orx_display.html#ga4df9750ffeddd581b7eb6e086e851a50", null ],
     [ "orxDisplay_IsVSyncEnabled", "group__orx_display.html#gae71ba04631c1ac576300c5b97d083312", null ],
     [ "orxDisplay_LoadBitmap", "group__orx_display.html#ga9ab637c5b295fdd11024c270327db5e4", null ],
+    [ "orxDisplay_LoadFont", "group__orx_display.html#ga1bf9adae9911650bc212707c96a9134d", null ],
     [ "orxDisplay_SaveBitmap", "group__orx_display.html#gae3acb236a4a537a86ff72091dc556829", null ],
     [ "orxDisplay_SetBitmapClipping", "group__orx_display.html#ga6ed6d3266bdcd9baf06f65877c074100", null ],
     [ "orxDisplay_SetBitmapData", "group__orx_display.html#gaf8a80961deb17b680772616fe2fd7239", null ],

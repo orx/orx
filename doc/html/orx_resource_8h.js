@@ -53,7 +53,7 @@ var orx_resource_8h =
     [ "orxResource_ReloadStorage", "group__orx_resource.html#gadba8c905ff1d9f9f7a68858e8805d694", null ],
     [ "orxResource_RemoveStorage", "group__orx_resource.html#ga3347a87e9f0b798d12e42c3d7b397ee7", null ],
     [ "orxResource_Seek", "group__orx_resource.html#gad92cb4c1520aa40cb2af3332807bbc81", null ],
-    [ "orxResource_SetMemoryResource", "group__orx_resource.html#gad28f61be70c6fb3dd44755efe08d8b6d", null ],
+    [ "orxResource_SetMemoryResource", "group__orx_resource.html#ga7a92059236a7fa5aa82c6c05f4e1c644", null ],
     [ "orxResource_Setup", "group__orx_resource.html#gabe07fd5cad2cda2a6c91b303d55cace3", null ],
     [ "orxResource_Sync", "group__orx_resource.html#ga20287ebe556f1d39a20bebca66e4f25c", null ],
     [ "orxResource_Tell", "group__orx_resource.html#ga727617afed34519f0d94189f252a7de3", null ],

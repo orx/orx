@@ -80,7 +80,6 @@ static orxINLINE void orxModule_RegisterAll()
   orxMODULE_REGISTER(RESOURCE, orxResource);
   orxMODULE_REGISTER(SCREENSHOT, orxScreenshot);
   orxMODULE_REGISTER(SHADER, orxShader);
-  orxMODULE_REGISTER(SHADERPOINTER, orxShaderPointer);
   orxMODULE_REGISTER(SOUND, orxSound);
   orxMODULE_REGISTER(SOUNDPOINTER, orxSoundPointer);
   orxMODULE_REGISTER(SOUNDSYSTEM, orxSoundSystem);

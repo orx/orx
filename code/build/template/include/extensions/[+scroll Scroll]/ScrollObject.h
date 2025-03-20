@@ -94,14 +94,17 @@ public:
                 void                    GetFlip(orxBOOL &_rbFlipX, orxBOOL &_rbFlipY) const;
                 void                    SetFlip(orxBOOL _bFlipX, orxBOOL _bFlipY, orxBOOL _bRecursive = orxTRUE);
 
+                const orxSTRING         GetText() const;
+                void                    SetText(const orxSTRING _zText);
+
                 orxBOOL                 IsAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE);
                 void                    SetAnim(const orxSTRING _zAnim, orxBOOL _bCurrent = orxFALSE, orxBOOL _bRecursive = orxTRUE);
 
                 void                    AddFX(const orxSTRING _zFXName, orxBOOL _bRecursive = orxTRUE, orxFLOAT _fPropagationDelay = orxFLOAT_0);
                 void                    RemoveFX(const orxSTRING _zFXName, orxBOOL _bRecursive = orxTRUE);
 
-                void                    AddShader(const orxSTRING _zShaderName, orxBOOL _bRecursive = orxTRUE);
-                void                    RemoveShader(const orxSTRING _zShaderName, orxBOOL _bRecursive = orxTRUE);
+                const orxSTRING         GetShader() const;
+                void                    SetShader(const orxSTRING _zShaderName, orxBOOL _bRecursive = orxTRUE);
 
                 void                    AddSound(const orxSTRING _zSoundName);
                 void                    RemoveSound(const orxSTRING _zSoundName);
@@ -542,6 +545,23 @@ void ScrollObject::SetFlip(orxBOOL _bFlipX, orxBOOL _bFlipY, orxBOOL _bRecursive
   }
 }
 
+const orxSTRING ScrollObject::GetText() const
+{
+  const orxSTRING zResult;
+  
+  // Updates result
+  zResult = orxObject_GetTextString(mpstObject);
+  
+  // Done!
+  return zResult;
+}
+
+void ScrollObject::SetText(const orxSTRING _zText)
+{
+  // Updates object's text
+  orxObject_SetTextString(mpstObject, _zText);
+}
+
 orxBOOL ScrollObject::IsAnim(const orxSTRING _zAnim, orxBOOL _bCurrent)
 {
   orxBOOL bResult;
@@ -625,33 +645,33 @@ void ScrollObject::RemoveFX(const orxSTRING _zFXName, orxBOOL _bRecursive)
   }
 }
 
-void ScrollObject::AddShader(const orxSTRING _zShaderName, orxBOOL _bRecursive)
+const orxSTRING ScrollObject::GetShader() const
 {
-  // Recursive?
-  if(_bRecursive)
-  {
-    // Adds shader to object
-    orxObject_AddShaderRecursive(mpstObject, _zShaderName);
-  }
-  else
-  {
-    // Adds shader to object
-    orxObject_AddShader(mpstObject, _zShaderName);
-  }
+  const orxSHADER  *pstShader;
+  const orxSTRING   zResult;
+  
+  // Gets shader
+  pstShader = orxObject_GetShader(mpstObject);
+  
+  // Updates result
+  zResult = (pstShader != orxNULL) ? orxShader_GetName(pstShader) : orxSTRING_EMPTY;
+  
+  // Done!
+  return zResult;
 }
 
-void ScrollObject::RemoveShader(const orxSTRING _zShaderName, orxBOOL _bRecursive)
+void ScrollObject::SetShader(const orxSTRING _zShaderName, orxBOOL _bRecursive)
 {
   // Recursive?
   if(_bRecursive)
   {
-    // Removes shader from object
-    orxObject_RemoveShaderRecursive(mpstObject, _zShaderName);
+    // Sets shader to object
+    orxObject_SetShaderFromConfigRecursive(mpstObject, _zShaderName);
   }
   else
   {
-    // Removes shader from object
-    orxObject_RemoveShader(mpstObject, _zShaderName);
+    // Sets shader to object
+    orxObject_SetShaderFromConfig(mpstObject, _zShaderName);
   }
 }
 
