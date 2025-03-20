@@ -222,8 +222,22 @@ extern "C"
 #define ARG_VALUE(ret_type, py_type, name, index) \
   PY_CHECK_ARG_TYPE(index, tp_##py_type);         \
   ret_type name = py_to##py_type(py_arg(index))
+#define ARG_VALUE_OR_NONE(ret_type, py_type, name, index) \
+  ret_type name;                                          \
+  do                                                      \
+  {                                                       \
+    if (py_isnone(py_arg(index)))                         \
+    {                                                     \
+      name = orxNULL;                                     \
+    }                                                     \
+    else                                                  \
+    {                                                     \
+      PY_CHECK_ARG_TYPE(index, tp_##py_type);             \
+      name = py_to##py_type(py_arg(index));               \
+    }                                                     \
+  } while (0)
 #define ARG_STR(name, index) ARG_VALUE(const orxSTRING, str, name, index)
-// #define ARG_FLOAT(name, index) ARG_VALUE(orxFLOAT, float, name, index)
+#define ARG_STR_OR_NONE(name, index) ARG_VALUE_OR_NONE(const orxSTRING, str, name, index)
 #define ARG_FLOAT(name, index)                 \
   orxFLOAT name;                               \
   do                                           \
@@ -1109,36 +1123,19 @@ extern "C"
     RETURN_NONE;
   }
 
-  BIND(Object, add_shader)
+  BIND(Object, set_shader_from_config)
   {
     PY_CHECK_ARGC(3);
     OBJECT;
-    ARG_STR(zName, 1);
+    ARG_STR_OR_NONE(zName, 1);
     ARG_BOOL(bRecursive, 2);
     if (bRecursive)
     {
-      orxObject_AddShaderRecursive(pstObject, zName);
+      orxObject_SetShaderFromConfigRecursive(pstObject, zName);
     }
     else
     {
-      orxObject_AddShader(pstObject, zName);
-    }
-    RETURN_NONE;
-  }
-
-  BIND(Object, remove_shader)
-  {
-    PY_CHECK_ARGC(3);
-    OBJECT;
-    ARG_STR(zName, 1);
-    ARG_BOOL(bRecursive, 2);
-    if (bRecursive)
-    {
-      orxObject_RemoveShaderRecursive(pstObject, zName);
-    }
-    else
-    {
-      orxObject_RemoveShader(pstObject, zName);
+      orxObject_SetShaderFromConfig(pstObject, zName);
     }
     RETURN_NONE;
   }
@@ -2067,8 +2064,7 @@ extern "C"
     BIND_METHOD("remove_last_filter(self) -> None", remove_last_filter);
     BIND_METHOD("remove_all_filters(self) -> None", remove_all_filters);
 
-    BIND_METHOD("add_shader(self, name: str, recursive: bool = False) -> None", add_shader);
-    BIND_METHOD("remove_shader(self, name: str, recursive: bool = False) -> None", remove_shader);
+    BIND_METHOD("set_shader_from_config(self, name: str | None, recursive: bool = False) -> None", set_shader_from_config);
     BIND_METHOD("enable_shader(self, enabled: bool = True) -> None", enable_shader);
     BIND_METHOD("is_shader_enabled(self) -> bool", is_shader_enabled);
 
