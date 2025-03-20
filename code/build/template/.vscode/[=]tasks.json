@@ -62,12 +62,13 @@
       }
     },
     {
-      "label": "Build [name] (debug, profile, release)",
+      "label": "Build [name] (debug, profile, release, web)",
       "dependsOrder": "sequence",
       "dependsOn": [
         "Build [name] (debug)",
         "Build [name] (profile)",
-        "Build [name] (release)"
+        "Build [name] (release)",
+        "Build [name] (web)"
       ],
       "problemMatcher": "$gcc"
     },
@@ -78,7 +79,7 @@
         "isDefault": true
       },
       "linux": {
-        "command": "make -j config=debug64",
+        "command": "make -j config=debug64"
       },
       "osx": {
         "command": "make -j config=debuguniv64"
@@ -122,7 +123,7 @@
       ],
       "group": "build",
       "type": "shell",
-      "command": "emmake make -j config=releaseweb",
+      "command": "emmake make -j config=releaseweb"
     },
     {
       "label": "Run [name] (debug)",
@@ -188,7 +189,7 @@
         "isDefault": false
       },
       "type": "shell",
-      "command": "emrun [name].html",
+      "command": "emrun index.html",
       "options": {
         "cwd": "${workspaceFolder}/bin/web/"
       }
