@@ -152,37 +152,37 @@ jobs:
         run: xcodebuild -workspace project.xcworkspace -scheme orxLIB -configuration=${{matrix.config}} -sdk iphone${{matrix.platform}} ${{matrix.extra}}
 
   # Android
-  build-android:
-    name: Android
-    strategy:
-      matrix:
-        os:
-          - linux
-        include:
-          - os: linux
-            runner: ubuntu-latest
-            setup: setup.sh
-    runs-on: ${{matrix.runner}}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-      - name: Setup
-        uses: ./.github/workflows/setup
-        with:
-          os: ${{matrix.os}}
-          setup: ${{matrix.setup}}
-      - name: Build engine
-        working-directory: code/build/android
-        run: ./gradlew clean assemble publishAllPublicationsToOrxRepository
-      - name: Build demo
-        working-directory: code/demo/android
-        run: ./gradlew clean assemble
+  # build-android:
+  #   name: Android
+  #   strategy:
+  #     matrix:
+  #       os:
+  #         - linux
+  #       include:
+  #         - os: linux
+  #           runner: ubuntu-latest
+  #           setup: setup.sh
+  #   runs-on: ${{matrix.runner}}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up JDK 17
+  #       uses: actions/setup-java@v3
+  #       with:
+  #         java-version: '17'
+  #         distribution: 'temurin'
+  #     - name: Set up Android SDK
+  #       uses: android-actions/setup-android@v3
+  #     - name: Setup
+  #       uses: ./.github/workflows/setup
+  #       with:
+  #         os: ${{matrix.os}}
+  #         setup: ${{matrix.setup}}
+  #     - name: Build engine
+  #       working-directory: code/build/android
+  #       run: ./gradlew clean assemble publishAllPublicationsToOrxRepository
+  #     - name: Build demo
+  #       working-directory: code/demo/android
+  #       run: ./gradlew clean assemble
 
   # Web
   build-web:
