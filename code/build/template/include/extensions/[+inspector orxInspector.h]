@@ -36,7 +36,6 @@ typedef enum __orxINSPECTOR_EVENT_t
 #define orxINSPECTOR_KZ_CONFIG_SECTION      "Inspector"
 #define orxINSPECTOR_KZ_CONFIG_RUNTIME      "InspectorRuntime"
 
-#define orxINSPECTOR_KZ_CONFIG_SHADER       "Shader"
 #define orxINSPECTOR_KZ_CONFIG_DEBUG_FIELDS "InspectorFields"
 #define orxINSPECTOR_KZ_CONFIG_WINDOW_SIZE  "WindowSize"
 
@@ -48,62 +47,6 @@ typedef enum __orxINSPECTOR_EVENT_t
 #define orxINSPECTOR_KZ_TRIGGER_UNREGISTER  "Unregister"
 
 #define orxINSPECTOR_KV_DEFAULT_WINDOW_SIZE orx2F(500.0f), orx2F(600.0f), orxFLOAT_0
-
-#define orxINSPECTOR_KZ_SHADER_HIGHLIGHT    "highlight"
-#define orxINSPECTOR_KZ_SHADER_CONFIG                                                                 \
-"UseCustomParam  = true\n"                                                                            \
-"ParamList       = texture # time # highlight # width # pixel_size # width_speed\n"                   \
-"time            = time 3.14\n"                                                                       \
-"highlight       = (1, 1, 1)\n"                                                                       \
-"width           = 5.0\n"                                                                             \
-"pixel_size      = 500\n"                                                                             \
-"width_speed     = 1.0\n"                                                                             \
-"Code            = \""                                                                                \
-"void main() {\n"                                                                                     \
-"  // Outline color\n"                                                                                \
-"  vec4 outline_color = vec4(highlight, 1.0);\n"                                                      \
-"\n"                                                                                                  \
-"  // Texture bounds\n"                                                                               \
-"	vec2 texture_min = vec2(texture_left, texture_top);\n"                                              \
-"	vec2 texture_max = vec2(texture_right, texture_bottom);\n"                                          \
-"	vec2 texture_size = texture_max - texture_min;\n"                                                   \
-"\n"                                                                                                  \
-"  // Position and texture color\n"                                                                   \
-"  vec2 pixel_pos = gl_TexCoord[0].xy;\n"                                                             \
-"  vec4 pixel_color = texture2D(texture, pixel_pos);\n"                                               \
-"\n"                                                                                                  \
-"  float _width = width; // + (sin(time*width_speed) + 1.0) * 5.0;\n"                                 \
-"\n"                                                                                                  \
-"  // Unit of sampling in each direction\n"                                                           \
-"  vec2 unit = vec2(1.0/float(pixel_size)) * texture_size;\n"                                         \
-"\n"                                                                                                  \
-"  // Balance between the outline color and texture color\n"                                          \
-"  float balance = 0.0;\n"                                                                            \
-"  if (pixel_color.a != 0.0) {\n"                                                                     \
-"    // Sample in a box around the current texture element\n"                                         \
-"    for (float x = -ceil(_width); x <= ceil(_width); x++) {\n"                                       \
-"      for (float y = -ceil(_width); y <= ceil(_width); y++) {\n"                                     \
-"        vec2 offset_pos = pixel_pos + vec2(x*unit.x, y*unit.y);\n"                                   \
-"        vec4 offset_color = vec4(0.0);\n"                                                            \
-"        if (offset_pos.x >= texture_min.x && offset_pos.x <= texture_max.x &&\n"                     \
-"            offset_pos.y >= texture_min.y && offset_pos.y <= texture_max.y) {\n"                     \
-"          offset_color = texture2D(texture, offset_pos);\n"                                          \
-"        }\n"                                                                                         \
-"        if (offset_color.a != 0.0 && gl_Color.a != 0.0 || (x==0.0 && y==0.0)) {\n"                   \
-"          continue;\n"                                                                               \
-"        }\n"                                                                                         \
-"        balance += outline_color.a / (pow(x,2)+pow(y,2)) * (1.0-pow(2.0, -_width));\n"               \
-"        if (balance > 1.0 || balance < 0.0) {\n"                                                     \
-"          balance = 1.0;\n"                                                                          \
-"        }\n"                                                                                         \
-"      }\n"                                                                                           \
-"    }\n"                                                                                             \
-"  }\n"                                                                                               \
-"  // Use the following line to have the outline color blend at the edges\n"                          \
-"  // gl_FragColor = mix(pixel_color * gl_Color, pixel_color * gl_Color * outline_color, balance);\n" \
-"  // Use the following line to have the outline color only at the edges\n"                           \
-"  gl_FragColor = mix(pixel_color * gl_Color, outline_color, balance);\n"                             \
-"}\""
 
 #define orxINSPECTOR_KU32_TEXT_BANK_SIZE    256
 #define orxINSPECTOR_KU32_TEXT_BUFFER_SIZE  1024
@@ -118,9 +61,8 @@ typedef enum __orxINSPECTOR_EVENT_t
 
 typedef struct __orxINSPECTOR_t
 {
-  const orxSTRING zShader;
-  orxBANK        *pstTextBank;
-  orxBOOL         bInit;
+  orxBANK  *pstTextBank;
+  orxBOOL   bInit;
 
 } orxINSPECTOR;
 
@@ -585,85 +527,17 @@ void orxInspector_ShowConfig(const orxSTRING _zSection)
   return;
 }
 
-void orxInspector_ShowHighlightCheckbox(orxOBJECT *_pstObject)
+void orxInspacter_ShowShader(const orxOBJECT *_pstObject)
 {
-  // Has a working graphic?
-  if(orxObject_GetWorkingGraphic(_pstObject) != orxNULL)
+  const orxSHADER *pstShader = orxObject_GetShader(_pstObject);
+  if(pstShader != orxNULL)
   {
-    orxVECTOR vColor;
-    orxInspector_GetHighlightColor(_pstObject, &vColor);
-    ImVec4 vHighlight = {vColor.fR, vColor.fG, vColor.fB, 1.0f};
-    ImGui::TextColored(vHighlight, "Highlight");
-    ImGui::SameLine();
-
-    orxSHADERPOINTER *pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
-    orxU32 u32HighlightShaderIndex = orxU32_UNDEFINED;
-    if(pstShaderPointer != orxNULL)
+    if(ImGui::CollapsingHeader("Shaders") && ImGui::BeginTable("Shaders", 2, orxINSPECTOR_KU32_TABLE_FLAGS))
     {
-      for(orxU32 i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
-      {
-        const orxSHADER *pstShader = orxShaderPointer_GetShader(pstShaderPointer, i);
-        if((pstShader != orxNULL) && (orxString_Compare(orxShader_GetName(pstShader), sstInspector.zShader) == 0))
-        {
-          u32HighlightShaderIndex = i;
-          break;
-        }
-      }
-    }
-
-    bool bHighlight = (u32HighlightShaderIndex != orxU32_UNDEFINED) ? true : false;
-    if(ImGui::Checkbox("##highlight", &bHighlight))
-    {
-      if(bHighlight != false)
-      {
-        if(u32HighlightShaderIndex == orxU32_UNDEFINED)
-        {
-          orxObject_AddShader(_pstObject, sstInspector.zShader);
-        }
-      }
-      else
-      {
-        if(u32HighlightShaderIndex != orxU32_UNDEFINED)
-        {
-          orxObject_RemoveShader(_pstObject, sstInspector.zShader);
-        }
-      }
-    }
-  }
-
-  // Done!
-  return;
-}
-
-void orxInspacter_ShowShaders(const orxOBJECT *_pstObject)
-{
-  orxBOOL bTableInitialized = orxFALSE;
-
-  orxSHADERPOINTER *pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
-  if(pstShaderPointer != orxNULL)
-  {
-    for(orxU32 i = 0; i < orxSHADERPOINTER_KU32_SHADER_NUMBER; i++)
-    {
-      const orxSHADER *pstShader = orxShaderPointer_GetShader(pstShaderPointer, i);
-      if((pstShader != orxNULL) && (orxString_Compare(orxShader_GetName(pstShader), sstInspector.zShader) != 0))
-      {
-        if(bTableInitialized == orxFALSE)
-        {
-          if((!ImGui::CollapsingHeader("Shaders"))
-          || (bTableInitialized = orxTRUE, !ImGui::BeginTable("Shaders", 2, orxINSPECTOR_KU32_TABLE_FLAGS)))
-          {
-            break;
-          }
-        }
-
-        ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Name");
-        ImGui::TableNextColumn();
-        ImGui::TextUnformatted(orxShader_GetName(pstShader));
-      }
-    }
-    if(bTableInitialized != orxFALSE)
-    {
+      ImGui::TableNextColumn();
+      ImGui::TextUnformatted("Name");
+      ImGui::TableNextColumn();
+      ImGui::TextUnformatted(orxShader_GetName(pstShader));
       ImGui::EndTable();
     }
   }
@@ -785,11 +659,10 @@ void orxInspector_ShowObject(orxOBJECT *_pstObject)
   {
     orxEVENT_SEND(orxEVENT_TYPE_INSPECTOR, orxINSPECTOR_EVENT_RENDER_START, _pstObject, _pstObject, orxNULL);
 
-    orxInspector_ShowHighlightCheckbox(_pstObject);
     orxInspector_ShowStatus(_pstObject);
     orxInspector_ShowConfig(zName);
     orxInspector_ShowGraphic(_pstObject);
-    orxInspacter_ShowShaders(_pstObject);
+    orxInspacter_ShowShader(_pstObject);
     orxInspector_ShowParent(_pstObject);
     orxInspector_ShowSiblings(_pstObject);
     orxInspector_ShowChildren(_pstObject);
@@ -801,7 +674,6 @@ void orxInspector_ShowObject(orxOBJECT *_pstObject)
   if(bRegistered == false)
   {
     orxInspector_UnregisterObject(_pstObject);
-    orxObject_RemoveShader(_pstObject, sstInspector.zShader);
   }
 
   // Done!
@@ -875,25 +747,6 @@ void orxInspector_CommandIsObjectRegistered(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
-orxSTATUS orxInspector_EventHandler(const orxEVENT *_pstEvent)
-{
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  // Get the event payload
-  orxSHADER_EVENT_PAYLOAD *pstPayload = (orxSHADER_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-  // Inspector highlight?
-  if((orxString_Compare(pstPayload->zShaderName, sstInspector.zShader) == 0)
-  && (orxString_Compare(pstPayload->zParamName, orxINSPECTOR_KZ_SHADER_HIGHLIGHT) == 0))
-  {
-    // Set the highlight color for the shader
-    orxInspector_GetHighlightColor(orxOBJECT(_pstEvent->hSender), &(pstPayload->vValue));
-  }
-
-  // Done!
-  return eResult;
-}
-
 void orxInspector_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
   // Push input set
@@ -959,20 +812,11 @@ void orxInspector_Init()
     // Should be activated?
     if(orxConfig_HasSection(orxINSPECTOR_KZ_CONFIG_SECTION) != orxFALSE)
     {
-      const orxSTRING zShaderConfig = orxINSPECTOR_KZ_SHADER_CONFIG;
-      orxCHAR acBuffer[2048];
-
       // Push config section
       orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_SECTION);
 
-      // Load shader config
-      orxS32 s32Written = orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", zShaderConfig);
-      orxASSERT(s32Written == orxString_GetLength(zShaderConfig));
-      orxConfig_LoadFromMemory(acBuffer, sizeof(acBuffer));
-
       // Init variables
       orxMemory_Zero(&(sstInspector), sizeof(orxINSPECTOR));
-      sstInspector.zShader      = (orxConfig_HasValue(orxINSPECTOR_KZ_CONFIG_SHADER) != orxFALSE) ? orxConfig_GetString(orxINSPECTOR_KZ_CONFIG_SHADER) : orxINSPECTOR_KZ_CONFIG_SECTION;
 
       // Create text bank
       sstInspector.pstTextBank  = orxBank_Create(orxINSPECTOR_KU32_TEXT_BANK_SIZE, orxINSPECTOR_KU32_TEXT_BUFFER_SIZE, orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_DEBUG);
@@ -980,14 +824,6 @@ void orxInspector_Init()
 
       // Register clock callback to render inspector windows on each frame
       orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxInspector_Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER);
-
-      // Add event handler
-      orxEvent_AddHandler(orxEVENT_TYPE_SHADER, orxInspector_EventHandler);
-      orxEvent_SetHandlerIDFlags(orxInspector_EventHandler,
-                                 orxEVENT_TYPE_SHADER,
-                                 orxNULL,
-                                 orxEVENT_GET_FLAG(orxSHADER_EVENT_SET_PARAM),
-                                 orxEVENT_KU32_MASK_ID_ALL);
 
       // Register commands
       orxCOMMAND_REGISTER_CORE_COMMAND(Inspector, RegisterObject, "GUID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
@@ -1026,9 +862,6 @@ void orxInspector_Exit()
     orxCOMMAND_UNREGISTER_CORE_COMMAND(Inspector, UnregisterObject);
     orxCOMMAND_UNREGISTER_CORE_COMMAND(Inspector, IsObjectRegistered);
 
-    // Remove event handler
-    orxEvent_RemoveHandler(orxEVENT_TYPE_SHADER, orxInspector_EventHandler);
-
     // Unregister clock callback
     orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxInspector_Update);
 
@@ -1060,8 +893,6 @@ orxSTATUS orxInspector_RegisterObject(orxOBJECT *_pstObject)
     orxConfig_SetBool(orxInspector_PrintGUID(_pstObject), orxTRUE);
     orxConfig_PopSection();
 
-    orxObject_AddShader(_pstObject, sstInspector.zShader);
-
     orxObject_FireTrigger(_pstObject, orxINSPECTOR_KZ_TRIGGER, &zRefinement, 1);
 
     // Update status
@@ -1084,8 +915,6 @@ orxSTATUS orxInspector_UnregisterObject(orxOBJECT *_pstObject)
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
     orxConfig_ClearValue(orxInspector_PrintGUID(_pstObject));
     orxConfig_PopSection();
-
-    orxObject_RemoveShader(_pstObject, sstInspector.zShader);
 
     orxObject_FireTrigger(_pstObject, orxINSPECTOR_KZ_TRIGGER, &zRefinement, 1);
 
