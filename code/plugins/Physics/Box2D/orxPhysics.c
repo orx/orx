@@ -3467,6 +3467,7 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
             /* Inits draw interface */
             sstPhysics.stDebugDraw                      = b2DefaultDebugDraw();
             sstPhysics.stDebugDraw.drawShapes           = true;
+            sstPhysics.stDebugDraw.drawMass             = true;
             sstPhysics.stDebugDraw.drawJoints           = true;
             sstPhysics.stDebugDraw.drawJointExtras      = true;
             sstPhysics.stDebugDraw.drawGraphColors      = true;
