@@ -45,6 +45,7 @@
 
 
 #include "orxInclude.h"
+#include "object/orxStructure.h"
 #include "plugin/orxPluginCore.h"
 #include "math/orxAABox.h"
 
@@ -317,7 +318,6 @@ typedef struct __orxPHYSICS_BODY_JOINT_t              orxPHYSICS_BODY_JOINT;
 #define orxPHYSICS_KZ_CONFIG_SECTION                  "Physics"
 #define orxPHYSICS_KZ_CONFIG_GRAVITY                  "Gravity"
 #define orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP              "AllowSleep"
-#define orxPHYSICS_KZ_CONFIG_ITERATIONS               "IterationsPerStep"
 #define orxPHYSICS_KZ_CONFIG_RATIO                    "DimensionRatio"
 #define orxPHYSICS_KZ_CONFIG_STEP_FREQUENCY           "StepFrequency"
 #define orxPHYSICS_KZ_CONFIG_SHOW_DEBUG               "ShowDebug"
@@ -375,11 +375,11 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxPhysics_GetGravity(orxV
 
 
 /** Creates a physical body
- * @param[in]   _hUserData                            User data to associate with this physical body
+ * @param[in]   _pstOwner                             Owner
  * @param[in]   _pstBodyDef                           Physical body definition
  * @return orxPHYSICS_BODY / orxNULL
  */
-extern orxDLLAPI orxPHYSICS_BODY *orxFASTCALL         orxPhysics_CreateBody(const orxHANDLE _hUserData, const orxBODY_DEF *_pstBodyDef);
+extern orxDLLAPI orxPHYSICS_BODY *orxFASTCALL         orxPhysics_CreateBody(const orxSTRUCTURE *_pstOwner, const orxBODY_DEF *_pstBodyDef);
 
 /** Deletes a physical body
  * @param[in]   _pstBody                              Concerned physical body

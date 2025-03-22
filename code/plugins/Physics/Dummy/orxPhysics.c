@@ -58,7 +58,7 @@ orxVECTOR *orxFASTCALL orxPhysics_Dummy_GetGravity(orxVECTOR *_pvGravity)
   return orxNULL;
 }
 
-orxPHYSICS_BODY *orxFASTCALL orxPhysics_Dummy_CreateBody(const orxHANDLE _hUserData, const orxBODY_DEF *_pstBodyDef)
+orxPHYSICS_BODY *orxFASTCALL orxPhysics_Dummy_CreateBody(const orxSTRUCTURE *_pstOwner, const orxBODY_DEF *_pstBodyDef)
 {
   /* Done! */
   return orxNULL;

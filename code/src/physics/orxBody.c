@@ -446,7 +446,7 @@ orxBODY *orxFASTCALL orxBody_Create(const orxSTRUCTURE *_pstOwner, const orxBODY
   if(pstBody != orxNULL)
   {
     /* Creates physics body */
-    pstBody->pstData = orxPhysics_CreateBody(pstBody, _pstBodyDef);
+    pstBody->pstData = orxPhysics_CreateBody((orxSTRUCTURE *)pstBody, _pstBodyDef);
 
     /* Valid? */
     if(pstBody->pstData != orxNULL)

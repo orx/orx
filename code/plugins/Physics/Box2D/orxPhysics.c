@@ -62,251 +62,203 @@
 
 #define orxPHYSICS_KU32_STATIC_MASK_ALL         0xFFFFFFFF /**< All mask */
 
-// namespace orxPhysics
-// {
-//   static const orxU32   su32DefaultIterations   = 10;
-//   static const orxFLOAT sfDefaultDimensionRatio = orx2F(0.01f);
-//   static const orxFLOAT sfMinStepDuration       = orx2F(0.001f);
-//   static const orxU32   su32MessageBankSize     = 512;
-//   static const orxU32   su32BodyBankSize        = 512;
-//   static const orxFLOAT sfDefaultFrequency      = orx2F(60.0f);
+#define orxPHYSICS_KU32_BODY_BANK_SIZE          512
+#define orxPHYSICS_KU32_BODY_PART_BANK_SIZE     1024
+#define orxPHYSICS_KF_DEFAULT_FREQUENCY         orx2F(60.0f) /* Default frequency */
+#define orxPHYSICS_KF_DEFAULT_DIMENSION_RATIO   orx2F(0.01f) /* Default dimension ratio */
+#define orxPHYSICS_KF_MIN_STEP_DURATION         orx2F(0.001f) /* Min step duration */
 
-// #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
-//   static const orxU32   su32RayBankSize         = 128;
-//   static const b2Color  stRayMissColor          = b2Color(0x00, 0xFF, 0x00);
-//   static const b2Color  stRayBeforeHitColor     = b2Color(0xFF, 0xFF, 0x00);
-//   static const b2Color  stRayAfterHitColor      = b2Color(0xFF, 0x00, 0x00);
+#define orxPHYSICS_KU32_RAY_BANK_SIZE           128
+#define orxPHYSICS_KU32_RAY_MISS_COLOR          b2_colorLime
+#define orxPHYSICS_KU32_RAY_BEFORE_HIT_COLOR    b2_colorYellow
+#define orxPHYSICS_KU32_RAY_AFTER_HIT_COLOR     b2_colorRed
 
-// #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
-// }
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+
 
 // /***************************************************************************
 //  * Structure declaration                                                   *
 //  ***************************************************************************/
 
-// struct __orxPHYSICS_BODY_t
-// {
-//   orxLINKLIST_NODE                  stNode;                 /**< Link list node */
-//   orxVECTOR                         vPreviousPosition;      /**< Previous position */
-//   orxVECTOR                         vInterpolatedPosition;  /**< Interpolated position */
-//   b2Body                           *poBody;                 /**< Box2D body */
-//   orxFLOAT                          fPreviousRotation;      /**< Previous rotation */
-//   orxFLOAT                          fInterpolatedRotation;  /**< Interpolated rotation */
-// };
+/** Body
+ */
+struct __orxPHYSICS_BODY_t
+{
+  orxLINKLIST_NODE    stNode;                 /**< Link list node */
+  orxVECTOR           vPreviousPosition;      /**< Previous position */
+  orxVECTOR           vInterpolatedPosition;  /**< Interpolated position */
+  const orxSTRUCTURE *pstOwner;               /**< Owner */
+  b2BodyId            stBody;                 /**< Box2D body */
+  orxFLOAT            fPreviousRotation;      /**< Previous rotation */
+  orxFLOAT            fInterpolatedRotation;  /**< Interpolated rotation */
+};
 
-// /** Event storage
-//  */
-// typedef struct __orxPHYSICS_EVENT_STORAGE_t
-// {
-//   orxLINKLIST_NODE                  stNode;                 /**< Link list node */
-//   b2Body                           *poSource;               /**< Event source */
-//   b2Body                           *poDestination;          /**< Event destination */
-//   orxPHYSICS_EVENT                  eID;                    /**< Event ID */
-//   orxPHYSICS_EVENT_PAYLOAD          stPayload;              /**< Event payload */
+/** Body part
+ */
+struct __orxPHYSICS_BODY_PART_t
+{
+  b2ShapeId           stShape;                /**< Box2D shape */
+};
 
-// } orxPHYSICS_EVENT_STORAGE;
+/** RayCast
+ */
+typedef struct __orxPHYSICS_RAYCAST_t
+{
+  orxVECTOR           vContact;
+  orxVECTOR           vNormal;
+  orxHANDLE           hResult;
+  orxBOOL             bEarlyExit;
 
-// /** Contact listener
-//  */
-// class orxPhysicsContactListener : public b2ContactListener
-// {
-// public:
-//   void BeginContact(b2Contact *_poContact);
-//   void EndContact(b2Contact *_poContact);
-// };
+} orxPHYSICS_RAYCAST;
 
+/** BoxPick
+ */
+typedef struct __orxPHYSICS_BOXPICK_t
+{
+  orxHANDLE          *ahUserDataList;
+  orxU32              u32Size;
+  orxU32              u32Count;
 
-// #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+} orxPHYSICS_BOXPICK;
 
-// /** Debug ray
-//  */
-// typedef struct __orxPHYSICS_DEBUG_RAY_t
-// {
-//   b2Vec2                      vBegin;
-//   b2Vec2                      vEnd;
-//   b2Color                     stColor;
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
-// } orxPHYSICS_DEBUG_RAY;
+/** Debug ray
+ */
+typedef struct __orxPHYSICS_DEBUG_RAY_t
+{
+  b2Vec2              vBegin;
+  b2Vec2              vEnd;
+  b2HexColor          stColor;
 
-// /** Debug draw
-//  */
-// class orxPhysicsDebugDraw : public b2Draw
-// {
-// public:
-//   void DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor);
-//   void DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor);
-//   void DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Color &_rstColor);
-//   void DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Vec2 &_rvAxis, const b2Color &_rstColor);
-//   void DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, const b2Color &_rstColor);
-//   void DrawTransform(const b2Transform &_rstTransform);
-// };
+} orxPHYSICS_DEBUG_RAY;
 
-// #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
 
-// /** Static structure
-//  */
-// typedef struct __orxPHYSICS_STATIC_t
-// {
-//   orxU32                      u32Flags;               /**< Control flags */
-//   orxU32                      u32Iterations;          /**< Simulation iterations per step */
-//   orxFLOAT                    fDimensionRatio;        /**< Dimension ratio */
-//   orxFLOAT                    fRecDimensionRatio;     /**< Reciprocal dimension ratio */
-//   orxFLOAT                    fLastDT;                /**< Last DT */
-//   orxLINKLIST                 stEventList;            /**< Event link list */
-//   orxBANK                    *pstEventBank;           /**< Event bank */
-//   b2World                    *poWorld;                /**< World */
-//   orxPhysicsContactListener  *poContactListener;      /**< Contact listener */
-//   orxFLOAT                    fFixedDT;               /**< Fixed DT */
-//   orxFLOAT                    fDTAccumulator;         /**< DT accumulator */
-//   orxLINKLIST                 stBodyList;             /**< Body link list */
-//   orxBANK                    *pstBodyBank;            /**< Body bank */
+/** Static structure
+ */
+typedef struct __orxPHYSICS_STATIC_t
+{
+  orxU32                      u32Flags;               /**< Control flags */
+  orxFLOAT                    fDimensionRatio;        /**< Dimension ratio */
+  orxFLOAT                    fRecDimensionRatio;     /**< Reciprocal dimension ratio */
+  orxFLOAT                    fLastDT;                /**< Last DT */
+  b2WorldId                   stWorld;                /**< Box2D world */
+  orxFLOAT                    fFixedDT;               /**< Fixed DT */
+  orxFLOAT                    fDTAccumulator;         /**< DT accumulator */
+  orxLINKLIST                 stBodyList;             /**< Body link list */
+  orxBANK                    *pstBodyBank;            /**< Body bank */
+  orxBANK                    *pstBodyPartBank;        /**< Body part bank */
 
-// #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
-//   orxPhysicsDebugDraw        *poDebugDraw;            /**< Debug draw */
-//   orxBANK                    *pstRayBank;             /**< Debug ray bank */
+  orxBANK                    *pstRayBank;             /**< Debug ray bank */
+  b2DebugDraw                 stDebugDraw;            /**< Debug draw interface */
 
-// #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
-// } orxPHYSICS_STATIC;
+} orxPHYSICS_STATIC;
 
 
 // /***************************************************************************
 //  * Static variables                                                        *
 //  ***************************************************************************/
 
-// /** Static data
-//  */
-// static orxPHYSICS_STATIC sstPhysics;
+/** Static data
+ */
+static orxPHYSICS_STATIC sstPhysics;
 
 
 // /***************************************************************************
 //  * Private functions                                                       *
 //  ***************************************************************************/
 
-// void *orxPhysics_Box2D_Allocate(int32 _iSize, void *)
-// {
-//   return orxMemory_Allocate((orxU32)_iSize, orxMEMORY_TYPE_PHYSICS);
-// }
+void *orxPhysics_Box2D_Allocate(unsigned int _uiSize, int _iAlignment)
+{
+  orxU32  u32RealSize;
+  void   *pAlloc, *pResult;
 
-// void orxPhysics_Box2D_Free(void *_pMem, void *)
-// {
-//   orxMemory_Free(_pMem);
-// }
+  /* Gets real allocation size */
+  u32RealSize = _uiSize + sizeof(orxUPTR) + _iAlignment;
+  
+  /* Allocates memory */
+  pAlloc = orxMemory_Allocate(u32RealSize, orxMEMORY_TYPE_PHYSICS);
+  
+  /* Success? */
+  if(pAlloc != orxNULL)
+  {
+    /* Updates result */
+    pResult = (void *)orxALIGN((orxUPTR)pAlloc + sizeof(orxUPTR), _iAlignment);
+    
+    /* Stores pointer */
+    ((void **)pResult)[-1] = pAlloc;
+  }
+  
+  /* Done */
+  return pResult;
+}
 
-// class RayCastCallback : public b2RayCastCallback
-// {
-// public:
+void orxPhysics_Box2D_Free(void *_pMem)
+{
+  /* Frees real allocation */
+  orxMemory_Free(((void **)_pMem)[-1]);
+}
 
-//   RayCastCallback() : hResult(orxHANDLE_UNDEFINED), bEarlyExit(orxFALSE), u16SelfFlags(0), u16CheckMask(0)
-//   {
-//     orxVector_Copy(&vContact, &orxVECTOR_0);
-//     orxVector_Copy(&vNormal, &orxVECTOR_0);
-//   }
+float orxPhysics_Box2D_RayCastCallback(b2ShapeId _stShape, b2Vec2 _vContact, b2Vec2 _vNormal, float _fFraction, void *_pContext)
+{
+  orxPHYSICS_RAYCAST *pstRayCast;
+  float               fResult;
 
-//   float32 ReportFixture(b2Fixture *_poFixture, const b2Vec2 &_rvContact, const b2Vec2 &_rvNormal, float32 _fFraction)
-//   {
-//     float32 fResult;
+  /* Gets ray cast */
+  pstRayCast = (orxPHYSICS_RAYCAST *)_pContext;
 
-//     /* Has hit? */
-//     if(_poFixture)
-//     {
-//       /* Gets fixture's filter info */
-//       const b2Filter &rstFilter = _poFixture->GetFilterData();
+  /* Stores contact and normal */
+  orxVector_Set(&(pstRayCast->vContact), sstPhysics.fRecDimensionRatio * _vContact.x, sstPhysics.fRecDimensionRatio * _vContact.y, orxFLOAT_0);
+  orxVector_Set(&(pstRayCast->vNormal), _vNormal.x, _vNormal.y, orxFLOAT_0);
 
-//       /* Match? */
-//       if(((rstFilter.maskBits & u16SelfFlags) != 0)
-//       && ((rstFilter.categoryBits & u16CheckMask) != 0))
-//       {
-//         /* Stores contact and normal */
-//         orxVector_Set(&vContact, sstPhysics.fRecDimensionRatio * _rvContact.x, sstPhysics.fRecDimensionRatio * _rvContact.y, orxFLOAT_0);
-//         orxVector_Set(&vNormal, _rvNormal.x, _rvNormal.y, orxFLOAT_0);
+  /* Stores associated object's handle */
+  pstRayCast->hResult = (orxHANDLE)(((orxPHYSICS_BODY *)b2Body_GetUserData(b2Shape_GetBody(_stShape)))->pstOwner);
 
-//         /* Stores associated object's handle */
-//         hResult = (orxHANDLE)_poFixture->GetBody()->GetUserData();
+  /* Early exit? */
+  if(pstRayCast->bEarlyExit != orxFALSE)
+  {
+    /* Stops now */
+    fResult = 0.0f;
+  }
+  else
+  {
+    /* Checks for closer fixture */
+    fResult = _fFraction;
+  }
 
-//         /* Early exit? */
-//         if(bEarlyExit != orxFALSE)
-//         {
-//           /* Stops now */
-//           fResult = 0.0f;
-//         }
-//         else
-//         {
-//           /* Checks for closer fixture */
-//           fResult = _fFraction;
-//         }
-//       }
-//       else
-//       {
-//         /* Ignores fixture completely */
-//         fResult = -1.0f;
-//       }
-//     }
-//     else
-//     {
-//       /* Stops now */
-//       fResult = 0.0f;
-//     }
+  /* Done! */
+  return fResult;
+}
 
-//     /* Done! */
-//     return fResult;
-//   }
+static bool orxPhysics_Box2D_BoxPickCallback(b2ShapeId _stShape, void *_pContext)
+{
+  orxPHYSICS_BOXPICK *pstBoxPick;
+  bool                bResult = true;
 
-//   orxVECTOR   vContact;
-//   orxVECTOR   vNormal;
-//   orxHANDLE   hResult;
-//   orxBOOL     bEarlyExit;
-//   orxU16      u16SelfFlags;
-//   orxU16      u16CheckMask;
-// };
+  /* Gets box pick */
+  pstBoxPick = (orxPHYSICS_BOXPICK *)_pContext;
 
-// class BoxPickCallback : public b2QueryCallback
-// {
-// public:
+  /* Has available storage? */
+  if(pstBoxPick->u32Count < pstBoxPick->u32Size)
+  {
+    /* Stores associated object's handle */
+    pstBoxPick->ahUserDataList[pstBoxPick->u32Count] = (orxHANDLE)(((orxPHYSICS_BODY *)b2Body_GetUserData(b2Shape_GetBody(_stShape)))->pstOwner);
+  }
 
-//   BoxPickCallback() : ahUserDataList(orxNULL), u32Size(0), u32Count(0), u16SelfFlags(0), u16CheckMask(0)
-//   {
-//   }
+  /* Updates count */
+  pstBoxPick->u32Count++;
 
-//   bool ReportFixture(b2Fixture* _poFixture)
-//   {
-//     bool bResult = true;
-
-//     /* Has hit? */
-//     if(_poFixture)
-//     {
-//       /* Gets fixture's filter info */
-//       const b2Filter &rstFilter = _poFixture->GetFilterData();
-
-//       /* Match? */
-//       if(((rstFilter.maskBits & u16SelfFlags) != 0)
-//       && ((rstFilter.categoryBits & u16CheckMask) != 0))
-//       {
-//         /* Has available storage? */
-//         if(u32Count < u32Size)
-//         {
-//           /* Stores associated object's handle */
-//           ahUserDataList[u32Count] = (orxHANDLE)_poFixture->GetBody()->GetUserData();
-//         }
-
-//         /* Updates count */
-//         u32Count++;
-//       }
-//     }
-
-//     /* Done! */
-//     return bResult;
-//   }
-
-//   orxHANDLE  *ahUserDataList;
-//   orxU32      u32Size;
-//   orxU32      u32Count;
-//   orxU16      u16SelfFlags;
-//   orxU16      u16CheckMask;
-// };
+  /* Done! */
+  return bResult;
+}
 
 // static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact, orxPHYSICS_EVENT _eEventID)
 // {
@@ -418,1163 +370,1226 @@
 // }
 
 
-// #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
-
-// void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor)
-// {
-//   orxVIEWPORT *pstViewport;
-
-//   /* For all viewports */
-//   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
-//       pstViewport != orxNULL;
-//       pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
-//   {
-//     /* Is enabled and supports debug? */
-//     if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
-//     && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
-//     {
-//       orxCAMERA *pstCamera;
-
-//       /* Gets viewport camera */
-//       pstCamera = orxViewport_GetCamera(pstViewport);
-
-//       /* Valid? */
-//       if(pstCamera != orxNULL)
-//       {
-//         orxAABOX    stFrustum;
-//         orxVECTOR   vCameraPosition;
-//         orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
-//         orxCOLOR    stColor;
-//         orxFLOAT    fZ;
-//         orxS32      i;
-
-//         /* Gets camera position */
-//         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
-
-//         /* Gets its frustum */
-//         orxCamera_GetFrustum(pstCamera, &stFrustum);
-
-//         /* Stores its Z */
-//         fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
-
-//         /* For all vertices */
-//         for(i = 0; i < _s32VertexNumber; i++)
-//         {
-//           orxVECTOR vTemp;
-
-//           /* Sets it */
-//           orxVector_Set(&vTemp, sstPhysics.fRecDimensionRatio * orx2F(_avVertexList[i].x), sstPhysics.fRecDimensionRatio * orx2F(_avVertexList[i].y), fZ);
-
-//           /* Stores its screen position */
-//           orxRender_GetScreenPosition(&vTemp, pstViewport, &(avVertexList[i]));
-//         }
-
-//         /* Sets color */
-//         orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
-//         stColor.fAlpha = orxFLOAT_1;
-
-//         /* Draws polygon */
-//         orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orxColor_ToRGBA(&stColor), orxFALSE);
-//       }
-//     }
-//   }
-
-//   /* Done! */
-//   return;
-// }
-
-// void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s32VertexNumber, const b2Color &_rstColor)
-// {
-//   orxVIEWPORT *pstViewport;
-
-//   /* For all viewports */
-//   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
-//       pstViewport != orxNULL;
-//       pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
-//   {
-//     /* Is enabled and supports debug? */
-//     if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
-//     && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
-//     {
-//       orxCAMERA *pstCamera;
-
-//       /* Gets viewport camera */
-//       pstCamera = orxViewport_GetCamera(pstViewport);
-
-//       /* Valid? */
-//       if(pstCamera != orxNULL)
-//       {
-//         orxAABOX    stFrustum;
-//         orxVECTOR   vCameraPosition;
-//         orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
-//         orxCOLOR    stColor;
-//         orxFLOAT    fZ;
-//         orxS32      i;
-
-//         /* Gets camera position */
-//         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
-
-//         /* Gets its frustum */
-//         orxCamera_GetFrustum(pstCamera, &stFrustum);
-
-//         /* Stores its Z */
-//         fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
-
-//         /* For all vertices */
-//         for(i = 0; i < _s32VertexNumber; i++)
-//         {
-//           orxVECTOR vTemp;
-
-//           /* Sets it */
-//           orxVector_Set(&vTemp, sstPhysics.fRecDimensionRatio * orx2F(_avVertexList[i].x), sstPhysics.fRecDimensionRatio * orx2F(_avVertexList[i].y), fZ);
-
-//           /* Stores its screen position */
-//           orxRender_GetScreenPosition(&vTemp, pstViewport, &(avVertexList[i]));
-//         }
-
-//         /* Sets color */
-//         orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
-
-//         /* Draws polygon inside */
-//         stColor.fAlpha = orx2F(0.5f);
-//         orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orxColor_ToRGBA(&stColor), orxTRUE);
-
-//         /* Draws polygon outside */
-//         stColor.fAlpha = orxFLOAT_1;
-//         orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orxColor_ToRGBA(&stColor), orxFALSE);
-//       }
-//     }
-//   }
-
-//   /* Done! */
-//   return;
-// }
-
-// void orxPhysicsDebugDraw::DrawCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Color &_rstColor)
-// {
-//   orxVIEWPORT *pstViewport;
-
-//   /* For all viewports */
-//   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
-//       pstViewport != orxNULL;
-//       pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
-//   {
-//     /* Is enabled and supports debug? */
-//     if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
-//     && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
-//     {
-//       orxCAMERA *pstCamera;
-
-//       /* Gets viewport camera */
-//       pstCamera = orxViewport_GetCamera(pstViewport);
-
-//       /* Valid? */
-//       if(pstCamera != orxNULL)
-//       {
-//         orxAABOX  stFrustum;
-//         orxVECTOR vCameraPosition, vCenter, vTemp;
-//         orxCOLOR  stColor;
-//         orxFLOAT  fRadius, fZ;
-
-//         /* Gets camera position */
-//         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
-
-//         /* Gets its frustum */
-//         orxCamera_GetFrustum(pstCamera, &stFrustum);
-
-//         /* Stores its Z */
-//         fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
-
-//         /* Inits center & temp vectors */
-//         orxVector_Set(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.x), sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.y), fZ);
-//         orxVector_Copy(&vTemp, &vCenter);
-//         vTemp.fX += sstPhysics.fRecDimensionRatio * orx2F(_fRadius);
-
-//         /* Gets its screen position */
-//         orxRender_GetScreenPosition(&vCenter, pstViewport, &vCenter);
-//         orxRender_GetScreenPosition(&vTemp, pstViewport, &vTemp);
-
-//         /* Sets color */
-//         orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
-//         stColor.fAlpha = orxFLOAT_1;
-
-//         /* Retrieves transformed radius */
-//         fRadius = orxVector_GetDistance(&vCenter, &vTemp);
-
-//         /* Draws circle */
-//         orxDisplay_DrawCircle(&vCenter, fRadius, orxColor_ToRGBA(&stColor), orxFALSE);
-//       }
-//     }
-//   }
-
-//   /* Done! */
-//   return;
-// }
-
-// void orxPhysicsDebugDraw::DrawSolidCircle(const b2Vec2 &_rvCenter, float32 _fRadius, const b2Vec2 &_rvAxis, const b2Color &_rstColor)
-// {
-//   orxVIEWPORT *pstViewport;
-
-//   /* For all viewports */
-//   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
-//       pstViewport != orxNULL;
-//       pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
-//   {
-//     /* Is enabled and supports debug? */
-//     if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
-//     && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
-//     {
-//       orxCAMERA *pstCamera;
-
-//       /* Gets viewport camera */
-//       pstCamera = orxViewport_GetCamera(pstViewport);
-
-//       /* Valid? */
-//       if(pstCamera != orxNULL)
-//       {
-//         orxAABOX  stFrustum;
-//         orxVECTOR vCameraPosition, vCenter, vTemp;
-//         orxCOLOR  stColor;
-//         orxFLOAT  fRadius, fZ;
-
-//         /* Gets camera position */
-//         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
-
-//         /* Gets its frustum */
-//         orxCamera_GetFrustum(pstCamera, &stFrustum);
-
-//         /* Stores its Z */
-//         fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
-
-//         /* Inits center & temp vectors */
-//         orxVector_Set(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.x), sstPhysics.fRecDimensionRatio * orx2F(_rvCenter.y), fZ);
-//         orxVector_Copy(&vTemp, &vCenter);
-//         vTemp.fX += sstPhysics.fRecDimensionRatio * orx2F(_fRadius);
-
-//         /* Gets their screen position */
-//         orxRender_GetScreenPosition(&vCenter, pstViewport, &vCenter);
-//         orxRender_GetScreenPosition(&vTemp, pstViewport, &vTemp);
-
-//         /* Retrieves transformed radius */
-//         fRadius = orxVector_GetDistance(&vCenter, &vTemp);
-
-//         /* Sets color */
-//         orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
-
-//         /* Draws circle inside */
-//         stColor.fAlpha = orx2F(0.5f);
-//         orxDisplay_DrawCircle(&vCenter, fRadius, orxColor_ToRGBA(&stColor), orxTRUE);
-
-//         /* Draws circle outside */
-//         stColor.fAlpha = orxFLOAT_1;
-//         orxDisplay_DrawCircle(&vCenter, fRadius, orxColor_ToRGBA(&stColor), orxFALSE);
-//       }
-//     }
-//   }
-
-//   /* Done! */
-//   return;
-// }
-
-// void orxPhysicsDebugDraw::DrawSegment(const b2Vec2 &_rvP1, const b2Vec2 &_rvP2, const b2Color &_rstColor)
-// {
-//   orxVIEWPORT *pstViewport;
-
-//   /* For all viewports */
-//   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
-//       pstViewport != orxNULL;
-//       pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
-//   {
-//     /* Is enabled and supports debug? */
-//     if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
-//     && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
-//     {
-//       orxCAMERA *pstCamera;
-
-//       /* Gets viewport camera */
-//       pstCamera = orxViewport_GetCamera(pstViewport);
-
-//       /* Valid? */
-//       if(pstCamera != orxNULL)
-//       {
-//         orxAABOX  stFrustum;
-//         orxVECTOR vCameraPosition, vBegin, vEnd;
-//         orxCOLOR  stColor;
-//         orxFLOAT  fZ;
-
-//         /* Gets camera position */
-//         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
-
-//         /* Gets its frustum */
-//         orxCamera_GetFrustum(pstCamera, &stFrustum);
-
-//         /* Stores its Z */
-//         fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
-
-//         /* Inits points */
-//         orxVector_Set(&vBegin, sstPhysics.fRecDimensionRatio * orx2F(_rvP1.x), sstPhysics.fRecDimensionRatio * orx2F(_rvP1.y), fZ);
-//         orxVector_Set(&vEnd, sstPhysics.fRecDimensionRatio * orx2F(_rvP2.x), sstPhysics.fRecDimensionRatio * orx2F(_rvP2.y), fZ);
-
-//         /* Gets their screen positions */
-//         orxRender_GetScreenPosition(&vBegin, pstViewport, &vBegin);
-//         orxRender_GetScreenPosition(&vEnd, pstViewport, &vEnd);
-
-//         /* Sets color */
-//         orxVector_Set(&(stColor.vRGB), orx2F(_rstColor.r), orx2F(_rstColor.g), orx2F(_rstColor.b));
-//         stColor.fAlpha = orxFLOAT_1;
-
-//         /* Draws segment */
-//         orxDisplay_DrawLine(&vBegin, &vEnd, orxColor_ToRGBA(&stColor));
-//       }
-//     }
-//   }
-
-//   /* Done! */
-//   return;
-// }
-
-// void orxPhysicsDebugDraw::DrawTransform(const b2Transform &_rstTransform)
-// {
-//   orxVIEWPORT *pstViewport;
-
-//   /* For all viewports */
-//   for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
-//       pstViewport != orxNULL;
-//       pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
-//   {
-//     /* Is enabled and supports debug? */
-//     if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
-//     && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
-//     {
-//       orxCAMERA *pstCamera;
-
-//       /* Gets viewport camera */
-//       pstCamera = orxViewport_GetCamera(pstViewport);
-
-//       /* Valid? */
-//       if(pstCamera != orxNULL)
-//       {
-//         orxAABOX  stFrustum;
-//         orxVECTOR vCameraPosition, vBegin, vEndX, vEndY;
-//         orxFLOAT  fZ;
-
-//         /* Gets camera position */
-//         orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
-
-//         /* Gets its frustum */
-//         orxCamera_GetFrustum(pstCamera, &stFrustum);
-
-//         /* Stores its Z */
-//         fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
-
-//         /* Inits points */
-// #define orxPHYSICS_KF_SCALE orx2F(0.5f)
-//         orxVector_Set(&vBegin, sstPhysics.fRecDimensionRatio * orx2F(_rstTransform.p.x), sstPhysics.fRecDimensionRatio * orx2F(_rstTransform.p.y), fZ);
-//         orxVector_Set(&vEndX, vBegin.fX + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(_rstTransform.q.c), vBegin.fY + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(_rstTransform.q.s), fZ);
-//         orxVector_Set(&vEndY, vBegin.fX + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(-_rstTransform.q.s), vBegin.fY + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(_rstTransform.q.c), fZ);
-// #undef orxPHYSICS_KF_SCALE
-
-//         /* Gets their screen positions */
-//         orxRender_GetScreenPosition(&vBegin, pstViewport, &vBegin);
-//         orxRender_GetScreenPosition(&vEndX, pstViewport, &vEndX);
-//         orxRender_GetScreenPosition(&vEndY, pstViewport, &vEndY);
-
-//         /* Draws segments */
-//         orxDisplay_DrawLine(&vBegin, &vEndX, orx2RGBA(0xFF, 0x00, 0x00, 0xFF));
-//         orxDisplay_DrawLine(&vBegin, &vEndY, orx2RGBA(0x00, 0xFF, 0x00, 0xFF));
-//       }
-//     }
-//   }
-
-//   /* Done! */
-//   return;
-// }
-
-// static orxSTATUS orxFASTCALL orxPhysics_Box2D_EventHandler(const orxEVENT *_pstEvent)
-// {
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RENDER);
-
-//   /* End of rendering? */
-//   if(_pstEvent->eID == orxRENDER_EVENT_STOP)
-//   {
-//     /* Pushes config section */
-//     orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
-
-//     /* Show debug? */
-//     if(orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_SHOW_DEBUG) != orxFALSE)
-//     {
-//       orxPHYSICS_DEBUG_RAY *pstRay;
-
-//       /* Draws debug */
-//       sstPhysics.poWorld->DrawDebugData();
-
-//       /* For all rays */
-//       for(pstRay = (orxPHYSICS_DEBUG_RAY *)orxBank_GetNext(sstPhysics.pstRayBank, orxNULL);
-//           pstRay != orxNULL;
-//           pstRay = (orxPHYSICS_DEBUG_RAY *)orxBank_GetNext(sstPhysics.pstRayBank, pstRay))
-//       {
-//         /* Draws it */
-//         sstPhysics.poDebugDraw->DrawSegment(pstRay->vBegin, pstRay->vEnd, pstRay->stColor);
-//       }
-//     }
-
-//     /* Clears ray bank */
-//     orxBank_Clear(sstPhysics.pstRayBank);
-
-//     /* Pops config section */
-//     orxConfig_PopSection();
-//   }
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
-
-// /** Applies physics simulation result to the body
-//  * @param[in]   _pstBody                      Concerned body
-//  */
-// static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBody)
-// {
-//   b2Body         *poBody;
-//   orxOBJECT      *pstObject;
-//   orxBODY        *pstBody;
-//   orxFRAME       *pstFrame;
-//   orxFRAME_SPACE  eFrameSpace;
-
-//   /* Profiles */
-//   orxPROFILER_PUSH_MARKER("orxPhysics_ApplySimResult");
-
-//   /* Gets physics body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets associated body */
-//   pstBody = orxBODY(poBody->GetUserData());
-
-//   /* Gets owner object */
-//   pstObject = orxOBJECT(orxStructure_GetOwner(pstBody));
-
-//   /* Gets its frame */
-//   pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
-
-//   /* Gets its frame space */
-//   eFrameSpace = (orxFrame_IsRootChild(pstFrame) != orxFALSE) ? orxFRAME_SPACE_LOCAL : orxFRAME_SPACE_GLOBAL;
-
-//   /* Is enabled? */
-//   if(orxObject_IsEnabled(pstObject) != orxFALSE)
-//   {
-//     orxVECTOR   vSpeed, vOldPos, vNewPos;
-//     orxCLOCK   *pstClock;
-//     orxFLOAT    fCoef = orxFLOAT_1;
-
-//     /* Gets its clock */
-//     pstClock = orxObject_GetClock(pstObject);
-
-//     /* Valid */
-//     if(pstClock != orxNULL)
-//     {
-//       /* Paused? */
-//       if(orxClock_IsPaused(pstClock) != orxFALSE)
-//       {
-//         /* Updates coef */
-//         fCoef = orxFLOAT_0;
-//       }
-//       else
-//       {
-//         orxFLOAT fModifier;
-
-//         /* Gets multiply modifier */
-//         fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
-
-//         /* Valid? */
-//         if(fModifier != orxFLOAT_0)
-//         {
-//           /* Updates coef */
-//           fCoef = orxFLOAT_1 / fModifier;
-//         }
-//       }
-//     }
-
-//     /* Gets resulting speed */
-//     orxPhysics_GetSpeed(_pstBody, &vSpeed);
-
-//     /* Global space? */
-//     if(eFrameSpace == orxFRAME_SPACE_GLOBAL)
-//     {
-//       orxVECTOR vScale;
-//       orxFRAME *pstParentFrame;
-
-//       /* Gets parent frame */
-//       pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
-
-//       /* Updates speed according to parent scale & rotation */
-//       orxVector_2DRotate(&vSpeed, &vSpeed, -orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
-//       orxVector_Div(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
-//     }
-
-//     /* Updates its speed & angular velocity */
-//     orxBody_SetSpeed(pstBody, orxVector_Mulf(&vSpeed, &vSpeed, fCoef));
-//     orxBody_SetAngularVelocity(pstBody, fCoef * orxPhysics_GetAngularVelocity(_pstBody));
-
-//     /* Should interpolate? */
-//     if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
-//     {
-//       orxFLOAT fInterpolationCoef;
-
-//       /* Gets interpolation coef */
-//       fInterpolationCoef = sstPhysics.fDTAccumulator / sstPhysics.fFixedDT;
-
-//       /* Updates rotation */
-//       _pstBody->fInterpolatedRotation = orxLERP(_pstBody->fPreviousRotation, orxPhysics_GetRotation(_pstBody), fInterpolationCoef);
-//       orxFrame_SetRotation(pstFrame, eFrameSpace, _pstBody->fInterpolatedRotation);
-
-//       /* Updates position */
-//       orxFrame_GetPosition(pstFrame, eFrameSpace, &vOldPos);
-//       orxPhysics_GetPosition(_pstBody, &vNewPos);
-//       _pstBody->vInterpolatedPosition.fX = orxLERP(_pstBody->vPreviousPosition.fX, vNewPos.fX, fInterpolationCoef);
-//       _pstBody->vInterpolatedPosition.fY = orxLERP(_pstBody->vPreviousPosition.fY, vNewPos.fY, fInterpolationCoef);
-//       _pstBody->vInterpolatedPosition.fZ = vOldPos.fZ;
-//       orxFrame_SetPosition(pstFrame, eFrameSpace, &_pstBody->vInterpolatedPosition);
-//     }
-//     else
-//     {
-//       /* Updates rotation */
-//       orxFrame_SetRotation(pstFrame, eFrameSpace, orxPhysics_GetRotation(_pstBody));
-
-//       /* Updates position */
-//       orxFrame_GetPosition(pstFrame, eFrameSpace, &vOldPos);
-//       orxPhysics_GetPosition(_pstBody, &vNewPos);
-//       vNewPos.fZ = vOldPos.fZ;
-//       orxFrame_SetPosition(pstFrame, eFrameSpace, &vNewPos);
-//     }
-//   }
-//   else
-//   {
-//     orxVECTOR vPosition;
-
-//     /* Enforces its body properties */
-//     orxPhysics_SetRotation(_pstBody, orxFrame_GetRotation(pstFrame, eFrameSpace));
-//     orxPhysics_SetAngularVelocity(_pstBody, orxFLOAT_0);
-//     orxPhysics_SetPosition(_pstBody, orxFrame_GetPosition(pstFrame, eFrameSpace, &vPosition));
-//     orxPhysics_SetSpeed(_pstBody, &orxVECTOR_0);
-//   }
-
-//   /* Profiles */
-//   orxPROFILER_POP_MARKER();
-
-//   /* Done! */
-//   return;
-// }
-
-// /** Resets interpolation values
-//  */
-// static void orxFASTCALL orxPhysics_Box2D_ResetInterpolation()
-// {
-//   orxPHYSICS_BODY *pstPhysicBody;
-
-//   /* For all physical bodies */
-//   for(pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetFirst(&(sstPhysics.stBodyList));
-//       pstPhysicBody != orxNULL;
-//       pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetNext(&(pstPhysicBody->stNode)))
-//   {
-//     b2Body *poBody;
-
-//     /* Gets body */
-//     poBody = pstPhysicBody->poBody;
-
-//     /* Non-static and awake? */
-//     if((poBody->GetType() != b2_staticBody)
-//     && (poBody->IsAwake() != false))
-//     {
-//       /* Resets its values */
-//       orxPhysics_GetPosition(pstPhysicBody, &pstPhysicBody->vPreviousPosition);
-//       orxVector_Copy(&pstPhysicBody->vInterpolatedPosition, &pstPhysicBody->vPreviousPosition);
-//       pstPhysicBody->fPreviousRotation      =
-//       pstPhysicBody->fInterpolatedRotation  = orxPhysics_GetRotation(pstPhysicBody);
-//     }
-//   }
-
-//   /* Done! */
-//   return;
-// }
-
-// /** Update (callback to register on a clock)
-//  * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
-//  * @param[in]   _pContext       Context sent when registering callback to the clock
-//  */
-// static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
-// {
-//   orxPHYSICS_BODY  *pstPhysicBody;
-//   b2Body           *poBody;
-
-//   /* Profiles */
-//   orxPROFILER_PUSH_MARKER("orxPhysics_Update");
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstClockInfo != orxNULL);
-
-//   /* For all physical bodies */
-//   for(pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetFirst(&(sstPhysics.stBodyList));
-//       pstPhysicBody != orxNULL;
-//       pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetNext(&(pstPhysicBody->stNode)))
-//   {
-//     orxOBJECT  *pstObject;
-//     orxBODY    *pstBody;
-
-//     poBody = pstPhysicBody->poBody;
-
-//     /* Gets associated body */
-//     pstBody = orxBODY(poBody->GetUserData());
-
-//     /* Gets owner object */
-//     pstObject = orxOBJECT(orxStructure_GetOwner(pstBody));
-
-//     /* Is enabled? */
-//     if(orxObject_IsEnabled(pstObject) != orxFALSE)
-//     {
-//       orxFRAME   *pstFrame;
-//       orxVECTOR   vSpeed, vGravity;
-//       orxCLOCK   *pstClock;
-//       orxFLOAT    fCoef = orxFLOAT_1;
-
-//       /* Gets its clock */
-//       pstClock = orxObject_GetClock(pstObject);
-
-//       /* Valid */
-//       if(pstClock != orxNULL)
-//       {
-//         /* Paused? */
-//         if(orxClock_IsPaused(pstClock) != orxFALSE)
-//         {
-//           /* Updates coef */
-//           fCoef = orxFLOAT_0;
-//         }
-//         else
-//         {
-//           orxFLOAT fModifier;
-
-//           /* Gets multiply modifier */
-//           fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
-
-//           /* Valid? */
-//           if(fModifier != orxFLOAT_0)
-//           {
-//             /* Uses it */
-//             fCoef = fModifier;
-//           }
-//         }
-//       }
-
-//       /* Enforces its activation state */
-//       poBody->SetActive(true);
-
-//       /* Gets owner's frame */
-//       pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
-
-//       /* Gets its body speed */
-//       orxBody_GetSpeed(pstBody, &vSpeed);
-
-//       /* Is not a root child? */
-//       if(orxFrame_IsRootChild(pstFrame) == orxFALSE)
-//       {
-//         orxVECTOR vPos, vScale;
-//         orxFRAME *pstParentFrame;
-
-//         /* Updates body position & rotation */
-//         orxPhysics_SetPosition(pstPhysicBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
-//         orxPhysics_SetRotation(pstPhysicBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
-
-//         /* Gets parent frame */
-//         pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
-
-//         /* Updates speed according to parent scale & rotation */
-//         orxVector_2DRotate(&vSpeed, &vSpeed, orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
-//         orxVector_Mul(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
-//       }
-
-//       /* Applies speed & angular velocity */
-//       orxPhysics_SetSpeed(pstPhysicBody, orxVector_Mulf(&vSpeed, &vSpeed, fCoef));
-//       orxPhysics_SetAngularVelocity(pstPhysicBody, fCoef * orxBody_GetAngularVelocity(pstBody));
-
-//       /* No custom gravity */
-//       if(orxBody_GetCustomGravity(pstBody, &vGravity) == orxNULL)
-//       {
-//         /* Uses world gravity */
-//         orxPhysics_GetGravity(&vGravity);
-//       }
-
-//       /* Applies modified gravity */
-//       orxPhysics_SetCustomGravity(pstPhysicBody, orxVector_Mulf(&vGravity, &vGravity, fCoef * fCoef));
-//     }
-//     else
-//     {
-//       /* Is still active? */
-//       if(poBody->IsActive() != false)
-//       {
-//         /* Deactivates it */
-//         poBody->SetActive(false);
-//       }
-//     }
-//   }
-
-//   /* Is simulation enabled? */
-//   if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
-//   {
-//     orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-//     orxU32                    u32Steps, i;
-
-//     /* Stores DT */
-//     sstPhysics.fLastDT = _pstClockInfo->fDT;
-
-//     /* Updates DT accumulator */
-//     sstPhysics.fDTAccumulator += _pstClockInfo->fDT;
-
-//     /* Computes the number of steps */
-//     u32Steps = (orxU32)orxMath_Floor((sstPhysics.fDTAccumulator + orxPhysics::sfMinStepDuration) / sstPhysics.fFixedDT);
-
-//     /* Updates accumulator */
-//     sstPhysics.fDTAccumulator = orxMAX(orxFLOAT_0, sstPhysics.fDTAccumulator - (orxU2F(u32Steps) * sstPhysics.fFixedDT));
-
-//     /* For all steps */
-//     for(i = 0; i < u32Steps; i++)
-//     {
-//       /* Last step and should interpolate? */
-//       if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE)
-//       && (i == u32Steps - 1))
-//       {
-//         /* Resets interpolation */
-//         orxPhysics_Box2D_ResetInterpolation();
-//       }
-
-//       /* Updates world simulation */
-//       sstPhysics.poWorld->Step(sstPhysics.fFixedDT, sstPhysics.u32Iterations, sstPhysics.u32Iterations >> 1);
-//     }
-
-//     /* Not absolute fixed DT? */
-//     if(!orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT))
-//     {
-//       /* Should run a last simulation step? */
-//       if(sstPhysics.fDTAccumulator >= orxPhysics::sfMinStepDuration)
-//       {
-//         /* Updates last step of world simulation */
-//         sstPhysics.poWorld->Step(sstPhysics.fDTAccumulator, sstPhysics.u32Iterations, sstPhysics.u32Iterations >> 1);
-
-//         /* Clears accumulator */
-//         sstPhysics.fDTAccumulator = orxFLOAT_0;
-//       }
-//     }
-
-//     /* Clears forces */
-//     sstPhysics.poWorld->ClearForces();
-
-//     /* For all physical bodies */
-//     for(pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetFirst(&(sstPhysics.stBodyList));
-//         pstPhysicBody != orxNULL;
-//         pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetNext(&(pstPhysicBody->stNode)))
-//     {
-//       poBody = pstPhysicBody->poBody;
-
-//       /* Non-static and awake? */
-//       if((poBody->GetType() != b2_staticBody)
-//       && (poBody->IsAwake() != false))
-//       {
-//         /* Applies simulation result */
-//         orxPhysics_ApplySimulationResult(pstPhysicBody);
-//       }
-//     }
-
-//     /* For all stored events */
-//     for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
-//         pstEventStorage != orxNULL;
-//         pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
-//     {
-//       /* Depending on type */
-//       switch(pstEventStorage->eID)
-//       {
-//         case orxPHYSICS_EVENT_CONTACT_ADD:
-//         case orxPHYSICS_EVENT_CONTACT_REMOVE:
-//         {
-//           /* Sends event */
-//           orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, pstEventStorage->eID, orxStructure_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData())), orxStructure_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData())), &(pstEventStorage->stPayload));
-
-//           break;
-//         }
-
-//         default:
-//         {
-//           break;
-//         }
-//       }
-//     }
-
-//     /* Clears stored events */
-//     orxLinkList_Clean(&(sstPhysics.stEventList));
-//     orxBank_Clear(sstPhysics.pstEventBank);
-//   }
-
-//   /* Profiles */
-//   orxPROFILER_POP_MARKER();
-
-//   /* Done! */
-//   return;
-// }
-
-// orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxHANDLE _hUserData, const orxBODY_DEF *_pstBodyDef)
-// {
-//   orxPHYSICS_BODY     *pstResult = 0;
-//   b2BodyDef            stBodyDef;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_hUserData != orxHANDLE_UNDEFINED);
-//   orxASSERT(_pstBodyDef != orxNULL);
-
-//   /* 2D? */
-//   if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_2D))
-//   {
-//     /* Inits body definition */
-//     stBodyDef.userData          = _hUserData;
-//     stBodyDef.angle             = _pstBodyDef->fRotation;
-//     stBodyDef.linearDamping     = _pstBodyDef->fLinearDamping;
-//     stBodyDef.angularDamping    = _pstBodyDef->fAngularDamping;
-//     stBodyDef.bullet            = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
-//     stBodyDef.allowSleep        = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP);
-//     stBodyDef.fixedRotation     = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
-//     stBodyDef.position.Set(sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fX, sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fY);
-
-//     /* Is dynamic? */
-//     if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
-//     {
-//       b2MassData  stMassData;
-//       orxBOOL     bHasMass;
-
-//       /* Sets its type */
-//       stBodyDef.type = b2_dynamicBody;
-
-//       /* Has mass data? */
-//       if((_pstBodyDef->fInertia > 0.0f) && (_pstBodyDef->fMass > 0.0f))
-//       {
-//         /* Stores mass properties */
-//         stMassData.I    = _pstBodyDef->fInertia;
-//         stMassData.mass = _pstBodyDef->fMass;
-
-//         /* Updates status */
-//         bHasMass = orxTRUE;
-//       }
-//       else
-//       {
-//         /* Updates status */
-//         bHasMass = orxFALSE;
-//       }
-
-//       /* Adds a body */
-//       pstResult = (orxPHYSICS_BODY*) orxBank_Allocate(sstPhysics.pstBodyBank);
-
-//       /* Valid? */
-//       if(pstResult != orxNULL)
-//       {
-//         orxMemory_Zero(pstResult, sizeof(orxPHYSICS_BODY));
-
-//         /* Creates dynamic body */
-//         pstResult->poBody = sstPhysics.poWorld->CreateBody(&stBodyDef);
-
-//         /* Valid and has mass data? */
-//         if((bHasMass != orxFALSE) && (pstResult->poBody != orxNULL))
-//         {
-//           /* Updates its mass data */
-//           pstResult->poBody->SetMassData(&stMassData);
-//         }
-
-//         /* Adds it to list */
-//         orxLinkList_AddEnd(&(sstPhysics.stBodyList), &(pstResult->stNode));
-//       }
-//     }
-//     else
-//     {
-//       /* Sets its type */
-//       stBodyDef.type = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_CAN_MOVE) ? b2_kinematicBody : b2_staticBody;
-
-//       /* Adds a body */
-//       pstResult = (orxPHYSICS_BODY*) orxBank_Allocate(sstPhysics.pstBodyBank);
-
-//       /* Valid? */
-//       if(pstResult != orxNULL)
-//       {
-//         orxMemory_Zero(pstResult, sizeof(orxPHYSICS_BODY));
-
-//         /* Creates dynamic body */
-//         pstResult->poBody = sstPhysics.poWorld->CreateBody(&stBodyDef);
-
-//         /* Adds it to list */
-//         orxLinkList_AddEnd(&(sstPhysics.stBodyList), &(pstResult->stNode));
-//       }
-//     }
-//   }
-
-//   /* Done! */
-//   return pstResult;
-// }
-
-// void orxFASTCALL orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
-// {
-//   orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* For all stored events */
-//   for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
-//       pstEventStorage != orxNULL;
-//       pstEventStorage = (pstEventStorage == orxNULL) ? (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList)) : (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
-//   {
-//     /* Is part of the event? */
-//     if(((b2Body *)_pstBody->poBody == pstEventStorage->poDestination) || ((b2Body *)_pstBody->poBody == pstEventStorage->poSource))
-//     {
-//       orxPHYSICS_EVENT_STORAGE *pstCurrentEventStorage;
-
-//       /* Gets current event */
-//       pstCurrentEventStorage = pstEventStorage;
-
-//       /* Goes back to previous */
-//       pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetPrevious(&(pstEventStorage->stNode));
-
-//       /* Removes event */
-//       orxLinkList_Remove(&(pstCurrentEventStorage->stNode));
-//       orxBank_Free(sstPhysics.pstEventBank, pstCurrentEventStorage);
-//     }
-//   }
-
-//   /* Deletes it */
-//   sstPhysics.poWorld->DestroyBody((b2Body *)_pstBody->poBody);
-
-//   /* Removes body */
-//   orxLinkList_Remove(&(_pstBody->stNode));
-//   orxBank_Free(sstPhysics.pstBodyBank, _pstBody);
-
-//   return;
-// }
-
-// orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef)
-// {
-//   b2Body         *poBody;
-//   b2Fixture      *poResult = 0;
-//   b2FixtureDef    stFixtureDef;
-//   b2CircleShape   stCircleShape;
-//   b2PolygonShape  stPolygonShape;
-//   b2EdgeShape     stEdgeShape;
-//   b2ChainShape    stChainShape;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-//   orxASSERT(_pstBodyPartDef != orxNULL);
-//   orxASSERT(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_MASK_TYPE));
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Circle? */
-//   if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SPHERE))
-//   {
-//     /* Stores shape reference */
-//     stFixtureDef.shape = &stCircleShape;
-
-//     /* Stores its coordinates */
-//     stCircleShape.m_p.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fY * _pstBodyPartDef->vScale.fY);
-//     stCircleShape.m_radius = sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.fRadius * orx2F(0.5f) * (orxMath_Abs(_pstBodyPartDef->vScale.fX) + orxMath_Abs(_pstBodyPartDef->vScale.fY));
-//   }
-//   /* Polygon? */
-//   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX | orxBODY_PART_DEF_KU32_FLAG_MESH))
-//   {
-//     /* Stores shape reference */
-//     stFixtureDef.shape = &stPolygonShape;
-
-//     /* Box? */
-//     if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX))
-//     {
-//       b2Vec2 avVertexList[4];
-
-//       /* No mirroring? */
-//       if(_pstBodyPartDef->vScale.fX * _pstBodyPartDef->vScale.fY > orxFLOAT_0)
-//       {
-//         /* Stores its coordinates */
-//         avVertexList[0].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
-//         avVertexList[1].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
-//         avVertexList[2].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
-//         avVertexList[3].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
-//       }
-//       else
-//       {
-//         /* Stores its coordinates */
-//         avVertexList[0].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
-//         avVertexList[1].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
-//         avVertexList[2].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fY * _pstBodyPartDef->vScale.fY);
-//         avVertexList[3].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vBR.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stAABox.stBox.vTL.fY * _pstBodyPartDef->vScale.fY);
-//       }
-
-//       /* Updates shape */
-//       stPolygonShape.Set(avVertexList, 4);
-//     }
-//     else
-//     {
-//       b2Vec2 avVertexList[b2_maxPolygonVertices];
-//       orxU32 i;
-
-//       /* Checks */
-//       orxASSERT(_pstBodyPartDef->stMesh.u32VertexCount > 0);
-//       orxASSERT(orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER <= b2_maxPolygonVertices);
-
-//       /* No mirroring? */
-//       if(_pstBodyPartDef->vScale.fX * _pstBodyPartDef->vScale.fY > orxFLOAT_0)
-//       {
-//         /* For all the vertices */
-//         for(i = 0; i < _pstBodyPartDef->stMesh.u32VertexCount; i++)
-//         {
-//           /* Sets its vector */
-//           avVertexList[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
-//         }
-//       }
-//       else
-//       {
-//         orxS32 iDst;
-
-//         /* For all the vertices */
-//         for(iDst = _pstBodyPartDef->stMesh.u32VertexCount - 1, i = 0; iDst >= 0; iDst--, i++)
-//         {
-//           /* Sets its vector */
-//           avVertexList[iDst].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
-//         }
-//       }
-
-//       /* Updates shape */
-//       stPolygonShape.Set(avVertexList, (int32)_pstBodyPartDef->stMesh.u32VertexCount);
-//     }
-//   }
-//   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_EDGE))
-//   {
-//     b2Vec2  av[2];
-//     orxU32  i;
-
-//     /* Stores shape reference */
-//     stFixtureDef.shape = &stEdgeShape;
-
-//     /* Sets vertices */
-//     for(i = 0; i < 2; i++)
-//     {
-//       av[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
-//     }
-
-//     /* Updates shape */
-//     stEdgeShape.Set(av[0], av[1]);
-
-//     /* Has previous (ghost)? */
-//     if(_pstBodyPartDef->stEdge.bHasPrevious)
-//     {
-//       stEdgeShape.m_vertex0.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vPrevious.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vPrevious.fY * _pstBodyPartDef->vScale.fY);
-//       stEdgeShape.m_hasVertex0 = true;
-//     }
-
-//     /* Has next (ghost)? */
-//     if(_pstBodyPartDef->stEdge.bHasNext)
-//     {
-//       stEdgeShape.m_vertex3.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vNext.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vNext.fY * _pstBodyPartDef->vScale.fY);
-//       stEdgeShape.m_hasVertex3 = true;
-//     }
-//   }
-//   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_CHAIN))
-//   {
-//     b2Vec2 *avVertexList = (b2Vec2 *)alloca(_pstBodyPartDef->stChain.u32VertexCount * sizeof(b2Vec2));
-//     orxU32  i;
-
-//     /* Checks */
-//     orxASSERT(_pstBodyPartDef->stChain.u32VertexCount > 0);
-//     orxASSERT(_pstBodyPartDef->stChain.avVertices != orxNULL);
-
-//     /* Stores shape reference */
-//     stFixtureDef.shape = &stChainShape;
-
-//     /* For all the vertices */
-//     for(i = 0; i < _pstBodyPartDef->stChain.u32VertexCount; i++)
-//     {
-//       /* Sets its vector */
-//       avVertexList[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
-//     }
-
-//     /* Is loop? */
-//     if(_pstBodyPartDef->stChain.bIsLoop != orxFALSE)
-//     {
-//       /* Creates loop chain */
-//       stChainShape.CreateLoop(avVertexList, _pstBodyPartDef->stChain.u32VertexCount);
-//     }
-//     else
-//     {
-//       /* Creates chain */
-//       stChainShape.CreateChain(avVertexList, _pstBodyPartDef->stChain.u32VertexCount);
-
-//       /* Has Previous? */
-//       if(_pstBodyPartDef->stChain.bHasPrevious != orxFALSE)
-//       {
-//         b2Vec2 vPrevious;
-
-//         /* Sets previous vertex */
-//         vPrevious.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vPrevious.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vPrevious.fY * _pstBodyPartDef->vScale.fY);
-//         stChainShape.SetPrevVertex(vPrevious);
-//       }
-
-//       /* Has Next? */
-//       if(_pstBodyPartDef->stChain.bHasNext != orxFALSE)
-//       {
-//         b2Vec2 vNext;
-
-//         /* Sets next vertex */
-//         vNext.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vNext.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vNext.fY * _pstBodyPartDef->vScale.fY);
-//         stChainShape.SetNextVertex(vNext);
-//       }
-//     }
-//   }
-
-//   /* Inits Fixture definition */
-//   stFixtureDef.userData             = _hUserData;
-//   stFixtureDef.friction             = _pstBodyPartDef->fFriction;
-//   stFixtureDef.restitution          = _pstBodyPartDef->fRestitution;
-//   stFixtureDef.density              = (poBody->GetType() != b2_dynamicBody) ? 0.0f : _pstBodyPartDef->fDensity;
-//   stFixtureDef.filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
-//   stFixtureDef.filter.maskBits      = _pstBodyPartDef->u16CheckMask;
-//   stFixtureDef.filter.groupIndex    = 0;
-//   stFixtureDef.isSensor             = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
-
-//   /* Creates it */
-//   poResult = poBody->CreateFixture(&stFixtureDef);
-
-//   /* Done! */
-//   return (orxPHYSICS_BODY_PART *)poResult;
-// }
-
-// void orxFASTCALL orxPhysics_Box2D_DeletePart(orxPHYSICS_BODY_PART *_pstBodyPart)
-// {
-//   b2Fixture  *poFixture;
-//   b2Body     *poBody;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets Fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Gets its body */
-//   poBody = poFixture->GetBody();
-
-//   /* Deletes its part */
-//   poBody->DestroyFixture(poFixture);
-
-//   return;
-// }
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+static void orxPhysics_Box2D_DrawPolygon(const b2Vec2 *_avVertexList, int _s32VertexNumber, b2HexColor _stColor, void *_pContext)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* For all viewports */
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+      pstViewport != orxNULL;
+      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+  {
+    /* Is enabled and supports debug? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
+    {
+      orxCAMERA *pstCamera;
+
+      /* Gets viewport camera */
+      pstCamera = orxViewport_GetCamera(pstViewport);
+
+      /* Valid? */
+      if(pstCamera != orxNULL)
+      {
+        orxAABOX    stFrustum;
+        orxVECTOR   vCameraPosition;
+        orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+        orxFLOAT    fZ;
+        orxS32      i;
+
+        /* Gets camera position */
+        orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+        /* Gets its frustum */
+        orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
+
+        /* For all vertices */
+        for(i = 0; i < _s32VertexNumber; i++)
+        {
+          orxVECTOR vTemp;
+
+          /* Sets it */
+          orxVector_Set(&vTemp, sstPhysics.fRecDimensionRatio * orx2F(_avVertexList[i].x), sstPhysics.fRecDimensionRatio * orx2F(_avVertexList[i].y), fZ);
+
+          /* Stores its screen position */
+          orxRender_GetScreenPosition(&vTemp, pstViewport, &(avVertexList[i]));
+        }
+
+        /* Draws polygon */
+        orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orx2RGBA((_stColor & 0xFF0000) >> 16, (_stColor & 0x00FF00) >> 8, _stColor & 0x0000FF, 0xFF), orxFALSE);
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+static void orxPhysics_Box2D_DrawSolidPolygon(b2Transform _stTransform, const b2Vec2 *_avVertexList, int _s32VertexNumber, float _fRadius, b2HexColor _stColor, void *_pContext)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* For all viewports */
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+      pstViewport != orxNULL;
+      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+  {
+    /* Is enabled and supports debug? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
+    {
+      orxCAMERA *pstCamera;
+
+      /* Gets viewport camera */
+      pstCamera = orxViewport_GetCamera(pstViewport);
+
+      /* Valid? */
+      if(pstCamera != orxNULL)
+      {
+        orxAABOX    stFrustum;
+        orxVECTOR   vCameraPosition;
+        orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+        orxFLOAT    fZ;
+        orxS32      i;
+
+        /* Gets camera position */
+        orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+        /* Gets its frustum */
+        orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
+
+        /* For all vertices */
+        for(i = 0; i < _s32VertexNumber; i++)
+        {
+          orxVECTOR vTemp;
+          b2Vec2    vPoint;
+
+          /* Sets it */
+          vPoint = b2TransformPoint(_stTransform, _avVertexList[i]);
+          orxVector_Set(&vTemp, sstPhysics.fRecDimensionRatio * orx2F(vPoint.x), sstPhysics.fRecDimensionRatio * orx2F(vPoint.y), fZ);
+
+          /* Stores its screen position */
+          orxRender_GetScreenPosition(&vTemp, pstViewport, &(avVertexList[i]));
+        }
+
+        /* Draws polygon inside */
+        orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orx2RGBA((_stColor & 0xFF0000) >> 16, (_stColor & 0x00FF00) >> 8, _stColor & 0x0000FF, 0x7F), orxTRUE);
+
+        /* Draws polygon outside */
+        orxDisplay_DrawPolygon(avVertexList, (orxS32)_s32VertexNumber, orx2RGBA((_stColor & 0xFF0000) >> 16, (_stColor & 0x00FF00) >> 8, _stColor & 0x0000FF, 0xFF), orxFALSE);
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+static void orxPhysics_Box2D_DrawCircle(b2Vec2 _vCenter, float _fRadius, b2HexColor _stColor, void *_pContext)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* For all viewports */
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+      pstViewport != orxNULL;
+      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+  {
+    /* Is enabled and supports debug? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
+    {
+      orxCAMERA *pstCamera;
+
+      /* Gets viewport camera */
+      pstCamera = orxViewport_GetCamera(pstViewport);
+
+      /* Valid? */
+      if(pstCamera != orxNULL)
+      {
+        orxAABOX  stFrustum;
+        orxVECTOR vCameraPosition, vCenter, vTemp;
+        orxFLOAT  fRadius, fZ;
+
+        /* Gets camera position */
+        orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+        /* Gets its frustum */
+        orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
+
+        /* Inits center & temp vectors */
+        orxVector_Set(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_vCenter.x), sstPhysics.fRecDimensionRatio * orx2F(_vCenter.y), fZ);
+        orxVector_Copy(&vTemp, &vCenter);
+        vTemp.fX += sstPhysics.fRecDimensionRatio * orx2F(_fRadius);
+
+        /* Gets their screen positions */
+        orxRender_GetScreenPosition(&vCenter, pstViewport, &vCenter);
+        orxRender_GetScreenPosition(&vTemp, pstViewport, &vTemp);
+
+        /* Retrieves transformed radius */
+        fRadius = orxVector_GetDistance(&vCenter, &vTemp);
+
+        /* Draws circle */
+        orxDisplay_DrawCircle(&vCenter, fRadius, orx2RGBA((_stColor & 0xFF0000) >> 16, (_stColor & 0x00FF00) >> 8, _stColor & 0x0000FF, 0xFF), orxFALSE);
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+static void orxPhysics_Box2D_DrawSolidCircle(b2Transform _stTransform, float _fRadius, b2HexColor _stColor, void *_pContext)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* For all viewports */
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+      pstViewport != orxNULL;
+      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+  {
+    /* Is enabled and supports debug? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
+    {
+      orxCAMERA *pstCamera;
+
+      /* Gets viewport camera */
+      pstCamera = orxViewport_GetCamera(pstViewport);
+
+      /* Valid? */
+      if(pstCamera != orxNULL)
+      {
+        orxAABOX  stFrustum;
+        orxVECTOR vCameraPosition, vCenter, vTemp;
+        orxFLOAT  fRadius, fZ;
+
+        /* Gets camera position */
+        orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+        /* Gets its frustum */
+        orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
+
+        /* Inits center vectors */
+        orxVector_Set(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_stTransform.p.x), sstPhysics.fRecDimensionRatio * orx2F(_stTransform.p.y), fZ);
+        orxVector_Copy(&vTemp, &vCenter);
+        vTemp.fX += sstPhysics.fRecDimensionRatio * orx2F(_fRadius);
+
+        /* Gets their screen positions */
+        orxRender_GetScreenPosition(&vCenter, pstViewport, &vCenter);
+        orxRender_GetScreenPosition(&vTemp, pstViewport, &vTemp);
+
+        /* Retrieves transformed radius */
+        fRadius = orxVector_GetDistance(&vCenter, &vTemp);
+
+        /* Draws circle inside */
+        orxDisplay_DrawCircle(&vCenter, fRadius, orx2RGBA((_stColor & 0xFF0000) >> 16, (_stColor & 0x00FF00) >> 8, _stColor & 0x0000FF, 0x7F), orxTRUE);
+
+        /* Draws circle outside */
+        orxDisplay_DrawCircle(&vCenter, fRadius, orx2RGBA((_stColor & 0xFF0000) >> 16, (_stColor & 0x00FF00) >> 8, _stColor & 0x0000FF, 0xFF), orxFALSE);
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+static void orxPhysics_Box2D_DrawSegment(b2Vec2 _vP1, b2Vec2 _vP2, b2HexColor _stColor, void *_pContext)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* For all viewports */
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+      pstViewport != orxNULL;
+      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+  {
+    /* Is enabled and supports debug? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
+    {
+      orxCAMERA *pstCamera;
+
+      /* Gets viewport camera */
+      pstCamera = orxViewport_GetCamera(pstViewport);
+
+      /* Valid? */
+      if(pstCamera != orxNULL)
+      {
+        orxAABOX  stFrustum;
+        orxVECTOR vCameraPosition, vBegin, vEnd;
+        orxFLOAT  fZ;
+
+        /* Gets camera position */
+        orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+        /* Gets its frustum */
+        orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
+
+        /* Inits points */
+        orxVector_Set(&vBegin, sstPhysics.fRecDimensionRatio * orx2F(_vP1.x), sstPhysics.fRecDimensionRatio * orx2F(_vP1.y), fZ);
+        orxVector_Set(&vEnd, sstPhysics.fRecDimensionRatio * orx2F(_vP2.x), sstPhysics.fRecDimensionRatio * orx2F(_vP2.y), fZ);
+
+        /* Gets their screen positions */
+        orxRender_GetScreenPosition(&vBegin, pstViewport, &vBegin);
+        orxRender_GetScreenPosition(&vEnd, pstViewport, &vEnd);
+
+        /* Draws segment */
+        orxDisplay_DrawLine(&vBegin, &vEnd, orx2RGBA((_stColor & 0xFF0000) >> 16, (_stColor & 0x00FF00) >> 8, _stColor & 0x0000FF, 0xFF));
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+static void orxPhysics_Box2D_DrawTransform(b2Transform _stTransform, void *_pContext)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* For all viewports */
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+      pstViewport != orxNULL;
+      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+  {
+    /* Is enabled and supports debug? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
+    {
+      orxCAMERA *pstCamera;
+
+      /* Gets viewport camera */
+      pstCamera = orxViewport_GetCamera(pstViewport);
+
+      /* Valid? */
+      if(pstCamera != orxNULL)
+      {
+        orxAABOX  stFrustum;
+        orxVECTOR vCameraPosition, vBegin, vEndX, vEndY;
+        orxFLOAT  fZ;
+
+        /* Gets camera position */
+        orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+        /* Gets its frustum */
+        orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
+
+        /* Inits points */
+#define orxPHYSICS_KF_SCALE orx2F(0.5f)
+        orxVector_Set(&vBegin, sstPhysics.fRecDimensionRatio * orx2F(_stTransform.p.x), sstPhysics.fRecDimensionRatio * orx2F(_stTransform.p.y), fZ);
+        orxVector_Set(&vEndX, vBegin.fX + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(_stTransform.q.c), vBegin.fY + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(_stTransform.q.s), fZ);
+        orxVector_Set(&vEndY, vBegin.fX + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(-_stTransform.q.s), vBegin.fY + sstPhysics.fRecDimensionRatio * orxPHYSICS_KF_SCALE * orx2F(_stTransform.q.c), fZ);
+#undef orxPHYSICS_KF_SCALE
+
+        /* Gets their screen positions */
+        orxRender_GetScreenPosition(&vBegin, pstViewport, &vBegin);
+        orxRender_GetScreenPosition(&vEndX, pstViewport, &vEndX);
+        orxRender_GetScreenPosition(&vEndY, pstViewport, &vEndY);
+
+        /* Draws segments */
+        orxDisplay_DrawLine(&vBegin, &vEndX, orx2RGBA(0xFF, 0x00, 0x00, 0xFF));
+        orxDisplay_DrawLine(&vBegin, &vEndY, orx2RGBA(0x00, 0xFF, 0x00, 0xFF));
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+static void orxPhysics_Box2D_DrawPoint(b2Vec2 _vPoint, float _fSize, b2HexColor _stColor, void *_pContext)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* For all viewports */
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+      pstViewport != orxNULL;
+      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+  {
+    /* Is enabled and supports debug? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
+    {
+      orxCAMERA *pstCamera;
+
+      /* Gets viewport camera */
+      pstCamera = orxViewport_GetCamera(pstViewport);
+
+      /* Valid? */
+      if(pstCamera != orxNULL)
+      {
+        orxAABOX  stFrustum;
+        orxVECTOR vCameraPosition, vCenter, vTemp;
+        orxFLOAT  fRadius, fZ;
+
+        /* Gets camera position */
+        orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+        /* Gets its frustum */
+        orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
+
+        /* Inits center & temp vectors */
+        orxVector_Set(&vCenter, sstPhysics.fRecDimensionRatio * orx2F(_vPoint.x), sstPhysics.fRecDimensionRatio * orx2F(_vPoint.y), fZ);
+        orxVector_Copy(&vTemp, &vCenter);
+        vTemp.fX += sstPhysics.fRecDimensionRatio * orx2F(_fSize);
+
+        /* Gets their screen positions */
+        orxRender_GetScreenPosition(&vCenter, pstViewport, &vCenter);
+        orxRender_GetScreenPosition(&vTemp, pstViewport, &vTemp);
+
+        /* Retrieves transformed radius */
+        fRadius = orxVector_GetDistance(&vCenter, &vTemp);
+
+        /* Draws circle */
+        orxDisplay_DrawCircle(&vCenter, fRadius, orx2RGBA((_stColor & 0xFF0000) >> 16, (_stColor & 0x00FF00) >> 8, _stColor & 0x0000FF, 0xFF), orxFALSE);
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+static void orxPhysics_Box2D_DrawString(b2Vec2 _vPosition, const char *_zString, b2HexColor _stColor, void *_pContext)
+{
+  orxVIEWPORT *pstViewport;
+
+  /* For all viewports */
+  for(pstViewport = orxVIEWPORT(orxStructure_GetFirst(orxSTRUCTURE_ID_VIEWPORT));
+      pstViewport != orxNULL;
+      pstViewport = orxVIEWPORT(orxStructure_GetNext(pstViewport)))
+  {
+    /* Is enabled and supports debug? */
+    if((orxViewport_IsEnabled(pstViewport) != orxFALSE)
+    && (!orxStructure_GetFlags(pstViewport, orxVIEWPORT_KU32_FLAG_NO_DEBUG)))
+    {
+      orxCAMERA *pstCamera;
+
+      /* Gets viewport camera */
+      pstCamera = orxViewport_GetCamera(pstViewport);
+
+      /* Valid? */
+      if(pstCamera != orxNULL)
+      {
+        orxAABOX              stFrustum;
+        orxVECTOR             vCameraPosition, vTemp;
+        orxDISPLAY_TRANSFORM  stTransform;
+        orxFONT              *pstFont;
+        orxFLOAT              fZ;
+
+        /* Gets camera position */
+        orxFrame_GetPosition(orxCamera_GetFrame(pstCamera), orxFRAME_SPACE_GLOBAL, &vCameraPosition);
+
+        /* Gets its frustum */
+        orxCamera_GetFrustum(pstCamera, &stFrustum);
+
+        /* Stores its Z */
+        fZ = stFrustum.vTL.fZ + vCameraPosition.fZ;
+
+        /* Inits vectors */
+        orxVector_Set(&vTemp, sstPhysics.fRecDimensionRatio * orx2F(_vPosition.x), sstPhysics.fRecDimensionRatio * orx2F(_vPosition.y), fZ);
+
+        /* Gets its screen position */
+        orxRender_GetScreenPosition(&vTemp, pstViewport, &vTemp);
+
+        /* Draws circle outside */
+        pstFont = orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME);
+        orxMemory_Zero(&stTransform, sizeof(orxDISPLAY_TRANSFORM));
+        stTransform.fDstX     = vTemp.fX;
+        stTransform.fDstY     = vTemp.fY;
+        stTransform.fRepeatX  =
+        stTransform.fRepeatY  =
+        stTransform.fScaleX   =
+        stTransform.fScaleY   = orxFLOAT_1;
+        orxDisplay_TransformText(_zString, orxTexture_GetBitmap(orxFont_GetTexture(pstFont)), orxFont_GetMap(pstFont), &stTransform, orx2RGBA((_stColor & 0xFF0000) >> 16, (_stColor & 0x00FF00) >> 8, _stColor & 0x0000FF, 0xFF), orxDISPLAY_SMOOTHING_OFF, orxDISPLAY_BLEND_MODE_ALPHA);
+      }
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+static orxSTATUS orxFASTCALL orxPhysics_Box2D_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(_pstEvent->eType == orxEVENT_TYPE_RENDER);
+
+  /* End of rendering? */
+  if(_pstEvent->eID == orxRENDER_EVENT_STOP)
+  {
+    /* Pushes config section */
+    orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+    /* Show debug? */
+    if(orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_SHOW_DEBUG) != orxFALSE)
+    {
+      orxPHYSICS_DEBUG_RAY *pstRay;
+
+      /* Draws debug */
+      b2World_Draw(sstPhysics.stWorld, &(sstPhysics.stDebugDraw));
+
+      /* For all rays */
+      for(pstRay = (orxPHYSICS_DEBUG_RAY *)orxBank_GetNext(sstPhysics.pstRayBank, orxNULL);
+          pstRay != orxNULL;
+          pstRay = (orxPHYSICS_DEBUG_RAY *)orxBank_GetNext(sstPhysics.pstRayBank, pstRay))
+      {
+        /* Draws it */
+        orxPhysics_Box2D_DrawSegment(pstRay->vBegin, pstRay->vEnd, pstRay->stColor, orxNULL);
+      }
+    }
+
+    /* Clears ray bank */
+    orxBank_Clear(sstPhysics.pstRayBank);
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+
+/** Applies physics simulation result to the body
+ * @param[in]   _pstBody                      Concerned body
+ */
+static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBody)
+{
+  orxOBJECT      *pstObject;
+  orxBODY        *pstBody;
+  orxFRAME       *pstFrame;
+  b2BodyId        stBody;
+  orxFRAME_SPACE  eFrameSpace;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxPhysics_ApplySimResult");
+
+  /* Gets Box2D body */
+  stBody = _pstBody->stBody;
+
+  /* Gets owner body */
+  pstBody = orxBODY(_pstBody->pstOwner);
+
+  /* Gets owner object */
+  pstObject = orxOBJECT(orxStructure_GetOwner(pstBody));
+
+  /* Gets its frame */
+  pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
+
+  /* Gets its frame space */
+  eFrameSpace = (orxFrame_IsRootChild(pstFrame) != orxFALSE) ? orxFRAME_SPACE_LOCAL : orxFRAME_SPACE_GLOBAL;
+
+  /* Is enabled? */
+  if(orxObject_IsEnabled(pstObject) != orxFALSE)
+  {
+    orxVECTOR   vSpeed, vOldPos, vNewPos;
+    orxCLOCK   *pstClock;
+    orxFLOAT    fCoef = orxFLOAT_1;
+
+    /* Gets its clock */
+    pstClock = orxObject_GetClock(pstObject);
+
+    /* Valid */
+    if(pstClock != orxNULL)
+    {
+      /* Paused? */
+      if(orxClock_IsPaused(pstClock) != orxFALSE)
+      {
+        /* Updates coef */
+        fCoef = orxFLOAT_0;
+      }
+      else
+      {
+        orxFLOAT fModifier;
+
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
+
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
+        {
+          /* Updates coef */
+          fCoef = orxFLOAT_1 / fModifier;
+        }
+      }
+    }
+
+    /* Gets resulting speed */
+    orxPhysics_GetSpeed(_pstBody, &vSpeed);
+
+    /* Global space? */
+    if(eFrameSpace == orxFRAME_SPACE_GLOBAL)
+    {
+      orxVECTOR vScale;
+      orxFRAME *pstParentFrame;
+
+      /* Gets parent frame */
+      pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
+
+      /* Updates speed according to parent scale & rotation */
+      orxVector_2DRotate(&vSpeed, &vSpeed, -orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
+      orxVector_Div(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
+    }
+
+    /* Updates its speed & angular velocity */
+    orxBody_SetSpeed(pstBody, orxVector_Mulf(&vSpeed, &vSpeed, fCoef));
+    orxBody_SetAngularVelocity(pstBody, fCoef * orxPhysics_GetAngularVelocity(_pstBody));
+
+    /* Should interpolate? */
+    if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
+    {
+      orxFLOAT fInterpolationCoef;
+
+      /* Gets interpolation coef */
+      fInterpolationCoef = sstPhysics.fDTAccumulator / sstPhysics.fFixedDT;
+
+      /* Updates rotation */
+      _pstBody->fInterpolatedRotation = orxLERP(_pstBody->fPreviousRotation, orxPhysics_GetRotation(_pstBody), fInterpolationCoef);
+      orxFrame_SetRotation(pstFrame, eFrameSpace, _pstBody->fInterpolatedRotation);
+
+      /* Updates position */
+      orxFrame_GetPosition(pstFrame, eFrameSpace, &vOldPos);
+      orxPhysics_GetPosition(_pstBody, &vNewPos);
+      _pstBody->vInterpolatedPosition.fX = orxLERP(_pstBody->vPreviousPosition.fX, vNewPos.fX, fInterpolationCoef);
+      _pstBody->vInterpolatedPosition.fY = orxLERP(_pstBody->vPreviousPosition.fY, vNewPos.fY, fInterpolationCoef);
+      _pstBody->vInterpolatedPosition.fZ = vOldPos.fZ;
+      orxFrame_SetPosition(pstFrame, eFrameSpace, &_pstBody->vInterpolatedPosition);
+    }
+    else
+    {
+      /* Updates rotation */
+      orxFrame_SetRotation(pstFrame, eFrameSpace, orxPhysics_GetRotation(_pstBody));
+
+      /* Updates position */
+      orxFrame_GetPosition(pstFrame, eFrameSpace, &vOldPos);
+      orxPhysics_GetPosition(_pstBody, &vNewPos);
+      vNewPos.fZ = vOldPos.fZ;
+      orxFrame_SetPosition(pstFrame, eFrameSpace, &vNewPos);
+    }
+  }
+  else
+  {
+    orxVECTOR vPosition;
+
+    /* Enforces its body properties */
+    orxPhysics_SetRotation(_pstBody, orxFrame_GetRotation(pstFrame, eFrameSpace));
+    orxPhysics_SetAngularVelocity(_pstBody, orxFLOAT_0);
+    orxPhysics_SetPosition(_pstBody, orxFrame_GetPosition(pstFrame, eFrameSpace, &vPosition));
+    orxPhysics_SetSpeed(_pstBody, &orxVECTOR_0);
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
+}
+
+/** Resets interpolation values
+ */
+static void orxFASTCALL orxPhysics_Box2D_ResetInterpolation()
+{
+  orxPHYSICS_BODY *pstPhysicBody;
+
+  /* For all physical bodies */
+  for(pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetFirst(&(sstPhysics.stBodyList));
+      pstPhysicBody != orxNULL;
+      pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetNext(&(pstPhysicBody->stNode)))
+  {
+    b2BodyId stBody;
+
+    /* Gets body */
+    stBody = pstPhysicBody->stBody;
+
+    /* Non-static and awake? */
+    if((b2Body_GetType(stBody) != b2_staticBody)
+    && (b2Body_IsAwake(stBody) != false))
+    {
+      /* Resets its values */
+      orxPhysics_GetPosition(pstPhysicBody, &pstPhysicBody->vPreviousPosition);
+      orxVector_Copy(&pstPhysicBody->vInterpolatedPosition, &pstPhysicBody->vPreviousPosition);
+      pstPhysicBody->fPreviousRotation      =
+      pstPhysicBody->fInterpolatedRotation  = orxPhysics_GetRotation(pstPhysicBody);
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Update (callback to register on a clock)
+ * @param[in]   _pstClockInfo   Clock info of the clock used upon registration
+ * @param[in]   _pContext       Context sent when registering callback to the clock
+ */
+static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+{
+  orxPHYSICS_BODY *pstPhysicBody;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxPhysics_Update");
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstClockInfo != orxNULL);
+
+  /* For all physical bodies */
+  for(pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetFirst(&(sstPhysics.stBodyList));
+      pstPhysicBody != orxNULL;
+      pstPhysicBody = (orxPHYSICS_BODY*)orxLinkList_GetNext(&(pstPhysicBody->stNode)))
+  {
+    orxOBJECT      *pstObject;
+    const orxBODY  *pstBody;
+    b2BodyId        stBody;
+
+    /* Gets Box2D body */
+    stBody = pstPhysicBody->stBody;
+
+    /* Gets associated body */
+    pstBody = orxBODY(pstPhysicBody->pstOwner);
+
+    /* Gets owner object */
+    pstObject = orxOBJECT(orxStructure_GetOwner(pstBody));
+
+    /* Is enabled? */
+    if(orxObject_IsEnabled(pstObject) != orxFALSE)
+    {
+      orxFRAME   *pstFrame;
+      orxVECTOR   vSpeed, vGravity;
+      orxCLOCK   *pstClock;
+      orxFLOAT    fCoef = orxFLOAT_1;
+
+      /* Gets its clock */
+      pstClock = orxObject_GetClock(pstObject);
+
+      /* Valid */
+      if(pstClock != orxNULL)
+      {
+        /* Paused? */
+        if(orxClock_IsPaused(pstClock) != orxFALSE)
+        {
+          /* Updates coef */
+          fCoef = orxFLOAT_0;
+        }
+        else
+        {
+          orxFLOAT fModifier;
+
+          /* Gets multiply modifier */
+          fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
+
+          /* Valid? */
+          if(fModifier != orxFLOAT_0)
+          {
+            /* Uses it */
+            fCoef = fModifier;
+          }
+        }
+      }
+
+      /* Enforces its activation state */
+      b2Body_SetAwake(stBody, true);
+
+      /* Gets owner's frame */
+      pstFrame = orxOBJECT_GET_STRUCTURE(pstObject, FRAME);
+
+      /* Gets its body speed */
+      orxBody_GetSpeed(pstBody, &vSpeed);
+
+      /* Is not a root child? */
+      if(orxFrame_IsRootChild(pstFrame) == orxFALSE)
+      {
+        orxVECTOR vPos, vScale;
+        orxFRAME *pstParentFrame;
+
+        /* Updates body position & rotation */
+        orxPhysics_SetPosition(pstPhysicBody, orxFrame_GetPosition(pstFrame, orxFRAME_SPACE_GLOBAL, &vPos));
+        orxPhysics_SetRotation(pstPhysicBody, orxFrame_GetRotation(pstFrame, orxFRAME_SPACE_GLOBAL));
+
+        /* Gets parent frame */
+        pstParentFrame = orxFRAME(orxStructure_GetParent(pstFrame));
+
+        /* Updates speed according to parent scale & rotation */
+        orxVector_2DRotate(&vSpeed, &vSpeed, orxFrame_GetRotation(pstParentFrame, orxFRAME_SPACE_GLOBAL));
+        orxVector_Mul(&vSpeed, &vSpeed, orxFrame_GetScale(pstParentFrame, orxFRAME_SPACE_GLOBAL, &vScale));
+      }
+
+      /* Applies speed & angular velocity */
+      orxPhysics_SetSpeed(pstPhysicBody, orxVector_Mulf(&vSpeed, &vSpeed, fCoef));
+      orxPhysics_SetAngularVelocity(pstPhysicBody, fCoef * orxBody_GetAngularVelocity(pstBody));
+
+      /* No custom gravity */
+      if(orxBody_GetCustomGravity(pstBody, &vGravity) == orxNULL)
+      {
+        /* Uses world gravity */
+        orxPhysics_GetGravity(&vGravity);
+      }
+
+      /* Applies modified gravity */
+      orxPhysics_SetCustomGravity(pstPhysicBody, orxVector_Mulf(&vGravity, &vGravity, fCoef * fCoef));
+    }
+    else
+    {
+      /* Is still active? */
+      if(b2Body_IsAwake(stBody) != false)
+      {
+        /* Deactivates it */
+        b2Body_SetAwake(stBody, false);
+      }
+    }
+  }
+
+  /* Is simulation enabled? */
+  if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
+  {
+    b2BodyEvents  stEvents;
+    orxS32        s32Steps, i;
+
+    /* Stores DT */
+    sstPhysics.fLastDT = _pstClockInfo->fDT;
+
+    /* Updates DT accumulator */
+    sstPhysics.fDTAccumulator += _pstClockInfo->fDT;
+
+    /* Computes the number of steps */
+    s32Steps = (orxS32)orxMath_Floor((sstPhysics.fDTAccumulator + orxPHYSICS_KF_MIN_STEP_DURATION) / sstPhysics.fFixedDT);
+
+    /* Updates accumulator */
+    sstPhysics.fDTAccumulator = orxMAX(orxFLOAT_0, sstPhysics.fDTAccumulator - (orxS2F(s32Steps) * sstPhysics.fFixedDT));
+
+    /* For all steps */
+    for(i = 0; i < s32Steps; i++)
+    {
+      /* Last step and should interpolate? */
+      if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE)
+      && (i == s32Steps - 1))
+      {
+        /* Resets interpolation */
+        orxPhysics_Box2D_ResetInterpolation();
+      }
+
+      /* Updates world simulation */
+      b2World_Step(sstPhysics.stWorld, sstPhysics.fFixedDT, 4);
+    }
+
+    /* Not absolute fixed DT? */
+    if(!orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT))
+    {
+      /* Should run a last simulation step? */
+      if(sstPhysics.fDTAccumulator >= orxPHYSICS_KF_MIN_STEP_DURATION)
+      {
+        /* Updates last step of world simulation */
+        b2World_Step(sstPhysics.stWorld, sstPhysics.fDTAccumulator, 4);
+
+        /* Clears accumulator */
+        sstPhysics.fDTAccumulator = orxFLOAT_0;
+      }
+    }
+
+    /* For all body events */
+    stEvents = b2World_GetBodyEvents(sstPhysics.stWorld);
+    for(i = 0; i < stEvents.moveCount; i++)
+    {
+      b2BodyMoveEvent *pstEvent;
+
+      /* Gets it */
+      pstEvent = &(stEvents.moveEvents[i]);
+
+
+      /* Non-static and awake? */
+      if((b2Body_GetType(pstEvent->bodyId) != b2_staticBody)
+      && (b2Body_IsAwake(pstEvent->bodyId) != false))
+      {
+        /* Applies simulation result */
+        orxPhysics_ApplySimulationResult((orxPHYSICS_BODY *)b2Body_GetUserData(pstEvent->bodyId));
+      }
+    }
+
+    //! TODO
+    ///* For all stored events */
+    //for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
+    //    pstEventStorage != orxNULL;
+    //    pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
+    //{
+    //  /* Depending on type */
+    //  switch(pstEventStorage->eID)
+    //  {
+    //    case orxPHYSICS_EVENT_CONTACT_ADD:
+    //    case orxPHYSICS_EVENT_CONTACT_REMOVE:
+    //    {
+    //      /* Sends event */
+    //      orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, pstEventStorage->eID, orxStructure_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData())), orxStructure_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData())), &(pstEventStorage->stPayload));
+
+    //      break;
+    //    }
+
+    //    default:
+    //    {
+    //      break;
+    //    }
+    //  }
+    //}
+  }
+
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
+  /* Done! */
+  return;
+}
+
+orxPHYSICS_BODY *orxFASTCALL orxPhysics_Box2D_CreateBody(const orxSTRUCTURE *_pstOwner, const orxBODY_DEF *_pstBodyDef)
+{
+  orxPHYSICS_BODY *pstResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstOwner != orxNULL);
+  orxASSERT(_pstBodyDef != orxNULL);
+
+  /* 2D? */
+  if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_2D))
+  {
+    /* Creates physics body */
+    pstResult = (orxPHYSICS_BODY*) orxBank_Allocate(sstPhysics.pstBodyBank);
+
+    /* Valid? */
+    if(pstResult != orxNULL)
+    {
+      b2BodyDef stBodyDef;
+
+      /* clears it */
+      orxMemory_Zero(pstResult, sizeof(orxPHYSICS_BODY));
+
+      /* Inits body definition */
+      stBodyDef                   = b2DefaultBodyDef();
+      stBodyDef.userData          = (void *)pstResult;
+      stBodyDef.rotation          = b2MakeRot(_pstBodyDef->fRotation);
+      stBodyDef.linearDamping     = _pstBodyDef->fLinearDamping;
+      stBodyDef.angularDamping    = _pstBodyDef->fAngularDamping;
+      stBodyDef.isBullet          = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_HIGH_SPEED);
+      stBodyDef.enableSleep       = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_ALLOW_SLEEP);
+      stBodyDef.fixedRotation     = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_FIXED_ROTATION);
+      stBodyDef.position.x        = sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fX;
+      stBodyDef.position.y        = sstPhysics.fDimensionRatio * _pstBodyDef->vPosition.fY;
+
+      /* Is dynamic? */
+      if(orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_DYNAMIC))
+      {
+        b2MassData  stMassData;
+        orxBOOL     bHasMass;
+
+        /* Sets its type */
+        stBodyDef.type = b2_dynamicBody;
+
+        /* Has mass data? */
+        if((_pstBodyDef->fInertia > 0.0f) && (_pstBodyDef->fMass > 0.0f))
+        {
+          /* Stores mass properties */
+          stMassData.rotationalInertia  = _pstBodyDef->fInertia;
+          stMassData.mass               = _pstBodyDef->fMass;
+
+          /* Updates status */
+          bHasMass = orxTRUE;
+        }
+        else
+        {
+          /* Updates status */
+          bHasMass = orxFALSE;
+        }
+
+        /* Creates dynamic body */
+        pstResult->stBody = b2CreateBody(sstPhysics.stWorld, &stBodyDef);
+
+        /* Success? */
+        if(pstResult->stBody.index1 > 0)
+        {
+          /* Valid and has mass data? */
+          if((bHasMass != orxFALSE) && (pstResult->stBody.index1 != 0))
+          {
+            /* Updates its mass data */
+            b2Body_SetMassData(pstResult->stBody, stMassData);
+          }
+        }
+      }
+      else
+      {
+        /* Sets its type */
+        stBodyDef.type = orxFLAG_TEST(_pstBodyDef->u32Flags, orxBODY_DEF_KU32_FLAG_CAN_MOVE) ? b2_kinematicBody : b2_staticBody;
+
+        /* Creates dynamic body */
+        pstResult->stBody = b2CreateBody(sstPhysics.stWorld, &stBodyDef);
+      }
+
+      /* Success? */
+      if(pstResult->stBody.index1 > 0)
+      {
+        /* Stores owner */
+        pstResult->pstOwner = _pstOwner;
+
+        /* Adds it to list */
+        orxLinkList_AddEnd(&(sstPhysics.stBodyList), &(pstResult->stNode));
+      }
+      else
+      {
+        /* Deletes physics body */
+        orxBank_Free(sstPhysics.pstBodyBank, pstResult);
+        pstResult = orxNULL;
+      }
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+void orxFASTCALL orxPhysics_Box2D_DeleteBody(orxPHYSICS_BODY *_pstBody)
+{
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Deletes it */
+  b2DestroyBody(_pstBody->stBody);
+
+  /* Removes it */
+  orxLinkList_Remove(&(_pstBody->stNode));
+  orxBank_Free(sstPhysics.pstBodyBank, _pstBody);
+
+  /* Done! */
+  return;
+}
+
+orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_pstBody, const orxHANDLE _hUserData, const orxBODY_PART_DEF *_pstBodyPartDef)
+{
+  orxPHYSICS_BODY_PART *pstResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pstBodyPartDef != orxNULL);
+  orxASSERT(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_MASK_TYPE));
+
+  /* Creates physics body */
+  pstResult = (orxPHYSICS_BODY_PART *) orxBank_Allocate(sstPhysics.pstBodyPartBank);
+
+  /* Valid? */
+  if(pstResult != orxNULL)
+  {
+    b2BodyId    stBody;
+    b2ShapeDef  stShapeDef;
+
+    /* Gets body */
+    stBody = _pstBody->stBody;
+
+    /* Inits shape definition */
+    stShapeDef = b2DefaultShapeDef();
+    stShapeDef.userData             = _hUserData;
+    stShapeDef.friction             = _pstBodyPartDef->fFriction;
+    stShapeDef.restitution          = _pstBodyPartDef->fRestitution;
+    stShapeDef.density              = (b2Body_GetType(stBody) != b2_dynamicBody) ? 0.0f : _pstBodyPartDef->fDensity;
+    stShapeDef.filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
+    stShapeDef.filter.maskBits      = _pstBodyPartDef->u16CheckMask;
+    stShapeDef.filter.groupIndex    = 0;
+    stShapeDef.isSensor             = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
+
+    /* Circle? */
+    if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SPHERE))
+    {
+      b2Circle stCircle;
+
+      /* Inits circle */
+      stCircle.center.x = sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fX * _pstBodyPartDef->vScale.fX;
+      stCircle.center.y = sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fY * _pstBodyPartDef->vScale.fY;
+      stCircle.radius   = sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.fRadius * orx2F(0.5f) * (orxMath_Abs(_pstBodyPartDef->vScale.fX) + orxMath_Abs(_pstBodyPartDef->vScale.fY));
+
+      /* Creates its shape */
+      pstResult->stShape = b2CreateCircleShape(stBody, &stShapeDef, &stCircle);
+    }
+    /* Polygon? */
+    else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX | orxBODY_PART_DEF_KU32_FLAG_MESH))
+    {
+      b2Polygon stPolygon;
+
+      /* Box? */
+      if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX))
+      {
+        stPolygon = b2MakeBox(orxMath_Abs(orx2F(0.5f) * sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * (_pstBodyPartDef->stAABox.stBox.vBR.fX - _pstBodyPartDef->stAABox.stBox.vTL.fX)),
+                              orxMath_Abs(orx2F(0.5f) * sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * (_pstBodyPartDef->stAABox.stBox.vBR.fY - _pstBodyPartDef->stAABox.stBox.vTL.fY)));
+      }
+      else
+      {
+        //! TODO
+        //b2Vec2 avVertexList[b2_maxPolygonVertices];
+        //orxU32 i;
+
+        ///* Checks */
+        //orxASSERT(_pstBodyPartDef->stMesh.u32VertexCount > 0);
+        //orxASSERT(orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER <= b2_maxPolygonVertices);
+
+        ///* No mirroring? */
+        //if(_pstBodyPartDef->vScale.fX * _pstBodyPartDef->vScale.fY > orxFLOAT_0)
+        //{
+        //  /* For all the vertices */
+        //  for(i = 0; i < _pstBodyPartDef->stMesh.u32VertexCount; i++)
+        //  {
+        //    /* Sets its vector */
+        //    avVertexList[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
+        //  }
+        //}
+        //else
+        //{
+        //  orxS32 iDst;
+
+        //  /* For all the vertices */
+        //  for(iDst = _pstBodyPartDef->stMesh.u32VertexCount - 1, i = 0; iDst >= 0; iDst--, i++)
+        //  {
+        //    /* Sets its vector */
+        //    avVertexList[iDst].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
+        //  }
+        //}
+      }
+
+      /* Creates its shape */
+      pstResult->stShape = b2CreatePolygonShape(stBody, &stShapeDef, &stPolygon);
+     }
+    //else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_EDGE))
+    //{
+    // b2Vec2  av[2];
+    // orxU32  i;
+
+    // /* Stores shape reference */
+    // stFixtureDef.shape = &stEdgeShape;
+
+    // /* Sets vertices */
+    // for(i = 0; i < 2; i++)
+    // {
+    //   av[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
+    // }
+
+    // /* Updates shape */
+    // stEdgeShape.Set(av[0], av[1]);
+
+    // /* Has previous (ghost)? */
+    // if(_pstBodyPartDef->stEdge.bHasPrevious)
+    // {
+    //   stEdgeShape.m_vertex0.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vPrevious.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vPrevious.fY * _pstBodyPartDef->vScale.fY);
+    //   stEdgeShape.m_hasVertex0 = true;
+    // }
+
+    // /* Has next (ghost)? */
+    // if(_pstBodyPartDef->stEdge.bHasNext)
+    // {
+    //   stEdgeShape.m_vertex3.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vNext.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vNext.fY * _pstBodyPartDef->vScale.fY);
+    //   stEdgeShape.m_hasVertex3 = true;
+    // }
+    //}
+    //else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_CHAIN))
+    //{
+    // b2Vec2 *avVertexList = (b2Vec2 *)alloca(_pstBodyPartDef->stChain.u32VertexCount * sizeof(b2Vec2));
+    // orxU32  i;
+
+    // /* Checks */
+    // orxASSERT(_pstBodyPartDef->stChain.u32VertexCount > 0);
+    // orxASSERT(_pstBodyPartDef->stChain.avVertices != orxNULL);
+
+    // /* Stores shape reference */
+    // stFixtureDef.shape = &stChainShape;
+
+    // /* For all the vertices */
+    // for(i = 0; i < _pstBodyPartDef->stChain.u32VertexCount; i++)
+    // {
+    //   /* Sets its vector */
+    //   avVertexList[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
+    // }
+
+    // /* Is loop? */
+    // if(_pstBodyPartDef->stChain.bIsLoop != orxFALSE)
+    // {
+    //   /* Creates loop chain */
+    //   stChainShape.CreateLoop(avVertexList, _pstBodyPartDef->stChain.u32VertexCount);
+    // }
+    // else
+    // {
+    //   /* Creates chain */
+    //   stChainShape.CreateChain(avVertexList, _pstBodyPartDef->stChain.u32VertexCount);
+
+    //   /* Has Previous? */
+    //   if(_pstBodyPartDef->stChain.bHasPrevious != orxFALSE)
+    //   {
+    //     b2Vec2 vPrevious;
+
+    //     /* Sets previous vertex */
+    //     vPrevious.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vPrevious.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vPrevious.fY * _pstBodyPartDef->vScale.fY);
+    //     stChainShape.SetPrevVertex(vPrevious);
+    //   }
+
+    //   /* Has Next? */
+    //   if(_pstBodyPartDef->stChain.bHasNext != orxFALSE)
+    //   {
+    //     b2Vec2 vNext;
+
+    //     /* Sets next vertex */
+    //     vNext.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vNext.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stChain.vNext.fY * _pstBodyPartDef->vScale.fY);
+    //     stChainShape.SetNextVertex(vNext);
+    //   }
+    // }
+    //}
+    
+    /* Failure? */
+    if(pstResult->stShape.index1 == 0)
+    {
+      /* Deletes part */
+      orxBank_Free(sstPhysics.pstBodyPartBank, pstResult);
+      pstResult = orxNULL;
+    }
+  }
+
+  /* Done! */
+  return pstResult;
+}
+
+void orxFASTCALL orxPhysics_Box2D_DeletePart(orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Deletes shape */
+  b2DestroyShape(_pstBodyPart->stShape, true);  
+
+  /* Frees part */
+  orxBank_Free(sstPhysics.pstBodyPartBank, _pstBodyPart);
+
+  /* Done! */
+  return;
+}
 
 // orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateJoint(orxPHYSICS_BODY *_pstSrcBody, orxPHYSICS_BODY *_pstDstBody, const orxHANDLE _hUserData, const orxBODY_JOINT_DEF *_pstBodyJointDef)
 // {
@@ -2057,1500 +2072,1495 @@
 //   return fResult;
 // }
 
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
-// {
-//   b2Body   *poBody;
-//   orxFLOAT fPosX, fPosY, fRotation;
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-//   orxASSERT(_pvPosition != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Should interpolate? */
-//   if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
-//   {
-//     /* Updates position and rotation */
-//     fPosX     = _pstBody->vInterpolatedPosition.fX;
-//     fPosY     = _pstBody->vInterpolatedPosition.fY;
-//     fRotation = _pstBody->fInterpolatedRotation;
-//   }
-//   else
-//   {
-//     /* Updates position and rotation */
-//     fPosX     = poBody->GetPosition().x;
-//     fPosY     = poBody->GetPosition().y;
-//     fRotation = poBody->GetAngle();
-//   }
-
-//   /* Should apply? */
-//   if((fPosX != _pvPosition->fX) || (fPosY != _pvPosition->fY))
-//   {
-//     b2Vec2 vPosition;
-
-//     /* Sets position vector */
-//     vPosition.Set(sstPhysics.fDimensionRatio * _pvPosition->fX, sstPhysics.fDimensionRatio * _pvPosition->fY);
-
-//     /* Wakes up */
-//     poBody->SetAwake(true);
-
-//     /* Updates its position */
-//     poBody->SetTransform(vPosition, fRotation);
-
-//     /* Should interpolate? */
-//     if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
-//     {
-//       /* Updates position */
-//       orxVector_Copy(&_pstBody->vPreviousPosition, _pvPosition);
-//       orxVector_Copy(&_pstBody->vInterpolatedPosition, _pvPosition);
-//     }
-//   }
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
-// {
-//   b2Body   *poBody;
-//   orxFLOAT fRotation;
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets current rotation */
-//   fRotation = orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE) ? _pstBody->fInterpolatedRotation : poBody->GetAngle();
-
-//   /* Should apply? */
-//   if(fRotation != _fRotation)
-//   {
-//     /* Wakes up */
-//     poBody->SetAwake(true);
-
-//     /* Should interpolate? */
-//     if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
-//     {
-//       b2Vec2 vPosition;
-
-//       /* Sets current position */
-//       vPosition.Set(sstPhysics.fDimensionRatio * _pstBody->vInterpolatedPosition.fX, sstPhysics.fDimensionRatio * _pstBody->vInterpolatedPosition.fY);
-
-//       /* Updates its rotation */
-//       poBody->SetTransform(vPosition, _fRotation);
-
-//       /* Updates interpolated rotation */
-//       _pstBody->fPreviousRotation = _fRotation;
-//       _pstBody->fInterpolatedRotation = _fRotation;
-//     }
-//     else
-//     {
-//       /* Updates its rotation */
-//       poBody->SetTransform(poBody->GetPosition(), _fRotation);
-//     }
-//   }
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvSpeed)
-// {
-//   b2Body   *poBody;
-//   b2Vec2    vSpeed;
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-//   orxASSERT(_pvSpeed != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its speed */
-//   const b2Vec2 &rvSpeed = poBody->GetLinearVelocity();
-
-//   /* Sets speed vector */
-//   vSpeed.Set(sstPhysics.fDimensionRatio * _pvSpeed->fX, sstPhysics.fDimensionRatio * _pvSpeed->fY);
-
-//   /* Should apply? */
-//   if((rvSpeed.x != vSpeed.x) || (rvSpeed.y != vSpeed.y))
-//   {
-//     /* Wakes up */
-//     poBody->SetAwake(true);
-
-//     /* Updates its speed */
-//     poBody->SetLinearVelocity(vSpeed);
-//   }
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity)
-// {
-//   b2Body   *poBody;
-//   float32   fAngularVelocity;
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its angular velocity */
-//   fAngularVelocity = poBody->GetAngularVelocity();
-
-//   /* Should apply? */
-//   if(fAngularVelocity != _fVelocity)
-//   {
-//     /* Wakes up */
-//     poBody->SetAwake(true);
-
-//     /* Updates its angular velocity */
-//     poBody->SetAngularVelocity(_fVelocity);
-//   }
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCustomGravity(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvCustomGravity)
-// {
-//   b2Body       *poBody;
-//   const b2Vec2 *pvCustomGravity;
-//   orxSTATUS     eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its custom gravity */
-//   pvCustomGravity = poBody->GetCustomGravity();
-
-//   /* Has new custom gravity? */
-//   if(_pvCustomGravity != orxNULL)
-//   {
-//     b2Vec2 vGravity;
-
-//     /* Sets gravity vector */
-//     vGravity.Set(sstPhysics.fDimensionRatio * _pvCustomGravity->fX, sstPhysics.fDimensionRatio * _pvCustomGravity->fY);
-
-//     /* Should apply? */
-//     if((pvCustomGravity == NULL) || (pvCustomGravity->x != vGravity.x) || (pvCustomGravity->y != vGravity.y))
-//     {
-//       /* Wakes up */
-//       poBody->SetAwake(true);
-
-//       /* Updates it */
-//       poBody->SetCustomGravity(&vGravity);
-//     }
-//   }
-//   else
-//   {
-//     /* Should apply */
-//     if(pvCustomGravity != NULL)
-//     {
-//       /* Wakes up */
-//       poBody->SetAwake(true);
-
-//       /* Removes it */
-//       poBody->SetCustomGravity(orxNULL);
-//     }
-//   }
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetFixedRotation(orxPHYSICS_BODY * _pstBody, orxBOOL _bFixed)
-// {
-//   b2Body   *poBody;
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Updates its fixed rotation property */
-//   poBody->SetFixedRotation((_bFixed != orxFALSE) ? true : false);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetDynamic(orxPHYSICS_BODY * _pstBody, orxBOOL _bDynamic)
-// {
-//   b2Body   *poBody;
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Dynamic? */
-//   if(_bDynamic != orxFALSE)
-//   {
-//     /* Updates its type */
-//     poBody->SetType(b2_dynamicBody);
-//   }
-//   else
-//   {
-//     orxBODY *pstBody;
-
-//     /* Gets associated body */
-//     pstBody = orxBODY(poBody->GetUserData());
-
-//     /* Updates its type */
-//     poBody->SetType(orxBody_GetAllowMoving(pstBody) != orxFALSE ? b2_kinematicBody : b2_staticBody);
-//   }
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAllowMoving(orxPHYSICS_BODY * _pstBody, orxBOOL _bAllowMoving)
-// {
-//   b2Body   *poBody;
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Not dynamic? */
-//   if(poBody->GetType() != b2_dynamicBody)
-//   {
-//     /* Updates its type */
-//     poBody->SetType(_bAllowMoving != orxFALSE ? b2_kinematicBody : b2_staticBody);
-//   }
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetPosition(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
-// {
-//   b2Body     *poBody;
-//   b2Vec2      vPosition;
-//   orxVECTOR  *pvResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-//   orxASSERT(_pvPosition != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its position */
-//   vPosition = poBody->GetPosition();
-
-//   /* Updates result */
-//   pvResult      = _pvPosition;
-//   pvResult->fX  = sstPhysics.fRecDimensionRatio * vPosition.x;
-//   pvResult->fY  = sstPhysics.fRecDimensionRatio * vPosition.y;
-
-//   /* Done! */
-//   return pvResult;
-// }
-
-// orxFLOAT orxFASTCALL orxPhysics_Box2D_GetRotation(const orxPHYSICS_BODY *_pstBody)
-// {
-//   b2Body   *poBody;
-//   orxFLOAT  fResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its rotation */
-//   fResult = poBody->GetAngle();
-
-//   /* Done! */
-//   return fResult;
-// }
-
-// orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetSpeed(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
-// {
-//   b2Body   *poBody;
-//   b2Vec2    vSpeed;
-//   orxVECTOR *pvResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-//   orxASSERT(_pvSpeed != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its speed */
-//   vSpeed = poBody->GetLinearVelocity();
-
-//   /* Updates result */
-//   pvResult      = _pvSpeed;
-//   pvResult->fX  = sstPhysics.fRecDimensionRatio * vSpeed.x;
-//   pvResult->fY  = sstPhysics.fRecDimensionRatio * vSpeed.y;
-//   pvResult->fZ  = orxFLOAT_0;
-
-//   /* Done! */
-//   return pvResult;
-// }
-
-// orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetSpeedAtWorldPosition(const orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition, orxVECTOR *_pvSpeed)
-// {
-//   b2Body   *poBody;
-//   b2Vec2    vSpeed;
-//   orxVECTOR *pvResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-//   orxASSERT(_pvPosition != orxNULL);
-//   orxASSERT(_pvSpeed != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its speed at given position */
-//   vSpeed = poBody->GetLinearVelocityFromWorldPoint(b2Vec2(sstPhysics.fDimensionRatio * _pvPosition->fX, sstPhysics.fDimensionRatio * _pvPosition->fY));
-
-//   /* Updates result */
-//   pvResult      = _pvSpeed;
-//   pvResult->fX  = sstPhysics.fRecDimensionRatio * vSpeed.x;
-//   pvResult->fY  = sstPhysics.fRecDimensionRatio * vSpeed.y;
-//   pvResult->fZ  = orxFLOAT_0;
-
-//   /* Done! */
-//   return pvResult;
-// }
-
-// orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularVelocity(const orxPHYSICS_BODY *_pstBody)
-// {
-//   b2Body   *poBody;
-//   orxFLOAT  fResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its angular velocity */
-//   fResult = poBody->GetAngularVelocity();
-
-//   /* Done! */
-//   return fResult;
-// }
-
-// orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity)
-// {
-//   b2Body       *poBody;
-//   const b2Vec2 *pvGravity;
-//   orxVECTOR    *pvResult = orxNULL;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-//   orxASSERT(_pvCustomGravity != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its custom gravity */
-//   pvGravity = poBody->GetCustomGravity();
-
-//   /* Found? */
-//   if(pvGravity != orxNULL)
-//   {
-//     /* Updates result */
-//     orxVector_Set(_pvCustomGravity, sstPhysics.fRecDimensionRatio * pvGravity->x, sstPhysics.fRecDimensionRatio * pvGravity->y, orxFLOAT_0);
-//     pvResult = _pvCustomGravity;
-//   }
-//   else
-//   {
-//     /* Clears result */
-//     pvResult = orxNULL;
-//   }
-
-//   /* Done! */
-//   return pvResult;
-// }
-
-// orxBOOL orxFASTCALL orxPhysics_Box2D_IsFixedRotation(const orxPHYSICS_BODY * _pstBody)
-// {
-//   b2Body   *poBody;
-//   orxBOOL   bResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Updates result */
-//   bResult = (poBody->IsFixedRotation() != false) ? orxTRUE : orxFALSE;
-
-//   /* Done! */
-//   return bResult;
-// }
-
-// orxFLOAT orxFASTCALL orxPhysics_Box2D_GetMass(const orxPHYSICS_BODY *_pstBody)
-// {
-//   b2Body     *poBody;
-//   orxFLOAT    fResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Updates result */
-//   fResult = orx2F(poBody->GetMass());
-
-//   /* Done! */
-//   return fResult;
-// }
-
-// orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetMassCenter(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
-// {
-//   b2Body     *poBody;
-//   b2Vec2      vMassCenter;
-//   orxVECTOR  *pvResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-//   orxASSERT(_pvMassCenter != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its mass center */
-//   vMassCenter = poBody->GetLocalCenter();
-
-//   /* Transfer values */
-//   _pvMassCenter->fX = sstPhysics.fRecDimensionRatio * vMassCenter.x;
-//   _pvMassCenter->fY = sstPhysics.fRecDimensionRatio * vMassCenter.y;
-//   _pvMassCenter->fZ = orxFLOAT_0;
-
-//   /* Updates result */
-//   pvResult = _pvMassCenter;
-
-//   /* Done! */
-//   return pvResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetLinearDamping(orxPHYSICS_BODY *_pstBody, orxFLOAT _fDamping)
-// {
-//   b2Body   *poBody;
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Sets its linear damping */
-//   poBody->SetLinearDamping(_fDamping);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularDamping(orxPHYSICS_BODY *_pstBody, orxFLOAT _fDamping)
-// {
-//   b2Body   *poBody;
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Sets its angular damping */
-//   poBody->SetAngularDamping(_fDamping);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxFLOAT orxFASTCALL orxPhysics_Box2D_GetLinearDamping(const orxPHYSICS_BODY *_pstBody)
-// {
-//   b2Body   *poBody;
-//   orxFLOAT  fResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its linear damping */
-//   fResult = orx2F(poBody->GetLinearDamping());
-
-//   /* Done! */
-//   return fResult;
-// }
-
-// orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularDamping(const orxPHYSICS_BODY *_pstBody)
-// {
-//   b2Body   *poBody;
-//   orxFLOAT  fResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets its angular damping */
-//   fResult = orx2F(poBody->GetAngularDamping());
-
-//   /* Done! */
-//   return fResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)
-// {
-//   b2Body     *poBody;
-//   orxOBJECT  *pstObject;
-//   float32     fTorque = (float32)_fTorque;
-//   orxSTATUS   eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets owner object */
-//   pstObject = orxOBJECT(orxStructure_GetOwner(orxBODY(poBody->GetUserData())));
-
-//   /* Is enabled? */
-//   if((pstObject != orxNULL) && (orxObject_IsEnabled(pstObject) != orxFALSE))
-//   {
-//     orxCLOCK *pstClock;
-
-//     /* Gets its clock */
-//     pstClock = orxObject_GetClock(pstObject);
-
-//     /* Valid */
-//     if(pstClock != orxNULL)
-//     {
-//       /* Paused? */
-//       if(orxClock_IsPaused(pstClock) != orxFALSE)
-//       {
-//         /* Updates torque */
-//         fTorque = orxFLOAT_0;
-//       }
-//       else
-//       {
-//         orxFLOAT fModifier;
-
-//         /* Gets multiply modifier */
-//         fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
-
-//         /* Valid? */
-//         if(fModifier != orxFLOAT_0)
-//         {
-//           /* Updates torque */
-//           fTorque *= (float32)fModifier;
-//         }
-//       }
-//     }
-//   }
-
-//   /* Applies torque */
-//   poBody->ApplyTorque(fTorque, true);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
-// {
-//   b2Body     *poBody;
-//   orxOBJECT  *pstObject;
-//   b2Vec2      vForce, vPoint;
-//   orxSTATUS   eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-//   orxASSERT(_pvForce != orxNULL);
-
-//   /* Sets force */
-//   vForce.Set(sstPhysics.fDimensionRatio * _pvForce->fX, sstPhysics.fDimensionRatio * _pvForce->fY);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets owner object */
-//   pstObject = orxOBJECT(orxStructure_GetOwner(orxBODY(poBody->GetUserData())));
-
-//   /* Is enabled? */
-//   if((pstObject != orxNULL) && (orxObject_IsEnabled(pstObject) != orxFALSE))
-//   {
-//     orxCLOCK *pstClock;
-
-//     /* Gets its clock */
-//     pstClock = orxObject_GetClock(pstObject);
-
-//     /* Valid */
-//     if(pstClock != orxNULL)
-//     {
-//       /* Paused? */
-//       if(orxClock_IsPaused(pstClock) != orxFALSE)
-//       {
-//         /* Updates force */
-//         vForce *= (float32)orxFLOAT_0;
-//       }
-//       else
-//       {
-//         orxFLOAT fModifier;
-
-//         /* Gets multiply modifier */
-//         fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
-
-//         /* Valid? */
-//         if(fModifier != orxFLOAT_0)
-//         {
-//           /* Updates force */
-//           vForce *= (float32)(fModifier * fModifier);
-//         }
-//       }
-//     }
-//   }
-
-//   /* Has point? */
-//   if(_pvPoint != orxNULL)
-//   {
-//     /* Sets point */
-//     vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
-//   }
-//   else
-//   {
-//     /* Gets world mass center */
-//     vPoint = poBody->GetWorldCenter();
-//   }
-
-//   /* Applies force */
-//   poBody->ApplyForce(vForce, vPoint, true);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint)
-// {
-//   b2Body     *poBody;
-//   orxOBJECT  *pstObject;
-//   b2Vec2      vImpulse, vPoint;
-//   orxSTATUS   eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBody != orxNULL);
-//   orxASSERT(_pvImpulse != orxNULL);
-
-//   /* Sets impulse */
-//   vImpulse.Set(sstPhysics.fDimensionRatio * _pvImpulse->fX, sstPhysics.fDimensionRatio * _pvImpulse->fY);
-
-//   /* Gets body */
-//   poBody = (b2Body *)_pstBody->poBody;
-
-//   /* Gets owner object */
-//   pstObject = orxOBJECT(orxStructure_GetOwner(orxBODY(poBody->GetUserData())));
-
-//   /* Is enabled? */
-//   if((pstObject != orxNULL) && (orxObject_IsEnabled(pstObject) != orxFALSE))
-//   {
-//     orxCLOCK *pstClock;
-
-//     /* Gets its clock */
-//     pstClock = orxObject_GetClock(pstObject);
-
-//     /* Valid */
-//     if(pstClock != orxNULL)
-//     {
-//       /* Paused? */
-//       if(orxClock_IsPaused(pstClock) != orxFALSE)
-//       {
-//         /* Updates impulse */
-//         vImpulse *= (float32)orxFLOAT_0;
-//       }
-//       else
-//       {
-//         orxFLOAT fModifier;
-
-//         /* Gets multiply modifier */
-//         fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
-
-//         /* Valid? */
-//         if(fModifier != orxFLOAT_0)
-//         {
-//           /* Updates impulse */
-//           vImpulse *= (float32)fModifier;
-//         }
-//       }
-//     }
-//   }
-
-//   /* Has point? */
-//   if(_pvPoint != orxNULL)
-//   {
-//     /* Sets point */
-//     vPoint.Set(sstPhysics.fDimensionRatio * _pvPoint->fX, sstPhysics.fDimensionRatio * _pvPoint->fY);
-//   }
-//   else
-//   {
-//     /* Gets world mass center */
-//     vPoint = poBody->GetWorldCenter();
-//   }
-
-//   /* Applies force */
-//   poBody->ApplyLinearImpulse(vImpulse, vPoint, true);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
-// {
-//   b2Fixture  *poFixture;
-//   b2Filter    oFilter;
-//   orxSTATUS   eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Gets its current filter */
-//   oFilter = poFixture->GetFilterData();
-
-//   /* Updates it */
-//   oFilter.categoryBits = _u16SelfFlags;
-
-//   /* Sets new filter */
-//   poFixture->SetFilterData(oFilter);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
-// {
-//   b2Fixture  *poFixture;
-//   b2Filter    oFilter;
-//   orxSTATUS   eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Gets its current filter */
-//   oFilter = poFixture->GetFilterData();
-
-//   /* Updates it */
-//   oFilter.maskBits = _u16CheckMask;
-
-//   /* Sets new filter */
-//   poFixture->SetFilterData(oFilter);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxU16 orxFASTCALL orxPhysics_Box2D_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
-// {
-//   const b2Fixture  *poFixture;
-//   orxU16            u16Result;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Updates result */
-//   u16Result = poFixture->GetFilterData().categoryBits;
-
-//   /* Done! */
-//   return u16Result;
-// }
-
-// orxU16 orxFASTCALL orxPhysics_Box2D_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
-// {
-//   const b2Fixture  *poFixture;
-//   orxU16            u16Result;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Updates result */
-//   u16Result = poFixture->GetFilterData().maskBits;
-
-//   /* Done! */
-//   return u16Result;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid)
-// {
-//   b2Fixture  *poFixture;
-//   orxSTATUS   eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Updates it */
-//   poFixture->SetSensor((_bSolid != orxFALSE) ? false : true);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxBOOL orxFASTCALL orxPhysics_Box2D_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart)
-// {
-//   b2Fixture  *poFixture;
-//   orxBOOL     bResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Updates result */
-//   bResult = poFixture->IsSensor() ? orxFALSE : orxTRUE;
-
-//   /* Done! */
-//   return bResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartFriction(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fFriction)
-// {
-//   b2Fixture  *poFixture;
-//   orxSTATUS   eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Updates it */
-//   poFixture->SetFriction(_fFriction);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartFriction(const orxPHYSICS_BODY_PART *_pstBodyPart)
-// {
-//   b2Fixture  *poFixture;
-//   orxFLOAT    fResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Updates result */
-//   fResult = orx2F(poFixture->GetFriction());
-
-//   /* Done! */
-//   return fResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartRestitution(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fRestitution)
-// {
-//   b2Fixture  *poFixture;
-//   orxSTATUS   eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Updates it */
-//   poFixture->SetRestitution(_fRestitution);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartRestitution(const orxPHYSICS_BODY_PART *_pstBodyPart)
-// {
-//   b2Fixture  *poFixture;
-//   orxFLOAT    fResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Updates result */
-//   fResult = orx2F(poFixture->GetRestitution());
-
-//   /* Done! */
-//   return fResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartDensity(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fDensity)
-// {
-//   b2Fixture  *poFixture;
-//   orxSTATUS   eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Updates it */
-//   poFixture->SetDensity(_fDensity);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartDensity(const orxPHYSICS_BODY_PART *_pstBodyPart)
-// {
-//   b2Fixture  *poFixture;
-//   orxFLOAT    fResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Updates result */
-//   fResult = orx2F(poFixture->GetDensity());
-
-//   /* Done! */
-//   return fResult;
-// }
-
-// orxBOOL orxFASTCALL orxPhysics_Box2D_IsInsidePart(const orxPHYSICS_BODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition)
-// {
-//   b2Fixture  *poFixture;
-//   b2Vec2      vPosition;
-//   orxBOOL     bResult;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyPart != orxNULL);
-
-//   /* Gets fixture */
-//   poFixture = (b2Fixture *)_pstBodyPart;
-
-//   /* Sets position */
-//   vPosition.Set(sstPhysics.fDimensionRatio * _pvPosition->fX, sstPhysics.fDimensionRatio * _pvPosition->fY);
-
-//   /* Updates result */
-//   bResult = (poFixture->TestPoint(vPosition) != false) ? orxTRUE : orxFALSE;
-
-//   /* Done! */
-//   return bResult;
-// }
-
-// orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
-// {
-//   b2Vec2          vBegin, vEnd;
-//   RayCastCallback oRaycastCallback;
-//   orxHANDLE       hResult = orxHANDLE_UNDEFINED;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pvBegin != orxNULL);
-//   orxASSERT(_pvEnd != orxNULL);
-
-//   /* Gets extremities */
-//   vBegin.Set(sstPhysics.fDimensionRatio * _pvBegin->fX, sstPhysics.fDimensionRatio * _pvBegin->fY);
-//   vEnd.Set(sstPhysics.fDimensionRatio * _pvEnd->fX, sstPhysics.fDimensionRatio * _pvEnd->fY);
-
-//   /* Inits filter data */
-//   oRaycastCallback.u16SelfFlags = _u16SelfFlags;
-//   oRaycastCallback.u16CheckMask = _u16CheckMask;
-
-//   /* Stores early exit status */
-//   oRaycastCallback.bEarlyExit   = _bEarlyExit;
-
-//   /* Issues Raycast */
-//   sstPhysics.poWorld->RayCast(&oRaycastCallback, vBegin, vEnd);
-
-//   /* Found? */
-//   if(oRaycastCallback.hResult != orxHANDLE_UNDEFINED)
-//   {
-//     /* Updates result */
-//     hResult = oRaycastCallback.hResult;
-
-//     /* Asked for contact? */
-//     if(_pvContact != orxNULL)
-//     {
-//       /* Updates it */
-//       orxVector_Set(_pvContact, oRaycastCallback.vContact.fX, oRaycastCallback.vContact.fY, _pvBegin->fZ);
-//     }
-
-//     /* Asked for normal? */
-//     if(_pvNormal != orxNULL)
-//     {
-//       /* Updates it */
-//       orxVector_Copy(_pvNormal, &(oRaycastCallback.vNormal));
-//     }
-//   }
-
-// #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
-
-//   /* Hit? */
-//   if(oRaycastCallback.hResult != orxHANDLE_UNDEFINED)
-//   {
-//     orxPHYSICS_DEBUG_RAY *pstBeforeHitRay, *pstAfterHitRay;
-
-//     /* Allocates debug rays */
-//     pstBeforeHitRay  = (orxPHYSICS_DEBUG_RAY *)orxBank_Allocate(sstPhysics.pstRayBank);
-//     pstAfterHitRay   = (orxPHYSICS_DEBUG_RAY *)orxBank_Allocate(sstPhysics.pstRayBank);
-//     orxASSERT(pstBeforeHitRay != orxNULL);
-//     orxASSERT(pstAfterHitRay != orxNULL);
-
-//     /* Inits them */
-//     pstBeforeHitRay->vBegin   = vBegin;
-//     pstBeforeHitRay->vEnd.Set(sstPhysics.fDimensionRatio * oRaycastCallback.vContact.fX, sstPhysics.fDimensionRatio * oRaycastCallback.vContact.fY);
-//     pstBeforeHitRay->stColor  = orxPhysics::stRayBeforeHitColor;
-//     pstAfterHitRay->vBegin.Set(sstPhysics.fDimensionRatio * oRaycastCallback.vContact.fX, sstPhysics.fDimensionRatio * oRaycastCallback.vContact.fY);
-//     pstAfterHitRay->vEnd      = vEnd;
-//     pstAfterHitRay->stColor   = orxPhysics::stRayAfterHitColor;
-//   }
-//   else
-//   {
-//     orxPHYSICS_DEBUG_RAY *pstMissRay;
-
-//     /* Allocates debug ray */
-//     pstMissRay = (orxPHYSICS_DEBUG_RAY *)orxBank_Allocate(sstPhysics.pstRayBank);
-//     orxASSERT(pstMissRay != orxNULL);
-
-//     /* Inits it */
-//     pstMissRay->vBegin  = vBegin;
-//     pstMissRay->vEnd    = vEnd;
-//     pstMissRay->stColor = orxPhysics::stRayMissColor;
-//   }
-
-// #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
-
-//   /* Done! */
-//   return hResult;
-// }
-
-// orxU32 orxFASTCALL orxPhysics_Box2D_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
-// {
-//   b2AABB          stBox;
-//   BoxPickCallback oBoxPickCallback;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBox != orxNULL);
-
-//   /* Gets extremities */
-//   stBox.lowerBound.Set(sstPhysics.fDimensionRatio * _pstBox->vTL.fX, sstPhysics.fDimensionRatio * _pstBox->vTL.fY);
-//   stBox.upperBound.Set(sstPhysics.fDimensionRatio * _pstBox->vBR.fX, sstPhysics.fDimensionRatio * _pstBox->vBR.fY);
-
-//   /* Inits filter data */
-//   oBoxPickCallback.u16SelfFlags = _u16SelfFlags;
-//   oBoxPickCallback.u16CheckMask = _u16CheckMask;
-
-//   /* Inits storage */
-//   oBoxPickCallback.ahUserDataList = _ahUserDataList;
-//   oBoxPickCallback.u32Size      = (_ahUserDataList != orxNULL) ? _u32Number : 0;
-
-//   /* Issues query */
-//   sstPhysics.poWorld->QueryAABB(&oBoxPickCallback, stBox);
-
-//   /* Done! */
-//   return oBoxPickCallback.u32Count;
-// }
-
-// void orxFASTCALL orxPhysics_Box2D_EnableSimulation(orxBOOL _bEnable)
-// {
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-
-//   /* Enabled? */
-//   if(_bEnable != orxFALSE)
-//   {
-//     /* Updates status */
-//     orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED, orxPHYSICS_KU32_STATIC_FLAG_NONE);
-//   }
-//   else
-//   {
-//     /* Updates status */
-//     orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_NONE, orxPHYSICS_KU32_STATIC_FLAG_ENABLED);
-//   }
-
-//   /* Done! */
-//   return;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_SetGravity(const orxVECTOR *_pvGravity)
-// {
-//   b2Vec2    vGravity;
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pvGravity != orxNULL);
-
-//   /* Sets gravity vector */
-//   vGravity.Set(sstPhysics.fDimensionRatio * _pvGravity->fX, sstPhysics.fDimensionRatio * _pvGravity->fY);
-
-//   /* Updates gravity */
-//   sstPhysics.poWorld->SetGravity(vGravity);
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetGravity(orxVECTOR *_pvGravity)
-// {
-//   b2Vec2      vGravity;
-//   orxVECTOR  *pvResult = _pvGravity;
-
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pvGravity != orxNULL);
-
-//   /* Gets gravity vector */
-//   vGravity = sstPhysics.poWorld->GetGravity();
-//   orxVector_Set(_pvGravity, sstPhysics.fRecDimensionRatio * vGravity.x, sstPhysics.fRecDimensionRatio * vGravity.y, orxFLOAT_0);
-
-//   /* Done! */
-//   return pvResult;
-// }
-
-// orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
-// {
-//   orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-//   /* Was not already initialized? */
-//   if(!(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY))
-//   {
-//     orxFLOAT  fRatio, fStepFrequency;
-//     orxVECTOR vGravity;
-//     b2Vec2    vWorldGravity;
-
-//     /* Cleans static controller */
-//     orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
-
-//     /* Pushes config section */
-//     orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
-
-//     /* Sets custom memory alloc/free */
-//     b2SetNumAllocs(0);
-//     b2SetAllocFreeCallbacks(orxPhysics_Box2D_Allocate, orxPhysics_Box2D_Free, NULL);
-
-//     /* Gets gravity & allow sleep from config */
-//     if(orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity) == orxNULL)
-//     {
-//       orxVector_Copy(&vGravity, &orxVECTOR_0);
-//     }
-
-//     /* Gets step frequency */
-//     fStepFrequency = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_STEP_FREQUENCY);
-
-//     /* Deactivated? */
-//     if(fStepFrequency <= orxFLOAT_0)
-//     {
-//       /* Uses default frequency */
-//       sstPhysics.fFixedDT = orxFLOAT_1 / orxPhysics::sfDefaultFrequency;
-//     }
-//     else
-//     {
-//       /* Stores fixed DT */
-//       sstPhysics.fFixedDT = orxFLOAT_1 / fStepFrequency;
-
-//       /* Updates status */
-//       orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT, orxPHYSICS_KU32_STATIC_FLAG_NONE);
-
-//       /* Should interpolate? */
-//       if((orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_INTERPOLATE) == orxFALSE) || (orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_INTERPOLATE) != orxFALSE))
-//       {
-//         /* Updates status */
-//         orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE, orxPHYSICS_KU32_STATIC_FLAG_NONE);
-//       }
-//     }
-
-//     /* Gets dimension ratio */
-//     fRatio = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
-
-//     /* Valid? */
-//     if(fRatio > orxFLOAT_0)
-//     {
-//       /* Stores it */
-//       sstPhysics.fDimensionRatio = fRatio;
-//     }
-//     else
-//     {
-//       /* Stores default one */
-//       sstPhysics.fDimensionRatio = orxPhysics::sfDefaultDimensionRatio;
-//     }
-
-//     /* Stores it */
-//     orxConfig_SetFloat(orxPHYSICS_KZ_CONFIG_RATIO, sstPhysics.fDimensionRatio);
-
-//     /* Inits world gravity */
-//     vWorldGravity.Set(sstPhysics.fDimensionRatio * vGravity.fX, sstPhysics.fDimensionRatio * vGravity.fY);
-
-//     /* Creates world */
-//     sstPhysics.poWorld = new b2World(vWorldGravity);
-
-//     /* Success? */
-//     if(sstPhysics.poWorld != orxNULL)
-//     {
-//       orxCLOCK *pstClock;
-//       orxU32    u32IterationsPerStep;
-
-//       /* Updates allow sleep status */
-//       sstPhysics.poWorld->SetAllowSleeping((orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? ((orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? true : false) : true);
-
-//       /* Creates listeners */
-//       sstPhysics.poContactListener = new orxPhysicsContactListener();
-
-//       /* Registers them */
-//       sstPhysics.poWorld->SetContactListener(sstPhysics.poContactListener);
-
-//       /* Removes auto clear forces */
-//       sstPhysics.poWorld->SetAutoClearForces(false);
-
-//       /* Stores inverse dimension ratio */
-//       sstPhysics.fRecDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
-
-//       /* Gets iteration per step number from config */
-//       u32IterationsPerStep = orxConfig_GetU32(orxPHYSICS_KZ_CONFIG_ITERATIONS);
-
-//       /* Valid? */
-//       if(u32IterationsPerStep > 0)
-//       {
-//         /* Stores it */
-//         sstPhysics.u32Iterations = u32IterationsPerStep;
-//       }
-//       else
-//       {
-//         /* Uses default value */
-//         sstPhysics.u32Iterations = orxPhysics::su32DefaultIterations;
-//       }
-
-//       /* Gets core clock */
-//       pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
-
-//       /* Resyncs clocks */
-//       orxClock_ResyncAll();
-
-//       /* Valid? */
-//       if(pstClock != orxNULL)
-//       {
-//         /* Creates event bank */
-//         sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-//         /* Creates body bank */
-//         sstPhysics.pstBodyBank  = orxBank_Create(orxPhysics::su32BodyBankSize, sizeof(orxPHYSICS_BODY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-//         /* Success? */
-//         if((sstPhysics.pstEventBank != orxNULL)
-//         && (sstPhysics.pstBodyBank != orxNULL))
-//         {
-//           /* Registers update function */
-//           eResult = orxClock_Register(pstClock, orxPhysics_Box2D_Update, orxNULL, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
-
-//           /* Valid? */
-//           if(eResult != orxSTATUS_FAILURE)
-//           {
-// #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
-
-//             /* Creates ray bank */
-//             sstPhysics.pstRayBank = orxBank_Create(orxPhysics::su32RayBankSize, sizeof(orxPHYSICS_DEBUG_RAY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_DEBUG);
-
-//             /* Creates debug draw */
-//             sstPhysics.poDebugDraw = new orxPhysicsDebugDraw();
-
-//             /* Inits it */
-//             sstPhysics.poDebugDraw->SetFlags(b2Draw::e_shapeBit | b2Draw::e_jointBit | b2Draw::e_centerOfMassBit);
-
-//             /* Registers it */
-//             sstPhysics.poWorld->SetDebugDraw(sstPhysics.poDebugDraw);
-
-//             /* Adds event handler */
-//             orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxPhysics_Box2D_EventHandler);
-//             orxEvent_SetHandlerIDFlags(orxPhysics_Box2D_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
-
-// #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
-
-//             /* Updates status */
-//             sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY | orxPHYSICS_KU32_STATIC_FLAG_ENABLED;
-//           }
-//           else
-//           {
-//             /* Deletes banks */
-//             orxBank_Delete(sstPhysics.pstEventBank);
-//             orxBank_Delete(sstPhysics.pstBodyBank);
-
-//             /* Deletes listeners */
-//             delete sstPhysics.poContactListener;
-
-//             /* Deletes world */
-//             delete sstPhysics.poWorld;
-//           }
-//         }
-//         else
-//         {
-//           /* Deletes banks */
-//           if(sstPhysics.pstEventBank != orxNULL)
-//           {
-//             orxBank_Delete(sstPhysics.pstEventBank);
-//           }
-//           if(sstPhysics.pstBodyBank != orxNULL)
-//           {
-//             orxBank_Delete(sstPhysics.pstBodyBank);
-//           }
-
-//           /* Deletes listeners */
-//           delete sstPhysics.poContactListener;
-
-//           /* Deletes world */
-//           delete sstPhysics.poWorld;
-
-//           /* Updates result */
-//           eResult = orxSTATUS_FAILURE;
-//         }
-//       }
-//       else
-//       {
-//         /* Deletes listeners */
-//         delete sstPhysics.poContactListener;
-
-//         /* Deletes world */
-//         delete sstPhysics.poWorld;
-
-//         /* Updates result */
-//         eResult = orxSTATUS_FAILURE;
-//       }
-//     }
-//     else
-//     {
-//       /* Updates result */
-//       eResult = orxSTATUS_FAILURE;
-//     }
-
-//     /* Pops config section */
-//     orxConfig_PopSection();
-//   }
-
-//   /* Done! */
-//   return eResult;
-// }
-
-// void orxFASTCALL orxPhysics_Box2D_Exit()
-// {
-//   /* Was initialized? */
-//   if(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY)
-//   {
-//     /* Unregisters update */
-//     orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxPhysics_Box2D_Update);
-
-//     /* Deletes body bank */
-//     orxBank_Delete(sstPhysics.pstBodyBank);
-
-//     /* Deletes event bank */
-//     orxBank_Delete(sstPhysics.pstEventBank);
-
-//     /* Deletes the listeners */
-//     delete sstPhysics.poContactListener;
-
-// #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
-
-//     /* Removes event handler */
-//     orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxPhysics_Box2D_EventHandler);
-
-//     /* Deletes debug draw */
-//     delete sstPhysics.poDebugDraw;
-
-//     /* Deletes ray bank */
-//     orxBank_Delete(sstPhysics.pstRayBank);
-
-// #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
-
-//     /* Deletes world */
-//     delete sstPhysics.poWorld;
-
-//     /* Cleans static controller */
-//     orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
-//   }
-
-//   return;
-// }
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
+{
+  b2BodyId  stBody;
+  b2Rot     stRotation;
+  orxFLOAT  fPosX, fPosY;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Should interpolate? */
+  if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
+  {
+    /* Updates position and rotation */
+    fPosX       = _pstBody->vInterpolatedPosition.fX;
+    fPosY       = _pstBody->vInterpolatedPosition.fY;
+    stRotation  = b2MakeRot(_pstBody->fInterpolatedRotation);
+  }
+  else
+  {
+    b2Vec2 vPosition;
+
+    /* Gets position */
+    vPosition = b2Body_GetPosition(stBody);
+
+    /* Updates position and rotation */
+    fPosX       = vPosition.x * sstPhysics.fRecDimensionRatio;
+    fPosY       = vPosition.y * sstPhysics.fRecDimensionRatio;
+    stRotation  = b2Body_GetRotation(stBody);
+  }
+
+  /* Should apply? */
+  if((fPosX != _pvPosition->fX) || (fPosY != _pvPosition->fY))
+  {
+    b2Vec2 vPosition;
+
+    /* Sets position vector */
+    vPosition.x = sstPhysics.fDimensionRatio * _pvPosition->fX;
+    vPosition.y = sstPhysics.fDimensionRatio * _pvPosition->fY;
+
+    /* Wakes up */
+    b2Body_SetAwake(stBody, true);
+
+    /* Updates its position & rotation */
+    b2Body_SetTransform(stBody, vPosition, stRotation);
+
+    /* Should interpolate? */
+    if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
+    {
+      /* Updates position */
+      orxVector_Copy(&_pstBody->vPreviousPosition, _pvPosition);
+      orxVector_Copy(&_pstBody->vInterpolatedPosition, _pvPosition);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
+{
+  b2BodyId  stBody;
+  b2Rot     stRotation, stCurrentRotation;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets new rotation */
+  stRotation = b2MakeRot(_fRotation);
+
+  /* Gets current rotation */
+  stCurrentRotation = orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE) ? b2MakeRot(_pstBody->fInterpolatedRotation) : b2Body_GetRotation(stBody);
+
+  /* Should apply? */
+  if((stRotation.c != stCurrentRotation.c) || (stRotation.s != stCurrentRotation.s))
+  {
+    /* Wakes up */
+    b2Body_SetAwake(stBody, true);
+
+    /* Should interpolate? */
+    if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
+    {
+      b2Vec2 vPosition;
+
+      /* Sets current position */
+      vPosition.x = sstPhysics.fDimensionRatio * _pstBody->vInterpolatedPosition.fX;
+      vPosition.y = sstPhysics.fDimensionRatio * _pstBody->vInterpolatedPosition.fY;
+
+      /* Updates its rotation */
+      b2Body_SetTransform(stBody, vPosition, stRotation);
+
+      /* Updates interpolated rotation */
+      _pstBody->fPreviousRotation     = _fRotation;
+      _pstBody->fInterpolatedRotation = _fRotation;
+    }
+    else
+    {
+      /* Updates its rotation */
+      b2Body_SetTransform(stBody, b2Body_GetPosition(stBody), stRotation);
+    }
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetSpeed(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvSpeed)
+{
+  b2BodyId  stBody;
+  b2Vec2    vSpeed;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvSpeed != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets its speed */
+  const b2Vec2 vCurrentSpeed = b2Body_GetLinearVelocity(stBody);
+
+  /* Sets speed vector */
+  vSpeed.x = sstPhysics.fDimensionRatio * _pvSpeed->fX;
+  vSpeed.y = sstPhysics.fDimensionRatio * _pvSpeed->fY;
+
+  /* Should apply? */
+  if((vCurrentSpeed.x != vSpeed.x) || (vCurrentSpeed.y != vSpeed.y))
+  {
+    /* Wakes up */
+    b2Body_SetAwake(stBody, true);
+
+    /* Updates its speed */
+    b2Body_SetLinearVelocity(stBody, vSpeed);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_BODY *_pstBody, orxFLOAT _fVelocity)
+{
+  b2BodyId  stBody;
+  float     fAngularVelocity;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets its angular velocity */
+  fAngularVelocity = b2Body_GetAngularVelocity(stBody);
+
+  /* Should apply? */
+  if(fAngularVelocity != _fVelocity)
+  {
+    /* Wakes up */
+    b2Body_SetAwake(stBody, true);
+
+    /* Updates its angular velocity */
+    b2Body_SetAngularVelocity(stBody, _fVelocity);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCustomGravity(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvCustomGravity)
+{
+  b2BodyId      stBody;
+  // const b2Vec2  vCustomGravity;
+  orxSTATUS     eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  //! TODO
+  // /* Gets its custom gravity */
+  // vCustomGravity = poBody->GetCustomGravity();
+
+  // /* Has new custom gravity? */
+  // if(_pvCustomGravity != orxNULL)
+  // {
+  //   b2Vec2 vGravity;
+
+  //   /* Sets gravity vector */
+  //   vGravity.Set(sstPhysics.fDimensionRatio * _pvCustomGravity->fX, sstPhysics.fDimensionRatio * _pvCustomGravity->fY);
+
+  //   /* Should apply? */
+  //   if((pvCustomGravity == NULL) || (pvCustomGravity->x != vGravity.x) || (pvCustomGravity->y != vGravity.y))
+  //   {
+  //     /* Wakes up */
+  //     poBody->SetAwake(true);
+
+  //     /* Updates it */
+  //     poBody->SetCustomGravity(&vGravity);
+  //   }
+  // }
+  // else
+  // {
+  //   /* Should apply */
+  //   if(pvCustomGravity != NULL)
+  //   {
+  //     /* Wakes up */
+  //     poBody->SetAwake(true);
+
+  //     /* Removes it */
+  //     poBody->SetCustomGravity(orxNULL);
+  //   }
+  // }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetFixedRotation(orxPHYSICS_BODY * _pstBody, orxBOOL _bFixed)
+{
+  b2BodyId  stBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Updates its fixed rotation property */
+  b2Body_SetFixedRotation(stBody, (_bFixed != orxFALSE) ? true : false);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetDynamic(orxPHYSICS_BODY * _pstBody, orxBOOL _bDynamic)
+{
+  b2BodyId  stBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Dynamic? */
+  if(_bDynamic != orxFALSE)
+  {
+    /* Updates its type */
+    b2Body_SetType(stBody, b2_dynamicBody);
+  }
+  else
+  {
+    const orxBODY *pstBody;
+
+    /* Gets associated body */
+    pstBody = orxBODY(_pstBody->pstOwner);
+
+    /* Updates its type */
+    b2Body_SetType(stBody, orxBody_GetAllowMoving(pstBody) != orxFALSE ? b2_kinematicBody : b2_staticBody);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAllowMoving(orxPHYSICS_BODY * _pstBody, orxBOOL _bAllowMoving)
+{
+  b2BodyId  stBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Not dynamic? */
+  if(b2Body_GetType(stBody) != b2_dynamicBody)
+  {
+    /* Updates its type */
+    b2Body_SetType(stBody, _bAllowMoving != orxFALSE ? b2_kinematicBody : b2_staticBody);
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetPosition(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvPosition)
+{
+  b2BodyId    stBody;
+  b2Vec2      vPosition;
+  orxVECTOR  *pvResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets its position */
+  vPosition = b2Body_GetPosition(stBody);
+
+  /* Updates result */
+  pvResult      = _pvPosition;
+  pvResult->fX  = sstPhysics.fRecDimensionRatio * vPosition.x;
+  pvResult->fY  = sstPhysics.fRecDimensionRatio * vPosition.y;
+
+  /* Done! */
+  return pvResult;
+}
+
+orxFLOAT orxFASTCALL orxPhysics_Box2D_GetRotation(const orxPHYSICS_BODY *_pstBody)
+{
+  b2BodyId  stBody;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets its rotation */
+  fResult = b2Rot_GetAngle(b2Body_GetRotation(stBody));
+
+  /* Done! */
+  return fResult;
+}
+
+orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetSpeed(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvSpeed)
+{
+  b2BodyId    stBody;
+  b2Vec2      vSpeed;
+  orxVECTOR  *pvResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvSpeed != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets its speed */
+  vSpeed = b2Body_GetLinearVelocity(stBody);
+
+  /* Updates result */
+  pvResult      = _pvSpeed;
+  pvResult->fX  = sstPhysics.fRecDimensionRatio * vSpeed.x;
+  pvResult->fY  = sstPhysics.fRecDimensionRatio * vSpeed.y;
+  pvResult->fZ  = orxFLOAT_0;
+
+  /* Done! */
+  return pvResult;
+}
+
+orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetSpeedAtWorldPosition(const orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition, orxVECTOR *_pvSpeed)
+{
+  b2BodyId  stBody;
+  b2Vec2    vSpeed, vPosition;
+  orxVECTOR *pvResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvPosition != orxNULL);
+  orxASSERT(_pvSpeed != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets its speed at given position */
+  vPosition.x = sstPhysics.fDimensionRatio * _pvPosition->fX;
+  vPosition.y = sstPhysics.fDimensionRatio * _pvPosition->fY;
+  vSpeed = b2Body_GetLocalPointVelocity(stBody, b2Body_GetLocalPoint(stBody, vPosition));
+
+  /* Updates result */
+  pvResult      = _pvSpeed;
+  pvResult->fX  = sstPhysics.fRecDimensionRatio * vSpeed.x;
+  pvResult->fY  = sstPhysics.fRecDimensionRatio * vSpeed.y;
+  pvResult->fZ  = orxFLOAT_0;
+
+  /* Done! */
+  return pvResult;
+}
+
+orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularVelocity(const orxPHYSICS_BODY *_pstBody)
+{
+  b2BodyId  stBody;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets its angular velocity */
+  fResult = b2Body_GetAngularVelocity(stBody);
+
+  /* Done! */
+  return fResult;
+}
+
+orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity)
+{
+  b2BodyId      stBody;
+  // const b2Vec2  vGravity;
+  orxVECTOR    *pvResult = orxNULL;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvCustomGravity != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  //! TODO
+  // /* Gets its custom gravity */
+  // pvGravity = poBody->GetCustomGravity();
+
+  // /* Found? */
+  // if(pvGravity != orxNULL)
+  // {
+  //   /* Updates result */
+  //   orxVector_Set(_pvCustomGravity, sstPhysics.fRecDimensionRatio * pvGravity->x, sstPhysics.fRecDimensionRatio * pvGravity->y, orxFLOAT_0);
+  //   pvResult = _pvCustomGravity;
+  // }
+  // else
+  // {
+  //   /* Clears result */
+  //   pvResult = orxNULL;
+  // }
+
+  /* Done! */
+  return pvResult;
+}
+
+orxBOOL orxFASTCALL orxPhysics_Box2D_IsFixedRotation(const orxPHYSICS_BODY * _pstBody)
+{
+  b2BodyId  stBody;
+  orxBOOL   bResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Updates result */
+  bResult = (b2Body_IsFixedRotation(stBody) != false) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+orxFLOAT orxFASTCALL orxPhysics_Box2D_GetMass(const orxPHYSICS_BODY *_pstBody)
+{
+  b2BodyId  stBody;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Updates result */
+  fResult = orx2F(b2Body_GetMass(stBody));
+
+  /* Done! */
+  return fResult;
+}
+
+orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetMassCenter(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvMassCenter)
+{
+  b2BodyId    stBody;
+  b2Vec2      vMassCenter;
+  orxVECTOR  *pvResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvMassCenter != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets its mass center */
+  vMassCenter = b2Body_GetLocalCenterOfMass(stBody);
+
+  /* Transfer values */
+  _pvMassCenter->fX = sstPhysics.fRecDimensionRatio * vMassCenter.x;
+  _pvMassCenter->fY = sstPhysics.fRecDimensionRatio * vMassCenter.y;
+  _pvMassCenter->fZ = orxFLOAT_0;
+
+  /* Updates result */
+  pvResult = _pvMassCenter;
+
+  /* Done! */
+  return pvResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetLinearDamping(orxPHYSICS_BODY *_pstBody, orxFLOAT _fDamping)
+{
+  b2BodyId  stBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Sets its linear damping */
+  b2Body_SetLinearDamping(stBody, _fDamping);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularDamping(orxPHYSICS_BODY *_pstBody, orxFLOAT _fDamping)
+{
+  b2BodyId  stBody;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Sets its angular damping */
+  b2Body_SetAngularDamping(stBody, _fDamping);
+
+  /* Done! */
+  return eResult;
+}
+
+orxFLOAT orxFASTCALL orxPhysics_Box2D_GetLinearDamping(const orxPHYSICS_BODY *_pstBody)
+{
+  b2BodyId  stBody;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets its linear damping */
+  fResult = orx2F(b2Body_GetLinearDamping(stBody));
+
+  /* Done! */
+  return fResult;
+}
+
+orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularDamping(const orxPHYSICS_BODY *_pstBody)
+{
+  b2BodyId  stBody;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets its angular damping */
+  fResult = orx2F(b2Body_GetAngularDamping(stBody));
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyTorque(orxPHYSICS_BODY *_pstBody, orxFLOAT _fTorque)
+{
+  b2BodyId    stBody;
+  orxOBJECT  *pstObject;
+  float       fTorque = (float)_fTorque;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets owner object */
+  pstObject = orxOBJECT(orxStructure_GetOwner(_pstBody->pstOwner));
+
+  /* Is enabled? */
+  if((pstObject != orxNULL) && (orxObject_IsEnabled(pstObject) != orxFALSE))
+  {
+    orxCLOCK *pstClock;
+
+    /* Gets its clock */
+    pstClock = orxObject_GetClock(pstObject);
+
+    /* Valid */
+    if(pstClock != orxNULL)
+    {
+      /* Paused? */
+      if(orxClock_IsPaused(pstClock) != orxFALSE)
+      {
+        /* Updates torque */
+        fTorque = orxFLOAT_0;
+      }
+      else
+      {
+        orxFLOAT fModifier;
+
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
+
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
+        {
+          /* Updates torque */
+          fTorque *= (float)fModifier;
+        }
+      }
+    }
+  }
+
+  /* Applies torque */
+  b2Body_ApplyTorque(stBody, fTorque, true);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyForce(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvForce, const orxVECTOR *_pvPoint)
+{
+  b2BodyId    stBody;
+  orxOBJECT  *pstObject;
+  b2Vec2      vForce, vPoint;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvForce != orxNULL);
+
+  /* Sets force */
+  vForce.x = sstPhysics.fDimensionRatio * _pvForce->fX;
+  vForce.y = sstPhysics.fDimensionRatio * _pvForce->fY;
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets owner object */
+  pstObject = orxOBJECT(orxStructure_GetOwner(_pstBody->pstOwner));
+
+  /* Is enabled? */
+  if((pstObject != orxNULL) && (orxObject_IsEnabled(pstObject) != orxFALSE))
+  {
+    orxCLOCK *pstClock;
+
+    /* Gets its clock */
+    pstClock = orxObject_GetClock(pstObject);
+
+    /* Valid */
+    if(pstClock != orxNULL)
+    {
+      /* Paused? */
+      if(orxClock_IsPaused(pstClock) != orxFALSE)
+      {
+        /* Updates force */
+        vForce.x = vForce.y = (float)orxFLOAT_0;
+      }
+      else
+      {
+        orxFLOAT fModifier;
+
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
+
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
+        {
+          /* Updates force */
+          vForce.x *= (float)(fModifier * fModifier);
+          vForce.y *= (float)(fModifier * fModifier);
+        }
+      }
+    }
+  }
+
+  /* Has point? */
+  if(_pvPoint != orxNULL)
+  {
+    /* Sets point */
+    vPoint.x = sstPhysics.fDimensionRatio * _pvPoint->fX;
+    vPoint.y = sstPhysics.fDimensionRatio * _pvPoint->fY;
+  }
+  else
+  {
+    /* Gets world mass center */
+    vPoint = b2Body_GetWorldCenterOfMass(stBody);
+  }
+
+  /* Applies force */
+  b2Body_ApplyForce(stBody, vForce, vPoint, true);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvImpulse, const orxVECTOR *_pvPoint)
+{
+  b2BodyId    stBody;
+  orxOBJECT  *pstObject;
+  b2Vec2      vImpulse, vPoint;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBody != orxNULL);
+  orxASSERT(_pvImpulse != orxNULL);
+
+  /* Sets impulse */
+  vImpulse.x = sstPhysics.fDimensionRatio * _pvImpulse->fX;
+  vImpulse.y = sstPhysics.fDimensionRatio * _pvImpulse->fY;
+
+  /* Gets body */
+  stBody = _pstBody->stBody;
+
+  /* Gets owner object */
+  pstObject = orxOBJECT(orxStructure_GetOwner(_pstBody->pstOwner));
+
+  /* Is enabled? */
+  if((pstObject != orxNULL) && (orxObject_IsEnabled(pstObject) != orxFALSE))
+  {
+    orxCLOCK *pstClock;
+
+    /* Gets its clock */
+    pstClock = orxObject_GetClock(pstObject);
+
+    /* Valid */
+    if(pstClock != orxNULL)
+    {
+      /* Paused? */
+      if(orxClock_IsPaused(pstClock) != orxFALSE)
+      {
+        /* Updates impulse */
+        vImpulse.x = vImpulse.y = (float)orxFLOAT_0;
+      }
+      else
+      {
+        orxFLOAT fModifier;
+
+        /* Gets multiply modifier */
+        fModifier = orxClock_GetModifier(pstClock, orxCLOCK_MODIFIER_MULTIPLY);
+
+        /* Valid? */
+        if(fModifier != orxFLOAT_0)
+        {
+          /* Updates impulse */
+          vImpulse.x *= (float)fModifier;
+          vImpulse.y *= (float)fModifier;
+        }
+      }
+    }
+  }
+
+  /* Has point? */
+  if(_pvPoint != orxNULL)
+  {
+    /* Sets point */
+    vPoint.x = sstPhysics.fDimensionRatio * _pvPoint->fX;
+    vPoint.y = sstPhysics.fDimensionRatio * _pvPoint->fY;
+  }
+  else
+  {
+    /* Gets world mass center */
+    vPoint = b2Body_GetWorldCenterOfMass(stBody);
+  }
+
+  /* Applies force */
+  b2Body_ApplyLinearImpulse(stBody, vImpulse, vPoint, true);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
+{
+  b2ShapeId stShape;
+  b2Filter  stFilter;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Gets its current filter */
+  stFilter = b2Shape_GetFilter(stShape);
+
+  /* Updates it */
+  stFilter.categoryBits = _u16SelfFlags;
+
+  /* Sets new filter */
+  b2Shape_SetFilter(stShape, stFilter);
+
+  /* Done! */
+  return eResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
+{
+  b2ShapeId stShape;
+  b2Filter  stFilter;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Gets its current filter */
+  stFilter = b2Shape_GetFilter(stShape);
+
+  /* Updates it */
+  stFilter.maskBits = _u16CheckMask;
+
+  /* Sets new filter */
+  b2Shape_SetFilter(stShape, stFilter);
+
+  /* Done! */
+  return eResult;
+}
+
+orxU16 orxFASTCALL orxPhysics_Box2D_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2ShapeId stShape;
+  orxU16    u16Result;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Updates result */
+  u16Result = (orxU16)(b2Shape_GetFilter(stShape).categoryBits);
+
+  /* Done! */
+  return u16Result;
+}
+
+orxU16 orxFASTCALL orxPhysics_Box2D_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2ShapeId stShape;
+  orxU16    u16Result;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Updates result */
+  u16Result = (orxU16)(b2Shape_GetFilter(stShape).maskBits);
+
+  /* Done! */
+  return u16Result;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid)
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Logs message */
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't change the solidity of a part: this feature isn't supported by this plugin.");
+
+  /* Done! */
+  return eResult;
+}
+
+orxBOOL orxFASTCALL orxPhysics_Box2D_IsPartSolid(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2ShapeId stShape;
+  orxBOOL   bResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Updates result */
+  bResult = b2Shape_IsSensor(stShape) ? orxFALSE : orxTRUE;
+
+  /* Done! */
+  return bResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartFriction(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fFriction)
+{
+  b2ShapeId stShape;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Updates it */
+  b2Shape_SetFriction(stShape, _fFriction);
+
+  /* Done! */
+  return eResult;
+}
+
+orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartFriction(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2ShapeId stShape;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Updates result */
+  fResult = orx2F(b2Shape_GetFriction(stShape));
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartRestitution(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fRestitution)
+{
+  b2ShapeId stShape;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Updates it */
+  b2Shape_SetRestitution(stShape, _fRestitution);
+
+  /* Done! */
+  return eResult;
+}
+
+orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartRestitution(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2ShapeId stShape;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Updates result */
+  fResult = orx2F(b2Shape_GetRestitution(stShape));
+
+  /* Done! */
+  return fResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartDensity(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fDensity)
+{
+  b2ShapeId stShape;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Updates it */
+  b2Shape_SetDensity(stShape, _fDensity, true);
+
+  /* Done! */
+  return eResult;
+}
+
+orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartDensity(const orxPHYSICS_BODY_PART *_pstBodyPart)
+{
+  b2ShapeId stShape;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Updates result */
+  fResult = orx2F(b2Shape_GetDensity(stShape));
+
+  /* Done! */
+  return fResult;
+}
+
+orxBOOL orxFASTCALL orxPhysics_Box2D_IsInsidePart(const orxPHYSICS_BODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition)
+{
+  b2ShapeId stShape;
+  b2Vec2    vPosition;
+  orxBOOL     bResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyPart != orxNULL);
+
+  /* Gets shape */
+  stShape = _pstBodyPart->stShape;
+
+  /* Sets position */
+  vPosition.x = sstPhysics.fDimensionRatio * _pvPosition->fX;
+  vPosition.y = sstPhysics.fDimensionRatio * _pvPosition->fY;
+
+  /* Updates result */
+  bResult = (b2Shape_TestPoint(stShape, vPosition) != false) ? orxTRUE : orxFALSE;
+
+  /* Done! */
+  return bResult;
+}
+
+orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+{
+  orxPHYSICS_RAYCAST  stRayCast;
+  b2QueryFilter       stFilter;
+  b2Vec2              vOrigin, vRay;
+  orxHANDLE           hResult = orxHANDLE_UNDEFINED;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvBegin != orxNULL);
+  orxASSERT(_pvEnd != orxNULL);
+
+  /* Gets extremities */
+  vOrigin.x = sstPhysics.fDimensionRatio * _pvBegin->fX;
+  vOrigin.y = sstPhysics.fDimensionRatio * _pvBegin->fY;
+  vRay.x    = sstPhysics.fDimensionRatio * _pvEnd->fX - vOrigin.x;
+  vRay.y    = sstPhysics.fDimensionRatio * _pvEnd->fY - vOrigin.y;
+
+  /* Inits ray cast */
+  orxMemory_Zero(&stRayCast, sizeof(orxPHYSICS_RAYCAST));
+  stRayCast.hResult     = orxHANDLE_UNDEFINED;
+  stRayCast.bEarlyExit  = _bEarlyExit;
+
+  /* Inits filter */
+  stFilter              = b2DefaultQueryFilter();
+  stFilter.categoryBits = _u16SelfFlags;
+  stFilter.maskBits     = _u16CheckMask;
+
+  /* Issues Raycast */
+  b2World_CastRay(sstPhysics.stWorld, vOrigin, vRay, stFilter, &orxPhysics_Box2D_RayCastCallback, &stRayCast);
+
+  /* Found? */
+  if(stRayCast.hResult != orxHANDLE_UNDEFINED)
+  {
+    /* Updates result */
+    hResult = stRayCast.hResult;
+
+    /* Asked for contact? */
+    if(_pvContact != orxNULL)
+    {
+      /* Updates it */
+      orxVector_Set(_pvContact, stRayCast.vContact.fX, stRayCast.vContact.fY, _pvBegin->fZ);
+    }
+
+    /* Asked for normal? */
+    if(_pvNormal != orxNULL)
+    {
+      /* Updates it */
+      orxVector_Copy(_pvNormal, &(stRayCast.vNormal));
+    }
+  }
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+  /* Hit? */
+  if(stRayCast.hResult != orxHANDLE_UNDEFINED)
+  {
+    orxPHYSICS_DEBUG_RAY *pstBeforeHitRay, *pstAfterHitRay;
+
+    /* Allocates debug rays */
+    pstBeforeHitRay  = (orxPHYSICS_DEBUG_RAY *)orxBank_Allocate(sstPhysics.pstRayBank);
+    pstAfterHitRay   = (orxPHYSICS_DEBUG_RAY *)orxBank_Allocate(sstPhysics.pstRayBank);
+    orxASSERT(pstBeforeHitRay != orxNULL);
+    orxASSERT(pstAfterHitRay != orxNULL);
+
+    /* Inits them */
+    pstBeforeHitRay->vBegin   = vOrigin;
+    pstBeforeHitRay->vEnd.x   = sstPhysics.fDimensionRatio * stRayCast.vContact.fX;
+    pstBeforeHitRay->vEnd.y   = sstPhysics.fDimensionRatio * stRayCast.vContact.fY;
+    pstBeforeHitRay->stColor  = orxPHYSICS_KU32_RAY_BEFORE_HIT_COLOR;
+    pstAfterHitRay->vBegin.x  = sstPhysics.fDimensionRatio * stRayCast.vContact.fX;
+    pstAfterHitRay->vBegin.y  = sstPhysics.fDimensionRatio * stRayCast.vContact.fY;
+    pstAfterHitRay->vEnd.x    = vOrigin.x + vRay.x;
+    pstAfterHitRay->vEnd.y    = vOrigin.y + vRay.y;
+    pstAfterHitRay->stColor   = orxPHYSICS_KU32_RAY_AFTER_HIT_COLOR;
+  }
+  else
+  {
+    orxPHYSICS_DEBUG_RAY *pstMissRay;
+
+    /* Allocates debug ray */
+    pstMissRay = (orxPHYSICS_DEBUG_RAY *)orxBank_Allocate(sstPhysics.pstRayBank);
+    orxASSERT(pstMissRay != orxNULL);
+
+    /* Inits it */
+    pstMissRay->vBegin  = vOrigin;
+    pstMissRay->vEnd.x  = vOrigin.x + vRay.x;
+    pstMissRay->vEnd.y  = vOrigin.y + vRay.y;
+    pstMissRay->stColor = orxPHYSICS_KU32_RAY_MISS_COLOR;
+  }
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+
+  /* Done! */
+  return hResult;
+}
+
+orxU32 orxFASTCALL orxPhysics_Box2D_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
+{
+  b2AABB              stBox;
+  b2QueryFilter       stFilter;
+  orxPHYSICS_BOXPICK  stBoxPick;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBox != orxNULL);
+
+  /* Gets extremities */
+  stBox.lowerBound.x = sstPhysics.fDimensionRatio * _pstBox->vTL.fX;
+  stBox.lowerBound.y = sstPhysics.fDimensionRatio * _pstBox->vTL.fY;
+  stBox.upperBound.x = sstPhysics.fDimensionRatio * _pstBox->vBR.fX;
+  stBox.upperBound.y = sstPhysics.fDimensionRatio * _pstBox->vBR.fY;
+
+  /* Inits ray cast */
+  orxMemory_Zero(&stBoxPick, sizeof(orxPHYSICS_BOXPICK));
+
+  /* Inits filter */
+  stFilter              = b2DefaultQueryFilter();
+  stFilter.categoryBits = _u16SelfFlags;
+  stFilter.maskBits     = _u16CheckMask;
+
+  /* Inits storage */
+  stBoxPick.ahUserDataList  = _ahUserDataList;
+  stBoxPick.u32Size         = (_ahUserDataList != orxNULL) ? _u32Number : 0;
+
+  /* Issues query */
+  b2World_OverlapAABB(sstPhysics.stWorld, stBox, stFilter, &orxPhysics_Box2D_BoxPickCallback, &stBoxPick);
+
+  /* Done! */
+  return stBoxPick.u32Count;
+}
+
+void orxFASTCALL orxPhysics_Box2D_EnableSimulation(orxBOOL _bEnable)
+{
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+
+  /* Enabled? */
+  if(_bEnable != orxFALSE)
+  {
+    /* Updates status */
+    orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED, orxPHYSICS_KU32_STATIC_FLAG_NONE);
+  }
+  else
+  {
+    /* Updates status */
+    orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_NONE, orxPHYSICS_KU32_STATIC_FLAG_ENABLED);
+  }
+
+  /* Done! */
+  return;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetGravity(const orxVECTOR *_pvGravity)
+{
+  b2Vec2    vGravity;
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvGravity != orxNULL);
+
+  /* Sets gravity vector */
+  vGravity.x = sstPhysics.fDimensionRatio * _pvGravity->fX;
+  vGravity.y = sstPhysics.fDimensionRatio * _pvGravity->fY;
+
+  /* Updates gravity */
+  b2World_SetGravity(sstPhysics.stWorld, vGravity);
+
+  /* Done! */
+  return eResult;
+}
+
+orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetGravity(orxVECTOR *_pvGravity)
+{
+  b2Vec2      vGravity;
+  orxVECTOR  *pvResult = _pvGravity;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pvGravity != orxNULL);
+
+  /* Gets gravity vector */
+  vGravity = b2World_GetGravity(sstPhysics.stWorld);
+  orxVector_Set(_pvGravity, sstPhysics.fRecDimensionRatio * vGravity.x, sstPhysics.fRecDimensionRatio * vGravity.y, orxFLOAT_0);
+
+  /* Done! */
+  return pvResult;
+}
+
+orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
+{
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Was not already initialized? */
+  if(!(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY))
+  {
+    orxFLOAT    fRatio, fStepFrequency;
+    orxVECTOR   vGravity;
+    b2WorldDef  stWorldDef;
+    
+    /* Cleans static controller */
+    orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
+
+    /* Pushes config section */
+    orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
+
+    /* Sets custom memory alloc/free */
+    b2SetAllocator(orxPhysics_Box2D_Allocate, orxPhysics_Box2D_Free);
+
+    /* Gets gravity */
+    if(orxConfig_GetVector(orxPHYSICS_KZ_CONFIG_GRAVITY, &vGravity) == orxNULL)
+    {
+      orxVector_Copy(&vGravity, &orxVECTOR_0);
+    }
+
+    /* Gets step frequency */
+    fStepFrequency = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_STEP_FREQUENCY);
+
+    /* Deactivated? */
+    if(fStepFrequency <= orxFLOAT_0)
+    {
+      /* Uses default frequency */
+      sstPhysics.fFixedDT = orxFLOAT_1 / orxPHYSICS_KF_DEFAULT_FREQUENCY;
+    }
+    else
+    {
+      /* Stores fixed DT */
+      sstPhysics.fFixedDT = orxFLOAT_1 / fStepFrequency;
+
+      /* Updates status */
+      orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_FIXED_DT, orxPHYSICS_KU32_STATIC_FLAG_NONE);
+
+      /* Should interpolate? */
+      if((orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_INTERPOLATE) == orxFALSE) || (orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_INTERPOLATE) != orxFALSE))
+      {
+        /* Updates status */
+        orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE, orxPHYSICS_KU32_STATIC_FLAG_NONE);
+      }
+    }
+
+    /* Gets dimension ratio */
+    fRatio = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);
+
+    /* Valid? */
+    if(fRatio > orxFLOAT_0)
+    {
+      /* Stores it */
+      sstPhysics.fDimensionRatio = fRatio;
+    }
+    else
+    {
+      /* Stores default one */
+      sstPhysics.fDimensionRatio = orxPHYSICS_KF_DEFAULT_DIMENSION_RATIO;
+    }
+
+    /* Stores it */
+    orxConfig_SetFloat(orxPHYSICS_KZ_CONFIG_RATIO, sstPhysics.fDimensionRatio);
+
+    /* Setups world */
+    stWorldDef              = b2DefaultWorldDef();
+    stWorldDef.enableSleep  = (orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) == orxFALSE) || (orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE);
+    stWorldDef.gravity.x    = sstPhysics.fDimensionRatio * vGravity.fX;
+    stWorldDef.gravity.y    = sstPhysics.fDimensionRatio * vGravity.fY;
+
+    /* Creates world */
+    sstPhysics.stWorld      = b2CreateWorld(&stWorldDef);
+
+    /* Success? */
+    if(sstPhysics.stWorld.index1 != 0)
+    {
+      orxCLOCK *pstClock;
+
+      /* Stores inverse dimension ratio */
+      sstPhysics.fRecDimensionRatio = orxFLOAT_1 / sstPhysics.fDimensionRatio;
+
+      /* Gets core clock */
+      pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
+
+      /* Resyncs clocks */
+      orxClock_ResyncAll();
+
+      /* Valid? */
+      if(pstClock != orxNULL)
+      {
+        /* Creates banks */
+        sstPhysics.pstBodyBank      = orxBank_Create(orxPHYSICS_KU32_BODY_BANK_SIZE, sizeof(orxPHYSICS_BODY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+        sstPhysics.pstBodyPartBank  = orxBank_Create(orxPHYSICS_KU32_BODY_PART_BANK_SIZE, sizeof(orxPHYSICS_BODY_PART), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+        /* Success? */
+        if((sstPhysics.pstBodyBank != orxNULL) && (sstPhysics.pstBodyPartBank != orxNULL))
+        {
+          /* Registers update function */
+          eResult = orxClock_Register(pstClock, orxPhysics_Box2D_Update, orxNULL, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
+
+          /* Valid? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+            /* Creates ray bank */
+            sstPhysics.pstRayBank = orxBank_Create(orxPHYSICS_KU32_RAY_BANK_SIZE, sizeof(orxPHYSICS_DEBUG_RAY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_DEBUG);
+
+            /* Inits draw interface */
+            sstPhysics.stDebugDraw                      = b2DefaultDebugDraw();
+            sstPhysics.stDebugDraw.drawShapes           = true;
+            sstPhysics.stDebugDraw.drawJoints           = true;
+            sstPhysics.stDebugDraw.drawJointExtras      = true;
+            sstPhysics.stDebugDraw.drawGraphColors      = true;
+            sstPhysics.stDebugDraw.DrawCircleFcn        = &orxPhysics_Box2D_DrawCircle;
+            sstPhysics.stDebugDraw.DrawSolidCircleFcn   = &orxPhysics_Box2D_DrawSolidCircle;
+            sstPhysics.stDebugDraw.DrawPolygonFcn       = &orxPhysics_Box2D_DrawPolygon;
+            sstPhysics.stDebugDraw.DrawSolidPolygonFcn  = &orxPhysics_Box2D_DrawSolidPolygon;
+            sstPhysics.stDebugDraw.DrawSegmentFcn       = &orxPhysics_Box2D_DrawSegment;
+            sstPhysics.stDebugDraw.DrawTransformFcn     = &orxPhysics_Box2D_DrawTransform;
+            sstPhysics.stDebugDraw.DrawPointFcn         = &orxPhysics_Box2D_DrawPoint;
+            sstPhysics.stDebugDraw.DrawStringFcn        = &orxPhysics_Box2D_DrawString;
+
+            /* Adds event handler */
+            orxEvent_AddHandler(orxEVENT_TYPE_RENDER, orxPhysics_Box2D_EventHandler);
+            orxEvent_SetHandlerIDFlags(orxPhysics_Box2D_EventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+
+            /* Updates status */
+            sstPhysics.u32Flags |= orxPHYSICS_KU32_STATIC_FLAG_READY | orxPHYSICS_KU32_STATIC_FLAG_ENABLED;
+
+            /* Updates result */
+            eResult = orxSTATUS_SUCCESS;
+          }
+          else
+          {
+            /* Deletes banks */
+            orxBank_Delete(sstPhysics.pstBodyBank);
+            orxBank_Delete(sstPhysics.pstBodyPartBank);
+
+            /* Deletes world */
+            b2DestroyWorld(sstPhysics.stWorld);
+          }
+        }
+        else
+        {
+          /* Deletes banks */
+          if(sstPhysics.pstBodyBank != orxNULL)
+          {
+            orxBank_Delete(sstPhysics.pstBodyBank);
+          }
+          if(sstPhysics.pstBodyPartBank != orxNULL)
+          {
+            orxBank_Delete(sstPhysics.pstBodyPartBank);
+          }
+          
+          /* Deletes world */
+          b2DestroyWorld(sstPhysics.stWorld);
+        }
+      }
+      else
+      {
+        /* Deletes world */
+        b2DestroyWorld(sstPhysics.stWorld);
+      }
+    }
+
+    /* Pops config section */
+    orxConfig_PopSection();
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+void orxFASTCALL orxPhysics_Box2D_Exit()
+{
+  /* Was initialized? */
+  if(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY)
+  {
+    /* Unregisters update */
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxPhysics_Box2D_Update);
+
+    /* Deletes banks */
+    orxBank_Delete(sstPhysics.pstBodyBank);
+    orxBank_Delete(sstPhysics.pstBodyPartBank);
+
+#ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
+
+    /* Removes event handler */
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxPhysics_Box2D_EventHandler);
+
+    /* Deletes ray bank */
+    orxBank_Delete(sstPhysics.pstRayBank);
+
+#endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
+
+    /* Deletes world */
+    b2DestroyWorld(sstPhysics.stWorld);
+
+    /* Cleans static controller */
+    orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
+  }
+
+  /* Done! */
+  return;
+}
 
 
 // /***************************************************************************
@@ -3558,61 +3568,61 @@
 //  ***************************************************************************/
 
 orxPLUGIN_USER_CORE_FUNCTION_START(PHYSICS);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Init, PHYSICS, INIT);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Exit, PHYSICS, EXIT);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetGravity, PHYSICS, SET_GRAVITY);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetGravity, PHYSICS, GET_GRAVITY);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBody, PHYSICS, CREATE_BODY);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeleteBody, PHYSICS, DELETE_BODY);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreatePart, PHYSICS, CREATE_PART);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeletePart, PHYSICS, DELETE_PART);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Init, PHYSICS, INIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Exit, PHYSICS, EXIT);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetGravity, PHYSICS, SET_GRAVITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetGravity, PHYSICS, GET_GRAVITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateBody, PHYSICS, CREATE_BODY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeleteBody, PHYSICS, DELETE_BODY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreatePart, PHYSICS, CREATE_PART);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeletePart, PHYSICS, DELETE_PART);
 // orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_CreateJoint, PHYSICS, CREATE_JOINT);
 // orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_DeleteJoint, PHYSICS, DELETE_JOINT);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPosition, PHYSICS, SET_POSITION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetRotation, PHYSICS, SET_ROTATION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetSpeed, PHYSICS, SET_SPEED);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetAngularVelocity, PHYSICS, SET_ANGULAR_VELOCITY);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetCustomGravity, PHYSICS, SET_CUSTOM_GRAVITY);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetFixedRotation, PHYSICS, SET_FIXED_ROTATION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetDynamic, PHYSICS, SET_DYNAMIC);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetAllowMoving, PHYSICS, SET_ALLOW_MOVING);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPosition, PHYSICS, GET_POSITION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetRotation, PHYSICS, GET_ROTATION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetSpeed, PHYSICS, GET_SPEED);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetSpeedAtWorldPosition, PHYSICS, GET_SPEED_AT_WORLD_POSITION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetAngularVelocity, PHYSICS, GET_ANGULAR_VELOCITY);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetCustomGravity, PHYSICS, GET_CUSTOM_GRAVITY);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_IsFixedRotation, PHYSICS, IS_FIXED_ROTATION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetMass, PHYSICS, GET_MASS);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetMassCenter, PHYSICS, GET_MASS_CENTER);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetLinearDamping, PHYSICS, SET_LINEAR_DAMPING);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetAngularDamping, PHYSICS, SET_ANGULAR_DAMPING);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetLinearDamping, PHYSICS, GET_LINEAR_DAMPING);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetAngularDamping, PHYSICS, GET_ANGULAR_DAMPING);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyTorque, PHYSICS, APPLY_TORQUE);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyForce, PHYSICS, APPLY_FORCE);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyImpulse, PHYSICS, APPLY_IMPULSE);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartSelfFlags, PHYSICS, SET_PART_SELF_FLAGS);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartCheckMask, PHYSICS, SET_PART_CHECK_MASK);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartSelfFlags, PHYSICS, GET_PART_SELF_FLAGS);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartCheckMask, PHYSICS, GET_PART_CHECK_MASK);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartSolid, PHYSICS, SET_PART_SOLID);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_IsPartSolid, PHYSICS, IS_PART_SOLID);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartFriction, PHYSICS, SET_PART_FRICTION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartFriction, PHYSICS, GET_PART_FRICTION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartRestitution, PHYSICS, SET_PART_RESTITUTION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartRestitution, PHYSICS, GET_PART_RESTITUTION);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartDensity, PHYSICS, SET_PART_DENSITY);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartDensity, PHYSICS, GET_PART_DENSITY);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_IsInsidePart, PHYSICS, IS_INSIDE_PART);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPosition, PHYSICS, SET_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetRotation, PHYSICS, SET_ROTATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetSpeed, PHYSICS, SET_SPEED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetAngularVelocity, PHYSICS, SET_ANGULAR_VELOCITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetCustomGravity, PHYSICS, SET_CUSTOM_GRAVITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetFixedRotation, PHYSICS, SET_FIXED_ROTATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetDynamic, PHYSICS, SET_DYNAMIC);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetAllowMoving, PHYSICS, SET_ALLOW_MOVING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPosition, PHYSICS, GET_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetRotation, PHYSICS, GET_ROTATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetSpeed, PHYSICS, GET_SPEED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetSpeedAtWorldPosition, PHYSICS, GET_SPEED_AT_WORLD_POSITION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetAngularVelocity, PHYSICS, GET_ANGULAR_VELOCITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetCustomGravity, PHYSICS, GET_CUSTOM_GRAVITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_IsFixedRotation, PHYSICS, IS_FIXED_ROTATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetMass, PHYSICS, GET_MASS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetMassCenter, PHYSICS, GET_MASS_CENTER);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetLinearDamping, PHYSICS, SET_LINEAR_DAMPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetAngularDamping, PHYSICS, SET_ANGULAR_DAMPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetLinearDamping, PHYSICS, GET_LINEAR_DAMPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetAngularDamping, PHYSICS, GET_ANGULAR_DAMPING);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyTorque, PHYSICS, APPLY_TORQUE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyForce, PHYSICS, APPLY_FORCE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_ApplyImpulse, PHYSICS, APPLY_IMPULSE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartSelfFlags, PHYSICS, SET_PART_SELF_FLAGS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartCheckMask, PHYSICS, SET_PART_CHECK_MASK);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartSelfFlags, PHYSICS, GET_PART_SELF_FLAGS);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartCheckMask, PHYSICS, GET_PART_CHECK_MASK);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartSolid, PHYSICS, SET_PART_SOLID);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_IsPartSolid, PHYSICS, IS_PART_SOLID);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartFriction, PHYSICS, SET_PART_FRICTION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartFriction, PHYSICS, GET_PART_FRICTION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartRestitution, PHYSICS, SET_PART_RESTITUTION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartRestitution, PHYSICS, GET_PART_RESTITUTION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartDensity, PHYSICS, SET_PART_DENSITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartDensity, PHYSICS, GET_PART_DENSITY);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_IsInsidePart, PHYSICS, IS_INSIDE_PART);
 // orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableMotor, PHYSICS, ENABLE_MOTOR);
 // orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMotorSpeed, PHYSICS, SET_JOINT_MOTOR_SPEED);
 // orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMaxMotorTorque, PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE);
 // orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetJointReactionForce, PHYSICS, GET_JOINT_REACTION_FORCE);
 // orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetJointReactionTorque, PHYSICS, GET_JOINT_REACTION_TORQUE);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Raycast, PHYSICS, RAYCAST);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_BoxPick, PHYSICS, BOX_PICK);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableSimulation, PHYSICS, ENABLE_SIMULATION);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Raycast, PHYSICS, RAYCAST);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_BoxPick, PHYSICS, BOX_PICK);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableSimulation, PHYSICS, ENABLE_SIMULATION);
 orxPLUGIN_USER_CORE_FUNCTION_END();
 
 
