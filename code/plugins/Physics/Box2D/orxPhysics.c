@@ -64,6 +64,7 @@
 
 #define orxPHYSICS_KU32_BODY_BANK_SIZE          512
 #define orxPHYSICS_KU32_BODY_PART_BANK_SIZE     1024
+#define orxPHYSICS_KS32_DEFAULT_SUB_STEP        4
 #define orxPHYSICS_KF_DEFAULT_FREQUENCY         orx2F(60.0f) /* Default frequency */
 #define orxPHYSICS_KF_DEFAULT_DIMENSION_RATIO   orx2F(0.01f) /* Default dimension ratio */
 #define orxPHYSICS_KF_MIN_STEP_DURATION         orx2F(0.001f) /* Min step duration */
@@ -143,6 +144,7 @@ typedef struct __orxPHYSICS_DEBUG_RAY_t
 typedef struct __orxPHYSICS_STATIC_t
 {
   orxU32                      u32Flags;               /**< Control flags */
+  orxS32                      s32IterationPerSteps;   /**< Iteration per steps */
   orxFLOAT                    fDimensionRatio;        /**< Dimension ratio */
   orxFLOAT                    fRecDimensionRatio;     /**< Reciprocal dimension ratio */
   orxFLOAT                    fLastDT;                /**< Last DT */
@@ -1195,7 +1197,7 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       }
 
       /* Updates world simulation */
-      b2World_Step(sstPhysics.stWorld, sstPhysics.fFixedDT, 4);
+      b2World_Step(sstPhysics.stWorld, sstPhysics.fFixedDT, sstPhysics.s32IterationPerSteps);
     }
 
     /* Not absolute fixed DT? */
@@ -1221,13 +1223,16 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       /* Gets it */
       pstEvent = &(stEvents.moveEvents[i]);
 
-
-      /* Non-static and awake? */
-      if((b2Body_GetType(pstEvent->bodyId) != b2_staticBody)
-      && (b2Body_IsAwake(pstEvent->bodyId) != false))
+      /* Valid? */
+      if(b2Body_IsValid(pstEvent->bodyId) != false)
       {
-        /* Applies simulation result */
-        orxPhysics_ApplySimulationResult((orxPHYSICS_BODY *)b2Body_GetUserData(pstEvent->bodyId));
+        /* Non-static and awake? */
+        if((b2Body_GetType(pstEvent->bodyId) != b2_staticBody)
+        && (b2Body_IsAwake(pstEvent->bodyId) != false))
+        {
+          /* Applies simulation result */
+          orxPhysics_ApplySimulationResult((orxPHYSICS_BODY *)b2Body_GetUserData(pstEvent->bodyId));
+        }
       }
     }
 
@@ -3393,6 +3398,9 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_Init()
         orxFLAG_SET(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE, orxPHYSICS_KU32_STATIC_FLAG_NONE);
       }
     }
+
+    /* Gets iteration per steps */
+    sstPhysics.s32IterationPerSteps = (orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ITERATIONS) != orxFALSE) ? orxConfig_GetS32(orxPHYSICS_KZ_CONFIG_ITERATIONS) : orxPHYSICS_KS32_DEFAULT_SUB_STEP;
 
     /* Gets dimension ratio */
     fRatio = orxConfig_GetFloat(orxPHYSICS_KZ_CONFIG_RATIO);

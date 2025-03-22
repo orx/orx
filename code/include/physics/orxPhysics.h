@@ -318,6 +318,7 @@ typedef struct __orxPHYSICS_BODY_JOINT_t              orxPHYSICS_BODY_JOINT;
 #define orxPHYSICS_KZ_CONFIG_SECTION                  "Physics"
 #define orxPHYSICS_KZ_CONFIG_GRAVITY                  "Gravity"
 #define orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP              "AllowSleep"
+#define orxPHYSICS_KZ_CONFIG_ITERATIONS               "IterationsPerStep"
 #define orxPHYSICS_KZ_CONFIG_RATIO                    "DimensionRatio"
 #define orxPHYSICS_KZ_CONFIG_STEP_FREQUENCY           "StepFrequency"
 #define orxPHYSICS_KZ_CONFIG_SHOW_DEBUG               "ShowDebug"
