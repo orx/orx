@@ -57,30 +57,30 @@ class Mini:
     self.context = Context(config_section, input_set_name)
     self.instance_context = Context(str(self.o), input_set_name)
 
+    # Remember the object
+    Mini._objects[o] = self
+
     # Object-specific on_create initialization
     with self.context:
       self.on_create()
 
-    # Remember the object
-    type(self)._objects[o] = self
-    Mini._objects[o] = self
-
   @classmethod
   def __cleanup__(cls, o: orx.object.Object):
     """Internal only: Remove object association with the class"""
-    _ = cls._objects.pop(o, None)
     _ = Mini._objects.pop(o, None)
 
   @classmethod
   def exists(cls, o: orx.object.Object) -> bool:
     """Check if an object has an instance associated with this class"""
-    return o in cls._objects
+    instance = Mini._objects.get(o)
+    return instance is not None and isinstance(instance, cls)
 
   @classmethod
   def objects(cls):
-    """Generator function for all objects associated with this class"""
-    for mini in cls._objects.values():
-      yield mini
+    """All objects associated with this class"""
+    for value in Mini._objects.values():
+      if isinstance(value, cls):
+        yield value
 
   @classmethod
   def create_from_config(cls, name: str) -> Self | None:
@@ -88,15 +88,18 @@ class Mini:
     o = orx.object.create_from_config(name)
     if o is None:
       return None
-    return cls(o)
+    return cls.from_object(o)
 
   @classmethod
   def from_object(cls, o: orx.object.Object) -> Self | None:
     """Find the object from this class associated with `o` if one exists"""
-    return cls._objects.get(o)
+    instance = cls._objects.get(o)
+    if instance is not None and isinstance(instance, cls):
+      return instance
+    return None
 
   @classmethod
-  def from_guid(cls, guid: int) -> Self | None:
+  def from_guid(cls, guid: orx.guid.Guid) -> Self | None:
     """Find the object from this class with the GUID `guid` if one exists"""
     o = orx.object.from_guid(guid)
     if o is None:

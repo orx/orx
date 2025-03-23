@@ -1,5 +1,5 @@
 # Expose each submodule as `orx.<module_name>`
-from . import command, config, input, object, vector
+from . import command, config, guid, input, object, vector
 
 def log(message: str) -> None: ...
 """Log a message to the terminal and console using orx's logging"""

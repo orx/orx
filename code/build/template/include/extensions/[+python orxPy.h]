@@ -33,6 +33,7 @@ extern "C"
 
   //! Custom Python types
 
+  static py_Type tp_orxguid;
   static py_Type tp_orxvector;
   static py_Type tp_orxobject;
   static py_Type tp_orxclock;
@@ -248,6 +249,14 @@ extern "C"
 #define ARG_INT(name, index) ARG_VALUE(orxS64, int, name, index)
 #define ARG_BOOL(name, index) ARG_VALUE(orxBOOL, bool, name, index)
 #define ARG_PTR(type, name, index) type *name = (type *)py_touserdata(py_arg(index))
+#define ARG_GUID(name, index)             \
+  orxU64 name;                            \
+  do                                      \
+  {                                       \
+    PY_CHECK_ARG_TYPE(index, tp_orxguid); \
+    ARG_PTR(orxU64, p##name, index);      \
+    name = *p##name;                      \
+  } while (0)
 #define ARG_OBJECT(name, index)             \
   orxOBJECT *name;                          \
   do                                        \
@@ -300,6 +309,9 @@ extern "C"
 #define RETURN_FLOAT(RET) RETURN_VALUE(py_newfloat, RET)
 #define RETURN_INT(RET) RETURN_VALUE(py_newint, RET)
 #define RETURN_BOOL(RET) RETURN_VALUE(py_newbool, RET)
+#define RETURN_GUID(RET) RETURN_VALUE(py_neworxguid, RET)
+#define RETURN_VECTOR(RET) RETURN_VALUE(py_neworxvector, RET)
+#define RETURN_CLOCK(RET) RETURN_VALUE(py_neworxclock, RET)
 #define RETURN_NONE          \
   do                         \
   {                          \
@@ -319,22 +331,16 @@ extern "C"
       return true;                       \
     }                                    \
   } while (0)
-#define RETURN_VECTOR(VEC)             \
-  do                                   \
-  {                                    \
-    py_neworxvector(py_retval(), VEC); \
-    return true;                       \
-  } while (0)
-#define RETURN_CLOCK(CLOCK)             \
-  do                                    \
-  {                                     \
-    py_neworxclock(py_retval(), CLOCK); \
-    return true;                        \
-  } while (0)
 
   // Function wrappers
 
   // Helpers
+
+  void py_neworxguid(py_OutRef pyOut, orxU64 _u64GUID)
+  {
+    orxU64 *pu64GUID = (orxU64 *)py_newobject(pyOut, tp_orxguid, 0, sizeof(orxU64));
+    *pu64GUID = _u64GUID;
+  }
 
   void py_neworxobject(py_OutRef pyOut, orxOBJECT *_pstObject)
   {
@@ -380,15 +386,15 @@ extern "C"
       // Object successfully created or this is a function call. Return result either way.
       RETURN_OBJECT_OR_NONE(pstObject);
     }
-    else if (py_istype(py_arg(u16ArgIndex), tp_int))
+    else if (py_istype(py_arg(u16ArgIndex), tp_orxguid))
     {
       // Retrieve from a GUID
-      ARG_INT(s64GUID, u16ArgIndex);
-      orxOBJECT *pstObject = orxOBJECT(orxStructure_Get(s64GUID));
+      ARG_GUID(u64GUID, u16ArgIndex);
+      orxOBJECT *pstObject = orxOBJECT(orxStructure_Get(u64GUID));
       if (pstObject == orxNULL && bIsConstructor)
       {
         // Object constructor, so raise an exception if an object cannot be created
-        return ValueError("Unable to create object from GUID 0x%016llX", s64GUID);
+        return ValueError("Unable to create object from GUID 0x%016llX", u64GUID);
       }
       // Object successfully created or this is a function call. Return result either way.
       RETURN_OBJECT_OR_NONE(pstObject);
@@ -437,7 +443,7 @@ extern "C"
   {
     PY_CHECK_ARGC(1);
     OBJECT;
-    RETURN_INT(orxStructure_GetGUID(orxSTRUCTURE(pstObject)));
+    RETURN_GUID(orxStructure_GetGUID(orxSTRUCTURE(pstObject)));
   }
 
   BIND(Object, enable)
@@ -493,7 +499,7 @@ extern "C"
     PY_CHECK_ARGC(2);
     OBJECT;
     ARG_OBJECT(pstOwner, 1);
-    orxObject_SetParent(pstObject, (void *)pstOwner);
+    orxObject_SetOwner(pstObject, (void *)pstOwner);
     RETURN_NONE;
   }
 
@@ -1341,8 +1347,7 @@ extern "C"
     py_Ref pyLifeTime = py_arg(1);
     if (py_isfloat(pyLifeTime) || py_isint(pyLifeTime))
     {
-      orxFLOAT fLifeTime;
-      py_castfloat32(pyLifeTime, &fLifeTime);
+      ARG_FLOAT(fLifeTime, 1);
       orxObject_SetLifeTime(pstObject, fLifeTime);
     }
     else if (py_isnone(pyLifeTime))
@@ -1399,22 +1404,24 @@ extern "C"
     RETURN_NONE;
   }
 
+  // GUID functions
+
+  BIND(Guid, __str__)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_GUID(u64GUID, 0);
+    orxCHAR acInstanceName[20];
+    orxString_NPrint(acInstanceName, sizeof(acInstanceName), "0x%016llX", u64GUID);
+    RETURN_STR(acInstanceName);
+  }
+
   // Config functions
 
   BIND(Config, set_parent)
   {
     PY_CHECK_ARGC(2);
     ARG_STR(zSection, 0);
-    const orxSTRING zParent;
-    if (py_isnone(py_arg(1)))
-    {
-      zParent = orxNULL;
-    }
-    else
-    {
-      ARG_STR(zParentArg, 1);
-      zParent = zParentArg;
-    }
+    ARG_STR_OR_NONE(zParent, 1);
     orxConfig_SetParent(zSection, zParent);
     RETURN_NONE;
   }
@@ -1424,7 +1431,7 @@ extern "C"
     PY_CHECK_ARGC(1);
     ARG_STR(zSection, 0);
     const orxSTRING zParent = orxConfig_GetParent(zSection);
-    if (zParent == orxNULL || zParent == orxSTRING_EMPTY)
+    if (zParent == orxNULL)
     {
       RETURN_NONE;
     }
@@ -1512,8 +1519,8 @@ extern "C"
   {                                                                      \
     PY_CHECK_ARGC(2);                                                    \
     ARG_STR(zKey, 0);                                                    \
-    ARG_##argtype(name, 1);                                              \
-    orxConfig_Set##name(zKey, name);                                     \
+    ARG_##argtype(name##_value, 1);                                      \
+    orxConfig_Set##name(zKey, name##_value);                             \
     RETURN_NONE;                                                         \
   }                                                                      \
   BIND(Config, get_##type)                                               \
@@ -1534,7 +1541,7 @@ extern "C"
 
   BIND_CONFIG_SET_GET(bool, BOOL, Bool)
   BIND_CONFIG_SET_GET(int, INT, S64)
-  BIND_CONFIG_SET_GET(uint, INT, U64)
+  BIND_CONFIG_SET_GET(guid, GUID, U64)
   BIND_CONFIG_SET_GET(float, FLOAT, Float)
   BIND_CONFIG_SET_GET(string, STR, String)
 
@@ -1620,7 +1627,7 @@ extern "C"
     }
     else
     {
-      ARG_INT(u64GUID, 1);
+      ARG_GUID(u64GUID, 1);
       orxCommand_EvaluateWithGUID(zCommand, u64GUID, &stResult);
     }
     RETURN_NONE;
@@ -1961,6 +1968,16 @@ extern "C"
     py_bindfunc(pyMod, "lerp", BINDING_NAME(Vector, lerp));
   }
 
+  void orxPy_AddModuleGuid()
+  {
+    py_Ref pyMod = py_newmodule("orx.guid");
+    py_Type pyType = py_newtype("Guid", tp_object, pyMod, orxNULL);
+
+    tp_orxguid = pyType;
+
+    py_bindmagic(pyType, __str__, BINDING_NAME(Guid, __str__));
+  }
+
   void orxPy_AddModuleObject()
   {
     py_Ref pyMod = py_newmodule("orx.object");
@@ -1976,7 +1993,7 @@ extern "C"
 #define BIND_METHOD(sig, name) py_bind(py_tpobject(pyType), sig, BINDING_NAME(Object, name))
 
     BIND_METHOD("delete(self) -> None", delete);
-    BIND_METHOD("get_guid(self) -> int", get_guid);
+    BIND_METHOD("get_guid(self) -> Guid", get_guid);
 
     BIND_METHOD("enable(self, state: bool, recursive: bool = False) -> None", enable);
     BIND_METHOD("is_enabled(self) -> bool", is_enabled);
@@ -2095,7 +2112,7 @@ extern "C"
 
     // Bind object functions
     py_bind(pyMod, "create_from_config(section_name: str) -> Object | None", BINDING_NAME(Object, __new__));
-    py_bind(pyMod, "from_guid(guid: int) -> Object | None", BINDING_NAME(Object, __new__));
+    py_bind(pyMod, "from_guid(guid: Guid) -> Object | None", BINDING_NAME(Object, __new__));
     py_bind(pyMod, "raycast(begin: Vector, end: Vector, self_flags: int, check_mask: int, early_exit: bool = False) -> tuple[Object, Vector, Vector] | None", BINDING_NAME(Object, raycast));
   }
 
@@ -2195,8 +2212,8 @@ extern "C"
     BIND_FUNC("get_bool(key: str, index: int | None = None) -> bool", get_bool);
     BIND_FUNC("set_int(key: str, value: int) -> None", set_int);
     BIND_FUNC("get_int(key: str, index: int | None = None) -> int", get_int);
-    BIND_FUNC("set_uint(key: str, value: int) -> None", set_uint);
-    BIND_FUNC("get_uint(key: str, index: int | None = None) -> int", get_uint);
+    BIND_FUNC("set_guid(key: str, value: Guid) -> None", set_guid);
+    BIND_FUNC("get_guid(key: str, index: int | None = None) -> Guid", get_guid);
     BIND_FUNC("set_float(key: str, value: float) -> None", set_float);
     BIND_FUNC("get_float(key: str, index: int | None = None) -> float", get_float);
     BIND_FUNC("set_string(key: str, value: str) -> None", set_string);
@@ -2221,7 +2238,7 @@ extern "C"
 #define BIND_FUNC(sig, name) py_bind(pyMod, sig, BINDING_NAME(Command, name))
 
     // Bind command functions
-    BIND_FUNC("evaluate(command: str, guid: int | None = None) -> None", evaluate);
+    BIND_FUNC("evaluate(command: str, guid: Guid | None = None) -> None", evaluate);
 
 #undef BIND_FUNC
   }
@@ -2265,6 +2282,7 @@ extern "C"
     orxPy_AddModuleOrx();
     orxPy_AddModuleClock();
     orxPy_AddModuleVector();
+    orxPy_AddModuleGuid();
     orxPy_AddModuleConfig();
     orxPy_AddModuleCommand();
     orxPy_AddModuleInput();
