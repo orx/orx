@@ -42,6 +42,7 @@
 #include "../plugins/Joystick/Dummy/orxJoystick.c"
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
 #include "../plugins/Mouse/Dummy/orxMouse.c"
+// #include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Physics/Box2D/orxPhysics.c"
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/Dummy/orxSoundSystem.c"
@@ -53,6 +54,7 @@
 
 /* Display, joystick, mouse & sound system plugins are directly included in the XCode project file as they need to be compiled in Objective-C */
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
+// #include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Physics/Box2D/orxPhysics.c"
 #include "../plugins/Render/Home/orxRender.c"
 
@@ -65,6 +67,7 @@
 #include "../plugins/Joystick/android/orxJoystick.cpp"
 #include "../plugins/Keyboard/android/orxKeyboard.cpp"
 #include "../plugins/Mouse/android/orxMouse.c"
+// #include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Physics/Box2D/orxPhysics.c"
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
@@ -76,6 +79,7 @@
 #include "../plugins/Joystick/GLFW/orxJoystick.c"
 #include "../plugins/Keyboard/GLFW/orxKeyboard.c"
 #include "../plugins/Mouse/GLFW/orxMouse.c"
+// #include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Physics/Box2D/orxPhysics.c"
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/MiniAudio/orxSoundSystem.c"
@@ -91,6 +95,7 @@
 #include "../plugins/Joystick/GLFW/orxJoystick.c"
 #include "../plugins/Keyboard/GLFW/orxKeyboard.c"
 #include "../plugins/Mouse/GLFW/orxMouse.c"
+// #include "../plugins/Physics/LiquidFun/orxPhysics.cpp"
 #include "../plugins/Physics/Box2D/orxPhysics.c"
 #include "../plugins/Render/Home/orxRender.c"
 #include "../plugins/Sound/MiniAudio/orxSoundSystem.c"

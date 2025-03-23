@@ -110,6 +110,7 @@ solution "orx"
         "../include",
         "../../extern/rpmalloc/rpmalloc",
         "../../extern/xxHash",
+        -- "../../extern/LiquidFun-1.1.0/include",
         "../../extern/box2d/include",
         "../../extern/stb_image",
         "../../extern/stb_truetype",
@@ -176,6 +177,7 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/linux",
+            -- "../../extern/LiquidFun-1.1.0/lib/linux",
             "../../extern/box2d/lib/linux",
             "../../extern/libwebp/lib/linux",
         }
@@ -189,6 +191,7 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/linux64",
+            -- "../../extern/LiquidFun-1.1.0/lib/linux64",
             "../../extern/box2d/lib/linux64",
             "../../extern/libwebp/lib/linux64",
         }
@@ -205,6 +208,7 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/mac",
+            -- "../../extern/LiquidFun-1.1.0/lib/mac",
             "../../extern/box2d/lib/mac",
             "../../extern/libwebp/lib/mac",
         }
@@ -242,6 +246,7 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/vc2015/32",
+            -- "../../extern/LiquidFun-1.1.0/lib/vc2015/32",
             "../../extern/box2d/lib/vc2015/32",
             "../../extern/libwebp/lib/vc2015/32",
         }
@@ -250,6 +255,7 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/vc2015/64",
+            -- "../../extern/LiquidFun-1.1.0/lib/vc2015/64",
             "../../extern/box2d/lib/vc2015/64",
             "../../extern/libwebp/lib/vc2015/64",
         }
@@ -258,6 +264,7 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/mingw/32",
+            -- "../../extern/LiquidFun-1.1.0/lib/mingw/32",
             "../../extern/box2d/lib/mingw/32",
             "../../extern/libwebp/lib/mingw/32",
         }
@@ -266,6 +273,7 @@ solution "orx"
         libdirs
         {
             "../../extern/glfw-3/lib/mingw/64",
+            -- "../../extern/LiquidFun-1.1.0/lib/mingw/64",
             "../../extern/box2d/lib/mingw/64",
             "../../extern/libwebp/lib/mingw/64",
         }
@@ -351,12 +359,14 @@ project "orx"
         links
         {
             "webpdecoder",
+            -- "liquidfun"
             "box2d"
         }
         includedirs {"../include"}
         libdirs {
             "../lib/static/web",
             "../../extern/libwebp/lib/web",
+            -- "../../extern/LiquidFun-1.1.0/lib/web"
             "../../extern/box2d/lib/web"
         }
 
@@ -509,9 +519,11 @@ project "orxLIB"
         links {"webpdecoder"}
 
     configuration {"not *Debug*", "not *Core*", "not web"}
+        -- links {"liquidfun"}
         links {"box2d"}
 
     configuration {"*Debug*", "not *Core*", "not web"}
+        -- links {"liquidfund"}
         links {"box2dd"}
 
 

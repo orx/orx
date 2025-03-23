@@ -175,12 +175,14 @@ solution "[name]"
         links
         {
             "webpdecoder",
+            -- "liquidfun"
             "box2d"
         }
         includedirs {"$(ORX)/include"}
         libdirs {
             "$(ORX)/lib/static/web",
             "$(ORX)/../extern/libwebp/lib/web",
+            -- "$(ORX)/../extern/LiquidFun-1.1.0/lib/web"
             "$(ORX)/../extern/box2d/lib/web"
         }
 
