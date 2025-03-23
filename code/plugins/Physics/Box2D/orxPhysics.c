@@ -1170,8 +1170,9 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
   /* Is simulation enabled? */
   if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
   {
-    b2BodyEvents  stEvents;
-    orxS32        s32Steps, i;
+    b2BodyEvents    stBodyEvents;
+    b2ContactEvents stContactEvents;
+    orxS32          s32Steps, i;
 
     /* Stores DT */
     sstPhysics.fLastDT = _pstClockInfo->fDT;
@@ -1215,13 +1216,13 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
     }
 
     /* For all body events */
-    stEvents = b2World_GetBodyEvents(sstPhysics.stWorld);
-    for(i = 0; i < stEvents.moveCount; i++)
+    stBodyEvents = b2World_GetBodyEvents(sstPhysics.stWorld);
+    for(i = 0; i < stBodyEvents.moveCount; i++)
     {
       b2BodyMoveEvent *pstEvent;
 
       /* Gets it */
-      pstEvent = &(stEvents.moveEvents[i]);
+      pstEvent = &(stBodyEvents.moveEvents[i]);
 
       /* Valid? */
       if(b2Body_IsValid(pstEvent->bodyId) != false)
@@ -1236,30 +1237,83 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       }
     }
 
-    //! TODO
-    ///* For all stored events */
-    //for(pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetFirst(&(sstPhysics.stEventList));
-    //    pstEventStorage != orxNULL;
-    //    pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxLinkList_GetNext(&(pstEventStorage->stNode)))
-    //{
-    //  /* Depending on type */
-    //  switch(pstEventStorage->eID)
-    //  {
-    //    case orxPHYSICS_EVENT_CONTACT_ADD:
-    //    case orxPHYSICS_EVENT_CONTACT_REMOVE:
-    //    {
-    //      /* Sends event */
-    //      orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, pstEventStorage->eID, orxStructure_GetOwner(orxBODY(pstEventStorage->poSource->GetUserData())), orxStructure_GetOwner(orxBODY(pstEventStorage->poDestination->GetUserData())), &(pstEventStorage->stPayload));
+    /* Gets contact events */
+    stContactEvents = b2World_GetContactEvents(sstPhysics.stWorld);
 
-    //      break;
-    //    }
+    /* For all contact begin events */
+    for(i = 0; i < stContactEvents.beginCount; i++)
+    {
+      /* Valid? */
+      if((b2Shape_IsValid(stContactEvents.beginEvents[i].shapeIdA) != false)
+      && (b2Shape_IsValid(stContactEvents.beginEvents[i].shapeIdB) != false))
+      {
+        orxPHYSICS_EVENT_PAYLOAD  stPayload;
+        b2BodyId                  stSender, stRecipient;
 
-    //    default:
-    //    {
-    //      break;
-    //    }
-    //  }
-    //}
+        /* Gets both bodies */
+        stSender    = b2Shape_GetBody(stContactEvents.beginEvents[i].shapeIdA);
+        stRecipient = b2Shape_GetBody(stContactEvents.beginEvents[i].shapeIdB);
+
+        /* Inits event payload */
+        stPayload.pstSenderPart     = (orxBODY_PART *)b2Shape_GetUserData(stContactEvents.beginEvents[i].shapeIdA);
+        stPayload.pstRecipientPart  = (orxBODY_PART *)b2Shape_GetUserData(stContactEvents.beginEvents[i].shapeIdB);
+
+        /* 2 contacts? */
+        if(stContactEvents.beginEvents[i].manifold.pointCount > 1)
+        {
+          /* Updates payload */
+          orxVector_Set(&(stPayload.vPosition),
+                        orx2F(0.5f) * sstPhysics.fRecDimensionRatio * (stContactEvents.beginEvents[i].manifold.points[0].point.x + stContactEvents.beginEvents[i].manifold.points[1].point.x),
+                        orx2F(0.5f) * sstPhysics.fRecDimensionRatio * (stContactEvents.beginEvents[i].manifold.points[0].point.y + stContactEvents.beginEvents[i].manifold.points[1].point.y),
+                        orxFLOAT_0);
+          orxVector_Set(&(stPayload.vNormal), stContactEvents.beginEvents[i].manifold.normal.x, stContactEvents.beginEvents[i].manifold.normal.y, orxFLOAT_0);
+        }
+        /* 1 contact? */
+        else if(stContactEvents.beginEvents[i].manifold.pointCount == 1)
+        {
+          /* Updates payload */
+          orxVector_Set(&(stPayload.vPosition),
+                        sstPhysics.fRecDimensionRatio * stContactEvents.beginEvents[i].manifold.points[0].point.x,
+                        sstPhysics.fRecDimensionRatio * stContactEvents.beginEvents[i].manifold.points[0].point.y,
+                        orxFLOAT_0);
+          orxVector_Set(&(stPayload.vNormal), stContactEvents.beginEvents[i].manifold.normal.x, stContactEvents.beginEvents[i].manifold.normal.y, orxFLOAT_0);
+        }
+        /* 0 contact */
+        else
+        {
+          orxVector_Copy(&(stPayload.vPosition), &orxVECTOR_0);
+          orxVector_Copy(&(stPayload.vNormal), &orxVECTOR_0);
+        }
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_CONTACT_ADD, orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stSender))->pstOwner)), orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stRecipient))->pstOwner)), &stPayload);
+      }
+    }
+    
+    /* For all contact end events */
+    for(i = 0; i < stContactEvents.endCount; i++)
+    {
+      /* Valid? */
+      if((b2Shape_IsValid(stContactEvents.endEvents[i].shapeIdA) != false)
+      && (b2Shape_IsValid(stContactEvents.endEvents[i].shapeIdB) != false))
+      {
+        orxPHYSICS_EVENT_PAYLOAD  stPayload;
+        b2BodyId                  stSender, stRecipient;
+
+        /* Gets both bodies */
+        stSender    = b2Shape_GetBody(stContactEvents.endEvents[i].shapeIdA);
+        stRecipient = b2Shape_GetBody(stContactEvents.endEvents[i].shapeIdB);
+
+        /* Inits event payload */
+        stPayload.pstSenderPart     = (orxBODY_PART *)b2Shape_GetUserData(stContactEvents.endEvents[i].shapeIdA);
+        stPayload.pstRecipientPart  = (orxBODY_PART *)b2Shape_GetUserData(stContactEvents.endEvents[i].shapeIdB);
+        orxVector_Copy(&(stPayload.vPosition), &orxVECTOR_0);
+        orxVector_Copy(&(stPayload.vNormal), &orxVECTOR_0);
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_CONTACT_REMOVE, orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stSender))->pstOwner)), orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stRecipient))->pstOwner)), &stPayload);
+      }
+    }
   }
 
   /* Profiles */
@@ -1423,6 +1477,9 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
     stShapeDef.filter.maskBits      = _pstBodyPartDef->u16CheckMask;
     stShapeDef.filter.groupIndex    = 0;
     stShapeDef.isSensor             = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
+    stShapeDef.enableSensorEvents   = true;
+    stShapeDef.enableContactEvents  = true;
+    stShapeDef.enableHitEvents      = false;
 
     /* Circle? */
     if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SPHERE))
@@ -1951,6 +2008,7 @@ void orxFASTCALL orxPhysics_Box2D_DeletePart(orxPHYSICS_BODY_PART *_pstBodyPart)
 //   /* Deletes it */
 //   sstPhysics.poWorld->DestroyJoint((b2Joint *)_pstBodyJoint);
 
+//   /* Done! */
 //   return;
 // }
 
