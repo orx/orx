@@ -1444,45 +1444,38 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
       /* Box? */
       if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_BOX))
       {
+        /* Makes the polygon */
         stPolygon = b2MakeBox(orxMath_Abs(orx2F(0.5f) * sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * (_pstBodyPartDef->stAABox.stBox.vBR.fX - _pstBodyPartDef->stAABox.stBox.vTL.fX)),
                               orxMath_Abs(orx2F(0.5f) * sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * (_pstBodyPartDef->stAABox.stBox.vBR.fY - _pstBodyPartDef->stAABox.stBox.vTL.fY)));
       }
       else
       {
-        //! TODO
-        //b2Vec2 avVertexList[b2_maxPolygonVertices];
-        //orxU32 i;
+        b2Hull stHull;
+        b2Vec2 avVertexList[B2_MAX_POLYGON_VERTICES];
+        orxU32 i;
 
-        ///* Checks */
-        //orxASSERT(_pstBodyPartDef->stMesh.u32VertexCount > 0);
-        //orxASSERT(orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER <= b2_maxPolygonVertices);
+        /* Checks */
+        orxASSERT(_pstBodyPartDef->stMesh.u32VertexCount > 3);
+        orxASSERT(orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER <= B2_MAX_POLYGON_VERTICES);
 
-        ///* No mirroring? */
-        //if(_pstBodyPartDef->vScale.fX * _pstBodyPartDef->vScale.fY > orxFLOAT_0)
-        //{
-        //  /* For all the vertices */
-        //  for(i = 0; i < _pstBodyPartDef->stMesh.u32VertexCount; i++)
-        //  {
-        //    /* Sets its vector */
-        //    avVertexList[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
-        //  }
-        //}
-        //else
-        //{
-        //  orxS32 iDst;
+        /* For all the vertices */
+        for(i = 0; i < _pstBodyPartDef->stMesh.u32VertexCount; i++)
+        {
+          /* Sets its vector */
+          avVertexList[i].x = sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX;
+          avVertexList[i].y = sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY;
+        }
 
-        //  /* For all the vertices */
-        //  for(iDst = _pstBodyPartDef->stMesh.u32VertexCount - 1, i = 0; iDst >= 0; iDst--, i++)
-        //  {
-        //    /* Sets its vector */
-        //    avVertexList[iDst].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stMesh.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
-        //  }
-        //}
+        /* Computes the hull */
+        stHull = b2ComputeHull((b2Vec2 *)&avVertexList, (int)i);
+
+        /* Makes the polygon */
+        stPolygon = b2MakePolygon(&stHull, 0.0f);
       }
 
       /* Creates its shape */
       pstResult->stShape = b2CreatePolygonShape(stBody, &stShapeDef, &stPolygon);
-     }
+    }
     //else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_EDGE))
     //{
     // b2Vec2  av[2];
