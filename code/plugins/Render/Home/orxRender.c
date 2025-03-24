@@ -1471,6 +1471,7 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
   orxRENDER_EVENT_PAYLOAD stPayload;
   orxOBJECT              *pstObject;
   orxEVENT                stEvent;
+  orxGRAPHIC             *pstOriginalGraphic;
   orxSTATUS               eResult = orxSTATUS_FAILURE;
 
   /* Profiles */
@@ -1484,6 +1485,31 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
 
   /* Inits it */
   stPayload.stObject.pstTransform = _pstTransform;
+
+  /* Gets object's working graphic */
+  pstOriginalGraphic = orxObject_GetWorkingGraphic(pstObject);
+
+  /* Is quad? */
+  if(orxStructure_TestFlags(pstOriginalGraphic, orxGRAPHIC_KU32_FLAG_QUAD) != orxFALSE)
+  {
+    orxTEXTURE *pstTexture;
+    orxBITMAP  *pstBitmap;
+    orxVECTOR   vClipTL, vClipBR, vSize;
+
+    /* Gets its texture */
+    pstTexture = orxTEXTURE(orxGraphic_GetData(pstOriginalGraphic));
+
+    /* Gets its bitmap */
+    pstBitmap = orxTexture_GetBitmap(pstTexture);
+
+    /* Gets its clipping corners */
+    orxGraphic_GetOrigin(pstOriginalGraphic, &vClipTL);
+    orxGraphic_GetSize(pstOriginalGraphic, &vSize);
+    orxVector_Add(&vClipBR, &vClipTL, &vSize);
+
+    /* Updates its clipping (before event start for updated texture coordinates in shader) */
+    orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipBR.fX), orxF2U(vClipBR.fY));
+  }
 
   /* Inits event */
   orxEVENT_INIT(stEvent, orxEVENT_TYPE_RENDER, orxRENDER_EVENT_OBJECT_START, (orxHANDLE)pstObject, (orxHANDLE)pstObject, &stPayload);
@@ -1507,8 +1533,6 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
     /* Is quad? */
     if(bIsQuad != orxFALSE)
     {
-      orxVECTOR vClipTL, vClipBR, vSize;
-
       /* Profiles */
       orxPROFILER_PUSH_MARKER("RenderObject <2D>");
 
@@ -1518,13 +1542,19 @@ static orxSTATUS orxFASTCALL orxRender_Home_RenderObject(const orxRENDER_NODE *_
       /* Gets its bitmap */
       pstBitmap = orxTexture_GetBitmap(pstTexture);
 
-      /* Gets its clipping corners */
-      orxGraphic_GetOrigin(pstGraphic, &vClipTL);
-      orxGraphic_GetSize(pstGraphic, &vSize);
-      orxVector_Add(&vClipBR, &vClipTL, &vSize);
+      /* Should re-update? */
+      if(pstGraphic != pstOriginalGraphic)
+      {
+        orxVECTOR vClipTL, vClipBR, vSize;
 
-      /* Updates its clipping (before event start for updated texture coordinates in shader) */
-      orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipBR.fX), orxF2U(vClipBR.fY));
+        /* Gets its clipping corners */
+        orxGraphic_GetOrigin(pstGraphic, &vClipTL);
+        orxGraphic_GetSize(pstGraphic, &vSize);
+        orxVector_Add(&vClipBR, &vClipTL, &vSize);
+
+        /* Updates its clipping */
+        orxDisplay_SetBitmapClipping(pstBitmap, orxF2U(vClipTL.fX), orxF2U(vClipTL.fY), orxF2U(vClipBR.fX), orxF2U(vClipBR.fY));
+      }
     }
     else
     {
