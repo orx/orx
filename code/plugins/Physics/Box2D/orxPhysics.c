@@ -79,9 +79,9 @@
 #endif /* orxPHYSICS_ENABLE_DEBUG_DRAW */
 
 
-// /***************************************************************************
-//  * Structure declaration                                                   *
-//  ***************************************************************************/
+/***************************************************************************
+ * Structure declaration                                                   *
+ ***************************************************************************/
 
 /** Body
  */
@@ -165,18 +165,18 @@ typedef struct __orxPHYSICS_STATIC_t
 } orxPHYSICS_STATIC;
 
 
-// /***************************************************************************
-//  * Static variables                                                        *
-//  ***************************************************************************/
+/***************************************************************************
+ * Static variables                                                        *
+ ***************************************************************************/
 
 /** Static data
  */
 static orxPHYSICS_STATIC sstPhysics;
 
 
-// /***************************************************************************
-//  * Private functions                                                       *
-//  ***************************************************************************/
+/***************************************************************************
+ * Private functions                                                       *
+ ***************************************************************************/
 
 void *orxPhysics_Box2D_Allocate(unsigned int _uiSize, int _iAlignment)
 {
@@ -261,116 +261,6 @@ static bool orxPhysics_Box2D_BoxPickCallback(b2ShapeId _stShape, void *_pContext
   /* Done! */
   return bResult;
 }
-
-// static void orxFASTCALL orxPhysics_Box2D_SendContactEvent(b2Contact *_poContact, orxPHYSICS_EVENT _eEventID)
-// {
-//   orxBODY_PART             *pstSourceBodyPart, *pstDestinationBodyPart;
-
-//   /* Gets body parts */
-//   pstSourceBodyPart       = (orxBODY_PART *)_poContact->GetFixtureA()->GetUserData();
-//   pstDestinationBodyPart  = (orxBODY_PART *)_poContact->GetFixtureB()->GetUserData();
-
-//   /* Valid? */
-//   if((pstSourceBodyPart != orxNULL) && (pstDestinationBodyPart != orxNULL))
-//   {
-//     orxPHYSICS_EVENT_STORAGE *pstEventStorage;
-
-//     /* Adds a contact event */
-//     pstEventStorage = (orxPHYSICS_EVENT_STORAGE *)orxBank_Allocate(sstPhysics.pstEventBank);
-
-//     /* Valid? */
-//     if(pstEventStorage != orxNULL)
-//     {
-//       b2Body *poSource, *poDestination;
-
-//       /* Clears it */
-//       orxMemory_Zero(pstEventStorage, sizeof(orxPHYSICS_EVENT_STORAGE));
-
-//       /* Adds it to list */
-//       orxLinkList_AddEnd(&(sstPhysics.stEventList), &(pstEventStorage->stNode));
-
-//       /* Gets both bodies */
-//       poSource      = _poContact->GetFixtureA()->GetBody();
-//       poDestination = _poContact->GetFixtureB()->GetBody();
-
-//       /* Inits it */
-//       pstEventStorage->eID            = _eEventID;
-//       pstEventStorage->poSource       = poSource;
-//       pstEventStorage->poDestination  = poDestination;
-
-//       /* Contact add? */
-//       if(_eEventID == orxPHYSICS_EVENT_CONTACT_ADD)
-//       {
-//         const b2Manifold *poManifold;
-
-//         /* Gets local manifold */
-//         poManifold = _poContact->GetManifold();
-
-//         /* 2 contacts? */
-//         if(poManifold->pointCount > 1)
-//         {
-//           b2WorldManifold oManifold;
-
-//           /* Gets global manifold */
-//           _poContact->GetWorldManifold(&oManifold);
-
-//           /* Updates values */
-//           orxVector_Set(&(pstEventStorage->stPayload.vPosition), orx2F(0.5f) * sstPhysics.fRecDimensionRatio * (oManifold.points[0].x + oManifold.points[1].x), orx2F(0.5f) * sstPhysics.fRecDimensionRatio * (oManifold.points[0].y + oManifold.points[1].y), orxFLOAT_0);
-//           orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.normal.x, oManifold.normal.y, orxFLOAT_0);
-//         }
-//         /* 1 contact? */
-//         else if(poManifold->pointCount == 1)
-//         {
-//           b2WorldManifold oManifold;
-
-//           /* Gets global manifold */
-//           _poContact->GetWorldManifold(&oManifold);
-
-//           /* Updates values */
-//           orxVector_Set(&(pstEventStorage->stPayload.vPosition), sstPhysics.fRecDimensionRatio * oManifold.points[0].x, sstPhysics.fRecDimensionRatio * oManifold.points[0].y, orxFLOAT_0);
-//           orxVector_Set(&(pstEventStorage->stPayload.vNormal), oManifold.normal.x, oManifold.normal.y, orxFLOAT_0);
-//         }
-//         /* 0 contact */
-//         else
-//         {
-//           orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
-//           orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
-//         }
-//       }
-//       else
-//       {
-//         orxVector_Copy(&(pstEventStorage->stPayload.vPosition), &orxVECTOR_0);
-//         orxVector_Copy(&(pstEventStorage->stPayload.vNormal), &orxVECTOR_0);
-//       }
-
-//       /* Updates part names */
-//       pstEventStorage->stPayload.pstSenderPart    = pstSourceBodyPart;
-//       pstEventStorage->stPayload.pstRecipientPart = pstDestinationBodyPart;
-//     }
-//   }
-
-//   /* Done! */
-//   return;
-// }
-
-// void orxPhysicsContactListener::BeginContact(b2Contact *_poContact)
-// {
-//   /* Sends contact event */
-//   orxPhysics_Box2D_SendContactEvent(_poContact, orxPHYSICS_EVENT_CONTACT_ADD);
-
-//   /* Done! */
-//   return;
-// }
-
-// void orxPhysicsContactListener::EndContact(b2Contact *_poContact)
-// {
-//   /* Sends contact event */
-//   orxPhysics_Box2D_SendContactEvent(_poContact, orxPHYSICS_EVENT_CONTACT_REMOVE);
-
-//   /* Done! */
-//   return;
-// }
-
 
 #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
@@ -1171,6 +1061,7 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
   if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_ENABLED))
   {
     b2BodyEvents    stBodyEvents;
+    b2SensorEvents  stSensorEvents;
     b2ContactEvents stContactEvents;
     orxS32          s32Steps, i;
 
@@ -1237,8 +1128,34 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       }
     }
 
-    /* Gets contact events */
+    /* Gets sensor & contact events */
+    stSensorEvents  = b2World_GetSensorEvents(sstPhysics.stWorld);
     stContactEvents = b2World_GetContactEvents(sstPhysics.stWorld);
+
+    /* For all sensor begin events */
+    for(i = 0; i < stSensorEvents.beginCount; i++)
+    {
+      /* Valid? */
+      if((b2Shape_IsValid(stSensorEvents.beginEvents[i].sensorShapeId) != false)
+      && (b2Shape_IsValid(stSensorEvents.beginEvents[i].visitorShapeId) != false))
+      {
+        orxPHYSICS_EVENT_PAYLOAD  stPayload;
+        b2BodyId                  stSender, stRecipient;
+
+        /* Gets both bodies */
+        stSender    = b2Shape_GetBody(stSensorEvents.beginEvents[i].sensorShapeId);
+        stRecipient = b2Shape_GetBody(stSensorEvents.beginEvents[i].visitorShapeId);
+
+        /* Inits event payload */
+        stPayload.pstSenderPart     = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.beginEvents[i].sensorShapeId);
+        stPayload.pstRecipientPart  = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.beginEvents[i].visitorShapeId);
+        orxVector_Copy(&(stPayload.vPosition), &orxVECTOR_0);
+        orxVector_Copy(&(stPayload.vNormal), &orxVECTOR_0);
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_CONTACT_ADD, orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stSender))->pstOwner)), orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stRecipient))->pstOwner)), &stPayload);
+      }
+    }
 
     /* For all contact begin events */
     for(i = 0; i < stContactEvents.beginCount; i++)
@@ -1290,6 +1207,31 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       }
     }
     
+    /* For all sensor end events */
+    for(i = 0; i < stSensorEvents.endCount; i++)
+    {
+      /* Valid? */
+      if((b2Shape_IsValid(stSensorEvents.endEvents[i].sensorShapeId) != false)
+      && (b2Shape_IsValid(stSensorEvents.endEvents[i].visitorShapeId) != false))
+      {
+        orxPHYSICS_EVENT_PAYLOAD  stPayload;
+        b2BodyId                  stSender, stRecipient;
+
+        /* Gets both bodies */
+        stSender    = b2Shape_GetBody(stSensorEvents.endEvents[i].sensorShapeId);
+        stRecipient = b2Shape_GetBody(stSensorEvents.endEvents[i].visitorShapeId);
+
+        /* Inits event payload */
+        stPayload.pstSenderPart     = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.endEvents[i].sensorShapeId);
+        stPayload.pstRecipientPart  = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.endEvents[i].visitorShapeId);
+        orxVector_Copy(&(stPayload.vPosition), &orxVECTOR_0);
+        orxVector_Copy(&(stPayload.vNormal), &orxVECTOR_0);
+
+        /* Sends event */
+        orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_CONTACT_REMOVE, orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stSender))->pstOwner)), orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stRecipient))->pstOwner)), &stPayload);
+      }
+    }
+
     /* For all contact end events */
     for(i = 0; i < stContactEvents.endCount; i++)
     {
@@ -3046,14 +2988,17 @@ orxU16 orxFASTCALL orxPhysics_Box2D_GetPartCheckMask(const orxPHYSICS_BODY_PART 
 
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid)
 {
+  b2ShapeId stShape;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Logs message */
-  orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't change the solidity of a part: this feature isn't supported by this plugin.");
+  /* Gets shape */
+  stShape   = _pstBodyPart->stShape;
+
+  //! TODO
 
   /* Done! */
   return eResult;
