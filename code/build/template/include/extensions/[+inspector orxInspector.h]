@@ -171,8 +171,13 @@ static orxSTATUS orxFASTCALL orxInspector_EventHandler(const orxEVENT *_pstEvent
     {
       orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
 
+      // Gets object
+      orxOBJECT *pstObject = orxOBJECT(_pstEvent->hSender);
+
       // Is highlight enabled?
-      if(orxConfig_GetBool(orxInspector_PrintGUID(orxOBJECT(_pstEvent->hSender), orxINSPECTOR_KZ_HIGHLIGHT)) != orxFALSE)
+      const orxSTRING zKey;
+      if((zKey = orxInspector_PrintGUID(pstObject), (orxConfig_HasValueNoCheck(zKey) != orxFALSE) && (orxConfig_GetBool(zKey) != orxFALSE))
+      && (zKey = orxInspector_PrintGUID(pstObject, orxINSPECTOR_KZ_HIGHLIGHT), (orxConfig_HasValueNoCheck(zKey) != orxFALSE) && (orxConfig_GetBool(zKey) != orxFALSE)))
       {
         // Render object start?
         if(_pstEvent->eID == orxRENDER_EVENT_OBJECT_START)
@@ -644,9 +649,9 @@ static void orxInspector_ShowHighlightCheckbox(orxOBJECT *_pstObject)
     ImGui::TextColored(vHighlight, orxINSPECTOR_KZ_HIGHLIGHT);
     ImGui::SameLine();
 
-    const orxSTRING zHighlight = orxInspector_PrintGUID(_pstObject, orxINSPECTOR_KZ_HIGHLIGHT);
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
-    bool bHighlight = orxConfig_GetBool(zHighlight) != orxFALSE;
+    const orxSTRING zHighlight = orxInspector_PrintGUID(_pstObject, orxINSPECTOR_KZ_HIGHLIGHT);
+    bool bHighlight = (orxConfig_HasValueNoCheck(zHighlight) != orxFALSE) && (orxConfig_GetBool(zHighlight) != orxFALSE);
     if(ImGui::Checkbox("##highlight", &bHighlight))
     {
       orxConfig_SetBool(zHighlight, bHighlight ? orxTRUE : orxFALSE);
@@ -658,7 +663,7 @@ static void orxInspector_ShowHighlightCheckbox(orxOBJECT *_pstObject)
   return;
 }
 
-static void orxInspacter_ShowShader(const orxOBJECT *_pstObject)
+static void orxInspector_ShowShader(const orxOBJECT *_pstObject)
 {
   const orxSHADER *pstShader = orxObject_GetShader(_pstObject);
   if(pstShader != orxNULL)
@@ -794,7 +799,7 @@ static void orxInspector_ShowObject(orxOBJECT *_pstObject)
     orxInspector_ShowStatus(_pstObject);
     orxInspector_ShowConfig(zName);
     orxInspector_ShowGraphic(_pstObject);
-    orxInspacter_ShowShader(_pstObject);
+    orxInspector_ShowShader(_pstObject);
     orxInspector_ShowParent(_pstObject);
     orxInspector_ShowSiblings(_pstObject);
     orxInspector_ShowChildren(_pstObject);
@@ -1046,7 +1051,7 @@ orxSTATUS orxInspector_RegisterObject(orxOBJECT *_pstObject)
     orxConfig_PushSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);
     orxConfig_SetBool(orxInspector_PrintGUID(_pstObject), orxTRUE);
     const orxSTRING zHighlight = orxInspector_PrintGUID(_pstObject, orxINSPECTOR_KZ_HIGHLIGHT);
-    if(!orxConfig_HasValue(zHighlight))
+    if(!orxConfig_HasValueNoCheck(zHighlight))
     {
       orxConfig_SetBool(zHighlight, orxTRUE);
     }
