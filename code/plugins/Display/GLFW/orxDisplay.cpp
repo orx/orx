@@ -3759,7 +3759,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
   orxASSERT(_pstTransform != orxNULL);
 
   /* Inits matrix */
-  orxDisplay_GLFW_InitMatrix(&mTransform, _pstTransform, orxNULL);
+  orxDisplay_GLFW_InitMatrix(&mTransform, _pstTransform, _pstFont);
 
   /* Gets character's height */
   fHeight = _pstMap->fCharacterHeight;
@@ -5122,7 +5122,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
     }
     else
     {
-      orxFLOAT  i, j, fRecRepeatX;
+      orxFLOAT  i, j, fRepeatX, fRepeatY, fRecRepeatX;
       GLfloat   fX, fY, fWidth, fHeight, fTop, fBottom, fLeft, fRight;
 
       /* Prepares bitmap for drawing */
@@ -5135,8 +5135,29 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
       fLeft = _pstSrc->fRecRealWidth * (_pstSrc->stClip.vTL.fX + _pstSrc->fBorderFix);
       fTop  = _pstSrc->fRecRealHeight * (_pstSrc->stClip.vTL.fY + _pstSrc->fBorderFix);
 
+      /* Gets oriented repeat values */
+      switch(_pstTransform->eOrientation)
+      {
+        default:
+        case orxDISPLAY_ORIENTATION_UP:
+        case orxDISPLAY_ORIENTATION_DOWN:
+        {
+          fRepeatX = _pstTransform->fRepeatX;
+          fRepeatY = _pstTransform->fRepeatY;
+          break;
+        }
+
+        case orxDISPLAY_ORIENTATION_LEFT:
+        case orxDISPLAY_ORIENTATION_RIGHT:
+        {
+          fRepeatX = _pstTransform->fRepeatY;
+          fRepeatY = _pstTransform->fRepeatX;
+          break;
+        }
+      }
+
       /* For all lines */
-      for(fY = 0.0f, i = _pstTransform->fRepeatY, fRecRepeatX = orxFLOAT_1 / _pstTransform->fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
+      for(fY = 0.0f, i = fRepeatY, fRecRepeatX = orxFLOAT_1 / fRepeatX; i > orxFLOAT_0; i -= orxFLOAT_1, fY += fHeight)
       {
         /* Partial line? */
         if(i < orxFLOAT_1)
@@ -5159,7 +5180,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformBitmap(const orxBITMAP *_pstSrc, 
         fWidth = (GLfloat)((_pstSrc->stClip.vBR.fX - _pstSrc->stClip.vTL.fX) * fRecRepeatX);
 
         /* For all columns */
-        for(fX = 0.0f, j = _pstTransform->fRepeatX; j > orxFLOAT_0; j -= orxFLOAT_1, fX += fWidth)
+        for(fX = 0.0f, j = fRepeatX; j > orxFLOAT_0; j -= orxFLOAT_1, fX += fWidth)
         {
           /* Partial column? */
           if(j < orxFLOAT_1)
