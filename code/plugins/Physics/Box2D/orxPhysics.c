@@ -1419,19 +1419,59 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
     /* Chain? */
     if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_CHAIN))
     {
-      //b2ChainDef stChainDef;
+      b2ChainDef        stChainDef;
+      b2SurfaceMaterial stMaterial;
+      b2Vec2           *avVertexList = (b2Vec2 *)alloca((_pstBodyPartDef->stChain.u32VertexCount + 2) * sizeof(b2Vec2));
+      orxU32            i;
+      int               iCount = 0;
 
-      ///* Inits shape definition */
-      //stChainDef = b2DefaultChainDef();
-      //stChainDef.userData             = _hUserData;
-      //stChainDef.friction             = _pstBodyPartDef->fFriction;
-      //stChainDef.restitution          = _pstBodyPartDef->fRestitution;
-      //stChainDef.density              = (b2Body_GetType(stBody) != b2_dynamicBody) ? 0.0f : _pstBodyPartDef->fDensity;
-      //stChainDef.isLoop               = (_pstBodyPartDef->stChain.bIsLoop != orxFALSE) ? true : false;
-      //stChainDef.filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
-      //stChainDef.filter.maskBits      = _pstBodyPartDef->u16CheckMask;
-      //stChainDef.filter.groupIndex    = 0;
-      //stChainDef.enableSensorEvents   = true;
+      /* Has previous (ghost) vertex? */
+      if(_pstBodyPartDef->stChain.bHasPrevious != orxFALSE)
+      {
+        /* Sets its vector */
+        avVertexList[iCount].x = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stChain.vPrevious.fX;
+        avVertexList[iCount].y = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stChain.vPrevious.fY;
+        iCount++;
+      }
+      /* For all the vertices */
+      for(i = 0; i < _pstBodyPartDef->stChain.u32VertexCount; i++, iCount++)
+      {
+        /* Sets its vector */
+        avVertexList[iCount].x = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stChain.avVertices[i].fX;
+        avVertexList[iCount].y = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stChain.avVertices[i].fY;
+      }
+      /* Has next (ghost) vertex? */
+      if(_pstBodyPartDef->stChain.bHasNext != orxFALSE)
+      {
+        /* Sets its vector */
+        avVertexList[iCount].x = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stChain.vNext.fX;
+        avVertexList[iCount].y = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stChain.vNext.fY;
+        iCount++;
+      }
+
+      /* Inits material definition */
+      stMaterial                      = b2DefaultSurfaceMaterial();
+      stMaterial.friction             = _pstBodyPartDef->fFriction;
+      stMaterial.restitution          = _pstBodyPartDef->fRestitution;
+
+      /* Inits chain definition */
+      stChainDef                      = b2DefaultChainDef();
+      stChainDef.userData             = _hUserData;
+      stChainDef.points               = avVertexList;
+      stChainDef.count                = iCount;
+      stChainDef.materials            = &stMaterial;
+      stChainDef.materialCount        = 1;
+      stChainDef.isLoop               = (_pstBodyPartDef->stChain.bIsLoop != orxFALSE) ? true : false;
+      stChainDef.filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
+      stChainDef.filter.maskBits      = _pstBodyPartDef->u16CheckMask;
+      stChainDef.filter.groupIndex    = 0;
+      stChainDef.enableSensorEvents   = true;
+
+      /* Creates the chain */
+      pstResult->stChain = b2CreateChain(stBody, &stChainDef);
+
+      /* Updates status */
+      pstResult->bIsChain = orxTRUE;
     }
     else
     {
@@ -1461,7 +1501,7 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
         stCircle.center.y = sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.vCenter.fY * _pstBodyPartDef->vScale.fY;
         stCircle.radius   = sstPhysics.fDimensionRatio * _pstBodyPartDef->stSphere.fRadius * orx2F(0.5f) * (orxMath_Abs(_pstBodyPartDef->vScale.fX) + orxMath_Abs(_pstBodyPartDef->vScale.fY));
 
-        /* Creates its shape */
+        /* Creates the shape */
         pstResult->stShape = b2CreateCircleShape(stBody, &stShapeDef, &stCircle);
       }
       /* Polygon? */
@@ -1501,7 +1541,7 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
           stPolygon = b2MakePolygon(&stHull, 0.0f);
         }
 
-        /* Creates its shape */
+        /* Creates the shape */
         pstResult->stShape = b2CreatePolygonShape(stBody, &stShapeDef, &stPolygon);
       }
       /* Edge? */
@@ -1528,7 +1568,7 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
           stSegment.ghost2.y        = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stEdge.vNext.fY;
         }
 
-        /* Creates its shape */
+        /* Creates the shape */
         pstResult->stShape = ((_pstBodyPartDef->stEdge.bHasPrevious) || (_pstBodyPartDef->stEdge.bHasNext))
                              ? b2CreateChainSegmentShape(stBody, &stShapeDef, &stSegment)
                              : b2CreateSegmentShape(stBody, &stShapeDef, &(stSegment.segment));
@@ -1555,8 +1595,8 @@ void orxFASTCALL orxPhysics_Box2D_DeletePart(orxPHYSICS_BODY_PART *_pstBodyPart)
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Deletes shape */
-  b2DestroyShape(_pstBodyPart->stShape, true);  
+  /* Deletes chain / shape */
+  (_pstBodyPart->bIsChain != orxFALSE) ? b2DestroyChain(_pstBodyPart->stChain) : b2DestroyShape(_pstBodyPart->stShape, true);  
 
   /* Frees part */
   orxBank_Free(sstPhysics.pstBodyPartBank, _pstBodyPart);
@@ -2868,25 +2908,34 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, c
 
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
 {
-  b2ShapeId stShape;
-  b2Filter  stFilter;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    //! TODO
+  }
+  else
+  {
+    b2ShapeId stShape;
+    b2Filter  stFilter;
 
-  /* Gets its current filter */
-  stFilter = b2Shape_GetFilter(stShape);
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
 
-  /* Updates it */
-  stFilter.categoryBits = _u16SelfFlags;
+    /* Gets its current filter */
+    stFilter = b2Shape_GetFilter(stShape);
 
-  /* Sets new filter */
-  b2Shape_SetFilter(stShape, stFilter);
+    /* Updates it */
+    stFilter.categoryBits = _u16SelfFlags;
+
+    /* Sets new filter */
+    b2Shape_SetFilter(stShape, stFilter);
+  }
 
   /* Done! */
   return eResult;
@@ -2894,25 +2943,34 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSelfFlags(orxPHYSICS_BODY_PART *_p
 
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
 {
-  b2ShapeId stShape;
-  b2Filter  stFilter;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    //! TODO
+  }
+  else
+  {
+    b2ShapeId stShape;
+    b2Filter  stFilter;
 
-  /* Gets its current filter */
-  stFilter = b2Shape_GetFilter(stShape);
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
 
-  /* Updates it */
-  stFilter.maskBits = _u16CheckMask;
+    /* Gets its current filter */
+    stFilter = b2Shape_GetFilter(stShape);
 
-  /* Sets new filter */
-  b2Shape_SetFilter(stShape, stFilter);
+    /* Updates it */
+    stFilter.maskBits = _u16CheckMask;
+
+    /* Sets new filter */
+    b2Shape_SetFilter(stShape, stFilter);
+  }
 
   /* Done! */
   return eResult;
@@ -2920,18 +2978,27 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartCheckMask(orxPHYSICS_BODY_PART *_p
 
 orxU16 orxFASTCALL orxPhysics_Box2D_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
-  b2ShapeId stShape;
-  orxU16    u16Result;
+  orxU16 u16Result = 0;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    //! TODO
+  }
+  else
+  {
+    b2ShapeId stShape;
 
-  /* Updates result */
-  u16Result = (orxU16)(b2Shape_GetFilter(stShape).categoryBits);
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
+
+    /* Updates result */
+    u16Result = (orxU16)(b2Shape_GetFilter(stShape).categoryBits);
+  }
 
   /* Done! */
   return u16Result;
@@ -2939,18 +3006,27 @@ orxU16 orxFASTCALL orxPhysics_Box2D_GetPartSelfFlags(const orxPHYSICS_BODY_PART 
 
 orxU16 orxFASTCALL orxPhysics_Box2D_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
-  b2ShapeId stShape;
-  orxU16    u16Result;
+  orxU16 u16Result = 0;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    //! TODO
+  }
+  else
+  {
+    b2ShapeId stShape;
 
-  /* Updates result */
-  u16Result = (orxU16)(b2Shape_GetFilter(stShape).maskBits);
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
+
+    /* Updates result */
+    u16Result = (orxU16)(b2Shape_GetFilter(stShape).maskBits);
+  }
 
   /* Done! */
   return u16Result;
@@ -2958,17 +3034,26 @@ orxU16 orxFASTCALL orxPhysics_Box2D_GetPartCheckMask(const orxPHYSICS_BODY_PART 
 
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid)
 {
-  b2ShapeId stShape;
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape   = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    //! TODO
+  }
+  else
+  {
+    b2ShapeId stShape;
 
-  //! TODO
+    /* Gets shape */
+    stShape   = _pstBodyPart->stShape;
+
+    //! TODO
+  }
 
   /* Done! */
   return eResult;
@@ -2987,7 +3072,7 @@ orxBOOL orxFASTCALL orxPhysics_Box2D_IsPartSolid(const orxPHYSICS_BODY_PART *_ps
   stShape = _pstBodyPart->stShape;
 
   /* Updates result */
-  bResult = b2Shape_IsSensor(stShape) ? orxFALSE : orxTRUE;
+  bResult = ((_pstBodyPart->bIsChain == orxFALSE) && b2Shape_IsSensor(stShape)) ? orxFALSE : orxTRUE;
 
   /* Done! */
   return bResult;
@@ -2995,18 +3080,27 @@ orxBOOL orxFASTCALL orxPhysics_Box2D_IsPartSolid(const orxPHYSICS_BODY_PART *_ps
 
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartFriction(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fFriction)
 {
-  b2ShapeId stShape;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    //! TODO
+  }
+  else
+  {
+    b2ShapeId stShape;
 
-  /* Updates it */
-  b2Shape_SetFriction(stShape, _fFriction);
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
+
+    /* Updates it */
+    b2Shape_SetFriction(stShape, _fFriction);
+  }
 
   /* Done! */
   return eResult;
@@ -3014,18 +3108,27 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartFriction(orxPHYSICS_BODY_PART *_ps
 
 orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartFriction(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
-  b2ShapeId stShape;
-  orxFLOAT  fResult;
+  orxFLOAT fResult = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    //! TODO
+  }
+  else
+  {
+    b2ShapeId stShape;
 
-  /* Updates result */
-  fResult = orx2F(b2Shape_GetFriction(stShape));
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
+
+    /* Updates result */
+    fResult = orx2F(b2Shape_GetFriction(stShape));
+  }
 
   /* Done! */
   return fResult;
@@ -3033,18 +3136,27 @@ orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartFriction(const orxPHYSICS_BODY_PART
 
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartRestitution(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fRestitution)
 {
-  b2ShapeId stShape;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    //! TODO
+  }
+  else
+  {
+    b2ShapeId stShape;
 
-  /* Updates it */
-  b2Shape_SetRestitution(stShape, _fRestitution);
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
+
+    /* Updates it */
+    b2Shape_SetRestitution(stShape, _fRestitution);
+  }
 
   /* Done! */
   return eResult;
@@ -3052,18 +3164,27 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartRestitution(orxPHYSICS_BODY_PART *
 
 orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartRestitution(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
-  b2ShapeId stShape;
-  orxFLOAT  fResult;
+  orxFLOAT fResult = orxFLOAT_0;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    //! TODO
+  }
+  else
+  {
+    b2ShapeId stShape;
 
-  /* Updates result */
-  fResult = orx2F(b2Shape_GetRestitution(stShape));
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
+
+    /* Updates result */
+    fResult = orx2F(b2Shape_GetRestitution(stShape));
+  }
 
   /* Done! */
   return fResult;
@@ -3071,18 +3192,28 @@ orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartRestitution(const orxPHYSICS_BODY_P
 
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartDensity(orxPHYSICS_BODY_PART *_pstBodyPart, orxFLOAT _fDensity)
 {
-  b2ShapeId stShape;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+  else
+  {
+    b2ShapeId stShape;
 
-  /* Updates it */
-  b2Shape_SetDensity(stShape, _fDensity, true);
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
+
+    /* Updates it */
+    b2Shape_SetDensity(stShape, _fDensity, true);
+  }
 
   /* Done! */
   return eResult;
@@ -3090,18 +3221,28 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartDensity(orxPHYSICS_BODY_PART *_pst
 
 orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartDensity(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
-  b2ShapeId stShape;
-  orxFLOAT  fResult;
+  orxFLOAT fResult;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Chain? */
+  if(_pstBodyPart->bIsChain != orxFALSE)
+  {
+    /* Updates result */
+    fResult = orxFLOAT_0;
+  }
+  else
+  {
+    b2ShapeId stShape;
 
-  /* Updates result */
-  fResult = orx2F(b2Shape_GetDensity(stShape));
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
+
+    /* Updates result */
+    fResult = orx2F(b2Shape_GetDensity(stShape));
+  }
 
   /* Done! */
   return fResult;
@@ -3109,23 +3250,28 @@ orxFLOAT orxFASTCALL orxPhysics_Box2D_GetPartDensity(const orxPHYSICS_BODY_PART 
 
 orxBOOL orxFASTCALL orxPhysics_Box2D_IsInsidePart(const orxPHYSICS_BODY_PART *_pstBodyPart, const orxVECTOR *_pvPosition)
 {
-  b2ShapeId stShape;
-  b2Vec2    vPosition;
-  orxBOOL     bResult;
+  orxBOOL bResult = orxFALSE;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
-  /* Gets shape */
-  stShape = _pstBodyPart->stShape;
+  /* Not a chain? */
+  if(_pstBodyPart->bIsChain == orxFALSE)
+  {
+    b2ShapeId stShape;
+    b2Vec2    vPosition;
 
-  /* Sets position */
-  vPosition.x = sstPhysics.fDimensionRatio * _pvPosition->fX;
-  vPosition.y = sstPhysics.fDimensionRatio * _pvPosition->fY;
+    /* Gets shape */
+    stShape = _pstBodyPart->stShape;
 
-  /* Updates result */
-  bResult = (b2Shape_TestPoint(stShape, vPosition) != false) ? orxTRUE : orxFALSE;
+    /* Sets position */
+    vPosition.x = sstPhysics.fDimensionRatio * _pvPosition->fX;
+    vPosition.y = sstPhysics.fDimensionRatio * _pvPosition->fY;
+
+    /* Updates result */
+    bResult = (b2Shape_TestPoint(stShape, vPosition) != false) ? orxTRUE : orxFALSE;
+  }
 
   /* Done! */
   return bResult;
