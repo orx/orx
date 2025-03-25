@@ -1144,21 +1144,41 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       if((b2Shape_IsValid(stSensorEvents.beginEvents[i].sensorShapeId) != false)
       && (b2Shape_IsValid(stSensorEvents.beginEvents[i].visitorShapeId) != false))
       {
-        orxPHYSICS_EVENT_PAYLOAD  stPayload;
-        b2BodyId                  stSender, stRecipient;
+        orxS32  j;
+        orxBOOL bSkip = orxFALSE;
+        
+        /* For all previous events */
+        for(j = 0; j < i; j++)
+        {
+          /* Already handled? */
+          if((orxMemory_Compare(&(stSensorEvents.beginEvents[i].sensorShapeId), &(stSensorEvents.beginEvents[j].visitorShapeId), sizeof(b2ShapeId)) == 0)
+          && (orxMemory_Compare(&(stSensorEvents.beginEvents[i].visitorShapeId), &(stSensorEvents.beginEvents[j].sensorShapeId), sizeof(b2ShapeId)) == 0))
+          {
+            /* Updates status */
+            bSkip = orxTRUE;
+            break;
+          }
+        }
 
-        /* Gets both bodies */
-        stSender    = b2Shape_GetBody(stSensorEvents.beginEvents[i].sensorShapeId);
-        stRecipient = b2Shape_GetBody(stSensorEvents.beginEvents[i].visitorShapeId);
+        /* Continue? */
+        if(bSkip == orxFALSE)
+        {        
+          orxPHYSICS_EVENT_PAYLOAD  stPayload;
+          b2BodyId                  stSender, stRecipient;
 
-        /* Inits event payload */
-        stPayload.pstSenderPart     = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.beginEvents[i].sensorShapeId);
-        stPayload.pstRecipientPart  = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.beginEvents[i].visitorShapeId);
-        orxVector_Copy(&(stPayload.vPosition), &orxVECTOR_0);
-        orxVector_Copy(&(stPayload.vNormal), &orxVECTOR_0);
+          /* Gets both bodies */
+          stSender    = b2Shape_GetBody(stSensorEvents.beginEvents[i].sensorShapeId);
+          stRecipient = b2Shape_GetBody(stSensorEvents.beginEvents[i].visitorShapeId);
 
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_CONTACT_ADD, orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stSender))->pstOwner)), orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stRecipient))->pstOwner)), &stPayload);
+          /* Inits event payload */
+          stPayload.pstSenderPart     = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.beginEvents[i].sensorShapeId);
+          stPayload.pstRecipientPart  = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.beginEvents[i].visitorShapeId);
+          orxVector_Copy(&(stPayload.vPosition), &orxVECTOR_0);
+          orxVector_Copy(&(stPayload.vNormal), &orxVECTOR_0);
+
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_CONTACT_ADD, orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stSender))->pstOwner)), orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stRecipient))->pstOwner)), &stPayload);
+        }
       }
     }
 
@@ -1219,21 +1239,41 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       if((b2Shape_IsValid(stSensorEvents.endEvents[i].sensorShapeId) != false)
       && (b2Shape_IsValid(stSensorEvents.endEvents[i].visitorShapeId) != false))
       {
-        orxPHYSICS_EVENT_PAYLOAD  stPayload;
-        b2BodyId                  stSender, stRecipient;
+        orxS32  j;
+        orxBOOL bSkip = orxFALSE;
+        
+        /* For all previous events */
+        for(j = 0; j < i; j++)
+        {
+          /* Already handled? */
+          if((orxMemory_Compare(&(stSensorEvents.beginEvents[i].sensorShapeId), &(stSensorEvents.beginEvents[j].visitorShapeId), sizeof(b2ShapeId)) == 0)
+          && (orxMemory_Compare(&(stSensorEvents.beginEvents[i].visitorShapeId), &(stSensorEvents.beginEvents[j].sensorShapeId), sizeof(b2ShapeId)) == 0))
+          {
+            /* Updates status */
+            bSkip = orxTRUE;
+            break;
+          }
+        }
 
-        /* Gets both bodies */
-        stSender    = b2Shape_GetBody(stSensorEvents.endEvents[i].sensorShapeId);
-        stRecipient = b2Shape_GetBody(stSensorEvents.endEvents[i].visitorShapeId);
+        /* Continue? */
+        if(bSkip == orxFALSE)
+        {        
+          orxPHYSICS_EVENT_PAYLOAD  stPayload;
+          b2BodyId                  stSender, stRecipient;
 
-        /* Inits event payload */
-        stPayload.pstSenderPart     = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.endEvents[i].sensorShapeId);
-        stPayload.pstRecipientPart  = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.endEvents[i].visitorShapeId);
-        orxVector_Copy(&(stPayload.vPosition), &orxVECTOR_0);
-        orxVector_Copy(&(stPayload.vNormal), &orxVECTOR_0);
+          /* Gets both bodies */
+          stSender    = b2Shape_GetBody(stSensorEvents.endEvents[i].sensorShapeId);
+          stRecipient = b2Shape_GetBody(stSensorEvents.endEvents[i].visitorShapeId);
 
-        /* Sends event */
-        orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_CONTACT_REMOVE, orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stSender))->pstOwner)), orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stRecipient))->pstOwner)), &stPayload);
+          /* Inits event payload */
+          stPayload.pstSenderPart     = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.endEvents[i].sensorShapeId);
+          stPayload.pstRecipientPart  = (orxBODY_PART *)b2Shape_GetUserData(stSensorEvents.endEvents[i].visitorShapeId);
+          orxVector_Copy(&(stPayload.vPosition), &orxVECTOR_0);
+          orxVector_Copy(&(stPayload.vNormal), &orxVECTOR_0);
+
+          /* Sends event */
+          orxEVENT_SEND(orxEVENT_TYPE_PHYSICS, orxPHYSICS_EVENT_CONTACT_REMOVE, orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stSender))->pstOwner)), orxStructure_GetOwner(orxBODY(((orxPHYSICS_BODY *)b2Body_GetUserData(stRecipient))->pstOwner)), &stPayload);
+        }
       }
     }
 
@@ -1425,8 +1465,8 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
       orxU32            i;
       int               iCount = 0;
 
-      /* Has previous (ghost) vertex? */
-      if(_pstBodyPartDef->stChain.bHasPrevious != orxFALSE)
+      /* Not looping and has previous (ghost) vertex? */
+      if((_pstBodyPartDef->stChain.bIsLoop == orxFALSE) && (_pstBodyPartDef->stChain.bHasPrevious != orxFALSE))
       {
         /* Sets its vector */
         avVertexList[iCount].x = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stChain.vPrevious.fX;
@@ -1440,8 +1480,8 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
         avVertexList[iCount].x = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stChain.avVertices[i].fX;
         avVertexList[iCount].y = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stChain.avVertices[i].fY;
       }
-      /* Has next (ghost) vertex? */
-      if(_pstBodyPartDef->stChain.bHasNext != orxFALSE)
+      /* Not looping and has next (ghost) vertex? */
+      if((_pstBodyPartDef->stChain.bIsLoop == orxFALSE) && (_pstBodyPartDef->stChain.bHasNext != orxFALSE))
       {
         /* Sets its vector */
         avVertexList[iCount].x = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stChain.vNext.fX;
@@ -1547,31 +1587,16 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
       /* Edge? */
       else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_EDGE))
       {
-        b2ChainSegment stSegment;
-
-        /* Inits segment */
-        stSegment.chainId = 0;
+        b2Segment stSegment;
 
         /* Sets vertices */
-        if(_pstBodyPartDef->stEdge.bHasPrevious != orxFALSE)
-        {
-          stSegment.ghost1.x        = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stEdge.vPrevious.fX;
-          stSegment.ghost1.y        = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stEdge.vPrevious.fY;
-        }
-        stSegment.segment.point1.x  = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stEdge.avVertices[0].fX;
-        stSegment.segment.point1.y  = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stEdge.avVertices[0].fY;
-        stSegment.segment.point2.x  = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stEdge.avVertices[1].fX;
-        stSegment.segment.point2.y  = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stEdge.avVertices[1].fY;
-        if(_pstBodyPartDef->stEdge.bHasNext != orxFALSE)
-        {
-          stSegment.ghost2.x        = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stEdge.vNext.fX;
-          stSegment.ghost2.y        = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stEdge.vNext.fY;
-        }
+        stSegment.point1.x  = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stEdge.avVertices[0].fX;
+        stSegment.point1.y  = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stEdge.avVertices[0].fY;
+        stSegment.point2.x  = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fX * _pstBodyPartDef->stEdge.avVertices[1].fX;
+        stSegment.point2.y  = sstPhysics.fDimensionRatio * _pstBodyPartDef->vScale.fY * _pstBodyPartDef->stEdge.avVertices[1].fY;
 
         /* Creates the shape */
-        pstResult->stShape = ((_pstBodyPartDef->stEdge.bHasPrevious) || (_pstBodyPartDef->stEdge.bHasNext))
-                             ? b2CreateChainSegmentShape(stBody, &stShapeDef, &stSegment)
-                             : b2CreateSegmentShape(stBody, &stShapeDef, &(stSegment.segment));
+        pstResult->stShape = b2CreateSegmentShape(stBody, &stShapeDef, &stSegment);
       }
     }
     
