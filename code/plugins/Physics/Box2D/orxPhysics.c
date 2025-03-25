@@ -1476,37 +1476,27 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
       /* Creates its shape */
       pstResult->stShape = b2CreatePolygonShape(stBody, &stShapeDef, &stPolygon);
     }
-    //else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_EDGE))
-    //{
-    // b2Vec2  av[2];
-    // orxU32  i;
+    /* Edge? */
+    else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_EDGE))
+    {
+      b2Segment stSegment;
 
-    // /* Stores shape reference */
-    // stFixtureDef.shape = &stEdgeShape;
+      /* Sets vertices */
+      stSegment.point1.x = sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[0].fX * _pstBodyPartDef->vScale.fX;
+      stSegment.point1.y = sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[0].fY * _pstBodyPartDef->vScale.fY;
+      stSegment.point2.x = sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[1].fX * _pstBodyPartDef->vScale.fX;
+      stSegment.point2.y = sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[1].fY * _pstBodyPartDef->vScale.fY;
 
-    // /* Sets vertices */
-    // for(i = 0; i < 2; i++)
-    // {
-    //   av[i].Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[i].fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.avVertices[i].fY * _pstBodyPartDef->vScale.fY);
-    // }
+      /* Has previous or next (ghost)? */
+      if((_pstBodyPartDef->stEdge.bHasPrevious) || (_pstBodyPartDef->stEdge.bHasNext))
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "An edge shape has been created with ghost vertices. However, those not supported by this plugin and will thus be ignored. Use chains instead to handle ghost collisions.");
+      }
 
-    // /* Updates shape */
-    // stEdgeShape.Set(av[0], av[1]);
-
-    // /* Has previous (ghost)? */
-    // if(_pstBodyPartDef->stEdge.bHasPrevious)
-    // {
-    //   stEdgeShape.m_vertex0.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vPrevious.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vPrevious.fY * _pstBodyPartDef->vScale.fY);
-    //   stEdgeShape.m_hasVertex0 = true;
-    // }
-
-    // /* Has next (ghost)? */
-    // if(_pstBodyPartDef->stEdge.bHasNext)
-    // {
-    //   stEdgeShape.m_vertex3.Set(sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vNext.fX * _pstBodyPartDef->vScale.fX, sstPhysics.fDimensionRatio * _pstBodyPartDef->stEdge.vNext.fY * _pstBodyPartDef->vScale.fY);
-    //   stEdgeShape.m_hasVertex3 = true;
-    // }
-    //}
+      /* Creates its shape */
+      pstResult->stShape = b2CreateSegmentShape(stBody, &stShapeDef, &stSegment);
+    }
     //else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_CHAIN))
     //{
     // b2Vec2 *avVertexList = (b2Vec2 *)alloca(_pstBodyPartDef->stChain.u32VertexCount * sizeof(b2Vec2));
