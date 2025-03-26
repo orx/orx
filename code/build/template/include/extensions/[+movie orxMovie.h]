@@ -506,7 +506,7 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
             "  gl_FragColor = vec4(color, 1.0) * bt601 * gl_Color;"
             "}"
           );
-          orxObject_AddShader(pstObject, orxConfig_GetCurrentSection());
+          orxObject_SetShaderFromConfig(pstObject, orxConfig_GetCurrentSection());
 
           // Pops config section
           orxConfig_PopSection();
