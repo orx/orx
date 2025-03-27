@@ -262,16 +262,16 @@ static orxINLINE void orxBody_DeleteAll()
   return;
 }
 
-static orxINLINE orxU16 orxBody_GetCollisionFlag(const orxSTRING _zConfigID)
+static orxINLINE orxU64 orxBody_GetCollisionFlag(const orxSTRING _zConfigID)
 {
-  orxU32  u32Value;
-  orxU16  u16Result = 0;
+  orxU64  u64Value;
+  orxU64  u64Result = 0;
 
   /* Gets its numerical value */
-  u32Value = orxConfig_GetListU32(_zConfigID, 0);
+  u64Value = orxConfig_GetListU64(_zConfigID, 0);
 
   /* Is 0? */
-  if(u32Value == 0)
+  if(u64Value == 0)
   {
     orxS32 s32Count, i;
 
@@ -279,17 +279,17 @@ static orxINLINE orxU16 orxBody_GetCollisionFlag(const orxSTRING _zConfigID)
     for(i = 0, s32Count = orxConfig_GetListCount(_zConfigID); i < s32Count; i++)
     {
       /* Updates result with numerical value */
-      u16Result |= (orxU16)orxPhysics_GetCollisionFlagValue(orxConfig_GetListString(_zConfigID, i));
+      u64Result |= orxPhysics_GetCollisionFlagValue(orxConfig_GetListString(_zConfigID, i));
     }
   }
   else
   {
     /* Updates result */
-    u16Result = (orxU16)u32Value;
+    u64Result = u64Value;
   }
 
   /* Done! */
-  return u16Result;
+  return u64Result;
 }
 
 
@@ -890,8 +890,8 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
     stBodyPartDef.fFriction     = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FRICTION);
     stBodyPartDef.fRestitution  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_RESTITUTION);
     stBodyPartDef.fDensity      = (orxConfig_HasValue(orxBODY_KZ_CONFIG_DENSITY) != orxFALSE) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_DENSITY) : orxFLOAT_1;
-    stBodyPartDef.u16SelfFlags  = orxBody_GetCollisionFlag(orxBODY_KZ_CONFIG_SELF_FLAGS);
-    stBodyPartDef.u16CheckMask  = orxBody_GetCollisionFlag(orxBODY_KZ_CONFIG_CHECK_MASK);
+    stBodyPartDef.u64SelfFlags  = orxBody_GetCollisionFlag(orxBODY_KZ_CONFIG_SELF_FLAGS);
+    stBodyPartDef.u64CheckMask  = orxBody_GetCollisionFlag(orxBODY_KZ_CONFIG_CHECK_MASK);
     orxVector_Copy(&(stBodyPartDef.vScale), &(_pstBody->vScale));
     if(orxConfig_GetBool(orxBODY_KZ_CONFIG_SOLID) != orxFALSE)
     {
@@ -1276,8 +1276,8 @@ const orxBODY_PART_DEF *orxFASTCALL orxBody_GetPartDef(const orxBODY_PART *_pstB
 
   /* Updates its information */
   orxVector_Copy(&(pstResult->vScale), &(_pstBodyPart->pstBody->vScale));
-  pstResult->u16CheckMask = orxBody_GetPartCheckMask(_pstBodyPart);
-  pstResult->u16SelfFlags = orxBody_GetPartSelfFlags(_pstBodyPart);
+  pstResult->u64CheckMask = orxBody_GetPartCheckMask(_pstBodyPart);
+  pstResult->u64SelfFlags = orxBody_GetPartSelfFlags(_pstBodyPart);
   if(orxBody_IsPartSolid(_pstBodyPart) != orxFALSE)
   {
     orxFLAG_SET(pstResult->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID, orxBODY_PART_DEF_KU32_FLAG_NONE);
@@ -2858,10 +2858,10 @@ orxSTATUS orxFASTCALL orxBody_ApplyImpulse(orxBODY *_pstBody, const orxVECTOR *_
 
 /** Sets self flags of a physical body part
  * @param[in]   _pstBodyPart    Concerned physical body part
- * @param[in]   _u16SelfFlags   Self flags to set
+ * @param[in]   _u64SelfFlags   Self flags to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxBody_SetPartSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
+orxSTATUS orxFASTCALL orxBody_SetPartSelfFlags(orxBODY_PART *_pstBodyPart, orxU64 _u64SelfFlags)
 {
   orxSTATUS eResult;
 
@@ -2870,7 +2870,7 @@ orxSTATUS orxFASTCALL orxBody_SetPartSelfFlags(orxBODY_PART *_pstBodyPart, orxU1
   orxASSERT(_pstBodyPart != orxNULL);
 
   /* Sets self flags */
-  eResult = orxPhysics_SetPartSelfFlags(_pstBodyPart->pstData, _u16SelfFlags);
+  eResult = orxPhysics_SetPartSelfFlags(_pstBodyPart->pstData, _u64SelfFlags);
 
   /* Done! */
   return eResult;
@@ -2878,10 +2878,10 @@ orxSTATUS orxFASTCALL orxBody_SetPartSelfFlags(orxBODY_PART *_pstBodyPart, orxU1
 
 /** Sets check mask of a physical body part
  * @param[in]   _pstBodyPart    Concerned physical body part
- * @param[in]   _u16CheckMask   Check mask to set
+ * @param[in]   _u64CheckMask   Check mask to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxBody_SetPartCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
+orxSTATUS orxFASTCALL orxBody_SetPartCheckMask(orxBODY_PART *_pstBodyPart, orxU64 _u64CheckMask)
 {
   orxSTATUS eResult;
 
@@ -2890,7 +2890,7 @@ orxSTATUS orxFASTCALL orxBody_SetPartCheckMask(orxBODY_PART *_pstBodyPart, orxU1
   orxASSERT(_pstBodyPart != orxNULL);
 
   /* Sets check mask */
-  eResult = orxPhysics_SetPartCheckMask(_pstBodyPart->pstData, _u16CheckMask);
+  eResult = orxPhysics_SetPartCheckMask(_pstBodyPart->pstData, _u64CheckMask);
 
   /* Done! */
   return eResult;
@@ -2900,38 +2900,38 @@ orxSTATUS orxFASTCALL orxBody_SetPartCheckMask(orxBODY_PART *_pstBodyPart, orxU1
  * @param[in]   _pstBodyPart    Concerned physical body part
  * @return Self flags of the physical body part
  */
-orxU16 orxFASTCALL orxBody_GetPartSelfFlags(const orxBODY_PART *_pstBodyPart)
+orxU64 orxFASTCALL orxBody_GetPartSelfFlags(const orxBODY_PART *_pstBodyPart)
 {
-  orxU16 u16Result;
+  orxU64 u64Result;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
   /* Gets self flags */
-  u16Result = orxPhysics_GetPartSelfFlags(_pstBodyPart->pstData);
+  u64Result = orxPhysics_GetPartSelfFlags(_pstBodyPart->pstData);
 
   /* Done! */
-  return u16Result;
+  return u64Result;
 }
 
 /** Gets check mask of a physical body part
  * @param[in]   _pstBodyPart    Concerned physical body part
  * @return Check mask of the physical body part
  */
-orxU16 orxFASTCALL orxBody_GetPartCheckMask(const orxBODY_PART *_pstBodyPart)
+orxU64 orxFASTCALL orxBody_GetPartCheckMask(const orxBODY_PART *_pstBodyPart)
 {
-  orxU16 u16Result;
+  orxU64 u64Result;
 
   /* Checks */
   orxASSERT(sstBody.u32Flags & orxBODY_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
 
   /* Gets check mask */
-  u16Result = orxPhysics_GetPartCheckMask(_pstBodyPart->pstData);
+  u64Result = orxPhysics_GetPartCheckMask(_pstBodyPart->pstData);
 
   /* Done! */
-  return u16Result;
+  return u64Result;
 }
 
 /** Sets a body part solid
@@ -3115,14 +3115,14 @@ orxBOOL orxFASTCALL orxBody_IsInsidePart(const orxBODY_PART *_pstBodyPart, const
 /** Issues a raycast to test for potential bodies in the way
  * @param[in]   _pvBegin        Beginning of raycast
  * @param[in]   _pvEnd          End of raycast
- * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
- * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64CheckMask   Check mask used for filtering (0xFFFF for no filtering)
  * @param[in]   _bEarlyExit     Should stop as soon as an object has been hit (which might not be the closest)
  * @param[in]   _pvContact      If non-null and a contact is found it will be stored here
  * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
  * @return Colliding orxBODY / orxNULL
  */
-orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   orxHANDLE hRaycastResult;
   orxBODY  *pstResult = orxNULL;
@@ -3133,7 +3133,7 @@ orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR 
   orxASSERT(_pvEnd != orxNULL);
 
   /* Issues raycast */
-  hRaycastResult = orxPhysics_Raycast(_pvBegin, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
+  hRaycastResult = orxPhysics_Raycast(_pvBegin, _pvEnd, _u64SelfFlags, _u64CheckMask, _bEarlyExit, _pvContact, _pvNormal);
 
   /* Found? */
   if(hRaycastResult != orxHANDLE_UNDEFINED)
@@ -3148,13 +3148,13 @@ orxBODY *orxFASTCALL orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR 
 
 /** Picks bodies in contact with the given axis aligned box.
  * @param[in]   _pstBox                               Box used for picking
- * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
- * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
  * @param[in]   _apstBodyList                         List of bodies to fill, can be orxNULL for query only
  * @param[in]   _u32Number                            Number of bodies
  * @return      Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all.
  */
-orxU32 orxFASTCALL orxBody_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBODY *_apstBodyList[], orxU32 _u32Number)
+orxU32 orxFASTCALL orxBody_BoxPick(const orxAABOX *_pstBox, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxBODY *_apstBodyList[], orxU32 _u32Number)
 {
   orxU32 u32Result;
 
@@ -3164,7 +3164,7 @@ orxU32 orxFASTCALL orxBody_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags
   orxASSERT((_apstBodyList != orxNULL) || (_u32Number == 0));
 
   /* Issues request */
-  u32Result = orxPhysics_BoxPick(_pstBox, _u16SelfFlags, _u16CheckMask, (orxHANDLE *)_apstBodyList, _u32Number);
+  u32Result = orxPhysics_BoxPick(_pstBox, _u64SelfFlags, _u64CheckMask, (orxHANDLE *)_apstBodyList, _u32Number);
 
   /* Done! */
   return u32Result;

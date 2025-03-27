@@ -412,29 +412,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_ApplyImpulse(orxBODY *_pst
 
 /** Sets self flags of a body part
  * @param[in]   _pstBodyPart    Concerned body part
- * @param[in]   _u16SelfFlags   Self flags to set
+ * @param[in]   _u64SelfFlags   Self flags to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartSelfFlags(orxBODY_PART *_pstBodyPart, orxU16 _u16SelfFlags);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartSelfFlags(orxBODY_PART *_pstBodyPart, orxU64 _u64SelfFlags);
 
 /** Sets check mask of a body part
  * @param[in]   _pstBodyPart    Concerned body part
- * @param[in]   _u16CheckMask   Check mask to set
+ * @param[in]   _u64CheckMask   Check mask to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartCheckMask(orxBODY_PART *_pstBodyPart, orxU16 _u16CheckMask);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxBody_SetPartCheckMask(orxBODY_PART *_pstBodyPart, orxU64 _u64CheckMask);
 
 /** Gets self flags of a body part
  * @param[in]   _pstBodyPart    Concerned body part
  * @return Self flags of the body part
  */
-extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartSelfFlags(const orxBODY_PART *_pstBodyPart);
+extern orxDLLAPI orxU64 orxFASTCALL           orxBody_GetPartSelfFlags(const orxBODY_PART *_pstBodyPart);
 
 /** Gets check mask of a body part
  * @param[in]   _pstBodyPart    Concerned body part
  * @return Check mask of the body part
  */
-extern orxDLLAPI orxU16 orxFASTCALL           orxBody_GetPartCheckMask(const orxBODY_PART *_pstBodyPart);
+extern orxDLLAPI orxU64 orxFASTCALL           orxBody_GetPartCheckMask(const orxBODY_PART *_pstBodyPart);
 
 /** Sets a body part solid
  * @param[in]   _pstBodyPart    Concerned body part
@@ -535,25 +535,25 @@ extern orxDLLAPI orxFLOAT orxFASTCALL         orxBody_GetJointReactionTorque(con
 /** Issues a raycast to test for potential bodies in the way
  * @param[in]   _pvBegin        Beginning of raycast
  * @param[in]   _pvEnd          End of raycast
- * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
- * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64CheckMask   Check mask used for filtering (0xFFFF for no filtering)
  * @param[in]   _bEarlyExit     Should stop as soon as an object has been hit (which might not be the closest)
  * @param[in]   _pvContact      If non-null and a contact is found it will be stored here
  * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
  * @return Colliding orxBODY / orxNULL
  */
-extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+extern orxDLLAPI orxBODY *orxFASTCALL         orxBody_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 
 /** Picks bodies in contact with the given axis aligned box.
  * @param[in]   _pstBox                               Box used for picking
- * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
- * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
  * @param[in]   _apstBodyList                         List of bodies to fill
  * @param[in]   _u32Number                            Number of bodies
  * @return      Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all.
  */
-extern orxDLLAPI orxU32 orxFASTCALL           orxBody_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBODY *_apstBodyList[], orxU32 _u32Number);
+extern orxDLLAPI orxU32 orxFASTCALL           orxBody_BoxPick(const orxAABOX *_pstBox, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxBODY *_apstBodyList[], orxU32 _u32Number);
 
 
 #endif /* _orxBODY_H_ */

@@ -497,21 +497,21 @@ static void orxFASTCALL orxBounce_Update(const orxCLOCK_INFO *_pstClockInfo, voi
   else if(orxInput_IsActive("RayCast"))
   {
     orxOBJECT  *pstRayHit;
-    orxU32      u32SelfFlags = 0, u32CheckMask = 0;
+    orxU64      u64SelfFlags = 0, u64CheckMask = 0;
     orxS32      i;
 
     /* Gets flags & mask */
     for(i = 0; i < orxConfig_GetListCount("RaySelfFlags"); i++)
     {
-      u32SelfFlags |= orxPhysics_GetCollisionFlagValue(orxConfig_GetListString("RaySelfFlags", i));
+      u64SelfFlags |= orxPhysics_GetCollisionFlagValue(orxConfig_GetListString("RaySelfFlags", i));
     }
     for(i = 0; i < orxConfig_GetListCount("RayCheckMask"); i++)
     {
-      u32CheckMask |= orxPhysics_GetCollisionFlagValue(orxConfig_GetListString("RayCheckMask", i));
+      u64CheckMask |= orxPhysics_GetCollisionFlagValue(orxConfig_GetListString("RayCheckMask", i));
     }
 
     /* Casts ray */
-    pstRayHit = orxObject_Raycast(&orxVECTOR_0, &vMousePos, (orxU16)u32SelfFlags, (orxU16)u32CheckMask, orxFALSE, orxNULL, orxNULL);
+    pstRayHit = orxObject_Raycast(&orxVECTOR_0, &vMousePos, u64SelfFlags, u64CheckMask, orxFALSE, orxNULL, orxNULL);
 
     /* Hit? */
     if(pstRayHit != orxNULL)

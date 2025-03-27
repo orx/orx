@@ -1467,6 +1467,8 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   orxASSERT(_pstBody != orxNULL);
   orxASSERT(_pstBodyPartDef != orxNULL);
   orxASSERT(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_MASK_TYPE));
+  orxASSERT(_pstBodyPartDef->u64SelfFlags <= 0xFFFF);
+  orxASSERT(_pstBodyPartDef->u64CheckMask <= 0xFFFF);
 
   /* Gets body */
   poBody = (b2Body *)_pstBody->poBody;
@@ -1636,8 +1638,8 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   stFixtureDef.friction             = _pstBodyPartDef->fFriction;
   stFixtureDef.restitution          = _pstBodyPartDef->fRestitution;
   stFixtureDef.density              = (poBody->GetType() != b2_dynamicBody) ? 0.0f : _pstBodyPartDef->fDensity;
-  stFixtureDef.filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
-  stFixtureDef.filter.maskBits      = _pstBodyPartDef->u16CheckMask;
+  stFixtureDef.filter.categoryBits  = (orxU16)_pstBodyPartDef->u64SelfFlags;
+  stFixtureDef.filter.maskBits      = (orxU16)_pstBodyPartDef->u64CheckMask;
   stFixtureDef.filter.groupIndex    = 0;
   stFixtureDef.isSensor             = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
 
@@ -2947,7 +2949,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_ApplyImpulse(orxPHYSICS_BO
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU64 _u64SelfFlags)
 {
   b2Fixture  *poFixture;
   b2Filter    oFilter;
@@ -2956,6 +2958,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartSelfFlags(orxPHYSIC
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
+  orxASSERT(_u64SelfFlags <= 0xFFFF);
 
   /* Gets fixture */
   poFixture = (b2Fixture *)_pstBodyPart;
@@ -2964,7 +2967,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartSelfFlags(orxPHYSIC
   oFilter = poFixture->GetFilterData();
 
   /* Updates it */
-  oFilter.categoryBits = _u16SelfFlags;
+  oFilter.categoryBits = (orxU16)_u64SelfFlags;
 
   /* Sets new filter */
   poFixture->SetFilterData(oFilter);
@@ -2973,7 +2976,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartSelfFlags(orxPHYSIC
   return eResult;
 }
 
-extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
+extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU64 _u64CheckMask)
 {
   b2Fixture  *poFixture;
   b2Filter    oFilter;
@@ -2982,6 +2985,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartCheckMask(orxPHYSIC
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBodyPart != orxNULL);
+  orxASSERT(_u64CheckMask <= 0xFFFF);
 
   /* Gets fixture */
   poFixture = (b2Fixture *)_pstBodyPart;
@@ -2990,7 +2994,7 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartCheckMask(orxPHYSIC
   oFilter = poFixture->GetFilterData();
 
   /* Updates it */
-  oFilter.maskBits = _u16CheckMask;
+  oFilter.maskBits = (orxU16)_u64CheckMask;
 
   /* Sets new filter */
   poFixture->SetFilterData(oFilter);
@@ -2999,10 +3003,10 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartCheckMask(orxPHYSIC
   return eResult;
 }
 
-extern "C" orxU16 orxFASTCALL orxPhysics_LiquidFun_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
+extern "C" orxU64 orxFASTCALL orxPhysics_LiquidFun_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
   const b2Fixture  *poFixture;
-  orxU16            u16Result;
+  orxU64            u64Result;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -3012,16 +3016,16 @@ extern "C" orxU16 orxFASTCALL orxPhysics_LiquidFun_GetPartSelfFlags(const orxPHY
   poFixture = (b2Fixture *)_pstBodyPart;
 
   /* Updates result */
-  u16Result = poFixture->GetFilterData().categoryBits;
+  u64Result = (orxU64)poFixture->GetFilterData().categoryBits;
 
   /* Done! */
-  return u16Result;
+  return u64Result;
 }
 
-extern "C" orxU16 orxFASTCALL orxPhysics_LiquidFun_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
+extern "C" orxU64 orxFASTCALL orxPhysics_LiquidFun_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
   const b2Fixture  *poFixture;
-  orxU16            u16Result;
+  orxU64            u64Result;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -3031,10 +3035,10 @@ extern "C" orxU16 orxFASTCALL orxPhysics_LiquidFun_GetPartCheckMask(const orxPHY
   poFixture = (b2Fixture *)_pstBodyPart;
 
   /* Updates result */
-  u16Result = poFixture->GetFilterData().maskBits;
+  u64Result = (orxU64)poFixture->GetFilterData().maskBits;
 
   /* Done! */
-  return u16Result;
+  return u64Result;
 }
 
 extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid)
@@ -3212,7 +3216,7 @@ extern "C" orxBOOL orxFASTCALL orxPhysics_LiquidFun_IsInsidePart(const orxPHYSIC
   return bResult;
 }
 
-extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   b2Vec2          vBegin, vEnd;
   RayCastCallback oRaycastCallback;
@@ -3222,14 +3226,16 @@ extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvBegin != orxNULL);
   orxASSERT(_pvEnd != orxNULL);
+  orxASSERT(_u64SelfFlags <= 0xFFFF);
+  orxASSERT(_u64CheckMask <= 0xFFFF);
 
   /* Gets extremities */
   vBegin.Set(sstPhysics.fDimensionRatio * _pvBegin->fX, sstPhysics.fDimensionRatio * _pvBegin->fY);
   vEnd.Set(sstPhysics.fDimensionRatio * _pvEnd->fX, sstPhysics.fDimensionRatio * _pvEnd->fY);
 
   /* Inits filter data */
-  oRaycastCallback.u16SelfFlags = _u16SelfFlags;
-  oRaycastCallback.u16CheckMask = _u16CheckMask;
+  oRaycastCallback.u16SelfFlags = (orxU16)_u64SelfFlags;
+  oRaycastCallback.u16CheckMask = (orxU16)_u64CheckMask;
 
   /* Stores early exit status */
   oRaycastCallback.bEarlyExit   = _bEarlyExit;
@@ -3299,7 +3305,7 @@ extern "C" orxHANDLE orxFASTCALL orxPhysics_LiquidFun_Raycast(const orxVECTOR *_
   return hResult;
 }
 
-extern "C" orxU32 orxFASTCALL orxPhysics_LiquidFun_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
+extern "C" orxU32 orxFASTCALL orxPhysics_LiquidFun_BoxPick(const orxAABOX *_pstBox, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
 {
   b2AABB          stBox;
   BoxPickCallback oBoxPickCallback;
@@ -3307,14 +3313,16 @@ extern "C" orxU32 orxFASTCALL orxPhysics_LiquidFun_BoxPick(const orxAABOX *_pstB
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBox != orxNULL);
+  orxASSERT(_u64SelfFlags <= 0xFFFF);
+  orxASSERT(_u64CheckMask <= 0xFFFF);
 
   /* Gets extremities */
   stBox.lowerBound.Set(sstPhysics.fDimensionRatio * _pstBox->vTL.fX, sstPhysics.fDimensionRatio * _pstBox->vTL.fY);
   stBox.upperBound.Set(sstPhysics.fDimensionRatio * _pstBox->vBR.fX, sstPhysics.fDimensionRatio * _pstBox->vBR.fY);
 
   /* Inits filter data */
-  oBoxPickCallback.u16SelfFlags = _u16SelfFlags;
-  oBoxPickCallback.u16CheckMask = _u16CheckMask;
+  oBoxPickCallback.u16SelfFlags = (orxU16)_u64SelfFlags;
+  oBoxPickCallback.u16CheckMask = (orxU16)_u64CheckMask;
 
   /* Inits storage */
   oBoxPickCallback.ahUserDataList = _ahUserDataList;

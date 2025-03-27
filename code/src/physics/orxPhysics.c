@@ -124,7 +124,7 @@ void orxFASTCALL orxPhysics_CommandEnableSimulation(orxU32 _u32ArgNumber, const 
 void orxFASTCALL orxPhysics_CommandGetCollisionFlagName(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->zValue = orxPhysics_GetCollisionFlagName(_astArgList[0].u32Value);
+  _pstResult->zValue = orxPhysics_GetCollisionFlagName(_astArgList[0].u64Value);
 
   /* Done! */
   return;
@@ -135,7 +135,7 @@ void orxFASTCALL orxPhysics_CommandGetCollisionFlagName(orxU32 _u32ArgNumber, co
 void orxFASTCALL orxPhysics_CommandGetCollisionFlagValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* Updates result */
-  _pstResult->u32Value = orxPhysics_GetCollisionFlagValue(_astArgList[0].zValue);
+  _pstResult->u64Value = orxPhysics_GetCollisionFlagValue(_astArgList[0].zValue);
 
   /* Done! */
   return;
@@ -149,9 +149,9 @@ static orxINLINE void orxPhysics_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Physics, EnableSimulation, "Enabled", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: GetCollisionFlagName */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Physics, GetCollisionFlagName, "FlagName", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"FlagValue", orxCOMMAND_VAR_TYPE_U32});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Physics, GetCollisionFlagName, "FlagName", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"FlagValue", orxCOMMAND_VAR_TYPE_U64});
   /* Command: GetCollisionFlagValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Physics, GetCollisionFlagValue, "FlagValue", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"FlagName", orxCOMMAND_VAR_TYPE_STRING});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Physics, GetCollisionFlagValue, "FlagValue", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"FlagName", orxCOMMAND_VAR_TYPE_STRING});
 }
 
 /** Unregisters all the physics commands
@@ -192,18 +192,18 @@ void orxFASTCALL orxPhysics_Setup()
 }
 
 /** Gets collision flag literal name
- * @param[in] _u32Flag      Concerned collision flag numerical value
+ * @param[in] _u64Flag      Concerned collision flag numerical value
  * @return Flag's name
  */
-const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
+const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU64 _u64Flag)
 {
   const orxSTRING zResult = orxSTRING_EMPTY;
 
   /* Checks */
-  orxASSERT(_u32Flag != 0);
+  orxASSERT(_u64Flag != 0);
 
   /* Is a flag? */
-  if(orxMath_IsPowerOfTwo(_u32Flag) != orxFALSE)
+  if((_u64Flag & (_u64Flag - 1)) == 0)
   {
     orxU32 u32Index;
 
@@ -211,7 +211,7 @@ const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
     orxConfig_PushSection(orxPHYSICS_KZ_CONFIG_SECTION);
 
     /* Gets flag index */
-    u32Index = orxMath_GetTrailingZeroCount(_u32Flag);
+    u32Index = orxMath_GetTrailingZeroCount64(_u64Flag);
 
     /* Valid? */
     if(u32Index < (orxU32)orxConfig_GetListCount(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST))
@@ -222,7 +222,7 @@ const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't get collision flag name for value <%d>: no flag has been defined with this value!", _u32Flag);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't get collision flag name for value <%llx>: no flag has been defined with this value!", _u64Flag);
     }
 
     /* Pops config section */
@@ -231,7 +231,7 @@ const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't get collision flag name for value <%d>: value needs to be a power of two!", _u32Flag);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't get collision flag name for value <%llx>: value needs to be a power of two!", _u64Flag);
   }
 
   /* Done! */
@@ -242,9 +242,10 @@ const orxSTRING orxFASTCALL orxPhysics_GetCollisionFlagName(orxU32 _u32Flag)
  * @param[in] _zFlag        Concerned collision flag literal name
  * @return Flag's value
  */
-orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
+orxU64 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
 {
-  orxU32 u32Result = 0, u32Count;
+  orxU64 u64Result = 0;
+  orxU32 u32Count;
 
   /* Checks */
   orxASSERT(_zFlag != orxNULL);
@@ -278,17 +279,17 @@ orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
       if(!orxString_ICompare(_zFlag, azFlagList[i]))
       {
         /* Updates result */
-        u32Result = 1 << i;
+        u64Result = ((orxU64)1) << i;
 
         break;
       }
     }
 
     /* Not found? */
-    if(u32Result == 0)
+    if(u64Result == 0)
     {
       /* Is there room to add the new flag? */
-      if(u32Count < 16)
+      if(u32Count < 64)
       {
         /* Stores its name */
         azFlagList[u32Count] = _zFlag;
@@ -297,10 +298,10 @@ orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
         if(orxConfig_SetListString(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST, azFlagList, u32Count + 1) != orxSTATUS_FAILURE)
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Adding collision flag <%s> with value <%d>.", _zFlag, 1 << u32Count);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Adding collision flag <%s> with value <%llX>.", _zFlag, ((orxU64)1) << u32Count);
 
           /* Updates result */
-          u32Result = 1 << u32Count;
+          u64Result = ((orxU64)1) << u32Count;
         }
       }
       else
@@ -315,7 +316,7 @@ orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
   orxConfig_PopSection();
 
   /* Done! */
-  return u32Result;
+  return u64Result;
 }
 
 
@@ -364,10 +365,10 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetAngularDamping, orxFLOAT, const orx
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_ApplyTorque, orxSTATUS, orxPHYSICS_BODY *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_ApplyForce, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *, const orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_ApplyImpulse, orxSTATUS, orxPHYSICS_BODY *, const  orxVECTOR *, const orxVECTOR *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartSelfFlags, orxSTATUS, orxPHYSICS_BODY_PART *, orxU16);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartCheckMask, orxSTATUS, orxPHYSICS_BODY_PART *, orxU16);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartSelfFlags, orxU16, const orxPHYSICS_BODY_PART *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartCheckMask, orxU16, const orxPHYSICS_BODY_PART *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartSelfFlags, orxSTATUS, orxPHYSICS_BODY_PART *, orxU64);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartCheckMask, orxSTATUS, orxPHYSICS_BODY_PART *, orxU64);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartSelfFlags, orxU64, const orxPHYSICS_BODY_PART *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartCheckMask, orxU64, const orxPHYSICS_BODY_PART *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartSolid, orxSTATUS, orxPHYSICS_BODY_PART *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_IsPartSolid, orxBOOL, const orxPHYSICS_BODY_PART *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartFriction, orxSTATUS, orxPHYSICS_BODY_PART *, orxFLOAT);
@@ -377,8 +378,8 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartRestitution, orxFLOAT, const or
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPartDensity, orxSTATUS, orxPHYSICS_BODY_PART *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetPartDensity, orxFLOAT, const orxPHYSICS_BODY_PART *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_IsInsidePart, orxBOOL, const orxPHYSICS_BODY_PART *, const orxVECTOR *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Raycast, orxHANDLE, const orxVECTOR *, const orxVECTOR *, orxU16, orxU16, orxBOOL, orxVECTOR *, orxVECTOR *);
-orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_BoxPick, orxU32, const orxAABOX *, orxU16, orxU16, orxHANDLE [], orxU32);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_Raycast, orxHANDLE, const orxVECTOR *, const orxVECTOR *, orxU64, orxU64, orxBOOL, orxVECTOR *, orxVECTOR *);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_BoxPick, orxU32, const orxAABOX *, orxU64, orxU64, orxHANDLE [], orxU32);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_EnableSimulation, void, orxBOOL);
 
 
@@ -630,22 +631,22 @@ orxSTATUS orxFASTCALL orxPhysics_ApplyImpulse(orxPHYSICS_BODY *_pstBody, const o
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_ApplyImpulse)(_pstBody, _pvImpulse, _pvPoint);
 }
 
-orxSTATUS orxFASTCALL orxPhysics_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
+orxSTATUS orxFASTCALL orxPhysics_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU64 _u64SelfFlags)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPartSelfFlags)(_pstBodyPart, _u16SelfFlags);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPartSelfFlags)(_pstBodyPart, _u64SelfFlags);
 }
 
-orxSTATUS orxFASTCALL orxPhysics_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
+orxSTATUS orxFASTCALL orxPhysics_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU64 _u64CheckMask)
 {
-   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPartCheckMask)(_pstBodyPart, _u16CheckMask);
+   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetPartCheckMask)(_pstBodyPart, _u64CheckMask);
 }
 
-orxU16 orxFASTCALL orxPhysics_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
+orxU64 orxFASTCALL orxPhysics_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
    return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPartSelfFlags)(_pstBodyPart);
 }
 
-orxU16 orxFASTCALL orxPhysics_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
+orxU64 orxFASTCALL orxPhysics_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
    return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetPartCheckMask)(_pstBodyPart);
 }
@@ -720,14 +721,14 @@ orxFLOAT orxFASTCALL orxPhysics_GetJointReactionTorque(const orxPHYSICS_BODY_JOI
   return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_GetJointReactionTorque)(_pstBodyJoint);
 }
 
-orxHANDLE orxFASTCALL orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+orxHANDLE orxFASTCALL orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Raycast)(_pvBegin, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_Raycast)(_pvBegin, _pvEnd, _u64SelfFlags, _u64CheckMask, _bEarlyExit, _pvContact, _pvNormal);
 }
 
-orxU32 orxFASTCALL orxPhysics_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
+orxU32 orxFASTCALL orxPhysics_BoxPick(const orxAABOX *_pstBox, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
 {
-  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_BoxPick)(_pstBox, _u16SelfFlags, _u16CheckMask, _ahUserDataList, _u32Number);
+  return orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_BoxPick)(_pstBox, _u64SelfFlags, _u64CheckMask, _ahUserDataList, _u32Number);
 }
 
 void orxFASTCALL orxPhysics_EnableSimulation(orxBOOL _bEnable)

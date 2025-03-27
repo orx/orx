@@ -126,57 +126,57 @@ typedef struct __orxBODY_DEF_t
  */
 typedef struct __orxBODY_PART_DEF_t
 {
-  orxVECTOR vScale;                                   /**< Scale : 12 */
-  orxFLOAT  fFriction;                                /**< Friction : 16 */
-  orxFLOAT  fRestitution;                             /**< Restitution : 20 */
-  orxFLOAT  fDensity;                                 /**< Density : 24 */
-  orxU16    u16SelfFlags;                             /**< Self defining flags : 26 */
-  orxU16    u16CheckMask;                             /**< Check mask : 28 */
-  orxU32    u32Flags;                                 /**< Control flags : 32 */
+  orxU64    u64SelfFlags;                             /**< Self defining flags : 8 */
+  orxU64    u64CheckMask;                             /**< Check mask : 16 */
+  orxVECTOR vScale;                                   /**< Scale : 28 */
+  orxFLOAT  fFriction;                                /**< Friction : 32 */
+  orxFLOAT  fRestitution;                             /**< Restitution : 36 */
+  orxFLOAT  fDensity;                                 /**< Density : 40 */
+  orxU32    u32Flags;                                 /**< Control flags : 44 */
 
   union
   {
     struct
     {
-      orxVECTOR vCenter;                              /**< Sphere center : 44 */
-      orxFLOAT  fRadius;                              /**< Sphere radius : 48 */
-    } stSphere;                                       /**< Sphere : 48 */
+      orxVECTOR vCenter;                              /**< Sphere center : 56 */
+      orxFLOAT  fRadius;                              /**< Sphere radius : 60 */
+    } stSphere;                                       /**< Sphere : 60 */
 
     struct
     {
-      orxAABOX  stBox;                                /**< Axis aligned Box : 56 */
-    } stAABox;                                        /**< Box : 56 */
+      orxAABOX  stBox;                                /**< Axis aligned Box : 68 */
+    } stAABox;                                        /**< Box : 68 */
 
     struct
     {
-      orxU32    u32VertexCount;                       /**< Mesh vertex count : 36 */
-      orxVECTOR avVertices[orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER]; /**< Mesh vertices : 132 */
+      orxU32    u32VertexCount;                       /**< Mesh vertex count : 48 */
+      orxVECTOR avVertices[orxBODY_PART_DEF_KU32_MESH_VERTEX_NUMBER]; /**< Mesh vertices : 144 */
 
     } stMesh;
 
     struct
     {
-      orxVECTOR avVertices[2];                        /**< Edge v2 : 56 */
-      orxVECTOR vPrevious;                            /**< Previous vertex (ghost) : 68 */
-      orxVECTOR vNext;                                /**< Next vertex (ghost) : 80 */
-      orxBOOL   bHasPrevious;                         /**< Has previous vertex : 84 */
-      orxBOOL   bHasNext;                             /**< Has next vertex : 88 */
+      orxVECTOR avVertices[2];                        /**< Edge v2 : 68 */
+      orxVECTOR vPrevious;                            /**< Previous vertex (ghost) : 80 */
+      orxVECTOR vNext;                                /**< Next vertex (ghost) : 92 */
+      orxBOOL   bHasPrevious;                         /**< Has previous vertex : 96 */
+      orxBOOL   bHasNext;                             /**< Has next vertex : 100 */
 
     } stEdge;
 
     struct
     {
-      orxVECTOR vPrevious;                            /**< Chain Previous vertex (ghost) : 44 */
-      orxVECTOR vNext;                                /**< Chain Next vertex (ghost) : 56 */
-      orxVECTOR*avVertices;                           /**< Chain vertices : 60 */
-      orxU32    u32VertexCount;                       /**< Chain vertex count : 64 */
-      orxBOOL   bIsLoop;                              /**< Loop chain : 68 */
-      orxBOOL   bHasPrevious;                         /**< Has previous vertex : 72 */
-      orxBOOL   bHasNext;                             /**< Has next vertex : 76 */
+      orxVECTOR vPrevious;                            /**< Chain Previous vertex (ghost) : 56 */
+      orxVECTOR vNext;                                /**< Chain Next vertex (ghost) : 68 */
+      orxVECTOR*avVertices;                           /**< Chain vertices : 72 */
+      orxU32    u32VertexCount;                       /**< Chain vertex count : 76 */
+      orxBOOL   bIsLoop;                              /**< Loop chain : 80 */
+      orxBOOL   bHasPrevious;                         /**< Has previous vertex : 84 */
+      orxBOOL   bHasNext;                             /**< Has next vertex : 88 */
 
     } stChain;
 
-  };                                                  /**< Part : 132 */
+  };                                                  /**< Part : 144 */
 
 } orxBODY_PART_DEF;
 
@@ -336,16 +336,16 @@ extern orxDLLAPI void orxFASTCALL                     orxPhysics_Setup();
 
 
 /** Gets collision flag literal name
- * @param[in] _u32Flag      Concerned collision flag numerical value
+ * @param[in] _u64Flag      Concerned collision flag numerical value
  * @return Flag's name
  */
-extern orxDLLAPI const orxSTRING orxFASTCALL          orxPhysics_GetCollisionFlagName(orxU32 _u32Flag);
+extern orxDLLAPI const orxSTRING orxFASTCALL          orxPhysics_GetCollisionFlagName(orxU64 _u64Flag);
 
 /** Gets collision flag numerical value
  * @param[in] _zFlag        Concerned collision flag literal name
  * @return Flag's value
  */
-extern orxDLLAPI orxU32 orxFASTCALL                   orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag);
+extern orxDLLAPI orxU64 orxFASTCALL                   orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag);
 
 
 /***************************************************************************
@@ -586,29 +586,29 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_ApplyImpulse(or
 
 /** Sets self flags of a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
- * @param[in]   _u16SelfFlags                         Self flags to set
+ * @param[in]   _u64SelfFlags                         Self flags to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU64 _u64SelfFlags);
 
 /** Sets check mask of a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
- * @param[in]   _u16CheckMask                         Check mask to set
+ * @param[in]   _u64CheckMask                         Check mask to set
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxPhysics_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU64 _u64CheckMask);
 
 /** Gets self flags of a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
  * @return Self flags of the physical body part
  */
-extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart);
+extern orxDLLAPI orxU64 orxFASTCALL                   orxPhysics_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart);
 
 /** Gets check mask of a physical body part
  * @param[in]   _pstBodyPart                          Concerned physical body part
  * @return Check mask of the physical body part
  */
-extern orxDLLAPI orxU16 orxFASTCALL                   orxPhysics_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart);
+extern orxDLLAPI orxU64 orxFASTCALL                   orxPhysics_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart);
 
 /** Sets a physical body part solid
  * @param[in]   _pstBodyPart                          Concerned physical body part
@@ -709,25 +709,25 @@ extern orxDLLAPI orxFLOAT orxFASTCALL                 orxPhysics_GetJointReactio
 /** Issues a raycast to test for potential physics bodies in the way
  * @param[in]   _pvBegin                              Beginning of raycast
  * @param[in]   _pvEnd                                End of raycast
- * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
- * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
  * @param[in]   _bEarlyExit                           Should stop as soon as an object has been hit (which might not be the closest)
  * @param[in]   _pvContact                            If non-null and a contact is found it will be stored here
  * @param[in]   _pvNormal                             If non-null and a contact is found, its normal will be stored here
  * @return Colliding body's user data / orxHANDLE_UNDEFINED
  */
-extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
+extern orxDLLAPI orxHANDLE orxFASTCALL                orxPhysics_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal);
 
 
 /** Picks bodies in contact with the given axis aligned box
  * @param[in]   _pstBox                               Box used for picking
- * @param[in]   _u16SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
- * @param[in]   _u16CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64SelfFlags                         Selfs flags used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64CheckMask                         Check mask used for filtering (0xFFFF for no filtering)
  * @param[in]   _ahUserDataList                       List of user data to fill
  * @param[in]   _u32Number                            Number of user data
  * @return      Count of actual found bodies. It might be larger than the given array, in which case you'd need to pass a larger array to retrieve them all.
  */
-extern orxDLLAPI orxU32 orxFASTCALL                   orxPhysics_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number);
+extern orxDLLAPI orxU32 orxFASTCALL                   orxPhysics_BoxPick(const orxAABOX *_pstBox, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number);
 
 
 /** Enables/disables physics simulation

@@ -10610,14 +10610,14 @@ orxSTATUS orxFASTCALL orxObject_ApplyImpulse(orxOBJECT *_pstObject, const orxVEC
 /** Issues a raycast to test for potential objects in the way.
  * @param[in]   _pvBegin        Beginning of raycast
  * @param[in]   _pvEnd          End of raycast
- * @param[in]   _u16SelfFlags   Selfs flags used for filtering (0xFFFF for no filtering)
- * @param[in]   _u16CheckMask   Check mask used for filtering (0xFFFF for no filtering)
+ * @param[in]   _u64SelfFlags   Selfs flags used for filtering (0xFFFFFFFFFFFFFFFF for no filtering)
+ * @param[in]   _u64CheckMask   Check mask used for filtering (0xFFFFFFFFFFFFFFFF for no filtering)
  * @param[in]   _bEarlyExit     Should stop as soon as an object has been hit (which might not be the closest)
  * @param[in]   _pvContact      If non-null and a contact is found it will be stored here
  * @param[in]   _pvNormal       If non-null and a contact is found, its normal will be stored here
  * @return Colliding orxOBJECT / orxNULL
  */
-orxOBJECT *orxFASTCALL orxObject_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+orxOBJECT *orxFASTCALL orxObject_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   orxBODY    *pstRaycastResult;
   orxOBJECT  *pstResult = orxNULL;
@@ -10628,7 +10628,7 @@ orxOBJECT *orxFASTCALL orxObject_Raycast(const orxVECTOR *_pvBegin, const orxVEC
   orxASSERT(_pvEnd != orxNULL);
 
   /* Issues raycast */
-  pstRaycastResult = orxBody_Raycast(_pvBegin, _pvEnd, _u16SelfFlags, _u16CheckMask, _bEarlyExit, _pvContact, _pvNormal);
+  pstRaycastResult = orxBody_Raycast(_pvBegin, _pvEnd, _u64SelfFlags, _u64CheckMask, _bEarlyExit, _pvContact, _pvNormal);
 
   /* Found? */
   if(pstRaycastResult != orxNULL)

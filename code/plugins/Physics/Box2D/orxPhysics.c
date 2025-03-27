@@ -1502,8 +1502,8 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
       stChainDef.materials            = &stMaterial;
       stChainDef.materialCount        = 1;
       stChainDef.isLoop               = (_pstBodyPartDef->stChain.bIsLoop != orxFALSE) ? true : false;
-      stChainDef.filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
-      stChainDef.filter.maskBits      = _pstBodyPartDef->u16CheckMask;
+      stChainDef.filter.categoryBits  = _pstBodyPartDef->u64SelfFlags;
+      stChainDef.filter.maskBits      = _pstBodyPartDef->u64CheckMask;
       stChainDef.filter.groupIndex    = 0;
       stChainDef.enableSensorEvents   = true;
 
@@ -1523,8 +1523,8 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
       stShapeDef.friction             = _pstBodyPartDef->fFriction;
       stShapeDef.restitution          = _pstBodyPartDef->fRestitution;
       stShapeDef.density              = (b2Body_GetType(stBody) != b2_dynamicBody) ? 0.0f : _pstBodyPartDef->fDensity;
-      stShapeDef.filter.categoryBits  = _pstBodyPartDef->u16SelfFlags;
-      stShapeDef.filter.maskBits      = _pstBodyPartDef->u16CheckMask;
+      stShapeDef.filter.categoryBits  = _pstBodyPartDef->u64SelfFlags;
+      stShapeDef.filter.maskBits      = _pstBodyPartDef->u64CheckMask;
       stShapeDef.filter.groupIndex    = 0;
       stShapeDef.isSensor             = orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_SOLID) == orxFALSE;
       stShapeDef.enableSensorEvents   = true;
@@ -2930,7 +2930,7 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_ApplyImpulse(orxPHYSICS_BODY *_pstBody, c
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU64 _u64SelfFlags)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2955,7 +2955,7 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSelfFlags(orxPHYSICS_BODY_PART *_p
     stFilter = b2Shape_GetFilter(stShape);
 
     /* Updates it */
-    stFilter.categoryBits = _u16SelfFlags;
+    stFilter.categoryBits = _u64SelfFlags;
 
     /* Sets new filter */
     b2Shape_SetFilter(stShape, stFilter);
@@ -2965,7 +2965,7 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSelfFlags(orxPHYSICS_BODY_PART *_p
   return eResult;
 }
 
-orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
+orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU64 _u64CheckMask)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
@@ -2990,7 +2990,7 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartCheckMask(orxPHYSICS_BODY_PART *_p
     stFilter = b2Shape_GetFilter(stShape);
 
     /* Updates it */
-    stFilter.maskBits = _u16CheckMask;
+    stFilter.maskBits = _u64CheckMask;
 
     /* Sets new filter */
     b2Shape_SetFilter(stShape, stFilter);
@@ -3000,9 +3000,9 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartCheckMask(orxPHYSICS_BODY_PART *_p
   return eResult;
 }
 
-orxU16 orxFASTCALL orxPhysics_Box2D_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
+orxU64 orxFASTCALL orxPhysics_Box2D_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
-  orxU16 u16Result = 0;
+  orxU64 u64Result = 0;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -3021,16 +3021,16 @@ orxU16 orxFASTCALL orxPhysics_Box2D_GetPartSelfFlags(const orxPHYSICS_BODY_PART 
     stShape = _pstBodyPart->stShape;
 
     /* Updates result */
-    u16Result = (orxU16)(b2Shape_GetFilter(stShape).categoryBits);
+    u64Result = b2Shape_GetFilter(stShape).categoryBits;
   }
 
   /* Done! */
-  return u16Result;
+  return u64Result;
 }
 
-orxU16 orxFASTCALL orxPhysics_Box2D_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
+orxU64 orxFASTCALL orxPhysics_Box2D_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
-  orxU16 u16Result = 0;
+  orxU64 u64Result = 0;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -3049,11 +3049,11 @@ orxU16 orxFASTCALL orxPhysics_Box2D_GetPartCheckMask(const orxPHYSICS_BODY_PART 
     stShape = _pstBodyPart->stShape;
 
     /* Updates result */
-    u16Result = (orxU16)(b2Shape_GetFilter(stShape).maskBits);
+    u64Result = b2Shape_GetFilter(stShape).maskBits;
   }
 
   /* Done! */
-  return u16Result;
+  return u64Result;
 }
 
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPartSolid(orxPHYSICS_BODY_PART *_pstBodyPart, orxBOOL _bSolid)
@@ -3301,7 +3301,7 @@ orxBOOL orxFASTCALL orxPhysics_Box2D_IsInsidePart(const orxPHYSICS_BODY_PART *_p
   return bResult;
 }
 
-orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   orxPHYSICS_RAYCAST  stRayCast;
   b2QueryFilter       stFilter;
@@ -3326,8 +3326,8 @@ orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvBegin, const 
 
   /* Inits filter */
   stFilter              = b2DefaultQueryFilter();
-  stFilter.categoryBits = _u16SelfFlags;
-  stFilter.maskBits     = _u16CheckMask;
+  stFilter.categoryBits = _u64SelfFlags;
+  stFilter.maskBits     = _u64CheckMask;
 
   /* Issues Raycast */
   b2World_CastRay(sstPhysics.stWorld, vOrigin, vRay, stFilter, &orxPhysics_Box2D_RayCastCallback, &stRayCast);
@@ -3398,7 +3398,7 @@ orxHANDLE orxFASTCALL orxPhysics_Box2D_Raycast(const orxVECTOR *_pvBegin, const 
   return hResult;
 }
 
-orxU32 orxFASTCALL orxPhysics_Box2D_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
+orxU32 orxFASTCALL orxPhysics_Box2D_BoxPick(const orxAABOX *_pstBox, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
 {
   b2AABB              stBox;
   b2QueryFilter       stFilter;
@@ -3419,8 +3419,8 @@ orxU32 orxFASTCALL orxPhysics_Box2D_BoxPick(const orxAABOX *_pstBox, orxU16 _u16
 
   /* Inits filter */
   stFilter              = b2DefaultQueryFilter();
-  stFilter.categoryBits = _u16SelfFlags;
-  stFilter.maskBits     = _u16CheckMask;
+  stFilter.categoryBits = _u64SelfFlags;
+  stFilter.maskBits     = _u64CheckMask;
 
   /* Inits storage */
   stBoxPick.ahUserDataList  = _ahUserDataList;

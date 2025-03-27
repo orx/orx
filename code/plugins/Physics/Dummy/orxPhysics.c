@@ -238,25 +238,25 @@ orxSTATUS orxFASTCALL orxPhysics_Dummy_ApplyImpulse(orxPHYSICS_BODY *_pstBody, c
   return orxSTATUS_FAILURE;
 }
 
-orxSTATUS orxFASTCALL orxPhysics_Dummy_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16SelfFlags)
+orxSTATUS orxFASTCALL orxPhysics_Dummy_SetPartSelfFlags(orxPHYSICS_BODY_PART *_pstBodyPart, orxU64 _u64SelfFlags)
 {
   /* Done! */
   return orxSTATUS_FAILURE;
 }
 
-orxSTATUS orxFASTCALL orxPhysics_Dummy_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU16 _u16CheckMask)
+orxSTATUS orxFASTCALL orxPhysics_Dummy_SetPartCheckMask(orxPHYSICS_BODY_PART *_pstBodyPart, orxU64 _u64CheckMask)
 {
   /* Done! */
   return orxSTATUS_FAILURE;
 }
 
-orxU16 orxFASTCALL orxPhysics_Dummy_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
+orxU64 orxFASTCALL orxPhysics_Dummy_GetPartSelfFlags(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
   /* Done! */
   return 0;
 }
 
-orxU16 orxFASTCALL orxPhysics_Dummy_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
+orxU64 orxFASTCALL orxPhysics_Dummy_GetPartCheckMask(const orxPHYSICS_BODY_PART *_pstBodyPart)
 {
   /* Done! */
   return 0;
@@ -346,13 +346,13 @@ orxFLOAT orxFASTCALL orxPhysics_Dummy_GetJointReactionTorque(const orxPHYSICS_BO
   return orxFLOAT_0;
 }
 
-orxHANDLE orxFASTCALL orxPhysics_Dummy_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
+orxHANDLE orxFASTCALL orxPhysics_Dummy_Raycast(const orxVECTOR *_pvBegin, const orxVECTOR *_pvEnd, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxBOOL _bEarlyExit, orxVECTOR *_pvContact, orxVECTOR *_pvNormal)
 {
   /* Done! */
   return orxHANDLE_UNDEFINED;
 }
 
-orxU32 orxFASTCALL orxPhysics_Dummy_BoxPick(const orxAABOX *_pstBox, orxU16 _u16SelfFlags, orxU16 _u16CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
+orxU32 orxFASTCALL orxPhysics_Dummy_BoxPick(const orxAABOX *_pstBox, orxU64 _u64SelfFlags, orxU64 _u64CheckMask, orxHANDLE _ahUserDataList[], orxU32 _u32Number)
 {
   /* Done! */
   return orxU32_UNDEFINED;
