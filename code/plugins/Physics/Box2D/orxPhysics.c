@@ -2296,7 +2296,7 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetAngularVelocity(orxPHYSICS_BODY *_pstB
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCustomGravity(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvCustomGravity)
 {
   b2BodyId      stBody;
-  // const b2Vec2  vCustomGravity;
+  const b2Vec2 *pvCustomGravity;
   orxSTATUS     eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
@@ -2306,40 +2306,40 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetCustomGravity(orxPHYSICS_BODY *_pstBod
   /* Gets body */
   stBody = _pstBody->stBody;
 
-  //! TODO
-  // /* Gets its custom gravity */
-  // vCustomGravity = poBody->GetCustomGravity();
+  /* Gets its custom gravity */
+  pvCustomGravity = b2Body_GetCustomGravity(stBody);;
 
-  // /* Has new custom gravity? */
-  // if(_pvCustomGravity != orxNULL)
-  // {
-  //   b2Vec2 vGravity;
+  /* Has new custom gravity? */
+  if(_pvCustomGravity != orxNULL)
+  {
+    b2Vec2 vGravity;
 
-  //   /* Sets gravity vector */
-  //   vGravity.Set(sstPhysics.fDimensionRatio * _pvCustomGravity->fX, sstPhysics.fDimensionRatio * _pvCustomGravity->fY);
+    /* Sets gravity vector */
+    vGravity.x = sstPhysics.fDimensionRatio * _pvCustomGravity->fX;
+    vGravity.y = sstPhysics.fDimensionRatio * _pvCustomGravity->fY;
 
-  //   /* Should apply? */
-  //   if((pvCustomGravity == NULL) || (pvCustomGravity->x != vGravity.x) || (pvCustomGravity->y != vGravity.y))
-  //   {
-  //     /* Wakes up */
-  //     poBody->SetAwake(true);
+    /* Should apply? */
+    if((pvCustomGravity == NULL) || (pvCustomGravity->x != vGravity.x) || (pvCustomGravity->y != vGravity.y))
+    {
+      /* Wakes up */
+      b2Body_SetAwake(stBody, true);
 
-  //     /* Updates it */
-  //     poBody->SetCustomGravity(&vGravity);
-  //   }
-  // }
-  // else
-  // {
-  //   /* Should apply */
-  //   if(pvCustomGravity != NULL)
-  //   {
-  //     /* Wakes up */
-  //     poBody->SetAwake(true);
+      /* Updates it */
+      b2Body_SetCustomGravity(stBody, &vGravity);
+    }
+  }
+  else
+  {
+    /* Should apply */
+    if(pvCustomGravity != NULL)
+    {
+      /* Wakes up */
+      b2Body_SetAwake(stBody, true);
 
-  //     /* Removes it */
-  //     poBody->SetCustomGravity(orxNULL);
-  //   }
-  // }
+      /* Removes it */
+      b2Body_SetCustomGravity(stBody, NULL);
+    }
+  }
 
   /* Done! */
   return eResult;
@@ -2544,8 +2544,8 @@ orxFLOAT orxFASTCALL orxPhysics_Box2D_GetAngularVelocity(const orxPHYSICS_BODY *
 orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetCustomGravity(const orxPHYSICS_BODY *_pstBody, orxVECTOR *_pvCustomGravity)
 {
   b2BodyId      stBody;
-  // const b2Vec2  vGravity;
-  orxVECTOR    *pvResult = orxNULL;
+  const b2Vec2 *pvGravity;
+  orxVECTOR    *pvResult;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
@@ -2555,22 +2555,21 @@ orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetCustomGravity(const orxPHYSICS_BODY *
   /* Gets body */
   stBody = _pstBody->stBody;
 
-  //! TODO
-  // /* Gets its custom gravity */
-  // pvGravity = poBody->GetCustomGravity();
+  /* Gets its custom gravity */
+  pvGravity = b2Body_GetCustomGravity(stBody);
 
-  // /* Found? */
-  // if(pvGravity != orxNULL)
-  // {
-  //   /* Updates result */
-  //   orxVector_Set(_pvCustomGravity, sstPhysics.fRecDimensionRatio * pvGravity->x, sstPhysics.fRecDimensionRatio * pvGravity->y, orxFLOAT_0);
-  //   pvResult = _pvCustomGravity;
-  // }
-  // else
-  // {
-  //   /* Clears result */
-  //   pvResult = orxNULL;
-  // }
+  /* Found? */
+  if(pvGravity != orxNULL)
+  {
+    /* Updates result */
+    orxVector_Set(_pvCustomGravity, sstPhysics.fRecDimensionRatio * pvGravity->x, sstPhysics.fRecDimensionRatio * pvGravity->y, orxFLOAT_0);
+    pvResult = _pvCustomGravity;
+  }
+  else
+  {
+    /* Clears result */
+    pvResult = orxNULL;
+  }
 
   /* Done! */
   return pvResult;
