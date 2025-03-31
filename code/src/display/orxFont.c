@@ -557,7 +557,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
 
                   /* For all SDF shader properties, inherits the local ones */
                   orxConfig_PushSection(orxFONT_KZ_SDF_SHADER_NAME);
-                  orxConfig_ForAllKeys(orxFont_InheritProperty, orxTRUE, azSectionList);
+                  orxConfig_ForAllKeys(orxFont_InheritProperty, orxTRUE, (void *)azSectionList);
                   orxConfig_PopSection();
 
                   /* Sets its texture size */
