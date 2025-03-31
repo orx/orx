@@ -911,16 +911,19 @@ static void orxSoundSystem_MiniAudio_OnDeviceNotification(const ma_device_notifi
 
 static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void *_pOutput, const void *_pInput, ma_uint32 _u32FrameCount)
 {
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxSoundSystem_UpdateRecording");
-
-  /* Recording? */
-  if(orxFLAG_GET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING | orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING)
+  /* Is engine still running? (As this is called by a non-orx thread, we need to make sure orx's still running) */
+  if(orxModule_IsInitialized(orxMODULE_ID_MAIN) != orxFALSE)
   {
-    /* Is engine still running? (As this is called by a non-orx thread, we need to make sure orx's still running) */
-    if(orxModule_IsInitialized(orxMODULE_ID_MAIN) != orxFALSE)
+    /* Recording? */
+    if(orxFLAG_GET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING | orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING)
     {
       orxFLOAT fDT;
+
+      /* Enforces thread-related memory initialization */
+      orxMemory_InitThread();
+
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxSoundSystem_UpdateRecording");
 
       /* Inits packet */
       sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber = _u32FrameCount * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber;
@@ -976,11 +979,17 @@ static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void
         /* Postpones recording stop on main thread */
         orxThread_RunTask(orxNULL, orxSoundSystem_MiniAudio_StopRecordingTask, orxNULL, orxNULL);
       }
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
+    }
+    /* Stopping? */
+    else if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING))
+    {
+      /* Enforces thread-related memory de-initialization */
+      orxMemory_ExitThread();
     }
   }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
