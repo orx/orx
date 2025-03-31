@@ -88,6 +88,9 @@
   #pragma warning(push)
   #pragma warning(disable : 4312)
 #endif /* __orxMSVC__ */
+#if defined(__orxMAC__) && defined(__orxX86_64__)
+#define STBI_NO_THREAD_LOCALS
+#endif /* __orxMAC__ && __orxX86_64__ */
 #define STBI_NO_STDIO
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_HDR
@@ -103,6 +106,9 @@
 #undef STBI_NO_HDR
 #undef STB_IMAGE_IMPLEMENTATION
 #undef STBI_NO_STDIO
+#if defined(__orxMAC__) && defined(__orxX86_64__)
+#undef STBI_NO_THREAD_LOCALS
+#endif /* __orxMAC__ && __orxX86_64__ */
 #ifdef __orxMSVC__
   #pragma warning(pop)
 #endif /* __orxMSVC__ */
@@ -169,6 +175,10 @@
 #undef STBTT_STATIC
 #undef STB_TRUETYPE_IMPLEMENTATION
 
+#ifdef __orxLLVM__
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Warray-bounds"
+#endif /* __orxLLVM__ */
 #define BASISD_SUPPORT_DXT1                         0
 #define BASISD_SUPPORT_FXT1                         0
 #define BASISD_SUPPORT_ETC2_EAC_A8                  0
@@ -191,6 +201,9 @@
 #undef BASISD_SUPPORT_ETC2_EAC_A8
 #undef BASISD_SUPPORT_FXT1
 #undef BASISD_SUPPORT_DXT1
+#ifdef __orxLLVM__
+  #pragma clang diagnostic pop
+#endif /* __orxLLVM__ */
 
 #include "msdfgen.cpp"
 
