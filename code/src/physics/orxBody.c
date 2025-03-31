@@ -1491,6 +1491,18 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
         /* Updates status */
         stBodyJointDef.u32Flags                  |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
       }
+
+      /* Has damping ? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_FREQUENCY) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_DAMPING) != orxFALSE))
+      {
+        /* Stores damping values */
+        stBodyJointDef.stRevolute.fFrequency      = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
+        stBodyJointDef.stRevolute.fDamping        = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
+
+        /* Updates status */
+        stBodyJointDef.u32Flags                  |= orxBODY_JOINT_DEF_KU32_FLAG_DAMPING;
+      }
     }
     /* Prismatic? */
     else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_PRISMATIC) == 0)
@@ -1526,6 +1538,18 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
 
         /* Updates status */
         stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
+      }
+
+      /* Has damping ? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_FREQUENCY) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_DAMPING) != orxFALSE))
+      {
+        /* Stores damping values */
+        stBodyJointDef.stPrismatic.fFrequency       = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
+        stBodyJointDef.stPrismatic.fDamping         = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
+
+        /* Updates status */
+        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_DAMPING;
       }
     }
     /* Spring? */

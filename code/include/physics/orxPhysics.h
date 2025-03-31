@@ -93,12 +93,13 @@
 #define orxBODY_JOINT_DEF_KU32_FLAG_FRICTION          0x00000080  /**< Friction body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_GEAR              0x00000100  /**< Gear body joint def flag */
 
-#define orxBODY_JOINT_DEF_KU32_MASK_TYPE              0x00000FFF  /**< Type body joint def mask */
+#define orxBODY_JOINT_DEF_KU32_MASK_TYPE              0x0000FFFF  /**< Type body joint def mask */
 
 #define orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE           0x10000000  /**< Collide body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT    0x20000000  /**< Rotation  limit body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT    0x20000000  /**< Rotation limit body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_MOTOR             0x40000000  /**< Motor body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT 0x80000000  /**< Translation limit def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_DAMPING           0x80000000  /*<< Damping body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT 0x01000000  /**< Translation limit def flag */
 
 #define orxBODY_JOINT_DEF_KU32_MASK_ALL               0xFFFFFFFF  /**< Body joint def all mask */
 
@@ -198,8 +199,10 @@ typedef struct __orxBODY_JOINT_DEF_t
       orxFLOAT  fMaxRotation;                         /**< Max rotation : 60 */
       orxFLOAT  fMotorSpeed;                          /**< Motor speed : 64 */
       orxFLOAT  fMaxMotorTorque;                      /**< Max motor torque : 68 */
+      orxFLOAT  fFrequency;                           /**< Frequency : 72 */
+      orxFLOAT  fDamping;                             /**< Damping : 76 */
 
-    } stRevolute;                                     /**< Revolute : 68 */
+    } stRevolute;                                     /**< Revolute : 76 */
 
     struct
     {
@@ -209,8 +212,10 @@ typedef struct __orxBODY_JOINT_DEF_t
       orxFLOAT  fMaxTranslation;                      /**< Max translation : 72 */
       orxFLOAT  fMotorSpeed;                          /**< Motor speed : 76 */
       orxFLOAT  fMaxMotorForce;                       /**< Max motor force : 80 */
+      orxFLOAT  fFrequency;                           /**< Frequency : 84 */
+      orxFLOAT  fDamping;                             /**< Damping : 88 */
 
-    } stPrismatic;                                    /**< Prismatic : 80 */
+    } stPrismatic;                                    /**< Prismatic : 88 */
 
     struct
     {
