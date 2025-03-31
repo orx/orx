@@ -85,20 +85,23 @@
 
 #define orxBODY_JOINT_DEF_KU32_FLAG_REVOLUTE          0x00000001  /**< Revolute body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_PRISMATIC         0x00000002  /**< Prismatic body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_SPRING            0x00000004  /**< Spring body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_ROPE              0x00000008  /**< Rope body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_PULLEY            0x00000010  /**< Pulley body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION        0x00000020  /**< Suspension body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_WELD              0x00000040  /**< Weld body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_FRICTION          0x00000080  /**< Friction body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_WELD              0x00000004  /**< Weld body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_DISTANCE          0x00000008  /**< Distance body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_MOTOR             0x00000010  /**< Motor body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_WHEEL             0x00000020  /**< Wheel body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_ROPE              0x00000040  /**< Rope body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_PULLEY            0x00000080  /**< Pulley body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_GEAR              0x00000100  /**< Gear body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_SPRING            0x00000200  /**< Spring body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION        0x00000400  /**< Suspension body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_FRICTION          0x00000800  /**< Friction body joint def flag */
 
 #define orxBODY_JOINT_DEF_KU32_MASK_TYPE              0x0000FFFF  /**< Type body joint def mask */
 
 #define orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE           0x10000000  /**< Collide body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT    0x20000000  /**< Rotation limit body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_MOTOR             0x40000000  /**< Motor body joint def flag */
-#define orxBODY_JOINT_DEF_KU32_FLAG_DAMPING           0x80000000  /*<< Damping body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR          0x40000000  /**< Motor body joint def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING         0x80000000  /*<< Damping body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT 0x01000000  /**< Translation limit def flag */
 
 #define orxBODY_JOINT_DEF_KU32_MASK_ALL               0xFFFFFFFF  /**< Body joint def all mask */

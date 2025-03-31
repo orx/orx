@@ -1708,14 +1708,17 @@ orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateJoint(orxPHYSICS_BODY 
           stRevoluteJointDef.enableMotor    = true;
         }
 
-        /* Has damping? */
-        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_DAMPING))
+        /* Is spring? */
+        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING))
         {
           /* Stores frequency */
           stRevoluteJointDef.hertz          = _pstBodyJointDef->stRevolute.fFrequency;
 
           /* Stores damping ratio */
           stRevoluteJointDef.dampingRatio   = _pstBodyJointDef->stRevolute.fDamping;
+
+          /* Updates status */
+          stRevoluteJointDef.enableSpring   = true;
         }
 
         /* Creates joint */
@@ -1765,14 +1768,17 @@ orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateJoint(orxPHYSICS_BODY 
           stPrismaticJointDef.enableMotor       = true;
         }
 
-        /* Has damping? */
-        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_DAMPING))
+        /* Is spring? */
+        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING))
         {
           /* Stores frequency */
           stPrismaticJointDef.hertz             = _pstBodyJointDef->stPrismatic.fFrequency;
 
           /* Stores damping ratio */
           stPrismaticJointDef.dampingRatio      = _pstBodyJointDef->stPrismatic.fDamping;
+          
+          /* Updates status */
+          stPrismaticJointDef.enableSpring      = true;
         }
 
         /* Creates joint */
@@ -1781,112 +1787,10 @@ orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateJoint(orxPHYSICS_BODY 
         break;
       }
 
-      ///* Spring? */
-      //case orxBODY_JOINT_DEF_KU32_FLAG_SPRING:
-      //{
-      //  /* Stores joint reference */
-      //  pstJointDef = &stSpringJointDef;
-
-      //  /* Stores anchors */
-      //  stSpringJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY);
-      //  stSpringJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY);
-
-      //  /* Stores length */
-      //  stSpringJointDef.length       = sstPhysics.fDimensionRatio * _pstBodyJointDef->stSpring.fLength;
-
-      //  /* Stores frequency */
-      //  stSpringJointDef.frequencyHz  = _pstBodyJointDef->stSpring.fFrequency;
-
-      //  /* Stores damping ratio */
-      //  stSpringJointDef.dampingRatio = _pstBodyJointDef->stSpring.fDamping;
-
-      //  break;
-      //}
-      // /* Rope? */
-      // case orxBODY_JOINT_DEF_KU32_FLAG_ROPE:
-      // {
-      //   /* Stores joint reference */
-      //   pstJointDef = &stRopeJointDef;
-
-      //   /* Stores anchors */
-      //   stRopeJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY);
-      //   stRopeJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY);
-
-      //   /* Stores length */
-      //   stRopeJointDef.maxLength = sstPhysics.fDimensionRatio * _pstBodyJointDef->stRope.fLength;
-
-      //   break;
-      // }
-      // /* Suspension? */
-      // case orxBODY_JOINT_DEF_KU32_FLAG_SUSPENSION:
-      // {
-      //   /* Stores joint reference */
-      //   pstJointDef = &stWheelJointDef;
-
-      //   /* Stores anchors */
-      //   stWheelJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY);
-      //   stWheelJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY);
-
-      //   /* Stores translation axis */
-      //   stWheelJointDef.localAxisA.Set(_pstBodyJointDef->stSuspension.vTranslationAxis.fX, _pstBodyJointDef->stSuspension.vTranslationAxis.fY);
-
-      //   /* Stores frequency */
-      //   stWheelJointDef.frequencyHz  = _pstBodyJointDef->stSuspension.fFrequency;
-
-      //   /* Stores damping ratio */
-      //   stWheelJointDef.dampingRatio = _pstBodyJointDef->stSuspension.fDamping;
-
-      //   /* Is motor? */
-      //   if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_MOTOR))
-      //   {
-      //     /* Stores them */
-      //     stWheelJointDef.motorSpeed     = sstPhysics.fDimensionRatio * _pstBodyJointDef->stSuspension.fMotorSpeed;
-      //     stWheelJointDef.maxMotorTorque = _pstBodyJointDef->stSuspension.fMaxMotorForce;
-
-      //     /* Updates status */
-      //     stWheelJointDef.enableMotor    = true;
-      //   }
-
-      //   break;
-      // }
-
-      // /* Weld? */
-      // case orxBODY_JOINT_DEF_KU32_FLAG_WELD:
-      // {
-      //   /* Stores joint reference */
-      //   pstJointDef = &stWeldJointDef;
-
-      //   /* Stores anchors */
-      //   stWeldJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY);
-      //   stWeldJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY);
-
-      //   /* Stores reference angle */
-      //   stWeldJointDef.referenceAngle = _pstBodyJointDef->stWeld.fDefaultRotation;
-
-      //   break;
-      // }
-
-      // /* Friction? */
-      // case orxBODY_JOINT_DEF_KU32_FLAG_FRICTION:
-      // {
-      //   /* Stores joint reference */
-      //   pstJointDef = &stFrictionJointDef;
-
-      //   /* Stores anchors */
-      //   stFrictionJointDef.localAnchorA.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY);
-      //   stFrictionJointDef.localAnchorB.Set(sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX, sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY);
-
-      //   /* Stores max force & torque values */
-      //   stFrictionJointDef.maxForce   = _pstBodyJointDef->stFriction.fMaxForce;
-      //   stFrictionJointDef.maxTorque  = _pstBodyJointDef->stFriction.fMaxTorque;
-
-      //   break;
-      // }
-
       default:
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't create body joint, invalid type <0x%X>.", orxFLAG_GET(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_MASK_TYPE));
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't create body joint, unknown type <0x%X>.", orxFLAG_GET(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_MASK_TYPE));
 
         break;
       }

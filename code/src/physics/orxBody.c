@@ -1501,7 +1501,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
         stBodyJointDef.stRevolute.fDamping        = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
 
         /* Updates status */
-        stBodyJointDef.u32Flags                  |= orxBODY_JOINT_DEF_KU32_FLAG_DAMPING;
+        stBodyJointDef.u32Flags                  |= orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING;
       }
     }
     /* Prismatic? */
@@ -1549,7 +1549,7 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
         stBodyJointDef.stPrismatic.fDamping         = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
 
         /* Updates status */
-        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_DAMPING;
+        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING;
       }
     }
     /* Spring? */
