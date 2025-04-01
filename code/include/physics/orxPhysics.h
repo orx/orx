@@ -103,6 +103,7 @@
 #define orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR          0x40000000  /**< Motor body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING         0x80000000  /*<< Damping body joint def flag */
 #define orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT 0x01000000  /**< Translation limit def flag */
+#define orxBODY_JOINT_DEF_KU32_FLAG_LENGTH_LIMIT      0x02000000  /**< Length limit def flag */
 
 #define orxBODY_JOINT_DEF_KU32_MASK_ALL               0xFFFFFFFF  /**< Body joint def all mask */
 
@@ -222,11 +223,46 @@ typedef struct __orxBODY_JOINT_DEF_t
 
     struct
     {
-      orxFLOAT  fLength;                              /**< Length : 52 */
+      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 52 */
       orxFLOAT  fFrequency;                           /**< Frequency : 56 */
       orxFLOAT  fDamping;                             /**< Damping : 60 */
+      orxFLOAT  fAngularFrequency;                    /**< Angular frequency : 64 */
+      orxFLOAT  fAngularDamping;                      /**< Angular damping : 68 */
 
-    } stSpring;                                       /**< Spring : 60 */
+    } stWeld;                                         /**< Weld : 68 */
+
+    struct
+    {
+      orxFLOAT  fLength;                              /**< Length : 52 */
+      orxFLOAT  fMinLength;                           /**< Min length : 56 */
+      orxFLOAT  fMaxLength;                           /**< Max length : 60 */
+      orxFLOAT  fMotorSpeed;                          /**< Motor speed : 64 */
+      orxFLOAT  fMaxMotorForce;                       /**< Max motor force : 68 */
+      orxFLOAT  fFrequency;                           /**< Frequency : 72 */
+      orxFLOAT  fDamping;                             /**< Damping : 76 */
+
+    } stDistance;                                     /**< Distance : 76 */
+
+    struct
+    {
+      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 52 */
+      orxFLOAT  fCorrectionFactor;                    /**< Correction factor : 56 */
+      orxFLOAT  fMaxMotorTorque;                      /**< Max motor torque : 64 */
+      orxFLOAT  fMaxMotorForce;                       /**< Max motor force : 68 */
+
+    } stMotor;                                        /**< Motor : 72 */
+
+    struct
+    {
+      orxVECTOR vTranslationAxis;                     /**< Translation axis : 60 */
+      orxFLOAT  fMinTranslation;                      /**< Min translation : 64 */
+      orxFLOAT  fMaxTranslation;                      /**< Max translation : 68 */
+      orxFLOAT  fMotorSpeed;                          /**< Motor speed : 72 */
+      orxFLOAT  fMaxMotorTorque;                      /**< Max motor torque : 76 */
+      orxFLOAT  fFrequency;                           /**< Frequency : 80 */
+      orxFLOAT  fDamping;                             /**< Damping : 84 */
+
+    } stWheel;                                        /**< Wheel : 84 */
 
     struct
     {
@@ -248,6 +284,22 @@ typedef struct __orxBODY_JOINT_DEF_t
 
     struct
     {
+      const orxSTRING zSrcJointName;                  /**< Source joint name : 56 */
+      const orxSTRING zDstJointName;                  /**< Destination joint name : 60 */
+      orxFLOAT        fJointRatio;                    /**< Joint ratio : 64 */
+
+    } stGear;                                         /**< Gear : 64 */
+
+    struct
+    {
+      orxFLOAT  fLength;                              /**< Length : 52 */
+      orxFLOAT  fFrequency;                           /**< Frequency : 56 */
+      orxFLOAT  fDamping;                             /**< Damping : 60 */
+
+    } stSpring;                                       /**< Spring : 60 */
+
+    struct
+    {
       orxVECTOR vTranslationAxis;                     /**< Translation axis : 64 */
       orxFLOAT  fFrequency;                           /**< Frequency : 68 */
       orxFLOAT  fDamping;                             /**< Damping : 72 */
@@ -258,24 +310,10 @@ typedef struct __orxBODY_JOINT_DEF_t
 
     struct
     {
-      orxFLOAT  fDefaultRotation;                     /**< Default rotation : 56 */
-
-    } stWeld;                                         /**< Weld : 56 */
-
-    struct
-    {
       orxFLOAT  fMaxForce;                            /**< Max force : 56 */
       orxFLOAT  fMaxTorque;                           /**< Max torque : 60 */
 
     } stFriction;                                     /**< Friction : 60 */
-
-    struct
-    {
-      const orxSTRING zSrcJointName;                  /**< Source joint name : 56 */
-      const orxSTRING zDstJointName;                  /**< Destination joint name : 60 */
-      orxFLOAT        fJointRatio;                    /**< Joint ratio : 64 */
-
-    } stGear;                                         /**< Gear : 64 */
 
   };                                                  /**< Joint : 92 */
 

@@ -339,6 +339,7 @@ orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_DeleteJoint, void, orxPHYSICS_BODY_JOI
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_EnableMotor, void, orxPHYSICS_BODY_JOINT *, orxBOOL);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMotorSpeed, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMaxMotorTorque, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
+orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetJointMaxMotorForce, void, orxPHYSICS_BODY_JOINT *, orxFLOAT);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetJointReactionForce, orxVECTOR *, const orxPHYSICS_BODY_JOINT *, orxVECTOR *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_GetJointReactionTorque, orxFLOAT, const orxPHYSICS_BODY_JOINT *);
 orxPLUGIN_DEFINE_CORE_FUNCTION(orxPhysics_SetPosition, orxSTATUS, orxPHYSICS_BODY *, const orxVECTOR *);
@@ -437,6 +438,7 @@ orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, IS_INSIDE_PART, orxPhysics_IsInsidePa
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, ENABLE_MOTOR, orxPhysics_EnableMotor)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MOTOR_SPEED, orxPhysics_SetJointMotorSpeed)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE, orxPhysics_SetJointMaxMotorTorque)
+orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, SET_JOINT_MAX_MOTOR_FORCE, orxPhysics_SetJointMaxMotorForce)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_JOINT_REACTION_FORCE, orxPhysics_GetJointReactionForce)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, GET_JOINT_REACTION_TORQUE, orxPhysics_GetJointReactionTorque)
 orxPLUGIN_ADD_CORE_FUNCTION_ARRAY(PHYSICS, RAYCAST, orxPhysics_Raycast)
@@ -709,6 +711,11 @@ void orxFASTCALL orxPhysics_SetJointMotorSpeed(orxPHYSICS_BODY_JOINT *_pstBodyJo
 void orxFASTCALL orxPhysics_SetJointMaxMotorTorque(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque)
 {
   orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetJointMaxMotorTorque)(_pstBodyJoint, _fMaxTorque);
+}
+
+void orxFASTCALL orxPhysics_SetJointMaxMotorForce(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxForce)
+{
+  orxPLUGIN_CORE_FUNCTION_POINTER_NAME(orxPhysics_SetJointMaxMotorForce)(_pstBodyJoint, _fMaxForce);
 }
 
 orxVECTOR *orxFASTCALL orxPhysics_GetJointReactionForce(const orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce)

@@ -1683,8 +1683,8 @@ orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateJoint(orxPHYSICS_BODY 
         stRevoluteJointDef.localAnchorA.y   = sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY;
         stRevoluteJointDef.localAnchorB.x   = sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX;
         stRevoluteJointDef.localAnchorB.y   = sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY;
-        stRevoluteJointDef.referenceAngle   = _pstBodyJointDef->stRevolute.fDefaultRotation;
         stRevoluteJointDef.collideConnected = orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE) ? true : false;
+        stRevoluteJointDef.referenceAngle   = _pstBodyJointDef->stRevolute.fDefaultRotation;
 
         /* Has rotation limits? */
         if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_ROTATION_LIMIT))
@@ -1698,7 +1698,7 @@ orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateJoint(orxPHYSICS_BODY 
         }
 
         /* Is motor? */
-        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_MOTOR))
+        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR))
         {
           /* Stores them */
           stRevoluteJointDef.motorSpeed     = _pstBodyJointDef->stRevolute.fMotorSpeed;
@@ -1741,8 +1741,8 @@ orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateJoint(orxPHYSICS_BODY 
         stPrismaticJointDef.localAnchorA.y      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY;
         stPrismaticJointDef.localAnchorB.x      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX;
         stPrismaticJointDef.localAnchorB.y      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY;
-        stPrismaticJointDef.referenceAngle      = _pstBodyJointDef->stPrismatic.fDefaultRotation;
         stPrismaticJointDef.collideConnected    = orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE) ? true : false;
+        stPrismaticJointDef.referenceAngle      = _pstBodyJointDef->stPrismatic.fDefaultRotation;
         stPrismaticJointDef.localAxisA.x        = _pstBodyJointDef->stPrismatic.vTranslationAxis.fX;
         stPrismaticJointDef.localAxisA.y        = _pstBodyJointDef->stPrismatic.vTranslationAxis.fY;
 
@@ -1758,7 +1758,7 @@ orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateJoint(orxPHYSICS_BODY 
         }
 
         /* Is motor? */
-        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_MOTOR))
+        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR))
         {
           /* Stores them */
           stPrismaticJointDef.motorSpeed        = sstPhysics.fDimensionRatio * _pstBodyJointDef->stPrismatic.fMotorSpeed;
@@ -1783,6 +1783,174 @@ orxPHYSICS_BODY_JOINT *orxFASTCALL orxPhysics_Box2D_CreateJoint(orxPHYSICS_BODY 
 
         /* Creates joint */
         pstResult->stJoint = b2CreatePrismaticJoint(sstPhysics.stWorld, &stPrismaticJointDef);
+
+        break;
+      }
+
+      /* Weld? */
+      case orxBODY_JOINT_DEF_KU32_FLAG_WELD:
+      {
+        b2WeldJointDef stWeldJointDef;
+
+        /* Inits its definition */
+        stWeldJointDef                    = b2DefaultWeldJointDef();
+        stWeldJointDef.userData           = (void *)_hUserData;
+        stWeldJointDef.bodyIdA            = stSrcBody;
+        stWeldJointDef.bodyIdB            = stDstBody;
+        stWeldJointDef.localAnchorA.x     = sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX;
+        stWeldJointDef.localAnchorA.y     = sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY;
+        stWeldJointDef.localAnchorB.x     = sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX;
+        stWeldJointDef.localAnchorB.y     = sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY;
+        stWeldJointDef.collideConnected   = orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE) ? true : false;
+        stWeldJointDef.referenceAngle     = _pstBodyJointDef->stWeld.fDefaultRotation;
+        stWeldJointDef.linearHertz        = _pstBodyJointDef->stWeld.fFrequency;
+        stWeldJointDef.linearDampingRatio = _pstBodyJointDef->stWeld.fDamping;
+        stWeldJointDef.angularHertz       = _pstBodyJointDef->stWeld.fAngularFrequency;
+        stWeldJointDef.angularDampingRatio= _pstBodyJointDef->stWeld.fAngularDamping;
+
+        /* Creates joint */
+        pstResult->stJoint = b2CreateWeldJoint(sstPhysics.stWorld, &stWeldJointDef);
+
+        break;
+      }
+
+      /* Distance? */
+      case orxBODY_JOINT_DEF_KU32_FLAG_DISTANCE:
+      {
+        b2DistanceJointDef stDistanceJointDef;
+
+        /* Inits its definition */
+        stDistanceJointDef                     = b2DefaultDistanceJointDef();
+        stDistanceJointDef.userData            = (void *)_hUserData;
+        stDistanceJointDef.bodyIdA             = stSrcBody;
+        stDistanceJointDef.bodyIdB             = stDstBody;
+        stDistanceJointDef.localAnchorA.x      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX;
+        stDistanceJointDef.localAnchorA.y      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY;
+        stDistanceJointDef.localAnchorB.x      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX;
+        stDistanceJointDef.localAnchorB.y      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY;
+        stDistanceJointDef.collideConnected    = orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE) ? true : false;
+        stDistanceJointDef.length              = _pstBodyJointDef->stDistance.fLength;
+
+        /* Has length limits? */
+        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_LENGTH_LIMIT))
+        {
+          /* Stores them */
+          stDistanceJointDef.minLength        = sstPhysics.fDimensionRatio * _pstBodyJointDef->stDistance.fMinLength;
+          stDistanceJointDef.maxLength        = sstPhysics.fDimensionRatio * _pstBodyJointDef->stDistance.fMaxLength;
+
+          /* Updates status */
+          stDistanceJointDef.enableLimit       = true;
+        }
+
+        /* Is motor? */
+        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR))
+        {
+          /* Stores them */
+          stDistanceJointDef.motorSpeed        = sstPhysics.fDimensionRatio * _pstBodyJointDef->stDistance.fMotorSpeed;
+          stDistanceJointDef.maxMotorForce     = _pstBodyJointDef->stDistance.fMaxMotorForce;
+
+          /* Updates status */
+          stDistanceJointDef.enableMotor       = true;
+        }
+
+        /* Is spring? */
+        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING))
+        {
+          /* Stores frequency */
+          stDistanceJointDef.hertz             = _pstBodyJointDef->stDistance.fFrequency;
+
+          /* Stores damping ratio */
+          stDistanceJointDef.dampingRatio      = _pstBodyJointDef->stDistance.fDamping;
+          
+          /* Updates status */
+          stDistanceJointDef.enableSpring      = true;
+        }
+
+        /* Creates joint */
+        pstResult->stJoint = b2CreateDistanceJoint(sstPhysics.stWorld, &stDistanceJointDef);
+
+        break;
+      }
+
+      /* Motor? */
+      case orxBODY_JOINT_DEF_KU32_FLAG_MOTOR:
+      {
+        b2MotorJointDef stMotorJointDef;
+
+        /* Inits its definition */
+        stMotorJointDef                   = b2DefaultMotorJointDef();
+        stMotorJointDef.userData          = (void *)_hUserData;
+        stMotorJointDef.bodyIdA           = stSrcBody;
+        stMotorJointDef.bodyIdB           = stDstBody;
+        stMotorJointDef.collideConnected  = orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE) ? true : false;
+        stMotorJointDef.linearOffset.x    = sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX;
+        stMotorJointDef.linearOffset.y    = sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY;
+        stMotorJointDef.angularOffset     = _pstBodyJointDef->stMotor.fDefaultRotation;
+        stMotorJointDef.correctionFactor  = _pstBodyJointDef->stMotor.fCorrectionFactor;
+        stMotorJointDef.maxTorque         = _pstBodyJointDef->stMotor.fMaxMotorTorque;
+        stMotorJointDef.maxForce          = _pstBodyJointDef->stMotor.fMaxMotorForce;
+
+        /* Creates joint */
+        pstResult->stJoint = b2CreateMotorJoint(sstPhysics.stWorld, &stMotorJointDef);
+
+        break;
+      }
+
+      /* Wheel? */
+      case orxBODY_JOINT_DEF_KU32_FLAG_WHEEL:
+      {
+        b2WheelJointDef stWheelJointDef;
+
+        /* Inits its definition */
+        stWheelJointDef                     = b2DefaultWheelJointDef();
+        stWheelJointDef.userData            = (void *)_hUserData;
+        stWheelJointDef.bodyIdA             = stSrcBody;
+        stWheelJointDef.bodyIdB             = stDstBody;
+        stWheelJointDef.localAnchorA.x      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fX * _pstBodyJointDef->vSrcAnchor.fX;
+        stWheelJointDef.localAnchorA.y      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vSrcScale.fY * _pstBodyJointDef->vSrcAnchor.fY;
+        stWheelJointDef.localAnchorB.x      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fX * _pstBodyJointDef->vDstAnchor.fX;
+        stWheelJointDef.localAnchorB.y      = sstPhysics.fDimensionRatio * _pstBodyJointDef->vDstScale.fY * _pstBodyJointDef->vDstAnchor.fY;
+        stWheelJointDef.collideConnected    = orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_COLLIDE) ? true : false;
+        stWheelJointDef.localAxisA.x        = _pstBodyJointDef->stWheel.vTranslationAxis.fX;
+        stWheelJointDef.localAxisA.y        = _pstBodyJointDef->stWheel.vTranslationAxis.fY;
+
+        /* Has translation limits? */
+        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT))
+        {
+          /* Stores them */
+          stWheelJointDef.lowerTranslation  = sstPhysics.fDimensionRatio * _pstBodyJointDef->stWheel.fMinTranslation;
+          stWheelJointDef.upperTranslation  = sstPhysics.fDimensionRatio * _pstBodyJointDef->stWheel.fMaxTranslation;
+
+          /* Updates status */
+          stWheelJointDef.enableLimit       = true;
+        }
+
+        /* Is motor? */
+        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR))
+        {
+          /* Stores them */
+          stWheelJointDef.motorSpeed        = sstPhysics.fDimensionRatio * _pstBodyJointDef->stWheel.fMotorSpeed;
+          stWheelJointDef.maxMotorTorque    = _pstBodyJointDef->stWheel.fMaxMotorTorque;
+
+          /* Updates status */
+          stWheelJointDef.enableMotor       = true;
+        }
+
+        /* Is spring? */
+        if(orxFLAG_TEST(_pstBodyJointDef->u32Flags, orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING))
+        {
+          /* Stores frequency */
+          stWheelJointDef.hertz             = _pstBodyJointDef->stWheel.fFrequency;
+
+          /* Stores damping ratio */
+          stWheelJointDef.dampingRatio      = _pstBodyJointDef->stWheel.fDamping;
+          
+          /* Updates status */
+          stWheelJointDef.enableSpring      = true;
+        }
+
+        /* Creates joint */
+        pstResult->stJoint = b2CreateWheelJoint(sstPhysics.stWorld, &stWheelJointDef);
 
         break;
       }
@@ -1825,128 +1993,263 @@ void orxFASTCALL orxPhysics_Box2D_DeleteJoint(orxPHYSICS_BODY_JOINT *_pstBodyJoi
   return;
 }
 
-// void orxFASTCALL orxPhysics_Box2D_EnableMotor(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxBOOL _bEnable)
-// {
-//   b2Joint *poJoint;
+void orxFASTCALL orxPhysics_Box2D_EnableMotor(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxBOOL _bEnable)
+{
+  b2JointId stJoint;
 
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyJoint != orxNULL);
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
 
-//   /* Gets joint */
-//   poJoint = (b2Joint *)_pstBodyJoint;
+  /* Gets joint */
+  stJoint = _pstBodyJoint->stJoint;
 
-//   /* Is a revolute joint? */
-//   if(poJoint->GetType() == e_revoluteJoint)
-//   {
-//     /* Enables / disables it */
-//     static_cast<b2RevoluteJoint *>(poJoint)->EnableMotor((_bEnable != orxFALSE) ? true : false);
-//   }
-//   else
-//   {
-//     /* Logs message */
-//     orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't enable motor on non-revolute joint.");
-//   }
+  /* Depending on its type */
+  switch(b2Joint_GetType(stJoint))
+  {
+    case b2_revoluteJoint:
+    {
+      /* Updates joint */
+      b2RevoluteJoint_EnableMotor(stJoint, (_bEnable != orxFALSE) ? true : false);
+      
+      break;
+    }
 
-//   /* Done! */
-//   return;
-// }
+    case b2_prismaticJoint:
+    {
+      /* Updates joint */
+      b2PrismaticJoint_EnableMotor(stJoint, (_bEnable != orxFALSE) ? true : false);
+      
+      break;
+    }
 
-// void orxFASTCALL orxPhysics_Box2D_SetJointMotorSpeed(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed)
-// {
-//   b2Joint *poJoint;
+    case b2_distanceJoint:
+    {
+      /* Updates joint */
+      b2DistanceJoint_EnableMotor(stJoint, (_bEnable != orxFALSE) ? true : false);
+      
+      break;
+    }
 
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyJoint != orxNULL);
+    case b2_wheelJoint:
+    {
+      /* Updates joint */
+      b2WheelJoint_EnableMotor(stJoint, (_bEnable != orxFALSE) ? true : false);
+      
+      break;
+    }
+    
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't enable motor on this type of joint.");
+      break;
+    }
+  }
 
-//   /* Gets joint */
-//   poJoint = (b2Joint *)_pstBodyJoint;
+  /* Done! */
+  return;
+}
 
-//   /* Is a revolute joint? */
-//   if(poJoint->GetType() == e_revoluteJoint)
-//   {
-//     /* Sets its motor speed */
-//     static_cast<b2RevoluteJoint *>(poJoint)->SetMotorSpeed(_fSpeed);
-//   }
-//   else
-//   {
-//     /* Logs message */
-//     orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't set motor speed on non-revolute joint.");
-//   }
+void orxFASTCALL orxPhysics_Box2D_SetJointMotorSpeed(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fSpeed)
+{
+  b2JointId stJoint;
 
-//   /* Done! */
-//   return;
-// }
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
 
-// void orxFASTCALL orxPhysics_Box2D_SetJointMaxMotorTorque(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque)
-// {
-//   b2Joint *poJoint;
+  /* Gets joint */
+  stJoint = _pstBodyJoint->stJoint;
 
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyJoint != orxNULL);
+  /* Depending on its type */
+  switch(b2Joint_GetType(stJoint))
+  {
+    case b2_revoluteJoint:
+    {
+      /* Updates joint */
+      b2RevoluteJoint_SetMotorSpeed(stJoint, _fSpeed);
+      
+      break;
+    }
 
-//   /* Gets joint */
-//   poJoint = (b2Joint *)_pstBodyJoint;
+    case b2_prismaticJoint:
+    {
+      /* Updates joint */
+      b2PrismaticJoint_SetMotorSpeed(stJoint, _fSpeed);
+      
+      break;
+    }
 
-//   /* Is a revolute joint? */
-//   if(poJoint->GetType() == e_revoluteJoint)
-//   {
-//     /* Sets its max torque */
-//     static_cast<b2RevoluteJoint *>(poJoint)->SetMaxMotorTorque(_fMaxTorque);
-//   }
-//   else
-//   {
-//     /* Logs message */
-//     orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't set max motor torque on non-revolute joint.");
-//   }
+    case b2_distanceJoint:
+    {
+      /* Updates joint */
+      b2DistanceJoint_SetMotorSpeed(stJoint, _fSpeed);
+      
+      break;
+    }
 
-//   /* Done! */
-//   return;
-// }
+    case b2_wheelJoint:
+    {
+      /* Updates joint */
+      b2WheelJoint_SetMotorSpeed(stJoint, _fSpeed);
+      
+      break;
+    }
+    
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't set motor speed on this type of joint.");
+      break;
+    }
+  }
 
-// orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetJointReactionForce(const orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce)
-// {
-//   const b2Joint  *poJoint;
-//   b2Vec2          vForce;
+  /* Done! */
+  return;
+}
 
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyJoint != orxNULL);
-//   orxASSERT(_pvForce != orxNULL);
+void orxFASTCALL orxPhysics_Box2D_SetJointMaxMotorTorque(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxTorque)
+{
+  b2JointId stJoint;
 
-//   /* Gets joint */
-//   poJoint = (const b2Joint *)_pstBodyJoint;
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
 
-//   /* Gets reaction force */
-//   vForce = poJoint->GetReactionForce((sstPhysics.fLastDT != orxFLOAT_0) ? orxFLOAT_1 / sstPhysics.fLastDT : orxFLOAT_1 / sstPhysics.fFixedDT);
+  /* Gets joint */
+  stJoint = _pstBodyJoint->stJoint;
 
-//   /* Updates result */
-//   orxVector_Set(_pvForce, orx2F(vForce.x), orx2F(vForce.y), orxFLOAT_0);
+  /* Depending on its type */
+  switch(b2Joint_GetType(stJoint))
+  {
+    case b2_revoluteJoint:
+    {
+      /* Updates joint */
+      b2RevoluteJoint_SetMaxMotorTorque(stJoint, _fMaxTorque);
+      
+      break;
+    }
 
-//   /* Done! */
-//   return _pvForce;
-// }
+    case b2_wheelJoint:
+    {
+      /* Updates joint */
+      b2WheelJoint_SetMaxMotorTorque(stJoint, _fMaxTorque);
+      
+      break;
+    }
+    
+    case b2_motorJoint:
+    {
+      /* Updates joint */
+      b2MotorJoint_SetMaxTorque(stJoint, _fMaxTorque);
+      
+      break;
+    }
 
-// orxFLOAT orxFASTCALL orxPhysics_Box2D_GetJointReactionTorque(const orxPHYSICS_BODY_JOINT *_pstBodyJoint)
-// {
-//   const b2Joint  *poJoint;
-//   orxFLOAT        fResult;
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't set max motor torque on this type of joint.");
+      break;
+    }
+  }
 
-//   /* Checks */
-//   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
-//   orxASSERT(_pstBodyJoint != orxNULL);
+  /* Done! */
+  return;
+}
 
-//   /* Gets joint */
-//   poJoint = (const b2Joint *)_pstBodyJoint;
+void orxFASTCALL orxPhysics_Box2D_SetJointMaxMotorForce(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxForce)
+{
+  b2JointId stJoint;
 
-//   /* Updates result */
-//   fResult = orx2F(poJoint->GetReactionTorque((sstPhysics.fLastDT != orxFLOAT_0) ? orxFLOAT_1 / sstPhysics.fLastDT : orxFLOAT_1 / sstPhysics.fFixedDT));
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
 
-//   /* Done! */
-//   return fResult;
-// }
+  /* Gets joint */
+  stJoint = _pstBodyJoint->stJoint;
+
+  /* Depending on its type */
+  switch(b2Joint_GetType(stJoint))
+  {
+    case b2_prismaticJoint:
+    {
+      /* Updates joint */
+      b2PrismaticJoint_SetMaxMotorForce(stJoint, _fMaxForce);
+      
+      break;
+    }
+
+    case b2_distanceJoint:
+    {
+      /* Updates joint */
+      b2DistanceJoint_SetMaxMotorForce(stJoint, _fMaxForce);
+      
+      break;
+    }
+    
+    case b2_motorJoint:
+    {
+      /* Updates joint */
+      b2MotorJoint_SetMaxForce(stJoint, _fMaxForce);
+      
+      break;
+    }
+
+    default:
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't set max motor force on this type of joint.");
+      break;
+    }
+  }
+
+  /* Done! */
+  return;
+}
+
+orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetJointReactionForce(const orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce)
+{
+  b2JointId stJoint;
+  b2Vec2    vForce;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
+  orxASSERT(_pvForce != orxNULL);
+
+  /* Gets joint */
+  stJoint = _pstBodyJoint->stJoint;
+
+  /* Gets reaction force */
+  vForce = b2Joint_GetConstraintForce(stJoint);
+
+  /* Updates result */
+  orxVector_Set(_pvForce, sstPhysics.fRecDimensionRatio * orx2F(vForce.x), sstPhysics.fRecDimensionRatio * orx2F(vForce.y), orxFLOAT_0);
+
+  /* Done! */
+  return _pvForce;
+}
+
+orxFLOAT orxFASTCALL orxPhysics_Box2D_GetJointReactionTorque(const orxPHYSICS_BODY_JOINT *_pstBodyJoint)
+{
+  b2JointId stJoint;
+  orxFLOAT  fResult;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
+
+  /* Gets joint */
+  stJoint = _pstBodyJoint->stJoint;
+
+  /* Updates result */
+  fResult = b2Joint_GetConstraintTorque(stJoint);
+
+  /* Done! */
+  return fResult;
+}
 
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, const orxVECTOR *_pvPosition)
 {
@@ -3677,11 +3980,12 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartRestitution, PHYSICS, G
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetPartDensity, PHYSICS, SET_PART_DENSITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetPartDensity, PHYSICS, GET_PART_DENSITY);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_IsInsidePart, PHYSICS, IS_INSIDE_PART);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableMotor, PHYSICS, ENABLE_MOTOR);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMotorSpeed, PHYSICS, SET_JOINT_MOTOR_SPEED);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMaxMotorTorque, PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetJointReactionForce, PHYSICS, GET_JOINT_REACTION_FORCE);
-// orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetJointReactionTorque, PHYSICS, GET_JOINT_REACTION_TORQUE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableMotor, PHYSICS, ENABLE_MOTOR);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMotorSpeed, PHYSICS, SET_JOINT_MOTOR_SPEED);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMaxMotorTorque, PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_SetJointMaxMotorForce, PHYSICS, SET_JOINT_MAX_MOTOR_FORCE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetJointReactionForce, PHYSICS, GET_JOINT_REACTION_FORCE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_GetJointReactionTorque, PHYSICS, GET_JOINT_REACTION_TORQUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_Raycast, PHYSICS, RAYCAST);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_BoxPick, PHYSICS, BOX_PICK);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_Box2D_EnableSimulation, PHYSICS, ENABLE_SIMULATION);

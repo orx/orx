@@ -109,14 +109,19 @@
 #define orxBODY_KZ_CONFIG_MOTOR_SPEED         "MotorSpeed"
 #define orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE     "MaxMotorForce"
 #define orxBODY_KZ_CONFIG_MAX_MOTOR_TORQUE    "MaxMotorTorque"
+#define orxBODY_KZ_CONFIG_CORRECTION_FACTOR   "CorrectionFactor"
 #define orxBODY_KZ_CONFIG_MAX_FORCE           "MaxForce"
 #define orxBODY_KZ_CONFIG_MAX_TORQUE          "MaxTorque"
 #define orxBODY_KZ_CONFIG_TRANSLATION_AXIS    "TranslationAxis"
 #define orxBODY_KZ_CONFIG_MIN_TRANSLATION     "MinTranslation"
 #define orxBODY_KZ_CONFIG_MAX_TRANSLATION     "MaxTranslation"
 #define orxBODY_KZ_CONFIG_LENGTH              "Length"
+#define orxBODY_KZ_CONFIG_MIN_LENGTH          "MinLength"
+#define orxBODY_KZ_CONFIG_MAX_LENGTH          "MaxLength"
 #define orxBODY_KZ_CONFIG_FREQUENCY           "Frequency"
 #define orxBODY_KZ_CONFIG_DAMPING             "Damping"
+#define orxBODY_KZ_CONFIG_ANGULAR_FREQUENCY   "AngularFrequency"
+#define orxBODY_KZ_CONFIG_ANGULAR_DAMPING     "AngularDamping"
 #define orxBODY_KZ_CONFIG_PARENT_GROUND_ANCHOR "ParentGroundAnchor"
 #define orxBODY_KZ_CONFIG_CHILD_GROUND_ANCHOR "ChildGroundAnchor"
 #define orxBODY_KZ_CONFIG_PARENT_LENGTH       "ParentLength"
@@ -136,13 +141,16 @@
 #define orxBODY_KZ_TYPE_CHAIN                 "chain"
 #define orxBODY_KZ_TYPE_REVOLUTE              "revolute"
 #define orxBODY_KZ_TYPE_PRISMATIC             "prismatic"
-#define orxBODY_KZ_TYPE_SPRING                "spring"
+#define orxBODY_KZ_TYPE_WELD                  "weld"
+#define orxBODY_KZ_TYPE_DISTANCE              "distance"
+#define orxBODY_KZ_TYPE_MOTOR                 "motor"
+#define orxBODY_KZ_TYPE_WHEEL                 "wheel"
 #define orxBODY_KZ_TYPE_ROPE                  "rope"
 #define orxBODY_KZ_TYPE_PULLEY                "pulley"
-#define orxBODY_KZ_TYPE_SUSPENSION            "suspension"
-#define orxBODY_KZ_TYPE_WELD                  "weld"
-#define orxBODY_KZ_TYPE_FRICTION              "friction"
 #define orxBODY_KZ_TYPE_GEAR                  "gear"
+#define orxBODY_KZ_TYPE_SPRING                "spring"
+#define orxBODY_KZ_TYPE_SUSPENSION            "suspension"
+#define orxBODY_KZ_TYPE_FRICTION              "friction"
 
 #define orxBODY_KU32_PART_BANK_SIZE           512
 #define orxBODY_KU32_JOINT_BANK_SIZE          64
@@ -1489,10 +1497,10 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
         stBodyJointDef.stRevolute.fMaxMotorTorque = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_TORQUE);
 
         /* Updates status */
-        stBodyJointDef.u32Flags                  |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
+        stBodyJointDef.u32Flags                  |= orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR;
       }
 
-      /* Has damping ? */
+      /* Is spring? */
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_FREQUENCY) != orxFALSE)
       && (orxConfig_HasValue(orxBODY_KZ_CONFIG_DAMPING) != orxFALSE))
       {
@@ -1537,10 +1545,10 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
         stBodyJointDef.stPrismatic.fMaxMotorForce   = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE);
 
         /* Updates status */
-        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
+        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR;
       }
 
-      /* Has damping ? */
+      /* Is spring? */
       if((orxConfig_HasValue(orxBODY_KZ_CONFIG_FREQUENCY) != orxFALSE)
       && (orxConfig_HasValue(orxBODY_KZ_CONFIG_DAMPING) != orxFALSE))
       {
@@ -1552,22 +1560,131 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
         stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING;
       }
     }
-    /* Spring? */
-    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_SPRING) == 0)
+    /* Weld? */
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_WELD) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags                |= orxBODY_JOINT_DEF_KU32_FLAG_WELD;
+
+      /* Stores default rotation */
+      stBodyJointDef.stWeld.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetWorldRotation(pstDstOwner) - orxObject_GetWorldRotation(pstSrcOwner);
+
+      /* Stores frequencies */
+      stBodyJointDef.stWeld.fFrequency        = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
+      stBodyJointDef.stWeld.fAngularFrequency = orxConfig_GetFloat(orxBODY_KZ_CONFIG_ANGULAR_FREQUENCY);
+
+      /* Stores dampings */
+      stBodyJointDef.stWeld.fDamping          = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
+      stBodyJointDef.stWeld.fAngularDamping   = orxConfig_GetFloat(orxBODY_KZ_CONFIG_ANGULAR_DAMPING);
+    }
+    /* Distance? */
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_DISTANCE) == 0)
     {
       orxVECTOR vSrcPos, vDstPos;
 
       /* Stores type */
-      stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_SPRING;
+      stBodyJointDef.u32Flags          |= orxBODY_JOINT_DEF_KU32_FLAG_DISTANCE;
 
       /* Stores length */
-      stBodyJointDef.stSpring.fLength     = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));
+      stBodyJointDef.stDistance.fLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));
 
-      /* Stores frequency */
-      stBodyJointDef.stSpring.fFrequency  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
+      /* Has length limits? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_LENGTH) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_LENGTH) != orxFALSE))
+      {
+        /* Updates status */
+        stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_LENGTH_LIMIT;
 
-      /* Stores damping */
-      stBodyJointDef.stSpring.fDamping    = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
+        /* Stores them */
+        stBodyJointDef.stDistance.fMinLength  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MIN_LENGTH);
+        stBodyJointDef.stDistance.fMaxLength  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_LENGTH);
+      }
+
+      /* Is a motor? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MOTOR_SPEED) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE) != orxFALSE))
+      {
+        /* Stores motor values */
+        stBodyJointDef.stDistance.fMotorSpeed      = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MOTOR_SPEED);
+        stBodyJointDef.stDistance.fMaxMotorForce   = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE);
+
+        /* Updates status */
+        stBodyJointDef.u32Flags                   |= orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR;
+      }
+
+      /* Is spring? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_FREQUENCY) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_DAMPING) != orxFALSE))
+      {
+        /* Stores damping values */
+        stBodyJointDef.stDistance.fFrequency       = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
+        stBodyJointDef.stDistance.fDamping         = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
+
+        /* Updates status */
+        stBodyJointDef.u32Flags                   |= orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING;
+      }
+    }
+    /* Motor? */
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_MOTOR) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags                |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
+
+      /* Stores default rotation */
+      stBodyJointDef.stMotor.fDefaultRotation = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetWorldRotation(pstDstOwner) - orxObject_GetWorldRotation(pstSrcOwner);
+
+      /* Stores motor values */
+      stBodyJointDef.stMotor.fCorrectionFactor= orxConfig_GetFloat(orxBODY_KZ_CONFIG_CORRECTION_FACTOR);
+      stBodyJointDef.stMotor.fMaxMotorTorque  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_TORQUE);
+      stBodyJointDef.stMotor.fMaxMotorForce   = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE);
+
+      /* Updates status */
+      stBodyJointDef.u32Flags                |= orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR;
+    }
+    /* Wheel? */
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_WHEEL) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags                |= orxBODY_JOINT_DEF_KU32_FLAG_WHEEL;
+
+      /* Stores translation axis */
+      orxConfig_GetVector(orxBODY_KZ_CONFIG_TRANSLATION_AXIS, &(stBodyJointDef.stWheel.vTranslationAxis));
+
+      /* Has translation limits? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MIN_TRANSLATION) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_TRANSLATION) != orxFALSE))
+      {
+        /* Updates status */
+        stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_TRANSLATION_LIMIT;
+
+        /* Stores them */
+        stBodyJointDef.stWheel.fMinTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MIN_TRANSLATION);
+        stBodyJointDef.stWheel.fMaxTranslation  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_TRANSLATION);
+      }
+
+      /* Is a motor? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_MOTOR_SPEED) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_MOTOR_TORQUE) != orxFALSE))
+      {
+        /* Stores motor values */
+        stBodyJointDef.stWheel.fMotorSpeed      = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MOTOR_SPEED);
+        stBodyJointDef.stWheel.fMaxMotorTorque  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_TORQUE);
+
+        /* Updates status */
+        stBodyJointDef.u32Flags                |= orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR;
+      }
+
+      /* Is spring? */
+      if((orxConfig_HasValue(orxBODY_KZ_CONFIG_FREQUENCY) != orxFALSE)
+      && (orxConfig_HasValue(orxBODY_KZ_CONFIG_DAMPING) != orxFALSE))
+      {
+        /* Stores damping values */
+        stBodyJointDef.stWheel.fFrequency       = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
+        stBodyJointDef.stWheel.fDamping         = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
+
+        /* Updates status */
+        stBodyJointDef.u32Flags                |= orxBODY_JOINT_DEF_KU32_FLAG_IS_SPRING;
+      }
     }
     /* Rope? */
     else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_ROPE) == 0)
@@ -1601,6 +1718,36 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       stBodyJointDef.stPulley.fMaxSrcLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_PARENT_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_PARENT_LENGTH) : stBodyJointDef.stPulley.fSrcLength + stBodyJointDef.stPulley.fLengthRatio * stBodyJointDef.stPulley.fDstLength;
       stBodyJointDef.stPulley.fMaxDstLength = orxConfig_HasValue(orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_CHILD_LENGTH) : stBodyJointDef.stPulley.fSrcLength + stBodyJointDef.stPulley.fDstLength;
     }
+    /* Gear? */
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_GEAR) == 0)
+    {
+      /* Stores type */
+      stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_GEAR;
+
+      /* Stores joint names */
+      stBodyJointDef.stGear.zSrcJointName = orxConfig_GetString(orxBODY_KZ_CONFIG_PARENT_JOINT_NAME);
+      stBodyJointDef.stGear.zDstJointName = orxConfig_GetString(orxBODY_KZ_CONFIG_CHILD_JOINT_NAME);
+
+      /* Stores joint ratio */
+      stBodyJointDef.stGear.fJointRatio   = (orxConfig_HasValue(orxBODY_KZ_CONFIG_JOINT_RATIO) != orxFALSE) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_JOINT_RATIO) : orxFLOAT_1;
+    }
+    /* Spring? */
+    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_SPRING) == 0)
+    {
+      orxVECTOR vSrcPos, vDstPos;
+
+      /* Stores type */
+      stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_SPRING;
+
+      /* Stores length */
+      stBodyJointDef.stSpring.fLength     = orxConfig_HasValue(orxBODY_KZ_CONFIG_LENGTH) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_LENGTH) : orxVector_GetDistance(orxObject_GetWorldPosition(pstSrcOwner, &vSrcPos), orxObject_GetWorldPosition(pstDstOwner, &vDstPos));
+
+      /* Stores frequency */
+      stBodyJointDef.stSpring.fFrequency  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_FREQUENCY);
+
+      /* Stores damping */
+      stBodyJointDef.stSpring.fDamping    = orxConfig_GetFloat(orxBODY_KZ_CONFIG_DAMPING);
+    }
     /* Suspension? */
     else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_SUSPENSION) == 0)
     {
@@ -1625,17 +1772,8 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
         stBodyJointDef.stSuspension.fMaxMotorForce  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_MOTOR_FORCE);
 
         /* Updates status */
-        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_MOTOR;
+        stBodyJointDef.u32Flags                    |= orxBODY_JOINT_DEF_KU32_FLAG_IS_MOTOR;
       }
-    }
-    /* Weld? */
-    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_WELD) == 0)
-    {
-      /* Stores type */
-      stBodyJointDef.u32Flags                |= orxBODY_JOINT_DEF_KU32_FLAG_WELD;
-
-      /* Stores default rotation */
-      stBodyJointDef.stWeld.fDefaultRotation  = orxConfig_HasValue(orxBODY_KZ_CONFIG_ROTATION) ? orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxBODY_KZ_CONFIG_ROTATION) : orxObject_GetWorldRotation(pstDstOwner) - orxObject_GetWorldRotation(pstSrcOwner);
     }
     /* Friction? */
     else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_FRICTION) == 0)
@@ -1646,19 +1784,6 @@ orxBODY_JOINT *orxFASTCALL orxBody_AddJointFromConfig(orxBODY *_pstSrcBody, orxB
       /* Stores max force & torque values */
       stBodyJointDef.stFriction.fMaxForce   = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_FORCE);
       stBodyJointDef.stFriction.fMaxTorque  = orxConfig_GetFloat(orxBODY_KZ_CONFIG_MAX_TORQUE);
-    }
-    /* Gear? */
-    else if(orxString_ICompare(zBodyJointType, orxBODY_KZ_TYPE_GEAR) == 0)
-    {
-      /* Stores type */
-      stBodyJointDef.u32Flags |= orxBODY_JOINT_DEF_KU32_FLAG_GEAR;
-
-      /* Stores joint names */
-      stBodyJointDef.stGear.zSrcJointName = orxConfig_GetString(orxBODY_KZ_CONFIG_PARENT_JOINT_NAME);
-      stBodyJointDef.stGear.zDstJointName = orxConfig_GetString(orxBODY_KZ_CONFIG_CHILD_JOINT_NAME);
-
-      /* Stores joint ratio */
-      stBodyJointDef.stGear.fJointRatio   = (orxConfig_HasValue(orxBODY_KZ_CONFIG_JOINT_RATIO) != orxFALSE) ? orxConfig_GetFloat(orxBODY_KZ_CONFIG_JOINT_RATIO) : orxFLOAT_1;
     }
     /* Unknown */
     else

@@ -2110,6 +2110,33 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_SetJointMaxMotorTorque(orxPHYSI
   return;
 }
 
+extern "C" void orxFASTCALL orxPhysics_LiquidFun_SetJointMaxMotorForce(orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxFLOAT _fMaxForce)
+{
+  b2Joint *poJoint;
+
+  /* Checks */
+  orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
+  orxASSERT(_pstBodyJoint != orxNULL);
+
+  /* Gets joint */
+  poJoint = (b2Joint *)_pstBodyJoint;
+
+  /* Is a prismatic joint? */
+  if(poJoint->GetType() == e_prismaticJoint)
+  {
+    /* Sets its max force */
+    static_cast<b2PrismaticJoint *>(poJoint)->SetMaxMotorForce(_fMaxForce);
+  }
+  else
+  {
+    /* Logs message */
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_PHYSICS, "Can't set max motor force on non-prismatic joint.");
+  }
+
+  /* Done! */
+  return;
+}
+
 extern "C" orxVECTOR *orxFASTCALL orxPhysics_LiquidFun_GetJointReactionForce(const orxPHYSICS_BODY_JOINT *_pstBodyJoint, orxVECTOR *_pvForce)
 {
   const b2Joint  *poJoint;
@@ -3712,6 +3739,7 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_IsInsidePart, PHYSICS, IS_
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_EnableMotor, PHYSICS, ENABLE_MOTOR);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetJointMotorSpeed, PHYSICS, SET_JOINT_MOTOR_SPEED);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetJointMaxMotorTorque, PHYSICS, SET_JOINT_MAX_MOTOR_TORQUE);
+orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_SetJointMaxMotorForce, PHYSICS, SET_JOINT_MAX_MOTOR_FORCE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetJointReactionForce, PHYSICS, GET_JOINT_REACTION_FORCE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_GetJointReactionTorque, PHYSICS, GET_JOINT_REACTION_TORQUE);
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_Raycast, PHYSICS, RAYCAST);
