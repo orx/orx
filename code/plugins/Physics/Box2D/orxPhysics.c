@@ -1113,7 +1113,7 @@ static void orxFASTCALL orxPhysics_Box2D_Update(const orxCLOCK_INFO *_pstClockIn
       if(sstPhysics.fDTAccumulator >= orxPHYSICS_KF_MIN_STEP_DURATION)
       {
         /* Updates last step of world simulation */
-        b2World_Step(sstPhysics.stWorld, sstPhysics.fDTAccumulator, 4);
+        b2World_Step(sstPhysics.stWorld, sstPhysics.fDTAccumulator, sstPhysics.s32IterationPerSteps);
 
         /* Clears accumulator */
         sstPhysics.fDTAccumulator = orxFLOAT_0;
