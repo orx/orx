@@ -210,7 +210,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetFloatParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList);
 
-/** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
+/** Sets the default value for a given texture parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable, has to match the size used when declaring the parameter
@@ -219,7 +219,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetFloatParam(const or
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetTextureParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList);
 
-/** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
+/** Sets the default value for a given vector parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable, has to match the size used when declaring the parameter
