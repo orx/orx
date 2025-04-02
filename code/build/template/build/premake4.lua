@@ -97,6 +97,10 @@ solution "[name]"
 
     flags
     {
+[+python
+        "C11",]
+[+imgui +sndh
+        "CXX11",]
         "NoPCH",
         "NoManifest",
         "FloatFast",
@@ -218,10 +222,6 @@ solution "[name]"
     configuration {"linux", "not web"}
         buildoptions
         {
-[-c++ [+python
-            "-std=c11",]]
-[+imgui +sndh
-            "-std=c++11",]
 [+sndh
             "-Wno-write-strings",
             "-Wno-multichar",]
@@ -245,12 +245,6 @@ solution "[name]"
     configuration {"macosx", "not web"}
         buildoptions
         {
-[+c++
-            "-stdlib=libc++",]
-[+imgui +sndh
-            "-std=c++11",]
-[-c++ [+python
-            "-std=c11",]]
 [+sndh
             "-Wno-multichar",]
             "-gdwarf-2",
@@ -259,8 +253,6 @@ solution "[name]"
         }
         linkoptions
         {
-[+c++
-            "-stdlib=libc++",]
             "-dead_strip"
         }
 

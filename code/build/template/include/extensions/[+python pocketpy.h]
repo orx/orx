@@ -3,7 +3,7 @@
  *  Distributed Under The MIT License
  *  https://github.com/pocketpy/pocketpy
  */
- 
+
 #pragma once
 
 // clang-format off
@@ -36,9 +36,12 @@
 
 // Memory allocation functions
 #ifndef PK_MALLOC
-#define PK_MALLOC(size)             malloc(size)
-#define PK_REALLOC(ptr, size)       realloc(ptr, size)
-#define PK_FREE(ptr)                free(ptr)
+
+#include "orx.h"
+#define PK_MALLOC(size) orxMemory_Allocate((orxU32)(size), orxMEMORY_TYPE_MAIN)
+#define PK_REALLOC(ptr, size) orxMemory_Reallocate((ptr), (orxU32)(size), orxMEMORY_TYPE_MAIN)
+#define PK_FREE(ptr) orxMemory_Free((ptr))
+
 #endif
 
 // This is the maximum size of the value stack in py_TValue units

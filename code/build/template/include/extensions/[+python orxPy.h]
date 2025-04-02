@@ -45,20 +45,6 @@ extern "C"
 
 #ifdef orxPY_IMPL
 
-#undef PK_MALLOC
-#undef PK_REALLOC
-#undef PK_FREE
-
-#define PK_MALLOC(size) orxMemory_Allocate((orxU32)(size), orxMEMORY_TYPE_MAIN)
-#define PK_REALLOC(ptr, size) orxMemory_Reallocate((ptr), (orxU32)(size), orxMEMORY_TYPE_MAIN)
-#define PK_FREE(ptr) orxMemory_Free((ptr))
-
-#include "pocketpy.c"
-
-#undef PK_MALLOC
-#undef PK_REALLOC
-#undef PK_FREE
-
   //! Variables / Structures
 
   typedef struct __orxPY_t
@@ -1415,6 +1401,21 @@ extern "C"
     RETURN_STR(acInstanceName);
   }
 
+  BIND(Guid, __eq__)
+  {
+    PY_CHECK_ARGC(2);
+    ARG_GUID(u64GUID1, 0);
+    ARG_GUID(u64GUID2, 1);
+    RETURN_BOOL(u64GUID1 == u64GUID2);
+  }
+
+  BIND(Guid, __hash__)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_GUID(u64GUID, 0);
+    RETURN_INT((py_i64)u64GUID);
+  }
+
   // Config functions
 
   BIND(Config, set_parent)
@@ -1976,6 +1977,8 @@ extern "C"
     tp_orxguid = pyType;
 
     py_bindmagic(pyType, __str__, BINDING_NAME(Guid, __str__));
+    py_bindmagic(pyType, __eq__, BINDING_NAME(Guid, __eq__));
+    py_bindmagic(pyType, __hash__, BINDING_NAME(Guid, __hash__));
   }
 
   void orxPy_AddModuleObject()
