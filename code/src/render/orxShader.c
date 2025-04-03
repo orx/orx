@@ -1686,7 +1686,7 @@ orxSTATUS orxFASTCALL orxShader_SetFloatParam(const orxSHADER *_pstShader, const
   return eResult;
 }
 
-/** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
+/** Sets the default value for a given texture parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable, has to match the size used when declaring the parameter
@@ -1759,7 +1759,7 @@ orxSTATUS orxFASTCALL orxShader_SetTextureParam(const orxSHADER *_pstShader, con
   return eResult;
 }
 
-/** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
+/** Sets the default value for a given vector parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable, has to match the size used when declaring the parameter

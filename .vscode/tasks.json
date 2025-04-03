@@ -132,7 +132,7 @@
       ],
       "group": "build",
       "type": "shell",
-      "command": "emmake make -j config=releaseweb"
+      "command": "emmake make -j orxLIB config=releaseweb"
     },
     {
       "label": "Run bounce demo (debug)",
