@@ -162,7 +162,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't set font (%s) for text (%s).", zName, _pstText->zReference);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't set font (%s).", _pstText->zReference, zName);
 
         /* Sets default font */
         orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
@@ -171,7 +171,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't create font (%s) for text (%s).", zName, _pstText->zReference);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't create font (%s).", _pstText->zReference, zName);
 
       /* Sets default font */
       orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
@@ -516,7 +516,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
             *pc = orxCHAR_NULL;
             for(pcDebug = pc - 1; (pcDebug >= _pstText->zString) && (*pcDebug != ' ') && (*pcDebug != '\t') && (*pcDebug != orxCHAR_LF) && (*pcDebug != orxCHAR_CR); pcDebug--)
               ;
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Word <%s> is too long to fit inside the requested <%g> pixels!", (_pstText->zReference != orxNULL) ? _pstText->zReference : orxSTRING_EMPTY, pcDebug + 1, _pstText->fWidth);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Word (%s) is too long to fit inside the requested (%g) pixels!", (_pstText->zReference != orxNULL) ? _pstText->zReference : orxSTRING_EMPTY, pcDebug + 1, _pstText->fWidth);
             *pc = cBackup;
           }
         }
@@ -753,7 +753,7 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
       if(orxText_ProcessConfigData(pstResult) == orxSTATUS_FAILURE)
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process config data for text <%s>.", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't process config data.", _zConfigID);
 
         /* Deletes it */
         orxText_Delete(pstResult);
@@ -769,7 +769,7 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find config section named (%s).", _zConfigID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't find config section.", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
