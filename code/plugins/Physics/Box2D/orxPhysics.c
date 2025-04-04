@@ -69,6 +69,7 @@
 #define orxPHYSICS_KF_DEFAULT_FREQUENCY         orx2F(60.0f) /* Default frequency */
 #define orxPHYSICS_KF_DEFAULT_DIMENSION_RATIO   orx2F(0.01f) /* Default dimension ratio */
 #define orxPHYSICS_KF_MIN_STEP_DURATION         orx2F(0.001f) /* Min step duration */
+#define orxPHYSICS_KF_CACHED_ROTATION_EPSILON   orx2F(0.002f) /* Cached rotation epsilon */
 
 #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
@@ -95,6 +96,7 @@ struct __orxPHYSICS_BODY_t
   b2BodyId            stBody;                 /**< Box2D body */
   orxFLOAT            fPreviousRotation;      /**< Previous rotation */
   orxFLOAT            fInterpolatedRotation;  /**< Interpolated rotation */
+  orxFLOAT            fCachedRotation;        /**< Cached rotation */
 };
 
 /** Body part
@@ -816,8 +818,9 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
   if(orxObject_IsEnabled(pstObject) != orxFALSE)
   {
     orxVECTOR   vSpeed, vOldPos, vNewPos;
+    b2BodyId    stBody;
     orxCLOCK   *pstClock;
-    orxFLOAT    fCoef = orxFLOAT_1;
+    orxFLOAT    fCoef = orxFLOAT_1, fRotation;
 
     /* Gets its clock */
     pstClock = orxObject_GetClock(pstObject);
@@ -868,6 +871,22 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
     orxBody_SetSpeed(pstBody, orxVector_Mulf(&vSpeed, &vSpeed, fCoef));
     orxBody_SetAngularVelocity(pstBody, fCoef * orxPhysics_GetAngularVelocity(_pstBody));
 
+    /* Gets physics body */
+    stBody = _pstBody->stBody;
+
+    /* Gets its rotation */
+    fRotation = b2Rot_GetAngle(b2Body_GetRotation(stBody)) * (orxFLOAT_1 / orxMATH_KF_2_PI);
+    fRotation -= orxS2F(orxF2S(fRotation) - (orxS32)(fRotation < orxFLOAT_0));
+    fRotation *= orxMATH_KF_2_PI;
+
+    /* Should update? */
+    if(orxMath_Abs(fRotation - _pstBody->fCachedRotation) > orxPHYSICS_KF_CACHED_ROTATION_EPSILON)
+    {      
+      /* Updates rotation */
+      orxFrame_SetRotation(pstFrame, eFrameSpace, fRotation);
+      _pstBody->fCachedRotation = fRotation;
+    }
+
     /* Should interpolate? */
     if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
     {
@@ -890,9 +909,6 @@ static void orxFASTCALL orxPhysics_ApplySimulationResult(orxPHYSICS_BODY *_pstBo
     }
     else
     {
-      /* Updates rotation */
-      orxFrame_SetRotation(pstFrame, eFrameSpace, orxPhysics_GetRotation(_pstBody));
-
       /* Updates position */
       orxFrame_GetPosition(pstFrame, eFrameSpace, &vOldPos);
       orxPhysics_GetPosition(_pstBody, &vNewPos);
@@ -2317,28 +2333,35 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetPosition(orxPHYSICS_BODY *_pstBody, co
 
 orxSTATUS orxFASTCALL orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, orxFLOAT _fRotation)
 {
-  b2BodyId  stBody;
-  b2Rot     stRotation, stCurrentRotation;
+  orxFLOAT  fRotation;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBody != orxNULL);
 
-  /* Gets body */
-  stBody = _pstBody->stBody;
-
-  /* Gets new rotation */
-  stRotation = b2MakeRot(_fRotation);
+  /* Applies circular clamp to rotation */
+  _fRotation *= orxFLOAT_1 / orxMATH_KF_2_PI;
+  _fRotation -= orxS2F(orxF2S(_fRotation) - (orxS32)(_fRotation < orxFLOAT_0));
+  _fRotation *= orxMATH_KF_2_PI;
 
   /* Gets current rotation */
-  stCurrentRotation = orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE) ? b2MakeRot(_pstBody->fInterpolatedRotation) : b2Body_GetRotation(stBody);
+  fRotation = orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE) ? _pstBody->fInterpolatedRotation : _pstBody->fCachedRotation;
 
   /* Should apply? */
-  if((stRotation.c != stCurrentRotation.c) || (stRotation.s != stCurrentRotation.s))
+  if(_fRotation != fRotation)
   {
+    b2BodyId  stBody;
+    b2Rot     stRotation;
+
+    /* Gets body */
+    stBody = _pstBody->stBody;
+
     /* Wakes up */
     b2Body_SetAwake(stBody, true);
+
+    /* Gets new rotation */
+    stRotation = b2MakeRot(_fRotation);
 
     /* Should interpolate? */
     if(orxFLAG_TEST(sstPhysics.u32Flags, orxPHYSICS_KU32_STATIC_FLAG_INTERPOLATE))
@@ -2361,6 +2384,9 @@ orxSTATUS orxFASTCALL orxPhysics_Box2D_SetRotation(orxPHYSICS_BODY *_pstBody, or
       /* Updates its rotation */
       b2Body_SetTransform(stBody, b2Body_GetPosition(stBody), stRotation);
     }
+    
+    /* Updates cached value */
+    _pstBody->fCachedRotation = _fRotation;
   }
 
   /* Done! */
@@ -2587,18 +2613,14 @@ orxVECTOR *orxFASTCALL orxPhysics_Box2D_GetPosition(const orxPHYSICS_BODY *_pstB
 
 orxFLOAT orxFASTCALL orxPhysics_Box2D_GetRotation(const orxPHYSICS_BODY *_pstBody)
 {
-  b2BodyId  stBody;
-  orxFLOAT  fResult;
+  orxFLOAT fResult;
 
   /* Checks */
   orxASSERT(sstPhysics.u32Flags & orxPHYSICS_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstBody != orxNULL);
 
-  /* Gets body */
-  stBody = _pstBody->stBody;
-
   /* Gets its rotation */
-  fResult = b2Rot_GetAngle(b2Body_GetRotation(stBody));
+  fResult = _pstBody->fCachedRotation;
 
   /* Done! */
   return fResult;
