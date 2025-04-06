@@ -242,7 +242,7 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
       if(u32CharacterCodePoint != orxCHAR_NULL)
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Too many characters defined for font <%s>: couldn't map characters [%s].", _pstFont->zReference, pc);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Too many characters defined: couldn't map characters (%s).", _pstFont->zReference, pc);
       }
     }
   }
@@ -580,7 +580,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture (%s) to font (%s).", zName, _pstFont->zReference);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't link texture (%s).", _pstFont->zReference, zName);
 
               /* Deletes texture */
               orxTexture_Delete(pstTexture);
@@ -595,6 +595,11 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
           /* Deletes bitmap */
           orxDisplay_DeleteBitmap(pstBitmap);
         }
+      }
+      else
+      {
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't load typeface (%s): invalid or missing.", _pstFont->zReference, zName);
       }
     }
     else
@@ -715,7 +720,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
                 else
                 {
                   /* Logs message */
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find character size / height & width list properties for font (%s).", _pstFont->zReference);
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't find character size / height & width list properties.", _pstFont->zReference);
 
                   /* Updates result */
                   eResult = orxSTATUS_FAILURE;
@@ -735,7 +740,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
                 else
                 {
                   /* Logs message */
-                  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid character size (%f, %f) for font (%s).", vCharacterSize.fX, vCharacterSize.fY, _pstFont->zReference);
+                  orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Invalid character size (%f, %f).", _pstFont->zReference, vCharacterSize.fX, vCharacterSize.fY);
 
                   /* Unlinks texture */
                   orxFont_SetTexture(_pstFont, orxNULL);
@@ -760,7 +765,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             else
             {
               /* Logs message */
-              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Invalid character list (%s) for font (%s).", zCharacterList, _pstFont->zReference);
+              orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Invalid character list (%s).", _pstFont->zReference, zCharacterList);
 
               /* Unlinks texture */
               orxFont_SetTexture(_pstFont, orxNULL);
@@ -775,7 +780,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
           else
           {
             /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't link texture (%s) to font (%s).", zName, _pstFont->zReference);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't link texture (%s).", _pstFont->zReference, zName);
 
             /* Deletes texture */
             orxTexture_Delete(pstTexture);
@@ -784,7 +789,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't create texture (%s) for font (%s).", zName, _pstFont->zReference);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't create texture (%s).", _pstFont->zReference, zName);
 
           /* Removes texture */
           orxFont_SetTexture(_pstFont, orxNULL);
@@ -793,7 +798,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find texture property for font (%s).", _pstFont->zReference);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't find texture property.", _pstFont->zReference);
       }
     }
 
@@ -1185,7 +1190,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
         else
         {
           /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process config data for font <%s>.", _zConfigID);
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't process config data.", _zConfigID);
 
           /* Deletes font */
           orxFont_Delete(pstResult);
@@ -1201,7 +1206,7 @@ orxFONT *orxFASTCALL orxFont_CreateFromConfig(const orxSTRING _zConfigID)
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find config section named (%s).", _zConfigID);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't find config section.", _zConfigID);
 
       /* Updates result */
       pstResult = orxNULL;
