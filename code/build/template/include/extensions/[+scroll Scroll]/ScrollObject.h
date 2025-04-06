@@ -116,6 +116,10 @@ public:
                 orxFLOAT                GetLifeTime() const;
                 void                    SetLifeTime(orxFLOAT _fLifeTime);
 
+                void                    AddTrigger(const orxSTRING _zTrigger, orxBOOL _bRecursive = orxTRUE);
+                void                    RemoveTrigger(const orxSTRING _zTrigger, orxBOOL _bRecursive = orxTRUE);
+                void                    FireTrigger(const orxSTRING _zEvent, const orxSTRING *_azRefinementList = orxNULL, orxU32 _u32Count = 0, orxBOOL _bRecursive = orxTRUE);
+
                 ScrollObject *          GetParent() const;
                 void                    SetParent(ScrollObject *_poParent);
 
@@ -748,6 +752,51 @@ void ScrollObject::SetLifeTime(orxFLOAT _fLifeTime)
 {
   // Updates its lifetime
   orxObject_SetLifeTime(mpstObject, _fLifeTime);
+}
+
+void ScrollObject::AddTrigger(const orxSTRING _zTrigger, orxBOOL _bRecursive)
+{
+  // Recursive?
+  if(_bRecursive)
+  {
+    // Adds trigger to object
+    orxObject_AddTriggerRecursive(mpstObject, _zTrigger);
+  }
+  else
+  {
+    // Adds trigger to object
+    orxObject_AddTrigger(mpstObject, _zTrigger);
+  }
+}
+
+void ScrollObject::RemoveTrigger(const orxSTRING _zTrigger, orxBOOL _bRecursive)
+{
+  // Recursive?
+  if(_bRecursive)
+  {
+    // Removes trigger to object
+    orxObject_RemoveTriggerRecursive(mpstObject, _zTrigger);
+  }
+  else
+  {
+    // Removes trigger to object
+    orxObject_RemoveTrigger(mpstObject, _zTrigger);
+  }
+}
+
+void ScrollObject::FireTrigger(const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count, orxBOOL _bRecursive)
+{
+  // Recursive?
+  if(_bRecursive)
+  {
+    // Fires an object's trigger
+    orxObject_FireTriggerRecursive(mpstObject, _zEvent, _azRefinementList, _u32Count);
+  }
+  else
+  {
+    // Fires an object's trigger
+    orxObject_FireTrigger(mpstObject, _zEvent, _azRefinementList, _u32Count);
+  }
 }
 
 void ScrollObject::PushConfigSection(orxBOOL _bPushInstanceSection) const
