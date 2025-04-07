@@ -1100,12 +1100,7 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
     orxCHAR                   acBuffer[orxTRIGGER_KU32_BUFFER_SIZE], *pc = acBuffer;
     orxS32                    i, s32StopDepth;
     orxU32                    u32PreviousRefinementListCount;
-
-  #ifdef __orxMSVC__
-    orxSTRINGID *astEventIDList = (orxSTRINGID *)_malloca((_u32Count + 1) * sizeof(orxSTRINGID));
-  #else /* __orxMSVC__ */
-    orxSTRINGID astEventIDList[_u32Count + 1];
-  #endif /* __orxMSVC__ */
+    orxSTRINGID              *astEventIDList = (orxSTRINGID *)alloca((_u32Count + 1) * sizeof(orxSTRINGID));
 
     /* Backups current event & refinement list */
     zPreviousEvent                  = sstTrigger.zCurrentEvent;

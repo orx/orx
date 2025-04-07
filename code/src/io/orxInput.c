@@ -1797,16 +1797,7 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
     orxU32            u32Index, u32PrefixLength;
     orxINPUT_SET     *pstSet;
     orxCHAR           acBuffer[128];
-
-#ifdef __orxMSVC__
-
     const orxSTRING  *azSetNameList = (const orxSTRING *)alloca(orxBank_GetCount(sstInput.pstSetBank) * sizeof(orxSTRING));
-
-#else /* __orxMSVC__ */
-
-    const orxSTRING   azSetNameList[orxBank_GetCount(sstInput.pstSetBank)];
-
-#endif /* __orxMSVC__ */
 
     /* Gets internal prefix length */
     u32PrefixLength = orxString_GetLength(orxINPUT_KZ_INTERNAL_SET_PREFIX);
@@ -1822,18 +1813,9 @@ orxSTATUS orxFASTCALL orxInput_Save(const orxSTRING _zFileName)
       /* Not an internal input set? */
       if(orxString_NCompare(pstSet->zName, orxINPUT_KZ_INTERNAL_SET_PREFIX, u32PrefixLength) != 0)
       {
-        orxINPUT_ENTRY *pstEntry;
-        orxU32          u32CombineIndex = 0;
-
-#ifdef __orxMSVC__
-
+        orxINPUT_ENTRY   *pstEntry;
+        orxU32            u32CombineIndex = 0;
         const orxSTRING  *azCombineNameList = (const orxSTRING *)alloca(orxLinkList_GetCount(&(pstSet->stEntryList)) * sizeof(orxSTRING));
-
-#else /* __orxMSVC__ */
-
-        const orxSTRING   azCombineNameList[orxLinkList_GetCount(&(pstSet->stEntryList))];
-
-#endif /* __orxMSVC__ */
 
         /* Adds it to the set list */
         *(azSetNameList + u32Index++) = pstSet->zName;

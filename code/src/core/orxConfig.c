@@ -502,12 +502,8 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE
     if(((eResult = orxString_ToVector(_zValue, _pvVector, &zRemainder)) == orxSTATUS_FAILURE)
     && (_eColorSpace != orxCOLORSPACE_NONE))
     {
-#ifdef __orxMSVC__
-        orxCHAR        *acBuffer = (orxCHAR *)alloca((s32RandomSeparatorIndex + 1) * sizeof(orxCHAR));
-#else /* __orxMSVC__ */
-        orxCHAR         acBuffer[s32RandomSeparatorIndex + 1];
-#endif /* __orxMSVC__ */
-        const orxSTRING zValue = _zValue;
+      orxCHAR        *acBuffer = (orxCHAR *)alloca((s32RandomSeparatorIndex + 1) * sizeof(orxCHAR));
+      const orxSTRING zValue = _zValue;
 
       /* Random? */
       if(s32RandomSeparatorIndex > 0)
