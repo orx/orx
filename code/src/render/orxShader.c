@@ -400,13 +400,8 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
     s32Count = orxConfig_GetListCount(orxSHADER_KZ_CONFIG_CODE_LIST);
 
     {
-      orxS32 i;
-
-#ifdef __orxMSVC__
-      orxSTRING *azCodeList = (orxSTRING *)alloca(s32Count * sizeof(const orxSTRING));
-#else /* __orxMSVC__ */
-      orxSTRING azCodeList[s32Count];
-#endif /* __orxMSVC__ */
+      orxS32      i;
+      orxSTRING  *azCodeList = (orxSTRING *)alloca(s32Count * sizeof(orxSTRING));
 
       /* For all code entries */
       for(i = 0; i < s32Count; i++)
