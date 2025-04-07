@@ -37,13 +37,6 @@
 #include "box2d/box2d.h"
 
 
-#if defined(__orxWINDOWS__) && !defined(__orxMSVC__) && !defined(alloca)
-
-  #define alloca(x) __builtin_alloca((x))
-
-#endif /* __orxWINDOWS__ && !__orxMSVC__ && !alloca */
-
-
 #if defined(__orxDEBUG__) || defined(__orxPROFILER__)
 
   #define orxPHYSICS_ENABLE_DEBUG_DRAW
