@@ -57,12 +57,6 @@
 
 #endif /* __orxGCC__ */
 
-#ifndef alloca
-
-  #define alloca(x) __builtin_alloca((x))
-
-#endif
-
 #endif /* __orxWINDOWS__ && !__orxMSVC__ */
 
 
