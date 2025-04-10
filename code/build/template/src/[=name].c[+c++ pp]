@@ -59,9 +59,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 ]
 [+python
   // Call Python update
-  [-scroll orxPy_Update(_pstClockInfo, orxNULL);]
-  [+scroll orxPy_Update(&_rstClockInfo, orxNULL);]
-]
+  [-scroll orxPy_Update(_pstClockInfo, orxNULL);][+scroll orxPy_Update(&_rstClockInfo, orxNULL);]]
 [-python
   // Should quit?
   if(orxInput_HasBeenActivated("Quit"))
@@ -82,21 +80,20 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Init extensions
   InitExtensions();
 
-[-python
 [+scroll
+[-python
   // Create the [-movie scene][+movie splash screen]
   CreateObject("[-movie Scene][+movie Splash]");
-]
-]
-
+]]
 [-scroll
   // Register the Update function to the core clock
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
 ]
-[-python -scroll
+[-python
+[-scroll
   // Create the [-movie scene][+movie splash screen]
   orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");
-]
+]]
   // Push [Main] as the default section
   orxConfig_PushSection("Main");
 
@@ -106,17 +103,15 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
   }
 [+python
+
   // Call Python init function
-  eStatus = orxPy_Init();
-]
+  eStatus = orxPy_Init();]
 
   // Done!
 [+python
-  return eStatus;
-]
+  return eStatus;]
 [-python
-  return orxSTATUS_SUCCESS;
-]
+  return orxSTATUS_SUCCESS;]
 }
 
 /** Run function, it should not contain any game logic
