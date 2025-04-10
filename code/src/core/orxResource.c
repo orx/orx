@@ -1538,7 +1538,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
         /* Success? */
         if(eResult != orxSTATUS_FAILURE)
         {
-          /* Inits file type */
+          /* Inits memory type */
           orxMemory_Zero(&stTypeInfo, sizeof(orxRESOURCE_TYPE_INFO));
           stTypeInfo.zTag       = orxRESOURCE_KZ_TYPE_TAG_MEMORY;
           stTypeInfo.pfnLocate  = orxResource_Memory_Locate;
