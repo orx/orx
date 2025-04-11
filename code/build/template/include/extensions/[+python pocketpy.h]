@@ -1,17 +1,17 @@
 /*
- *  Copyright (c) 2024 blueloveTH
+ *  Copyright (c) 2025 blueloveTH
  *  Distributed Under The MIT License
  *  https://github.com/pocketpy/pocketpy
  */
-
+ 
 #pragma once
 
 // clang-format off
 
-#define PK_VERSION				"2.0.6"
+#define PK_VERSION				"2.0.8"
 #define PK_VERSION_MAJOR            2
 #define PK_VERSION_MINOR            0
-#define PK_VERSION_PATCH            6
+#define PK_VERSION_PATCH            8
 
 /*************** feature settings ***************/
 
@@ -30,7 +30,7 @@
     #if PK_LOW_MEMORY_MODE
         #define PK_GC_MIN_THRESHOLD     2048
     #else
-        #define PK_GC_MIN_THRESHOLD     16384
+        #define PK_GC_MIN_THRESHOLD     32768
     #endif
 #endif
 
@@ -136,9 +136,12 @@
 
 
 
+#include <stdint.h>
+
 typedef union c11_vec2i {
     struct { int x, y; };
     int data[2];
+    int64_t _i64;
 } c11_vec2i;
 
 typedef union c11_vec3i {
@@ -199,16 +202,6 @@ typedef struct c11_sv {
     int size;
 } c11_sv;
 
-/// A struct contains the callbacks of the VM.
-typedef struct py_Callbacks {
-    /// Used by `__import__` to load source code of a module.
-    char* (*importfile)(const char*);
-    /// Used by `print` to output a string.
-    void (*print)(const char*);
-    /// Used by `input` to get a character.
-    int (*getchar)();
-} py_Callbacks;
-
 #define PY_RAISE
 #define PY_RETURN
 
@@ -224,6 +217,28 @@ typedef py_TValue* py_StackRef;
 typedef py_TValue* py_ItemRef;
 /// An output reference for returning a value.
 typedef py_TValue* py_OutRef;
+
+typedef struct py_Frame py_Frame;
+
+// An enum for tracing events.
+enum py_TraceEvent {
+    TRACE_EVENT_LINE,
+    TRACE_EVENT_EXCEPTION,
+    TRACE_EVENT_PUSH,
+    TRACE_EVENT_POP,
+};
+
+typedef void (*py_TraceFunc)(py_Frame* frame, enum py_TraceEvent);
+
+/// A struct contains the callbacks of the VM.
+typedef struct py_Callbacks {
+    /// Used by `__import__` to load source code of a module.
+    char* (*importfile)(const char*);
+    /// Used by `print` to output a string.
+    void (*print)(const char*);
+    /// Used by `input` to get a character.
+    int (*getchar)();
+} py_Callbacks;
 
 /// Native function signature.
 /// @param argc number of arguments.
@@ -254,12 +269,22 @@ PK_API void py_resetvm();
 PK_API void* py_getvmctx();
 /// Set the current VM context. This is used for user-defined data.
 PK_API void py_setvmctx(void* ctx);
-/// Interrupt the current VM and raise a `KeyboardInterrupt` exception.
-PK_API void py_interrupt();
 /// Set `sys.argv`. Used for storing command-line arguments.
 PK_API void py_sys_setargv(int argc, char** argv);
+/// Set the trace function for the current VM.
+PK_API void py_sys_settrace(py_TraceFunc func);
 /// Setup the callbacks for the current VM.
 PK_API py_Callbacks* py_callbacks();
+
+/// Get the current source location of the frame.
+PK_API const char* py_Frame_sourceloc(py_Frame* frame, int* lineno);
+/// Python equivalent to `globals()` with respect to the given frame.
+PK_API void py_Frame_newglobals(py_Frame* frame, py_OutRef out);
+/// Python equivalent to `locals()` with respect to the given frame.
+PK_API void py_Frame_newlocals(py_Frame* frame, py_OutRef out);
+/// Get the function object of the frame.
+/// Returns `NULL` if not available.
+PK_API py_StackRef py_Frame_function(py_Frame* frame);
 
 /// Run a source string.
 /// @param source source string.
@@ -268,9 +293,9 @@ PK_API py_Callbacks* py_callbacks();
 /// @param module target module. Use NULL for the main module.
 /// @return `true` if the execution is successful or `false` if an exception is raised.
 PK_API bool py_exec(const char* source,
-                       const char* filename,
-                       enum py_CompileMode mode,
-                       py_Ref module) PY_RAISE PY_RETURN;
+                    const char* filename,
+                    enum py_CompileMode mode,
+                    py_Ref module) PY_RAISE PY_RETURN;
 
 /// Evaluate a source string. Equivalent to `py_exec(source, "<string>", EVAL_MODE, module)`.
 PK_API bool py_eval(const char* source, py_Ref module) PY_RAISE PY_RETURN;
@@ -293,14 +318,13 @@ PK_API bool py_smarteval(const char* source, py_Ref module, ...) PY_RAISE PY_RET
 /// Compile a source string into a code object.
 /// Use python's `exec()` or `eval()` to execute it.
 PK_API bool py_compile(const char* source,
-                          const char* filename,
-                          enum py_CompileMode mode,
-                          bool is_dynamic) PY_RAISE PY_RETURN;
+                       const char* filename,
+                       enum py_CompileMode mode,
+                       bool is_dynamic) PY_RAISE PY_RETURN;
 
 /// Python equivalent to `globals()`.
 PK_API void py_newglobals(py_OutRef);
 /// Python equivalent to `locals()`.
-/// @return a temporary object, which expires on the associated function return.
 PK_API void py_newlocals(py_OutRef);
 
 /************* Values Creation *************/
@@ -341,7 +365,7 @@ PK_API void py_newellipsis(py_OutRef);
 PK_API void py_newnil(py_OutRef);
 /// Create a `tuple` with `n` UNINITIALIZED elements.
 /// You should initialize all elements before using it.
-PK_API void py_newtuple(py_OutRef, int n);
+PK_API py_ObjectRef py_newtuple(py_OutRef, int n);
 /// Create an empty `list`.
 PK_API void py_newlist(py_OutRef);
 /// Create a `list` with `n` UNINITIALIZED elements.
@@ -356,19 +380,21 @@ PK_API void py_newslice(py_OutRef);
 PK_API void py_newnativefunc(py_OutRef, py_CFunction);
 /// Create a `function` object.
 PK_API py_Name py_newfunction(py_OutRef out,
-                                 const char* sig,
-                                 py_CFunction f,
-                                 const char* docstring,
-                                 int slots);
+                              const char* sig,
+                              py_CFunction f,
+                              const char* docstring,
+                              int slots);
 /// Create a `boundmethod` object.
 PK_API void py_newboundmethod(py_OutRef out, py_Ref self, py_Ref func);
 
-/************* Name Convertions *************/
+/************* Name Conversions *************/
 
 /// Convert a null-terminated string to a name.
 PK_API py_Name py_name(const char*);
 /// Convert a name to a null-terminated string.
 PK_API const char* py_name2str(py_Name);
+/// Convert a name to a python `str` object with cache.
+PK_API py_GlobalRef py_name2ref(py_Name);
 /// Convert a `c11_sv` to a name.
 PK_API py_Name py_namev(c11_sv);
 /// Convert a name to a `c11_sv`.
@@ -383,10 +409,7 @@ PK_API c11_sv py_name2sv(py_Name);
 /// @param base base type.
 /// @param module module where the type is defined. Use `NULL` for built-in types.
 /// @param dtor destructor function. Use `NULL` if not needed.
-PK_API py_Type py_newtype(const char* name,
-                             py_Type base,
-                             const py_GlobalRef module,
-                             py_Dtor dtor);
+PK_API py_Type py_newtype(const char* name, py_Type base, const py_GlobalRef module, py_Dtor dtor);
 
 /// Create a new object.
 /// @param out output reference.
@@ -467,9 +490,13 @@ PK_API const char* py_tpname(py_Type type);
 /// Call a type to create a new instance.
 PK_API bool py_tpcall(py_Type type, int argc, py_Ref argv) PY_RAISE PY_RETURN;
 
-/// Check if the object is an instance of the given type.
+/// Check if the object is an instance of the given type exactly.
 /// Raise `TypeError` if the check fails.
 PK_API bool py_checktype(py_Ref self, py_Type type) PY_RAISE;
+
+/// Check if the object is an instance of the given type or its subclass.
+/// Raise `TypeError` if the check fails.
+PK_API bool py_checkinstance(py_Ref self, py_Type type) PY_RAISE;
 
 #define py_checkint(self) py_checktype(self, tp_int)
 #define py_checkfloat(self) py_checktype(self, tp_float)
@@ -536,7 +563,9 @@ PK_API py_StackRef py_inspect_currentfunction();
 /// Get the current `module` object where the code is executed.
 /// Return `NULL` if not available.
 PK_API py_GlobalRef py_inspect_currentmodule();
-
+/// Get the current frame object.
+/// Return `NULL` if not available.
+PK_API py_Frame* py_inspect_currentframe();
 /************* Bindings *************/
 
 /// Bind a function to the object via "decl-based" style.
@@ -638,9 +667,10 @@ PK_API py_StackRef py_pushtmp();
 /// If return false: `[self] -> [self]` (no change).
 PK_API bool py_pushmethod(py_Name name);
 /// Call a callable object via pocketpy's calling convention.
-/// You need to prepare the stack using this form: `callable, self/nil, arg1, arg2, ..., k1, v1, k2, v2, ...`
+/// You need to prepare the stack using the following format:
+/// `callable, self/nil, arg1, arg2, ..., k1, v1, k2, v2, ...`.
 /// `argc` is the number of positional arguments excluding `self`.
-/// `kwargc` is the number of keyword arguments, i.e. the number of key-value pairs.
+/// `kwargc` is the number of keyword arguments.
 /// The result will be set to `py_retval()`.
 /// The stack size will be reduced by `2 + argc + kwargc * 2`.
 PK_API bool py_vectorcall(uint16_t argc, uint16_t kwargc) PY_RAISE PY_RETURN;
@@ -666,7 +696,7 @@ PK_API int py_import(const char* path) PY_RAISE PY_RETURN;
 
 /// Raise an exception by type and message. Always return false.
 PK_API bool py_exception(py_Type type, const char* fmt, ...) PY_RAISE;
-/// Raise an expection object. Always return false.
+/// Raise an exception object. Always return false.
 PK_API bool py_raise(py_Ref) PY_RAISE;
 /// Print the current exception.
 /// The exception will be set as handled.
@@ -696,7 +726,9 @@ PK_API void py_clearexc(py_StackRef p0);
 #define AttributeError(self, n)                                                                    \
     py_exception(tp_AttributeError, "'%t' object has no attribute '%n'", (self)->type, (n))
 #define UnboundLocalError(n)                                                                       \
-    py_exception(tp_UnboundLocalError, "local variable '%n' referenced before assignment", (n))
+    py_exception(tp_UnboundLocalError,                                                             \
+                 "cannot access local variable '%n' where it is not associated with a value",      \
+                 (n))
 
 PK_API bool StopIteration() PY_RAISE;
 PK_API bool KeyError(py_Ref key) PY_RAISE;
@@ -734,7 +766,7 @@ PK_API bool py_isidentical(py_Ref, py_Ref);
 /// Call a function.
 /// It prepares the stack and then performs a `vectorcall(argc, 0, false)`.
 /// The result will be set to `py_retval()`.
-/// The stack remains unchanged after the operation.
+/// The stack remains unchanged if successful.
 PK_API bool py_call(py_Ref f, int argc, py_Ref argv) PY_RAISE PY_RETURN;
 
 #ifndef NDEBUG
@@ -752,7 +784,7 @@ PK_API bool py_repr(py_Ref val) PY_RAISE PY_RETURN;
 /// Python equivalent to `len(val)`.
 PK_API bool py_len(py_Ref val) PY_RAISE PY_RETURN;
 /// Python equivalent to `json.dumps(val)`.
-PK_API bool py_json_dumps(py_Ref val) PY_RAISE PY_RETURN;
+PK_API bool py_json_dumps(py_Ref val, int indent) PY_RAISE PY_RETURN;
 /// Python equivalent to `json.loads(val)`.
 PK_API bool py_json_loads(const char* source) PY_RAISE PY_RETURN;
 /// Python equivalent to `pickle.dumps(val)`.
@@ -832,8 +864,8 @@ PK_API int py_replinput(char* buf, int max_size);
 /// %t: py_Type
 /// %n: py_Name
 
-enum py_MagicNames {
-    py_MagicNames__NULL,  // 0 is reserved
+enum py_MagicName {
+    py_MagicName__NULL,  // 0 is reserved
 
 #define MAGIC_METHOD(x) x,
 #ifdef MAGIC_METHOD
@@ -846,8 +878,6 @@ MAGIC_METHOD(__ge__)
 /////////////////////////////
 MAGIC_METHOD(__neg__)
 MAGIC_METHOD(__abs__)
-MAGIC_METHOD(__float__)
-MAGIC_METHOD(__int__)
 MAGIC_METHOD(__round__)
 MAGIC_METHOD(__divmod__)
 /////////////////////////////
@@ -907,7 +937,7 @@ MAGIC_METHOD(__missing__)
 #undef MAGIC_METHOD
 };
 
-enum py_PredefinedTypes {
+enum py_PredefinedType {
     tp_nil = 0,
     tp_object = 1,
     tp_type,  // py_Type
@@ -948,7 +978,7 @@ enum py_PredefinedTypes {
     tp_KeyboardInterrupt,
     tp_StopIteration,
     tp_SyntaxError,
-    tp_StackOverflowError,
+    tp_RecursionError,
     tp_OSError,
     tp_NotImplementedError,
     tp_TypeError,
@@ -969,8 +999,11 @@ enum py_PredefinedTypes {
     tp_vec3i,
     tp_mat3x3,
     /* array2d */
+    tp_array2d_like,
+    tp_array2d_like_iterator,
     tp_array2d,
-    tp_array2d_iterator,
+    tp_array2d_view,
+    tp_chunked_array2d,
 };
 
 #ifdef __cplusplus
