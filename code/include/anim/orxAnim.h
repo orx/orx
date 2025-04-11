@@ -258,11 +258,11 @@ extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventStorageSize(const 
 extern orxDLLAPI orxU32 orxFASTCALL           orxAnim_GetEventCount(const orxANIM *_pstAnim);
 
 
-/** Anim time length accessor
+/** Anim duration accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      Anim time length
  */
-extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnim_GetLength(const orxANIM *_pstAnim);
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnim_GetDuration(const orxANIM *_pstAnim);
 
 /** Anim name get accessor
  * @param[in]   _pstAnim        Concerned animation

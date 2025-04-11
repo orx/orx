@@ -261,16 +261,16 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           /* Not cut? */
           if(bCut == orxFALSE)
           {
-            orxFLOAT fAnimLength;
+            orxFLOAT fAnimDuration;
 
-            /* Gets anim length */
-            fAnimLength = orxAnim_GetLength(stPayload.pstAnim);
+            /* Gets anim duration */
+            fAnimDuration = orxAnim_GetDuration(stPayload.pstAnim);
 
             /* In scope? */
-            if(fEventStartTime < fAnimLength)
+            if(fEventStartTime < fAnimDuration)
             {
               /* Sends custom events */
-              orxAnimPointer_SendCustomEvents(stPayload.pstAnim, pstOwner, fEventStartTime, fAnimLength);
+              orxAnimPointer_SendCustomEvents(stPayload.pstAnim, pstOwner, fEventStartTime, fAnimDuration);
             }
           }
 
@@ -347,17 +347,17 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
           /* Looped? */
           if(_pstAnimPointer->fCurrentAnimTime < fTimeBackup)
           {
-            orxFLOAT  fAnimLength;
+            orxFLOAT  fAnimDuration;
             orxU32    u32CurrentAnim, u32TargetAnim;
 
-            /* Gets anim length */
-            fAnimLength = orxAnim_GetLength(stPayload.pstAnim);
+            /* Gets anim duration */
+            fAnimDuration = orxAnim_GetDuration(stPayload.pstAnim);
 
             /* In scope? */
-            if(fEventStartTime < fAnimLength)
+            if(fEventStartTime < fAnimDuration)
             {
               /* Sends custom events */
-              orxAnimPointer_SendCustomEvents(stPayload.pstAnim, pstOwner, fEventStartTime, fAnimLength);
+              orxAnimPointer_SendCustomEvents(stPayload.pstAnim, pstOwner, fEventStartTime, fAnimDuration);
             }
 
             /* Stores current and target anims */
@@ -407,7 +407,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
             orxStructure_SetFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_NONE, orxANIMPOINTER_KU32_FLAG_NEW_CURRENT);
           }
         }
-      } while((bRecompute != orxFALSE) || (_pstAnimPointer->fCurrentAnimTime > orxAnim_GetLength(stPayload.pstAnim)));
+      } while((bRecompute != orxFALSE) || (_pstAnimPointer->fCurrentAnimTime > orxAnim_GetDuration(stPayload.pstAnim)));
 
       /* Has current anim? */
       if(orxStructure_TestFlags(_pstAnimPointer, orxANIMPOINTER_KU32_FLAG_HAS_CURRENT_ANIM) != orxFALSE)
