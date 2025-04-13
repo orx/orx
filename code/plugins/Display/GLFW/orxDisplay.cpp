@@ -5482,7 +5482,12 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadFont(const orxSTRING _zFileName, cons
                       const orxSTRING zCharacterList;
                       orxU32          u32CharacterCodePoint, i;
                       int             iX0, iX1, iY0, iY1;
-                      orxFLOAT        fCurrentWidth, fWidth, fHeight, fBaseLine, fXPadding, fYPadding;
+                      orxFLOAT        fCurrentWidth, fWidth, fHeight, fBaseLine, fXPadding, fYPadding, fMaxTextureWidth;
+
+                      /* Gets max texture width */
+                      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+                      fMaxTextureWidth = (orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_MAX_TEXTURE_SIZE) != orxFALSE) ? orxConfig_GetFloat(orxDISPLAY_KZ_CONFIG_MAX_TEXTURE_SIZE) : orxS2F(sstDisplay.iMaxTextureSize);
+                      orxConfig_PopSection();
 
                       /* Stores source buffer */
                       pstLoadInfo->pu8Buffer = pu8Buffer;
@@ -5562,7 +5567,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadFont(const orxSTRING _zFileName, cons
                         fAdvance = pstLoadInfo->astGlyphList[i].stGlyph.fWidth + _pvCharacterSpacing->fX;
 
                         /* Updates dimensions */
-                        if(fCurrentWidth + fAdvance <= orxS2F(sstDisplay.iMaxTextureSize))
+                        if(fCurrentWidth + fAdvance <= fMaxTextureWidth)
                         {
                           fCurrentWidth += fAdvance;
                         }
