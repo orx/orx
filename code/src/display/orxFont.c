@@ -75,23 +75,8 @@
 #define orxFONT_KV_DEFAULT_CHARACTER_SPACING    orx2F(2.0f), orx2F(2.0f), orxFLOAT_0
 #define orxFONT_KV_DEFAULT_CHARACTER_SIZE       orxFLOAT_0, orx2F(32.0f), orxFLOAT_0
 
-#define orxFONT_KZ_CONFIG_TEXTURE_NAME          "Texture"
-#define orxFONT_KZ_CONFIG_CHARACTER_LIST        "CharacterList"
-#define orxFONT_KZ_CONFIG_CHARACTER_SIZE        "CharacterSize"
-#define orxFONT_KZ_CONFIG_CHARACTER_HEIGHT      "CharacterHeight"
-#define orxFONT_KZ_CONFIG_CHARACTER_WIDTH_LIST  "CharacterWidthList"
-#define orxFONT_KZ_CONFIG_CHARACTER_SPACING     "CharacterSpacing"
-#define orxFONT_KZ_CONFIG_CHARACTER_PADDING     "CharacterPadding"
-#define orxFONT_KZ_CONFIG_TEXTURE_ORIGIN        "TextureOrigin"
-#define orxFONT_KZ_CONFIG_TEXTURE_SIZE          "TextureSize"
 #define orxFONT_KZ_CONFIG_TEXTURE_CORNER        "TextureCorner" /**< Kept for retro-compatibility reason */
-#define orxFONT_KZ_CONFIG_KEEP_IN_CACHE         "KeepInCache"
-#define orxFONT_KZ_CONFIG_TYPEFACE              "Typeface"
-#define orxFONT_KZ_CONFIG_SDF                   "SDF"
-#define orxFONT_KZ_CONFIG_SHADER                "Shader"
 
-#define orxFONT_KZ_ASCII                        "ascii"
-#define orxFONT_KZ_ANSI                         "ansi"
 #define orxFONT_KZ_TEXTURE_FONT_PREFIX          "orx:texture:font"
 #define orxFONT_KZ_CONFIG_SDF_NAME              "orx:config:font:sdf"
 
