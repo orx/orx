@@ -725,7 +725,7 @@ static void Run()
       // Gets font properties
       zCharacterList    = orxFont_GetCharacterList(pstFont);
       fCharacterHeight  = orxFont_GetCharacterHeight(pstFont);
-      u32CharacterCount = orxString_GetCharacterCount(sstFontGen.zCharacterList);
+      u32CharacterCount = orxString_GetCharacterCount(zCharacterList);
 
       // Allocates width list
       acWidthBuffer         = (orxCHAR *)orxMemory_Allocate(u32CharacterCount * 8, orxMEMORY_TYPE_TEMP);
@@ -777,9 +777,9 @@ static void Run()
       orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
 
       // Logs messages
-      orxFONTGEN_LOG(PROCESS, "Calculated character size:    %4g x %g.", orxFont_GetCharacterWidth(pstFont, (orxString_SearchChar(zCharacterList, ' ') != orxNULL) ? ' ' : orxString_GetFirstCharacterCodePoint(zCharacterList, orxNULL)), fCharacterHeight);
-      orxFONTGEN_LOG(PROCESS, "Calculated character spacing: %4g x %g.", vCharacterSpacing.fX, vCharacterSpacing.fY);
-      orxFONTGEN_LOG(PROCESS, "Calculated texture size:      %4g x %g.", fWidth, fHeight);
+      orxFONTGEN_LOG(PROCESS, "Calculated character size:    %5g x %g.", orxFont_GetCharacterWidth(pstFont, (orxString_SearchChar(zCharacterList, ' ') != orxNULL) ? ' ' : orxString_GetFirstCharacterCodePoint(zCharacterList, orxNULL)), fCharacterHeight);
+      orxFONTGEN_LOG(PROCESS, "Calculated character spacing: %5g x %g.", vCharacterSpacing.fX, vCharacterSpacing.fY);
+      orxFONTGEN_LOG(PROCESS, "Calculated texture size:      %5g x %g.", fWidth, fHeight);
       orxFONTGEN_LOG(PROCESS, "%u glyphs generated in '%s'.", u32CharacterCount, acBuffer);
 
       // Waits until all tasks are complete
