@@ -41,6 +41,7 @@
 #define orxFONTGEN_KU32_STATIC_FLAG_SIZE            0x00000002  /**< Size flag */
 #define orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE       0x00000004  /**< Monospace flag */
 #define orxFONTGEN_KU32_STATIC_FLAG_SDF             0x00000008  /**< SDF flag */
+#define orxFONTGEN_KU32_STATIC_FLAG_CHARACTER_LIST  0x00000010  /**< Character list flag */
 
 #define orxFONTGEN_KU32_STATIC_MASK_READY           0x00000001  /**< Ready mask */
 
@@ -238,7 +239,7 @@ static orxSTATUS orxFASTCALL ProcessInputParams(orxU32 _u32ParamCount, const orx
       sstFontGen.zCharacterList = orxString_Duplicate(orxFONT_KZ_ANSI);
 
       // Logs message
-      orxFONTGEN_LOG(INPUT, "Character list set to: ANSI");
+      orxFONTGEN_LOG(INPUT, "Character list set to: ANSI.");
     }
     // ASCII?
     else if(orxString_ICompare(_azParams[1], orxFONT_KZ_ASCII) == 0)
@@ -247,7 +248,7 @@ static orxSTATUS orxFASTCALL ProcessInputParams(orxU32 _u32ParamCount, const orx
       sstFontGen.zCharacterList = orxString_Duplicate(orxFONT_KZ_ASCII);
 
       // Logs message
-      orxFONTGEN_LOG(INPUT, "Character list set to: ASCII");
+      orxFONTGEN_LOG(INPUT, "Character list set to: ASCII.");
     }
     else
     {
@@ -339,8 +340,18 @@ static orxSTATUS orxFASTCALL ProcessInputParams(orxU32 _u32ParamCount, const orx
   }
   else
   {
+    // Updates character list
+    sstFontGen.zCharacterList = orxString_Duplicate(orxFONT_KZ_ASCII);
+
     // Logs message
     orxFONTGEN_LOG(INPUT, "No text input provided, using default ASCII character list.");
+  }
+
+  // Success?
+  if(eResult != orxSTATUS_FAILURE)
+  {
+    // Updates status
+    orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_CHARACTER_LIST, orxFONTGEN_KU32_STATIC_FLAG_NONE);
   }
 
   // Done!
@@ -358,7 +369,7 @@ static orxSTATUS orxFASTCALL ProcessOutputParams(orxU32 _u32ParamCount, const or
     sstFontGen.zFontName = orxString_Duplicate(_azParams[1]);
 
     // Logs message
-    orxFONTGEN_LOG(OUTPUT, "Using output font name '%s'.", sstFontGen.zFontName);
+    orxFONTGEN_LOG(OUTPUT, "Output font name set to: %s.", sstFontGen.zFontName);
   }
 
   // Done!
@@ -381,7 +392,7 @@ static orxSTATUS orxFASTCALL ProcessSizeParams(orxU32 _u32ParamCount, const orxS
     orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SIZE, orxFONTGEN_KU32_STATIC_FLAG_NONE);
 
     // Logs message
-    orxFONTGEN_LOG(SIZE, "Character height (size) set to <%u>.", u32Size);
+    orxFONTGEN_LOG(SIZE, "Character height (size) set to: %u.", u32Size);
   }
   else
   {
@@ -389,12 +400,12 @@ static orxSTATUS orxFASTCALL ProcessSizeParams(orxU32 _u32ParamCount, const orxS
     if(_u32ParamCount > 1)
     {
       // Logs message
-      orxFONTGEN_LOG(SIZE, "Invalid character size found in '%s', defaulting to <%u>.", _azParams[1], orxFONTGEN_KU32_DEFAULT_SIZE);
+      orxFONTGEN_LOG(SIZE, "Invalid character size found in '%s', defaulting to: %u.", _azParams[1], orxFONTGEN_KU32_DEFAULT_SIZE);
     }
     else
     {
       // Logs message
-      orxFONTGEN_LOG(SIZE, "No character size found, defaulting to <%u>.", orxFONTGEN_KU32_DEFAULT_SIZE);
+      orxFONTGEN_LOG(SIZE, "No character size found, defaulting to: %u.", orxFONTGEN_KU32_DEFAULT_SIZE);
     }
   }
 
@@ -419,7 +430,7 @@ static orxSTATUS orxFASTCALL ProcessMaxWidthParams(orxU32 _u32ParamCount, const 
       sstFontGen.u32MaxWidth = u32MaxWidth;
 
       // Logs message
-      orxFONTGEN_LOG(WIDTH, "Maximum texture width set to <%u>.", u32MaxWidth);
+      orxFONTGEN_LOG(WIDTH, "Maximum texture width set to: %u.", u32MaxWidth);
     }
     else
     {
@@ -445,7 +456,7 @@ static orxSTATUS orxFASTCALL ProcessSDFParams(orxU32 _u32ParamCount, const orxST
   orxFLAG_SET(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SDF, orxFONTGEN_KU32_STATIC_FLAG_NONE);
 
   // Logs message
-  orxFONTGEN_LOG(TYPE, "Font type set to SDF.");
+  orxFONTGEN_LOG(TYPE, "Font type set to: SDF.");
 
   // Done!
   return eResult;
@@ -466,7 +477,7 @@ static orxSTATUS orxFASTCALL ProcessPaddingParams(orxU32 _u32ParamCount, const o
     && (sstFontGen.vCharacterPadding.fY >= orxFLOAT_0))
     {
       // Logs message
-      orxFONTGEN_LOG(PADDING, "Character padding set to <(%g, %g)>.", sstFontGen.vCharacterPadding.fX, sstFontGen.vCharacterPadding.fY);
+      orxFONTGEN_LOG(PADDING, "Character padding set to: (%g, %g).", sstFontGen.vCharacterPadding.fX, sstFontGen.vCharacterPadding.fY);
     }
     else if((orxString_ToFloat(_azParams[1], &fPadding, orxNULL) != orxSTATUS_FAILURE)
          && (fPadding >= orxFLOAT_0))
@@ -475,7 +486,7 @@ static orxSTATUS orxFASTCALL ProcessPaddingParams(orxU32 _u32ParamCount, const o
       orxVector_Set(&(sstFontGen.vCharacterPadding), fPadding, fPadding, orxFLOAT_0);
 
       // Logs message
-      orxFONTGEN_LOG(PADDING, "Character padding set to <(%g, %g)>.", sstFontGen.vCharacterPadding.fX, sstFontGen.vCharacterPadding.fY);
+      orxFONTGEN_LOG(PADDING, "Character padding set to: (%g, %g).", sstFontGen.vCharacterPadding.fX, sstFontGen.vCharacterPadding.fY);
     }
     else
     {
@@ -508,7 +519,7 @@ static orxSTATUS orxFASTCALL ProcessFontParams(orxU32 _u32ParamCount, const orxS
       eResult = orxSTATUS_SUCCESS;
 
       // Logs message
-      orxFONTGEN_LOG(FONT, "Using font '%s'.", sstFontGen.zFileName);
+      orxFONTGEN_LOG(FONT, "Using font: %s.", sstFontGen.zFileName);
     }
     else
     {
@@ -542,7 +553,7 @@ static orxSTATUS orxFASTCALL ProcessMonospaceParams(orxU32 _u32ParamCount, const
     sstFontGen.vCharacterSize.fX = orxU2F(u32Width);
 
     // Logs message
-    orxFONTGEN_LOG(MODE, "Output mode set to monospace, using width <%u>.", u32Width);
+    orxFONTGEN_LOG(MODE, "Output mode set to monospace, with fixed width: %u.", u32Width);
   }
   else
   {
@@ -596,48 +607,52 @@ static orxSTATUS orxFASTCALL Init()
     eResult = orxParam_Register(&astParamList[i]);
   }
 
-  // No font name?
-  if(sstFontGen.zFontName == orxNULL)
+  // Success?
+  if(eResult != orxSTATUS_FAILURE)
   {
-    // Logs message
-    orxFONTGEN_LOG(OUTPUT, "No output provided, defaulting to '%s'.", orxFONTGEN_KZ_DEFAULT_NAME);
+    // No font name?
+    if(sstFontGen.zFontName == orxNULL)
+    {
+      // Logs message
+      orxFONTGEN_LOG(OUTPUT, "No output provided, defaulting to: %s.", orxFONTGEN_KZ_DEFAULT_NAME);
 
-    // Uses default one
-    sstFontGen.zFontName = orxString_Duplicate(orxFONTGEN_KZ_DEFAULT_NAME);
-  }
+      // Uses default one
+      sstFontGen.zFontName = orxString_Duplicate(orxFONTGEN_KZ_DEFAULT_NAME);
+    }
 
-  // No character size?
-  if(sstFontGen.vCharacterSize.fY == orxFLOAT_0)
-  {
-    // Updates it
-    sstFontGen.vCharacterSize.fY = orxU2F(orxFONTGEN_KU32_DEFAULT_SIZE);
+    // No character size?
+    if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SIZE))
+    {
+      // Updates it
+      sstFontGen.vCharacterSize.fY = orxU2F(orxFONTGEN_KU32_DEFAULT_SIZE);
 
-    // Logs message
-    orxFONTGEN_LOG(SIZE, "Character size defaulting to <%u>.", orxFONTGEN_KU32_DEFAULT_SIZE);
-  }
+      // Logs message
+      orxFONTGEN_LOG(SIZE, "Character size defaulting to: %u.", orxFONTGEN_KU32_DEFAULT_SIZE);
+    }
 
-  // Not monospace?
-  if(sstFontGen.vCharacterSize.fX == orxFLOAT_0)
-  {
-    // Logs message
-    orxFONTGEN_LOG(MODE, "Output mode set to non-monospace.");
-  }
+    // Not monospace?
+    if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_MONOSPACE))
+    {
+      // Logs message
+      orxFONTGEN_LOG(MODE, "Output mode set to non-monospace.");
+    }
 
-  // Not SDF?
-  if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SDF))
-  {
-    // Logs message
-    orxFONTGEN_LOG(TYPE, "Font type set to bitmap (regular).");
-  }
+    // Not SDF?
+    if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_SDF))
+    {
+      // Logs message
+      orxFONTGEN_LOG(TYPE, "Font type set to: bitmap (regular).");
+    }
 
-  // No character list?
-  if(sstFontGen.zCharacterList == orxNULL)
-  {
-    // Logs message
-    orxFONTGEN_LOG(INPUT, "Character list set to: ASCII");
+    // No character list?
+    if(!orxFLAG_TEST(sstFontGen.u32Flags, orxFONTGEN_KU32_STATIC_FLAG_CHARACTER_LIST))
+    {
+      // Logs message
+      orxFONTGEN_LOG(INPUT, "Character list set to: ASCII.");
 
-    // Defaults to ASCII
-    sstFontGen.zCharacterList = orxString_Duplicate(orxFONT_KZ_ASCII);
+      // Defaults to ASCII
+      sstFontGen.zCharacterList = orxString_Duplicate(orxFONT_KZ_ASCII);
+    }
   }
 
   // Done!
@@ -780,14 +795,14 @@ static void Run()
       orxFONTGEN_LOG(PROCESS, "Calculated character size:    %5g x %g.", orxFont_GetCharacterWidth(pstFont, (orxString_SearchChar(zCharacterList, ' ') != orxNULL) ? ' ' : orxString_GetFirstCharacterCodePoint(zCharacterList, orxNULL)), fCharacterHeight);
       orxFONTGEN_LOG(PROCESS, "Calculated character spacing: %5g x %g.", vCharacterSpacing.fX, vCharacterSpacing.fY);
       orxFONTGEN_LOG(PROCESS, "Calculated texture size:      %5g x %g.", fWidth, fHeight);
-      orxFONTGEN_LOG(PROCESS, "%u glyphs generated in '%s'.", u32CharacterCount, acBuffer);
+      orxFONTGEN_LOG(PROCESS, "%u glyphs generated in texture: %s.", u32CharacterCount, acBuffer);
 
       // Waits until all tasks are complete
       while(orxThread_GetTaskCount() != 0)
         ;
 
       // Logs message
-      orxFONTGEN_LOG(SAVE, "'%s': SUCCESS.", acBuffer);
+      orxFONTGEN_LOG(SAVE, "Writing '%s': SUCCESS.", acBuffer);
 
       // Gets config file name
       orxString_NPrint(acBuffer, sizeof(acBuffer), "%s.ini", sstFontGen.zFontName);
@@ -796,12 +811,12 @@ static void Run()
       if(orxConfig_Save(acBuffer, orxFALSE, SaveFilter) != orxSTATUS_FAILURE)
       {
         // Logs message
-        orxFONTGEN_LOG(SAVE, "'%s': SUCCESS.", acBuffer);
+        orxFONTGEN_LOG(SAVE, "Writing '%s': SUCCESS.", acBuffer);
       }
       else
       {
         // Logs message
-        orxFONTGEN_LOG(SAVE, "'%s': FAILURE.", acBuffer);
+        orxFONTGEN_LOG(SAVE, "Writing '%s': FAILURE.", acBuffer);
       }
 
       // Frees buffers
