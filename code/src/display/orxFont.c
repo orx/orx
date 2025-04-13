@@ -383,9 +383,13 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
   && (orxConfig_HasSection(_pstFont->zReference) != orxFALSE))
   {
     const orxSTRING zName;
+    orxBOOL         bSDF;
 
     /* Pushes its config section */
     orxConfig_PushSection(_pstFont->zReference);
+
+    /* Gets SDF status */
+    bSDF = orxConfig_GetBool(orxFONT_KZ_CONFIG_SDF);
 
     /* Gets typeface name */
     zName = orxConfig_GetString(orxFONT_KZ_CONFIG_TYPEFACE);
@@ -398,7 +402,6 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
       orxBITMAP      *pstBitmap;
       orxFLOAT       *afCharacterWidthList;
       orxU32          u32CharacterCount;
-      orxBOOL         bSDF;
 
       /* Retrieves character spacing */
       if(orxConfig_GetVector(orxFONT_KZ_CONFIG_CHARACTER_SPACING, &vCharacterSpacing) == orxNULL)
@@ -445,9 +448,6 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
         zCharacterList = sstFont.zANSICharacterList;
       }
 
-      /* Gets SDF status */
-      bSDF = orxConfig_GetBool(orxFONT_KZ_CONFIG_SDF);
-
       /* Gets character count */
       u32CharacterCount = orxString_GetCharacterCount(zCharacterList);
 
@@ -484,9 +484,6 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
             if(((_pstFont->pstTexture == pstTexture) && (_pstFont->fTop = _pstFont->fLeft, orxTexture_GetSize(pstTexture, &(_pstFont->fWidth), &(_pstFont->fHeight)) != orxSTATUS_FAILURE))
             || (orxFont_SetTexture(_pstFont, pstTexture) != orxSTATUS_FAILURE))
             {
-              const orxSTRING zShader;
-              orxCHAR         acShaderBuffer[256];
-
               /* Sets its owner */
               orxStructure_SetOwner(pstTexture, _pstFont);
 
@@ -508,56 +505,6 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
 
               /* Stores its typeface */
               _pstFont->zTypeface = orxString_Store(zName);
-
-              /* Gets shader */
-              zShader = orxConfig_GetString(orxFONT_KZ_CONFIG_SHADER);
-
-              /* SDF? */
-              if(bSDF != orxFALSE)
-              {
-                /* Updates flags */
-                orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_SDF, orxFONT_KU32_FLAG_NONE);
-
-                /* No custom shader? */
-                if(*zShader == orxCHAR_NULL)
-                {
-                  orxVECTOR       vSize;
-                  orxCHAR         acBuffer[256];
-                  const orxSTRING azSectionList[2] = {acBuffer, acShaderBuffer};
-
-                  /* Gets shader config section */
-                  orxString_NPrint(acShaderBuffer, sizeof(acShaderBuffer), "%s:%s", orxFONT_KZ_SDF_SHADER_NAME, _pstFont->zReference);
-
-                  /* Uses SDF shader as its parent */
-                  orxConfig_SetParent(acShaderBuffer, orxFONT_KZ_SDF_SHADER_NAME);
-
-                  /* Copies font's origin (for hot-reloading purposes) */
-                  orxConfig_SetOrigin(acShaderBuffer, orxConfig_GetOrigin(_pstFont->zReference));
-
-                  /* Stores it */
-                  zShader = acShaderBuffer;
-
-                  /* Gets current section with inheritance marker  */
-                  orxString_NPrint(acBuffer, sizeof(acBuffer), "%c%s", orxFONT_KC_INHERITANCE_MARKER, _pstFont->zReference);
-
-                  /* For all SDF shader properties, inherits the local ones */
-                  orxConfig_PushSection(orxFONT_KZ_SDF_SHADER_NAME);
-                  orxConfig_ForAllKeys(orxFont_InheritProperty, orxTRUE, (void *)azSectionList);
-                  orxConfig_PopSection();
-
-                  /* Sets its texture size */
-                  orxVector_Set(&vSize, _pstFont->fWidth, _pstFont->fHeight, orxFLOAT_0);
-                  orxConfig_PushSection(acShaderBuffer);
-                  orxConfig_SetVector(orxFONT_KZ_CONFIG_TEXTURE_SIZE, &vSize);
-                  orxConfig_PopSection();
-                }
-              }
-
-              /* Sets shader */
-              orxFont_SetShaderFromConfig(_pstFont, zShader);
-
-              /* Updates its map */
-              orxFont_UpdateMap(_pstFont);
 
               /* Updates result */
               eResult = orxSTATUS_SUCCESS;
@@ -609,8 +556,8 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
           /* Links it */
           if(orxFont_SetTexture(_pstFont, pstTexture) != orxSTATUS_FAILURE)
           {
-            orxVECTOR       vCharacterSize, vCharacterSpacing;
             const orxSTRING zCharacterList;
+            orxVECTOR       vCharacterSize, vCharacterSpacing;
 
             /* Removes its shader */
             orxFont_SetShaderFromConfig(_pstFont, orxNULL);
@@ -758,9 +705,6 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
 
             /* Reactivates map update */
             orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_CAN_UPDATE_MAP, orxFONT_KU32_FLAG_NONE);
-
-            /* Updates its map */
-            orxFont_UpdateMap(_pstFont);
           }
           else
           {
@@ -785,6 +729,62 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't find texture property.", _pstFont->zReference);
       }
+    }
+
+    /* Success? */
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      const orxSTRING zShader;
+
+      /* Gets shader */
+      zShader = orxConfig_GetString(orxFONT_KZ_CONFIG_SHADER);
+
+      /* SDF? */
+      if(bSDF != orxFALSE)
+      {
+        /* Updates flags */
+        orxStructure_SetFlags(_pstFont, orxFONT_KU32_FLAG_SDF, orxFONT_KU32_FLAG_NONE);
+
+        /* No custom shader? */
+        if(*zShader == orxCHAR_NULL)
+        {
+          orxVECTOR       vSize;
+          orxCHAR         acBuffer[256], acShaderBuffer[256];
+          const orxSTRING azSectionList[2] = {acBuffer, acShaderBuffer};
+
+          /* Gets shader config section */
+          orxString_NPrint(acShaderBuffer, sizeof(acShaderBuffer), "%s:%s", orxFONT_KZ_SDF_SHADER_NAME, _pstFont->zReference);
+
+          /* Uses SDF shader as its parent */
+          orxConfig_SetParent(acShaderBuffer, orxFONT_KZ_SDF_SHADER_NAME);
+
+          /* Copies font's origin (for hot-reloading purposes) */
+          orxConfig_SetOrigin(acShaderBuffer, orxConfig_GetOrigin(_pstFont->zReference));
+
+          /* Stores it */
+          zShader = acShaderBuffer;
+
+          /* Gets current section with inheritance marker  */
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%c%s", orxFONT_KC_INHERITANCE_MARKER, _pstFont->zReference);
+
+          /* For all SDF shader properties, inherits the local ones */
+          orxConfig_PushSection(orxFONT_KZ_SDF_SHADER_NAME);
+          orxConfig_ForAllKeys(orxFont_InheritProperty, orxTRUE, (void *)azSectionList);
+          orxConfig_PopSection();
+
+          /* Sets its texture size */
+          orxVector_Set(&vSize, _pstFont->fWidth, _pstFont->fHeight, orxFLOAT_0);
+          orxConfig_PushSection(acShaderBuffer);
+          orxConfig_SetVector(orxFONT_KZ_CONFIG_TEXTURE_SIZE, &vSize);
+          orxConfig_PopSection();
+        }
+      }
+
+      /* Sets shader */
+      orxFont_SetShaderFromConfig(_pstFont, zShader);
+
+      /* Updates its map */
+      orxFont_UpdateMap(_pstFont);
     }
 
     /* Pops config section */

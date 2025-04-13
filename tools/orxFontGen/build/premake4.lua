@@ -93,29 +93,15 @@ solution "orxFontGen"
     {
         "../include",
         "../../../code/include",
-        "$(ORX)/include",
-        "../../../extern/stb_image",
-        "$(ORX)/../extern/stb_image",
-        "../../../extern/freetype/include",
-        "$(ORX)/../extern/freetype/include"
+        "$(ORX)/include"
     }
 
-    configuration {"not macosx"}
-        libdirs
-        {
-            "../lib",
-            "../../../code/lib/static",
-            "$(ORX)/lib/static"
-        }
-
-    configuration {"macosx"}
-        libdirs
-        {
-            "../../../code/lib/dynamic",
-            "$(ORX)/lib/dynamic"
-        }
-
-    configuration {}
+    libdirs
+    {
+        "../lib",
+        "../../../code/lib/dynamic",
+        "$(ORX)/lib/dynamic"
+    }
 
     targetdir ("../bin/")
 
@@ -149,25 +135,8 @@ solution "orxFontGen"
         flags {"Optimize", "NoRTTI"}
         links {"orx"}
 
-    configuration {}
-        defines {"__orxSTATIC__"}
-
 
 -- Linux
-
-    configuration {"linux", "x32"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/linux",
-            "$(ORX)/../extern/freetype/lib/linux"
-        }
-
-    configuration {"linux", "x64"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/linux64",
-            "$(ORX)/../extern/freetype/lib/linux64"
-        }
 
     configuration {"linux"}
         buildoptions {"-Wno-unused-function"}
@@ -180,11 +149,6 @@ solution "orxFontGen"
 -- Mac OS X
 
     configuration {"macosx"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/mac",
-            "$(ORX)/../extern/freetype/lib/mac"
-        }
         buildoptions
         {
             "-stdlib=libc++",
@@ -197,7 +161,6 @@ solution "orxFontGen"
             "-stdlib=libc++",
             "-dead_strip"
         }
-        postbuildcommands {"$(shell [ -f " .. copybase .. "/../../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
 
     configuration {"macosx", "x32"}
         buildoptions
@@ -216,34 +179,6 @@ solution "orxFontGen"
 
     configuration {"windows", "vs*", "*Debug*"}
         linkoptions {"/NODEFAULTLIB:LIBCMT"}
-
-    configuration {"vs2017 or vs2019 or vs2022", "x32"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2015/32",
-            "$(ORX)/../extern/freetype/lib/vc2015/32"
-        }
-
-    configuration {"vs2017 or vs2019 or vs2022", "x64"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/vc2015/64",
-            "$(ORX)/../extern/freetype/lib/vc2015/64"
-        }
-
-    configuration {"windows", "gmake or codelite or codeblocks", "x32"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/mingw/32",
-            "$(ORX)/../extern/freetype/lib/mingw/32"
-        }
-
-    configuration {"windows", "gmake or codelite or codeblocks", "x64"}
-        libdirs
-        {
-            "../../../extern/freetype/lib/mingw/64",
-            "$(ORX)/../extern/freetype/lib/mingw/64"
-        }
 
     configuration {"windows", "gmake", "x32"}
         prebuildcommands
@@ -286,10 +221,6 @@ project "orxFontGen"
 
     files {"../src/orxFontGen.c"}
     targetname ("orxfontgen")
-    links
-    {
-        "freetype"
-    }
 
 
 -- Linux
@@ -303,6 +234,7 @@ project "orxFontGen"
             "rt",
             "pthread"
         }
+        postbuildcommands {"cp -f $(ORX)/lib/dynamic/liborx*.so " .. copybase .. "/bin"}
 
 
 -- Mac OS X
@@ -329,6 +261,7 @@ project "orxFontGen"
             "z",
             "pthread"
         }
+        postbuildcommands {"$(shell [ -f " .. copybase .. "/../../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
 
 
 -- Windows
@@ -339,3 +272,4 @@ project "orxFontGen"
             "winmm",
             "OpenGL32"
         }
+        postbuildcommands {"cmd /c copy /Y $(ORX)\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
