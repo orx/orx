@@ -2518,7 +2518,7 @@ orxHANDLE orxFASTCALL orxResource_Open(const orxSTRING _zLocation, orxBOOL _bEra
 
       /* Inits it */
       pstOpenInfo->pstTypeInfo  = &(pstType->stInfo);
-      pstOpenInfo->u32OpCount = 0;
+      pstOpenInfo->u32OpCount   = 0;
 
       /* Opens it */
       pstOpenInfo->hResource = pstType->stInfo.pfnOpen(_zLocation + u32TagLength + 1, _bEraseMode);

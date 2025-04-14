@@ -3078,6 +3078,14 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
   orxCommand_AddAlias("?", "Command.Help", orxNULL);
 
+  /* Alias: ListCommands/LS */
+  orxCommand_AddAlias("ListCommands", "Command.ListCommands", orxNULL);
+  orxCommand_AddAlias("LS", "Command.ListCommands", orxNULL);
+
+  /* Alias: ListAliases/LA */
+  orxCommand_AddAlias("ListAliases", "Command.ListAliases", orxNULL);
+  orxCommand_AddAlias("LA", "Command.ListAliases", orxNULL);
+
   /* Alias: Exit */
   orxCommand_AddAlias("Exit", "Command.Exit", orxNULL);
   /* Alias: Quit */
@@ -3124,9 +3132,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Alias: == */
   orxCommand_AddAlias("==", "Logic.AreEqual", orxNULL);
   /* Alias: gt */
-  orxCommand_AddAlias("gt", "Logic.IsGreater", orxNULL);
+  orxCommand_AddAlias("GT", "Logic.IsGreater", orxNULL);
   /* Alias: ly */
-  orxCommand_AddAlias("lt", "Logic.IsLesser", orxNULL);
+  orxCommand_AddAlias("LT", "Logic.IsLesser", orxNULL);
 
   /* Alias: Math.Add */
   orxCommand_AddAlias("Math.Add", "Command.Add", orxNULL);
@@ -3281,6 +3289,14 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("Help");
   orxCommand_RemoveAlias("?");
 
+  /* Alias: ListCommands/LS */
+  orxCommand_RemoveAlias("ListCommands");
+  orxCommand_RemoveAlias("LS");
+
+  /* Alias: ListAliases/LA */
+  orxCommand_RemoveAlias("ListAliases");
+  orxCommand_RemoveAlias("LA");
+
   /* Alias: Exit */
   orxCommand_RemoveAlias("Exit");
   /* Alias: Quit */
@@ -3327,9 +3343,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: == */
   orxCommand_RemoveAlias("==");
   /* Alias: gt */
-  orxCommand_RemoveAlias("gt");
+  orxCommand_RemoveAlias("GT");
   /* Alias: lt */
-  orxCommand_RemoveAlias("lt");
+  orxCommand_RemoveAlias("LT");
 
   /* Alias: Math.Add */
   orxCommand_RemoveAlias("Math.Add");
