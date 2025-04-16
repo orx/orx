@@ -117,6 +117,17 @@ static orxBOOL orxFASTCALL SaveFilter(const orxSTRING _zSectionName, const orxST
   return bResult;
 }
 
+static orxSTATUS orxFASTCALL Bootstrap()
+{
+  // No window
+  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+  orxConfig_SetS32(orxDISPLAY_KZ_CONFIG_MONITOR, -1);
+  orxConfig_PopSection();
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
 static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName, orxHASHTABLE *_pstCharacterTable)
 {
   orxFILE  *pstFile;
@@ -574,6 +585,9 @@ static void orxFASTCALL Setup()
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_PARAM);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FILE);
   orxModule_AddDependency(orxMODULE_ID_MAIN, orxMODULE_ID_FONT);
+
+  // Done!
+  return;
 }
 
 static orxSTATUS orxFASTCALL Init()
@@ -684,6 +698,9 @@ static void orxFASTCALL Exit()
     orxString_Delete(sstFontGen.zCharacterList);
     sstFontGen.zCharacterList = orxNULL;
   }
+
+  // Done!
+  return;
 }
 
 static void Run()
@@ -829,6 +846,9 @@ static void Run()
       orxFONTGEN_LOG(LOAD, "Failed to create font '%s'.", sstFontGen.zFontName);
     }
   }
+
+  // Done!
+  return;
 }
 
 int main(int argc, char **argv)
@@ -838,6 +858,9 @@ int main(int argc, char **argv)
 
   // Registers main module
   orxModule_Register(orxMODULE_ID_MAIN, "MAIN", Setup, Init, Exit);
+
+  // Set config bootstrap function
+  orxConfig_SetBootstrap(Bootstrap);
 
   // Sends the command line arguments to orxParam module
   if(orxParam_SetArgs(argc, argv) != orxSTATUS_FAILURE)

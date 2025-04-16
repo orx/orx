@@ -2352,7 +2352,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_ProcessFont(void *_pContext)
 
           /* Gets its shape */
           s32VertexCount = stbtt_GetGlyphShape(&(pstLoadInfo->stFontInfo), pstLoadInfo->astGlyphList[i].s32Index, &astVertexList);
-          
+
           /* Valid? */
           if(s32VertexCount > 0)
           {
@@ -2442,7 +2442,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_ProcessFont(void *_pContext)
           /* Renders the glyph */
           stbtt_MakeGlyphBitmap(&(pstLoadInfo->stFontInfo), pu8Buffer + s32X + orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fX) + ((s32Y + orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fY)) * s32TextureWidth), s32Width - orxF2S(pstLoadInfo->astGlyphList[i].stGlyph.fX), orxF2S(pstLoadInfo->vCharacterSize.fY - pstLoadInfo->astGlyphList[i].stGlyph.fY), s32TextureWidth, pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY, pstLoadInfo->astGlyphList[i].s32Index);
         }
-        
+
         /* Updates horizontal position */
         s32X += s32Width + orxF2S(pstLoadInfo->vCharacterSpacing.fX);
       }
@@ -6077,6 +6077,13 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
       /* Updates flags */
       orxFLAG_SET(sstDisplay.u32Flags, orxDISPLAY_KU32_STATIC_FLAG_NONE, orxDISPLAY_KU32_STATIC_FLAG_NO_RESIZE);
     }
+
+#ifdef __orxHEADLESS__
+
+    /* Enforces hidden mode */
+    orxConfig_SetS32(orxDISPLAY_KZ_CONFIG_MONITOR, -1);
+
+#endif /* __orxHEADLESS__ */
 
     /* Should hide? */
     if(orxConfig_GetS32(orxDISPLAY_KZ_CONFIG_MONITOR) < 0)

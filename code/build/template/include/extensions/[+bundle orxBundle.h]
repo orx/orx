@@ -44,6 +44,7 @@ const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 #define orxBUNDLE_KU32_LINE_LENGTH          16
 #define orxBUNDLE_KU32_TABLE_SIZE           256
 #define orxBUNDLE_KU32_TOC_SIZE             1024
+#define orxBUNDLE_KS32_MONITOR_GUARD        0x40000000
 
 #define orxBUNDLE_KZ_BINARY_TAG             "OBR1"
 #define orxBUNDLE_KU32_HEADER_INTRO_SIZE    (4 + 4)
@@ -104,6 +105,7 @@ typedef struct __orxBUNDLE_t
   orxHASHTABLE *pstDataTable;
   orxHANDLE     hResource;
   orxU32        u32DataCount;
+  orxS32        s32Monitor;
   orxBOOL       bProcess;
   orxBOOL       bInit;
 
@@ -384,6 +386,15 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
       // Updates debug flags
       orxDEBUG_SET_FLAGS(u32DebugFlags, orxDEBUG_KU32_STATIC_FLAG_NONE);
 
+      // Hides window
+      orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+      if(orxConfig_HasValue(orxDISPLAY_KZ_CONFIG_MONITOR) != orxFALSE)
+      {
+        sstBundle.s32Monitor = orxConfig_GetS32(orxDISPLAY_KZ_CONFIG_MONITOR) | orxBUNDLE_KS32_MONITOR_GUARD;
+      }
+      orxConfig_SetS32(orxDISPLAY_KZ_CONFIG_MONITOR, -1);
+      orxConfig_PopSection();
+
       // Updates result
       eResult = orxSTATUS_SUCCESS;
       break;
@@ -423,6 +434,18 @@ static orxINLINE orxSTATUS orxBundle_Process()
   // Waits until all pending operations are over
   while(orxResource_GetTotalPendingOpCount() != 0)
     ;
+
+  // Restores monitor property
+  orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
+  if(sstBundle.s32Monitor != 0)
+  {
+    orxConfig_SetS32(orxDISPLAY_KZ_CONFIG_MONITOR, sstBundle.s32Monitor & ~orxBUNDLE_KS32_MONITOR_GUARD);
+  }
+  else
+  {
+    orxConfig_ClearValue(orxDISPLAY_KZ_CONFIG_MONITOR);
+  }
+  orxConfig_PopSection();
 
   // Updates debug flag
   u32DebugFlags = orxDEBUG_GET_FLAGS();
@@ -494,11 +517,15 @@ static orxINLINE orxSTATUS orxBundle_Process()
         // Gets it
         zRule = orxConfig_GetListString(astRuleInfoList[i].zKey, (orxS32)j);
 
-        // Adds it to the rule table
-        *orxHashTable_Retrieve(pstRuleTable, orxString_Hash(zRule)) = astRuleInfoList[i].pValue;
+        // Valid?
+        if(*zRule != orxCHAR_NULL)
+        {
+          // Adds it to the rule table
+          *orxHashTable_Retrieve(pstRuleTable, orxString_Hash(zRule)) = astRuleInfoList[i].pValue;
 
-        // Logs message
-        orxLOG(orxBUNDLE_KZ_LOG_TAG "Applying rule %s" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_RESET, astRuleInfoList[i].zQualifier, zRule);
+          // Logs message
+          orxLOG(orxBUNDLE_KZ_LOG_TAG "Applying rule %s" orxANSI_KZ_COLOR_FG_CYAN "%s" orxANSI_KZ_COLOR_RESET, astRuleInfoList[i].zQualifier, zRule);
+        }
       }
     }
 
