@@ -125,7 +125,7 @@ static orxSTATUS orxFASTCALL Bootstrap()
   orxConfig_PopSection();
 
   // Done!
-  return orxSTATUS_SUCCESS;
+  return orxSTATUS_FAILURE;
 }
 
 static orxSTATUS orxFASTCALL ParseTextFile(const orxSTRING _zFileName, orxHASHTABLE *_pstCharacterTable)
