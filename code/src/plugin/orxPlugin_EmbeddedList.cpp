@@ -38,7 +38,7 @@
 /* Headless? */
 #if defined(__orxHEADLESS__)
 
-#include "../plugins/Display/GLFW/orxDisplay.cpp" /* Hidden window enforced by the plugin */
+#include "../plugins/Display/Dummy/orxDisplay.c"
 #include "../plugins/Joystick/Dummy/orxJoystick.c"
 #include "../plugins/Keyboard/Dummy/orxKeyboard.c"
 #include "../plugins/Mouse/Dummy/orxMouse.c"
