@@ -493,7 +493,7 @@ static orxU32 orxFASTCALL                                 orxString_GetFirstChar
   if(_pzRemaining != orxNULL)
   {
     /* Stores it */
-    *_pzRemaining = (orxSTRING)(pu8Byte + 1);
+    *_pzRemaining = (*pu8Byte == orxCHAR_NULL) ? orxNULL : (orxSTRING)(pu8Byte + 1);
   }
 
   /* Done! */
