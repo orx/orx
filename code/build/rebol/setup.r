@@ -18,6 +18,7 @@ hg-hook:        {update.orx}
 git:            %.git/
 git-hooks:      [%post-checkout %post-merge]
 build-file:     %code/include/base/orxBuild.h
+script-root:    %code/build/rebol
 env-variable:   {ORX}
 env-path:       %code
 platform-data:  compose/deep [
@@ -34,7 +35,7 @@ switch platform: system/platform [
 ]
 platform-info: platform-data/:platform
 
-change-dir root: system/options/path
+change-dir root: copy/part system/options/script find system/options/script script-root
 attempt [write build-file {}]
 
 ; Should override cache?
