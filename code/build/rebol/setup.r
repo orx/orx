@@ -67,7 +67,7 @@ req-file: %.extern
 cur-file: extern/.version
 req-ver: trim/all read/string req-file
 cur-ver: if exists? cur-file [trim/all read/string cur-file]
-print [{== Checking version: [} extern {]}]
+print [{== Checking version [} extern {]}]
 either req-ver = cur-ver [
   print [{== [} cur-ver {] already installed, skipping!}]
 ] [
@@ -146,8 +146,8 @@ case [
   skip-env [
     print {== Skipping environment setup}
   ]
-  new-env: (trim/with any [get-env env-variable {}] dbl-quote) != trim/with copy env-path: rejoin [dbl-quote to-local-file clean-path root/:env-path dbl-quote] dbl-quote [
-    print [{== Setting environment: [} env-variable {=} env-path {]}]
+  new-env: do [print [{== Checking environment [} env-variable {]}] (trim/with any [get-env env-variable {}] dbl-quote) != trim/with copy env-path: rejoin [dbl-quote to-local-file clean-path root/:env-path dbl-quote] dbl-quote] [
+    prin [{== Setting [} env-path {]}]
     set-env env-variable env-path
     either platform = 'windows [
       call/wait/shell/output form reduce [{setx} env-variable env-path] none
@@ -170,9 +170,10 @@ case [
         ]
       ]
     ]
+    print {, done!}
   ]
   true [
-    print [{== Environment already set: [} env-variable {=} env-path {], skipping!}]
+    print [{== [} env-path {] already set, skipping!}]
   ]
 ]
 
