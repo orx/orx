@@ -52,6 +52,23 @@
 
 /** Misc defines
  */
+#define orxFONT_KZ_CONFIG_TEXTURE_NAME                "Texture"
+#define orxFONT_KZ_CONFIG_CHARACTER_LIST              "CharacterList"
+#define orxFONT_KZ_CONFIG_CHARACTER_SIZE              "CharacterSize"
+#define orxFONT_KZ_CONFIG_CHARACTER_HEIGHT            "CharacterHeight"
+#define orxFONT_KZ_CONFIG_CHARACTER_WIDTH_LIST        "CharacterWidthList"
+#define orxFONT_KZ_CONFIG_CHARACTER_SPACING           "CharacterSpacing"
+#define orxFONT_KZ_CONFIG_CHARACTER_PADDING           "CharacterPadding"
+#define orxFONT_KZ_CONFIG_TEXTURE_ORIGIN              "TextureOrigin"
+#define orxFONT_KZ_CONFIG_TEXTURE_SIZE                "TextureSize"
+#define orxFONT_KZ_CONFIG_KEEP_IN_CACHE               "KeepInCache"
+#define orxFONT_KZ_CONFIG_TYPEFACE                    "Typeface"
+#define orxFONT_KZ_CONFIG_SDF                         "SDF"
+#define orxFONT_KZ_CONFIG_SHADER                      "Shader"
+
+#define orxFONT_KZ_ASCII                              "ascii"
+#define orxFONT_KZ_ANSI                               "ansi"
+
 #define orxFONT_KZ_DEFAULT_FONT_NAME                  "orx:font:default"
 #define orxFONT_KZ_DEFAULT_TEXTURE_NAME               "orx:texture:font:default"
 #define orxFONT_KZ_SDF_SHADER_NAME                    "orx:shader:font:sdf"

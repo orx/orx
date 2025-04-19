@@ -1242,11 +1242,11 @@ orxU32 orxFASTCALL orxAnim_GetEventCount(const orxANIM *_pstAnim)
   return (orxU32)_pstAnim->u16EventCount;
 }
 
-/** Animation time length accessor
+/** Animation duration accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation time length
  */
-orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
+orxFLOAT orxFASTCALL orxAnim_GetDuration(const orxANIM *_pstAnim)
 {
   orxFLOAT fLength;
 

@@ -533,6 +533,9 @@ static orxINLINE void orxTexture_RegisterCommands()
 
   /* Command: GetLoadCount */
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetLoadCount, "Load Count", orxCOMMAND_VAR_TYPE_U32, 0, 0);
+
+  /* Alias: Load */
+  orxCommand_AddAlias("Texture.Load", "Texture.Create", orxNULL);
 }
 
 /** Unregisters all the texture commands
@@ -558,6 +561,9 @@ static orxINLINE void orxTexture_UnregisterCommands()
 
   /* Command: GetLoadCount */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, GetLoadCount);
+
+  /* Alias: Load */
+  orxCommand_RemoveAlias("Texture.Load");
 }
 
 /** Creates an empty texture

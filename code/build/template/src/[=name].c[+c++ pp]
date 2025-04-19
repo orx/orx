@@ -80,6 +80,15 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Init extensions
   InitExtensions();
 
+  // Push [Main] as the default config section
+  orxConfig_PushSection("Main");
+
+  // Create the viewports
+  for(orxS32 i = 0, iCount = orxConfig_GetListCount("ViewportList"); i < iCount; i++)
+  {
+    orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
+  }
+
 [+scroll
 [-python
   // Create the [-movie scene][+movie splash screen]

@@ -340,9 +340,9 @@ static orxSTATUS orxFASTCALL orxBounce_EventHandler(const orxEVENT *_pstEvent)
         /* Not first frame? (to prevent looping track flood) */
         if(pstPayload->fTimeStamp != orxFLOAT_0)
         {
-        /* Logs info */
-        orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s::%s::%s]" orxANSI_KZ_COLOR_FG_DEFAULT " has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
-      }
+          /* Logs info */
+          orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "[%s::%s::%s]" orxANSI_KZ_COLOR_FG_DEFAULT " has been triggered", orxObject_GetName(orxOBJECT(_pstEvent->hSender)), pstPayload->zTrackName, pstPayload->zEvent);
+        }
       }
 
       break;

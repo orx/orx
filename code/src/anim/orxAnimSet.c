@@ -3815,27 +3815,27 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
     }
     else
     {
-      orxFLOAT fLength;
+      orxFLOAT fDuration;
 
       /* Defaults to no target clearing */
       *_pbClearTarget = orxFALSE;
 
       /* Gets current animation duration */
-      fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
+      fDuration = orxAnim_GetDuration(_pstAnimSet->pastAnim[u32Anim]);
 
       /* Next animation? */
-      if((fLength == orxFLOAT_0) || (*_pfTime > fLength))
+      if((fDuration == orxFLOAT_0) || (*_pfTime > fDuration))
       {
         /* Get next animation */
         u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, _u32DstAnim, orxFALSE);
 
         /* Has next animation? */
         if((u32TargetAnim != orxU32_UNDEFINED)
-        && ((fLength > orxFLOAT_0)
+        && ((fDuration > orxFLOAT_0)
          || (u32TargetAnim != _u32SrcAnim)))
         {
           /* Updates timestamp */
-          *_pfTime -= fLength;
+          *_pfTime -= fDuration;
 
           /* Gets link index */
           u32LinkIndex = ((orxU32)(pstWorkTable->u16TableSize) * u32Anim) + u32TargetAnim;
