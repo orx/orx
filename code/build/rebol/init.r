@@ -26,8 +26,9 @@ platforms:  [
   mac         [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
   linux       [config [{gmake} {codelite} {codeblocks}                           ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
 ]
-source-path: %../template/
-extern: %../../../extern/
+script-root:  %code/build/rebol
+source-path:  %../template/
+extern:       %../../../extern/
 
 ; Helpers
 log: function [
@@ -100,7 +101,7 @@ apply-template: function [
 ]
 
 ; Inits
-change-dir root: system/options/path
+change-dir root: copy/part system/options/script find system/options/script script-root
 code-path: {..}
 date: to-string now/date
 switch platform: system/platform [
