@@ -15,7 +15,8 @@ environment:
   - Version: 64
 
 install:
-- cmd: setup ../cache
+- cmd: >-
+    cmd /C "code\build\rebol\r3-windows.exe -qs code\build\rebol\setup.r ../cache"
 
 cache: ../cache
 
@@ -41,7 +42,7 @@ build_script:
 
     set ORX=%CD%\code
 
-    init.bat test +scroll +imgui +bundle
+    cmd /C "code\build\rebol\r3-windows.exe -qs code\build\rebol\init.r test +scroll +imgui +bundle"
 
     msbuild test/build/windows/%Folder%/test.sln /p:Platform=%Platform% /p:Configuration=Release
 
