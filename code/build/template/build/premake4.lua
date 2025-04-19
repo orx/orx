@@ -167,6 +167,7 @@ solution "[name]"
         buildoptions
         {
             "-DorxWEB_EXECUTABLE_NAME='\"[name].wasm\"'",
+            "-Wno-undefined-var-template",
             "--use-port=contrib.glfw3",
             "-pthread"
         }
