@@ -142,32 +142,37 @@ either req-ver = cur-ver [
 ]
 
 ; Sets environment variable
-either skip-env [
-  print {== Skipping environment setup}
-] [
-  new-env: (trim/with any [get-env env-variable {}] dbl-quote) != trim/with copy env-path: rejoin [dbl-quote to-local-file clean-path root/:env-path dbl-quote] dbl-quote
-  print [{== Setting environment: [} env-variable {=} env-path {]}]
-  set-env env-variable env-path
-  either platform = 'windows [
-    call/wait/shell/output form reduce [{setx} env-variable env-path] none
-  ] [
-    env-home: to-rebol-file dirize get-env {HOME}
-    foreach [env-file env-prefix mandatory] reduce [
-      env-home/.profile                     rejoin [{export } env-variable {=}]   true
-      env-home/.bashrc                      rejoin [{export } env-variable {=}]   true
-      env-home/.bash_profile                rejoin [{export } env-variable {=}]   false
-      env-home/.zshrc                       rejoin [{export } env-variable {=}]   false
-      env-home/.zprofile                    rejoin [{export } env-variable {=}]   false
-      env-home/.config/fish/fish_variables  rejoin [{SETUVAR } env-variable {:}]  false
+case [
+  skip-env [
+    print {== Skipping environment setup}
+  ]
+  new-env: (trim/with any [get-env env-variable {}] dbl-quote) != trim/with copy env-path: rejoin [dbl-quote to-local-file clean-path root/:env-path dbl-quote] dbl-quote [
+    print [{== Setting environment: [} env-variable {=} env-path {]}]
+    set-env env-variable env-path
+    either platform = 'windows [
+      call/wait/shell/output form reduce [{setx} env-variable env-path] none
     ] [
-      if any [mandatory exists? env-file] [
-        parse env-content: any [attempt [to-string read env-file] copy {}] [
-          thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
-        | to end start: (insert start rejoin [newline env-prefix env-path newline])
+      env-home: to-rebol-file dirize get-env {HOME}
+      foreach [env-file env-prefix mandatory] reduce [
+        env-home/.profile                     rejoin [{export } env-variable {=}]   true
+        env-home/.bashrc                      rejoin [{export } env-variable {=}]   true
+        env-home/.bash_profile                rejoin [{export } env-variable {=}]   false
+        env-home/.zshrc                       rejoin [{export } env-variable {=}]   false
+        env-home/.zprofile                    rejoin [{export } env-variable {=}]   false
+        env-home/.config/fish/fish_variables  rejoin [{SETUVAR } env-variable {:}]  false
+      ] [
+        if any [mandatory exists? env-file] [
+          parse env-content: any [attempt [to-string read env-file] copy {}] [
+            thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
+          | to end start: (insert start rejoin [newline env-prefix env-path newline])
+          ]
+          attempt [write env-file env-content]
         ]
-        attempt [write env-file env-content]
       ]
     ]
+  ]
+  true [
+    print [{== Environment already set: [} env-variable {=} env-path {], skipping!}]
   ]
 ]
 
