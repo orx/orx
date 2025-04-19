@@ -281,6 +281,8 @@ public:
 
                 ScrollObject *  GetObject(orxU64 _u64GUID) const;
           template<class O> O * GetObject(orxU64 _u64GUID) const {return ScrollCast<O *>(GetObject(_u64GUID));}
+                ScrollObject *  GetObject(const orxSTRING _zSection, const orxSTRING _zKey = "ID") const;
+          template<class O> O * GetObject(const orxSTRING _zSection, const orxSTRING _zKey = "ID") const {return ScrollCast<O *>(GetObject(_zSection, _zKey));}
 
                 ScrollObject *  GetNextObject(const ScrollObject *_poObject = orxNULL, orxBOOL _bChronological = orxFALSE) const;
           template<class O> O * GetNextObject(const O *_poObject = orxNULL) const;
@@ -769,6 +771,31 @@ ScrollObject *ScrollBase::GetObject(orxU64 _u64GUID) const
 
   // Gets object
   pstObject = orxOBJECT(orxStructure_Get(_u64GUID));
+
+  // Valid?
+  if(pstObject)
+  {
+    // Updates result
+    poResult = (ScrollObject *)orxObject_GetUserData(pstObject);
+  }
+
+  // Done!
+  return poResult;
+}
+
+ScrollObject *ScrollBase::GetObject(const orxSTRING _zSection, const orxSTRING _zKey) const
+{
+  orxOBJECT    *pstObject;
+  ScrollObject *poResult = orxNULL;
+
+  // Pushes config section
+  orxConfig_PushSection(_zSection);
+
+  // Gets object
+  pstObject = orxOBJECT(orxStructure_Get(orxConfig_GetU64(_zKey)));
+
+  // Pops config section
+  orxConfig_PopSection();
 
   // Valid?
   if(pstObject)
