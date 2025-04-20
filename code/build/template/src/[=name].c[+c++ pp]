@@ -74,6 +74,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [+scroll void [!name]::CameraUpdate(const orxCLOCK_INFO &_rstClockInfo)]
 [-scroll void orxFASTCALL CameraUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)]
 {
+[-python
   // Get MainCamera proxy object
 [+scroll
   ScrollObject *poMainCamera = [!name]::GetInstance().GetObject("MainCamera");
@@ -94,6 +95,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [-scroll
     orxObject_SetPosition(pstMainCamera, orxVector_Round(&vPosition, orxObject_GetPosition(pstMainCamera, &vPosition)));]
   }
+]
+[+python
+  // Call Python camera update
+  [-scroll orxPy_CameraUpdate(_pstClockInfo, orxNULL);][+scroll orxPy_CameraUpdate(&_rstClockInfo, orxNULL);]]
 }
 
 /** Init function, it is called when all orx's modules have been initialized

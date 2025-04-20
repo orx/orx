@@ -23,6 +23,7 @@ extern "C"
 
 #define orxPY_KZ_DEFAULT_INIT "on_init"
 #define orxPY_KZ_DEFAULT_UPDATE "on_update"
+#define orxPY_KZ_DEFAULT_CAMERAUPDATE "on_camera_update"
 #define orxPY_KZ_DEFAULT_EXIT "on_exit"
 
 #define orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER "on_create"
@@ -42,6 +43,7 @@ extern "C"
 
   orxSTATUS orxPy_Init();
   void orxPy_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext);
+  void orxPy_CameraUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext);
 
 #ifdef orxPY_IMPL
 
@@ -53,6 +55,7 @@ extern "C"
     py_GlobalRef pyMod;      // Module containing callbacks
     py_Name pyInit;          // Engine init callback
     py_Name pyUpdate;        // Engine update callback
+    py_Name pyCameraUpdate;  // Engine update callback, after all other updates are complete
     py_Name pyExit;          // Engine exit callback
     py_Name pyOnCreate;      // Object creation callback
     py_Name pyOnDelete;      // Object deletion callback
@@ -197,6 +200,18 @@ extern "C"
       py_Ref pyArg = py_r0();
       py_newfloat(pyArg, _pstClockInfo->fDT);
       orxPy_Call1(orxPy_GetCallback(sstPy.pyUpdate), pyArg);
+    }
+    orxPROFILER_POP_MARKER();
+  }
+
+  void orxPy_CameraUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
+  {
+    orxPROFILER_PUSH_MARKER(__FUNCTION__);
+    if (sstPy.pyCameraUpdate != 0)
+    {
+      py_Ref pyArg = py_r0();
+      py_newfloat(pyArg, _pstClockInfo->fDT);
+      orxPy_Call1(orxPy_GetCallback(sstPy.pyCameraUpdate), pyArg);
     }
     orxPROFILER_POP_MARKER();
   }
@@ -1920,6 +1935,23 @@ extern "C"
     RETURN_VECTOR(&vRes);
   }
 
+  BIND(Vector, round_in_place)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_VECTOR(vSelf, 0);
+    orxVector_Round(vSelf, vSelf);
+    RETURN_NONE;
+  }
+
+  BIND(Vector, round)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_VECTOR(vOp, 0);
+    orxVECTOR vRes = orxVECTOR_0;
+    orxVector_Round(&vRes, vOp);
+    RETURN_VECTOR(&vRes);
+  }
+
   BIND(Clock, compute_dt)
   {
     PY_CHECK_ARGC(2);
@@ -1962,9 +1994,11 @@ extern "C"
     py_bindmethod(pyType, "size", BINDING_NAME(Vector, size));
     py_bindmethod(pyType, "rotate", BINDING_NAME(Vector, rotate_in_place));
     py_bindmethod(pyType, "normalize", BINDING_NAME(Vector, normalize_in_place));
+    py_bindmethod(pyType, "round", BINDING_NAME(Vector, round_in_place));
 
     py_bindfunc(pyMod, "rotate", BINDING_NAME(Vector, rotate));
     py_bindfunc(pyMod, "normalize", BINDING_NAME(Vector, normalize));
+    py_bindfunc(pyMod, "round", BINDING_NAME(Vector, round));
     py_bindfunc(pyMod, "distance", BINDING_NAME(Vector, distance));
     py_bindfunc(pyMod, "lerp", BINDING_NAME(Vector, lerp));
   }
@@ -2465,6 +2499,7 @@ extern "C"
       sstPy.pyMod = orxNULL;
       sstPy.pyInit = 0;
       sstPy.pyUpdate = 0;
+      sstPy.pyCameraUpdate = 0;
       sstPy.pyExit = 0;
       sstPy.pyOnCreate = 0;
       sstPy.pyOnDelete = 0;
@@ -2515,6 +2550,7 @@ extern "C"
     // Get function names for functions which are defined
     SET_CALLBACK(sstPy.pyInit, orxPY_KZ_DEFAULT_INIT)
     SET_CALLBACK(sstPy.pyUpdate, orxPY_KZ_DEFAULT_UPDATE)
+    SET_CALLBACK(sstPy.pyCameraUpdate, orxPY_KZ_DEFAULT_CAMERAUPDATE)
     SET_CALLBACK(sstPy.pyExit, orxPY_KZ_DEFAULT_EXIT)
     SET_CALLBACK(sstPy.pyOnCreate, orxPY_KZ_DEFAULT_OBJECT_CREATE_EVENT_HANDLER)
     SET_CALLBACK(sstPy.pyOnDelete, orxPY_KZ_DEFAULT_OBJECT_DELETE_EVENT_HANDLER)
@@ -2600,6 +2636,7 @@ extern "C"
       sstPy.pyMod = orxNULL;
       sstPy.pyInit = 0;
       sstPy.pyUpdate = 0;
+      sstPy.pyCameraUpdate = 0;
       sstPy.pyExit = 0;
       sstPy.pyOnCreate = 0;
       sstPy.pyOnDelete = 0;
