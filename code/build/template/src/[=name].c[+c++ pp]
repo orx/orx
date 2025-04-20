@@ -65,6 +65,33 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   }
 }
 
+/** Camera Update function, it has been registered to be called every tick of the core clock, after physics & objects have been updated
+*/
+[+scroll void [!name]::CameraUpdate(const orxCLOCK_INFO &_rstClockInfo)]
+[-scroll void orxFASTCALL CameraUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)]
+{
+  // Get MainCamera proxy object
+[+scroll
+  ScrollObject *poMainCamera = [!name]::GetInstance().GetObject("MainCamera");
+  if(poMainCamera)]
+[-scroll
+  orxConfig_PushSection("MainCamera");
+  orxOBJECT *pstMainCamera = orxOBJECT(orxStructure_Get(orxConfig_GetU64("ID")));
+  orxConfig_PopSection();
+  if(pstMainCamera)]
+  {
+    // Update & move the camera here
+    // [...]
+
+    // Round its position
+    orxVECTOR vPosition;
+[+scroll
+    poMainCamera->SetPosition(*orxVector_Round(&vPosition, &poMainCamera->GetPosition(vPosition)));]
+[-scroll
+    orxObject_SetPosition(pstMainCamera, orxVector_Round(&vPosition, orxObject_GetPosition(pstMainCamera, &vPosition)));]
+  }
+}
+
 /** Init function, it is called when all orx's modules have been initialized
  */
 [+scroll orxSTATUS [!name]::Init()]
@@ -87,8 +114,9 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   CreateObject("[-movie Scene][+movie Splash]");
 ]
 [-scroll
-  // Register the Update function to the core clock
+  // Register the Update & CameraUpdate functions to the core clock
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+  orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), CameraUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER);
 
   // Create the [-movie scene][+movie splash screen]
   orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");
