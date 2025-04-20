@@ -1538,8 +1538,8 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
       /* Inits shape definition */
       stShapeDef = b2DefaultShapeDef();
       stShapeDef.userData             = _hUserData;
-      stShapeDef.friction             = _pstBodyPartDef->fFriction;
-      stShapeDef.restitution          = _pstBodyPartDef->fRestitution;
+      stShapeDef.material.friction    = _pstBodyPartDef->fFriction;
+      stShapeDef.material.restitution = _pstBodyPartDef->fRestitution;
       stShapeDef.density              = (b2Body_GetType(stBody) != b2_dynamicBody) ? 0.0f : _pstBodyPartDef->fDensity;
       stShapeDef.filter.categoryBits  = _pstBodyPartDef->u64SelfFlags;
       stShapeDef.filter.maskBits      = _pstBodyPartDef->u64CheckMask;
