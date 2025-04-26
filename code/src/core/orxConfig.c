@@ -4188,117 +4188,167 @@ void orxFASTCALL orxConfig_CommandHasValue(orxU32 _u32ArgNumber, const orxCOMMAN
  */
 void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxS32  s32Index;
-  orxBOOL bPush;
+  const orxSTRING zSection  = _astArgList[0].zValue;
+  const orxSTRING zKey      = _astArgList[1].zValue;
 
-  /* Gets index */
-  s32Index = (_u32ArgNumber > 2) ? _astArgList[2].s32Value : -1;
-
-  /* Pushes section */
-  bPush = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxTRUE : orxFALSE;
-  if(bPush != orxFALSE)
+  /* Using shorthand? */
+  if(_u32ArgNumber == 1)
   {
-    orxConfig_PushSection(_astArgList[0].zValue);
-  }
+    orxS32 s32SeparatorIndex;
 
-  /* Raw request? */
-  if((_u32ArgNumber > 3) && (_astArgList[3].bValue != orxFALSE))
-  {
-    /* Updates result */
-    _pstResult->zValue = orxConfig_GetListString(_astArgList[1].zValue, s32Index);
-  }
-  else
-  {
-    orxCONFIG_VALUE *pstValue;
+    /* Looks for separator index */
+    s32SeparatorIndex = orxString_SearchCharIndex(zSection, orxCONFIG_KC_SECTION_SEPARATOR, 0);
 
-    /* Gets corresponding value */
-    pstValue = orxConfig_GetValue(_astArgList[1].zValue);
-
-    /* Success? */
-    if(pstValue != orxNULL)
+    /* Found and no empty part? */
+    if((s32SeparatorIndex > 0) && (*(zSection + s32SeparatorIndex +1) != orxCHAR_NULL))
     {
-      const orxSTRING zValue;
+      /* Updates key */
+      zKey = zSection + s32SeparatorIndex + 1;
 
-      /* Random? */
-      if(s32Index == -1)
+      /* Allocates section buffer */
+      zSection = (const orxSTRING)alloca(s32SeparatorIndex + 1);
+
+      /* Copies its name */
+      orxMemory_Copy((orxSTRING)zSection, _astArgList[0].zValue, s32SeparatorIndex);
+      *(orxSTRING)(zSection + s32SeparatorIndex) = orxCHAR_NULL;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[Config.GetValue] Can't retrieve value from section <%s>: missing key!", zSection);
+
+      /* Clears section */
+      zSection = orxNULL;
+    }
+  }
+
+  /* Valid? */
+  if(zSection != orxNULL)
+  {
+    orxS32  s32Index;
+    orxBOOL bPush = orxFALSE;
+
+    /* Gets index */
+    s32Index = (_u32ArgNumber > 2) ? _astArgList[2].s32Value : -1;
+
+    /* Not current? */
+    if((*zSection != orxCHAR_NULL) && (*zSection != orxCONFIG_KC_INHERITANCE_MARKER))
+    {
+      /* Has section? */
+      if(zSection != orxNULL)
       {
-        /* Updates real index */
-        s32Index = orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST) ? orxMath_GetRandomS32(0, (orxU32)pstValue->u16ListCount - 1) : 0;
+        /* Updates status */
+        bPush = orxTRUE;
+
+        /* Pushes section */
+        orxConfig_PushSection(zSection);
       }
-      else
+    }
+
+    /* Raw request? */
+    if((_u32ArgNumber > 3) && (_astArgList[3].bValue != orxFALSE))
+    {
+      /* Updates result */
+      _pstResult->zValue = orxConfig_GetListString(zKey, s32Index);
+    }
+    else
+    {
+      orxCONFIG_VALUE *pstValue;
+
+      /* Gets corresponding value */
+      pstValue = orxConfig_GetValue(zKey);
+
+      /* Success? */
+      if(pstValue != orxNULL)
       {
-        /* Invalid index? */
-        if(s32Index >= (orxS32)pstValue->u16ListCount)
+        const orxSTRING zValue;
+
+        /* Random? */
+        if(s32Index == -1)
         {
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "<%s.%s> can't access list value at index [%d]: out of bound access, returning last value at index [%u]!", _astArgList[0].zValue, _astArgList[1].zValue, s32Index, (orxU32)pstValue->u16ListCount - 1);
-
-          /* Updates index */
-          s32Index = (orxS32)pstValue->u16ListCount - 1;
-        }
-      }
-
-      /* Is a command? */
-      zValue = (s32Index == 0) ? pstValue->zValue : pstValue->zValue + pstValue->au32ListIndexTable[s32Index - 1];
-      if((*zValue == orxCONFIG_KC_COMMAND) && (*(zValue + 1) != orxCONFIG_KC_COMMAND))
-      {
-        /* Gets string value */
-        _pstResult->zValue = orxConfig_GetListValue(pstValue, s32Index, orxFALSE);
-      }
-      /* Is index valid? */
-      else if(s32Index < (orxS32)pstValue->u16ListCount)
-      {
-        orxVECTOR vResult;
-        orxBOOL   bConfigLevelEnabled;
-
-        /* Gets config debug level state */
-        bConfigLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
-
-        /* Deactivates config debug level */
-        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
-
-        /* Gets vector value */
-        if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
-        {
-          /* Prints it */
-          orxString_NPrint(sstConfig.acCommandBuffer, sizeof(sstConfig.acCommandBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
-
-          /* Updates result */
-          _pstResult->zValue = sstConfig.acCommandBuffer;
+          /* Updates real index */
+          s32Index = orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_LIST) ? orxMath_GetRandomS32(0, (orxU32)pstValue->u16ListCount - 1) : 0;
         }
         else
         {
-          orxBOOL bSuccess = orxFALSE;
-
-          /* Random? */
-          if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+          /* Invalid index? */
+          if(s32Index >= (orxS32)pstValue->u16ListCount)
           {
-            orxFLOAT fValue;
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "<%s.%s> can't access list value at index [%d]: out of bound access, returning last value at index [%u]!", zSection, zKey, s32Index, (orxU32)pstValue->u16ListCount - 1);
 
-            /* Gets random float value */
-            if(orxConfig_GetFloatFromValue(pstValue, s32Index, &fValue) != orxSTATUS_FAILURE)
-            {
-              /* Prints it */
-              orxString_NPrint(sstConfig.acCommandBuffer, sizeof(sstConfig.acCommandBuffer), "%g", fValue);
-
-              /* Updates result */
-              _pstResult->zValue = sstConfig.acCommandBuffer;
-
-              /* Updates status */
-              bSuccess = orxTRUE;
-            }
-          }
-
-          /* Need string value? */
-          if(bSuccess == orxFALSE)
-          {
-            /* Gets string value */
-            _pstResult->zValue = orxConfig_GetListValue(pstValue, s32Index, orxFALSE);
+            /* Updates index */
+            s32Index = (orxS32)pstValue->u16ListCount - 1;
           }
         }
 
-        /* Restores config debug level state */
-        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bConfigLevelEnabled);
+        /* Is a command? */
+        zValue = (s32Index == 0) ? pstValue->zValue : pstValue->zValue + pstValue->au32ListIndexTable[s32Index - 1];
+        if((*zValue == orxCONFIG_KC_COMMAND) && (*(zValue + 1) != orxCONFIG_KC_COMMAND))
+        {
+          /* Gets string value */
+          _pstResult->zValue = orxConfig_GetListValue(pstValue, s32Index, orxFALSE);
+        }
+        /* Is index valid? */
+        else if(s32Index < (orxS32)pstValue->u16ListCount)
+        {
+          orxVECTOR vResult;
+          orxBOOL   bConfigLevelEnabled;
+
+          /* Gets config debug level state */
+          bConfigLevelEnabled = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
+
+          /* Deactivates config debug level */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
+
+          /* Gets vector value */
+          if(orxConfig_GetVectorFromValue(pstValue, s32Index, &vResult) != orxSTATUS_FAILURE)
+          {
+            /* Prints it */
+            orxString_NPrint(sstConfig.acCommandBuffer, sizeof(sstConfig.acCommandBuffer), "%c%g%c %g%c %g%c", orxSTRING_KC_VECTOR_START, vResult.fX, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fY, orxSTRING_KC_VECTOR_SEPARATOR, vResult.fZ, orxSTRING_KC_VECTOR_END);
+
+            /* Updates result */
+            _pstResult->zValue = sstConfig.acCommandBuffer;
+          }
+          else
+          {
+            orxBOOL bSuccess = orxFALSE;
+
+            /* Random? */
+            if(orxFLAG_TEST(pstValue->u16Flags, orxCONFIG_VALUE_KU16_FLAG_RANDOM))
+            {
+              orxFLOAT fValue;
+
+              /* Gets random float value */
+              if(orxConfig_GetFloatFromValue(pstValue, s32Index, &fValue) != orxSTATUS_FAILURE)
+              {
+                /* Prints it */
+                orxString_NPrint(sstConfig.acCommandBuffer, sizeof(sstConfig.acCommandBuffer), "%g", fValue);
+
+                /* Updates result */
+                _pstResult->zValue = sstConfig.acCommandBuffer;
+
+                /* Updates status */
+                bSuccess = orxTRUE;
+              }
+            }
+
+            /* Need string value? */
+            if(bSuccess == orxFALSE)
+            {
+              /* Gets string value */
+              _pstResult->zValue = orxConfig_GetListValue(pstValue, s32Index, orxFALSE);
+            }
+          }
+
+          /* Restores config debug level state */
+          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bConfigLevelEnabled);
+        }
+        else
+        {
+          /* Updates result */
+          _pstResult->zValue = orxSTRING_EMPTY;
+        }
       }
       else
       {
@@ -4306,17 +4356,17 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
         _pstResult->zValue = orxSTRING_EMPTY;
       }
     }
-    else
+
+    /* Pops section */
+    if(bPush != orxFALSE)
     {
-      /* Updates result */
-      _pstResult->zValue = orxSTRING_EMPTY;
+      orxConfig_PopSection();
     }
   }
-
-  /* Pops section */
-  if(bPush != orxFALSE)
+  else
   {
-    orxConfig_PopSection();
+    /* Updates result */
+    _pstResult->zValue = "Invalid command!";
   }
 
   /* Done! */
@@ -4327,22 +4377,76 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
  */
 void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxBOOL bPush;
+  const orxSTRING zSection  = _astArgList[0].zValue;
+  const orxSTRING zKey      = _astArgList[1].zValue;
+  const orxSTRING zValue    = _astArgList[2].zValue;
 
-  /* Pushes section */
-  bPush = ((*_astArgList[0].zValue != orxCHAR_NULL) && (*_astArgList[0].zValue != orxCONFIG_KC_INHERITANCE_MARKER)) ? orxTRUE : orxFALSE;
-  if(bPush != orxFALSE)
+  /* Using shorthand? */
+  if(_u32ArgNumber == 2)
   {
-    orxConfig_PushSection(_astArgList[0].zValue);
+    orxS32 s32SeparatorIndex;
+
+    /* Looks for separator index */
+    s32SeparatorIndex = orxString_SearchCharIndex(zSection, orxCONFIG_KC_SECTION_SEPARATOR, 0);
+
+    /* Found and no empty part? */
+    if((s32SeparatorIndex > 0) && (*(zSection + s32SeparatorIndex +1) != orxCHAR_NULL))
+    {
+      /* Updates value */
+      zValue = _astArgList[1].zValue;
+
+      /* Updates key */
+      zKey = zSection + s32SeparatorIndex + 1;
+
+      /* Allocates section buffer */
+      zSection = (const orxSTRING)alloca(s32SeparatorIndex + 1);
+
+      /* Copies its name */
+      orxMemory_Copy((orxSTRING)zSection, _astArgList[0].zValue, s32SeparatorIndex);
+      *(orxSTRING)(zSection + s32SeparatorIndex) = orxCHAR_NULL;
+    }
+    else
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, "[Config.SetValue] Can't set value for section <%s>: missing key and/or value!", zSection);
+
+      /* Clears section */
+      zSection = orxNULL;
+    }
   }
 
-  /* Updates result */
-  _pstResult->zValue = (orxConfig_SetString(_astArgList[1].zValue, _astArgList[2].zValue) != orxSTATUS_FAILURE) ? _astArgList[2].zValue : orxSTRING_EMPTY;
-
-  /* Pops section */
-  if(bPush != orxFALSE)
+  /* Valid? */
+  if(zSection != orxNULL)
   {
-    orxConfig_PopSection();
+    orxBOOL bPush = orxFALSE;
+
+    /* Not current? */
+    if((*zSection != orxCHAR_NULL) && (*zSection != orxCONFIG_KC_INHERITANCE_MARKER))
+    {
+      /* Has section? */
+      if(zSection != orxNULL)
+      {
+        /* Updates status */
+        bPush = orxTRUE;
+
+        /* Pushes section */
+        orxConfig_PushSection(zSection);
+      }
+    }
+
+    /* Updates result */
+    _pstResult->zValue = (orxConfig_SetString(zKey, zValue) != orxSTATUS_FAILURE) ? zValue : orxSTRING_EMPTY;
+
+    /* Pops section */
+    if(bPush != orxFALSE)
+    {
+      orxConfig_PopSection();
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->zValue = "Invalid command!";
   }
 
   /* Done! */
@@ -4554,9 +4658,9 @@ static orxINLINE void orxConfig_RegisterCommands()
   /* Command: ClearValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, ClearValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 2, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Index = -1", orxCOMMAND_VAR_TYPE_S32}, {"Verbatim = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, GetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 1, 3, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Index = -1", orxCOMMAND_VAR_TYPE_S32}, {"Verbatim = false", orxCOMMAND_VAR_TYPE_BOOL});
   /* Command: SetValue */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 3, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_NUMERIC});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Config, SetValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_NUMERIC});
   /* Command: AppendValue */
   orxCOMMAND_REGISTER_CORE_COMMAND(Config, AppendValue, "Value", orxCOMMAND_VAR_TYPE_STRING, 3, 0, {"Section", orxCOMMAND_VAR_TYPE_STRING}, {"Key", orxCOMMAND_VAR_TYPE_STRING}, {"Value", orxCOMMAND_VAR_TYPE_NUMERIC});
   /* Command: GetRawValue */
