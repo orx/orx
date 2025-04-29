@@ -3706,12 +3706,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_EnableSimulation, PHYSICS,
 orxPLUGIN_USER_CORE_FUNCTION_END();
 
 
-#if defined(__orxWINDOWS__) && !defined(__orxMSVC__)
-
-  #undef alloca
-
-#endif /* __orxWINDOWS__ && !__orxMSVC__ */
-
 #ifdef __orxMSVC__
 
   #pragma warning(pop)
