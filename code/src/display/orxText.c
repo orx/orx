@@ -469,14 +469,13 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
 
           default:
           {
+            orxCHAR *pcNext;
+
             /* Finds end of word */
-            for(; (u32CharacterCodePoint != ' ') && (u32CharacterCodePoint != '\t') && (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL); u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pc))
+            for(pcNext = pc; (u32CharacterCodePoint != ' ') && (u32CharacterCodePoint != '\t') && (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL); pc = pcNext, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pcNext))
             {
               fWidth += orxFont_GetCharacterWidth(_pstText->pstFont, u32CharacterCodePoint);
             }
-
-            /* Gets back to previous character */
-            pc--;
 
             break;
           }

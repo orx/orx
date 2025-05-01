@@ -774,10 +774,10 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           /* Should echo? */
           if(orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ECHO))
           {
-            /* Echos command */
+            /* Echoes command */
             orxLOG("$ %s", pstEntry->acBuffer);
 
-            /* Echos result */
+            /* Echoes result */
             orxLOG("%s", acValue);
           }
         }
