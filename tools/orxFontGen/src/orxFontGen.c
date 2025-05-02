@@ -768,7 +768,7 @@ static void Run()
 
       // For all characters
       for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &pcSrc), pcDst = acWidthBuffer, i = 0;
-          pcSrc != orxNULL;
+          (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
           u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pcSrc, &pcSrc), pcDst += 8, i++)
       {
         orxFLOAT fCharacterWidth;

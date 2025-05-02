@@ -107,7 +107,7 @@ uint32_t orxJoystick_Android_GetButtonMask(orxS32 s32Button)
 {
   uint32_t mask;
 
-  switch (s32Button)
+  switch(s32Button)
   {
     case orxJOYSTICK_BUTTON_1_1:
     case orxJOYSTICK_BUTTON_A_1:
@@ -228,7 +228,7 @@ static orxFLOAT orxJoystick_Android_GetAccelerometerValue(orxJOYSTICK_AXIS _eAxi
   orxFLOAT fResult;
 
   /* Depending on axis */
-  switch (_eAxis)
+  switch(_eAxis)
   {
     case orxJOYSTICK_AXIS_LX_1:
       /* Updates result */
