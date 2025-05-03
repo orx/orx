@@ -378,9 +378,9 @@ void orxFASTCALL orxTexture_CommandDelete(orxU32 _u32ArgNumber, const orxCOMMAND
   return;
 }
 
-/** Command: Find
+/** Command: Get
  */
-void orxFASTCALL orxTexture_CommandFind(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+void orxFASTCALL orxTexture_CommandGet(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxTEXTURE *pstTexture;
 
@@ -519,8 +519,8 @@ static orxINLINE void orxTexture_RegisterCommands()
   /* Command: Delete */
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Delete, "Texture", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Texture", orxCOMMAND_VAR_TYPE_U64});
 
-  /* Command: Find */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Find, "Texture", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: Get */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Texture, Get, "Texture", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"Name", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: GetSize */
   orxCOMMAND_REGISTER_CORE_COMMAND(Texture, GetSize, "Size", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Texture", orxCOMMAND_VAR_TYPE_U64});
@@ -536,6 +536,9 @@ static orxINLINE void orxTexture_RegisterCommands()
 
   /* Alias: Load */
   orxCommand_AddAlias("Texture.Load", "Texture.Create", orxNULL);
+
+  /* Alias: Find */
+  orxCommand_AddAlias("Texture.Find", "Texture.Get", orxNULL);
 }
 
 /** Unregisters all the texture commands
@@ -547,8 +550,8 @@ static orxINLINE void orxTexture_UnregisterCommands()
   /* Command: Delete */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, Delete);
 
-  /* Command: Find */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, Find);
+  /* Command: Get */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, Get);
 
   /* Command: GetSize */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Texture, GetSize);
@@ -564,6 +567,9 @@ static orxINLINE void orxTexture_UnregisterCommands()
 
   /* Alias: Load */
   orxCommand_RemoveAlias("Texture.Load");
+
+  /* Alias: Find */
+  orxCommand_RemoveAlias("Texture.Find");
 }
 
 /** Creates an empty texture

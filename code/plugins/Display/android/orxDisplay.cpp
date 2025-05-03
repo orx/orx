@@ -2828,11 +2828,11 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformText(const orxSTRING _zString,
 
   /* For all characters */
   for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zString, &pc), fX = 0.0f, fY = 0.0f;
-      u32CharacterCodePoint != orxCHAR_NULL;
+      (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
       u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
   {
     /* Depending on character */
-    switch (u32CharacterCodePoint)
+    switch(u32CharacterCodePoint)
     {
       case orxCHAR_CR:
       {
@@ -4370,7 +4370,6 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, c
                     /* Success? */
                     if(pstLoadInfo->astGlyphList != orxNULL)
                     {
-                      const orxSTRING zRemainder;
                       const orxSTRING zCharacterList;
                       orxU32          u32CharacterCodePoint, i;
                       int             iX0, iX1, iY0, iY1;
@@ -4385,9 +4384,9 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, c
                       pstLoadInfo->pu8Buffer = pu8Buffer;
 
                       /* For all characters */
-                      for(zCharacterList = _zCharacterList, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &zRemainder), i = iX0 = iX1 = iY0 = iY1 = 0;
-                          *zCharacterList != orxCHAR_NULL;
-                          zCharacterList = zRemainder, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &zRemainder), i++)
+                      for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zCharacterList, &zCharacterList), i = iX0 = iX1 = iY0 = iY1 = 0;
+                          (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
+                          u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &zCharacterList), i++)
                       {
                         int iGlyphX0, iGlyphX1, iGlyphY0, iGlyphY1;
 
@@ -4423,9 +4422,9 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, c
                       orxVector_Copy(&(pstLoadInfo->vCharacterSpacing), _pvCharacterSpacing);
 
                       /* For all characters */
-                      for(zCharacterList = _zCharacterList, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &zRemainder), i = 0, fCurrentWidth = fWidth = _pvCharacterSpacing->fX, fHeight = pstLoadInfo->vCharacterSize.fY + orx2F(2.0f) * _pvCharacterSpacing->fY;
-                          *zCharacterList != orxCHAR_NULL;
-                          zCharacterList = zRemainder, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &zRemainder), i++)
+                      for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zCharacterList, &zCharacterList), i = 0, fCurrentWidth = fWidth = _pvCharacterSpacing->fX, fHeight = pstLoadInfo->vCharacterSize.fY + orx2F(2.0f) * _pvCharacterSpacing->fY;
+                          (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
+                          u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zCharacterList, &zCharacterList), i++)
                       {
                         int       iGlyphWidth, iGlyphX0, iGlyphX1, iGlyphY0, iGlyphY1;
                         orxFLOAT  fAdvance;

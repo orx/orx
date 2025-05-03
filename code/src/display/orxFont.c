@@ -166,7 +166,7 @@ static void orxFASTCALL orxFont_UpdateMap(orxFONT *_pstFont)
 
       /* For all defined characters */
       for(s32Index = 0, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstFont->zCharacterList, &pc), orxVector_Set(&vOrigin, _pstFont->fLeft + ((_pstFont->zTypeface != orxNULL) ? _pstFont->vCharacterSpacing.fX : orxFLOAT_0), _pstFont->fTop + ((_pstFont->zTypeface != orxNULL) ? _pstFont->vCharacterSpacing.fY : orxFLOAT_0), orxFLOAT_0);
-          (u32CharacterCodePoint != orxCHAR_NULL) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight);
+          (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED) && (vOrigin.fY < _pstFont->fTop + _pstFont->fHeight);
           s32Index++, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
       {
         orxCHARACTER_GLYPH  **ppstBucket;
