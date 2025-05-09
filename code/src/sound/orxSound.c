@@ -659,7 +659,11 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         if(orxConfig_GetListCount(orxSOUND_KZ_CONFIG_DISTANCE_LIST) > 1)
         {
           afDistanceList[1] = orxConfig_GetListFloat(orxSOUND_KZ_CONFIG_DISTANCE_LIST, 1);
-          if(afDistanceList[1] < afDistanceList[0])
+          if(afDistanceList[1] == afDistanceList[0])
+          {
+            afDistanceList[1] += orxMATH_KF_EPSILON;
+          }
+          else if(afDistanceList[1] < afDistanceList[0])
           {
             orxFLOAT fTemp;
             fTemp             = afDistanceList[0];
