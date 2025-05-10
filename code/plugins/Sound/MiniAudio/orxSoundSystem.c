@@ -3338,6 +3338,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         stEngineConfig.pLog                 = &(sstSoundSystem.stLog);
         stEngineConfig.pResourceManager     = &(sstSoundSystem.stResourceManager);
         stEngineConfig.listenerCount        = sstSoundSystem.u32ListenerCount;
+        stEngineConfig.channels             = orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_CHANNELS);
         stEngineConfig.notificationCallback = &orxSoundSystem_MiniAudio_OnDeviceNotification;
         ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
         hResult                             = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
