@@ -1061,9 +1061,9 @@ orxSTATUS orxFASTCALL orxFile_Delete(const orxSTRING _zFileName)
     /* Tries to remove it as a directory */
 #ifdef __orxMSVC__
     if(_rmdir(_zFileName) == 0)
-#else /* __orxWINDOWS__ */
+#else /* __orxMSVC__ */
     if(rmdir(_zFileName) == 0)
-#endif /* __orxWINDOWS__ */
+#endif /* __orxMSVC__ */
     {
       /* Updates result */
       eResult = orxSTATUS_SUCCESS;
