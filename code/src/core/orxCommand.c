@@ -282,7 +282,7 @@ static orxINLINE orxCOMMAND_TRIE_NODE *orxCommand_FindTrieNode(const orxSTRING _
 
   /* For all characters */
   for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_zName, &zName);
-      u32CharacterCodePoint != orxCHAR_NULL;
+      (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
       u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(zName, &zName))
   {
     orxCOMMAND_TRIE_NODE *pstChild, *pstPrevious;

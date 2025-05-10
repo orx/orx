@@ -281,8 +281,8 @@ public:
 
                 ScrollObject *  GetObject(orxU64 _u64GUID) const;
           template<class O> O * GetObject(orxU64 _u64GUID) const {return ScrollCast<O *>(GetObject(_u64GUID));}
-                ScrollObject *  GetObject(const orxSTRING _zSection, const orxSTRING _zKey = "ID") const;
-          template<class O> O * GetObject(const orxSTRING _zSection, const orxSTRING _zKey = "ID") const {return ScrollCast<O *>(GetObject(_zSection, _zKey));}
+                ScrollObject *  GetObject(const orxSTRING _zSection, const orxSTRING _zKey = ScrollBase::szConfigScrollObjectID /* = ID */) const;
+          template<class O> O * GetObject(const orxSTRING _zSection, const orxSTRING _zKey = ScrollBase::szConfigScrollObjectID /* = ID */) const {return ScrollCast<O *>(GetObject(_zSection, _zKey));}
 
                 ScrollObject *  GetNextObject(const ScrollObject *_poObject = orxNULL, orxBOOL _bChronological = orxFALSE) const;
           template<class O> O * GetNextObject(const O *_poObject = orxNULL) const;
@@ -306,6 +306,8 @@ protected:
 
   static  const orxSTRING       szConfigScrollObjectPausable;
   static  const orxSTRING       szConfigScrollObjectInput;
+  static  const orxSTRING       szConfigScrollObjectUnique;
+  static  const orxSTRING       szConfigScrollObjectID;
   static  const orxCHAR         scConfigScrollObjectInstantMarker   = '.';
   static  const orxCHAR         scConfigScrollObjectNegativeMarker  = '-';
 
@@ -438,6 +440,8 @@ O *ScrollBase::GetPreviousObject(const O *_poObject) const
 //! Constants
 const orxSTRING ScrollBase::szConfigScrollObjectPausable      = "Pausable";
 const orxSTRING ScrollBase::szConfigScrollObjectInput         = "Input";
+const orxSTRING ScrollBase::szConfigScrollObjectUnique        = "Unique";
+const orxSTRING ScrollBase::szConfigScrollObjectID            = "ID";
 
 
 //! Static variables
@@ -1673,6 +1677,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
   ScrollObject::Flag  xFlags = ScrollObject::FlagNone;
   ScrollObject       *poResult;
   const orxSTRING     zInputSet;
+  const orxSTRING     zUnique;
 
   // Checks
   orxSTRUCTURE_ASSERT(_pstObject);
@@ -1722,6 +1727,41 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
   {
     // Updates flags
     xFlags |= ScrollObject::FlagPausable;
+  }
+
+  // Gets unique identifier
+  zUnique = orxConfig_GetString(ScrollBase::szConfigScrollObjectUnique);
+  
+  // Valid?
+  if(*zUnique != orxCHAR_NULL)
+  {
+    const orxSTRING zRemaining;
+    const orxSTRING zKey = orxNULL;
+    orxBOOL         bUnique;
+    
+    /* Is a bool? */
+    if((orxString_ToBool(zUnique, &bUnique, &zRemaining) != orxSTATUS_FAILURE)
+    && (*zRemaining == orxCHAR_NULL))
+    {
+      /* Unique? */
+      if(bUnique != orxFALSE)
+      {
+        /* Uses default ID key */
+        zKey = ScrollBase::szConfigScrollObjectID;
+      }
+    }
+    else
+    {
+      /* Uses it as key */
+      zKey = zUnique;
+    }
+    
+    /* Has key? */
+    if(zKey != orxNULL)
+    {
+      /* Stores its GUID */
+      orxConfig_SetU64(zKey, orxStructure_GetGUID(_pstObject));
+    }
   }
 
   // Gets input set

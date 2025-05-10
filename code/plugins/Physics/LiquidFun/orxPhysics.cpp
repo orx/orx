@@ -1443,6 +1443,7 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_DeleteBody(orxPHYSICS_BODY *_ps
   orxLinkList_Remove(&(_pstBody->stNode));
   orxBank_Free(sstPhysics.pstBodyBank, _pstBody);
 
+  /* Done! */
   return;
 }
 
@@ -1662,6 +1663,7 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_DeletePart(orxPHYSICS_BODY_PART
   /* Deletes its part */
   poBody->DestroyFixture(poFixture);
 
+  /* Done! */
   return;
 }
 
@@ -2020,6 +2022,7 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_DeleteJoint(orxPHYSICS_BODY_JOI
   /* Deletes it */
   sstPhysics.poWorld->DestroyJoint((b2Joint *)_pstBodyJoint);
 
+  /* Done! */
   return;
 }
 
@@ -3674,6 +3677,7 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_Exit()
     orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
   }
 
+  /* Done! */
   return;
 }
 

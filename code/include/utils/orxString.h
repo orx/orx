@@ -515,7 +515,7 @@ static orxINLINE orxU32                                   orxString_GetCharacter
   /* For all characters */
   for(pc = _zString, u32Result = 0; *pc != orxCHAR_NULL; u32Result++)
   {
-    /* Invalid current character ID */
+    /* Invalid current character ID? */
     if(orxString_GetFirstCharacterCodePoint(pc, &pc) == orxU32_UNDEFINED)
     {
       /* Updates result */

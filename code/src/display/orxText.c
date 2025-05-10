@@ -364,7 +364,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
 
       /* For all characters */
       for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstText->zString, &pc), fHeight = fCharacterHeight, fWidth = fMaxWidth = orxFLOAT_0;
-          u32CharacterCodePoint != orxCHAR_NULL;
+          (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
           u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
       {
         /* Depending on character */
@@ -417,7 +417,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
 
       /* For all characters */
       for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstText->zString, (const orxCHAR **)&pc), fHeight = fCharacterHeight, fWidth = orxFLOAT_0, zLastSpace = orxNULL;
-          u32CharacterCodePoint != orxCHAR_NULL;
+          (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
           u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pc))
       {
         /* Depending on the character */
@@ -957,7 +957,7 @@ orxSTATUS orxFASTCALL orxText_GetLineSize(const orxTEXT *_pstText, orxU32 _u32Li
 
         /* For all characters in the line */
         for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc), fWidth = orxFLOAT_0;
-            (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL);
+            (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
             u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
         {
           /* Updates width */
