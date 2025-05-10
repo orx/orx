@@ -376,7 +376,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxFLOAT                        fForegroundVolume;      /**< Foreground volume */
   orxFLOAT                        fDeviceDelay;           /**< Device delay */
   orxU32                          u32TaskParamIndex;      /**< Task param index */
-  orxU32                          u32ListenerNumber;      /**< Listener number */
+  orxU32                          u32ListenerCount;      /**< Listener count */
   orxU32                          u32WorkerThread;        /**< Worker thread */
   orxU32                          u32Flags;               /**< Status flags */
 
@@ -2394,7 +2394,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LinkSampleTask(void *_pCon
   /* Inits sound config */
   stSoundConfig             = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
   stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
-  stSoundConfig.flags       = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
+  stSoundConfig.flags       = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerCount == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
   stSoundConfig.pFilePath   = pstSound->stSample.pstSample->stResource.zLocation;
 
   /* Creates sound */
@@ -2470,7 +2470,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LoadStreamTask(void *_pCon
       stSoundConfig             = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
       stSoundConfig.pDataSource = &(pstSound->stBase);
       stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
-      stSoundConfig.flags       = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
+      stSoundConfig.flags       = (sstSoundSystem.u32ListenerCount == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
 
       /* Stores info */
       hResult = ma_data_source_get_data_format(&(pstSound->stStream.stDataSource), NULL, (ma_uint32 *)&(pstSound->u32ChannelNumber), (ma_uint32 *)&(pstSound->u32SampleRate), NULL, 0);
@@ -3217,20 +3217,20 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     orxConfig_SetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO, sstSoundSystem.fDimensionRatio);
 
     /* Retrieves listener count */
-    sstSoundSystem.u32ListenerNumber = (orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) != orxFALSE) ? orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) : orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER;
+    sstSoundSystem.u32ListenerCount = (orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) != orxFALSE) ? orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) : orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER;
 
     /* Should clamp? */
-    if(sstSoundSystem.u32ListenerNumber > MA_ENGINE_MAX_LISTENERS)
+    if(sstSoundSystem.u32ListenerCount > MA_ENGINE_MAX_LISTENERS)
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Too many listeners have been requested [%u]: using the maximum of [%u] listeners instead.", sstSoundSystem.u32ListenerNumber, MA_ENGINE_MAX_LISTENERS);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Too many listeners have been requested [%u]: using the maximum of [%u] listeners instead.", sstSoundSystem.u32ListenerCount, MA_ENGINE_MAX_LISTENERS);
 
       /* Updates listener count */
-      sstSoundSystem.u32ListenerNumber = MA_ENGINE_MAX_LISTENERS;
+      sstSoundSystem.u32ListenerCount = MA_ENGINE_MAX_LISTENERS;
     }
 
     /* Stores it */
-    orxConfig_SetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS, sstSoundSystem.u32ListenerNumber);
+    orxConfig_SetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS, sstSoundSystem.u32ListenerCount);
 
     /* Gets reciprocal dimension ratio */
     sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
@@ -3337,7 +3337,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         stEngineConfig.pContext             = &(sstSoundSystem.stContext);
         stEngineConfig.pLog                 = &(sstSoundSystem.stLog);
         stEngineConfig.pResourceManager     = &(sstSoundSystem.stResourceManager);
-        stEngineConfig.listenerCount        = sstSoundSystem.u32ListenerNumber;
+        stEngineConfig.listenerCount        = sstSoundSystem.u32ListenerCount;
         stEngineConfig.notificationCallback = &orxSoundSystem_MiniAudio_OnDeviceNotification;
         ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
         hResult                             = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
@@ -3374,7 +3374,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
               orxEvent_SetHandlerIDFlags(orxSoundSystem_MiniAudio_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_BACKGROUND) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_FOREGROUND), orxEVENT_KU32_MASK_ID_ALL);
 
               /* For all listeners */
-              for(i = 0; i < sstSoundSystem.u32ListenerNumber; i++)
+              for(i = 0; i < sstSoundSystem.u32ListenerCount; i++)
               {
                 /* Inits it */
                 ma_engine_listener_set_position(&(sstSoundSystem.stEngine), i, 0.0f, 0.0f, 0.0f);
@@ -3763,7 +3763,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     if(_pstSample->bBuffer != orxFALSE)
     {
       /* Updates sound config */
-      stSoundConfig.flags       = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
+      stSoundConfig.flags       = (sstSoundSystem.u32ListenerCount == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
       stSoundConfig.pDataSource = &(pstResult->stSample.stDataSource);
 
       /* Creates buffer data source */
@@ -3778,7 +3778,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     else
     {
       /* Updates sound config */
-      stSoundConfig.flags     = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
+      stSoundConfig.flags     = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerCount == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
       stSoundConfig.pFilePath = _pstSample->stResource.zLocation;
     }
 
@@ -3997,7 +3997,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
           stSoundConfig               = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
           stSoundConfig.pDataSource   = &(pstResult->stBase);
           stSoundConfig.channelsOut   = ma_engine_get_channels(&(sstSoundSystem.stEngine));
-          stSoundConfig.flags         = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
+          stSoundConfig.flags         = (sstSoundSystem.u32ListenerCount == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
 
           /* Stores info */
           pstResult->u32ChannelNumber = _u32ChannelNumber;
@@ -5152,7 +5152,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSpatialization(orxSOUNDSYSTEM_
   orxASSERT(_fRollOff >= orxFLOAT_0);
 
   /* Is spatialization enabled? */
-  if(sstSoundSystem.u32ListenerNumber > 0)
+  if(sstSoundSystem.u32ListenerCount > 0)
   {
     /* Ready? */
     if(_pstSound->bReady != orxFALSE)
@@ -5390,7 +5390,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSpatialization(const orxSOUNDS
   orxASSERT(_pfRollOff != orxNULL);
 
   /* Is spatialization enabled? */
-  if((_pstSound->bReady != orxFALSE) && (sstSoundSystem.u32ListenerNumber > 0))
+  if((_pstSound->bReady != orxFALSE) && (sstSoundSystem.u32ListenerCount > 0))
   {
     /* Is sound spatialized? */
     if(_pstSound->stSound.engineNode.isSpatializationDisabled == MA_FALSE)
@@ -5586,7 +5586,7 @@ orxU32 orxFASTCALL orxSoundSystem_MiniAudio_GetListenerCount()
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Updates result */
-  u32Result = sstSoundSystem.u32ListenerNumber;
+  u32Result = sstSoundSystem.u32ListenerCount;
 
   /* Done! */
   return u32Result;
@@ -5596,7 +5596,7 @@ void orxFASTCALL orxSoundSystem_MiniAudio_EnableListener(orxU32 _u32ListenerInde
 {
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-  orxASSERT(_u32ListenerIndex < sstSoundSystem.u32ListenerNumber);
+  orxASSERT(_u32ListenerIndex < sstSoundSystem.u32ListenerCount);
 
   /* Updates listener */
   ma_engine_listener_set_enabled(&(sstSoundSystem.stEngine), _u32ListenerIndex, (_bEnable != orxFALSE) ? MA_TRUE : MA_FALSE);
@@ -5611,7 +5611,7 @@ orxBOOL orxFASTCALL orxSoundSystem_MiniAudio_IsListenerEnabled(orxU32 _u32Listen
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-  orxASSERT(_u32ListenerIndex < sstSoundSystem.u32ListenerNumber);
+  orxASSERT(_u32ListenerIndex < sstSoundSystem.u32ListenerCount);
 
   /* Updates listener */
   bResult = (ma_engine_listener_is_enabled(&(sstSoundSystem.stEngine), _u32ListenerIndex) != MA_FALSE) ? orxTRUE : orxFALSE;
@@ -5627,10 +5627,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetListenerPosition(orxU32 _u32In
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvPosition != orxNULL);
-  orxASSERT(_u32Index < sstSoundSystem.u32ListenerNumber);
+  orxASSERT(_u32Index < sstSoundSystem.u32ListenerCount);
 
   /* Valid? */
-  if(_u32Index < sstSoundSystem.u32ListenerNumber)
+  if(_u32Index < sstSoundSystem.u32ListenerCount)
   {
     /* Sets listener position */
     ma_engine_listener_set_position(&(sstSoundSystem.stEngine), _u32Index, sstSoundSystem.fDimensionRatio * _pvPosition->fX, sstSoundSystem.fDimensionRatio * _pvPosition->fY, sstSoundSystem.fDimensionRatio * _pvPosition->fZ);
@@ -5656,10 +5656,10 @@ orxVECTOR *orxFASTCALL orxSoundSystem_MiniAudio_GetListenerPosition(orxU32 _u32I
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvPosition != orxNULL);
-  orxASSERT(_u32Index < sstSoundSystem.u32ListenerNumber);
+  orxASSERT(_u32Index < sstSoundSystem.u32ListenerCount);
 
   /* Valid? */
-  if(_u32Index < sstSoundSystem.u32ListenerNumber)
+  if(_u32Index < sstSoundSystem.u32ListenerCount)
   {
     /* Updates result */
     pvResult = _pvPosition;
