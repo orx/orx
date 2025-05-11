@@ -638,7 +638,7 @@ orxSTATUS orxFASTCALL orxTrigger_Init()
     if(sstTrigger.pstSetTable != orxNULL)
     {
       /* Inits current event & refinement list */
-      sstTrigger.zCurrentEvent                  = orxNULL;
+      sstTrigger.zCurrentEvent                  = orxSTRING_EMPTY;
       sstTrigger.azCurrentRefinementList        = orxNULL;
       sstTrigger.u32CurrentRefinementListCount  = 0;
 
