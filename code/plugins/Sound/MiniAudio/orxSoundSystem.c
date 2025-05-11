@@ -327,7 +327,7 @@ typedef struct __orxSOUNDSYSTEM_TASK_PARAM_t
       orxFLOAT              fRollOff;
     } stSpatialization;
     const orxSTRING         zLocation;
-    orxSOUNDSYSTEM_BUS *    pstBus;
+    orxSOUNDSYSTEM_BUS     *pstBus;
     orxFLOAT                fVolume;
     orxFLOAT                fPitch;
     orxFLOAT                fTime;
