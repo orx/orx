@@ -2770,7 +2770,7 @@ void orxFASTCALL orxCommand_CommandGetSubString(orxU32 _u32ArgNumber, const orxC
   u32Length = orxMIN(sizeof(sstCommand.acStringBuffer) - 1, u32Length);
   
   /* Updates result */
-  _pstResult->zValue = (u32Length > 0) ? sstCommand.acStringBuffer[u32Length] = orxCHAR_NULL, orxMemory_Copy(sstCommand.acStringBuffer, _astArgList[0].zValue + u32Start, u32Length) : orxSTRING_EMPTY;
+  _pstResult->zValue = (u32Length > 0) ? sstCommand.acStringBuffer[u32Length] = orxCHAR_NULL, (orxSTRING)orxMemory_Copy(sstCommand.acStringBuffer, _astArgList[0].zValue + u32Start, u32Length) : orxSTRING_EMPTY;
 
   /* Done! */
   return;
