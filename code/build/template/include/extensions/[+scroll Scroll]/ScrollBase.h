@@ -1760,7 +1760,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
     if(zKey != orxNULL)
     {
       /* Stores its GUID */
-      orxConfig_SetU64(zKey, orxStructure_GetGUID(_pstObject));
+      orxConfig_SetString(zKey, poResult->GetInstanceName());
     }
   }
 

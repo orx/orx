@@ -111,16 +111,14 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 
 [+scroll
   // Create the [-movie scene][+movie splash screen]
-  CreateObject("[-movie Scene][+movie Splash]");
-]
+  CreateObject("[-movie Scene][+movie Splash]");]
 [-scroll
   // Register the Update & CameraUpdate functions to the core clock
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), CameraUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER);
 
   // Create the [-movie scene][+movie splash screen]
-  orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");
-]
+  orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");]
 
   // Done!
   return orxSTATUS_SUCCESS;
