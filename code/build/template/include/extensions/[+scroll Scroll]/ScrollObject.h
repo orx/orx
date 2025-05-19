@@ -184,7 +184,7 @@ private:
                 orxLINKLIST_NODE        mstNode;
                 orxLINKLIST_NODE        mstChronoNode;
                 const orxSTRING         mzInputSet;
-                ScrollObjectBinderBase *mpoBinder;
+          class ScrollObjectBinderBase *mpoBinder;
                 Flag                    mxFlags;
                 orxCHAR                 macInstanceName[20];
 };
