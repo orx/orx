@@ -365,7 +365,7 @@ typedef struct __orxCONFIG_STATIC_t
   orxLINKLIST         stSectionList;        /**< Section list */
   orxHASHTABLE       *pstSectionTable;      /**< Section table */
   orxHASHTABLE       *pstKeyTable;          /**< Key table */
-  orxCONFIG_SECTION  *pstDefaultSection;    /**< Default parent section */
+  orxCONFIG_SECTION  *pstDefaultParent;     /**< Default parent section */
   orxU32              u32CurrentStackEntry; /**< Current stack entry */
   orxCONFIG_SECTION*  apstSectionStack[orxCONFIG_KU32_STACK_SIZE]; /**< Section stack */
   orxCHAR             acCommandBuffer[orxCONFIG_KU32_COMMAND_BUFFER_SIZE]; /**< Command buffer */
@@ -1400,10 +1400,10 @@ static orxCONFIG_ENTRY *orxFASTCALL orxConfig_GetEntryFromKey(orxSTRINGID _stKey
     else
     {
       /* Isn't the default parent? */
-      if(sstConfig.pstCurrentSection != sstConfig.pstDefaultSection)
+      if(sstConfig.pstCurrentSection != sstConfig.pstDefaultParent)
       {
         /* Selects default parent */
-        pstParent = sstConfig.pstDefaultSection;
+        pstParent = sstConfig.pstDefaultParent;
       }
       else
       {
@@ -1546,10 +1546,10 @@ static orxCONFIG_VALUE *orxFASTCALL orxConfig_GetValueFromKey(orxSTRINGID _stKey
     else
     {
       /* Isn't the default parent? */
-      if(sstConfig.pstCurrentSection != sstConfig.pstDefaultSection)
+      if(sstConfig.pstCurrentSection != sstConfig.pstDefaultParent)
       {
         /* Selects default parent */
-        pstParent = sstConfig.pstDefaultSection;
+        pstParent = sstConfig.pstDefaultParent;
       }
       else
       {
@@ -6321,16 +6321,16 @@ orxSTATUS orxFASTCALL orxConfig_SetDefaultParent(const orxSTRING _zSectionName)
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
   /* Has current default parent? */
-  if(sstConfig.pstDefaultSection != orxNULL)
+  if(sstConfig.pstDefaultParent != orxNULL)
   {
     /* Unprotects it */
-    sstConfig.pstDefaultSection->s32ProtectionCount--;
+    sstConfig.pstDefaultParent->s32ProtectionCount--;
 
     /* Checks */
-    orxASSERT(sstConfig.pstDefaultSection->s32ProtectionCount >= 0);
+    orxASSERT(sstConfig.pstDefaultParent->s32ProtectionCount >= 0);
 
     /* Clears it */
-    sstConfig.pstDefaultSection = orxNULL;
+    sstConfig.pstDefaultParent = orxNULL;
   }
 
   /* Valid? */
@@ -6354,7 +6354,7 @@ orxSTATUS orxFASTCALL orxConfig_SetDefaultParent(const orxSTRING _zSectionName)
       sstConfig.pstCurrentSection->s32ProtectionCount++;
 
       /* Stores it */
-      sstConfig.pstDefaultSection = sstConfig.pstCurrentSection;
+      sstConfig.pstDefaultParent = sstConfig.pstCurrentSection;
     }
 
     /* Restores current section */
@@ -6375,11 +6375,11 @@ const orxSTRING orxFASTCALL orxConfig_GetDefaultParent()
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstConfig.u32Flags, orxCONFIG_KU32_STATIC_FLAG_READY));
 
-  /* Has default section? */
-  if(sstConfig.pstDefaultSection != orxNULL)
+  /* Has default parent? */
+  if(sstConfig.pstDefaultParent != orxNULL)
   {
     /* Updates result */
-    zResult = sstConfig.pstDefaultSection->zName;
+    zResult = sstConfig.pstDefaultParent->zName;
   }
 
   /* Done! */
