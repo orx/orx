@@ -3,35 +3,29 @@
  *  Distributed Under The MIT License
  *  https://github.com/pocketpy/pocketpy
  */
- 
+
 #pragma once
 
 // clang-format off
 
-#define PK_VERSION				"2.0.8"
+#define PK_VERSION				"2.1.0"
 #define PK_VERSION_MAJOR            2
-#define PK_VERSION_MINOR            0
-#define PK_VERSION_PATCH            8
+#define PK_VERSION_MINOR            1
+#define PK_VERSION_PATCH            0
 
 /*************** feature settings ***************/
-
-// Reduce the startup memory usage for embedded systems
-#ifndef PK_LOW_MEMORY_MODE          // can be overridden by cmake
-#define PK_LOW_MEMORY_MODE          0
-#endif
-
 // Whether to compile os-related modules or not
 #ifndef PK_ENABLE_OS                // can be overridden by cmake
 #define PK_ENABLE_OS                1
 #endif
 
+#ifndef PK_ENABLE_WATCHDOG          // can be overridden by cmake
+#define PK_ENABLE_WATCHDOG          0
+#endif
+
 // GC min threshold
 #ifndef PK_GC_MIN_THRESHOLD         // can be overridden by cmake
-    #if PK_LOW_MEMORY_MODE
-        #define PK_GC_MIN_THRESHOLD     2048
-    #else
-        #define PK_GC_MIN_THRESHOLD     32768
-    #endif
+    #define PK_GC_MIN_THRESHOLD     32768
 #endif
 
 // Memory allocation functions
@@ -47,11 +41,7 @@
 // This is the maximum size of the value stack in py_TValue units
 // The actual size in bytes equals `sizeof(py_TValue) * PK_VM_STACK_SIZE`
 #ifndef PK_VM_STACK_SIZE            // can be overridden by cmake
-    #if PK_LOW_MEMORY_MODE
-        #define PK_VM_STACK_SIZE    2048
-    #else
-        #define PK_VM_STACK_SIZE    16384
-    #endif
+    #define PK_VM_STACK_SIZE        16384
 #endif
 
 // This is the maximum number of local variables in a function
@@ -170,6 +160,16 @@ typedef union c11_mat3x3 {
     float data[9];
 } c11_mat3x3;
 
+typedef union c11_color32 {
+    struct {
+        unsigned char r;
+        unsigned char g;
+        unsigned char b;
+        unsigned char a;
+    };
+    unsigned char data[4];
+} c11_color32;
+
 
 
 #include <stdint.h>
@@ -236,6 +236,8 @@ typedef struct py_Callbacks {
     char* (*importfile)(const char*);
     /// Used by `print` to output a string.
     void (*print)(const char*);
+    /// Flush the output buffer of `print`.
+    void (*flush)();
     /// Used by `input` to get a character.
     int (*getchar)();
 } py_Callbacks;
@@ -256,7 +258,8 @@ enum py_CompileMode { EXEC_MODE, EVAL_MODE, SINGLE_MODE };
 
 /// Initialize pocketpy and the default VM.
 PK_API void py_initialize();
-/// Finalize pocketpy and free all VMs.
+/// Finalize pocketpy and free all VMs. This opearation is irreversible.
+/// After this call, you cannot use any function from this header anymore.
 PK_API void py_finalize();
 /// Get the current VM index.
 PK_API int py_currentvm();
@@ -275,6 +278,16 @@ PK_API void py_sys_setargv(int argc, char** argv);
 PK_API void py_sys_settrace(py_TraceFunc func);
 /// Setup the callbacks for the current VM.
 PK_API py_Callbacks* py_callbacks();
+
+/// Begin the watchdog with a timeout in milliseconds.
+/// `PK_ENABLE_WATCHDOG` must be defined to `1` to use this feature.
+/// You need to call `py_watchdog_reset()` periodically to keep the watchdog alive.
+/// If the timeout is reached, `TimeoutError` will be raised.
+PK_API void py_watchdog_begin(py_i64 timeout);
+/// Reset the watchdog.
+PK_API void py_watchdog_reset();
+/// End the watchdog.
+PK_API void py_watchdog_end();
 
 /// Get the current source location of the frame.
 PK_API const char* py_Frame_sourceloc(py_Frame* frame, int* lineno);
@@ -718,6 +731,7 @@ PK_API void py_clearexc(py_StackRef p0);
 #define NameError(n) py_exception(tp_NameError, "name '%n' is not defined", (n))
 #define TypeError(...) py_exception(tp_TypeError, __VA_ARGS__)
 #define RuntimeError(...) py_exception(tp_RuntimeError, __VA_ARGS__)
+#define TimeoutError(...) py_exception(tp_TimeoutError, __VA_ARGS__)
 #define OSError(...) py_exception(tp_OSError, __VA_ARGS__)
 #define ValueError(...) py_exception(tp_ValueError, __VA_ARGS__)
 #define IndexError(...) py_exception(tp_IndexError, __VA_ARGS__)
@@ -835,17 +849,19 @@ PK_API bool
 /// noexcept
 PK_API int py_dict_len(py_Ref self);
 
-/************* linalg module *************/
+/************* vmath module *************/
 void py_newvec2(py_OutRef out, c11_vec2);
 void py_newvec3(py_OutRef out, c11_vec3);
 void py_newvec2i(py_OutRef out, c11_vec2i);
 void py_newvec3i(py_OutRef out, c11_vec3i);
+void py_newcolor32(py_OutRef out, c11_color32);
 c11_mat3x3* py_newmat3x3(py_OutRef out);
 c11_vec2 py_tovec2(py_Ref self);
 c11_vec3 py_tovec3(py_Ref self);
 c11_vec2i py_tovec2i(py_Ref self);
 c11_vec3i py_tovec3i(py_Ref self);
 c11_mat3x3* py_tomat3x3(py_Ref self);
+c11_color32 py_tocolor32(py_Ref self);
 
 /************* Others *************/
 
@@ -964,7 +980,7 @@ enum py_PredefinedType {
     tp_locals,
     tp_code,
     tp_dict,
-    tp_dict_items,    // 1 slot
+    tp_dict_iterator, // 1 slot
     tp_property,      // 2 slots (getter + setter)
     tp_star_wrapper,  // 1 slot + int level
     tp_staticmethod,  // 1 slot
@@ -985,6 +1001,7 @@ enum py_PredefinedType {
     tp_IndexError,
     tp_ValueError,
     tp_RuntimeError,
+    tp_TimeoutError,
     tp_ZeroDivisionError,
     tp_NameError,
     tp_UnboundLocalError,
@@ -992,12 +1009,13 @@ enum py_PredefinedType {
     tp_ImportError,
     tp_AssertionError,
     tp_KeyError,
-    /* linalg */
+    /* vmath */
     tp_vec2,
     tp_vec3,
     tp_vec2i,
     tp_vec3i,
     tp_mat3x3,
+    tp_color32,
     /* array2d */
     tp_array2d_like,
     tp_array2d_like_iterator,
