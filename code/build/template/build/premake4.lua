@@ -352,6 +352,8 @@ project "[name]"
     {
 [+imgui
         "../include/extensions/imgui",]
+[+python
+        "../include/extensions/pocketpy",]
         "../include/extensions",
         "../include"
     }
