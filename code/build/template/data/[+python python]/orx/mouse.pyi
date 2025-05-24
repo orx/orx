@@ -1,0 +1,3 @@
+from vector import Vector
+
+def get_position() -> Vector: ...
