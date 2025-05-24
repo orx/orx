@@ -61,12 +61,16 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   extern void Clay_ShowDemoContent();
   Clay_ShowDemoContent();
 ]
+[+python
+  // Call Python update
+  [-scroll orxPy_Update(_pstClockInfo, orxNULL);][+scroll orxPy_Update(&_rstClockInfo, orxNULL);]]
+[-python
   // Should quit?
   if(orxInput_HasBeenActivated("Quit"))
   {
     // Send close event
     orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
-  }
+  }]
 }
 
 /** Camera Update function, it has been registered to be called every tick of the core clock, after physics & objects have been updated
@@ -74,6 +78,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [+scroll void [!name]::CameraUpdate(const orxCLOCK_INFO &_rstClockInfo)]
 [-scroll void orxFASTCALL CameraUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)]
 {
+[-python
   // Get MainCamera proxy object
 [+scroll
   ScrollObject *poMainCamera = [!name]::GetInstance().GetObject("MainCamera");
@@ -94,6 +99,10 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [-scroll
     orxObject_SetPosition(pstMainCamera, orxVector_Round(&vPosition, orxObject_GetPosition(pstMainCamera, &vPosition)));]
   }
+]
+[+python
+  // Call Python camera update
+  [-scroll orxPy_CameraUpdate(_pstClockInfo, orxNULL);][+scroll orxPy_CameraUpdate(&_rstClockInfo, orxNULL);]]
 }
 
 /** Init function, it is called when all orx's modules have been initialized
@@ -104,6 +113,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Init extensions
   InitExtensions();
 
+[-python
   // Push [Main] as the default config section
   orxConfig_PushSection("Main");
 
@@ -112,17 +122,22 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   {
     orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
   }
-
+]
 [+scroll
+[-python
   // Create the [-movie scene][+movie splash screen]
-  CreateObject("[-movie Scene][+movie Splash]");]
+  CreateObject("[-movie Scene][+movie Splash]");
+]]
 [-scroll
   // Register the Update & CameraUpdate functions to the core clock
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
   orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), CameraUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER);
-
+]
+[-python
+[-scroll
   // Create the [-movie scene][+movie splash screen]
-  orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");]
+  orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");
+]]
 
   // Done!
   return orxSTATUS_SUCCESS;
