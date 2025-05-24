@@ -75,6 +75,7 @@
 
 #define orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE          65536
 #define orxCOMMAND_KU32_PROCESS_BUFFER_SIZE           65536
+#define orxCOMMAND_KU32_STRING_BUFFER_SIZE            65536
 #define orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE         512
 
 #define orxCOMMAND_KZ_ERROR_VALUE                     "ERROR"
@@ -151,6 +152,7 @@ typedef struct __orxCOMMAND_STATIC_t
   orxCHAR                   acEvaluateBuffer[orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE];   /**< Evaluate buffer */
   orxCHAR                   acProcessBuffer[orxCOMMAND_KU32_PROCESS_BUFFER_SIZE];     /**< Process buffer */
   orxCHAR                   acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE]; /**< Prototype buffer */
+  orxCHAR                   acStringBuffer[orxCOMMAND_KU32_STRING_BUFFER_SIZE];       /**< String buffer */
   orxCHAR                   acResultBuffer[orxCOMMAND_KU32_RESULT_BUFFER_SIZE];       /**< Result buffer */
   orxS32                    s32EvaluateOffset;                                        /**< Evaluate buffer offset */
   orxS32                    s32ProcessOffset;                                         /**< Process buffer offset */
@@ -2741,6 +2743,39 @@ void orxFASTCALL orxCommand_CommandGetStringLength(orxU32 _u32ArgNumber, const o
   return;
 }
 
+/* Command: GetSubString */
+void orxFASTCALL orxCommand_CommandGetSubString(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxU32 u32Length, u32Start;
+  
+  /* Get its length */
+  u32Length = orxString_GetLength(_astArgList[0].zValue);
+  
+  /* Gets its start */
+  if(_astArgList[1].s32Value >= 0)
+  {
+    u32Start = orxMIN(u32Length, (orxU32)_astArgList[1].s32Value);
+  }
+  else
+  {
+    u32Start = u32Length - orxMIN(u32Length, (orxU32)-_astArgList[1].s32Value);
+  }
+
+  /* Updates its length */
+  u32Length -= u32Start;
+  if((_u32ArgNumber > 2) && (_astArgList[2].u32Value != 0))
+  {
+    u32Length = orxMIN(_astArgList[2].u32Value, u32Length);
+  }
+  u32Length = orxMIN(sizeof(sstCommand.acStringBuffer) - 1, u32Length);
+  
+  /* Updates result */
+  _pstResult->zValue = (u32Length > 0) ? sstCommand.acStringBuffer[u32Length] = orxCHAR_NULL, (orxSTRING)orxMemory_Copy(sstCommand.acStringBuffer, _astArgList[0].zValue + u32Start, u32Length) : orxSTRING_EMPTY;
+
+  /* Done! */
+  return;
+}
+
 /* Command: GetStringID */
 void orxFASTCALL orxCommand_CommandGetStringID(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -3048,6 +3083,9 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: GetStringLength */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringLength, "Length", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
 
+  /* Command: GetSubString */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetSubString, "SubString", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"String", orxCOMMAND_VAR_TYPE_STRING}, {"Start", orxCOMMAND_VAR_TYPE_S32}, {"Length = 0", orxCOMMAND_VAR_TYPE_U32});
+
   /* Command: GetStringID */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringID, "ID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetStringFromID */
@@ -3250,6 +3288,9 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: String.GetLength */
   orxCommand_AddAlias("String.GetLength", "Command.GetStringLength", orxNULL);
+
+  /* Alias: String.Sub */
+  orxCommand_AddAlias("String.Sub", "Command.GetSubString", orxNULL);
 
   /* Alias: String.GetID */
   orxCommand_AddAlias("String.GetID", "Command.GetStringID", orxNULL);
@@ -3462,6 +3503,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: String.GetLength */
   orxCommand_RemoveAlias("String.GetLength");
 
+  /* Alias: String.Sub */
+  orxCommand_RemoveAlias("String.Sub");
+
   /* Alias: String.GetID */
   orxCommand_RemoveAlias("String.GetID");
   /* Alias: String.GetFromID */
@@ -3596,6 +3640,9 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Command: GetStringLength */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetStringLength);
 
+  /* Command: GetSubString */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetSubString);
+
   /* Command: GetStringID */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetStringID);
   /* Command: GetStringFromID */
@@ -3702,6 +3749,7 @@ orxSTATUS orxFASTCALL orxCommand_Init()
             sstCommand.acEvaluateBuffer[orxCOMMAND_KU32_EVALUATE_BUFFER_SIZE - 1]   = orxCHAR_NULL;
             sstCommand.acProcessBuffer[orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1]     = orxCHAR_NULL;
             sstCommand.acPrototypeBuffer[orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE - 1] = orxCHAR_NULL;
+            sstCommand.acStringBuffer[orxCOMMAND_KU32_STRING_BUFFER_SIZE - 1]       = orxCHAR_NULL;
 
             /* Inits offsets */
             sstCommand.s32EvaluateOffset  =

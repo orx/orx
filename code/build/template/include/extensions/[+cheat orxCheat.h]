@@ -17,7 +17,7 @@ void orxFASTCALL                            orxCheat_Enable(orxBOOL _bEnable);
 
 #define orxCHEAT_KZ_CONFIG_SECTION          "Cheats"
 #define orxCHEAT_KZ_CONFIG_COMMAND          "Command"
-#define orxCHEAT_KZ_CONFIG_ROOT             "Cheat"
+#define orxCHEAT_KZ_CONFIG_ROOT             "orx:cheat"
 #define orxCHEAT_KC_CONFIG_SEPARATOR        ':'
 #define orxCHEAT_KZ_CONFIG_PREFIX           (orxCHEAT_KZ_CONFIG_ROOT ":")
 #define orxCHEAT_KZ_INPUT_SET               "orx:input:cheat"
@@ -276,7 +276,7 @@ orxSTATUS orxCheat_Init()
     }
     for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_QUOTE; eKey <= orxKEYBOARD_KEY_BACKQUOTE; eKey = (orxKEYBOARD_KEY)(eKey + 1))
     {
-      orxConfig_SetString(orxKeyboard_GetKeyName(eKey), orxKeyboard_GetKeyDisplayName(eKey));
+      orxConfig_SetStringBlock(orxKeyboard_GetKeyName(eKey), orxKeyboard_GetKeyDisplayName(eKey));
     }
     for(orxKEYBOARD_KEY eKey = orxKEYBOARD_KEY_0; eKey <= orxKEYBOARD_KEY_9; eKey = (orxKEYBOARD_KEY)(eKey + 1))
     {

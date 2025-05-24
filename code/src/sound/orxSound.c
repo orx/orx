@@ -659,7 +659,11 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         if(orxConfig_GetListCount(orxSOUND_KZ_CONFIG_DISTANCE_LIST) > 1)
         {
           afDistanceList[1] = orxConfig_GetListFloat(orxSOUND_KZ_CONFIG_DISTANCE_LIST, 1);
-          if(afDistanceList[1] < afDistanceList[0])
+          if(afDistanceList[1] == afDistanceList[0])
+          {
+            afDistanceList[1] += orxMATH_KF_EPSILON;
+          }
+          else if(afDistanceList[1] < afDistanceList[0])
           {
             orxFLOAT fTemp;
             fTemp             = afDistanceList[0];
@@ -1815,6 +1819,103 @@ void orxFASTCALL orxSound_CommandRemoveAllBusFilters(orxU32 _u32ArgNumber, const
   return;
 }
 
+/** Command: EnableListener
+ */
+void orxFASTCALL orxSound_CommandEnableListener(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Valid? */
+  if((orxU32)_astArgList[0].u64Value < orxSoundSystem_GetListenerCount())
+  {
+    /* Updates listener */
+    orxSoundSystem_EnableListener((orxU32)_astArgList[0].u64Value, (_u32ArgNumber < 2) || (_astArgList[1].bValue != orxFALSE) ? orxTRUE : orxFALSE);
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: IsListenerEnabled
+ */
+void orxFASTCALL orxSound_CommandIsListenerEnabled(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Valid? */
+  if((orxU32)_astArgList[0].u64Value < orxSoundSystem_GetListenerCount())
+  {
+    /* Updates result */
+    _pstResult->bValue = orxSoundSystem_IsListenerEnabled((orxU32)_astArgList[0].u64Value);
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: SetListenerPosition
+ */
+void orxFASTCALL orxSound_CommandSetListenerPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Valid? */
+  if((orxU32)_astArgList[0].u64Value < orxSoundSystem_GetListenerCount())
+  {
+    /* Sets listener's position */
+    orxSoundSystem_SetListenerPosition((orxU32)_astArgList[0].u64Value, &(_astArgList[1].vValue));
+
+    /* Updates result */
+    _pstResult->u64Value = _astArgList[0].u64Value;
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->u64Value = orxU64_UNDEFINED;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetListenerPosition
+ */
+void orxFASTCALL orxSound_CommandGetListenerPosition(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Valid? */
+  if((orxU32)_astArgList[0].u64Value < orxSoundSystem_GetListenerCount())
+  {
+    /* Gets listener's position */
+    orxSoundSystem_GetListenerPosition((orxU32)_astArgList[0].u64Value, &(_pstResult->vValue));
+  }
+  else
+  {
+    /* Updates result */
+    orxVector_Copy(&(_pstResult->vValue), &orxVECTOR_0);
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetListenerCount
+ */
+void orxFASTCALL orxSound_CommandGetListenerCount(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->u32Value = orxSoundSystem_GetListenerCount();
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the sound commands
  */
 static orxINLINE void orxSound_RegisterCommands()
@@ -1843,6 +1944,20 @@ static orxINLINE void orxSound_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Sound, RemoveLastBusFilter, "Bus", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: RemoveAllBusFilters */
   orxCOMMAND_REGISTER_CORE_COMMAND(Sound, RemoveAllBusFilters, "Bus", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Bus", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: EnableListener */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, EnableListener, "Listener", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Listener", orxCOMMAND_VAR_TYPE_U64}, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: IsListenerEnabled */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, IsListenerEnabled, "IsEnabled?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Listener", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: SetListenerPosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, SetListenerPosition, "Listener", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Listener", orxCOMMAND_VAR_TYPE_U64}, {"Position", orxCOMMAND_VAR_TYPE_VECTOR});
+  /* Command: GetListenerPosition */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, GetListenerPosition, "Position", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Listener", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: GetListenerCount */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Sound, GetListenerCount, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 0);
+
+  /* Done! */
+  return;
 }
 
 /** Unregisters all the sound commands
@@ -1873,6 +1988,20 @@ static orxINLINE void orxSound_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, RemoveLastBusFilter);
   /* Command: RemoveAllBusFilters */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, RemoveAllBusFilters);
+
+  /* Command: EnableListener */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, EnableListener);
+  /* Command: IsListenerEnabled */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, IsListenerEnabled);
+  /* Command: SetListenerPosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, SetListenerPosition);
+  /* Command: GetListenerPosition */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, GetListenerPosition);
+  /* Command: GetListenerCount */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Sound, GetListenerCount);
+
+  /* Done! */
+  return;
 }
 
 

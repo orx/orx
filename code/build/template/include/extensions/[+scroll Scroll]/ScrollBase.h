@@ -130,7 +130,7 @@ protected:
 
   static        orxHASHTABLE *          GetTable();
   static        void                    DeleteTable();
-  static        ScrollObjectBinderBase *GetBinder(const orxSTRING _zName, orxBOOL _bAllowDefault = orxTRUE);
+  static        ScrollObjectBinderBase *GetBinder(const orxSTRING _zName);
 
                                         ScrollObjectBinderBase(orxS32 _s32SegmentSize, orxU32 _u32ElementSize);
   virtual                              ~ScrollObjectBinderBase();
@@ -281,8 +281,8 @@ public:
 
                 ScrollObject *  GetObject(orxU64 _u64GUID) const;
           template<class O> O * GetObject(orxU64 _u64GUID) const {return ScrollCast<O *>(GetObject(_u64GUID));}
-                ScrollObject *  GetObject(const orxSTRING _zSection, const orxSTRING _zKey = "ID") const;
-          template<class O> O * GetObject(const orxSTRING _zSection, const orxSTRING _zKey = "ID") const {return ScrollCast<O *>(GetObject(_zSection, _zKey));}
+                ScrollObject *  GetObject(const orxSTRING _zSection, const orxSTRING _zKey = ScrollBase::szConfigScrollObjectID /* = ID */) const;
+          template<class O> O * GetObject(const orxSTRING _zSection, const orxSTRING _zKey = ScrollBase::szConfigScrollObjectID /* = ID */) const {return ScrollCast<O *>(GetObject(_zSection, _zKey));}
 
                 ScrollObject *  GetNextObject(const ScrollObject *_poObject = orxNULL, orxBOOL _bChronological = orxFALSE) const;
           template<class O> O * GetNextObject(const O *_poObject = orxNULL) const;
@@ -306,6 +306,8 @@ protected:
 
   static  const orxSTRING       szConfigScrollObjectPausable;
   static  const orxSTRING       szConfigScrollObjectInput;
+  static  const orxSTRING       szConfigScrollObjectUnique;
+  static  const orxSTRING       szConfigScrollObjectID;
   static  const orxCHAR         scConfigScrollObjectInstantMarker   = '.';
   static  const orxCHAR         scConfigScrollObjectNegativeMarker  = '-';
 
@@ -358,7 +360,6 @@ private:
                 orxLINKLIST     mstObjectList;
                 orxLINKLIST     mstObjectChronoList;
                 orxU32          mu32FrameCount;
-                orxU32          mu32CreateObjectCount;
                 orxBOOL         mbObjectListLocked;
                 orxBOOL         mbIsRunning;
                 orxBOOL         mbIsPaused;
@@ -438,6 +439,8 @@ O *ScrollBase::GetPreviousObject(const O *_poObject) const
 //! Constants
 const orxSTRING ScrollBase::szConfigScrollObjectPausable      = "Pausable";
 const orxSTRING ScrollBase::szConfigScrollObjectInput         = "Input";
+const orxSTRING ScrollBase::szConfigScrollObjectUnique        = "Unique";
+const orxSTRING ScrollBase::szConfigScrollObjectID            = "ID";
 
 
 //! Static variables
@@ -456,8 +459,7 @@ ScrollBase &ScrollBase::GetInstance()
   return *spoInstance;
 }
 
-ScrollBase::ScrollBase() : mu32FrameCount(0), mu32CreateObjectCount(0),
-                           mbObjectListLocked(orxFALSE), mbIsRunning(orxFALSE), mbIsPaused(orxFALSE)
+ScrollBase::ScrollBase() : mu32FrameCount(0), mbObjectListLocked(orxFALSE), mbIsRunning(orxFALSE), mbIsPaused(orxFALSE)
 {
 }
 
@@ -486,14 +488,8 @@ ScrollObject *ScrollBase::CreateObject(const orxSTRING _zName)
   {
     orxOBJECT *pstObject;
 
-    // Requests a ScrollObject
-    mu32CreateObjectCount++;
-
     // Creates object
     pstObject = orxObject_CreateFromConfig(_zName);
-
-    // Updates request count
-    mu32CreateObjectCount--;
 
     // Valid?
     if(pstObject)
@@ -1256,7 +1252,7 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
         ScrollObjectBinderBase *poBinder;
 
         // Gets binder
-        poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject), (roGame.mu32CreateObjectCount != 0) ? orxTRUE : orxFALSE);
+        poBinder = ScrollObjectBinderBase::GetBinder(orxObject_GetName(pstObject));
 
         // Found?
         if(poBinder)
@@ -1279,14 +1275,9 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
         // Valid object (first deletion)?
         if(poObject && poObject->mpstObject)
         {
-          ScrollObjectBinderBase *poBinder;
-
-          // Gets binder
-          poBinder = ScrollObjectBinderBase::GetBinder(poObject->GetName());
-          orxASSERT(poBinder);
-
-          // Uses it to delete object
-          poBinder->DeleteObject(poObject);
+          // Deletes it through its binder
+          orxASSERT(poObject->mpoBinder);
+          poObject->mpoBinder->DeleteObject(poObject);
         }
       }
       break;
@@ -1626,7 +1617,7 @@ ScrollObjectBinderBase *ScrollObjectBinderBase::GetDefaultBinder()
   return ScrollObjectBinder<ScrollObject>::GetInstance(512);
 }
 
-ScrollObjectBinderBase *ScrollObjectBinderBase::GetBinder(const orxSTRING _zName, orxBOOL _bAllowDefault)
+ScrollObjectBinderBase *ScrollObjectBinderBase::GetBinder(const orxSTRING _zName)
 {
   ScrollObjectBinderBase *poResult = orxNULL;
 
@@ -1636,16 +1627,16 @@ ScrollObjectBinderBase *ScrollObjectBinderBase::GetBinder(const orxSTRING _zName
     const orxSTRING zSection;
 
     // Gets associated binder, using config hierarchy
-    for(zSection = _zName, poResult = (ScrollObjectBinderBase *)orxHashTable_Get(GetTable(), orxString_Hash(zSection));
-        (!poResult) && ((zSection = orxConfig_GetParent(zSection)));
-        poResult = (ScrollObjectBinderBase *)orxHashTable_Get(GetTable(), orxString_Hash(zSection)));
-  }
+    for(poResult = (ScrollObjectBinderBase *)orxHashTable_Get(GetTable(), orxString_Hash(_zName)), zSection = orxConfig_GetParent(_zName);
+        (poResult == orxNULL) && (zSection != orxNULL) && (zSection != orxSTRING_EMPTY);
+        poResult = (ScrollObjectBinderBase *)orxHashTable_Get(GetTable(), orxString_Hash(zSection)), zSection = orxConfig_GetParent(zSection));
 
-  // Not found and default allowed?
-  if(!poResult && _bAllowDefault)
-  {
-    // Gets default binder
-    poResult = GetDefaultBinder();
+    // Not found and not explicitly rejected?
+    if(!poResult && (zSection != orxSTRING_EMPTY))
+    {
+      // Gets default binder
+      poResult = GetDefaultBinder();
+    }
   }
 
   // Done!
@@ -1673,6 +1664,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
   ScrollObject::Flag  xFlags = ScrollObject::FlagNone;
   ScrollObject       *poResult;
   const orxSTRING     zInputSet;
+  const orxSTRING     zUnique;
 
   // Checks
   orxSTRUCTURE_ASSERT(_pstObject);
@@ -1724,6 +1716,41 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
     xFlags |= ScrollObject::FlagPausable;
   }
 
+  // Gets unique identifier
+  zUnique = orxConfig_GetString(ScrollBase::szConfigScrollObjectUnique);
+  
+  // Valid?
+  if(*zUnique != orxCHAR_NULL)
+  {
+    const orxSTRING zRemaining;
+    const orxSTRING zKey = orxNULL;
+    orxBOOL         bUnique;
+    
+    /* Is a bool? */
+    if((orxString_ToBool(zUnique, &bUnique, &zRemaining) != orxSTATUS_FAILURE)
+    && (*zRemaining == orxCHAR_NULL))
+    {
+      /* Unique? */
+      if(bUnique != orxFALSE)
+      {
+        /* Uses default ID key */
+        zKey = ScrollBase::szConfigScrollObjectID;
+      }
+    }
+    else
+    {
+      /* Uses it as key */
+      zKey = zUnique;
+    }
+    
+    /* Has key? */
+    if(zKey != orxNULL)
+    {
+      /* Stores its GUID */
+      orxConfig_SetString(zKey, poResult->GetInstanceName());
+    }
+  }
+
   // Gets input set
   zInputSet = orxConfig_GetString(ScrollBase::szConfigScrollObjectInput);
 
@@ -1763,6 +1790,9 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
       orxInput_PopSet();
     }
   }
+
+  // Stores its binder
+  poResult->mpoBinder = this;
 
   // Stores flags
   poResult->SetFlags(xFlags, ScrollObject::MaskAll);

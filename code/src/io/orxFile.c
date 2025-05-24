@@ -87,7 +87,7 @@
 
 /** Misc
  */
-#define orxFILE_KU32_BUFFER_SIZE                512         /**< Buffer size */
+#define orxFILE_KU32_BUFFER_SIZE                1024        /**< Buffer size */
 
 #if defined(__orxLINUX__)
 
@@ -140,6 +140,7 @@ static orxFILE_STATIC sstFile;
 static orxINLINE void orxFile_GetInfoFromData(const WIN32_FIND_DATAA *_pstData, orxFILE_INFO *_pstFileInfo)
 {
   orxU32 u32PathLength;
+
   /* Checks */
   orxASSERT(_pstData != orxNULL);
   orxASSERT(_pstFileInfo != orxNULL);
@@ -183,11 +184,10 @@ static orxINLINE void orxFile_GetInfoFromData(const struct dirent *_pstData, orx
   u32PathLength = orxString_GetLength(_pstFileInfo->zPath);
   orxString_NCopy(_pstFileInfo->zFullName + u32PathLength, _pstFileInfo->zName, sizeof(_pstFileInfo->zFullName) - 1 - u32PathLength);
   _pstFileInfo->zFullName[sizeof(_pstFileInfo->zFullName) - 1] = orxCHAR_NULL;
+  _pstFileInfo->u32Flags = 0;
 
   /* Gets file info */
   stat(_pstFileInfo->zFullName, &stStat);
-
-  _pstFileInfo->u32Flags = 0;
 
   /* Read only file ? */
   if(access(_pstFileInfo->zFullName, R_OK | W_OK) == 0)
@@ -542,7 +542,7 @@ orxBOOL orxFASTCALL orxFile_Exists(const orxSTRING _zFileName)
   orxMemory_Zero(&stInfo, sizeof(orxFILE_INFO));
 
   /* Done! */
-  return(orxFile_GetInfo(_zFileName, &stInfo) != orxSTATUS_FAILURE);
+  return((orxFile_GetInfo(_zFileName, &stInfo) != orxSTATUS_FAILURE) ? orxTRUE : orxFALSE);
 }
 
 /** Starts a new file search: finds the first file/directory that will match to the given pattern (ex: /bin/foo*)
@@ -556,8 +556,8 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
 
 #ifdef __orxWINDOWS__
 
-  WIN32_FIND_DATAA    stData;
-  orxHANDLE           hHandle;
+  WIN32_FIND_DATAA  stData;
+  HANDLE            hHandle;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
@@ -565,10 +565,10 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
   orxASSERT(_pstFileInfo != orxNULL);
 
   /* Opens the search */
-  hHandle = (orxHANDLE)FindFirstFile(_zSearchPattern, &stData);
+  hHandle = FindFirstFile(_zSearchPattern, &stData);
 
   /* Valid? */
-  if((orxSPTR)hHandle > 0)
+  if(hHandle != INVALID_HANDLE_VALUE)
   {
     const orxSTRING zFileName;
 
@@ -602,11 +602,11 @@ orxSTATUS orxFASTCALL orxFile_FindFirst(const orxSTRING _zSearchPattern, orxFILE
       _pstFileInfo->zPattern[sizeof(_pstFileInfo->zPattern) - 1] = orxCHAR_NULL;
     }
 
-    /* Tranfers file info */
+    /* Transfers file info */
     orxFile_GetInfoFromData(&stData, _pstFileInfo);
 
     /* Stores handle */
-    _pstFileInfo->hInternal = hHandle;
+    _pstFileInfo->hInternal = (orxHANDLE)hHandle;
 
     /* Updates result */
     eResult = orxSTATUS_SUCCESS;
@@ -690,20 +690,20 @@ orxSTATUS orxFASTCALL orxFile_FindNext(orxFILE_INFO *_pstFileInfo)
 
 #ifdef __orxWINDOWS__
 
-  WIN32_FIND_DATAA    stData;
-  orxS32              s32FindResult;
+  WIN32_FIND_DATAA  stData;
+  BOOL              bFound;
 
   /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstFileInfo != orxNULL);
 
-  /* Opens the search */
-  s32FindResult = FindNextFile((HANDLE)_pstFileInfo->hInternal, &stData);
+  /* Finds next file */
+  bFound = FindNextFile((HANDLE)_pstFileInfo->hInternal, &stData);
 
   /* Valid? */
-  if(s32FindResult == 0)
+  if(bFound != FALSE)
   {
-    /* Tranfers file info */
+    /* Transfers file info */
     orxFile_GetInfoFromData(&stData, _pstFileInfo);
 
     /* Updates result */
@@ -804,42 +804,6 @@ orxSTATUS orxFASTCALL orxFile_GetInfo(const orxSTRING _zFileName, orxFILE_INFO *
   return eResult;
 }
 
-/** Removes a file or an empty directory
- * @param[in] _zFileName            Concerned file / directory
- * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxFile_Remove(const orxSTRING _zFileName)
-{
-  orxSTATUS eResult = orxSTATUS_FAILURE;
-
-  /* Checks */
-  orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
-  orxASSERT(_zFileName != orxNULL);
-
-  /* Tries to remove it as a file */
-  if(remove(_zFileName) == 0)
-  {
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Tries to remove it as a directory */
-#ifdef __orxMSVC__
-    if(_rmdir(_zFileName) == 0)
-#else /* __orxWINDOWS__ */
-    if(rmdir(_zFileName) == 0)
-#endif /* __orxWINDOWS__ */
-    {
-      /* Updates result */
-      eResult = orxSTATUS_SUCCESS;
-    }
-  }
-
-  /* Done! */
-  return eResult;
-}
-
 /** Makes a directory, works recursively if needed
  * @param[in] _zName                Name of the directory to make
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
@@ -900,21 +864,18 @@ orxSTATUS orxFASTCALL orxFile_MakeDirectory(const orxSTRING _zName)
 }
 
 /** Opens a file for later read or write operation
- * @param[in] _zFileName           Full file path to open
- * @param[in] _u32OpenFlags        List of used flags when opened
+ * @param[in] _zFileName            Full file path to open
+ * @param[in] _u32Flags             Flags used to determine the file access mode
  * @return a File pointer (or orxNULL if an error has occurred)
  */
-orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFlags)
+orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32Flags)
 {
-  /* Convert the open flags into a string */
-  orxCHAR acMode[4];
-  orxBOOL bBinaryMode;
+  orxFILE        *pstResult;
+  const orxSTRING zMode;
+  orxBOOL         bBinary;
 
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
-
-  /* Clears mode */
-  acMode[0] = orxCHAR_NULL;
 
   /*** LIB C MODES :
    * r   : Open text file for reading.
@@ -944,99 +905,58 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
    *  X   |  X    |   X    | a+
    */
 
-  /* Binary? */
-  if(_u32OpenFlags & orxFILE_KU32_FLAG_OPEN_BINARY)
-  {
-    /* Removes it */
-    _u32OpenFlags &= ~orxFILE_KU32_FLAG_OPEN_BINARY;
+  /* Updates binary status*/
+  bBinary = orxFLAG_TEST(_u32Flags, orxFILE_KU32_FLAG_OPEN_BINARY) ? orxTRUE : orxFALSE;
 
-    /* Updates binary status*/
-    bBinaryMode = orxTRUE;
-  }
-  else
+  /* Depending on flags */
+  switch(orxFLAG_GET(_u32Flags, orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND))
   {
-    /* Updates binary status*/
-    bBinaryMode = orxFALSE;
-  }
+    /* Read only? */
+    default:
+    case orxFILE_KU32_FLAG_OPEN_READ:
+    {
+      /* Updates mode */
+      zMode = (bBinary != orxFALSE) ? "rb" : "r";
+      break;
+    }
 
-  /* Read only? */
-  if(_u32OpenFlags == orxFILE_KU32_FLAG_OPEN_READ)
-  {
-    /* Binary? */
-    if(bBinaryMode != orxFALSE)
+    /* Write only?*/
+    case orxFILE_KU32_FLAG_OPEN_WRITE:
     {
-      /* Sets literal mode */
-      orxString_NPrint(acMode, sizeof(acMode), "rb");
+      /* Updates mode */
+      zMode = (bBinary != orxFALSE) ? "wb+" : "w+";
+      break;
     }
-    else
+
+    /* Append only? */
+    case orxFILE_KU32_FLAG_OPEN_APPEND:
+    case (orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND):
     {
-      /* Sets literal mode */
-      orxString_NPrint(acMode, sizeof(acMode), "r");
+      /* Updates mode */
+      zMode = (bBinary != orxFALSE) ? "ab" : "a";
+      break;
     }
-  }
-  /* Write only ?*/
-  else if(_u32OpenFlags == orxFILE_KU32_FLAG_OPEN_WRITE)
-  {
-    /* Binary? */
-    if(bBinaryMode != orxFALSE)
+
+    /* Read/Write? */
+    case (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE):
     {
-      /* Sets literal mode */
-      orxString_NPrint(acMode, sizeof(acMode), "wb+");
+      /* Updates mode */
+      zMode = (bBinary != orxFALSE) ? "rb+" : "r+";
+      break;
     }
-    else
+
+    /* Read and/or Write & Append? */
+    case (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_APPEND):
+    case (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND):
     {
-      /* Sets literal mode */
-      orxString_NPrint(acMode, sizeof(acMode), "w+");
-    }
-  }
-  /* Append only ? */
-  else if((_u32OpenFlags == orxFILE_KU32_FLAG_OPEN_APPEND)
-       || (_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND)))
-  {
-    /* Binary? */
-    if(bBinaryMode != orxFALSE)
-    {
-      /* Sets literal mode */
-      orxString_NPrint(acMode, sizeof(acMode), "ab");
-    }
-    else
-    {
-      /* Sets literal mode */
-      orxString_NPrint(acMode, sizeof(acMode), "a");
-    }
-  }
-  else if(_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE))
-  {
-    /* Binary? */
-    if(bBinaryMode != orxFALSE)
-    {
-      /* Sets literal mode */
-      orxString_NPrint(acMode, sizeof(acMode), "rb+");
-    }
-    else
-    {
-      /* Sets literal mode */
-      orxString_NPrint(acMode, sizeof(acMode), "r+");
-    }
-  }
-  else if((_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_APPEND))
-       || (_u32OpenFlags == (orxFILE_KU32_FLAG_OPEN_READ | orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND)))
-  {
-    /* Binary? */
-    if(bBinaryMode != orxFALSE)
-    {
-      /* Sets literal mode */
-      orxString_NPrint(acMode, sizeof(acMode), "ab+");
-    }
-    else
-    {
-      /* Sets literal mode */
-      orxString_NPrint(acMode, sizeof(acMode), "a+");
+      /* Updates mode */
+      zMode = (bBinary != orxFALSE) ? "ab+" : "a+";
+      break;
     }
   }
 
   /* Write mode? */
-  if(_u32OpenFlags & (orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND))
+  if(orxFLAG_TEST(_u32Flags, orxFILE_KU32_FLAG_OPEN_WRITE | orxFILE_KU32_FLAG_OPEN_APPEND))
   {
     const orxSTRING zBaseName;
 
@@ -1061,14 +981,17 @@ orxFILE *orxFASTCALL orxFile_Open(const orxSTRING _zFileName, orxU32 _u32OpenFla
   }
 
   /* Opens the file */
-  return(orxFILE *)fopen(_zFileName, acMode);
+  pstResult = (orxFILE *)fopen(_zFileName, zMode);
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Reads data from a file
- * @param[out] _pBuffer            Buffer that will contain read data
- * @param[in] _s64ElemSize         Size of 1 element
- * @param[in] _s64NbElem           Number of elements
- * @param[in] _pstFile             Pointer to the file descriptor
+ * @param[out] _pBuffer             Buffer that will contain read data
+ * @param[in] _s64ElemSize          Size of 1 element
+ * @param[in] _s64NbElem            Number of elements
+ * @param[in] _pstFile              Pointer to the file descriptor
  * @return The number of read elements (not bytes)
  */
 orxS64 orxFASTCALL orxFile_Read(void *_pBuffer, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
@@ -1076,7 +999,7 @@ orxS64 orxFASTCALL orxFile_Read(void *_pBuffer, orxS64 _s64ElemSize, orxS64 _s64
   /* Default return value */
   orxS64 s64Ret = 0;
 
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
 
   /* Valid input ? */
@@ -1090,10 +1013,10 @@ orxS64 orxFASTCALL orxFile_Read(void *_pBuffer, orxS64 _s64ElemSize, orxS64 _s64
 }
 
 /** Writes data to a file
- * @param[in] _pBuffer             Buffer that contains the data to write
- * @param[in] _s64ElemSize         Size of 1 element
- * @param[in] _s64NbElem           Number of elements
- * @param[in] _pstFile             Pointer to the file descriptor
+ * @param[in] _pBuffer              Buffer that contains the data to write
+ * @param[in] _s64ElemSize          Size of 1 element
+ * @param[in] _s64NbElem            Number of elements
+ * @param[in] _pstFile              Pointer to the file descriptor
  * @return The number of written elements (not bytes)
  */
 orxS64 orxFASTCALL orxFile_Write(const void *_pBuffer, orxS64 _s64ElemSize, orxS64 _s64NbElem, orxFILE *_pstFile)
@@ -1101,10 +1024,8 @@ orxS64 orxFASTCALL orxFile_Write(const void *_pBuffer, orxS64 _s64ElemSize, orxS
   /* Default return value */
   orxS64 s64Ret = 0;
 
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
-
-  /* Checks inputs */
   orxASSERT(_pstFile != orxNULL);
 
   /* Valid input ? */
@@ -1117,22 +1038,37 @@ orxS64 orxFASTCALL orxFile_Write(const void *_pBuffer, orxS64 _s64ElemSize, orxS
   return s64Ret;
 }
 
-/** Deletes a file
- * @param[in] _zFileName           Full file path to delete
+/** Deletes a file or an empty directory
+ * @param[in] _zFileName            Full file path to delete
  * @return orxSTATUS_SUCCESS upon success, orxSTATUS_FAILURE otherwise
  */
 orxSTATUS orxFASTCALL orxFile_Delete(const orxSTRING _zFileName)
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
-  /* Module initialized ? */
+  /* Checks */
   orxASSERT((sstFile.u32Flags & orxFILE_KU32_STATIC_FLAG_READY) == orxFILE_KU32_STATIC_FLAG_READY);
-
-  /* Checks inputs */
   orxASSERT(_zFileName != orxNULL);
 
-  /* Deletes it */
-  eResult = (remove(_zFileName) == 0) ? orxSTATUS_SUCCESS : orxSTATUS_FAILURE;
+  /* Tries to remove it as a file */
+  if(remove(_zFileName) == 0)
+  {
+    /* Updates result */
+    eResult = orxSTATUS_SUCCESS;
+  }
+  else
+  {
+    /* Tries to remove it as a directory */
+#ifdef __orxMSVC__
+    if(_rmdir(_zFileName) == 0)
+#else /* __orxMSVC__ */
+    if(rmdir(_zFileName) == 0)
+#endif /* __orxMSVC__ */
+    {
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
+  }
 
   /* Done! */
   return eResult;
