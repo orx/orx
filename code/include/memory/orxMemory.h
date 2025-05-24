@@ -83,9 +83,9 @@
 
 
 /** Memory helpers */
-#if !defined(__orxMSVC__)
+#if !defined(__orxWINDOWS__)
   #include <alloca.h>
-#endif /* !__orxMSVC__ */
+#endif /* !__orxWINDOWS__ */
 #define orxMemory_StackAllocate(x)                        alloca((x))
 
 
