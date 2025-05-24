@@ -2370,7 +2370,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_LoadBitmapData(orxBITMAP *_pstBitmap
         int     iWidth, iHeight, iDummy = 0;
 
         /* Retrieves header for QOI */
-        pu8Header     = (orxU8 *)alloca(QOI_HEADER_SIZE);
+        pu8Header     = (orxU8 *)orxMemory_StackAllocate(QOI_HEADER_SIZE);
         orxResource_Read(hResource, QOI_HEADER_SIZE, pu8Header, orxNULL, orxNULL);
         orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
 

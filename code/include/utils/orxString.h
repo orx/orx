@@ -696,9 +696,9 @@ static orxINLINE orxU32                                   orxString_GetEditDista
   /* Valid? */
   if((u32Length1 > 0) && (u32Length2 > 0))
   {
-    orxU32 *au32PreviousRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
-    orxU32 *au32CurrentRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
-    orxU32 *au32NextRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 *au32PreviousRow = (orxU32 *)orxMemory_StackAllocate((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 *au32CurrentRow = (orxU32 *)orxMemory_StackAllocate((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 *au32NextRow = (orxU32 *)orxMemory_StackAllocate((u32Length2 + 1) * sizeof(orxU32));
     orxU32 i, j;
 
     /* Initializes the previous and current rows */

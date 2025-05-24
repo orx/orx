@@ -1368,7 +1368,7 @@ static ma_result orxSoundSystem_MiniAudio_QOA_Read(ma_data_source *_pstDataSourc
     }
 
     /* Allocates temporary buffer */
-    pu8FrameData = (orxU8 *)alloca(uiFrameSize);
+    pu8FrameData = (orxU8 *)orxMemory_StackAllocate(uiFrameSize);
     orxASSERT(pu8FrameData != orxNULL);
 
     /* For all frames */
@@ -1455,7 +1455,7 @@ static ma_result orxSoundSystem_MiniAudio_QOA_Seek(ma_data_source *_pstDataSourc
       orxU8 *pu8FrameData;
 
       /* Allocates temporary buffer */
-      pu8FrameData = (orxU8 *)alloca(uiFrameSize);
+      pu8FrameData = (orxU8 *)orxMemory_StackAllocate(uiFrameSize);
       orxASSERT(pu8FrameData != orxNULL);
 
       /* Reads & decodes a frame */

@@ -510,7 +510,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       const orxSTRING       azBufferList[orxCOMMAND_KU32_ALIAS_MAX_DEPTH];
       orxU32                u32ArgNumber, u32ParamNumber = (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber;
       orxCHAR               acGUID[20];
-      orxCOMMAND_VAR       *astArgList = (orxCOMMAND_VAR *)alloca(u32ParamNumber * sizeof(orxCOMMAND_VAR));
+      orxCOMMAND_VAR       *astArgList = (orxCOMMAND_VAR *)orxMemory_StackAllocate(u32ParamNumber * sizeof(orxCOMMAND_VAR));
 
       /* Is GUID valid? */
       if(_u64GUID != orxU64_UNDEFINED)

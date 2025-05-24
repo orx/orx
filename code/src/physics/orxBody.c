@@ -1056,7 +1056,7 @@ orxBODY_PART *orxFASTCALL orxBody_AddPartFromConfig(orxBODY *_pstBody, const orx
       && ((stBodyPartDef.stChain.u32VertexCount = orxConfig_GetListCount(orxBODY_KZ_CONFIG_VERTEX_LIST)) >= 2))
       {
         /* Allocates vertices */
-        stBodyPartDef.stChain.avVertices = (orxVECTOR *)alloca(stBodyPartDef.stChain.u32VertexCount * sizeof(orxVECTOR));
+        stBodyPartDef.stChain.avVertices = (orxVECTOR *)orxMemory_StackAllocate(stBodyPartDef.stChain.u32VertexCount * sizeof(orxVECTOR));
 
         /* Valid? */
         if(stBodyPartDef.stChain.avVertices != orxNULL)

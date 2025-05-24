@@ -257,7 +257,7 @@ orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
 
   {
     orxU32            i;
-    const orxSTRING  *azFlagList = (const orxSTRING *)alloca((u32Count + 1) * sizeof(orxSTRING));
+    const orxSTRING  *azFlagList = (const orxSTRING *)orxMemory_StackAllocate((u32Count + 1) * sizeof(orxSTRING));
 
     /* For all flags */
     for(i = 0; i < u32Count; i++)

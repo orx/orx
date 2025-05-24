@@ -2704,7 +2704,7 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_LoadBitmapData(orxBITMAP *_pstBitma
 
         /* Retrieves header for Basis Universal & QOI */
         uiHeaderSize  = orxMAX((unsigned int)sizeof(basist::ktx2_header), QOI_HEADER_SIZE);
-        pu8Header     = (orxU8 *)alloca(uiHeaderSize);
+        pu8Header     = (orxU8 *)orxMemory_StackAllocate(uiHeaderSize);
         orxResource_Read(hResource, uiHeaderSize, pu8Header, orxNULL, orxNULL);
         orxResource_Seek(hResource, 0, orxSEEK_OFFSET_WHENCE_START);
 

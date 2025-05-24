@@ -502,7 +502,7 @@ orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE
     if(((eResult = orxString_ToVector(_zValue, _pvVector, &zRemainder)) == orxSTATUS_FAILURE)
     && (_eColorSpace != orxCOLORSPACE_NONE))
     {
-      orxCHAR        *acBuffer = (orxCHAR *)alloca((s32RandomSeparatorIndex + 1) * sizeof(orxCHAR));
+      orxCHAR        *acBuffer = (orxCHAR *)orxMemory_StackAllocate((s32RandomSeparatorIndex + 1) * sizeof(orxCHAR));
       const orxSTRING zValue = _zValue;
 
       /* Random? */
@@ -4206,7 +4206,7 @@ void orxFASTCALL orxConfig_CommandGetValue(orxU32 _u32ArgNumber, const orxCOMMAN
       zKey = zSection + s32SeparatorIndex + 1;
 
       /* Allocates section buffer */
-      zSection = (const orxSTRING)alloca(s32SeparatorIndex + 1);
+      zSection = (const orxSTRING)orxMemory_StackAllocate(s32SeparatorIndex + 1);
 
       /* Copies its name */
       orxMemory_Copy((orxSTRING)zSection, _astArgList[0].zValue, s32SeparatorIndex);
@@ -4399,7 +4399,7 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
       zKey = zSection + s32SeparatorIndex + 1;
 
       /* Allocates section buffer */
-      zSection = (const orxSTRING)alloca(s32SeparatorIndex + 1);
+      zSection = (const orxSTRING)orxMemory_StackAllocate(s32SeparatorIndex + 1);
 
       /* Copies its name */
       orxMemory_Copy((orxSTRING)zSection, _astArgList[0].zValue, s32SeparatorIndex);

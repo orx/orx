@@ -452,7 +452,7 @@ static orxSTATUS orxFASTCALL orxFont_ProcessConfigData(orxFONT *_pstFont)
       u32CharacterCount = orxString_GetCharacterCount(zCharacterList);
 
       /* Allocates character width list */
-      afCharacterWidthList = (orxFLOAT *)alloca(u32CharacterCount * sizeof(orxFLOAT));
+      afCharacterWidthList = (orxFLOAT *)orxMemory_StackAllocate(u32CharacterCount * sizeof(orxFLOAT));
       orxASSERT(afCharacterWidthList != orxNULL);
 
       /* Loads font bitmap */

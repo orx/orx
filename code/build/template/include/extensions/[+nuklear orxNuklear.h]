@@ -95,11 +95,7 @@ static void orxNuklear_Paste(nk_handle _hHandle, struct nk_text_edit *_pstTextEd
 
 static void orxNuklear_Copy(nk_handle _hHandle, const char *_acText, int len)
 {
-#ifndef alloca
-  #define alloca(x) __builtin_alloca((x))
-#endif // alloca
-
-  orxCHAR *acBuffer = (orxCHAR *)orxMemory_Copy(alloca(len + 1), _acText, len);
+  orxCHAR *acBuffer = (orxCHAR *)orxMemory_Copy(orxMemory_StackAllocate(len + 1), _acText, len);
   acBuffer[len] = orxCHAR_NULL;
   orxSystem_SetClipboard(acBuffer);
 }
