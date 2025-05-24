@@ -1,0 +1,3 @@
+from guid import Guid
+
+def evaluate(command: str, guid: Guid | None = None) -> None: ...
