@@ -296,7 +296,7 @@ static void orxPhysics_Box2D_DrawPolygon(const b2Vec2 *_avVertexList, int _s32Ve
       {
         orxAABOX    stFrustum;
         orxVECTOR   vCameraPosition;
-        orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+        orxVECTOR  *avVertexList = (orxVECTOR *)orxMemory_StackAllocate(_s32VertexNumber * sizeof(orxVECTOR));
         orxFLOAT    fZ;
         orxS32      i;
 
@@ -354,7 +354,7 @@ static void orxPhysics_Box2D_DrawSolidPolygon(b2Transform _stTransform, const b2
       {
         orxAABOX    stFrustum;
         orxVECTOR   vCameraPosition;
-        orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+        orxVECTOR  *avVertexList = (orxVECTOR *)orxMemory_StackAllocate(_s32VertexNumber * sizeof(orxVECTOR));
         orxFLOAT    fZ;
         orxS32      i;
 
@@ -1479,7 +1479,7 @@ orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_Box2D_CreatePart(orxPHYSICS_BODY *_
     {
       b2ChainDef        stChainDef;
       b2SurfaceMaterial stMaterial;
-      b2Vec2           *avVertexList = (b2Vec2 *)alloca((_pstBodyPartDef->stChain.u32VertexCount + 2) * sizeof(b2Vec2));
+      b2Vec2           *avVertexList = (b2Vec2 *)orxMemory_StackAllocate((_pstBodyPartDef->stChain.u32VertexCount + 2) * sizeof(b2Vec2));
       orxU32            i;
       int               iCount = 0;
 
