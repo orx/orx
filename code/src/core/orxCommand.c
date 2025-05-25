@@ -2776,6 +2776,34 @@ void orxFASTCALL orxCommand_CommandGetSubString(orxU32 _u32ArgNumber, const orxC
   return;
 }
 
+/* Command: GetUpperCaseString */
+void orxFASTCALL orxCommand_CommandGetUpperCaseString(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Copies input string */
+  orxString_NCopy(sstCommand.acStringBuffer, _astArgList[0].zValue, orxCOMMAND_KU32_STRING_BUFFER_SIZE);
+  sstCommand.acStringBuffer[orxCOMMAND_KU32_STRING_BUFFER_SIZE - 1] = orxCHAR_NULL;
+
+  /* Updates result */
+  _pstResult->zValue = orxString_UpperCase(sstCommand.acStringBuffer);
+
+  /* Done! */
+  return;
+}
+
+/* Command: GetLowerCaseString */
+void orxFASTCALL orxCommand_CommandGetLowerCaseString(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Copies input string */
+  orxString_NCopy(sstCommand.acStringBuffer, _astArgList[0].zValue, orxCOMMAND_KU32_STRING_BUFFER_SIZE);
+  sstCommand.acStringBuffer[orxCOMMAND_KU32_STRING_BUFFER_SIZE - 1] = orxCHAR_NULL;
+
+  /* Updates result */
+  _pstResult->zValue = orxString_LowerCase(sstCommand.acStringBuffer);
+
+  /* Done! */
+  return;
+}
+
 /* Command: GetStringID */
 void orxFASTCALL orxCommand_CommandGetStringID(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
@@ -3086,6 +3114,11 @@ static orxINLINE void orxCommand_RegisterCommands()
   /* Command: GetSubString */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetSubString, "SubString", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"String", orxCOMMAND_VAR_TYPE_STRING}, {"Start", orxCOMMAND_VAR_TYPE_S32}, {"Length = 0", orxCOMMAND_VAR_TYPE_U32});
 
+  /* Command: GetUpperCaseString */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetUpperCaseString, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
+  /* Command: GetLowerCaseString */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetLowerCaseString, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
+
   /* Command: GetStringID */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringID, "ID", orxCOMMAND_VAR_TYPE_U64, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetStringFromID */
@@ -3291,6 +3324,11 @@ static orxINLINE void orxCommand_RegisterCommands()
 
   /* Alias: String.Sub */
   orxCommand_AddAlias("String.Sub", "Command.GetSubString", orxNULL);
+
+  /* Alias: String.Upper */
+  orxCommand_AddAlias("String.Upper", "Command.GetUpperCaseString", orxNULL);
+  /* Alias: String.Lower */
+  orxCommand_AddAlias("String.Lower", "Command.GetLowerCaseString", orxNULL);
 
   /* Alias: String.GetID */
   orxCommand_AddAlias("String.GetID", "Command.GetStringID", orxNULL);
@@ -3506,6 +3544,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
   /* Alias: String.Sub */
   orxCommand_RemoveAlias("String.Sub");
 
+  /* Alias: String.Upper */
+  orxCommand_RemoveAlias("String.Upper");
+  /* Alias: String.Lower */
+  orxCommand_RemoveAlias("String.Lower");
+
   /* Alias: String.GetID */
   orxCommand_RemoveAlias("String.GetID");
   /* Alias: String.GetFromID */
@@ -3642,6 +3685,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
 
   /* Command: GetSubString */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetSubString);
+
+  /* Command: GetUpperCaseString */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetUpperCaseString);
+  /* Command: GetLowerCaseString */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetLowerCaseString);
 
   /* Command: GetStringID */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Command, GetStringID);
