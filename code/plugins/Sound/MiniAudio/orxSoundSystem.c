@@ -327,7 +327,7 @@ typedef struct __orxSOUNDSYSTEM_TASK_PARAM_t
       orxFLOAT              fRollOff;
     } stSpatialization;
     const orxSTRING         zLocation;
-    orxSOUNDSYSTEM_BUS *    pstBus;
+    orxSOUNDSYSTEM_BUS     *pstBus;
     orxFLOAT                fVolume;
     orxFLOAT                fPitch;
     orxFLOAT                fTime;
@@ -1368,7 +1368,7 @@ static ma_result orxSoundSystem_MiniAudio_QOA_Read(ma_data_source *_pstDataSourc
     }
 
     /* Allocates temporary buffer */
-    pu8FrameData = (orxU8 *)alloca(uiFrameSize);
+    pu8FrameData = (orxU8 *)orxMemory_StackAllocate(uiFrameSize);
     orxASSERT(pu8FrameData != orxNULL);
 
     /* For all frames */
@@ -1455,7 +1455,7 @@ static ma_result orxSoundSystem_MiniAudio_QOA_Seek(ma_data_source *_pstDataSourc
       orxU8 *pu8FrameData;
 
       /* Allocates temporary buffer */
-      pu8FrameData = (orxU8 *)alloca(uiFrameSize);
+      pu8FrameData = (orxU8 *)orxMemory_StackAllocate(uiFrameSize);
       orxASSERT(pu8FrameData != orxNULL);
 
       /* Reads & decodes a frame */
@@ -3338,6 +3338,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         stEngineConfig.pLog                 = &(sstSoundSystem.stLog);
         stEngineConfig.pResourceManager     = &(sstSoundSystem.stResourceManager);
         stEngineConfig.listenerCount        = sstSoundSystem.u32ListenerCount;
+        stEngineConfig.channels             = orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_CHANNELS);
         stEngineConfig.notificationCallback = &orxSoundSystem_MiniAudio_OnDeviceNotification;
         ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
         hResult                             = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));

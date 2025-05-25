@@ -638,7 +638,7 @@ orxSTATUS orxFASTCALL orxTrigger_Init()
     if(sstTrigger.pstSetTable != orxNULL)
     {
       /* Inits current event & refinement list */
-      sstTrigger.zCurrentEvent                  = orxNULL;
+      sstTrigger.zCurrentEvent                  = orxSTRING_EMPTY;
       sstTrigger.azCurrentRefinementList        = orxNULL;
       sstTrigger.u32CurrentRefinementListCount  = 0;
 
@@ -1100,7 +1100,7 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
     orxCHAR                   acBuffer[orxTRIGGER_KU32_BUFFER_SIZE], *pc = acBuffer;
     orxS32                    i, s32StopDepth;
     orxU32                    u32PreviousRefinementListCount;
-    orxSTRINGID              *astEventIDList = (orxSTRINGID *)alloca((_u32Count + 1) * sizeof(orxSTRINGID));
+    orxSTRINGID              *astEventIDList = (orxSTRINGID *)orxMemory_StackAllocate((_u32Count + 1) * sizeof(orxSTRINGID));
 
     /* Backups current event & refinement list */
     zPreviousEvent                  = sstTrigger.zCurrentEvent;

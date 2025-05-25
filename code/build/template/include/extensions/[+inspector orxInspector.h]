@@ -279,7 +279,7 @@ static void orxInspector_ShowConfigRow(const orxSTRING _zKey, orxBOOL _bForceUpd
     if(bNeedUpdate != orxFALSE)
     {
       // Update the config list
-      const orxSTRING *azValues = (const orxSTRING *)alloca(orxBank_GetCount(sstInspector.pstTextBank) * sizeof(orxSTRING));
+      const orxSTRING *azValues = (const orxSTRING *)orxMemory_StackAllocate(orxBank_GetCount(sstInspector.pstTextBank) * sizeof(orxSTRING));
       orxCHAR *acBuffer;
       orxU32 u32Index;
       for(u32Index = 0, acBuffer = (orxCHAR *)orxBank_GetNext(sstInspector.pstTextBank, orxNULL);

@@ -219,6 +219,7 @@ typedef struct __orxSOUND_FILTER_DATA_t
 #define orxSOUNDSYSTEM_KZ_CONFIG_RATIO                "DimensionRatio"
 #define orxSOUNDSYSTEM_KZ_CONFIG_MUTE_IN_BACKGROUND   "MuteInBackground"
 #define orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS            "Listeners"
+#define orxSOUNDSYSTEM_KZ_CONFIG_CHANNELS             "Channels"
 
 
 /***************************************************************************

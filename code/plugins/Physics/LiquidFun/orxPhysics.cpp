@@ -461,7 +461,7 @@ void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32Ver
       {
         orxAABOX    stFrustum;
         orxVECTOR   vCameraPosition;
-        orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+        orxVECTOR  *avVertexList = (orxVECTOR *)orxMemory_StackAllocate(_s32VertexNumber * sizeof(orxVECTOR));
         orxCOLOR    stColor;
         orxFLOAT    fZ;
         orxS32      i;
@@ -524,7 +524,7 @@ void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s
       {
         orxAABOX    stFrustum;
         orxVECTOR   vCameraPosition;
-        orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+        orxVECTOR  *avVertexList = (orxVECTOR *)orxMemory_StackAllocate(_s32VertexNumber * sizeof(orxVECTOR));
         orxCOLOR    stColor;
         orxFLOAT    fZ;
         orxS32      i;
@@ -1578,7 +1578,7 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   }
   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_CHAIN))
   {
-    b2Vec2 *avVertexList = (b2Vec2 *)alloca(_pstBodyPartDef->stChain.u32VertexCount * sizeof(b2Vec2));
+    b2Vec2 *avVertexList = (b2Vec2 *)orxMemory_StackAllocate(_pstBodyPartDef->stChain.u32VertexCount * sizeof(b2Vec2));
     orxU32  i;
 
     /* Checks */

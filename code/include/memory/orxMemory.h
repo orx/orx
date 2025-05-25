@@ -82,6 +82,13 @@
 #endif /* __orxPROFILER__ */
 
 
+/** Memory helpers */
+#if !defined(__orxWINDOWS__)
+  #include <alloca.h>
+#endif /* !__orxWINDOWS__ */
+#define orxMemory_StackAllocate(x)                        alloca((x))
+
+
 /** Memory type
  */
 typedef enum __orxMEMORY_TYPE_t
