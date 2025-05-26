@@ -92,19 +92,19 @@
 struct __orxFONT_t
 {
   orxSTRUCTURE      stStructure;                /**< Public structure, first structure member : 32 */
-  orxCHARACTER_MAP *pstMap;                     /**< Font's map : 20 */
-  orxFLOAT         *afCharacterWidthList;       /**< Character width list : 24 */
-  orxFLOAT          fCharacterHeight;           /**< Character height : 28 */
-  orxVECTOR         vCharacterSpacing;          /**< Character spacing : 40 */
-  orxTEXTURE       *pstTexture;                 /**< Texture : 44 */
-  orxFLOAT          fTop;                       /**< Top coordinate : 48 */
-  orxFLOAT          fLeft;                      /**< Left coordinate : 52 */
-  orxFLOAT          fWidth;                     /**< Width : 56 */
-  orxFLOAT          fHeight;                    /**< Height : 60 */
-  const orxSTRING   zCharacterList;             /**< Character list : 64 */
-  const orxSTRING   zReference;                 /**< Config reference : 68 */
-  const orxSTRING   zTypeface;                  /**< Typeface : 72 */
-  orxSHADER        *pstShader;                  /**< Shader : 76 */
+  orxCHARACTER_MAP *pstMap;                     /**< Font's map : 36 */
+  orxTEXTURE       *pstTexture;                 /**< Texture : 40 */
+  orxFLOAT         *afCharacterWidthList;       /**< Character width list : 44 */
+  orxVECTOR         vCharacterSpacing;          /**< Character spacing : 56 */
+  orxFLOAT          fCharacterHeight;           /**< Character height : 60 */
+  orxFLOAT          fTop;                       /**< Top coordinate : 64 */
+  orxFLOAT          fLeft;                      /**< Left coordinate : 68 */
+  orxFLOAT          fWidth;                     /**< Width : 72 */
+  orxFLOAT          fHeight;                    /**< Height : 76 */
+  const orxSTRING   zCharacterList;             /**< Character list : 80 */
+  const orxSTRING   zReference;                 /**< Config reference : 84 */
+  const orxSTRING   zTypeface;                  /**< Typeface : 88 */
+  orxSHADER        *pstShader;                  /**< Shader : 92 */
 };
 
 /** Static structure
@@ -1420,7 +1420,7 @@ orxSTATUS orxFASTCALL orxFont_SetCharacterHeight(orxFONT *_pstFont, orxFLOAT _fC
 /** Sets font's character width list
  * @param[in]   _pstFont              Concerned font
  * @param[in]   _u32CharacterNumber   Character's number
-= * @param[in]   _afCharacterWidthList List of widths for all the characters
+ * @param[in]   _afCharacterWidthList List of widths for all the characters
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 orxSTATUS orxFASTCALL orxFont_SetCharacterWidthList(orxFONT *_pstFont, orxU32 _u32CharacterNumber, const orxFLOAT *_afCharacterWidthList)
