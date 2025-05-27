@@ -226,6 +226,7 @@ project "orxFontGen"
 -- Linux
 
     configuration {"linux"}
+        linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
         links
         {
             "dl",

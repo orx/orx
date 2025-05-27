@@ -130,6 +130,7 @@ solution "orx"
     flags
     {
         "NoPCH",
+        "CXX11",
         "NoManifest",
         "FloatFast",
         "NoNativeWChar",
