@@ -32,7 +32,7 @@
 </p>
 
 
-Orx (Version 1.15)
+Orx (Version 1.16)
 ========================================
 
 This engine is licensed under the very permissive [zlib license](https://en.wikipedia.org/wiki/Zlib_License) (i.e. it's free for any commercial or non-commercial use),
@@ -47,7 +47,7 @@ Summary
 [Orx](https://orx-project.org) is a heavily data-driven, 2D-oriented, portable game engine, focused primarily on ease of use and powerful features.
 (See below for a list of supported platforms.)
 
-This is a release candidate for orx v1.15. If you find any bugs,
+This is a release candidate for orx v1.16. If you find any bugs,
 please report them on the [forum](https://forum.orx-project.org), in the "Bug report - Feature request" board,
 or via orx's [issue page/tracker](https://github.com/orx/orx/issues).
 
@@ -58,6 +58,8 @@ Some notable features of the engine are:
   transparency (alpha blending), different blending modes, coloring, tiling and mirroring
 - advanced rendering features such as MRT (Multiple Render Targets), offscreen rendering, flexible pipeline & easy compositing
 - advanced resource management allowing for easy multi-platform data support and patching
+- C++ extension with semi-automated C++/config binding
+- bundle support (automatic resource encryption & packaging)
 - automatic hotloading of resources upon modification on disk drastically shortens iteration times
 - timelines and commands modules allow for config-driven scripting-like features
 - interactive console can execute commands at runtime (very useful for tweaking/debugging purposes)
@@ -71,14 +73,14 @@ Some notable features of the engine are:
 - powerful localization module (for localized texts, audio, graphics, etc.)
 - spawners (provides an easy way to create particles or projectiles)
 - 3D positioning using "scene nodes"
-- custom bitmap font support
+- custom bitmap, truetype & SDF font support
 - automatic differential scrolling and depth scaling upon request
 - fully featured and extensible sound system (WAV/MP3/OGG/QOA support, streams, hierarchical buses, filters, spatialization, etc.)
 - clock system that provides time consistency and allows time stretching + high precision timers
 - event manager
 - unicode support with UTF-8 encoding
 - plugin system
-- screenshot capture tool (supports bmp, png, jpg, qoi, tga and dds)
+- screenshot capture tool (supports BMP, PNG, JPG, QOI, TGA, PNM, GIF, PSD and DDS)
 
 
 Getting Started
@@ -156,32 +158,32 @@ Packages
 You can download all the packages from [SourceForge](https://sf.net/projects/orx) or [GitHub](https://github.com/orx/orx/releases).
 Here is a list with a small description for each package.
 
-- `orx-doc-1.15.zip`                  : orx's API doxygen documentation
-- `orx-src-1.15.zip`                  : orx's source code, ready for compile after running the setup script
-- `orx-dev-linux32-1.15.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
-- `orx-dev-linux64-1.15.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
-- `orx-dev-mac-1.15.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- `orx-dev-mingw-32-1.15.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
-- `orx-dev-mingw-64-1.15.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
-- `orx-dev-vs2017-32-1.15.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
-- `orx-dev-vs2017-64-1.15.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2019-32-1.15.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
-- `orx-dev-vs2019-64-1.15.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2022-32-1.15.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86), release/profile/debug + tools.
-- `orx-dev-vs2022-64-1.15.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86-64), release/profile/debug + tools.
-- `orx-full-ios-1.15.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- `orx-dev-android-1.15.zip`          : static embedded binaries for Android, release/profile/debug (device).
-- `orx-tutorial-linux32-1.15.tar.bz2` : tutorials for Linux (x86)
-- `orx-tutorial-linux64-1.15.tar.bz2` : tutorials for Linux (x86-64)
-- `orx-tutorial-mac-1.15.zip`         : tutorials for MacOS X (x86/x86-64)
-- `orx-tutorial-mingw-32-1.15.zip`    : tutorials for Windows (mingw/x86)
-- `orx-tutorial-mingw-64-1.15.zip`    : tutorials for Windows (mingw/x86-64)
-- `orx-tutorial-vs2017-32-1.15.zip`   : tutorials for Windows (Visual Studio 2017, x86)
-- `orx-tutorial-vs2017-64-1.15.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
-- `orx-tutorial-vs2019-32-1.15.zip`   : tutorials for Windows (Visual Studio 2019, x86)
-- `orx-tutorial-vs2019-64-1.15.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
-- `orx-tutorial-vs2022-32-1.15.zip`   : tutorials for Windows (Visual Studio 2022, x86)
-- `orx-tutorial-vs2022-64-1.15.zip`   : tutorials for Windows (Visual Studio 2022, x86-64)
+- `orx-doc-1.16.zip`                  : orx's API doxygen documentation
+- `orx-src-1.16.zip`                  : orx's source code, ready for compile after running the setup script
+- `orx-dev-linux32-1.16.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
+- `orx-dev-linux64-1.16.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
+- `orx-dev-mac-1.16.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
+- `orx-dev-mingw-32-1.16.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
+- `orx-dev-mingw-64-1.16.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
+- `orx-dev-vs2017-32-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
+- `orx-dev-vs2017-64-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2019-32-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
+- `orx-dev-vs2019-64-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
+- `orx-dev-vs2022-32-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86), release/profile/debug + tools.
+- `orx-dev-vs2022-64-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86-64), release/profile/debug + tools.
+- `orx-full-ios-1.16.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
+- `orx-dev-android-1.16.zip`          : static embedded binaries for Android, release/profile/debug (device).
+- `orx-tutorial-linux32-1.16.tar.bz2` : tutorials for Linux (x86)
+- `orx-tutorial-linux64-1.16.tar.bz2` : tutorials for Linux (x86-64)
+- `orx-tutorial-mac-1.16.zip`         : tutorials for MacOS X (x86/x86-64)
+- `orx-tutorial-mingw-32-1.16.zip`    : tutorials for Windows (mingw/x86)
+- `orx-tutorial-mingw-64-1.16.zip`    : tutorials for Windows (mingw/x86-64)
+- `orx-tutorial-vs2017-32-1.16.zip`   : tutorials for Windows (Visual Studio 2017, x86)
+- `orx-tutorial-vs2017-64-1.16.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
+- `orx-tutorial-vs2019-32-1.16.zip`   : tutorials for Windows (Visual Studio 2019, x86)
+- `orx-tutorial-vs2019-64-1.16.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
+- `orx-tutorial-vs2022-32-1.16.zip`   : tutorials for Windows (Visual Studio 2022, x86)
+- `orx-tutorial-vs2022-64-1.16.zip`   : tutorials for Windows (Visual Studio 2022, x86-64)
 
 All the `*-dev-*` packages above include:
 

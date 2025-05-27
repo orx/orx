@@ -1,6 +1,58 @@
 Orx - Portable Game Engine
 ==========================
 
+orx 1.16
+-----
+* IMPORTANT: Added Web/HTML5 platform support
+* IMPORTANT: Added runtime TrueType/OpenType font support, including support for SDF/mSDF with optional outline, soft edge and glow/shadow
+* IMPORTANT: Plugins can now be used as any resources, including in bundles, and hot swapped at any time
+* IMPORTANT: Replaced orxObject_CreateNeighborList() & orxObject_DeleteNeighborList() with orxObject_ForAllNeighbors()
+* IMPORTANT: Replaced 'ShaderList' config properties with 'Shader', removed the orxSHADERPOINTER structure and update all relevant object & viewport APIs
+* IMPORTANT: `+=` for config properties will now support inheritance (note: the extension is done on the spot, not lazily)
+* IMPORTANT: Removed the 'On' prefix from all triggers internally used by orx (OnCreate, OnDelete, OnCollide, OnPartCollide, OnSeparate & OnPartSeparate)
+* IMPORTANT: Updated init template to use the latest for all extensions, including Scroll (heavily trimmed, new systems: input, unique, ScrollObject instantiation as a opt-out, etc.)
+* IMPORTANT: Init template can now update an existing project, including adding/removing/updating extensions
+* IMPORTANT: Replaced internal random generator: XorShift128 -> SplitMix64
+* IMPORTANT: *Find[Owned]Child() will look up through the config hierarchy when a name is prefixed with '@'
+* IMPORTANT: Triggers refinements can now be retrieved from code and commands
+* IMPORTANT: Modified refinements for Collide/Separate & PartCollide/PartSeparate triggers
+* IMPORTANT: Added support for the QOA audio format
+* IMPORTANT: Added support for PNM, GIF & PSD
+* IMPORTANT: Setting Display.Monitor = 0 on desktop will hide the window entirely (fake headless)
+* IMPORTANT: Uniform scaling can now be achieved for object with parents by setting the component to 0 (ex.: Scale = (1, 0))
+* IMPORTANT: Rewrote the orxFontGen tool to leverage orx's runtime font generation, and support SDF generation
+* IMPORTANT: Added Storage & Group parameters to orxResource_SetMemoryResource()
+* IMPORTANT: Renamed internal clocks (core -> orx:clock:core, fps -> orx:clock:fps)
+* IMPORTANT: Renamed internal textures (pixel -> orx:texture:pixel, transparent -> orx:texture:transparent, screen -> orx:texture:screen, orx:font:default -> orx:texture:font:default)
+* IMPORTANT: Replaced: orxFont_GetDefaultFont() -> orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME)
+* IMPORTANT: Updated orxTRIGGER_EVENT_PAYLOAD: added event name, refinement list & refinement index & renamed: zEvent -> zEventValue
+* IMPORTANT: Renamed orxAnim_GetLength() -> orxAnim_GetDuration()
+* IMPORTANT: orxString_GetFirstCharacterCodePoint() will now return orxNULL as remainder when reaching the end of the string
+* IMPORTANT: Fixed audio spatialization support in MiniAudio plugin & switched to linear attenuation model (to support gain = 0)
+* IMPORTANT: Fixed orxFile_FindNext() on Windows & removed orxFile_Remove() (orxFile_Delete() can now handle empty directories instead)
+* Added config property SoundSystem.Channels: (when set to 0 (default), the native channel count of the device is used, when set to 1, the device will be set mono and spatialization will affect the volume of all speakers equally)
+* Better handling of empty string as key/section in Config module: 'Config.SetParent Section' removes Section's parent whereas 'Config.SetParent Section ""' forces "no parent" on Section
+* Added support for time-based vector shader params: time params will now have the type float or vector, if a vector FX is attached to it
+* Shader's CodeList config property can now reference properties outside of the current section to define a multi-part shader
+* Added orxAnimSet_Get() orxFont_Get(), orxFX_Get() & orxShader_Get()
+* Added orxConfig_SetOrigin() with an option to only consider section whose origin matches the file when saving
+* Added Noise Texture init extension (noisetex) for on-the-fly data-driven noise texture generation
+* Added orxConfig_ForAllKeys() to process all keys of a section, optionally following its section inheritance
+* The render plugin will only consider the graphic's Flip property and the object Flip property will alter the underlying Graphic's one (ie. no more double flipping when using Graphic = @)
+* Replaced orxLocale_GetKeyCount() & orxLocale_GetKey() with orxLocale_ForAllKeys()
+* Spawners auto-reset can now be applied to counts & timer separately
+* Added support for bitmaps/textures stored at 90°, 180° & 270° angles
+* Added clock commands: Clock.GetFrequency, Clock.GetModifier, Clock.GetDT & Clock.GetTime
+* Trigger propagation stop can now be enforced at the source, when firing (Ex.: Object.FireTrigger ^ Event:Ref1:!Ref2)
+* Improved ease of embedding orx in other code bases, including along other engines (can be down to a couple of lines of code)
+* The Resource & Config config section can now inherit from other sections
+* Added config property FrameGrid for animations
+* Added orxConfig_GetParentDistance(), which will return how "far" a parent is from the current section
+* Cheat extension should now support non-QWERTY layouts (ie. match actual literals) and spaces inside cheat codes
+* Bundle extension has an optional extensive search option to discover file-based animation resources
+* Added String commands: String.Sub, String.Upper & String.Lower
+* *Many* misc fixes, optimizations and additions
+
 orx 1.15
 -----
 

@@ -1,10 +1,11 @@
 Orx authors:
 
-  Architecture and all core features except file handling:
+  Architecture and all core features except file & params handling:
     Romain Killian
 
-  File handling:
+  File & Params handling:
     Nicolas Antoniazzi
+    Romain Killian
 
   Tools:
     Romain Killian
@@ -56,6 +57,7 @@ Orx authors:
     Grey
     Hezekiah 'hcarty' Carty
     Iarwain
+    Joe Woynillowicz
     Jonas Ohrn
     Katarak
     Kevin Watters
