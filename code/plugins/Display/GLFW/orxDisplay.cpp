@@ -2356,45 +2356,46 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_ProcessFont(void *_pContext)
           /* Valid? */
           if(s32VertexCount > 0)
           {
-            msdfgen::Shape stShape;
+            msdfgen::Shape  stShape;
+            orxS32          j;
 
             /* Inverses Y axis */
             stShape.inverseYAxis = true;
 
             /* For all vertices */
-            for(int i = 0; i < s32VertexCount; ++i)
+            for(j = 0; j < s32VertexCount; ++j)
             {
               /* Depending on type */
-              switch(astVertexList[i].type)
+              switch(astVertexList[j].type)
               {
                 default:
                 case STBTT_vmove:
                 {
-                  stShape.contours.reserve(s32VertexCount - i);
+                  stShape.contours.reserve(s32VertexCount - j);
                   stShape.addContour();
                   break;
                 }
                 case STBTT_vline:
                 {
-                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
-                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+                  msdfgen::Point2 stPrevious((double)(astVertexList[j - 1].x), (double)(astVertexList[j - 1].y));
+                  msdfgen::Point2 stCurrent((double)(astVertexList[j].x), (double)(astVertexList[j].y));
                   stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stCurrent));
                   break;
                 }
                 case STBTT_vcurve:
                 {
-                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
-                  msdfgen::Point2 stC0((double)(astVertexList[i].cx), (double)(astVertexList[i].cy));
-                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+                  msdfgen::Point2 stPrevious((double)(astVertexList[j - 1].x), (double)(astVertexList[j - 1].y));
+                  msdfgen::Point2 stC0((double)(astVertexList[j].cx), (double)(astVertexList[j].cy));
+                  msdfgen::Point2 stCurrent((double)(astVertexList[j].x), (double)(astVertexList[j].y));
                   stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stC0, stCurrent));
                   break;
                 }
                 case STBTT_vcubic:
                 {
-                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
-                  msdfgen::Point2 stC0((double)(astVertexList[i].cx), (double)(astVertexList[i].cy));
-                  msdfgen::Point2 stC1((double)(astVertexList[i].cx1), (double)(astVertexList[i].cy1));
-                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+                  msdfgen::Point2 stPrevious((double)(astVertexList[j - 1].x), (double)(astVertexList[j - 1].y));
+                  msdfgen::Point2 stC0((double)(astVertexList[j].cx), (double)(astVertexList[j].cy));
+                  msdfgen::Point2 stC1((double)(astVertexList[j].cx1), (double)(astVertexList[j].cy1));
+                  msdfgen::Point2 stCurrent((double)(astVertexList[j].x), (double)(astVertexList[j].y));
                   stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stC0, stC1, stCurrent));
                   break;
                 }
