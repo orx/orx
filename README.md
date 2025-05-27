@@ -47,9 +47,7 @@ Summary
 [Orx](https://orx-project.org) is a heavily data-driven, 2D-oriented, portable game engine, focused primarily on ease of use and powerful features.
 (See below for a list of supported platforms.)
 
-This is a release candidate for orx v1.16. If you find any bugs,
-please report them on the [forum](https://forum.orx-project.org), in the "Bug report - Feature request" board,
-or via orx's [issue page/tracker](https://github.com/orx/orx/issues).
+This is a release candidate for orx v1.16. If you find any bugs, please report them using orx's [issue page/tracker](https://github.com/orx/orx/issues).
 
 Some notable features of the engine are:
 
