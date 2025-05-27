@@ -119,6 +119,8 @@ $(document).ready(function(){initNavTree('group__orx_memory.html','');});
 Macros</h2></td></tr>
 <tr class="memitem:ga7240bc33642336c84068c3f70adb967a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#ga7240bc33642336c84068c3f70adb967a">orxMEMORY_BARRIER</a>()</td></tr>
 <tr class="separator:ga7240bc33642336c84068c3f70adb967a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaee8d015a8fe14ea463b90943a36a8e55"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gaee8d015a8fe14ea463b90943a36a8e55">orxMemory_StackAllocate</a>(x)                                            &#160;&#160;&#160;alloca((x))</td></tr>
+<tr class="separator:gaee8d015a8fe14ea463b90943a36a8e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gafe7c2f7c245a3e8f8e489cd9d1053649"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_memory.html#gafe7c2f7c245a3e8f8e489cd9d1053649">orxMEMORY_TRACK</a>(TYPE,  SIZE,  ALLOCATE)</td></tr>
 <tr class="separator:gafe7c2f7c245a3e8f8e489cd9d1053649"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -193,6 +195,25 @@ Functions</h2></td></tr>
 <p>Memory barrier macros </p>
 
 <p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00070">70</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gaee8d015a8fe14ea463b90943a36a8e55"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define orxMemory_StackAllocate</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">x</td><td>)</td>
+          <td>&#160;&#160;&#160;alloca((x))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Memory helpers </p>
+
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00089">89</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -278,7 +299,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00087">87</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00094">94</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -364,7 +385,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>returns a value less than, equal to or greater than 0 if the content of _pMem1 is respectively smaller, equal or greater than _pMem2's </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00190">190</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00197">197</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -416,7 +437,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>if _pSrc and _pDest overlap, use orxMemory_Move instead </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00158">158</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00165">165</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -592,7 +613,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00174">174</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00181">181</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -684,7 +705,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00206">206</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00213">213</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>
@@ -744,7 +765,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>returns a pointer to _pDest </dd></dl>
 
-<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00220">220</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_memory_8h_source.html#l00227">227</a> of file <a class="el" href="orx_memory_8h_source.html">orxMemory.h</a>.</p>
 
 </div>
 </div>

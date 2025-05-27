@@ -28,6 +28,7 @@ var group__orx_sound_system =
       [ "stPeaking", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#a8c9576175920630421f8376fe9b9c53a", null ],
       [ "u32Order", "structorx_s_o_u_n_d___f_i_l_t_e_r___d_a_t_a.html#a084a7f4bef84ce36027e77bbef45e98c", null ]
     ] ],
+    [ "orxSOUNDSYSTEM_KZ_CONFIG_CHANNELS", "group__orx_sound_system.html#ga2ffe2f1aae10d746789187ec82075381", null ],
     [ "orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS", "group__orx_sound_system.html#gaacbbd7bbf29183bb2bea0be00c48b12a", null ],
     [ "orxSOUNDSYSTEM_KZ_CONFIG_MUTE_IN_BACKGROUND", "group__orx_sound_system.html#ga06003dcf3a2762717a4d579eb106cf8f", null ],
     [ "orxSOUNDSYSTEM_KZ_CONFIG_RATIO", "group__orx_sound_system.html#ga41370e9556fefbd90a4626bcf3489468", null ],

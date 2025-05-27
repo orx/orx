@@ -1,5 +1,6 @@
 var orx_sound_system_8h =
 [
+    [ "orxSOUNDSYSTEM_KZ_CONFIG_CHANNELS", "group__orx_sound_system.html#ga2ffe2f1aae10d746789187ec82075381", null ],
     [ "orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS", "group__orx_sound_system.html#gaacbbd7bbf29183bb2bea0be00c48b12a", null ],
     [ "orxSOUNDSYSTEM_KZ_CONFIG_MUTE_IN_BACKGROUND", "group__orx_sound_system.html#ga06003dcf3a2762717a4d579eb106cf8f", null ],
     [ "orxSOUNDSYSTEM_KZ_CONFIG_RATIO", "group__orx_sound_system.html#ga41370e9556fefbd90a4626bcf3489468", null ],

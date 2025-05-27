@@ -1,6 +1,7 @@
 var group__orx_memory =
 [
     [ "orxMEMORY_BARRIER", "group__orx_memory.html#ga7240bc33642336c84068c3f70adb967a", null ],
+    [ "orxMemory_StackAllocate", "group__orx_memory.html#gaee8d015a8fe14ea463b90943a36a8e55", null ],
     [ "orxMEMORY_TRACK", "group__orx_memory.html#gafe7c2f7c245a3e8f8e489cd9d1053649", null ],
     [ "orxMEMORY_TYPE", "group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0", [
       [ "orxMEMORY_TYPE_MAIN", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a95004f02fdd1b8f754b3a0191af1aad4", null ],
