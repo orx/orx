@@ -74,6 +74,9 @@ typedef struct __orxMOUSE_STATIC_t
   orxU32      u32Flags;
   orxFLOAT    fWheelMove, fInternalWheelMove;
   orxBOOL     bClearWheel, bClearMove, bButtonPressed, bUpdateCursor;
+  struct {
+    orxBOOL   bSet : 1, bDirty : 1, bPending : 1;
+  }           abButtonStatusList[orxMOUSE_BUTTON_NUMBER];
 
 } orxMOUSE_STATIC;
 
@@ -122,6 +125,31 @@ static void orxMouse_GLFW_ScrollCallback(GLFWwindow *_pstWindow, double _dX, dou
   return;
 }
 
+/** Button callback
+ */
+static void orxMouse_GLFW_ButtonCallback(GLFWwindow *_pstWindow, int _iButton, int _iAction, int _iMods)
+{
+  /* Is clean? */
+  if(sstMouse.abButtonStatusList[_iButton].bDirty == orxFALSE)
+  {
+    /* Updates it */
+    sstMouse.abButtonStatusList[_iButton].bSet = (_iAction == GLFW_PRESS) ? orxTRUE : orxFALSE;
+
+    /* Updates its status */
+    sstMouse.abButtonStatusList[_iButton].bDirty    = orxTRUE;
+    sstMouse.abButtonStatusList[_iButton].bPending  = orxFALSE;
+  }
+  /* Dirty */
+  else
+  {
+    /* Updates its status */
+    sstMouse.abButtonStatusList[_iButton].bPending = sstMouse.abButtonStatusList[_iButton].bSet ^ (_iAction == GLFW_PRESS);
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Event handler
  */
 static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEvent)
@@ -140,6 +168,9 @@ static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEven
   /* Registers mouse wheel callback */
   glfwSetScrollCallback(sstMouse.pstWindow, orxMouse_GLFW_ScrollCallback);
 
+  /* Registers mouse button callback */
+  glfwSetMouseButtonCallback(sstMouse.pstWindow, orxMouse_GLFW_ButtonCallback);
+
   /* Asks for cursor update */
   sstMouse.bUpdateCursor = orxTRUE;
 
@@ -151,6 +182,8 @@ static orxSTATUS orxFASTCALL orxMouse_GLFW_EventHandler(const orxEVENT *_pstEven
  */
 static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
+  orxU32 i;
+
   /* Profiles */
   orxPROFILER_PUSH_MARKER("orxMouse_Update");
 
@@ -170,8 +203,28 @@ static void orxFASTCALL orxMouse_GLFW_Update(const orxCLOCK_INFO *_pstClockInfo,
     sstMouse.bUpdateCursor = orxFALSE;
   }
 
+  /* For all mouse buttons */
+  for(i = 0; i < orxMOUSE_BUTTON_NUMBER; i++)
+  {
+    /* Is dirty? */
+    if(sstMouse.abButtonStatusList[i].bDirty != orxFALSE)
+    {
+      /* Updates its status */
+      sstMouse.abButtonStatusList[i].bDirty = orxFALSE;
+    }
+    /* Is pending? */
+    else if(sstMouse.abButtonStatusList[i].bPending != orxFALSE)
+    {
+      /* Flips it */
+      sstMouse.abButtonStatusList[i].bSet = !sstMouse.abButtonStatusList[i].bSet;
+
+      /* Updates its status */
+      sstMouse.abButtonStatusList[i].bPending = orxFALSE;
+    }
+  }
+
   /* Is left button pressed? */
-  if(glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_LEFT) != GLFW_RELEASE)
+  if(sstMouse.abButtonStatusList[GLFW_MOUSE_BUTTON_LEFT].bSet != orxFALSE)
   {
     orxSYSTEM_EVENT_PAYLOAD stPayload;
 
@@ -375,6 +428,9 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
         /* Registers mouse wheel callback */
         glfwSetScrollCallback(sstMouse.pstWindow, orxMouse_GLFW_ScrollCallback);
 
+        /* Registers mouse button callback */
+        glfwSetMouseButtonCallback(sstMouse.pstWindow, orxMouse_GLFW_ButtonCallback);
+
         /* Pushes config section */
         orxConfig_PushSection(orxMOUSE_KZ_CONFIG_SECTION);
 
@@ -477,56 +533,56 @@ orxBOOL orxFASTCALL orxMouse_GLFW_IsButtonPressed(orxMOUSE_BUTTON _eButton)
     case orxMOUSE_BUTTON_LEFT:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_LEFT) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      bResult = (orxBOOL)sstMouse.abButtonStatusList[GLFW_MOUSE_BUTTON_LEFT].bSet;
       break;
     }
 
     case orxMOUSE_BUTTON_RIGHT:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_RIGHT) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      bResult = (orxBOOL)sstMouse.abButtonStatusList[GLFW_MOUSE_BUTTON_RIGHT].bSet;
       break;
     }
 
     case orxMOUSE_BUTTON_MIDDLE:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_MIDDLE) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      bResult = (orxBOOL)sstMouse.abButtonStatusList[GLFW_MOUSE_BUTTON_MIDDLE].bSet;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_1:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_4) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      bResult = (orxBOOL)sstMouse.abButtonStatusList[GLFW_MOUSE_BUTTON_4].bSet;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_2:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_5) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      bResult = (orxBOOL)sstMouse.abButtonStatusList[GLFW_MOUSE_BUTTON_5].bSet;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_3:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_6) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      bResult = (orxBOOL)sstMouse.abButtonStatusList[GLFW_MOUSE_BUTTON_6].bSet;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_4:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_7) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      bResult = (orxBOOL)sstMouse.abButtonStatusList[GLFW_MOUSE_BUTTON_7].bSet;
       break;
     }
 
     case orxMOUSE_BUTTON_EXTRA_5:
     {
       /* Updates result */
-      bResult = (glfwGetMouseButton(sstMouse.pstWindow, GLFW_MOUSE_BUTTON_8) != GLFW_RELEASE) ? orxTRUE : orxFALSE;
+      bResult = (orxBOOL)sstMouse.abButtonStatusList[GLFW_MOUSE_BUTTON_8].bSet;
       break;
     }
 

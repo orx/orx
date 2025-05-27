@@ -46,6 +46,9 @@
 
 /** Misc
  */
+#define orxRESOURCE_KZ_CONFIG_SECTION                     "Resource"
+#define orxRESOURCE_KZ_CONFIG_WATCH_LIST                  "WatchList"
+
 #define orxRESOURCE_KC_LOCATION_SEPARATOR                 ':'
 
 #define orxRESOURCE_KZ_DEFAULT_STORAGE                    "."
@@ -252,7 +255,7 @@ extern orxDLLAPI orxS64 orxFASTCALL                       orxResource_Tell(orxHA
 /** Reads data from a resource
  * @param[in] _hResource        Concerned resource
  * @param[in] _s64Size          Size to read (in bytes)
- * @param[out] _pBuffer         Buffer that will be filled by the read data
+ * @param[out] _pBuffer         Buffer that will be filled with the read data
  * @param[in] _pfnCallback      Callback that will get called after asynchronous operation; if orxNULL, operation will be synchronous
  * @param[in] _pContext         Context that will be transmitted to the callback when called
  * @return Size of the read data, in bytes or -1 for successful asynchronous call
@@ -342,12 +345,14 @@ extern orxDLLAPI orxHANDLE orxFASTCALL                    orxResource_GetNextCac
 
 /** Sets an internal memory resource
  * !IMPORTANT! The content of _pBuffer is *required* to remain valid until this resource has been successfully unset (by passing _s64Size=0 or _pBuffer=orxNULL), no internal copies will be made!
+ * @param[in] _zGroup           Group of the resource to set/unset, orxNULL to be available for all groups
+ * @param[in] _zStorage         Storage of the resource to set/unset, orxNULL for the default storage
  * @param[in] _zName            Name of the resource to set/unset
  * @param[in] _s64Size          Size of the resource's data (0 to unset)
  * @param[in] _pBuffer          Data of the resource (orxNULL to unset)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_SetMemoryResource(const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer);
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxResource_SetMemoryResource(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxS64 _s64Size, const void *_pBuffer);
 
 #endif /* _orxRESOURCE_H_ */
 

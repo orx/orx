@@ -1532,7 +1532,7 @@ orxFX *orxFASTCALL orxFX_CreateFromConfig(const orxSTRING _zConfigID)
   /* Gets FX ID */
   stID = orxString_Hash(_zConfigID);
 
-  /* Search for reference */
+  /* Searches for FX */
   pstResult = (orxFX *)orxHashTable_Get(sstFX.pstReferenceTable, stID);
 
   /* Found? */
@@ -2111,6 +2111,7 @@ orxVECTOR *orxFASTCALL orxFX_GetVector(const orxFX *_pstFX, orxFLOAT _fPreviousT
   /* Checks */
   orxSTRUCTURE_ASSERT(_pstFX);
   orxASSERT(_fTime >= _fPreviousTime);
+  orxASSERT(_pvVector != orxNULL);
 
   /* Is time valid? */
   if(_fTime >= orxFLOAT_0)
@@ -2681,6 +2682,25 @@ orxFLOAT orxFASTCALL orxFX_GetDuration(const orxFX *_pstFX)
 
   /* Done! */
   return fResult;
+}
+
+/** Gets FX given its name
+ * @param[in]   _zName          FX name
+ * @return      orxFX / orxNULL
+ */
+orxFX *orxFASTCALL orxFX_Get(const orxSTRING _zName)
+{
+  orxFX *pstResult;
+
+  /* Checks */
+  orxASSERT(sstFX.u32Flags & orxFX_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Updates result */
+  pstResult = (orxFX *)orxHashTable_Get(sstFX.pstReferenceTable, orxString_Hash(_zName));
+
+  /* Done! */
+  return pstResult;
 }
 
 /** Gets FX name

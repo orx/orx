@@ -44,7 +44,6 @@ var modules =
     [ "OrxResource", "group__orx_resource.html", "group__orx_resource" ],
     [ "OrxScreenshot", "group__orx_screenshot.html", "group__orx_screenshot" ],
     [ "OrxShader", "group__orx_shader.html", "group__orx_shader" ],
-    [ "OrxShaderPointer", "group__orx_shader_pointer.html", "group__orx_shader_pointer" ],
     [ "OrxSound", "group__orx_sound.html", "group__orx_sound" ],
     [ "OrxSoundPointer", "group__orx_sound_pointer.html", "group__orx_sound_pointer" ],
     [ "OrxSoundSystem", "group__orx_sound_system.html", "group__orx_sound_system" ],

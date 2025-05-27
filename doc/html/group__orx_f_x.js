@@ -105,6 +105,7 @@ var group__orx_f_x =
     [ "orxFX_Delete", "group__orx_f_x.html#gad347030e4b5db33538155e49831b6945", null ],
     [ "orxFX_Enable", "group__orx_f_x.html#gaa71c511d2e7a3ccaba138120988bb7f2", null ],
     [ "orxFX_Exit", "group__orx_f_x.html#ga6ca67fd00535dd66486ab940fed45462", null ],
+    [ "orxFX_Get", "group__orx_f_x.html#ga62093f61be0ce84ddd88812846f702db", null ],
     [ "orxFX_GetDuration", "group__orx_f_x.html#gab8c45b4c3ebd69db45c3edf7fd12e6f9", null ],
     [ "orxFX_GetFloat", "group__orx_f_x.html#ga90dacdb01ebde55d284d5058f1aa703f", null ],
     [ "orxFX_GetName", "group__orx_f_x.html#ga2023118f60de4fab06bb2f491478b1fc", null ],

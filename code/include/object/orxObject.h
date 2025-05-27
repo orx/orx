@@ -53,8 +53,8 @@
 #include "display/orxGraphic.h"
 #include "display/orxTexture.h"
 #include "math/orxOBox.h"
-#include "memory/orxBank.h"
 #include "object/orxStructure.h"
+#include "render/orxShader.h"
 #include "sound/orxSound.h"
 
 
@@ -85,6 +85,9 @@ typedef enum __orxOBJECT_EVENT_t
 
 /** Internal object structure */
 typedef struct __orxOBJECT_t                orxOBJECT;
+
+/** Object callback function type to use with ForAllNeighbors */
+typedef orxBOOL (orxFASTCALL *orxOBJECT_NEIGHBOR_FUNCTION)(orxOBJECT *_pstObject, void *_pContext);
 
 
 /** @name Internal module function
@@ -232,11 +235,13 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetOwnedSibling(const orxO
  * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
  * Paths are composed by object names separated by '.'.
  * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * If a name is prefixed by '@', then the name will be tested against all the config ancestry of the object's name, in addition to object's name itself.
  * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
  * For example:
  * @code
  * orxObject_FindOwnedChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
  * orxObject_FindOwnedChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "*.@Parent"); will find the first child (depth-first search) of pstObject which is either named Parent or has Parent in its config ancestry
  * orxObject_FindOwnedChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
  * orxObject_FindOwnedChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
  * @endcode
@@ -307,6 +312,18 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  _orxObject_GetStructure(const orxOBJ
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetFlip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY);
+
+/** Clears object flipping.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ClearFlip(orxOBJECT *_pstObject);
+
+/** Object has flip accessor?
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_HasFlip(const orxOBJECT *_pstObject);
 
 /** Gets object flipping.
  * @param[in]   _pstObject      Concerned object
@@ -549,11 +566,13 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL  orxObject_GetNextChild(const orxOBJE
  * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
  * Paths are composed by object names separated by '.'.
  * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * If a name is prefixed by '@', then the name will be tested against all the config ancestry of the object's name, in addition to object's name itself.
  * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
  * For example:
  * @code
  * orxObject_FindChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
  * orxObject_FindChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "*.@Parent"); will find the first child (depth-first search) of pstObject which is either named Parent or has Parent in its config ancestry
  * orxObject_FindChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
  * orxObject_FindChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
  * @endcode
@@ -1049,31 +1068,37 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveAllFilters(orxOBJECT
 
 /** @name Shader
  * @{ */
-/** Adds a shader to an object using its config ID.
+/** Sets the shader of an object.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShader(orxOBJECT *_pstObject, orxSHADER *_pstShader);
 
-/** Adds a shader to an object and its owned children.
+/** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_AddShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI void orxFASTCALL           orxObject_SetShaderRecursive(orxOBJECT *_pstObject, orxSHADER *_pstShader);
 
-/** Removes a shader using its config ID.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zShaderConfigID Config ID of the shader to remove
+/** Sets the shader of an object using its config ID.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_SetShaderFromConfig(orxOBJECT *_pstObject, const orxSTRING _zShaderID);
 
-/** Removes a shader from an object and its owned children.
+/** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to remove
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_RemoveShaderRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID);
+extern orxDLLAPI void orxFASTCALL           orxObject_SetShaderFromConfigRecursive(orxOBJECT *_pstObject, const orxSTRING _zShaderID);
+
+/** Gets the shader of an object.
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxSTRING / orx
+ */
+extern orxDLLAPI const orxSHADER *orxFASTCALL orxObject_GetShader(const orxOBJECT *_pstObject);
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object
@@ -1163,20 +1188,20 @@ extern orxDLLAPI void orxFASTCALL           orxObject_RemoveTriggerRecursive(orx
 /** Fires an object's trigger.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count         Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count);
 
 /** Fires a trigger on an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count         Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size);
+extern orxDLLAPI void orxFASTCALL           orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count);
 /** @} */
 
 
@@ -1192,39 +1217,15 @@ extern orxDLLAPI const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *
 
 /** @name Neighboring
  * @{ */
-/** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box).
- * The following is an example for iterating over a neighbor list:
- * @code
- * orxVECTOR vPosition; // The world position of the neighborhood area
- * // set_position(vPosition);
- * orxVECTOR vSize; // The size of the neighborhood area
- * // set_size(vSize);
- * orxVECTOR vPivot; // The pivot of the neighborhood area
- * // set_pivot(vPivot);
- *
- * orxOBOX stBox;
- * orxOBox_2DSet(&stBox, &vPosition, &vPivot, &vSize, 0);
- *
- * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox, orxSTRINGID_UNDEFINED);
- * if(pstBank) {
- *     for(int i=0; i < orxBank_GetCount(pstBank); ++i)
- *     {
- *         orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));
- *         do_something_with(pstObject);
- *     }
- *     orxObject_DeleteNeighborList(pstBank);
- * }
- * @endcode
- * @param[in]   _pstCheckBox    Box to check intersection with
+/** Runs a callback for all neighboring objects (ie. whose bounding volume intersects this box).
+ * @param[in]   _pfnNeighborCallback Function to run for each neighbor. If this function returns orxFALSE, no other neighbor will be processed (ie. early exit)
+ * @param[in]   _pstCheckBox    Box to check intersection with, orxNULL for all objects
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
- * @return      orxBANK / orxNULL
+ * @param[in]   _bEnabled       Only consider enabled objects if set to orxTRUE, consider all objects otherwise
+ * @param[in]   _pContext       User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS if all neighbors were processed without interruption, orxSTATUS_FAILURE otherwise
  */
-extern orxDLLAPI orxBANK *orxFASTCALL       orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox, orxSTRINGID _stGroupID);
-
-/** Deletes an object list created with orxObject_CreateNeighborList().
- * @param[in]   _pstObjectList  Concerned object list
- */
-extern orxDLLAPI void orxFASTCALL           orxObject_DeleteNeighborList(orxBANK *_pstObjectList);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_ForAllNeighbors(const orxOBJECT_NEIGHBOR_FUNCTION _pfnNeighborCallback, const orxOBOX *_pstCheckBox, orxSTRINGID _stGroupID, orxBOOL _bEnabled, void *_pContext);
 /** @} */
 
 
@@ -1468,8 +1469,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNextEnabled(const orxOB
 /** @name Picking
  * @{ */
 /** Picks the first active object with size "under" the given position, within a given group. See
- * orxObject_BoxPick(), orxObject_CreateNeighborList() and orxObject_Raycast for other ways of picking
- * objects.
+ * orxObject_BoxPick(), orxObject_ForAllNeighbors() and orxObject_Raycast() for other ways of picking objects.
  * @param[in]   _pvPosition     Position to pick from
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
@@ -1477,7 +1477,7 @@ extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_GetNextEnabled(const orxOB
 extern orxDLLAPI orxOBJECT *orxFASTCALL     orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID _stGroupID);
 
 /** Picks the first active object with size in contact with the given box, withing a given group. Use
- * orxObject_CreateNeighborList() to get all the objects in the box.
+ * orxObject_ForAllNeighbors() to access all the objects in the box.
  * @param[in]   _pstBox         Box to use for picking
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL

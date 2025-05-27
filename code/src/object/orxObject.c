@@ -32,22 +32,22 @@
 
 #include "object/orxObject.h"
 
-#include "debug/orxDebug.h"
-#include "debug/orxProfiler.h"
+#include "anim/orxAnimPointer.h"
 #include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
-#include "memory/orxMemory.h"
-#include "anim/orxAnimPointer.h"
+#include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
 #include "display/orxText.h"
-#include "physics/orxBody.h"
+#include "memory/orxBank.h"
+#include "memory/orxMemory.h"
 #include "object/orxFrame.h"
 #include "object/orxFXPointer.h"
 #include "object/orxSpawner.h"
 #include "object/orxTimeLine.h"
 #include "object/orxTrigger.h"
+#include "physics/orxBody.h"
 #include "render/orxCamera.h"
-#include "render/orxShaderPointer.h"
 #include "sound/orxSoundPointer.h"
 
 
@@ -107,6 +107,7 @@
 
 #define orxOBJECT_KC_PATH_SEPARATOR             '.'
 #define orxOBJECT_KC_PATH_WILDCARD              '*'
+#define orxOBJECT_KC_PATH_INHERITANCE           '@'
 #define orxOBJECT_KC_PATH_INDEX_START           '['
 #define orxOBJECT_KC_PATH_INDEX_STOP            ']'
 
@@ -137,7 +138,8 @@
 #define orxOBJECT_KZ_CONFIG_FX_RECURSIVE_LIST   "FXRecursiveList"
 #define orxOBJECT_KZ_CONFIG_FX_FREQUENCY        "FXFrequency"
 #define orxOBJECT_KZ_CONFIG_SOUND_LIST          "SoundList"
-#define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList"
+#define orxOBJECT_KZ_CONFIG_SHADER              "Shader"
+#define orxOBJECT_KZ_CONFIG_SHADER_LIST         "ShaderList" /**< Kept for retro-compatibility reason */
 #define orxOBJECT_KZ_CONFIG_TRACK_LIST          "TrackList"
 #define orxOBJECT_KZ_CONFIG_TRIGGER_LIST        "TriggerList"
 #define orxOBJECT_KZ_CONFIG_CHILD_LIST          "ChildList"
@@ -158,23 +160,18 @@
 #define orxOBJECT_KZ_OVERRIDE_MARKER            "->"
 #define orxOBJECT_KZ_CENTERED_PIVOT             "center"
 #define orxOBJECT_KZ_TRUNCATE_PIVOT             "truncate"
-#define orxOBJECT_KZ_ROUND_PIVOT                "round"
-#define orxOBJECT_KZ_TOP_PIVOT                  "top"
-#define orxOBJECT_KZ_LEFT_PIVOT                 "left"
-#define orxOBJECT_KZ_BOTTOM_PIVOT               "bottom"
-#define orxOBJECT_KZ_RIGHT_PIVOT                "right"
 #define orxOBJECT_KZ_ANIM                       "anim"
 #define orxOBJECT_KZ_CHILD                      "child"
 #define orxOBJECT_KZ_FX                         "fx"
 #define orxOBJECT_KZ_SOUND                      "sound"
 #define orxOBJECT_KZ_SPAWN                      "spawn"
 #define orxOBJECT_KZ_TRACK                      "track"
-#define orxOBJECT_KZ_ON_COLLIDE                 "OnCollide"
-#define orxOBJECT_KZ_ON_SEPARATE                "OnSeparate"
-#define orxOBJECT_KZ_ON_PART_COLLIDE            "OnPartCollide"
-#define orxOBJECT_KZ_ON_PART_SEPARATE           "OnPartSeparate"
-#define orxOBJECT_KZ_ON_CREATE                  "OnCreate"
-#define orxOBJECT_KZ_ON_DELETE                  "OnDelete"
+#define orxOBJECT_KZ_COLLIDE                    "Collide"
+#define orxOBJECT_KZ_SEPARATE                   "Separate"
+#define orxOBJECT_KZ_PART_COLLIDE               "PartCollide"
+#define orxOBJECT_KZ_PART_SEPARATE              "PartSeparate"
+#define orxOBJECT_KZ_CREATE                     "Create"
+#define orxOBJECT_KZ_DELETE                     "Delete"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -222,7 +219,17 @@ typedef struct __orxOBJECT_LISTS_t
 {
   orxLINKLIST       stList;                     /**< List : 12 / 24 */
   orxLINKLIST       stEnableList;               /**< Enable list : 24 / 48 */
+
 } orxOBJECT_LISTS;
+
+/** Object context structure
+ */
+typedef struct __orxOBJECT_CONTEXT_t
+{
+  orxOBJECT        *pstObject;
+  const orxSTRING   zCommand;
+
+} orxOBJECT_CONTEXT;
 
 /** Object structure
  */
@@ -286,8 +293,7 @@ static orxOBJECT_STATIC sstObject;
 
 /** Semi-private, internal-use only forward declarations
  */
-orxVECTOR *orxFASTCALL  orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
-orxFLOAT orxFASTCALL    orxClock_ComputeDT(orxFLOAT _fDT, orxCLOCK *_pstClock);
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
 
 /** Update body scale
  */
@@ -382,45 +388,73 @@ static orxINLINE orxBODY *orxObject_SetBodyFromConfig(orxOBJECT *_pstObject, con
 {
   orxBODY *pstResult = orxNULL;
 
-  /* Creates body */
-  pstResult = orxBody_CreateFromConfig(orxSTRUCTURE(_pstObject), _zBodyName);
-
-  /* Valid? */
-  if(pstResult != orxNULL)
+  /* Is body module initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_BODY) != orxFALSE)
   {
-    /* Links it */
-    if(orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstResult)) != orxSTATUS_FAILURE)
+    /* Creates body */
+    pstResult = orxBody_CreateFromConfig(orxSTRUCTURE(_pstObject), _zBodyName);
+
+    /* Valid? */
+    if(pstResult != orxNULL)
     {
-      orxU32 u32FrameFlags;
-
-      /* Updates status */
-      orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_BODY, orxOBJECT_KU32_FLAG_NONE);
-
-      /* Updates its owner */
-      orxStructure_SetOwner(pstResult, _pstObject);
-
-      /* Gets frame's flags */
-      u32FrameFlags = orxStructure_GetFlags(orxOBJECT_GET_STRUCTURE(_pstObject, FRAME), orxFRAME_KU32_FLAG_DEPTH_SCALE | orxFRAME_KU32_MASK_SCROLL_BOTH);
-
-      /* Using depth scale xor auto scroll? */
-      if((u32FrameFlags != orxFRAME_KU32_FLAG_NONE)
-      && ((u32FrameFlags == orxFRAME_KU32_FLAG_DEPTH_SCALE)
-       || (orxFLAG_GET(u32FrameFlags, orxFRAME_KU32_MASK_SCROLL_BOTH) == u32FrameFlags)))
+      /* Links it */
+      if(orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstResult)) != orxSTATUS_FAILURE)
       {
-        /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> is using physics along with either DepthScale or AutoScroll properties. Either all properties or none should be used on this object otherwise this will result in incorrect object rendering.", orxObject_GetName(_pstObject));
+        orxU32 u32FrameFlags;
+
+        /* Updates status */
+        orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_BODY, orxOBJECT_KU32_FLAG_NONE);
+
+        /* Updates its owner */
+        orxStructure_SetOwner(pstResult, _pstObject);
+
+        /* Gets frame's flags */
+        u32FrameFlags = orxStructure_GetFlags(orxOBJECT_GET_STRUCTURE(_pstObject, FRAME), orxFRAME_KU32_FLAG_DEPTH_SCALE | orxFRAME_KU32_MASK_SCROLL_BOTH);
+
+        /* Using depth scale xor auto scroll? */
+        if((u32FrameFlags != orxFRAME_KU32_FLAG_NONE)
+        && ((u32FrameFlags == orxFRAME_KU32_FLAG_DEPTH_SCALE)
+         || (orxFLAG_GET(u32FrameFlags, orxFRAME_KU32_MASK_SCROLL_BOTH) == u32FrameFlags)))
+        {
+          /* Logs message */
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Warning, object <%s> is using physics along with either DepthScale or AutoScroll properties. Either all properties or none should be used on this object otherwise this will result in incorrect object rendering.", orxObject_GetName(_pstObject));
+        }
       }
-    }
-    else
-    {
-      /* Deletes it */
-      orxBody_Delete(pstResult);
-      pstResult = orxNULL;
+      else
+      {
+        /* Deletes it */
+        orxBody_Delete(pstResult);
+        pstResult = orxNULL;
+      }
     }
   }
 
   /* Done! */
   return pstResult;
+}
+
+/** Run Command Callback
+ */
+orxBOOL orxFASTCALL orxObject_RunCommand(orxOBJECT *_pstObject, void *_pContext)
+{
+  orxCOMMAND_VAR      stCommandResult;
+  orxOBJECT_CONTEXT  *pstContext;
+  orxBOOL             bResult;
+
+  /* Gets context */
+  pstContext = (orxOBJECT_CONTEXT *)_pContext;
+
+  /* Evaluates command on object */
+  bResult = (_pstObject == pstContext->pstObject)
+         || ((orxCommand_EvaluateWithGUID(pstContext->zCommand, orxStructure_GetGUID(_pstObject), &stCommandResult) == orxNULL)
+         || ((stCommandResult.eType != orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.eType != orxCOMMAND_VAR_TYPE_STRING))
+         || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_STRING) && (*stCommandResult.zValue != orxNULL) && (orxString_ICompare(stCommandResult.zValue, orxSTRING_FALSE) != 0))
+         || ((stCommandResult.eType == orxCOMMAND_VAR_TYPE_BOOL) && (stCommandResult.bValue != orxFALSE)))
+          ? orxTRUE
+          : orxFALSE;
+
+  /* Done! */
+  return bResult;
 }
 
 /** Command: Create
@@ -493,6 +527,22 @@ void orxFASTCALL orxObject_CommandFindNext(orxU32 _u32ArgNumber, const orxCOMMAN
       break;
     }
   }
+
+  /* Done! */
+  return;
+}
+
+/** Command: Pick
+ */
+void orxFASTCALL orxObject_CommandPick(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT *pstObject;
+
+  /* Picks object */
+  pstObject = orxObject_Pick(&(_astArgList[0].vValue), (_u32ArgNumber > 1) ? orxString_GetID(_astArgList[1].zValue) : sstObject.stDefaultGroupID);
+
+  /* Updates result */
+  _pstResult->u64Value = (pstObject != orxNULL) ? orxStructure_GetGUID(pstObject) : orxU64_UNDEFINED;
 
   /* Done! */
   return;
@@ -2975,7 +3025,9 @@ void orxFASTCALL orxObject_CommandFireTrigger(orxU32 _u32ArgNumber, const orxCOM
 
     /* For all characters in event */
     for(pcSrc = _astArgList[1].zValue, pcDst = acBuffer, u32RefinementCount = 0;
-        (*pcSrc != orxCHAR_NULL) && (pcDst - acBuffer < sizeof(acBuffer) - 1);
+        (*pcSrc != orxCHAR_NULL)
+     && ((orxU32)(pcDst - acBuffer) < sizeof(acBuffer) - 1)
+     && (u32RefinementCount < orxARRAY_GET_ITEM_COUNT(azRefinementList));
         pcSrc++, pcDst++)
     {
       /* Depending on character */
@@ -3012,12 +3064,12 @@ void orxFASTCALL orxObject_CommandFireTrigger(orxU32 _u32ArgNumber, const orxCOM
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
       /* Fires trigger */
-      orxObject_FireTriggerRecursive(pstObject, acBuffer, (const orxSTRING *)azRefinementList, u32RefinementCount);
+      orxObject_FireTriggerRecursive(pstObject, acBuffer, (u32RefinementCount > 0) ? (const orxSTRING *)azRefinementList : orxNULL, u32RefinementCount);
     }
     else
     {
       /* Fires trigger */
-      orxObject_FireTrigger(pstObject, acBuffer, (const orxSTRING *)azRefinementList, u32RefinementCount);
+      orxObject_FireTrigger(pstObject, acBuffer, (u32RefinementCount > 0) ? (const orxSTRING *)azRefinementList : orxNULL, u32RefinementCount);
     }
 
     /* Updates result */
@@ -3277,9 +3329,9 @@ void orxFASTCALL orxObject_CommandGetFXTime(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
-/** Command: AddShader
+/** Command: SetShader
  */
-void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+void orxFASTCALL orxObject_CommandSetShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxOBJECT *pstObject;
 
@@ -3292,13 +3344,13 @@ void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMA
     /* Recursive? */
     if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
     {
-      /* Adds shader */
-      orxObject_AddShaderRecursive(pstObject, _astArgList[1].zValue);
+      /* Sets shader */
+      orxObject_SetShaderFromConfigRecursive(pstObject, _astArgList[1].zValue);
     }
     else
     {
-      /* Adds shader */
-      orxObject_AddShader(pstObject, _astArgList[1].zValue);
+      /* Sets shader */
+      orxObject_SetShaderFromConfig(pstObject, (_u32ArgNumber > 1) ? _astArgList[1].zValue : orxNULL);
     }
 
     /* Updates result */
@@ -3314,38 +3366,17 @@ void orxFASTCALL orxObject_CommandAddShader(orxU32 _u32ArgNumber, const orxCOMMA
   return;
 }
 
-/** Command: RemoveShader
+/** Command: GetShader
  */
-void orxFASTCALL orxObject_CommandRemoveShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+void orxFASTCALL orxObject_CommandGetShader(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   orxOBJECT *pstObject;
 
   /* Gets object */
   pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
 
-  /* Valid? */
-  if(pstObject != orxNULL)
-  {
-    /* Recursive? */
-    if((_u32ArgNumber > 2) && (_astArgList[2].bValue != orxFALSE))
-    {
-      /* Removes shader */
-      orxObject_RemoveShaderRecursive(pstObject, _astArgList[1].zValue);
-    }
-    else
-    {
-      /* Removes shader */
-      orxObject_RemoveShader(pstObject, _astArgList[1].zValue);
-    }
-
-    /* Updates result */
-    _pstResult->u64Value = _astArgList[0].u64Value;
-  }
-  else
-  {
-    /* Updates result */
-    _pstResult->u64Value = orxU64_UNDEFINED;
-  }
+  /* Updates result */
+  _pstResult->zValue = ((pstObject != orxNULL) && (orxObject_GetShader(pstObject) != orxNULL)) ? orxShader_GetName(orxObject_GetShader(pstObject)) : orxSTRING_EMPTY;
 
   /* Done! */
   return;
@@ -3989,6 +4020,42 @@ void orxFASTCALL orxObject_CommandGetPivot(orxU32 _u32ArgNumber, const orxCOMMAN
   return;
 }
 
+/** Command: ForAllNeighbors
+ */
+void orxFASTCALL orxObject_CommandForAllNeighbors(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxOBJECT_CONTEXT stContext;
+  orxOBOX           stObjectBox, *pstBox = orxNULL;
+  orxOBJECT        *pstObject;
+  orxU64            u64Result = orxU64_UNDEFINED;
+
+  /* Gets object */
+  pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
+
+  /* Valid? */
+  if(pstObject != orxNULL)
+  {
+    /* Gets its bounding box */
+    pstBox = orxObject_GetBoundingBox(pstObject, &stObjectBox);
+
+    /* Updates result */
+    u64Result = _astArgList[0].u64Value;
+  }
+
+  /* Inits context */
+  stContext.pstObject = pstObject;
+  stContext.zCommand  = _astArgList[1].zValue;
+
+  /* Runs command on all neighbors */
+  orxObject_ForAllNeighbors(orxObject_RunCommand, pstBox, ((_u32ArgNumber > 2) && (*_astArgList[2].zValue != orxCHAR_NULL)) ? orxString_Hash(_astArgList[2].zValue) : orxSTRINGID_UNDEFINED, (_u32ArgNumber > 3) ? _astArgList[3].bValue : orxFALSE, &stContext);
+
+  /* Updates result */
+  _pstResult->u64Value = u64Result;
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the object commands
  */
 static orxINLINE void orxObject_RegisterCommands()
@@ -4000,6 +4067,8 @@ static orxINLINE void orxObject_RegisterCommands()
 
   /* Command: FindNext */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, FindNext, "Object", orxCOMMAND_VAR_TYPE_U64, 0, 2, {"Name = *", orxCOMMAND_VAR_TYPE_STRING}, {"Previous = <void>", orxCOMMAND_VAR_TYPE_U64});
+  /* Command: Pick */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, Pick, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 1, {"Position", orxCOMMAND_VAR_TYPE_VECTOR}, {"Group = <default>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: GetCount */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetCount, "Count", orxCOMMAND_VAR_TYPE_U32, 0, 2, {"Name = <empty>", orxCOMMAND_VAR_TYPE_STRING}, {"EnabledOnly = false", orxCOMMAND_VAR_TYPE_BOOL});
@@ -4185,10 +4254,10 @@ static orxINLINE void orxObject_RegisterCommands()
   /* Command: GetFXTime */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetFXTime, "Time", orxCOMMAND_VAR_TYPE_FLOAT, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
-  /* Command: AddShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
-  /* Command: RemoveShader */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Object, RemoveShader, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 1, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: SetShader */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetShader, "Object", orxCOMMAND_VAR_TYPE_U64, 1, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Shader = <void>", orxCOMMAND_VAR_TYPE_STRING}, {"Recursive = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Command: GetShader */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetShader, "Object", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
 
   /* Command: AddSound */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, AddSound, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Sound", orxCOMMAND_VAR_TYPE_STRING});
@@ -4236,6 +4305,14 @@ static orxINLINE void orxObject_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, SetPivot, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 0, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Pivot", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: GetPivot */
   orxCOMMAND_REGISTER_CORE_COMMAND(Object, GetPivot, "Pivot", orxCOMMAND_VAR_TYPE_VECTOR, 1, 0, {"Object", orxCOMMAND_VAR_TYPE_U64});
+
+  /* Command: ForAllNeighbors */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Object, ForAllNeighbors, "Object", orxCOMMAND_VAR_TYPE_U64, 2, 2, {"Object", orxCOMMAND_VAR_TYPE_U64}, {"Command", orxCOMMAND_VAR_TYPE_STRING}, {"Group = <undefined>", orxCOMMAND_VAR_TYPE_STRING}, {"Enabled = false", orxCOMMAND_VAR_TYPE_BOOL});
+  /* Alias: ForAll */
+  orxCommand_AddAlias("Object.ForAll", "Object.ForAllNeighbors", "\"\"");
+
+  /* Done! */
+  return;
 }
 
 /** Unregisters all the object commands
@@ -4249,6 +4326,8 @@ static orxINLINE void orxObject_UnregisterCommands()
 
   /* Command: FindNext */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, FindNext);
+  /* Command: Pick */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, Pick);
 
   /* Command: GetCount */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetCount);
@@ -4434,10 +4513,10 @@ static orxINLINE void orxObject_UnregisterCommands()
   /* Command: GetFXTime */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetFXTime);
 
-  /* Command: AddShader */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddShader);
-  /* Command: RemoveShader */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, RemoveShader);
+  /* Command: SetShader */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetShader);
+  /* Command: GetShader */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetShader);
 
   /* Command: AddSound */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, AddSound);
@@ -4485,6 +4564,14 @@ static orxINLINE void orxObject_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, SetPivot);
   /* Command: GetPivot */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, GetPivot);
+
+  /* Command: ForAllNeighbors */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Object, ForAllNeighbors);
+  /* Alias: ForAll */
+  orxCommand_RemoveAlias("Object.ForAll");
+
+  /* Done! */
+  return;
 }
 
 /** Adds a delayed FX using its config ID.
@@ -4630,7 +4717,7 @@ void orxFASTCALL orxObject_ApplyFXRecursive(orxOBJECT *_pstObject, const orxCLOC
 
 /* Finds next child
  */
-static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObject, const orxSTRING _zName, orxS32 *_ps32Skip, orxBOOL _bRecursive, orxOBJECT *(orxFASTCALL *_pfnGetChild)(const orxOBJECT *), orxOBJECT *(orxFASTCALL *_pfnGetSibling)(const orxOBJECT *))
+static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObject, const orxSTRING _zName, orxS32 *_ps32Skip, orxBOOL _bRecursive, orxBOOL _bCheckParents, orxOBJECT *(orxFASTCALL *_pfnGetChild)(const orxOBJECT *), orxOBJECT *(orxFASTCALL *_pfnGetSibling)(const orxOBJECT *))
 {
   orxOBJECT *pstChild, *pstResult = orxNULL;
 
@@ -4639,8 +4726,16 @@ static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObjec
       pstChild != orxNULL;
       pstChild = _pfnGetSibling(pstChild))
   {
+    const orxSTRING zChildName;
+
+    /* Gets child name */
+    zChildName = orxObject_GetName(pstChild);
+
     /* Found? */
-    if(((*_zName == orxCHAR_NULL) || (orxString_Compare(_zName, orxObject_GetName(pstChild)) == 0))
+    if(((*_zName == orxCHAR_NULL)
+     || (orxString_Compare(_zName, zChildName) == 0)
+     || ((_bCheckParents != orxFALSE)
+      && (orxConfig_GetParentDistance(zChildName, _zName) > 0)))
     && ((*_ps32Skip)-- <= 0))
     {
       /* Updates result */
@@ -4659,7 +4754,7 @@ static orxOBJECT *orxFASTCALL orxObject_FindNextChild(const orxOBJECT *_pstObjec
       orxOBJECT *pstObject;
 
       /* Finds object recursively */
-      pstObject = orxObject_FindNextChild(pstChild, _zName, _ps32Skip, orxTRUE, _pfnGetChild, _pfnGetSibling);
+      pstObject = orxObject_FindNextChild(pstChild, _zName, _ps32Skip, orxTRUE, _bCheckParents, _pfnGetChild, _pfnGetSibling);
 
       /* Found? */
       if(pstObject != orxNULL)
@@ -4749,8 +4844,20 @@ static orxINLINE orxOBJECT *orxObject_FindChildInternal(const orxOBJECT *_pstObj
         /* Should continue? */
         if(bValid != orxFALSE)
         {
+          orxBOOL bCheckParents = orxFALSE;
+
+          /* Inheritance marker? */
+          if(*pcToken == orxOBJECT_KC_PATH_INHERITANCE)
+          {
+            /* Updates status */
+            bCheckParents = orxTRUE;
+
+            /* Updates token */
+            pcToken++;
+          }
+
           /* Finds current object */
-          pstObject = orxObject_FindNextChild(pstObject, pcToken, &s32Skip, bWildcard, _pfnGetChild, _pfnGetSibling);
+          pstObject = orxObject_FindNextChild(pstObject, pcToken, &s32Skip, bWildcard, bCheckParents, _pfnGetChild, _pfnGetSibling);
 
           /* Updates status */
           bWildcard = orxFALSE;
@@ -4770,7 +4877,7 @@ static orxINLINE orxOBJECT *orxObject_FindChildInternal(const orxOBJECT *_pstObj
       orxS32 s32Skip = 0;
 
       /* Updates result */
-      pstResult = (bWildcard != orxFALSE) ? orxObject_FindNextChild(pstObject, orxSTRING_EMPTY, &s32Skip, orxTRUE, _pfnGetChild, _pfnGetSibling) : (orxOBJECT *)pstObject;
+      pstResult = (bWildcard != orxFALSE) ? orxObject_FindNextChild(pstObject, orxSTRING_EMPTY, &s32Skip, orxTRUE, orxFALSE, _pfnGetChild, _pfnGetSibling) : (orxOBJECT *)pstObject;
     }
     else
     {
@@ -4862,7 +4969,7 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
         if(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
         {
           /* Fires it */
-          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_ON_DELETE, orxNULL, 0);
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_DELETE, orxNULL, 0);
         }
 
         /* Has frame? */
@@ -4997,10 +5104,13 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
   else
   {
     orxPHYSICS_EVENT_PAYLOAD *pstPayload;
-    const orxSTRING           azRefinementList[2];
+    const orxSTRING           azRefinementList[4];
     const orxSTRING           zEvent;
     const orxSTRING           zPartEvent;
     orxOBJECT                *pstSender, *pstRecipient;
+    orxCOMMAND_VAR            stVar;
+    orxCHAR                   acBuffer1[64], acBuffer2[64];
+    orxU32                    u32RefinementCount = 2;
 
     /* Checks */
     orxASSERT(_pstEvent->eType == orxEVENT_TYPE_PHYSICS);
@@ -5015,28 +5125,49 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
     /* Selects events */
     if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
     {
-      zEvent      = orxOBJECT_KZ_ON_COLLIDE;
-      zPartEvent  = orxOBJECT_KZ_ON_PART_COLLIDE;
+      zEvent      = orxOBJECT_KZ_COLLIDE;
+      zPartEvent  = orxOBJECT_KZ_PART_COLLIDE;
     }
     else
     {
-      zEvent      = orxOBJECT_KZ_ON_SEPARATE;
-      zPartEvent  = orxOBJECT_KZ_ON_PART_SEPARATE;
+      zEvent      = orxOBJECT_KZ_SEPARATE;
+      zPartEvent  = orxOBJECT_KZ_PART_SEPARATE;
     }
 
-    /* Fires triggers on sender */
+    /* Fires collide triggers */
+    stVar.eType         = orxCOMMAND_VAR_TYPE_U64;
+    azRefinementList[1] = acBuffer1;
+
     azRefinementList[0] = orxObject_GetName(pstRecipient);
-    orxObject_FireTrigger(pstSender, zEvent, azRefinementList, 1);
+    stVar.u64Value      = orxStructure_GetGUID(pstRecipient);
+    orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
+    orxObject_FireTrigger(pstSender, zEvent, azRefinementList, u32RefinementCount);
+
+    azRefinementList[0] = orxObject_GetName(pstSender);
+    stVar.u64Value      = orxStructure_GetGUID(pstSender);
+    orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
+    orxObject_FireTrigger(pstRecipient, zEvent, azRefinementList, u32RefinementCount);
+
+    /* Fires part collide triggers */
+    if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+    {
+      stVar.eType = orxCOMMAND_VAR_TYPE_VECTOR;
+      orxVector_Copy(&(stVar.vValue), &(pstPayload->vPosition));
+      orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
+      orxVector_Copy(&(stVar.vValue), &(pstPayload->vNormal));
+      orxCommand_PrintVar(acBuffer2, sizeof(acBuffer2), &stVar);
+      azRefinementList[2] = acBuffer1;
+      azRefinementList[3] = acBuffer2;
+      u32RefinementCount  = 4;
+    }
+
     azRefinementList[0] = orxBody_GetPartName(pstPayload->pstSenderPart);
     azRefinementList[1] = orxBody_GetPartName(pstPayload->pstRecipientPart);
-    orxObject_FireTrigger(pstSender, zPartEvent, azRefinementList, 2);
+    orxObject_FireTrigger(pstSender, zPartEvent, azRefinementList, u32RefinementCount);
 
-    /* Fires triggers on recipient */
-    azRefinementList[0] = orxObject_GetName(pstSender);
-    orxObject_FireTrigger(pstRecipient, zEvent, azRefinementList, 1);
     azRefinementList[0] = orxBody_GetPartName(pstPayload->pstRecipientPart);
     azRefinementList[1] = orxBody_GetPartName(pstPayload->pstSenderPart);
-    orxObject_FireTrigger(pstRecipient, zPartEvent, azRefinementList, 2);
+    orxObject_FireTrigger(pstRecipient, zPartEvent, azRefinementList, u32RefinementCount);
   }
 
   /* Done! */
@@ -5105,7 +5236,7 @@ static orxOBJECT *orxFASTCALL orxObject_UpdateInternal(orxOBJECT *_pstObject, co
       orxMemory_Copy(&stClockInfo, orxClock_GetInfo(pstClock), sizeof(orxCLOCK_INFO));
 
       /* Computes its DT */
-      stClockInfo.fDT = (orxClock_IsPaused(pstClock) != orxFALSE) ? orxFLOAT_0 : orxClock_ComputeDT(_pstClockInfo->fDT, pstClock);
+      stClockInfo.fDT = (orxClock_IsPaused(pstClock) != orxFALSE) ? orxFLOAT_0 : orxClock_ComputeDT(pstClock, _pstClockInfo->fDT);
     }
     else
     {
@@ -5312,26 +5443,26 @@ static void orxFASTCALL orxObject_UpdateAll(const orxCLOCK_INFO *_pstClockInfo, 
 void orxFASTCALL orxObject_Setup()
 {
   /* Adds module dependencies */
-  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_MEMORY);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BANK);
-  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_STRUCTURE);
-  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_PROFILER);
-  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FRAME);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CAMERA);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CLOCK);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_EVENT);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FRAME);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FXPOINTER);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_MEMORY);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_PROFILER);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SPAWNER);
   orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_STRING);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_STRUCTURE);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TIMELINE);
+  orxModule_AddDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TRIGGER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_ANIMPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_BODY);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_CAMERA);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_FXPOINTER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_GRAPHIC);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SHADERPOINTER);
+  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SHADER);
   orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SOUNDPOINTER);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_SPAWNER);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TIMELINE);
-  orxModule_AddOptionalDependency(orxMODULE_ID_OBJECT, orxMODULE_ID_TRIGGER);
 
   /* Done! */
   return;
@@ -5635,7 +5766,7 @@ orxSTATUS orxFASTCALL orxObject_Update(orxOBJECT *_pstObject, const orxCLOCK_INF
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstObject != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT(_pstClockInfo != orxNULL);
 
   /* Updates object */
@@ -5652,6 +5783,9 @@ orxSTATUS orxFASTCALL orxObject_Update(orxOBJECT *_pstObject, const orxCLOCK_INF
 orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 {
   orxOBJECT *pstResult;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxObject_CreateFromConfig");
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -5729,13 +5863,12 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
       {
         orxVECTOR       vValue, vParentSize, vPosition, vScale, vPivotOverride;
         orxAABOX        stParentBox;
-        const orxSTRING zGraphicName;
-        const orxSTRING zAnimPointerName;
         const orxSTRING zAutoScrolling;
-        const orxSTRING zFlipping;
+        const orxSTRING zFlip;
         const orxSTRING zBodyName;
         const orxSTRING zClockName;
         const orxSTRING zSpawnerName;
+        const orxSTRING zShaderName;
         const orxSTRING zParentName;
         const orxSTRING zIgnoreFromParent;
         const orxSTRING zPosition;
@@ -5846,28 +5979,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         {
           /* Updates frame flags */
           u32FrameFlags = orxFRAME_KU32_FLAG_NONE;
-        }
-
-        /* Gets flipping value */
-        zFlipping = orxConfig_GetString(orxOBJECT_KZ_CONFIG_FLIP);
-
-        /* X flipping? */
-        if(orxString_ICompare(zFlipping, orxOBJECT_KZ_X) == 0)
-        {
-          /* Updates frame flags */
-          u32FrameFlags  |= orxFRAME_KU32_FLAG_FLIP_X;
-        }
-        /* Y flipping? */
-        else if(orxString_ICompare(zFlipping, orxOBJECT_KZ_Y) == 0)
-        {
-          /* Updates frame flags */
-          u32FrameFlags  |= orxFRAME_KU32_FLAG_FLIP_Y;
-        }
-        /* Both flipping? */
-        else if(orxString_ICompare(zFlipping, orxOBJECT_KZ_BOTH) == 0)
-        {
-          /* Updates frame flags */
-          u32FrameFlags  |= orxFRAME_KU32_FLAG_FLIP_X | orxFRAME_KU32_FLAG_FLIP_Y;
         }
 
         /* Depth scaling active? */
@@ -6076,115 +6187,158 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
         /* *** Graphic *** */
 
-        /* Gets graphic file name */
-        zGraphicName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_GRAPHIC_NAME);
-
-        /* Valid? */
-        if((zGraphicName != orxNULL) && (*zGraphicName != orxCHAR_NULL))
+        /* Is graphic module initialized? */
+        if(orxModule_IsInitialized(orxMODULE_ID_GRAPHIC) != orxFALSE)
         {
-          orxGRAPHIC *pstGraphic;
+          const orxSTRING zGraphicName;
 
-          /* Creates graphic */
-          pstGraphic = orxGraphic_CreateFromConfig(zGraphicName);
+          /* Gets graphic file name */
+          zGraphicName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_GRAPHIC_NAME);
 
           /* Valid? */
-          if(pstGraphic != orxNULL)
+          if((zGraphicName != orxNULL) && (*zGraphicName != orxCHAR_NULL))
           {
-            /* Links it structures */
-            if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstGraphic)) != orxSTATUS_FAILURE)
-            {
-              /* Updates status */
-              orxStructure_SetFlags(pstResult, 1 << orxSTRUCTURE_ID_GRAPHIC, orxOBJECT_KU32_FLAG_NONE);
+            orxGRAPHIC *pstGraphic;
 
-              /* Updates its owner */
-              orxStructure_SetOwner(pstGraphic, pstResult);
-            }
-            else
+            /* Creates graphic */
+            pstGraphic = orxGraphic_CreateFromConfig(zGraphicName);
+
+            /* Valid? */
+            if(pstGraphic != orxNULL)
             {
-              /* Deletes it */
-              orxGraphic_Delete(pstGraphic);
-              pstGraphic = orxNULL;
+              /* Links it structures */
+              if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstGraphic)) != orxSTATUS_FAILURE)
+              {
+                /* Updates status */
+                orxStructure_SetFlags(pstResult, 1 << orxSTRUCTURE_ID_GRAPHIC, orxOBJECT_KU32_FLAG_NONE);
+
+                /* Updates its owner */
+                orxStructure_SetOwner(pstGraphic, pstResult);
+              }
+              else
+              {
+                /* Deletes it */
+                orxGraphic_Delete(pstGraphic);
+              }
             }
           }
         }
 
         /* *** Animation *** */
 
-        /* Gets animation set name */
-        zAnimPointerName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME);
-
-        /* Valid? */
-        if((zAnimPointerName != orxNULL) && (*zAnimPointerName != orxCHAR_NULL))
+        /* Is animpointer module initialized? */
+        if(orxModule_IsInitialized(orxMODULE_ID_ANIMPOINTER) != orxFALSE)
         {
-          orxANIMPOINTER *pstAnimPointer;
+          const orxSTRING zAnimPointerName;
 
-          /* Creates animation pointer from it */
-          pstAnimPointer = orxAnimPointer_CreateFromConfig(zAnimPointerName);
+          /* Gets animation set name */
+          zAnimPointerName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_ANIMPOINTER_NAME);
 
           /* Valid? */
-          if(pstAnimPointer != orxNULL)
+          if((zAnimPointerName != orxNULL) && (*zAnimPointerName != orxCHAR_NULL))
           {
-            /* Links it structures */
-            if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstAnimPointer)) != orxSTATUS_FAILURE)
+            orxANIMPOINTER *pstAnimPointer;
+
+            /* Creates animation pointer from it */
+            pstAnimPointer = orxAnimPointer_CreateFromConfig(zAnimPointerName);
+
+            /* Valid? */
+            if(pstAnimPointer != orxNULL)
             {
-              /* Updates status */
-              orxStructure_SetFlags(pstResult, 1 << orxSTRUCTURE_ID_ANIMPOINTER, orxOBJECT_KU32_FLAG_NONE);
-
-              /* Updates its owner */
-              orxStructure_SetOwner(pstAnimPointer, pstResult);
-
-              /* Has frequency? */
-              if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY) != orxFALSE)
+              /* Links it structures */
+              if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstAnimPointer)) != orxSTATUS_FAILURE)
               {
-                /* Updates animation pointer frequency */
-                orxObject_SetAnimFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY));
-              }
+                /* Updates status */
+                orxStructure_SetFlags(pstResult, 1 << orxSTRUCTURE_ID_ANIMPOINTER, orxOBJECT_KU32_FLAG_NONE);
 
-              /* Doesn't have a graphic? */
-              if(pstResult->apstStructureList[orxSTRUCTURE_ID_GRAPHIC] == orxNULL)
-              {
-                orxGRAPHIC *pstGraphic;
+                /* Updates its owner */
+                orxStructure_SetOwner(pstAnimPointer, pstResult);
 
-                /* Gets current graphic */
-                pstGraphic = orxObject_GetWorkingGraphic(pstResult);
-
-                /* Valid? */
-                if(pstGraphic != orxNULL)
+                /* Has frequency? */
+                if(orxConfig_HasValue(orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY) != orxFALSE)
                 {
-                  /* Creates a clone */
-                  pstGraphic = orxGraphic_Clone(pstGraphic);
+                  /* Updates animation pointer frequency */
+                  orxObject_SetAnimFrequency(pstResult, orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANIM_FREQUENCY));
+                }
+
+                /* Doesn't have a graphic? */
+                if(pstResult->apstStructureList[orxSTRUCTURE_ID_GRAPHIC] == orxNULL)
+                {
+                  orxGRAPHIC *pstGraphic;
+
+                  /* Gets current graphic */
+                  pstGraphic = orxObject_GetWorkingGraphic(pstResult);
 
                   /* Valid? */
                   if(pstGraphic != orxNULL)
                   {
-                    /* Links it structures */
-                    if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstGraphic)) != orxSTATUS_FAILURE)
-                    {
-                      /* Updates status */
-                      orxStructure_SetFlags(pstResult, 1 << orxSTRUCTURE_ID_GRAPHIC, orxOBJECT_KU32_FLAG_NONE);
+                    /* Creates a clone */
+                    pstGraphic = orxGraphic_Clone(pstGraphic);
 
-                      /* Updates its owner */
-                      orxStructure_SetOwner(pstGraphic, pstResult);
-                    }
-                    else
+                    /* Valid? */
+                    if(pstGraphic != orxNULL)
                     {
-                      /* Deletes it */
-                      orxGraphic_Delete(pstGraphic);
+                      /* Links it structures */
+                      if(orxObject_LinkStructure(pstResult, orxSTRUCTURE(pstGraphic)) != orxSTATUS_FAILURE)
+                      {
+                        /* Updates status */
+                        orxStructure_SetFlags(pstResult, 1 << orxSTRUCTURE_ID_GRAPHIC, orxOBJECT_KU32_FLAG_NONE);
+
+                        /* Updates its owner */
+                        orxStructure_SetOwner(pstGraphic, pstResult);
+                      }
+                      else
+                      {
+                        /* Deletes it */
+                        orxGraphic_Delete(pstGraphic);
+                      }
                     }
                   }
                 }
               }
-            }
-            else
-            {
-              /* Deletes it */
-              orxAnimPointer_Delete(pstAnimPointer);
-              pstAnimPointer = orxNULL;
+              else
+              {
+                /* Deletes it */
+                orxAnimPointer_Delete(pstAnimPointer);
+                pstAnimPointer = orxNULL;
+              }
             }
           }
         }
 
-        /* *** Origin/Size/Pivot *** */
+        /* *** Flip/Origin/Size/Pivot *** */
+
+        /* Gets flip value */
+        zFlip = orxConfig_GetString(orxOBJECT_KZ_CONFIG_FLIP);
+
+        /* Valid? */
+        if(*zFlip != orxCHAR_NULL)
+        {
+          orxBOOL bFlipX = orxFALSE, bFlipY = orxFALSE;
+
+          /* X flipping? */
+          if(orxString_ICompare(zFlip, orxOBJECT_KZ_X) == 0)
+          {
+            /* Updates status */
+            bFlipX = orxTRUE;
+          }
+          /* Y flipping? */
+          else if(orxString_ICompare(zFlip, orxOBJECT_KZ_Y) == 0)
+          {
+            /* Updates status */
+            bFlipY = orxTRUE;
+          }
+          /* Both flipping? */
+          else if(orxString_ICompare(zFlip, orxOBJECT_KZ_BOTH) == 0)
+          {
+            /* Updates status */
+            bFlipX = orxTRUE;
+            bFlipY = orxTRUE;
+          }
+
+          /* Updates object flip */
+          orxObject_SetFlip(pstResult, bFlipX, bFlipY);
+        }
 
         /* Has origin? */
         if(orxConfig_GetVector(orxOBJECT_KZ_CONFIG_ORIGIN, &vValue) != orxNULL)
@@ -6261,6 +6415,16 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
 
             /* Gets world space values */
             orxVector_Mul(&vScale, orxVector_Div(&vScale, &vScale, &vSize), &vParentSize);
+
+            /* Updates uniform scaling if needed */
+            if(vScale.fX == orxFLOAT_0)
+            {
+              vScale.fX = vScale.fY;
+            }
+            else if(vScale.fY == orxFLOAT_0)
+            {
+              vScale.fY = vScale.fX;
+            }
           }
 
           /* Updates object scale */
@@ -6722,6 +6886,30 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         /* Sets angular velocity? */
         orxObject_SetAngularVelocity(pstResult, orxMATH_KF_DEG_TO_RAD * orxConfig_GetFloat(orxOBJECT_KZ_CONFIG_ANGULAR_VELOCITY));
 
+        /* *** Sound *** */
+
+        /* Has sound? */
+        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
+        {
+          orxS32 i;
+
+          /* For all defined sounds */
+          for(i = 0; i < s32Count; i++)
+          {
+            const orxSTRING zSound;
+
+            /* Gets its name */
+            zSound = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND_LIST, i);
+
+            /* Valid? */
+            if(*zSound != orxCHAR_NULL)
+            {
+              /* Adds it */
+              orxObject_AddSound(pstResult, zSound);
+            }
+          }
+        }
+
         /* *** FX *** */
 
         /* Has FX? */
@@ -6827,52 +7015,30 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
           }
         }
 
-        /* *** Sound *** */
+        /* *** Shader *** */
 
-        /* Has sound? */
-        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SOUND_LIST)) > 0)
+        /* Gets shader name */
+        zShaderName = orxConfig_GetString(orxOBJECT_KZ_CONFIG_SHADER);
+
+        /* Not found? */
+        if(*zShaderName == orxCHAR_NULL)
         {
-          orxS32 i;
+          /* Gets first shader from list */
+          zShaderName = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SHADER_LIST, 0);
 
-          /* For all defined sounds */
-          for(i = 0; i < s32Count; i++)
+          /* Has multiple shaders? */
+          if(orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SHADER_LIST) > 1)
           {
-            const orxSTRING zSound;
-
-            /* Gets its name */
-            zSound = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SOUND_LIST, i);
-
-            /* Valid? */
-            if(*zSound != orxCHAR_NULL)
-            {
-              /* Adds it */
-              orxObject_AddSound(pstResult, zSound);
-            }
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": deprecated property <ShaderList> contains multiple entries, only the first one will be used.", _zConfigID);
           }
         }
 
-        /* *** Shader *** */
-
         /* Has shader? */
-        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_SHADER_LIST)) > 0)
+        if(*zShaderName != orxCHAR_NULL)
         {
-          orxS32 i;
-
-          /* For all defined shaders */
-          for(i = 0; i < s32Count; i++)
-          {
-            const orxSTRING zShader;
-
-            /* Gets its name */
-            zShader = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_SHADER_LIST, i);
-
-            /* Valid? */
-            if(*zShader != orxCHAR_NULL)
-            {
-              /* Adds it */
-              orxObject_AddShader(pstResult, zShader);
-            }
-          }
+          /* Sets it */
+          orxObject_SetShaderFromConfig(pstResult, zShaderName);
         }
 
         /* *** Timeline *** */
@@ -6992,7 +7158,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
         {
           /* Fires it */
-          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_ON_CREATE, orxNULL, 0);
+          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_CREATE, orxNULL, 0);
         }
 
         /* Should age? */
@@ -7140,6 +7306,9 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
     pstResult = orxNULL;
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
   return pstResult;
 }
@@ -7254,9 +7423,9 @@ void orxFASTCALL orxObject_UnlinkStructure(orxOBJECT *_pstObject, orxSTRUCTURE_I
           break;
         }
 
-        case orxSTRUCTURE_ID_SHADERPOINTER:
+        case orxSTRUCTURE_ID_SHADER:
         {
-          orxShaderPointer_Delete(orxSHADERPOINTER(pstStructure));
+          orxShader_Delete(orxSHADER(pstStructure));
           break;
         }
 
@@ -7692,11 +7861,13 @@ orxOBJECT *orxFASTCALL orxObject_GetOwnedSibling(const orxOBJECT *_pstObject)
  * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
  * Paths are composed by object names separated by '.'.
  * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * If a name is prefixed by '@', then the name will be tested against all the config ancestry of the object's name, in addition to object's name itself.
  * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
  * For example:
  * @code
  * orxObject_FindOwnedChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
  * orxObject_FindOwnedChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "*.@Parent"); will find the first child (depth-first search) of pstObject which is either named Parent or has Parent in its config ancestry
  * orxObject_FindOwnedChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
  * orxObject_FindOwnedChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
  * @endcode
@@ -7782,30 +7953,21 @@ orxCLOCK *orxFASTCALL orxObject_GetClock(const orxOBJECT *_pstObject)
  */
 orxSTATUS orxFASTCALL orxObject_SetFlip(orxOBJECT *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY)
 {
-  orxFRAME *pstFrame;
-  orxSTATUS eResult;
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets its frame */
-  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
 
   /* Valid? */
-  if(pstFrame != orxNULL)
+  if(pstGraphic != orxNULL)
   {
-    orxU32 u32Flags;
-
-    /* Updates flags */
-    u32Flags  = (_bFlipX != orxFALSE) ? orxFRAME_KU32_FLAG_FLIP_X : orxFRAME_KU32_FLAG_NONE;
-    u32Flags |= (_bFlipY != orxFALSE) ? orxFRAME_KU32_FLAG_FLIP_Y : orxFRAME_KU32_FLAG_NONE;
-
-    /* Updates frame */
-    orxStructure_SetFlags(pstFrame, u32Flags, orxFRAME_KU32_FLAG_FLIP_X | orxFRAME_KU32_FLAG_FLIP_Y);
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    /* Sets graphic flip */
+    eResult = orxGraphic_SetFlip(pstGraphic, _bFlipX, _bFlipY);
   }
   else
   {
@@ -7817,6 +7979,70 @@ orxSTATUS orxFASTCALL orxObject_SetFlip(orxOBJECT *_pstObject, orxBOOL _bFlipX, 
   return eResult;
 }
 
+/** Clears object flipping.
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_ClearFlip(orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Clears graphic flip */
+    eResult = orxGraphic_ClearFlip(pstGraphic);
+  }
+  else
+  {
+    /* Updates result */
+    eResult = orxSTATUS_FAILURE;
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Object has flip accessor?
+ * @param[in]   _pstObject      Concerned object
+ * @return      orxTRUE / orxFALSE
+ */
+orxBOOL orxFASTCALL orxObject_HasFlip(const orxOBJECT *_pstObject)
+{
+  orxGRAPHIC *pstGraphic;
+  orxBOOL     bResult;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
+
+  /* Valid? */
+  if(pstGraphic != orxNULL)
+  {
+    /* Has graphic flip? */
+    bResult = orxGraphic_HasFlip(pstGraphic);
+  }
+  else
+  {
+    /* Updates result */
+    bResult = orxFALSE;
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Gets object flipping.
  * @param[in]   _pstObject      Concerned object
  * @param[in]   _pbFlipX        X axis flipping
@@ -7825,8 +8051,8 @@ orxSTATUS orxFASTCALL orxObject_SetFlip(orxOBJECT *_pstObject, orxBOOL _bFlipX, 
  */
 orxSTATUS orxFASTCALL orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)
 {
-  orxFRAME *pstFrame;
-  orxSTATUS eResult;
+  orxGRAPHIC *pstGraphic;
+  orxSTATUS   eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -7834,18 +8060,14 @@ orxSTATUS orxFASTCALL orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_p
   orxASSERT(_pbFlipX != orxNULL);
   orxASSERT(_pbFlipY != orxNULL);
 
-  /* Gets its frame */
-  pstFrame = orxOBJECT_GET_STRUCTURE(_pstObject, FRAME);
+  /* Gets graphic */
+  pstGraphic = orxOBJECT_GET_STRUCTURE(_pstObject, GRAPHIC);
 
   /* Valid? */
-  if(pstFrame != orxNULL)
+  if(pstGraphic != orxNULL)
   {
-    /* Updates flipping mode */
-    *_pbFlipX = orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_FLIP_X) ? orxTRUE : orxFALSE;
-    *_pbFlipY = orxStructure_TestFlags(pstFrame, orxFRAME_KU32_FLAG_FLIP_Y) ? orxTRUE : orxFALSE;
-
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+    /* Gets graphic flip */
+    eResult = orxGraphic_GetFlip(pstGraphic, _pbFlipX, _pbFlipY);
   }
   else
   {
@@ -7866,7 +8088,7 @@ orxSTATUS orxFASTCALL orxObject_GetFlip(const orxOBJECT *_pstObject, orxBOOL *_p
 orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR *_pvPivot)
 {
   orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxSTATUS   eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -7879,8 +8101,8 @@ orxSTATUS orxFASTCALL orxObject_SetPivot(orxOBJECT *_pstObject, const orxVECTOR 
   /* Valid? */
   if(pstGraphic != orxNULL)
   {
-    /* Sets object pivot */
-    orxGraphic_SetPivot(pstGraphic, _pvPivot);
+    /* Sets graphic pivot */
+    eResult = orxGraphic_SetPivot(pstGraphic, _pvPivot);
   }
   else
   {
@@ -7955,7 +8177,7 @@ orxSTATUS orxFASTCALL orxObject_SetRelativePivot(orxOBJECT *_pstObject, orxU32 _
 orxSTATUS orxFASTCALL orxObject_SetOrigin(orxOBJECT *_pstObject, const orxVECTOR *_pvOrigin)
 {
   orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxSTATUS   eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -7968,8 +8190,8 @@ orxSTATUS orxFASTCALL orxObject_SetOrigin(orxOBJECT *_pstObject, const orxVECTOR
   /* Valid? */
   if(pstGraphic != orxNULL)
   {
-    /* Sets object origin */
-    orxGraphic_SetOrigin(pstGraphic, _pvOrigin);
+    /* Sets graphic origin */
+    eResult = orxGraphic_SetOrigin(pstGraphic, _pvOrigin);
   }
   else
   {
@@ -7996,7 +8218,7 @@ orxSTATUS orxFASTCALL orxObject_SetOrigin(orxOBJECT *_pstObject, const orxVECTOR
 orxSTATUS orxFASTCALL orxObject_SetSize(orxOBJECT *_pstObject, const orxVECTOR *_pvSize)
 {
   orxGRAPHIC *pstGraphic;
-  orxSTATUS   eResult = orxSTATUS_SUCCESS;
+  orxSTATUS   eResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -8009,8 +8231,8 @@ orxSTATUS orxFASTCALL orxObject_SetSize(orxOBJECT *_pstObject, const orxVECTOR *
   /* Valid? */
   if(pstGraphic != orxNULL)
   {
-    /* Sets object size */
-    orxGraphic_SetSize(pstGraphic, _pvSize);
+    /* Sets graphic size */
+    eResult = orxGraphic_SetSize(pstGraphic, _pvSize);
   }
   else
   {
@@ -8047,7 +8269,7 @@ orxVECTOR *orxFASTCALL orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR
   if(pstGraphic != orxNULL)
   {
     /* Gets its pivot */
-     pvResult = orxGraphic_GetPivot(pstGraphic, _pvPivot);
+    pvResult = orxGraphic_GetPivot(pstGraphic, _pvPivot);
   }
   else
   {
@@ -8119,6 +8341,28 @@ orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR 
   {
     /* Gets its size */
     pvResult = orxGraphic_GetSize(pstGraphic, _pvSize);
+
+    /* Depending on orientation */
+    switch(orxGraphic_GetOrientation(pstGraphic))
+    {
+      case orxDISPLAY_ORIENTATION_LEFT:
+      case orxDISPLAY_ORIENTATION_RIGHT:
+      {
+        orxFLOAT fTemp;
+
+        /* Swap values */
+        fTemp       = _pvSize->fX;
+        _pvSize->fX = _pvSize->fY;
+        _pvSize->fY = fTemp;
+
+        break;
+      }
+
+      default:
+      {
+        break;
+      }
+    }
   }
   else
   {
@@ -9116,11 +9360,13 @@ orxSTRUCTURE *orxFASTCALL orxObject_GetNextChild(const orxOBJECT *_pstObject, vo
  * Note: this function will filter out any camera or spawner and retrieve the child matching the provided path.
  * Paths are composed by object names separated by '.'.
  * A wildcard can be used `*` instead of a name to find children at any depth inside the hierarchy, using depth-first search.
+ * If a name is prefixed by '@', then the name will be tested against all the config ancestry of the object's name, in addition to object's name itself.
  * Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there.
  * For example:
  * @code
  * orxObject_FindChild(pstObject, "Higher.Lower"); will find the first child named Lower of the first child named Higher of pstObject
  * orxObject_FindChild(pstObject, "Higher.*.Deep"); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject
+ * orxObject_FindOwnedChild(pstObject, "*.@Parent"); will find the first child (depth-first search) of pstObject which is either named Parent or has Parent in its config ancestry
  * orxObject_FindChild(pstObject, "*.Other[2]"); will find the third object named Other at any depth under pstObject (depth-first search)
  * orxObject_FindChild(pstObject, "Higher.[1]"); will find the second child (no matter its name) of the first child named Higher of pstObject
  * @endcode
@@ -9527,54 +9773,53 @@ orxSTATUS orxFASTCALL orxObject_LogParents(const orxOBJECT *_pstObject)
  */
 orxSTATUS orxFASTCALL orxObject_SetAnimSet(orxOBJECT *_pstObject, orxANIMSET *_pstAnimSet)
 {
-  orxSTATUS eResult;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Has animation set? */
-  if(_pstAnimSet != orxNULL)
+  /* Is animpointer module initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_ANIMPOINTER) != orxFALSE)
   {
-    orxANIMPOINTER *pstAnimPointer;
-
-    /* Creates animation pointer from animation set */
-    pstAnimPointer = orxAnimPointer_Create(_pstAnimSet);
-
-    /* Valid? */
-    if(pstAnimPointer != orxNULL)
+    /* Has animation set? */
+    if(_pstAnimSet != orxNULL)
     {
-      /* Links it to the object */
-      eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstAnimPointer));
+      orxANIMPOINTER *pstAnimPointer;
 
-      /* Success? */
-      if(eResult != orxSTATUS_FAILURE)
-      {
-        /* Updates status */
-        orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_ANIMPOINTER, orxOBJECT_KU32_FLAG_NONE);
+      /* Creates animation pointer from animation set */
+      pstAnimPointer = orxAnimPointer_Create(_pstAnimSet);
 
-        /* Updates its owner */
-        orxStructure_SetOwner(pstAnimPointer, _pstObject);
-      }
-      else
+      /* Valid? */
+      if(pstAnimPointer != orxNULL)
       {
-        /* Deletes it */
-        orxAnimPointer_Delete(pstAnimPointer);
+        /* Links it to the object */
+        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstAnimPointer));
+
+        /* Success? */
+        if(eResult != orxSTATUS_FAILURE)
+        {
+          /* Updates status */
+          orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_ANIMPOINTER, orxOBJECT_KU32_FLAG_NONE);
+
+          /* Updates its owner */
+          orxStructure_SetOwner(pstAnimPointer, _pstObject);
+        }
+        else
+        {
+          /* Deletes it */
+          orxAnimPointer_Delete(pstAnimPointer);
+        }
       }
     }
     else
     {
-      /* Updates result */
-      eResult = orxSTATUS_FAILURE;
-    }
-  }
-  else
-  {
-    /* Unlinks animation pointer */
-    orxObject_UnlinkStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER);
+      /* Unlinks animation pointer */
+      orxObject_UnlinkStructure(_pstObject, orxSTRUCTURE_ID_ANIMPOINTER);
 
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
   }
 
   /* Done! */
@@ -10929,49 +11174,53 @@ orxSTATUS orxFASTCALL orxObject_AddSound(orxOBJECT *_pstObject, const orxSTRING 
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT((_zSoundConfigID != orxNULL) && (*_zSoundConfigID != orxCHAR_NULL));
 
-  /* Is object active? */
-  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  /* Is soundpointer module initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_SOUNDPOINTER) != orxFALSE)
   {
-    orxSOUNDPOINTER *pstSoundPointer;
-
-    /* Gets its SoundPointer */
-    pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
-
-    /* Doesn't exist? */
-    if(pstSoundPointer == orxNULL)
+    /* Is object active? */
+    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
     {
-      /* Creates one */
-      pstSoundPointer = orxSoundPointer_Create();
+      orxSOUNDPOINTER *pstSoundPointer;
 
-      /* Valid? */
-      if(pstSoundPointer != orxNULL)
+      /* Gets its SoundPointer */
+      pstSoundPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SOUNDPOINTER);
+
+      /* Doesn't exist? */
+      if(pstSoundPointer == orxNULL)
       {
-        /* Links it */
-        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstSoundPointer));
+        /* Creates one */
+        pstSoundPointer = orxSoundPointer_Create();
 
         /* Valid? */
-        if(eResult != orxSTATUS_FAILURE)
+        if(pstSoundPointer != orxNULL)
         {
-          /* Updates status */
-          orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_SOUNDPOINTER, orxOBJECT_KU32_FLAG_NONE);
+          /* Links it */
+          eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstSoundPointer));
 
-          /* Updates its owner */
-          orxStructure_SetOwner(pstSoundPointer, _pstObject);
+          /* Valid? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            /* Updates status */
+            orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_SOUNDPOINTER, orxOBJECT_KU32_FLAG_NONE);
 
-          /* Adds sound from config */
-          eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
-        }
-        else
-        {
-          /* Deletes it */
-          orxSoundPointer_Delete(pstSoundPointer);
+            /* Updates its owner */
+            orxStructure_SetOwner(pstSoundPointer, _pstObject);
+
+            /* Adds sound from config */
+            eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+          }
+          else
+          {
+            /* Deletes it */
+            orxSoundPointer_Delete(pstSoundPointer);
+          }
         }
       }
-    }
-    else
-    {
-      /* Adds sound from config */
-      eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+      else
+      {
+        /* Adds sound from config */
+        eResult = orxSoundPointer_AddSoundFromConfig(pstSoundPointer, _zSoundConfigID);
+      }
     }
   }
 
@@ -11283,63 +11532,93 @@ orxSTATUS orxFASTCALL orxObject_RemoveAllFilters(orxOBJECT *_pstObject)
   return eResult;
 }
 
-/** Adds a shader to an object using its config ID.
+/** Sets the shader of an object.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID)
+orxSTATUS orxFASTCALL orxObject_SetShader(orxOBJECT *_pstObject, orxSHADER *_pstShader)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Checks */
+  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstObject);
+
+  /* Removes old one */
+  orxObject_UnlinkStructure(_pstObject, orxSTRUCTURE_ID_SHADER);
+
+  /* Has new one? */
+  if(_pstShader != orxNULL)
+  {
+    /* Links it */
+    eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(_pstShader));
+  }
+
+  /* Done! */
+  return eResult;
+}
+
+/** Sets the shader of an object and its owned children.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _pstShader        Shader to set, orxNULL to remove the current one
+ */
+orxOBJECT_MAKE_RECURSIVE(SetShader, orxSHADER *);
+
+/** Sets the shader of an object using its config ID.
+ * @param[in]   _pstObject        Concerned object
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxObject_SetShaderFromConfig(orxOBJECT *_pstObject, const orxSTRING _zShaderID)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zShaderConfigID != orxNULL) && (*_zShaderConfigID != orxCHAR_NULL));
 
-  /* Is object active? */
-  if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
+  /* Is shader module initialized? */
+  if(orxModule_IsInitialized(orxMODULE_ID_SHADER) != orxFALSE)
   {
-    orxSHADERPOINTER *pstShaderPointer;
-
-    /* Gets its ShaderPointer */
-    pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
-
-    /* Doesn't exist? */
-    if(pstShaderPointer == orxNULL)
+    /* Is object active? */
+    if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
     {
-      /* Creates one */
-      pstShaderPointer = orxShaderPointer_Create();
-
-      /* Valid? */
-      if(pstShaderPointer != orxNULL)
+      /* New shader? */
+      if((_zShaderID != orxNULL) && (*_zShaderID != orxCHAR_NULL))
       {
-        /* Links it */
-        eResult = orxObject_LinkStructure(_pstObject, orxSTRUCTURE(pstShaderPointer));
+        orxSHADER *pstShader;
 
-        /* Valid? */
-        if(eResult != orxSTATUS_FAILURE)
+        /* Creates it */
+        pstShader = orxShader_CreateFromConfig(_zShaderID);
+
+        /* Success? */
+        if(pstShader != orxNULL)
         {
-          /* Updates status */
-          orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_SHADERPOINTER, orxOBJECT_KU32_FLAG_NONE);
+          /* Sets it */
+          eResult = orxObject_SetShader(_pstObject, pstShader);
 
-          /* Updates its owner */
-          orxStructure_SetOwner(pstShaderPointer, _pstObject);
+          /* Success? */
+          if(eResult != orxSTATUS_FAILURE)
+          {
+            /* Updates its owner */
+            orxStructure_SetOwner(pstShader, _pstObject);
 
-          /* Adds shader from config */
-          eResult = orxShaderPointer_AddShaderFromConfig(pstShaderPointer, _zShaderConfigID);
-        }
-        else
-        {
-          /* Deletes it */
-          orxShaderPointer_Delete(pstShaderPointer);
+            /* Updates status */
+            orxStructure_SetFlags(_pstObject, 1 << orxSTRUCTURE_ID_SHADER, orxOBJECT_KU32_FLAG_NONE);
+          }
+          else
+          {
+            /* Deletes it */
+            orxShader_Delete(pstShader);
+          }
         }
       }
-    }
-    else
-    {
-      /* Adds shader from config */
-      eResult = orxShaderPointer_AddShaderFromConfig(pstShaderPointer, _zShaderConfigID);
+      else
+      {
+        /* Removes previous shader */
+        eResult = orxObject_SetShader(_pstObject, orxNULL);
+      }
     }
   }
 
@@ -11347,45 +11626,30 @@ orxSTATUS orxFASTCALL orxObject_AddShader(orxOBJECT *_pstObject, const orxSTRING
   return eResult;
 }
 
-/** Adds a shader to an object and its owned children.
+/** Sets the shader of an object and its owned children.
  * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to add
+ * @param[in]   _zShaderID        Config ID of the shader to set, orxNULL to remove the current one
  */
-orxOBJECT_MAKE_RECURSIVE(AddShader, const orxSTRING);
+orxOBJECT_MAKE_RECURSIVE(SetShaderFromConfig, const orxSTRING);
 
-/** Removes a shader using its config ID.
- * @param[in]   _pstObject      Concerned object
- * @param[in]   _zShaderConfigID Config ID of the shader to remove
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+/** Gets the shader of an object.
+ * @param[in]   _pstObject        Concerned object
+ * @return      orxSTRING / orx
  */
-orxSTATUS orxFASTCALL orxObject_RemoveShader(orxOBJECT *_pstObject, const orxSTRING _zShaderConfigID)
+const orxSHADER *orxFASTCALL orxObject_GetShader(const orxOBJECT *_pstObject)
 {
-  orxSHADERPOINTER *pstShaderPointer;
-  orxSTATUS         eResult = orxSTATUS_FAILURE;
+  const orxSHADER *pstResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets its ShaderPointer */
-  pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
-
-  /* Valid? */
-  if(pstShaderPointer != orxNULL)
-  {
-    /* Removes shader from config */
-    eResult = orxShaderPointer_RemoveShaderFromConfig(pstShaderPointer, _zShaderConfigID);
-  }
+  /* Updates result */
+  pstResult = orxOBJECT_GET_STRUCTURE(_pstObject, SHADER);
 
   /* Done! */
-  return eResult;
+  return pstResult;
 }
-
-/** Removes a shader from an object and its owned children.
- * @param[in]   _pstObject        Concerned object
- * @param[in]   _zShaderConfigID  Config ID of the shader to remove
- */
-orxOBJECT_MAKE_RECURSIVE(RemoveShader, const orxSTRING);
 
 /** Enables an object's shader.
  * @param[in]   _pstObject        Concerned object
@@ -11393,20 +11657,20 @@ orxOBJECT_MAKE_RECURSIVE(RemoveShader, const orxSTRING);
  */
 void orxFASTCALL orxObject_EnableShader(orxOBJECT *_pstObject, orxBOOL _bEnable)
 {
-  orxSHADERPOINTER *pstShaderPointer;
+  orxSHADER *pstShader;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets its ShaderPointer */
-  pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
+  /* Gets its shader */
+  pstShader = orxOBJECT_GET_STRUCTURE(_pstObject, SHADER);
 
   /* Valid? */
-  if(pstShaderPointer != orxNULL)
+  if(pstShader != orxNULL)
   {
     /* Enables it */
-    orxShaderPointer_Enable(pstShaderPointer, _bEnable);
+    orxShader_Enable(pstShader, _bEnable);
   }
 
   /* Done! */
@@ -11419,21 +11683,21 @@ void orxFASTCALL orxObject_EnableShader(orxOBJECT *_pstObject, orxBOOL _bEnable)
  */
 orxBOOL orxFASTCALL orxObject_IsShaderEnabled(const orxOBJECT *_pstObject)
 {
-  orxSHADERPOINTER *pstShaderPointer;
-  orxBOOL           bResult;
+  orxSHADER  *pstShader;
+  orxBOOL     bResult;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
 
-  /* Gets its ShaderPointer */
-  pstShaderPointer = orxOBJECT_GET_STRUCTURE(_pstObject, SHADERPOINTER);
+  /* Gets its shader */
+  pstShader = orxOBJECT_GET_STRUCTURE(_pstObject, SHADER);
 
   /* Valid? */
-  if(pstShaderPointer != orxNULL)
+  if(pstShader != orxNULL)
   {
     /* Updates result */
-    bResult = orxShaderPointer_IsEnabled(pstShaderPointer);
+    bResult = orxShader_IsEnabled(pstShader);
   }
   else
   {
@@ -11712,14 +11976,14 @@ orxSTATUS orxFASTCALL orxObject_RemoveTrigger(orxOBJECT *_pstObject, const orxST
  */
 orxOBJECT_MAKE_RECURSIVE(RemoveTrigger, const orxSTRING);
 
-/** Fire an object's trigger.
+/** Fires an object's trigger.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count         Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
+orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -11727,7 +11991,7 @@ orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRI
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT((_zEvent != orxNULL) && (_zEvent != orxSTRING_EMPTY));
-  orxASSERT((_u32Size == 0) || (_azRefinementList != orxNULL));
+  orxASSERT((_u32Count == 0) || (_azRefinementList != orxNULL));
 
   /* Is object active? */
   if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
@@ -11741,7 +12005,7 @@ orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRI
     if(pstTrigger != orxNULL)
     {
       /* Fires it */
-      eResult = orxTrigger_Fire(pstTrigger, _zEvent, _azRefinementList, _u32Size);
+      eResult = orxTrigger_Fire(pstTrigger, _zEvent, _azRefinementList, _u32Count);
     }
   }
 
@@ -11749,14 +12013,14 @@ orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRI
   return eResult;
 }
 
-/** Fire a trigger on an object and its owned children.
+/** Fires a trigger on an object and its owned children.
  * @param[in]   _pstObject        Concerned object
  * @param[in]   _zEvent           Event to fire
- * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size          Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count         Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
+void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count)
 {
   orxOBJECT *pstChild;
 
@@ -11764,10 +12028,10 @@ void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orx
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
   orxASSERT((_zEvent != orxNULL) && (_zEvent != orxSTRING_EMPTY));
-  orxASSERT((_u32Size == 0) || (_azRefinementList != orxNULL));
+  orxASSERT((_u32Count == 0) || (_azRefinementList != orxNULL));
 
   /* Fires trigger */
-  orxObject_FireTrigger(_pstObject, _zEvent, _azRefinementList, _u32Size);
+  orxObject_FireTrigger(_pstObject, _zEvent, _azRefinementList, _u32Count);
 
   /* For all its owned children */
   for(pstChild = orxObject_GetOwnedChild(_pstObject);
@@ -11775,7 +12039,7 @@ void orxFASTCALL orxObject_FireTriggerRecursive(orxOBJECT *_pstObject, const orx
       pstChild = orxObject_GetOwnedSibling(pstChild))
   {
     /* Fires its trigger */
-    orxObject_FireTrigger(pstChild, _zEvent, _azRefinementList, _u32Size);
+    orxObject_FireTriggerRecursive(pstChild, _zEvent, _azRefinementList, _u32Count);
   }
 
   /* Done! */
@@ -11801,105 +12065,57 @@ const orxSTRING orxFASTCALL orxObject_GetName(const orxOBJECT *_pstObject)
   return zResult;
 }
 
-/** Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box).
- * The following is an example for iterating over a neighbor list:
- * @code
- * orxVECTOR vPosition; // The world position of the neighborhood area
- * // set_position(vPosition);
- * orxVECTOR vSize; // The size of the neighborhood area
- * // set_size(vSize);
- * orxVECTOR vPivot; // The pivot of the neighborhood area
- * // set_pivot(vPivot);
- *
- * orxOBOX stBox;
- * orxOBox_2DSet(&stBox, &vPosition, &vPivot, &vSize, 0);
- *
- * orxBANK * pstBank = orxObject_CreateNeighborList(&stBox, orxU32_UNDEFINED);
- * if(pstBank) {
- *     for(int i=0; i < orxBank_GetCount(pstBank); ++i)
- *     {
- *         orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));
- *         do_something_with(pstObject);
- *     }
- *     orxObject_DeleteNeighborList(pstBank);
- * }
- * @endcode
- * @param[in]   _pstCheckBox    Box to check intersection with
+/** Runs a callback for all neighboring objects (ie. whose bounding volume intersects this box).
+ * @param[in]   _pfnNeighborCallback Function to run for each neighbor. If this function returns orxFALSE, no other neighbor will be processed (ie. early exit)
+ * @param[in]   _pstCheckBox    Box to check intersection with, orxNULL for all objects
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
- * @return      orxBANK / orxNULL
+ * @param[in]   _bEnabled       Only consider enabled objects if set to orxTRUE, consider all objects otherwise
+ * @param[in]   _pContext       User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS if all neighbors were processed without interruption, orxSTATUS_FAILURE otherwise
  */
-orxBANK *orxFASTCALL orxObject_CreateNeighborList(const orxOBOX *_pstCheckBox, orxSTRINGID _stGroupID)
+orxSTATUS orxFASTCALL orxObject_ForAllNeighbors(const orxOBJECT_NEIGHBOR_FUNCTION _pfnNeighborCallback, const orxOBOX *_pstCheckBox, orxSTRINGID _stGroupID, orxBOOL _bEnabled, void *_pContext)
 {
-  orxOBOX    stObjectBox;
-  orxOBJECT  *pstObject;
-  orxBANK    *pstResult;
+  orxOBJECT *(orxFASTCALL  *pfnGet)(const orxOBJECT *_pstObject, orxSTRINGID _stGroupID);
+  orxOBJECT                *pstObject;
+  orxSTATUS                 eResult = orxSTATUS_SUCCESS;
+
+  /* Profiles */
+  orxPROFILER_PUSH_MARKER("orxObject_ForAllNeighbors");
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-  orxASSERT(_pstCheckBox != orxNULL);
+  orxASSERT(_pfnNeighborCallback != orxNULL);
 
-  /* Creates bank */
-  pstResult = orxBank_Create(orxOBJECT_KU32_NEIGHBOR_LIST_SIZE, sizeof(orxOBJECT *), orxBANK_KU32_FLAG_NOT_EXPANDABLE, orxMEMORY_TYPE_TEMP);
+  /* Selects get function */
+  pfnGet = (_bEnabled != orxFALSE) ? orxObject_GetNextEnabled : orxObject_GetNext;
 
-  /* Valid? */
-  if(pstResult != orxNULL)
+  /* For all objects */
+  for(pstObject = pfnGet(orxNULL, _stGroupID);
+      pstObject != orxNULL;
+      pstObject = pfnGet(pstObject, _stGroupID))
   {
-    orxU32 u32Count;
+    orxOBOX stObjectBox;
 
-    /* For all objects */
-    for(u32Count = 0, pstObject = orxObject_GetNext(orxNULL, _stGroupID);
-        (u32Count < orxOBJECT_KU32_NEIGHBOR_LIST_SIZE) && (pstObject != orxNULL);
-        pstObject = orxObject_GetNext(pstObject, _stGroupID))
+    /* No box or is intersecting? */
+    if((_pstCheckBox == orxNULL)
+    || ((orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+     && (orxOBox_ZAlignedTestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)))
     {
-      /* Gets its bounding box */
-      if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+      /* Runs callback */
+      if(_pfnNeighborCallback(pstObject, _pContext) == orxFALSE)
       {
-        /* Is intersecting? */
-        if(orxOBox_ZAlignedTestIntersection(_pstCheckBox, &stObjectBox) != orxFALSE)
-        {
-          orxOBJECT **ppstObject;
-
-          /* Creates a new cell */
-          ppstObject = (orxOBJECT **)orxBank_Allocate(pstResult);
-
-          /* Valid? */
-          if(ppstObject != orxNULL)
-          {
-            /* Adds object */
-            *ppstObject = pstObject;
-
-            /* Updates count */
-            u32Count++;
-          }
-          else
-          {
-            /* Logs message */
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to allocate new object neighbor cell.");
-            break;
-          }
-        }
+        /* Updates result */
+        eResult = orxSTATUS_FAILURE;
+        break;
       }
     }
   }
 
+  /* Profiles */
+  orxPROFILER_POP_MARKER();
+
   /* Done! */
-  return pstResult;
-}
-
-/** Deletes an object list created with orxObject_CreateNeigborList.
- * @param[in]   _astObjectList  Concerned object list
- */
-void orxFASTCALL orxObject_DeleteNeighborList(orxBANK *_pstObjectList)
-{
-  /* Checks */
-  orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
-
-  /* Non null? */
-  if(_pstObjectList != orxNULL)
-  {
-    /* Deletes it */
-    orxBank_Delete(_pstObjectList);
-  }
+  return eResult;
 }
 
 /** Sets object smoothing.
@@ -13043,8 +13259,7 @@ orxOBJECT *orxFASTCALL orxObject_GetNextEnabled(const orxOBJECT *_pstObject, orx
 }
 
 /** Picks the first active object with size "under" the given position, within a given group. See
- * orxObject_BoxPick(), orxObject_CreateNeighborList() and orxObject_Raycast for other ways of picking
- * objects.
+ * orxObject_BoxPick(), orxObject_ForAllNeighbors() and orxObject_Raycast() for other ways of picking objects.
  * @param[in]   _pvPosition     Position to pick from
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
@@ -13059,38 +13274,34 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID 
   orxASSERT(_pvPosition != orxNULL);
 
   /* For all objects */
-  for(pstObject = orxObject_GetNext(orxNULL, _stGroupID), fSelectedZ = _pvPosition->fZ;
+  for(pstObject = orxObject_GetNextEnabled(orxNULL, _stGroupID), fSelectedZ = _pvPosition->fZ;
       pstObject != orxNULL;
-      pstObject = orxObject_GetNext(pstObject, _stGroupID))
+      pstObject = orxObject_GetNextEnabled(pstObject, _stGroupID))
   {
-    /* Is enabled? */
-    if(orxObject_IsEnabled(pstObject) != orxFALSE)
+    orxVECTOR vObjectPos;
+
+    /* Gets object position */
+    if(orxObject_GetWorldPosition(pstObject, &vObjectPos) != orxNULL)
     {
-      orxVECTOR vObjectPos;
-
-      /* Gets object position */
-      if(orxObject_GetWorldPosition(pstObject, &vObjectPos) != orxNULL)
+      /* Is under position? */
+      if(vObjectPos.fZ >= _pvPosition->fZ)
       {
-        /* Is under position? */
-        if(vObjectPos.fZ >= _pvPosition->fZ)
+        /* No selection or above it? */
+        if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
         {
-          /* No selection or above it? */
-          if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
+          orxOBOX stObjectBox;
+
+          /* Gets its bounding box */
+          if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
           {
-            orxOBOX stObjectBox;
-
-            /* Gets its bounding box */
-            if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+            /* Is position in 2D box? */
+            if(orxOBox_2DIsInside(&stObjectBox, _pvPosition) != orxFALSE)
             {
-              /* Is position in 2D box? */
-              if(orxOBox_2DIsInside(&stObjectBox, _pvPosition) != orxFALSE)
-              {
-                /* Updates result */
-                pstResult = pstObject;
+              /* Updates result */
+              pstResult = pstObject;
 
-                /* Updates selected position */
-                fSelectedZ = vObjectPos.fZ;
-              }
+              /* Updates selected position */
+              fSelectedZ = vObjectPos.fZ;
             }
           }
         }
@@ -13103,7 +13314,7 @@ orxOBJECT *orxFASTCALL orxObject_Pick(const orxVECTOR *_pvPosition, orxSTRINGID 
 }
 
 /** Picks the first active object with size in contact with the given box, withing a given group. Use
- * orxObject_CreateNeighborList() to get all the objects in the box.
+ * orxObject_ForAllNeighbors() to access all the objects in the box.
  * @param[in]   _pstBox         Box to use for picking
  * @param[in]   _stGroupID      Group ID to consider, orxSTRINGID_UNDEFINED for all
  * @return      orxOBJECT / orxNULL
@@ -13118,35 +13329,31 @@ orxOBJECT *orxFASTCALL orxObject_BoxPick(const orxOBOX *_pstBox, orxSTRINGID _st
   orxASSERT(_pstBox != orxNULL);
 
   /* For all objects */
-  for(pstObject = orxObject_GetNext(orxNULL, _stGroupID), fSelectedZ = _pstBox->vPosition.fZ;
+  for(pstObject = orxObject_GetNextEnabled(orxNULL, _stGroupID), fSelectedZ = _pstBox->vPosition.fZ;
       pstObject != orxNULL;
-      pstObject = orxObject_GetNext(pstObject, _stGroupID))
+      pstObject = orxObject_GetNextEnabled(pstObject, _stGroupID))
   {
-    /* Is enabled? */
-    if(orxObject_IsEnabled(pstObject) != orxFALSE)
+    orxVECTOR vObjectPos;
+
+    /* Gets object position */
+    if(orxObject_GetWorldPosition(pstObject, &vObjectPos) != orxNULL)
     {
-      orxVECTOR vObjectPos;
-
-      /* Gets object position */
-      if(orxObject_GetWorldPosition(pstObject, &vObjectPos) != orxNULL)
+      /* No selection or above it? */
+      if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
       {
-        /* No selection or above it? */
-        if((pstResult == orxNULL) || (vObjectPos.fZ <= fSelectedZ))
+        orxOBOX stObjectBox;
+
+        /* Gets its bounding box */
+        if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
         {
-          orxOBOX stObjectBox;
-
-          /* Gets its bounding box */
-          if(orxObject_GetBoundingBox(pstObject, &stObjectBox) != orxNULL)
+          /* Does it intersect with box? */
+          if(orxOBox_ZAlignedTestIntersection(_pstBox, &stObjectBox) != orxFALSE)
           {
-            /* Does it intersect with box? */
-            if(orxOBox_ZAlignedTestIntersection(_pstBox, &stObjectBox) != orxFALSE)
-            {
-              /* Updates result */
-              pstResult = pstObject;
+            /* Updates result */
+            pstResult = pstObject;
 
-              /* Updates selected position */
-              fSelectedZ = vObjectPos.fZ;
-            }
+            /* Updates selected position */
+            fSelectedZ = vObjectPos.fZ;
           }
         }
       }

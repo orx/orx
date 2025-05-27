@@ -1,7 +1,8 @@
 var orx_spawner_8h =
 [
     [ "orxSPAWNER_KU32_FLAG_AUTO_DELETE", "group__orx_spawner.html#gae85d9762c0af0efefd9371c8bf81f6af", null ],
-    [ "orxSPAWNER_KU32_FLAG_AUTO_RESET", "group__orx_spawner.html#ga9787936032dc7d434c0011c995c6873b", null ],
+    [ "orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT", "group__orx_spawner.html#gaad5ab57006a7302904a0c1985ce11fd1", null ],
+    [ "orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY", "group__orx_spawner.html#ga0bad409dc049f37bad2f4da2fca1b606", null ],
     [ "orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE", "group__orx_spawner.html#gae94f7631defe7e169359fba6c27bab93", null ],
     [ "orxSPAWNER_KU32_FLAG_INTERPOLATE", "group__orx_spawner.html#ga1fcde744796769d444210e53ccdf61c0", null ],
     [ "orxSPAWNER_KU32_FLAG_NONE", "group__orx_spawner.html#ga7539c41c2c9e9b50e49e9198f65ddaac", null ],
@@ -12,6 +13,7 @@ var orx_spawner_8h =
     [ "orxSPAWNER_KU32_FLAG_USE_ROTATION", "group__orx_spawner.html#ga7bb5fe4f7f77736d728ae4aa94d44355", null ],
     [ "orxSPAWNER_KU32_FLAG_USE_SCALE", "group__orx_spawner.html#gacc4c15ae87339a10834da009dc85bb1a", null ],
     [ "orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT", "group__orx_spawner.html#ga9dac3f048e3fd9117d296f24f281b88b", null ],
+    [ "orxSPAWNER_KU32_MASK_AUTO_RESET", "group__orx_spawner.html#gaf91385eaf94557e181a0769f4564f3c8", null ],
     [ "orxSPAWNER_KU32_MASK_USE_RELATIVE_SPEED", "group__orx_spawner.html#ga28c2d3014307a6cb37a1080691ab1224", null ],
     [ "orxSPAWNER_KU32_MASK_USER_ALL", "group__orx_spawner.html#ga26db6b62deb1e9d00aa7033ce157c4aa", null ],
     [ "orxSPAWNER", "group__orx_spawner.html#ga92079497160c92dff118837b22c0ea31", null ],
@@ -50,7 +52,7 @@ var orx_spawner_8h =
     [ "orxSpawner_GetWorldScale", "group__orx_spawner.html#ga56edd656547321c9cbb37152a4fa224b", null ],
     [ "orxSpawner_Init", "group__orx_spawner.html#gaff800cd8cb86a34956293b1288f5f24e", null ],
     [ "orxSpawner_IsEnabled", "group__orx_spawner.html#ga64d22cba58280cc097133aaaec19ea57", null ],
-    [ "orxSpawner_Reset", "group__orx_spawner.html#ga94e4e78d9003e0d5f140230552953c95", null ],
+    [ "orxSpawner_Reset", "group__orx_spawner.html#ga1494acbfa1b12c3d55a54f06a5caebd0", null ],
     [ "orxSpawner_SetActiveObjectLimit", "group__orx_spawner.html#ga447ab00a10c978925eaed817af28cddf", null ],
     [ "orxSpawner_SetNextWaveDelay", "group__orx_spawner.html#ga26ae6b63a8db49505069447a50c0b26c", null ],
     [ "orxSpawner_SetObjectSpeed", "group__orx_spawner.html#ga56689aca0a6e07e4190e8b81804035ab", null ],

@@ -1,8 +1,6 @@
 var group__orx_frame =
 [
     [ "orxFRAME_KU32_FLAG_DEPTH_SCALE", "group__orx_frame.html#ga4f209742a45e5d6866ac60ab74857c90", null ],
-    [ "orxFRAME_KU32_FLAG_FLIP_X", "group__orx_frame.html#ga4ba8fc4ce9e8e72961401741bda7cef1", null ],
-    [ "orxFRAME_KU32_FLAG_FLIP_Y", "group__orx_frame.html#ga6719372aeb79ba435667135a237f27a7", null ],
     [ "orxFRAME_KU32_FLAG_IGNORE_NONE", "group__orx_frame.html#gac305e84be5aed831b3331f4d543aa98c", null ],
     [ "orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_X", "group__orx_frame.html#gae1cd0ffa3ce592ac6134489df030462b", null ],
     [ "orxFRAME_KU32_FLAG_IGNORE_POSITION_POSITION_Y", "group__orx_frame.html#ga817f22b54c1101aa683628e05f066769", null ],
@@ -18,7 +16,6 @@ var group__orx_frame =
     [ "orxFRAME_KU32_FLAG_NONE", "group__orx_frame.html#gaabb00af267ab23481900f90ff84b2673", null ],
     [ "orxFRAME_KU32_FLAG_SCROLL_X", "group__orx_frame.html#gac337433335ea7ba593cbc1f21b21ed94", null ],
     [ "orxFRAME_KU32_FLAG_SCROLL_Y", "group__orx_frame.html#ga89b6bc7f7eb8f2ffeec57a55d37c9939", null ],
-    [ "orxFRAME_KU32_MASK_FLIP_BOTH", "group__orx_frame.html#gafefc9d46ee49c6126639f0cd28ab54ec", null ],
     [ "orxFRAME_KU32_MASK_IGNORE_ALL", "group__orx_frame.html#ga58a80f966add465a1f892560a569ffd9", null ],
     [ "orxFRAME_KU32_MASK_IGNORE_POSITION", "group__orx_frame.html#ga6d4e653daf6e48b2ef6b3545ff76d16b", null ],
     [ "orxFRAME_KU32_MASK_IGNORE_POSITION_POSITION", "group__orx_frame.html#gaf5f6ffe16bc1e0abc218d8b94122d7cc", null ],

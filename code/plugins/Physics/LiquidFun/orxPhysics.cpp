@@ -57,12 +57,6 @@
 
 #endif /* __orxGCC__ */
 
-#ifndef alloca
-
-  #define alloca(x) __builtin_alloca((x))
-
-#endif
-
 #endif /* __orxWINDOWS__ && !__orxMSVC__ */
 
 
@@ -467,7 +461,7 @@ void orxPhysicsDebugDraw::DrawPolygon(const b2Vec2 *_avVertexList, int32 _s32Ver
       {
         orxAABOX    stFrustum;
         orxVECTOR   vCameraPosition;
-        orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+        orxVECTOR  *avVertexList = (orxVECTOR *)orxMemory_StackAllocate(_s32VertexNumber * sizeof(orxVECTOR));
         orxCOLOR    stColor;
         orxFLOAT    fZ;
         orxS32      i;
@@ -530,7 +524,7 @@ void orxPhysicsDebugDraw::DrawSolidPolygon(const b2Vec2 *_avVertexList, int32 _s
       {
         orxAABOX    stFrustum;
         orxVECTOR   vCameraPosition;
-        orxVECTOR  *avVertexList = (orxVECTOR *)alloca(_s32VertexNumber * sizeof(orxVECTOR));
+        orxVECTOR  *avVertexList = (orxVECTOR *)orxMemory_StackAllocate(_s32VertexNumber * sizeof(orxVECTOR));
         orxCOLOR    stColor;
         orxFLOAT    fZ;
         orxS32      i;
@@ -1449,6 +1443,7 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_DeleteBody(orxPHYSICS_BODY *_ps
   orxLinkList_Remove(&(_pstBody->stNode));
   orxBank_Free(sstPhysics.pstBodyBank, _pstBody);
 
+  /* Done! */
   return;
 }
 
@@ -1581,7 +1576,7 @@ extern "C" orxPHYSICS_BODY_PART *orxFASTCALL orxPhysics_LiquidFun_CreatePart(orx
   }
   else if(orxFLAG_TEST(_pstBodyPartDef->u32Flags, orxBODY_PART_DEF_KU32_FLAG_CHAIN))
   {
-    b2Vec2 *avVertexList = (b2Vec2 *)alloca(_pstBodyPartDef->stChain.u32VertexCount * sizeof(b2Vec2));
+    b2Vec2 *avVertexList = (b2Vec2 *)orxMemory_StackAllocate(_pstBodyPartDef->stChain.u32VertexCount * sizeof(b2Vec2));
     orxU32  i;
 
     /* Checks */
@@ -1666,6 +1661,7 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_DeletePart(orxPHYSICS_BODY_PART
   /* Deletes its part */
   poBody->DestroyFixture(poFixture);
 
+  /* Done! */
   return;
 }
 
@@ -2024,6 +2020,7 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_DeleteJoint(orxPHYSICS_BODY_JOI
   /* Deletes it */
   sstPhysics.poWorld->DestroyJoint((b2Joint *)_pstBodyJoint);
 
+  /* Done! */
   return;
 }
 
@@ -3466,6 +3463,9 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       orxCLOCK *pstClock;
       orxU32    u32IterationsPerStep;
 
+      /* Updates allow sleep status */
+      sstPhysics.poWorld->SetAllowSleeping((orxConfig_HasValue(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? ((orxConfig_GetBool(orxPHYSICS_KZ_CONFIG_ALLOW_SLEEP) != orxFALSE) ? true : false) : true);
+
       /* Creates listeners */
       sstPhysics.poContactListener = new orxPhysicsContactListener();
 
@@ -3505,20 +3505,21 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
       /* Valid? */
       if(pstClock != orxNULL)
       {
-        /* Registers rendering function */
-        eResult = orxClock_Register(pstClock, orxPhysics_LiquidFun_Update, orxNULL, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
+        /* Creates event bank */
+        sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
-        /* Valid? */
-        if(eResult != orxSTATUS_FAILURE)
+        /* Creates body bank */
+        sstPhysics.pstBodyBank  = orxBank_Create(orxPhysics::su32BodyBankSize, sizeof(orxPHYSICS_BODY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+
+        /* Success? */
+        if((sstPhysics.pstEventBank != orxNULL)
+        && (sstPhysics.pstBodyBank != orxNULL))
         {
-          /* Creates event bank */
-          sstPhysics.pstEventBank = orxBank_Create(orxPhysics::su32MessageBankSize, sizeof(orxPHYSICS_EVENT_STORAGE), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+          /* Registers update function */
+          eResult = orxClock_Register(pstClock, orxPhysics_LiquidFun_Update, orxNULL, orxMODULE_ID_PHYSICS, orxCLOCK_PRIORITY_LOWER);
 
-          /* Creates body bank */
-          sstPhysics.pstBodyBank  = orxBank_Create(orxPhysics::su32BodyBankSize, sizeof(orxPHYSICS_BODY), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-
-          if((sstPhysics.pstEventBank != orxNULL)
-          && (sstPhysics.pstBodyBank != orxNULL))
+          /* Valid? */
+          if(eResult != orxSTATUS_FAILURE)
           {
 #ifdef orxPHYSICS_ENABLE_DEBUG_DRAW
 
@@ -3545,28 +3546,29 @@ extern "C" orxSTATUS orxFASTCALL orxPhysics_LiquidFun_Init()
           }
           else
           {
-            if(sstPhysics.pstEventBank != orxNULL)
-            {
-              orxBank_Delete(sstPhysics.pstEventBank);
-            }
-
-            if(sstPhysics.pstBodyBank != orxNULL)
-            {
-              orxBank_Delete(sstPhysics.pstBodyBank);
-            }
+            /* Deletes banks */
+            orxBank_Delete(sstPhysics.pstEventBank);
+            orxBank_Delete(sstPhysics.pstBodyBank);
 
             /* Deletes listeners */
             delete sstPhysics.poContactListener;
 
             /* Deletes world */
             delete sstPhysics.poWorld;
-
-            /* Updates result */
-            eResult = orxSTATUS_FAILURE;
           }
         }
         else
         {
+          /* Deletes banks */
+          if(sstPhysics.pstEventBank != orxNULL)
+          {
+            orxBank_Delete(sstPhysics.pstEventBank);
+          }
+          if(sstPhysics.pstBodyBank != orxNULL)
+          {
+            orxBank_Delete(sstPhysics.pstBodyBank);
+          }
+
           /* Deletes listeners */
           delete sstPhysics.poContactListener;
 
@@ -3640,6 +3642,7 @@ extern "C" void orxFASTCALL orxPhysics_LiquidFun_Exit()
     orxMemory_Zero(&sstPhysics, sizeof(orxPHYSICS_STATIC));
   }
 
+  /* Done! */
   return;
 }
 
@@ -3706,12 +3709,6 @@ orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_BoxPick, PHYSICS, BOX_PICK
 orxPLUGIN_USER_CORE_FUNCTION_ADD(orxPhysics_LiquidFun_EnableSimulation, PHYSICS, ENABLE_SIMULATION);
 orxPLUGIN_USER_CORE_FUNCTION_END();
 
-
-#if defined(__orxWINDOWS__) && !defined(__orxMSVC__)
-
-  #undef alloca
-
-#endif /* __orxWINDOWS__ && !__orxMSVC__ */
 
 #ifdef __orxMSVC__
 

@@ -162,25 +162,25 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't set font (%s) for text (%s).", zName, _pstText->zReference);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't set font (%s).", _pstText->zReference, zName);
 
         /* Sets default font */
-        orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
+        orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
       }
     }
     else
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't create font (%s) for text (%s).", zName, _pstText->zReference);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't create font (%s).", _pstText->zReference, zName);
 
       /* Sets default font */
-      orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
+      orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
     }
   }
   else
   {
     /* Sets default font */
-    orxText_SetFont(_pstText, orxFONT(orxFont_GetDefaultFont()));
+    orxText_SetFont(_pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
   }
 
   /* Gets its string */
@@ -278,7 +278,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
             else
             {
               /* Sets default font */
-              orxText_SetFont(pstText, orxFONT(orxFont_GetDefaultFont()));
+              orxText_SetFont(pstText, orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
             }
           }
         }
@@ -364,7 +364,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
 
       /* For all characters */
       for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstText->zString, &pc), fHeight = fCharacterHeight, fWidth = fMaxWidth = orxFLOAT_0;
-          u32CharacterCodePoint != orxCHAR_NULL;
+          (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
           u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
       {
         /* Depending on character */
@@ -417,7 +417,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
 
       /* For all characters */
       for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(_pstText->zString, (const orxCHAR **)&pc), fHeight = fCharacterHeight, fWidth = orxFLOAT_0, zLastSpace = orxNULL;
-          u32CharacterCodePoint != orxCHAR_NULL;
+          (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
           u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pc))
       {
         /* Depending on the character */
@@ -469,14 +469,13 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
 
           default:
           {
+            orxCHAR *pcNext;
+
             /* Finds end of word */
-            for(; (u32CharacterCodePoint != ' ') && (u32CharacterCodePoint != '\t') && (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL); u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pc))
+            for(pcNext = pc; (u32CharacterCodePoint != ' ') && (u32CharacterCodePoint != '\t') && (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL); pc = pcNext, u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, (const orxCHAR **)&pcNext))
             {
               fWidth += orxFont_GetCharacterWidth(_pstText->pstFont, u32CharacterCodePoint);
             }
-
-            /* Gets back to previous character */
-            pc--;
 
             break;
           }
@@ -516,7 +515,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
             *pc = orxCHAR_NULL;
             for(pcDebug = pc - 1; (pcDebug >= _pstText->zString) && (*pcDebug != ' ') && (*pcDebug != '\t') && (*pcDebug != orxCHAR_LF) && (*pcDebug != orxCHAR_CR); pcDebug--)
               ;
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Word <%s> is too long to fit inside the requested <%g> pixels!", (_pstText->zReference != orxNULL) ? _pstText->zReference : orxSTRING_EMPTY, pcDebug + 1, _pstText->fWidth);
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Word (%s) is too long to fit inside the requested (%g) pixels!", (_pstText->zReference != orxNULL) ? _pstText->zReference : orxSTRING_EMPTY, pcDebug + 1, _pstText->fWidth);
             *pc = cBackup;
           }
         }
@@ -753,7 +752,7 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
       if(orxText_ProcessConfigData(pstResult) == orxSTATUS_FAILURE)
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't process config data for text <%s>.", _zConfigID);
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't process config data.", _zConfigID);
 
         /* Deletes it */
         orxText_Delete(pstResult);
@@ -769,7 +768,7 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
   else
   {
     /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Couldn't find config section named (%s).", _zConfigID);
+    orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "[%s] Couldn't find config section.", _zConfigID);
 
     /* Updates result */
     pstResult = orxNULL;
@@ -958,7 +957,7 @@ orxSTATUS orxFASTCALL orxText_GetLineSize(const orxTEXT *_pstText, orxU32 _u32Li
 
         /* For all characters in the line */
         for(u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc), fWidth = orxFLOAT_0;
-            (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL);
+            (u32CharacterCodePoint != orxCHAR_CR) && (u32CharacterCodePoint != orxCHAR_LF) && (u32CharacterCodePoint != orxCHAR_NULL) && (u32CharacterCodePoint != orxU32_UNDEFINED);
             u32CharacterCodePoint = orxString_GetFirstCharacterCodePoint(pc, &pc))
         {
           /* Updates width */
@@ -1218,45 +1217,41 @@ orxSTATUS orxFASTCALL orxText_SetFont(orxTEXT *_pstText, orxFONT *_pstFont)
   orxASSERT(sstText.u32Flags & orxTEXT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstText);
 
-  /* Different? */
-  if(_pstText->pstFont != _pstFont)
+  /* Has current font? */
+  if(_pstText->pstFont != orxNULL)
   {
-    /* Has current font? */
-    if(_pstText->pstFont != orxNULL)
+    /* Updates structure reference count *indirectly*, as deletion needs to be handled for non-internal fonts */
+    orxFont_Delete(_pstText->pstFont);
+
+    /* Internally handled? */
+    if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL) != orxFALSE)
     {
-      /* Updates structure reference count *indirectly*, as deletion needs to be handled for non-internal fonts */
+      /* Removes its owner */
+      orxStructure_SetOwner(_pstText->pstFont, orxNULL);
+
+      /* Deletes it */
       orxFont_Delete(_pstText->pstFont);
 
-      /* Internally handled? */
-      if(orxStructure_TestFlags(_pstText, orxTEXT_KU32_FLAG_INTERNAL) != orxFALSE)
-      {
-        /* Removes its owner */
-        orxStructure_SetOwner(_pstText->pstFont, orxNULL);
-
-        /* Deletes it */
-        orxFont_Delete(_pstText->pstFont);
-
-        /* Updates flags */
-        orxStructure_SetFlags(_pstText, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_FLAG_INTERNAL);
-      }
-
-      /* Cleans it */
-      _pstText->pstFont = orxNULL;
+      /* Updates flags */
+      orxStructure_SetFlags(_pstText, orxTEXT_KU32_FLAG_NONE, orxTEXT_KU32_FLAG_INTERNAL);
     }
 
-    /* Has new font? */
-    if(_pstFont != orxNULL)
-    {
-      /* Stores it */
-      _pstText->pstFont = _pstFont;
-
-      /* Updates its reference count */
-      orxStructure_IncreaseCount(_pstFont);
-    }
-
-    /* Updates text's size */
-    orxText_UpdateSize(_pstText);
+    /* Cleans it */
+    _pstText->pstFont = orxNULL;
   }
+
+  /* Has new font? */
+  if(_pstFont != orxNULL)
+  {
+    /* Stores it */
+    _pstText->pstFont = _pstFont;
+
+    /* Updates its reference count */
+    orxStructure_IncreaseCount(_pstFont);
+  }
+
+  /* Updates text's size */
+  orxText_UpdateSize(_pstText);
 
   /* Done! */
   return eResult;

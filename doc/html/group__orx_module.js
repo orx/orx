@@ -36,7 +36,6 @@ var group__orx_module =
       [ "orxMODULE_ID_RESOURCE", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708acdb6d4d87d122beaca1e6c7118bf4fc5", null ],
       [ "orxMODULE_ID_SCREENSHOT", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a8f4c2507939ee5e0a7c852d8d2633628", null ],
       [ "orxMODULE_ID_SHADER", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708afeeb506b27d982b4aa2a5fe97abbb9b3", null ],
-      [ "orxMODULE_ID_SHADERPOINTER", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708ad971dcf62e16fdf71f2a2e002f5b7693", null ],
       [ "orxMODULE_ID_SOUND", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708aa6f773be1c333e991778cd44f4269312", null ],
       [ "orxMODULE_ID_SOUNDPOINTER", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a177da56f1cd218fb7dcc920c80aff7f2", null ],
       [ "orxMODULE_ID_SOUNDSYSTEM", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708adf8fd36b3fe37b2cc1947795d97e9ebe", null ],

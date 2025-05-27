@@ -32,13 +32,14 @@
 
 #include "object/orxTrigger.h"
 
-#include "debug/orxDebug.h"
-#include "debug/orxProfiler.h"
-#include "memory/orxMemory.h"
-#include "memory/orxBank.h"
+#include "core/orxCommand.h"
 #include "core/orxConfig.h"
 #include "core/orxEvent.h"
 #include "core/orxResource.h"
+#include "debug/orxDebug.h"
+#include "debug/orxProfiler.h"
+#include "memory/orxBank.h"
+#include "memory/orxMemory.h"
 #include "object/orxObject.h"
 #include "object/orxStructure.h"
 #include "utils/orxHashTable.h"
@@ -134,6 +135,9 @@ struct __orxTRIGGER_t
 typedef struct __orxTRIGGER_STATIC_t
 {
   orxHASHTABLE             *pstSetTable;              /**< Set hash table */
+  const orxSTRING           zCurrentEvent;            /**< Current event */
+  const orxSTRING          *azCurrentRefinementList;  /**< Current list of refinements */
+  orxU32                    u32CurrentRefinementListCount; /**< Current list of refinements' size */
   orxU32                    u32Flags;                 /**< Control flags */
 
 } orxTRIGGER_STATIC;
@@ -152,6 +156,94 @@ static orxTRIGGER_STATIC sstTrigger;
  * Private functions                                                       *
  ***************************************************************************/
 
+static orxBOOL orxFASTCALL orxTrigger_Count(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
+{
+  orxU32 *pu32Counter;
+
+  /* Gets counter */
+  pu32Counter = (orxU32 *)_pContext;
+
+  /* Increases it */
+  (*pu32Counter) += (orxU32)orxConfig_GetListCount(_zKeyName);
+
+  /* Done! */
+  return orxTRUE;
+}
+
+static orxBOOL orxFASTCALL orxTrigger_AddEvent(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
+{
+  orxSTRINGID     stEventID;
+  orxTRIGGER_SET *pstTriggerSet;
+  const orxCHAR  *pcSrc;
+  orxCHAR        *pcDst;
+  orxU32          u32StopDepth, u32Depth;
+  orxS32          s32ListCount, i;
+  orxCHAR         acBuffer[orxTRIGGER_KU32_BUFFER_SIZE];
+
+  /* Gets trigger set */
+  pstTriggerSet = (orxTRIGGER_SET *)_pContext;
+
+  /* For all characters */
+  for(pcSrc = _zKeyName, pcDst = acBuffer, u32StopDepth = 0, u32Depth = 0;
+      (*pcSrc != orxCHAR_NULL) && (pcDst - acBuffer < sizeof(acBuffer) - 1);
+      pcSrc++)
+  {
+    /* Depending on character */
+    switch(*pcSrc)
+    {
+      case orxTRIGGER_KC_STOP_MARKER:
+      {
+        /* Checks */
+        if((u32StopDepth != 0) || (u32Depth == 0))
+        {
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s] Invalid stop markers found for event <%s>.", orxString_GetFromID(pstTriggerSet->stID), _zKeyName);
+        }
+
+        /* Updates stop depth */
+        u32StopDepth = u32Depth;
+
+        break;
+      }
+
+      case orxTRIGGER_KC_SEPARATOR:
+      {
+        /* Updates depth */
+        u32Depth++;
+
+        /* Fall through */
+      }
+
+      default:
+      {
+        /* Copies it */
+        *(pcDst++) = *pcSrc;
+
+        break;
+      }
+    }
+  }
+
+  /* Terminates buffer */
+  *pcDst = orxCHAR_NULL;
+
+  /* Gets event ID */
+  stEventID = orxString_Hash(acBuffer);
+
+  /* For all associated values */
+  for(i = 0, s32ListCount = orxConfig_GetListCount(_zKeyName);
+      i < s32ListCount;
+      i++, (pstTriggerSet->u32EventCount)++)
+  {
+    /* Stores it */
+    pstTriggerSet->astEventList[pstTriggerSet->u32EventCount].stID          = stEventID;
+    pstTriggerSet->astEventList[pstTriggerSet->u32EventCount].zValue        = orxString_Store(orxConfig_GetListString(_zKeyName, i));
+    pstTriggerSet->astEventList[pstTriggerSet->u32EventCount].u32StopDepth  = u32StopDepth;
+  }
+
+  /* Done! */
+  return orxTRUE;
+}
+
 /** Creates a set
  */
 static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID)
@@ -162,17 +254,10 @@ static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID
   if((orxConfig_HasSection(_zConfigID) != orxFALSE)
   && (orxConfig_PushSection(_zConfigID) != orxSTATUS_FAILURE))
   {
-    orxU32 i, u32KeyCount, u32EventCount;
+    orxU32 u32EventCount = 0;
 
-    /* Gets number of keys */
-    u32KeyCount = orxConfig_GetKeyCount();
-
-    /* For all keys */
-    for(i = 0, u32EventCount = 0; i < u32KeyCount; i++)
-    {
-      /* Updates event count */
-      u32EventCount += (orxU32)orxConfig_GetListCount(orxConfig_GetKey(i));
-    }
+    /* Gets event count */
+    orxConfig_ForAllKeys(orxTrigger_Count, orxTRUE, &u32EventCount);
 
     /* Valid? */
     if(u32EventCount > 0)
@@ -186,91 +271,25 @@ static orxINLINE orxTRIGGER_SET *orxTrigger_CreateSet(const orxSTRING _zConfigID
         /* Stores its ID */
         pstResult->stID = orxString_GetID(orxConfig_GetCurrentSection());
 
+        /* Inits its event count */
+        pstResult->u32EventCount = 0;
+
         /* Adds it to reference table */
         if(orxHashTable_Set(sstTrigger.pstSetTable, pstResult->stID, pstResult) != orxSTATUS_FAILURE)
         {
-          orxU32 u32KeyIndex, u32EventIndex, u32Flags = orxTRIGGER_SET_KU32_FLAG_NONE;
+          orxU32 u32Flags = orxTRIGGER_SET_KU32_FLAG_NONE;
 
-          /* For all keys */
-          for(u32KeyIndex = 0, u32EventIndex = 0; u32KeyIndex < u32KeyCount; u32KeyIndex++)
-          {
-            orxSTRINGID     stEventID;
-            const orxSTRING zKey;
-            const orxCHAR  *pcSrc;
-            orxCHAR        *pcDst;
-            orxCHAR         acBuffer[orxTRIGGER_KU32_BUFFER_SIZE];
-            orxU32          u32ListCount, u32StopDepth, u32Depth;
+          /* Adds all events */
+          orxConfig_ForAllKeys(orxTrigger_AddEvent, orxTRUE, pstResult);
 
-            /* Gets corresponding key */
-            zKey = orxConfig_GetKey(u32KeyIndex);
-
-            /* For all characters */
-            for(pcSrc = zKey, pcDst = acBuffer, u32StopDepth = 0, u32Depth = 0;
-                (*pcSrc != orxCHAR_NULL) && (pcDst - acBuffer < sizeof(acBuffer) - 1);
-                pcSrc++)
-            {
-              /* Depending on character */
-              switch(*pcSrc)
-              {
-                case orxTRIGGER_KC_STOP_MARKER:
-                {
-                  /* Checks */
-                  if((u32StopDepth != 0) || (u32Depth == 0))
-                  {
-                    orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s] Invalid stop markers found for event <%s>.", _zConfigID, zKey);
-                  }
-
-                  /* Updates stop depth */
-                  u32StopDepth = u32Depth;
-
-                  break;
-                }
-
-                case orxTRIGGER_KC_SEPARATOR:
-                {
-                  /* Updates depth */
-                  u32Depth++;
-
-                  /* Fall through */
-                }
-
-                default:
-                {
-                  /* Copies it */
-                  *(pcDst++) = *pcSrc;
-
-                  break;
-                }
-              }
-            }
-
-            /* Terminates buffer */
-            *pcDst = orxCHAR_NULL;
-
-            /* Gets event ID */
-            stEventID = orxString_Hash(acBuffer);
-
-            /* For all associated values */
-            for(i = 0, u32ListCount = orxConfig_GetListCount(zKey);
-                i < u32ListCount;
-                i++, u32EventIndex++)
-            {
-              /* Checks */
-              orxASSERT(u32EventIndex < u32EventCount);
-
-              /* Stores it */
-              pstResult->astEventList[u32EventIndex].stID         = stEventID;
-              pstResult->astEventList[u32EventIndex].zValue       = orxString_Store(orxConfig_GetListString(zKey, i));
-              pstResult->astEventList[u32EventIndex].u32StopDepth = u32StopDepth;
-            }
-          }
+          /* Checks */
+          orxASSERT(pstResult->u32EventCount == u32EventCount);
 
           /* Stores its reference */
           pstResult->zReference = orxString_GetFromID(pstResult->stID);
 
-          /* Updates set counts */
-          pstResult->u32RefCount    = 1;
-          pstResult->u32EventCount  = u32EventCount;
+          /* Updates its ref count */
+          pstResult->u32RefCount = 1;
 
           /* Should keep in cache? */
           if(orxConfig_GetBool(orxTRIGGER_KZ_CONFIG_KEEP_IN_CACHE) != orxFALSE)
@@ -501,6 +520,81 @@ static orxINLINE void orxTrigger_DeleteAll()
   return;
 }
 
+/** Command: GetRefinement
+ */
+void orxFASTCALL orxTrigger_CommandGetRefinement(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->zValue = ((_u32ArgNumber < 1) || (_astArgList[0].u32Value == 0))
+                       ? sstTrigger.zCurrentEvent
+                       : (_astArgList[0].u32Value <= sstTrigger.u32CurrentRefinementListCount)
+                         ? sstTrigger.azCurrentRefinementList[_astArgList[0].u32Value - 1]
+                         : orxSTRING_EMPTY;
+
+  /* Has stop marker? */
+  if(_pstResult->zValue[0] == orxTRIGGER_KC_STOP_MARKER)
+  {
+    /* Skips it */
+    _pstResult->zValue++;
+  }
+
+  /* Done! */
+  return;
+}
+
+/** Command: GetRefinementCount
+ */
+void orxFASTCALL orxTrigger_CommandGetRefinementCount(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  /* Updates result */
+  _pstResult->u32Value = sstTrigger.u32CurrentRefinementListCount;
+
+  /* Done! */
+  return;
+}
+
+/** Registers all the trigger commands
+ */
+static orxINLINE void orxTrigger_RegisterCommands()
+{
+  /* Command: GetRefinement */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Trigger, GetRefinement, "Refinement", orxCOMMAND_VAR_TYPE_STRING, 0, 1, {"Index = 0 (Event)", orxCOMMAND_VAR_TYPE_U32});
+  /* Command: GetRefinementCount */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Trigger, GetRefinementCount, "RefinementCount", orxCOMMAND_VAR_TYPE_U32, 0, 0);
+
+  /* Alias: GetRefinement */
+  orxCommand_AddAlias("GetRefinement", "Trigger.GetRefinement", orxNULL);
+  /* Alias: GetRefinementCount */
+  orxCommand_AddAlias("GetRefinementCount", "Trigger.GetRefinementCount", orxNULL);
+
+  /* Alias: : */
+  orxCommand_AddAlias(":", "Trigger.GetRefinement", orxNULL);
+
+  /* Done! */
+  return;
+}
+
+/** Unregisters all the trigger commands
+ */
+static orxINLINE void orxTrigger_UnregisterCommands()
+{
+  /* Alias: GetRefinement */
+  orxCommand_RemoveAlias("GetRefinement");
+  /* Alias: GetRefinementCount */
+  orxCommand_RemoveAlias("GetRefinementCount");
+
+  /* Alias: : */
+  orxCommand_RemoveAlias(":");
+
+  /* Command: GetRefinement */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Trigger, GetRefinement);
+  /* Command: GetRefinementCount */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Trigger, GetRefinementCount);
+
+  /* Done! */
+  return;
+}
+
 
 /***************************************************************************
  * Public functions                                                        *
@@ -516,6 +610,7 @@ void orxFASTCALL orxTrigger_Setup()
   orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_STRUCTURE);
   orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_PROFILER);
+  orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_COMMAND);
   orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_TRIGGER, orxMODULE_ID_EVENT);
 
@@ -542,8 +637,37 @@ orxSTATUS orxFASTCALL orxTrigger_Init()
     /* Valid? */
     if(sstTrigger.pstSetTable != orxNULL)
     {
+      /* Inits current event & refinement list */
+      sstTrigger.zCurrentEvent                  = orxSTRING_EMPTY;
+      sstTrigger.azCurrentRefinementList        = orxNULL;
+      sstTrigger.u32CurrentRefinementListCount  = 0;
+
       /* Registers structure type */
       eResult = orxSTRUCTURE_REGISTER(TRIGGER, orxSTRUCTURE_STORAGE_TYPE_LINKLIST, orxMEMORY_TYPE_MAIN, orxTRIGGER_KU32_BANK_SIZE, orxNULL);
+
+      /* Initialized? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Registers commands */
+        orxTrigger_RegisterCommands();
+
+        /* Inits Flags */
+        orxFLAG_SET(sstTrigger.u32Flags, orxTRIGGER_KU32_STATIC_FLAG_READY, orxTRIGGER_KU32_STATIC_FLAG_NONE);
+
+        /* Adds event handlers */
+        orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxTrigger_EventHandler);
+        orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxTrigger_EventHandler);
+        orxEvent_SetHandlerIDFlags(orxTrigger_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
+        orxEvent_SetHandlerIDFlags(orxTrigger_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DISABLE), orxEVENT_KU32_MASK_ID_ALL);
+      }
+      else
+      {
+        /* Deletes set table */
+        orxHashTable_Delete(sstTrigger.pstSetTable);
+
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "Failed to register link list structure.");
+      }
     }
     else
     {
@@ -558,27 +682,6 @@ orxSTATUS orxFASTCALL orxTrigger_Init()
 
     /* Already initialized */
     eResult = orxSTATUS_SUCCESS;
-  }
-
-  /* Initialized? */
-  if(eResult != orxSTATUS_FAILURE)
-  {
-    /* Inits Flags */
-    orxFLAG_SET(sstTrigger.u32Flags, orxTRIGGER_KU32_STATIC_FLAG_READY, orxTRIGGER_KU32_STATIC_FLAG_NONE);
-
-    /* Adds event handlers */
-    orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxTrigger_EventHandler);
-    orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxTrigger_EventHandler);
-    orxEvent_SetHandlerIDFlags(orxTrigger_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
-    orxEvent_SetHandlerIDFlags(orxTrigger_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_ENABLE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DISABLE), orxEVENT_KU32_MASK_ID_ALL);
-  }
-  else
-  {
-    /* Deletes set table if needed */
-    if(sstTrigger.pstSetTable != orxNULL)
-    {
-      orxHashTable_Delete(sstTrigger.pstSetTable);
-    }
   }
 
   /* Done! */
@@ -597,6 +700,9 @@ void orxFASTCALL orxTrigger_Exit()
     /* Removes event handlers */
     orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxTrigger_EventHandler);
     orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxTrigger_EventHandler);
+
+    /* Unregisters commands */
+    orxTrigger_UnregisterCommands();
 
     /* Deletes Trigger list */
     orxTrigger_DeleteAll();
@@ -823,13 +929,9 @@ orxSTATUS orxFASTCALL orxTrigger_AddSetFromConfig(orxTRIGGER *_pstTrigger, const
   if(u32Index < orxTRIGGER_KU32_SET_NUMBER)
   {
     orxTRIGGER_SET *pstSet;
-    orxSTRINGID     stID;
 
-    /* Gets set ID */
-    stID = orxString_Hash(_zConfigID);
-
-    /* Search for reference */
-    pstSet = (orxTRIGGER_SET *)orxHashTable_Get(sstTrigger.pstSetTable, stID);
+    /* Searches for reference */
+    pstSet = (orxTRIGGER_SET *)orxHashTable_Get(sstTrigger.pstSetTable, orxString_Hash(_zConfigID));
 
     /* Found? */
     if(pstSet != orxNULL)
@@ -971,11 +1073,11 @@ orxU32 orxFASTCALL orxTrigger_GetCount(const orxTRIGGER *_pstTrigger)
 /** Fire a Trigger's event
  * @param[in]   _pstTrigger           Concerned Trigger
  * @param[in]   _zEvent               Event to fire
- * @param[in]   _azRefinementList     List of refinements for this event, unused if _u32Size == 0
- * @param[in]   _u32Size              Size of the refinement list, 0 for none
+ * @param[in]   _azRefinementList     List of refinements for this event, unused if _u32Count == 0
+ * @param[in]   _u32Count             Number of refinements in the list, 0 for none
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)
+orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -986,21 +1088,29 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
   orxASSERT(sstTrigger.u32Flags & orxTRIGGER_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstTrigger);
   orxASSERT((_zEvent != orxNULL) && (_zEvent != orxSTRING_EMPTY));
-  orxASSERT((_u32Size == 0) || (_azRefinementList != orxNULL));
+  orxASSERT((_u32Count == 0) || (_azRefinementList != orxNULL));
 
   /* Is enabled? */
   if(orxStructure_TestFlags(_pstTrigger, orxTRIGGER_KU32_FLAG_ENABLED))
   {
     orxTRIGGER_EVENT_PAYLOAD  stPayload;
     orxSTRUCTURE             *pstOwner;
+    const orxSTRING          *azPreviousRefinementList;
+    const orxSTRING           zPreviousEvent;
     orxCHAR                   acBuffer[orxTRIGGER_KU32_BUFFER_SIZE], *pc = acBuffer;
     orxS32                    i, s32StopDepth;
+    orxU32                    u32PreviousRefinementListCount;
+    orxSTRINGID              *astEventIDList = (orxSTRINGID *)orxMemory_StackAllocate((_u32Count + 1) * sizeof(orxSTRINGID));
 
-  #ifdef __orxMSVC__
-    orxSTRINGID *astEventIDList = (orxSTRINGID *)_malloca((_u32Size + 1) * sizeof(orxSTRINGID));
-  #else /* __orxMSVC__ */
-    orxSTRINGID astEventIDList[_u32Size + 1];
-  #endif /* __orxMSVC__ */
+    /* Backups current event & refinement list */
+    zPreviousEvent                  = sstTrigger.zCurrentEvent;
+    azPreviousRefinementList        = sstTrigger.azCurrentRefinementList;
+    u32PreviousRefinementListCount  = sstTrigger.u32CurrentRefinementListCount;
+
+    /* Updates current event & refinement list */
+    sstTrigger.zCurrentEvent                  = _zEvent;
+    sstTrigger.azCurrentRefinementList        = _azRefinementList;
+    sstTrigger.u32CurrentRefinementListCount  = _u32Count;
 
     /* Gets event ID */
     pc += orxString_NPrint(pc, sizeof(acBuffer), "%s", _zEvent);
@@ -1008,21 +1118,26 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
 
     /* Inits event payload */
     orxMemory_Zero(&stPayload, sizeof(orxTRIGGER_EVENT_PAYLOAD));
-    stPayload.pstTrigger  = _pstTrigger;
+    stPayload.pstTrigger = _pstTrigger;
 
     /* Gets owner */
     pstOwner = orxStructure_GetOwner(_pstTrigger);
 
     /* For all refinements */
-    for(i = 0; i < (orxS32)_u32Size; i++)
+    for(i = 0, s32StopDepth = 0; i < (orxS32)_u32Count; i++)
     {
+      const orxSTRING zRefinement;
+
+      /* Gets refinement & stop depth */
+      zRefinement = (*_azRefinementList[i] == orxTRIGGER_KC_STOP_MARKER) ? s32StopDepth = i + 1, _azRefinementList[i] + 1 : _azRefinementList[i];
+
       /* Stores its ID */
-      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "%c%s", orxTRIGGER_KC_SEPARATOR, _azRefinementList[i]);
+      pc += orxString_NPrint(pc, (orxU32)(sizeof(acBuffer) - (pc - acBuffer)), "%c%s", orxTRIGGER_KC_SEPARATOR, zRefinement);
       astEventIDList[i + 1] = orxString_Hash(acBuffer);
     }
 
     /* For all refinements, in reverse order */
-    for(i = (orxS32)_u32Size, s32StopDepth = 0; (i >= 0) && (i >= s32StopDepth); i--)
+    for(i = (orxS32)_u32Count; (i >= 0) && (i >= s32StopDepth); i--)
     {
       orxSTRINGID stEventID;
       orxU32      u32SetIndex;
@@ -1050,8 +1165,12 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
             if(pstSet->astEventList[u32EventIndex].stID == stEventID)
             {
               /* Updates payload */
-              stPayload.zSetName  = pstSet->zReference;
-              stPayload.zEvent    = pstSet->astEventList[u32EventIndex].zValue;
+              stPayload.zSetName            = pstSet->zReference;
+              stPayload.zEventName          = _zEvent;
+              stPayload.zEventValue         = pstSet->astEventList[u32EventIndex].zValue;
+              stPayload.azRefinementList    = _azRefinementList;
+              stPayload.u32RefinementCount  = _u32Count;
+              stPayload.u32RefinementIndex  = (orxU32)i;
 
               /* Sends event */
               orxEVENT_SEND(orxEVENT_TYPE_TRIGGER, orxTRIGGER_EVENT_FIRE, pstOwner, pstOwner, &stPayload);
@@ -1066,6 +1185,11 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
         }
       }
     }
+
+    /* Restores previous event & refinement list */
+    sstTrigger.zCurrentEvent                  = zPreviousEvent;
+    sstTrigger.azCurrentRefinementList        = azPreviousRefinementList;
+    sstTrigger.u32CurrentRefinementListCount  = u32PreviousRefinementListCount;
   }
 
   /* Profiles */

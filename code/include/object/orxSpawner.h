@@ -56,21 +56,25 @@
 #define orxSPAWNER_KU32_FLAG_NONE                       0x00000000  /**< No flags */
 
 #define orxSPAWNER_KU32_FLAG_AUTO_DELETE                0x00000001  /**< Auto delete flag */
-#define orxSPAWNER_KU32_FLAG_AUTO_RESET                 0x00000002  /**< Auto delete flag */
-#define orxSPAWNER_KU32_FLAG_USE_ALPHA                  0x00000004  /**< Use alpha flag */
-#define orxSPAWNER_KU32_FLAG_USE_COLOR                  0x00000008  /**< Use color flag */
-#define orxSPAWNER_KU32_FLAG_USE_ROTATION               0x00000010  /**< Use rotation flag */
-#define orxSPAWNER_KU32_FLAG_USE_SCALE                  0x00000020  /**< Use scale flag */
+#define orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT           0x00000002  /**< Auto reset count flag */
+#define orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY           0x00000004  /**< Auto reset delay flag */
+#define orxSPAWNER_KU32_MASK_AUTO_RESET                 0x00000006  /**< Auto reset mask */
 
-#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_OBJECT  0x00000040  /**< Use relative speed (object) flag */
-#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_SPAWNER 0x00000080  /**< Use relative speed (spawner) flag */
-#define orxSPAWNER_KU32_MASK_USE_RELATIVE_SPEED         0x000000C0  /**< Use relative speed mask */
+#define orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE            0x00000008  /**< Clean on delete flag */
 
-#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT         0x00000100  /**< Use self as parent flag */
-#define orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE            0x00000200  /**< Clean on delete flag */
-#define orxSPAWNER_KU32_FLAG_INTERPOLATE                0x00000400  /**< Interpolate flag */
+#define orxSPAWNER_KU32_FLAG_USE_ALPHA                  0x00000010  /**< Use alpha flag */
+#define orxSPAWNER_KU32_FLAG_USE_COLOR                  0x00000020  /**< Use color flag */
+#define orxSPAWNER_KU32_FLAG_USE_ROTATION               0x00000040  /**< Use rotation flag */
+#define orxSPAWNER_KU32_FLAG_USE_SCALE                  0x00000080  /**< Use scale flag */
 
-#define orxSPAWNER_KU32_MASK_USER_ALL                   0x000004FF  /**< All mask */
+#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_OBJECT  0x00000100  /**< Use relative speed (object) flag */
+#define orxSPAWNER_KU32_FLAG_USE_RELATIVE_SPEED_SPAWNER 0x00000200  /**< Use relative speed (spawner) flag */
+#define orxSPAWNER_KU32_MASK_USE_RELATIVE_SPEED         0x00000300  /**< Use relative speed mask */
+
+#define orxSPAWNER_KU32_FLAG_USE_SELF_AS_PARENT         0x00000400  /**< Use self as parent flag */
+#define orxSPAWNER_KU32_FLAG_INTERPOLATE                0x00000800  /**< Interpolate flag */
+
+#define orxSPAWNER_KU32_MASK_USER_ALL                   0x00000FFF  /**< All mask */
 
 
 /** Event enum
@@ -141,8 +145,10 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxSpawner_IsEnabled(const orxSPAWNE
 
 /** Resets (and disables) a spawner
  * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _bResetCount    Reset counts (total & object), along spawned objects ownership
+ * @param[in]   _bResetTimer    Reset spawn timer
  */
-extern orxDLLAPI void orxFASTCALL           orxSpawner_Reset(orxSPAWNER *_pstSpawner);
+extern orxDLLAPI void orxFASTCALL           orxSpawner_Reset(orxSPAWNER *_pstSpawner, orxBOOL _bResetCount, orxBOOL _bResetTimer);
 
 /** Sets spawner total object limit
  * @param[in]   _pstSpawner     Concerned spawner

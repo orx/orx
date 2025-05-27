@@ -1,6 +1,7 @@
 var orx_memory_8h =
 [
     [ "orxMEMORY_BARRIER", "group__orx_memory.html#ga7240bc33642336c84068c3f70adb967a", null ],
+    [ "orxMemory_StackAllocate", "group__orx_memory.html#gaee8d015a8fe14ea463b90943a36a8e55", null ],
     [ "orxMEMORY_TRACK", "group__orx_memory.html#gafe7c2f7c245a3e8f8e489cd9d1053649", null ],
     [ "orxMEMORY_TYPE", "group__orx_memory.html#gab389ac47cdad29f66eb25d37f09179b0", [
       [ "orxMEMORY_TYPE_MAIN", "group__orx_memory.html#ggab389ac47cdad29f66eb25d37f09179b0a95004f02fdd1b8f754b3a0191af1aad4", null ],
@@ -19,10 +20,12 @@ var orx_memory_8h =
     [ "orxMemory_Compare", "group__orx_memory.html#ga177bab636d9bad880174a62f8d41cb17", null ],
     [ "orxMemory_Copy", "group__orx_memory.html#gae9f162d0bd9c52e8bd44f827401093d9", null ],
     [ "orxMemory_Exit", "group__orx_memory.html#ga643c775ffcf970857a16d419bf298020", null ],
+    [ "orxMemory_ExitThread", "group__orx_memory.html#ga29499dffe7ad4380ee77035e09f19b1f", null ],
     [ "orxMemory_Free", "group__orx_memory.html#ga46afc4965b86e4aa25fc3ddf1befa02d", null ],
     [ "orxMemory_GetCacheLineSize", "group__orx_memory.html#ga7e69f5cbe4ac63c45077cc5d9a3da9f8", null ],
     [ "orxMemory_GetTypeName", "group__orx_memory.html#ga23385dc3cafb19d8e25dd58ea4d30af2", null ],
     [ "orxMemory_Init", "group__orx_memory.html#ga9f26236adad8a0a4d07aa6212280b379", null ],
+    [ "orxMemory_InitThread", "group__orx_memory.html#ga21b638c17b6b4f1da646a55639b89ef3", null ],
     [ "orxMemory_Move", "group__orx_memory.html#gac3af5ad79d07e4f38f40682272e71953", null ],
     [ "orxMemory_Reallocate", "group__orx_memory.html#gae5c2c5f182122468435fdf55d875a486", null ],
     [ "orxMemory_Set", "group__orx_memory.html#gaf19f65244ab0a99424048ef0b43d681d", null ],

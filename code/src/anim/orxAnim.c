@@ -779,7 +779,7 @@ orxSTATUS orxFASTCALL orxAnim_AddKey(orxANIM *_pstAnim, orxSTRUCTURE *_pstData, 
   /* Checks */
   orxASSERT(sstAnim.u32Flags & orxANIM_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstAnim);
-  orxASSERT(_pstData != orxNULL);
+  orxSTRUCTURE_ASSERT(_pstData);
   orxASSERT(orxStructure_TestFlags(_pstAnim, orxANIM_KU32_FLAG_2D) != orxFALSE);
   orxASSERT((orxAnim_GetKeyCount(_pstAnim) == 0) || (_fTimeStamp > _pstAnim->astKeyList[orxAnim_GetKeyCount(_pstAnim) - 1].fTimeStamp));
 
@@ -1242,11 +1242,11 @@ orxU32 orxFASTCALL orxAnim_GetEventCount(const orxANIM *_pstAnim)
   return (orxU32)_pstAnim->u16EventCount;
 }
 
-/** Animation time length accessor
+/** Animation duration accessor
  * @param[in]   _pstAnim        Concerned animation
  * @return      Animation time length
  */
-orxFLOAT orxFASTCALL orxAnim_GetLength(const orxANIM *_pstAnim)
+orxFLOAT orxFASTCALL orxAnim_GetDuration(const orxANIM *_pstAnim)
 {
   orxFLOAT fLength;
 

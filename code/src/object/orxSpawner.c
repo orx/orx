@@ -99,6 +99,8 @@
 #define orxSPAWNER_KZ_BOTH                        "both"
 #define orxSPAWNER_KZ_OBJECT                      "object"
 #define orxSPAWNER_KZ_SPAWNER                     "spawner"
+#define orxSPAWNER_KZ_COUNT                       "count"
+#define orxSPAWNER_KZ_DELAY                       "delay"
 
 
 #define orxSPAWNER_KU32_BANK_SIZE                 128         /**< Bank size */
@@ -189,6 +191,13 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
         {
           /* Removes its owner */
           orxObject_SetOwner(pstObject, orxNULL);
+
+          /* Should clean? */
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE))
+          {
+            /* Updates its lifetime */
+            orxObject_SetLifeTime(pstObject, orxFLOAT_0);
+          }
         }
 
         /* Deletes its table */
@@ -363,11 +372,47 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
       }
     }
 
-    /* Auto reset? */
-    if(orxConfig_GetBool(orxSPAWNER_KZ_CONFIG_AUTO_RESET) != orxFALSE)
+    /* Has auto reset? */
+    if(orxConfig_HasValue(orxSPAWNER_KZ_CONFIG_AUTO_RESET) != orxFALSE)
     {
-      /* Updates status */
-      orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET, orxSPAWNER_KU32_FLAG_NONE);
+      const orxSTRING zAutoRest;
+
+      /* Gets its literal version */
+      zAutoRest = orxConfig_GetString(orxSPAWNER_KZ_CONFIG_AUTO_RESET);
+
+      /* Defined? */
+      if((zAutoRest != orxNULL) && (zAutoRest != orxSTRING_EMPTY))
+      {
+        /* Count only? */
+        if(orxString_ICompare(zAutoRest, orxSPAWNER_KZ_COUNT) == 0)
+        {
+          /* Updates status */
+          orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT, orxSPAWNER_KU32_FLAG_NONE);
+        }
+        /* Delay only? */
+        else if(orxString_ICompare(zAutoRest, orxSPAWNER_KZ_DELAY) == 0)
+        {
+          /* Updates status */
+          orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY, orxSPAWNER_KU32_FLAG_NONE);
+        }
+        /* Both? */
+        else if(orxString_ICompare(zAutoRest, orxSPAWNER_KZ_BOTH) == 0)
+        {
+          /* Updates status */
+          orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT | orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY, orxSPAWNER_KU32_FLAG_NONE);
+        }
+        else
+        {
+          orxBOOL bAutoReset;
+
+          /* Should auto reset? */
+          if((orxString_ToBool(zAutoRest, &bAutoReset, orxNULL) != orxSTATUS_FAILURE) && (bAutoReset != orxFALSE))
+          {
+            /* Updates status */
+            orxStructure_SetFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT | orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY, orxSPAWNER_KU32_FLAG_NONE);
+          }
+        }
+      }
     }
 
     /* Use alpha? */
@@ -678,10 +723,10 @@ orxU32 orxFASTCALL orxSpawner_SpawnInternal(orxSPAWNER *_pstSpawner, orxU32 _u32
           orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_EMPTY, _pstSpawner, orxNULL, orxNULL);
 
           /* Auto reset? */
-          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET))
+          if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_MASK_AUTO_RESET))
           {
             /* Resets spawner */
-            orxSpawner_Reset(_pstSpawner);
+            orxSpawner_Reset(_pstSpawner, orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT), orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY));
           }
           /* Disables */
           else
@@ -727,8 +772,8 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           /* Gets owner as spawner */
           pstSpawner = orxSPAWNER(orxObject_GetOwner(pstObject));
 
-          /* Valid? */
-          if(pstSpawner != orxNULL)
+          /* Valid and not currently spawning? */
+          if((pstSpawner != orxNULL) && (sstSpawner.pstCurrentSpawner != pstSpawner))
           {
             /* Checks */
             orxASSERT(pstSpawner->pstSpawnedTable != orxNULL);
@@ -747,8 +792,6 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
 
             /* Removes it from spawned table */
             orxHashTable_Remove(pstSpawner->pstSpawnedTable, u64Key);
-
-            break;
           }
 
           break;
@@ -1541,10 +1584,10 @@ void orxFASTCALL orxSpawner_Enable(orxSPAWNER *_pstSpawner, orxBOOL _bEnable)
   else
   {
     /* Auto reset? */
-    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET))
+    if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_MASK_AUTO_RESET))
     {
       /* Resets spawner */
-      orxSpawner_Reset(_pstSpawner);
+      orxSpawner_Reset(_pstSpawner, orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_COUNT), orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_AUTO_RESET_DELAY));
     }
     else
     {
@@ -1572,8 +1615,10 @@ orxBOOL orxFASTCALL orxSpawner_IsEnabled(const orxSPAWNER *_pstSpawner)
 
 /** Resets (and disables) a spawner
  * @param[in]   _pstSpawner     Concerned spawner
+ * @param[in]   _bResetCount    Reset counts (total & object), along spawned objects ownership
+ * @param[in]   _bResetTimer    Reset spawn timer
  */
-void orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
+void orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner, orxBOOL _bResetCount, orxBOOL _bResetTimer)
 {
   /* Checks */
   orxASSERT(sstSpawner.u32Flags & orxSPAWNER_KU32_STATIC_FLAG_READY);
@@ -1585,28 +1630,38 @@ void orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner)
   /* Sends event */
   orxEVENT_SEND(orxEVENT_TYPE_SPAWNER, orxSPAWNER_EVENT_RESET, _pstSpawner, orxNULL, orxNULL);
 
-  /* Resets counts */
-  _pstSpawner->u32ActiveObjectCount = 0;
-  _pstSpawner->u32TotalObjectCount  = 0;
-  _pstSpawner->fWaveTimer           = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_IMMEDIATE) ? orxFLOAT_0 : _pstSpawner->fWaveDelay;
-
-  /* Has spawned table? */
-  if(_pstSpawner->pstSpawnedTable != orxNULL)
+  /* Should reset timer? */
+  if(_bResetTimer != orxFALSE)
   {
-    orxHANDLE   hIterator;
-    orxOBJECT  *pstObject;
+    /* Resets it */
+    _pstSpawner->fWaveTimer = orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_IMMEDIATE) ? orxFLOAT_0 : _pstSpawner->fWaveDelay;
+  }
 
-    /* For all objects */
-    for(hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstObject);
-        hIterator != orxHANDLE_UNDEFINED;
-        hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, hIterator, orxNULL, (void **)&pstObject))
+  /* Should reset counts? */
+  if(_bResetCount != orxFALSE)
+  {
+    /* Resets them */
+    _pstSpawner->u32ActiveObjectCount = 0;
+    _pstSpawner->u32TotalObjectCount  = 0;
+
+    /* Has spawned table? */
+    if(_pstSpawner->pstSpawnedTable != orxNULL)
     {
-      /* Removes it */
-      orxObject_SetOwner(pstObject, orxNULL);
-    }
+      orxHANDLE   hIterator;
+      orxOBJECT  *pstObject;
 
-    /* Clears spawned table */
-    orxHashTable_Clear(_pstSpawner->pstSpawnedTable);
+      /* For all objects */
+      for(hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, orxHANDLE_UNDEFINED, orxNULL, (void **)&pstObject);
+          hIterator != orxHANDLE_UNDEFINED;
+          hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, hIterator, orxNULL, (void **)&pstObject))
+      {
+        /* Removes it */
+        orxObject_SetOwner(pstObject, orxNULL);
+      }
+
+      /* Clears spawned table */
+      orxHashTable_Clear(_pstSpawner->pstSpawnedTable);
+    }
   }
 
   return;

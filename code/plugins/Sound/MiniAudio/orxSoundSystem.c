@@ -40,6 +40,13 @@
 #undef STB_VORBIS_HEADER_ONLY
 #undef FILE
 
+#ifdef __orxMSVC__
+
+  #pragma warning(push)
+  #pragma warning(disable : 4200)
+
+#endif /* __orxMSVC__ */
+
 #ifdef __APPLE__
   #define MA_NO_RUNTIME_LINKING
 #endif /* __APPLE__ */
@@ -47,42 +54,36 @@
   #undef APIENTRY
 #endif /* APIENTRY */
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-  void rpmalloc_thread_initialize();
-  void rpmalloc_thread_finalize(int);
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
-#define MA_ON_THREAD_ENTRY                rpmalloc_thread_initialize();
-#define MA_ON_THREAD_EXIT                 rpmalloc_thread_finalize(1);
+#define MA_ON_THREAD_ENTRY                orxMemory_InitThread();
+#define MA_ON_THREAD_EXIT                 orxMemory_ExitThread();
 
 #define MA_NO_FLAC
 
-#define MINIAUDIO_IMPLEMENTATION
+#ifdef __orxWEB__
+  #define MA_ENABLE_AUDIO_WORKLETS
+#endif /* __orxWEB__ */
 
 #ifdef __orxGCC__
   #if (__GNUC__ >= 7)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wstringop-overflow"
-  #endif // (__GNUC__ >= 7)
-#endif // __orxGCC__
+  #endif /* (__GNUC__ >= 7) */
+#endif /* __orxGCC__ */
 
-#include "miniaudio.h"
+#include "miniaudio.c"
 
 #ifdef __orxGCC__
   #if (__GNUC__ >= 7)
     #pragma GCC diagnostic pop
-  #endif // (__GNUC__ >= 7)
-#endif // __orxGCC__
+  #endif /* (__GNUC__ >= 7) */
+#endif /* __orxGCC__ */
 
 #undef MA_NO_RUNTIME_LINKING
 #undef MA_ON_THREAD_ENTRY
 #undef MA_ON_THREAD_EXIT
 #undef MA_NO_FLAC
 #undef MINIAUDIO_IMPLEMENTATION
+#undef MA_ENABLE_AUDIO_WORKLETS
 
 #define FILE                              void
 #define fopen(NAME, MODE)                 orxResource_Open(NAME, orxFALSE)
@@ -120,6 +121,19 @@ extern "C" {
 #undef fopen_s
 
 
+#define QOA_IMPLEMENTATION
+#define QOA_NO_STDIO
+#define QOA_MALLOC(SIZE)                  orxMemory_Allocate((orxU32)SIZE, orxMEMORY_TYPE_AUDIO)
+#define QOA_FREE(MEMORY)                  orxMemory_Free(MEMORY)
+
+#include "qoa.h"
+
+#undef QOA_FREE
+#undef QOA_MALLOC
+#undef QOA_NO_STDIO
+#undef QOA_IMPLEMENTATION
+
+
 /** Module flags
  */
 #define orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE              0x00000000 /**< No flags */
@@ -155,6 +169,22 @@ extern "C" {
 /***************************************************************************
  * Structure declaration                                                   *
  ***************************************************************************/
+
+/** Internal QOA data source
+ */
+typedef struct __orxSOUNDSYSTEM_QOA_t
+{
+  ma_data_source_base             stBase;
+  orxU64                          u64Cursor;
+  ma_read_proc                    pfnRead;
+  ma_seek_proc                    pfnSeek;
+  ma_tell_proc                    pfnTell;
+  void                           *pUserData;
+  orxU32                          u32HeaderSize;
+  qoa_desc                        stDesc;
+  orxS16                          as16Data[0];
+
+} orxSOUNDSYSTEM_QOA;
 
 /** Internal sample structure
  */
@@ -297,7 +327,7 @@ typedef struct __orxSOUNDSYSTEM_TASK_PARAM_t
       orxFLOAT              fRollOff;
     } stSpatialization;
     const orxSTRING         zLocation;
-    orxSOUNDSYSTEM_BUS *    pstBus;
+    orxSOUNDSYSTEM_BUS     *pstBus;
     orxFLOAT                fVolume;
     orxFLOAT                fPitch;
     orxFLOAT                fTime;
@@ -330,8 +360,10 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   ma_context                      stCaptureContext;       /**< Context */
   ma_device                       stCaptureDevice;        /**< Caoture device */
   ma_data_source_vtable           stStreamVTable;         /**< Stream VTable */
+  ma_data_source_vtable           stQOADataSourceVTable;  /**< QOA data source VTable */
+  ma_decoding_backend_vtable      stQOAVTable;            /**< QOA decoding backend VTable */
   ma_decoding_backend_vtable      stVorbisVTable;         /**< Vorbis decoding backend VTable */
-  ma_decoding_backend_vtable     *apstVTable[1];          /**< Decoding backend VTable */
+  ma_decoding_backend_vtable     *apstVTable[2];          /**< Decoding backend VTable */
   ma_node_vtable                  stCustomNodeVTable;     /**< Custom node VTable */
   orxBANK                        *pstSampleBank;          /**< Sample bank */
   orxBANK                        *pstSoundBank;           /**< Sound bank */
@@ -344,7 +376,7 @@ typedef struct __orxSOUNDSYSTEM_STATIC_t
   orxFLOAT                        fForegroundVolume;      /**< Foreground volume */
   orxFLOAT                        fDeviceDelay;           /**< Device delay */
   orxU32                          u32TaskParamIndex;      /**< Task param index */
-  orxU32                          u32ListenerNumber;      /**< Listener number */
+  orxU32                          u32ListenerCount;      /**< Listener count */
   orxU32                          u32WorkerThread;        /**< Worker thread */
   orxU32                          u32Flags;               /**< Status flags */
 
@@ -879,16 +911,19 @@ static void orxSoundSystem_MiniAudio_OnDeviceNotification(const ma_device_notifi
 
 static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void *_pOutput, const void *_pInput, ma_uint32 _u32FrameCount)
 {
-  /* Profiles */
-  orxPROFILER_PUSH_MARKER("orxSoundSystem_UpdateRecording");
-
-  /* Recording? */
-  if(orxFLAG_GET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING | orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING)
+  /* Is engine still running? (As this is called by a non-orx thread, we need to make sure orx's still running) */
+  if(orxModule_IsInitialized(orxMODULE_ID_MAIN) != orxFALSE)
   {
-    /* Is engine still running? (As this is called by a non-orx thread, we need to make sure orx's still running) */
-    if(orxModule_IsInitialized(orxMODULE_ID_MAIN) != orxFALSE)
+    /* Recording? */
+    if(orxFLAG_GET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING | orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_RECORDING)
     {
       orxFLOAT fDT;
+
+      /* Enforces thread-related memory initialization */
+      orxMemory_InitThread();
+
+      /* Profiles */
+      orxPROFILER_PUSH_MARKER("orxSoundSystem_UpdateRecording");
 
       /* Inits packet */
       sstSoundSystem.stRecordingPayload.stStream.stPacket.u32SampleNumber = _u32FrameCount * sstSoundSystem.stRecordingPayload.stStream.stInfo.u32ChannelNumber;
@@ -944,11 +979,17 @@ static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void
         /* Postpones recording stop on main thread */
         orxThread_RunTask(orxNULL, orxSoundSystem_MiniAudio_StopRecordingTask, orxNULL, orxNULL);
       }
+
+      /* Profiles */
+      orxPROFILER_POP_MARKER();
+    }
+    /* Stopping? */
+    else if(orxFLAG_TEST(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING))
+    {
+      /* Enforces thread-related memory de-initialization */
+      orxMemory_ExitThread();
     }
   }
-
-  /* Profiles */
-  orxPROFILER_POP_MARKER();
 
   /* Done! */
   return;
@@ -1290,6 +1331,254 @@ static ma_result orxSoundSystem_MiniAudio_Stream_SetLooping(ma_data_source* _pst
   return hResult;
 }
 
+static ma_result orxSoundSystem_MiniAudio_QOA_Read(ma_data_source *_pstDataSource, void *_pFramesOut, ma_uint64 _u64FrameCount, ma_uint64 *_pu64FramesRead)
+{
+  ma_result hResult;
+
+  /* Valid? */
+  if((_pstDataSource != NULL) && (_u64FrameCount != 0))
+  {
+    orxSOUNDSYSTEM_QOA *pstQOA;
+    orxU8              *pu8FrameData;
+    orxU64              u64FrameRead = 0;
+    orxU32              u32FrameRemainder;
+    unsigned int        uiFrameSize;
+
+    /* Gets QOA */
+    pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
+
+    /* Gets frame size */
+    uiFrameSize = qoa_max_frame_size(&(pstQOA->stDesc));
+
+    /* Gets frame remainder */
+    u32FrameRemainder = (orxU32)pstQOA->u64Cursor % QOA_FRAME_LEN;
+
+    /* Has pending data? */
+    if(u32FrameRemainder != 0)
+    {
+      /* Gets frame read count */
+      u64FrameRead = (orxU64)orxMIN(QOA_FRAME_LEN - u32FrameRemainder, (orxU32)_u64FrameCount);
+      u64FrameRead = orxMIN(u64FrameRead, (orxU64)pstQOA->stDesc.samples - pstQOA->u64Cursor);
+
+      /* Copies data */
+      orxMemory_Copy(_pFramesOut, pstQOA->as16Data + u32FrameRemainder * pstQOA->stDesc.channels, (orxU32)u64FrameRead * pstQOA->stDesc.channels * sizeof(orxS16));
+
+      /* Updates cursor */
+      pstQOA->u64Cursor += u64FrameRead;
+    }
+
+    /* Allocates temporary buffer */
+    pu8FrameData = (orxU8 *)orxMemory_StackAllocate(uiFrameSize);
+    orxASSERT(pu8FrameData != orxNULL);
+
+    /* For all frames */
+    while((u64FrameRead < _u64FrameCount) && (pstQOA->u64Cursor < pstQOA->stDesc.samples))
+    {
+      size_t sSizeRead;
+      orxU64 u64FrameCopied;
+      unsigned int uiFrameLength, uiDecodedSize;
+
+      /* Checks */
+      orxASSERT(pstQOA->u64Cursor % QOA_FRAME_LEN == 0);
+
+      /* Reads & decodes a frame */
+      hResult = pstQOA->pfnRead(pstQOA->pUserData, pu8FrameData, uiFrameSize, &sSizeRead);
+      orxASSERT(hResult == MA_SUCCESS);
+      uiDecodedSize = qoa_decode_frame(pu8FrameData, (orxU32)sSizeRead, &(pstQOA->stDesc), pstQOA->as16Data, &uiFrameLength);
+      orxASSERT(uiDecodedSize == (orxU32)sSizeRead);
+
+      /* Gets copy size */
+      u64FrameCopied = orxMIN(_u64FrameCount - u64FrameRead, (orxU64)uiFrameLength);
+
+      /* Copies data */
+      orxMemory_Copy((orxS16 *)_pFramesOut + u64FrameRead * pstQOA->stDesc.channels, pstQOA->as16Data, (orxU32)u64FrameCopied * pstQOA->stDesc.channels * sizeof(orxS16));
+
+      /* Updates frames read */
+      u64FrameRead += u64FrameCopied;
+
+      /* Updates cursor */
+      pstQOA->u64Cursor += u64FrameCopied;
+    }
+
+    /* Updates read frames count */
+    if(_pu64FramesRead != NULL)
+    {
+      *_pu64FramesRead = (orxU64)u64FrameRead;
+    }
+
+    /* Checks */
+    orxASSERT(pstQOA->u64Cursor <= pstQOA->stDesc.samples);
+
+    /* Updates result */
+    hResult = (pstQOA->u64Cursor == pstQOA->stDesc.samples) ? MA_AT_END : MA_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_INVALID_ARGS;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static ma_result orxSoundSystem_MiniAudio_QOA_Seek(ma_data_source *_pstDataSource, ma_uint64 _u64FrameIndex)
+{
+  ma_result hResult;
+
+  /* Valid? */
+  if(_pstDataSource != NULL)
+  {
+    orxSOUNDSYSTEM_QOA *pstQOA;
+    orxU64              u64FrameCount;
+    size_t              sSizeRead;
+    unsigned int        uiFrameSize, uiFrameLength;
+
+    /* Gets QOA */
+    pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
+
+    /* Gets frame size */
+    uiFrameSize = qoa_max_frame_size(&(pstQOA->stDesc));
+
+    /* Gets frame count */
+    u64FrameCount = _u64FrameIndex / QOA_FRAME_LEN;
+
+    /* Seeks to frame */
+    hResult = pstQOA->pfnSeek(pstQOA->pUserData, pstQOA->u32HeaderSize + u64FrameCount * uiFrameSize, ma_seek_origin_start);
+
+    /* Updates cursor */
+    pstQOA->u64Cursor = orxMIN(_u64FrameIndex, pstQOA->stDesc.samples);
+
+    /* Should read a frame (not at a frame boundary)? */
+    if((pstQOA->u64Cursor < pstQOA->stDesc.samples) && (pstQOA->u64Cursor % QOA_FRAME_LEN != 0))
+    {
+      orxU8 *pu8FrameData;
+
+      /* Allocates temporary buffer */
+      pu8FrameData = (orxU8 *)orxMemory_StackAllocate(uiFrameSize);
+      orxASSERT(pu8FrameData != orxNULL);
+
+      /* Reads & decodes a frame */
+      hResult = pstQOA->pfnRead(pstQOA->pUserData, pu8FrameData, uiFrameSize, &sSizeRead);
+      orxASSERT(hResult == MA_SUCCESS);
+      qoa_decode_frame(pu8FrameData, (orxU32)sSizeRead, &(pstQOA->stDesc), pstQOA->as16Data, &uiFrameLength);
+    }
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_INVALID_ARGS;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static ma_result orxSoundSystem_MiniAudio_QOA_GetDataFormat(ma_data_source *_pstDataSource, ma_format *_peFormat, ma_uint32 *_pu32Channels, ma_uint32* _pu32SampleRate, ma_channel *_peChannelMap, size_t _sChannelMapCap)
+{
+  ma_result hResult;
+
+  /* Valid? */
+  if(_pstDataSource != NULL)
+  {
+    orxSOUNDSYSTEM_QOA *pstQOA;
+
+    /* Gets QOA */
+    pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
+
+    /* Updates format */
+    if(_peFormat != NULL)
+    {
+      *_peFormat = ma_format_s16;
+    }
+
+    /* Updates channels */
+    if(_pu32Channels != NULL)
+    {
+      *_pu32Channels = pstQOA->stDesc.channels;
+    }
+
+    /* Updates sample rate */
+    if(_pu32SampleRate != NULL)
+    {
+      *_pu32SampleRate = pstQOA->stDesc.samplerate;
+    }
+
+    /* Updates channel map */
+    if(_peChannelMap != NULL)
+    {
+      ma_channel_map_init_standard(ma_standard_channel_map_default, _peChannelMap, _sChannelMapCap, pstQOA->stDesc.channels);
+    }
+
+    /* Updates result */
+    hResult = MA_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_INVALID_OPERATION;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static ma_result orxSoundSystem_MiniAudio_QOA_GetCursor(ma_data_source *_pstDataSource, ma_uint64 *_pu64Cursor)
+{
+  ma_result hResult;
+
+  /* Valid? */
+  if((_pstDataSource != NULL) && (_pu64Cursor != NULL))
+  {
+    orxSOUNDSYSTEM_QOA *pstQOA;
+
+    /* Gets QOA */
+    pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
+
+    /* Updates result */
+    *_pu64Cursor = pstQOA->u64Cursor;
+
+    /* Updates result */
+    hResult = MA_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_INVALID_ARGS;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static ma_result orxSoundSystem_MiniAudio_QOA_GetLength(ma_data_source *_pstDataSource, ma_uint64 *_pu64Length)
+{
+  ma_result hResult;
+
+  /* Valid? */
+  if(_pstDataSource != NULL)
+  {
+    orxSOUNDSYSTEM_QOA *pstQOA;
+
+    /* Gets QOA */
+    pstQOA = (orxSOUNDSYSTEM_QOA *)_pstDataSource;
+
+    /* Updates result */
+    *_pu64Length = pstQOA->stDesc.samples;
+
+    /* Updates result */
+    hResult = MA_SUCCESS;
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_INVALID_ARGS;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
 /*
  * This function's logic has been lifted straight from 'ma_stbvorbis_init_file', replacing the internal call to `stb_vorbis_open_filename` with `stb_vorbis_open_file`, bypassing the use of the pushdata API.
  */
@@ -1318,7 +1607,7 @@ static ma_result orxSoundSystem_MiniAudio_InitVorbis(ma_read_proc _pfnRead, ma_s
       ma_allocation_callbacks_init_copy(&(_pstVorbis->allocationCallbacks), _pstAllocationCallbacks);
 
       /* Inits vorbis decoder */
-      _pstVorbis->stb = stb_vorbis_open_file(((ma_decoder*)_pReadSeekTellUserData)->data.vfs.file, FALSE, NULL, NULL);
+      _pstVorbis->stb = stb_vorbis_open_file(((ma_decoder *)_pReadSeekTellUserData)->data.vfs.file, FALSE, NULL, NULL);
 
       /* Success? */
       if(_pstVorbis->stb != NULL)
@@ -1396,6 +1685,97 @@ static void orxSoundSystem_MiniAudio_UninitVorbisBackend(void *_pUserData, ma_da
 {
   /* Uninits decoder backend */
   ma_stbvorbis_uninit((ma_stbvorbis *)_pstBackend, _pstAllocationCallbacks);
+
+  /* Frees it */
+  ma_free(_pstBackend, _pstAllocationCallbacks);
+
+  /* Done! */
+  return;
+}
+
+static ma_result orxSoundSystem_MiniAudio_InitQOABackend(void *_pUserData, ma_read_proc _pfnRead, ma_seek_proc _pfnSeek, ma_tell_proc _pfnTell, void *_pReadSeekTellUserData, const ma_decoding_backend_config *_pstConfig, const ma_allocation_callbacks *_pstAllocationCallbacks, ma_data_source **_ppstBackend)
+{
+  ma_result hResult;
+
+  /* VFS? */
+  if(((ma_decoder *)_pReadSeekTellUserData)->onRead == &ma_decoder__on_read_vfs)
+  {
+    qoa_desc  stDesc;
+    size_t    sSize;
+    orxU32    u32HeaderSize;
+    orxU8     au8Buffer[QOA_MIN_FILESIZE];
+
+    /* Is a valid QOA? */
+    if((_pfnRead(_pReadSeekTellUserData, au8Buffer, QOA_MIN_FILESIZE, &sSize) == MA_SUCCESS)
+    && (sSize == QOA_MIN_FILESIZE)
+    && (u32HeaderSize = qoa_decode_header(au8Buffer, QOA_MIN_FILESIZE, &stDesc), u32HeaderSize != 0))
+    {
+      orxSOUNDSYSTEM_QOA *pstQOA;
+
+      /* Allocates the decoder backend */
+      pstQOA = (orxSOUNDSYSTEM_QOA *)ma_malloc(sizeof(orxSOUNDSYSTEM_QOA) + QOA_FRAME_LEN * stDesc.channels * sizeof(orxS16), _pstAllocationCallbacks);
+
+      /* Success? */
+      if(pstQOA != NULL)
+      {
+        ma_data_source_config stDataSourceConfig;
+
+        /* Inits its base */
+        stDataSourceConfig        = ma_data_source_config_init();
+        stDataSourceConfig.vtable = &(sstSoundSystem.stQOADataSourceVTable);
+        hResult                   = ma_data_source_init(&stDataSourceConfig, &(pstQOA->stBase));
+        orxASSERT(hResult == MA_SUCCESS);
+
+        /* Inits its descriptor */
+        orxMemory_Copy(&(pstQOA->stDesc), &stDesc, sizeof(qoa_desc));
+
+        /* Inits its header size */
+        pstQOA->u32HeaderSize = u32HeaderSize;
+
+        /* Inits its cursor */
+        pstQOA->u64Cursor = 0;
+        _pfnSeek(_pReadSeekTellUserData, pstQOA->u32HeaderSize, ma_seek_origin_start);
+
+        /* Inits its callbacks */
+        pstQOA->pfnRead   = _pfnRead;
+        pstQOA->pfnSeek   = _pfnSeek;
+        pstQOA->pfnTell   = _pfnTell;
+        pstQOA->pUserData = _pReadSeekTellUserData;
+
+        /* Stores it */
+        *_ppstBackend = pstQOA;
+      }
+      else
+      {
+        /* Updates result */
+        hResult = MA_OUT_OF_MEMORY;
+      }
+    }
+    else
+    {
+      /* Updates result */
+      hResult = MA_INVALID_FILE;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    hResult = MA_ERROR;
+  }
+
+  /* Done! */
+  return hResult;
+}
+
+static void orxSoundSystem_MiniAudio_UninitQOABackend(void *_pUserData, ma_data_source *_pstBackend, const ma_allocation_callbacks *_pstAllocationCallbacks)
+{
+  orxSOUNDSYSTEM_QOA *pstQOA;
+
+  /* Retrieves QOA data source */
+  pstQOA = (orxSOUNDSYSTEM_QOA *)_pstBackend;
+
+  /* Uninits its data source */
+  ma_data_source_uninit(&(pstQOA->stBase));
 
   /* Frees it */
   ma_free(_pstBackend, _pstAllocationCallbacks);
@@ -2014,7 +2394,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LinkSampleTask(void *_pCon
   /* Inits sound config */
   stSoundConfig             = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
   stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
-  stSoundConfig.flags       = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
+  stSoundConfig.flags       = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerCount == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
   stSoundConfig.pFilePath   = pstSound->stSample.pstSample->stResource.zLocation;
 
   /* Creates sound */
@@ -2090,7 +2470,7 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_LoadStreamTask(void *_pCon
       stSoundConfig             = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
       stSoundConfig.pDataSource = &(pstSound->stBase);
       stSoundConfig.channelsOut = ma_engine_get_channels(&(sstSoundSystem.stEngine));
-      stSoundConfig.flags       = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
+      stSoundConfig.flags       = (sstSoundSystem.u32ListenerCount == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
 
       /* Stores info */
       hResult = ma_data_source_get_data_format(&(pstSound->stStream.stDataSource), NULL, (ma_uint32 *)&(pstSound->u32ChannelNumber), (ma_uint32 *)&(pstSound->u32SampleRate), NULL, 0);
@@ -2721,14 +3101,15 @@ static orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSpatializationTask(void
   if(pstSound->bReady != orxFALSE)
   {
     /* Enable? */
-    if((pstTaskParam->stSpatialization.fMinDistance >= orxFLOAT_0) && (pstTaskParam->stSpatialization.fMaxDistance >= orxFLOAT_0))
+    if((pstTaskParam->stSpatialization.fMinDistance >= orxFLOAT_0) && (pstTaskParam->stSpatialization.fMaxDistance > pstTaskParam->stSpatialization.fMinDistance))
     {
       /* Updates status */
       ma_sound_set_spatialization_enabled(&(pstSound->stSound), orxTRUE);
+      ma_sound_set_attenuation_model(&(pstSound->stSound), ma_attenuation_model_linear);
 
       /* Updates properties */
-      ma_sound_set_min_distance(&(pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * pstTaskParam->stSpatialization.fMinDistance, orxFLOAT_1));
-      ma_sound_set_max_distance(&(pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * pstTaskParam->stSpatialization.fMaxDistance, orxFLOAT_1));
+      ma_sound_set_min_distance(&(pstSound->stSound), sstSoundSystem.fDimensionRatio * pstTaskParam->stSpatialization.fMinDistance);
+      ma_sound_set_max_distance(&(pstSound->stSound), sstSoundSystem.fDimensionRatio * pstTaskParam->stSpatialization.fMaxDistance);
       ma_sound_set_min_gain(&(pstSound->stSound), pstTaskParam->stSpatialization.fMinGain);
       ma_sound_set_max_gain(&(pstSound->stSound), pstTaskParam->stSpatialization.fMaxGain);
       ma_sound_set_rolloff(&(pstSound->stSound), pstTaskParam->stSpatialization.fRollOff);
@@ -2836,36 +3217,46 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     orxConfig_SetFloat(orxSOUNDSYSTEM_KZ_CONFIG_RATIO, sstSoundSystem.fDimensionRatio);
 
     /* Retrieves listener count */
-    sstSoundSystem.u32ListenerNumber = (orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) != orxFALSE) ? orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) : orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER;
+    sstSoundSystem.u32ListenerCount = (orxConfig_HasValue(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) != orxFALSE) ? orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS) : orxSOUNDSYSTEM_KU32_DEFAULT_LISTENER_NUMBER;
 
     /* Should clamp? */
-    if(sstSoundSystem.u32ListenerNumber > MA_ENGINE_MAX_LISTENERS)
+    if(sstSoundSystem.u32ListenerCount > MA_ENGINE_MAX_LISTENERS)
     {
       /* Logs message */
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Too many listeners have been requested [%u]: using the maximum of [%u] listeners instead.", sstSoundSystem.u32ListenerNumber, MA_ENGINE_MAX_LISTENERS);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_SOUND, "Too many listeners have been requested [%u]: using the maximum of [%u] listeners instead.", sstSoundSystem.u32ListenerCount, MA_ENGINE_MAX_LISTENERS);
 
       /* Updates listener count */
-      sstSoundSystem.u32ListenerNumber = MA_ENGINE_MAX_LISTENERS;
+      sstSoundSystem.u32ListenerCount = MA_ENGINE_MAX_LISTENERS;
     }
 
     /* Stores it */
-    orxConfig_SetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS, sstSoundSystem.u32ListenerNumber);
+    orxConfig_SetU32(orxSOUNDSYSTEM_KZ_CONFIG_LISTENERS, sstSoundSystem.u32ListenerCount);
 
     /* Gets reciprocal dimension ratio */
     sstSoundSystem.fRecDimensionRatio = orxFLOAT_1 / sstSoundSystem.fDimensionRatio;
 
-    /* Inits vorbis decoding backend VTable */
+    /* Inits custom decoding backend VTables */
     sstSoundSystem.stVorbisVTable.onInit                                  = &orxSoundSystem_MiniAudio_InitVorbisBackend;
     sstSoundSystem.stVorbisVTable.onUninit                                = &orxSoundSystem_MiniAudio_UninitVorbisBackend;
     sstSoundSystem.apstVTable[0]                                          = &(sstSoundSystem.stVorbisVTable);
 
-    /* Inits data source VTable */
+    sstSoundSystem.stQOAVTable.onInit                                     = &orxSoundSystem_MiniAudio_InitQOABackend;
+    sstSoundSystem.stQOAVTable.onUninit                                   = &orxSoundSystem_MiniAudio_UninitQOABackend;
+    sstSoundSystem.apstVTable[1]                                          = &(sstSoundSystem.stQOAVTable);
+
+    /* Inits data source VTables */
     sstSoundSystem.stStreamVTable.onRead                                  = &orxSoundSystem_MiniAudio_Stream_Read;
     sstSoundSystem.stStreamVTable.onSeek                                  = &orxSoundSystem_MiniAudio_Stream_Seek;
     sstSoundSystem.stStreamVTable.onGetDataFormat                         = &orxSoundSystem_MiniAudio_Stream_GetDataFormat;
     sstSoundSystem.stStreamVTable.onGetCursor                             = &orxSoundSystem_MiniAudio_Stream_GetCursor;
     sstSoundSystem.stStreamVTable.onGetLength                             = &orxSoundSystem_MiniAudio_Stream_GetLength;
     sstSoundSystem.stStreamVTable.onSetLooping                            = &orxSoundSystem_MiniAudio_Stream_SetLooping;
+
+    sstSoundSystem.stQOADataSourceVTable.onRead                           = &orxSoundSystem_MiniAudio_QOA_Read;
+    sstSoundSystem.stQOADataSourceVTable.onSeek                           = &orxSoundSystem_MiniAudio_QOA_Seek;
+    sstSoundSystem.stQOADataSourceVTable.onGetDataFormat                  = &orxSoundSystem_MiniAudio_QOA_GetDataFormat;
+    sstSoundSystem.stQOADataSourceVTable.onGetCursor                      = &orxSoundSystem_MiniAudio_QOA_GetCursor;
+    sstSoundSystem.stQOADataSourceVTable.onGetLength                      = &orxSoundSystem_MiniAudio_QOA_GetLength;
 
     /* Inits custom node VTable */
     sstSoundSystem.stCustomNodeVTable.onProcess                           = &orxSoundSystem_MiniAudio_ProcessCustomNode;
@@ -2946,7 +3337,8 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
         stEngineConfig.pContext             = &(sstSoundSystem.stContext);
         stEngineConfig.pLog                 = &(sstSoundSystem.stLog);
         stEngineConfig.pResourceManager     = &(sstSoundSystem.stResourceManager);
-        stEngineConfig.listenerCount        = sstSoundSystem.u32ListenerNumber;
+        stEngineConfig.listenerCount        = sstSoundSystem.u32ListenerCount;
+        stEngineConfig.channels             = orxConfig_GetU32(orxSOUNDSYSTEM_KZ_CONFIG_CHANNELS);
         stEngineConfig.notificationCallback = &orxSoundSystem_MiniAudio_OnDeviceNotification;
         ma_allocation_callbacks_init_copy(&(stEngineConfig.allocationCallbacks), &(sstSoundSystem.stResourceManagerConfig.allocationCallbacks));
         hResult                             = ma_engine_init(&stEngineConfig, &(sstSoundSystem.stEngine));
@@ -2983,7 +3375,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
               orxEvent_SetHandlerIDFlags(orxSoundSystem_MiniAudio_EventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_BACKGROUND) | orxEVENT_GET_FLAG(orxSYSTEM_EVENT_FOREGROUND), orxEVENT_KU32_MASK_ID_ALL);
 
               /* For all listeners */
-              for(i = 0; i < sstSoundSystem.u32ListenerNumber; i++)
+              for(i = 0; i < sstSoundSystem.u32ListenerCount; i++)
               {
                 /* Inits it */
                 ma_engine_listener_set_position(&(sstSoundSystem.stEngine), i, 0.0f, 0.0f, 0.0f);
@@ -3372,7 +3764,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     if(_pstSample->bBuffer != orxFALSE)
     {
       /* Updates sound config */
-      stSoundConfig.flags       = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
+      stSoundConfig.flags       = (sstSoundSystem.u32ListenerCount == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
       stSoundConfig.pDataSource = &(pstResult->stSample.stDataSource);
 
       /* Creates buffer data source */
@@ -3387,7 +3779,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
     else
     {
       /* Updates sound config */
-      stSoundConfig.flags     = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
+      stSoundConfig.flags     = MA_SOUND_FLAG_DECODE | MA_SOUND_FLAG_ASYNC | ((sstSoundSystem.u32ListenerCount == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0);
       stSoundConfig.pFilePath = _pstSample->stResource.zLocation;
     }
 
@@ -3606,7 +3998,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateStream(orxHANDL
           stSoundConfig               = ma_sound_config_init_2(&(sstSoundSystem.stEngine));
           stSoundConfig.pDataSource   = &(pstResult->stBase);
           stSoundConfig.channelsOut   = ma_engine_get_channels(&(sstSoundSystem.stEngine));
-          stSoundConfig.flags         = (sstSoundSystem.u32ListenerNumber == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
+          stSoundConfig.flags         = (sstSoundSystem.u32ListenerCount == 0) ? MA_SOUND_FLAG_NO_SPATIALIZATION : 0;
 
           /* Stores info */
           pstResult->u32ChannelNumber = _u32ChannelNumber;
@@ -4626,7 +5018,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetVolume(orxSOUNDSYSTEM_SOUND *_
   if(_pstSound->bReady != orxFALSE)
   {
     /* Sets volume */
-    ma_sound_set_volume(&(_pstSound->stSound), _fVolume);
+    ma_sound_set_volume(&(_pstSound->stSound), orxCLAMP(_fVolume, orxFLOAT_0, orxFLOAT_1));
   }
   else
   {
@@ -4634,7 +5026,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetVolume(orxSOUNDSYSTEM_SOUND *_
 
     /* Prepares task parameter */
     pstTaskParam          = orxSoundSystem_MiniAudio_GetTaskParam(_pstSound);
-    pstTaskParam->fVolume = _fVolume;
+    pstTaskParam->fVolume = orxCLAMP(_fVolume, orxFLOAT_0, orxFLOAT_1);
 
     /* Runs set volume task */
     eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetVolumeTask, orxNULL, orxNULL, pstTaskParam);
@@ -4754,26 +5146,28 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSpatialization(orxSOUNDSYSTEM_
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pstSound != orxNULL);
-  orxASSERT(_fMaxDistance >= _fMinDistance);
+  orxASSERT((_fMinDistance < orxFLOAT_0) || (_fMaxDistance < orxFLOAT_0) || (_fMaxDistance > _fMinDistance));
   orxASSERT((_fMinGain >= orxFLOAT_0) && (_fMinGain <= orxFLOAT_1));
   orxASSERT((_fMaxGain >= orxFLOAT_0) && (_fMaxGain <= orxFLOAT_1));
+  orxASSERT(_fMinGain <= _fMaxGain);
   orxASSERT(_fRollOff >= orxFLOAT_0);
 
   /* Is spatialization enabled? */
-  if(sstSoundSystem.u32ListenerNumber > 0)
+  if(sstSoundSystem.u32ListenerCount > 0)
   {
     /* Ready? */
     if(_pstSound->bReady != orxFALSE)
     {
       /* Enable? */
-      if((_fMinDistance >= orxFLOAT_0) && (_fMaxDistance >= orxFLOAT_0))
+      if((_fMinDistance >= orxFLOAT_0) && (_fMaxDistance > _fMinDistance))
       {
         /* Updates status */
         ma_sound_set_spatialization_enabled(&(_pstSound->stSound), orxTRUE);
+        ma_sound_set_attenuation_model(&(_pstSound->stSound), ma_attenuation_model_linear);
 
         /* Updates properties */
-        ma_sound_set_min_distance(&(_pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * _fMinDistance, orxFLOAT_1));
-        ma_sound_set_max_distance(&(_pstSound->stSound), orxMAX(sstSoundSystem.fDimensionRatio * _fMaxDistance, orxFLOAT_1));
+        ma_sound_set_min_distance(&(_pstSound->stSound), sstSoundSystem.fDimensionRatio * _fMinDistance);
+        ma_sound_set_max_distance(&(_pstSound->stSound), sstSoundSystem.fDimensionRatio * _fMaxDistance);
         ma_sound_set_min_gain(&(_pstSound->stSound), _fMinGain);
         ma_sound_set_max_gain(&(_pstSound->stSound), _fMaxGain);
         ma_sound_set_rolloff(&(_pstSound->stSound), _fRollOff);
@@ -4997,7 +5391,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_GetSpatialization(const orxSOUNDS
   orxASSERT(_pfRollOff != orxNULL);
 
   /* Is spatialization enabled? */
-  if((_pstSound->bReady != orxFALSE) && (sstSoundSystem.u32ListenerNumber > 0))
+  if((_pstSound->bReady != orxFALSE) && (sstSoundSystem.u32ListenerCount > 0))
   {
     /* Is sound spatialized? */
     if(_pstSound->stSound.engineNode.isSpatializationDisabled == MA_FALSE)
@@ -5193,7 +5587,7 @@ orxU32 orxFASTCALL orxSoundSystem_MiniAudio_GetListenerCount()
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
 
   /* Updates result */
-  u32Result = sstSoundSystem.u32ListenerNumber;
+  u32Result = sstSoundSystem.u32ListenerCount;
 
   /* Done! */
   return u32Result;
@@ -5203,7 +5597,7 @@ void orxFASTCALL orxSoundSystem_MiniAudio_EnableListener(orxU32 _u32ListenerInde
 {
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-  orxASSERT(_u32ListenerIndex < sstSoundSystem.u32ListenerNumber);
+  orxASSERT(_u32ListenerIndex < sstSoundSystem.u32ListenerCount);
 
   /* Updates listener */
   ma_engine_listener_set_enabled(&(sstSoundSystem.stEngine), _u32ListenerIndex, (_bEnable != orxFALSE) ? MA_TRUE : MA_FALSE);
@@ -5218,7 +5612,7 @@ orxBOOL orxFASTCALL orxSoundSystem_MiniAudio_IsListenerEnabled(orxU32 _u32Listen
 
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
-  orxASSERT(_u32ListenerIndex < sstSoundSystem.u32ListenerNumber);
+  orxASSERT(_u32ListenerIndex < sstSoundSystem.u32ListenerCount);
 
   /* Updates listener */
   bResult = (ma_engine_listener_is_enabled(&(sstSoundSystem.stEngine), _u32ListenerIndex) != MA_FALSE) ? orxTRUE : orxFALSE;
@@ -5234,10 +5628,10 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetListenerPosition(orxU32 _u32In
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvPosition != orxNULL);
-  orxASSERT(_u32Index < sstSoundSystem.u32ListenerNumber);
+  orxASSERT(_u32Index < sstSoundSystem.u32ListenerCount);
 
   /* Valid? */
-  if(_u32Index < sstSoundSystem.u32ListenerNumber)
+  if(_u32Index < sstSoundSystem.u32ListenerCount)
   {
     /* Sets listener position */
     ma_engine_listener_set_position(&(sstSoundSystem.stEngine), _u32Index, sstSoundSystem.fDimensionRatio * _pvPosition->fX, sstSoundSystem.fDimensionRatio * _pvPosition->fY, sstSoundSystem.fDimensionRatio * _pvPosition->fZ);
@@ -5263,10 +5657,10 @@ orxVECTOR *orxFASTCALL orxSoundSystem_MiniAudio_GetListenerPosition(orxU32 _u32I
   /* Checks */
   orxASSERT((sstSoundSystem.u32Flags & orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY) == orxSOUNDSYSTEM_KU32_STATIC_FLAG_READY);
   orxASSERT(_pvPosition != orxNULL);
-  orxASSERT(_u32Index < sstSoundSystem.u32ListenerNumber);
+  orxASSERT(_u32Index < sstSoundSystem.u32ListenerCount);
 
   /* Valid? */
-  if(_u32Index < sstSoundSystem.u32ListenerNumber)
+  if(_u32Index < sstSoundSystem.u32ListenerCount)
   {
     /* Updates result */
     pvResult = _pvPosition;
@@ -5286,6 +5680,12 @@ orxVECTOR *orxFASTCALL orxSoundSystem_MiniAudio_GetListenerPosition(orxU32 _u32I
   /* Done! */
   return pvResult;
 }
+
+#ifdef __orxMSVC__
+
+  #pragma warning(pop)
+
+#endif /* __orxMSVC__ */
 
 
 /***************************************************************************

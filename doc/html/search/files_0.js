@@ -61,7 +61,6 @@ var searchData=
   ['orxresource_2eh',['orxResource.h',['../orx_resource_8h.html',1,'']]],
   ['orxscreenshot_2eh',['orxScreenshot.h',['../orx_screenshot_8h.html',1,'']]],
   ['orxshader_2eh',['orxShader.h',['../orx_shader_8h.html',1,'']]],
-  ['orxshaderpointer_2eh',['orxShaderPointer.h',['../orx_shader_pointer_8h.html',1,'']]],
   ['orxsound_2eh',['orxSound.h',['../orx_sound_8h.html',1,'']]],
   ['orxsoundpointer_2eh',['orxSoundPointer.h',['../orx_sound_pointer_8h.html',1,'']]],
   ['orxsoundsystem_2eh',['orxSoundSystem.h',['../orx_sound_system_8h.html',1,'']]],

@@ -1,8 +1,7 @@
 var annotated_dup =
 [
     [ "orxAABOX", "structorx_a_a_b_o_x.html", "structorx_a_a_b_o_x" ],
-    [ "orxANDROID_KEY_EVENT", "structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t.html", "structorx_a_n_d_r_o_i_d___k_e_y___e_v_e_n_t" ],
-    [ "orxANDROID_SURFACE_CHANGED_EVENT", "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t.html", "structorx_a_n_d_r_o_i_d___s_u_r_f_a_c_e___c_h_a_n_g_e_d___e_v_e_n_t" ],
+    [ "orxANDROID_EVENT_PAYLOAD", "structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d" ],
     [ "orxANIM_CUSTOM_EVENT", "structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t.html", "structorx_a_n_i_m___c_u_s_t_o_m___e_v_e_n_t" ],
     [ "orxANIM_EVENT_PAYLOAD", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d.html", "structorx_a_n_i_m___e_v_e_n_t___p_a_y_l_o_a_d" ],
     [ "orxBODY_DEF", "structorx_b_o_d_y___d_e_f.html", "structorx_b_o_d_y___d_e_f" ],

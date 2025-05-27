@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['orxandroid_5fevent',['orxANDROID_EVENT',['../group__orx_android.html#ga47388b128fba88aa32d4711d93b3def6',1,'orxAndroid.h']]],
   ['orxanim_5fevent',['orxANIM_EVENT',['../group__orx_anim.html#ga35c8d85da4576521adb85018dd46f3e0',1,'orxAnim.h']]],
   ['orxclock_5fevent',['orxCLOCK_EVENT',['../group__orx_clock.html#ga5d61e2fc9dcad950bc23ff7a5525791d',1,'orxClock.h']]],
   ['orxclock_5fmodifier',['orxCLOCK_MODIFIER',['../group__orx_clock.html#ga4ec0bce152b97b492d6308eba27428a3',1,'orxClock.h']]],
@@ -10,6 +11,7 @@ var searchData=
   ['orxdebug_5flevel',['orxDEBUG_LEVEL',['../group__orx_debug.html#gaeb4ae42be59a5cb6239cee52d62e28bb',1,'orxDebug.h']]],
   ['orxdisplay_5fblend_5fmode',['orxDISPLAY_BLEND_MODE',['../group__orx_display.html#gad54faad16cd6fe98b24adbdde00137fc',1,'orxDisplay.h']]],
   ['orxdisplay_5fevent',['orxDISPLAY_EVENT',['../group__orx_display.html#ga28840e9c6ef7b5e7eaf61f0108e806a4',1,'orxDisplay.h']]],
+  ['orxdisplay_5forientation',['orxDISPLAY_ORIENTATION',['../group__orx_display.html#ga6f6093ca383ea024e7687aa04aa48464',1,'orxDisplay.h']]],
   ['orxdisplay_5fprimitive',['orxDISPLAY_PRIMITIVE',['../group__orx_display.html#ga459ca91299563deac47f45c51c8a0ba1',1,'orxDisplay.h']]],
   ['orxdisplay_5fsmoothing',['orxDISPLAY_SMOOTHING',['../group__orx_display.html#ga06d1a571694db550938b75f1c66cd331',1,'orxDisplay.h']]],
   ['orxevent_5ftype',['orxEVENT_TYPE',['../group__orx_event.html#ga4576598772ee9b827a80ca5b6c9a6cd8',1,'orxEvent.h']]],
@@ -31,6 +33,7 @@ var searchData=
   ['orxobject_5fevent',['orxOBJECT_EVENT',['../group__orx_object.html#ga6d3be2b225f5e2ae28fc521d39cbb6b1',1,'orxObject.h']]],
   ['orxphysics_5fevent',['orxPHYSICS_EVENT',['../group__orx_physics.html#ga1c4aaa4ece57611bd21ae6470a07a29d',1,'orxPhysics.h']]],
   ['orxplugin_5fcore_5fid',['orxPLUGIN_CORE_ID',['../group__orx_plugin.html#gac8f3a703cf9f5799bff24a129beee67e',1,'orxPlugin_CoreID.h']]],
+  ['orxplugin_5fentry_5fmode',['orxPLUGIN_ENTRY_MODE',['../group__orx_plugin.html#gae4664793e99ee7a0e349edec961af53f',1,'orxPluginType.h']]],
   ['orxplugin_5ffunction_5fbase_5fid_5fdisplay',['orxPLUGIN_FUNCTION_BASE_ID_DISPLAY',['../group__orx_plugin.html#gab155bd6d5a09b625a08a9fc69c35bcb7',1,'orxPlugin_Display.h']]],
   ['orxplugin_5ffunction_5fbase_5fid_5fjoystick',['orxPLUGIN_FUNCTION_BASE_ID_JOYSTICK',['../group__orx_plugin.html#ga59e301081bf23fee7f474326141f0bc7',1,'orxPlugin_Joystick.h']]],
   ['orxplugin_5ffunction_5fbase_5fid_5fkeyboard',['orxPLUGIN_FUNCTION_BASE_ID_KEYBOARD',['../group__orx_plugin.html#ga25158caaf5e4db6702d80d3c73b945fa',1,'orxPlugin_Keyboard.h']]],

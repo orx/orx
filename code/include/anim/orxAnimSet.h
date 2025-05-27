@@ -248,6 +248,12 @@ extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimCount(cons
  */
 extern orxDLLAPI orxU32 orxFASTCALL                 orxAnimSet_GetAnimIDFromName(const orxANIMSET *_pstAnimSet, const orxSTRING _zAnimName);
 
+/** Gets AnimSet given its name
+ * @param[in]   _zName                              AnimSet name
+ * @return      orxANIMSET / orxNULL
+ */
+extern orxDLLAPI orxANIMSET *orxFASTCALL            orxAnimSet_Get(const orxSTRING _zName);
+
 /** AnimSet name get accessor
  * @param[in]   _pstAnimSet                         Concerned AnimSet
  * @return      orxSTRING / orxSTRING_EMPTY

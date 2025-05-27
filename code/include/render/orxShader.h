@@ -47,7 +47,7 @@
 #include "orxInclude.h"
 #include "math/orxVector.h"
 #include "display/orxTexture.h"
-#include "object/orxObject.h"
+#include "object/orxStructure.h"
 #include "utils/orxLinkList.h"
 
 
@@ -58,7 +58,6 @@ typedef enum __orxSHADER_PARAM_TYPE_t
   orxSHADER_PARAM_TYPE_FLOAT = 0,
   orxSHADER_PARAM_TYPE_TEXTURE,
   orxSHADER_PARAM_TYPE_VECTOR,
-  orxSHADER_PARAM_TYPE_TIME,
 
   orxSHADER_PARAM_TYPE_NUMBER,
 
@@ -154,7 +153,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_ClearCache();
 
 /** Starts a shader
  * @param[in] _pstShader              Concerned Shader
- * @param[in] _pstOwner               Owner structure (orxOBJECT / orxVIEWPORT / orxNULL)
+ * @param[in] _pstOwner               Owner structure (orxOBJECT / orxVIEWPORT)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_Start(const orxSHADER *_pstShader, const orxSTRUCTURE *_pstOwner);
@@ -197,7 +196,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddVectorParam(orxSHAD
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _fWrap                  Time will wrap around after that amount of seconds, <= 0 to ignore
- * @param[in] _zFXName                FX to apply as transformation (should be of type FLOAT), orxNULL for none
+ * @param[in] _zFXName                FX to apply as transformation (should be of type FLOAT or VECTOR), orxNULL for none
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER *_pstShader, const orxSTRING _zName, orxFLOAT _fWrap, const orxSTRING _zFXName);
@@ -211,7 +210,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_AddTimeParam(orxSHADER
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetFloatParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxFLOAT *_afValueList);
 
-/** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
+/** Sets the default value for a given texture parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable, has to match the size used when declaring the parameter
@@ -220,7 +219,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetFloatParam(const or
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL          orxShader_SetTextureParam(const orxSHADER *_pstShader, const orxSTRING _zName, orxU32 _u32ArraySize, const orxTEXTURE **_apstValueList);
 
-/** Sets the default value for a given float parameter in a shader (parameters need to be added beforehand)
+/** Sets the default value for a given vector parameter in a shader (parameters need to be added beforehand)
  * @param[in] _pstShader              Concerned Shader
  * @param[in] _zName                  Parameter's literal name
  * @param[in] _u32ArraySize           Parameter's array size, 0 for simple variable, has to match the size used when declaring the parameter
@@ -248,6 +247,12 @@ extern orxDLLAPI void orxFASTCALL               orxShader_Enable(orxSHADER *_pst
  * @return      orxTRUE if enabled, orxFALSE otherwise
  */
 extern orxDLLAPI orxBOOL orxFASTCALL            orxShader_IsEnabled(const orxSHADER *_pstShader);
+
+/** Gets shader given its name
+ * @param[in]   _zName                Shader name
+ * @return      orxSHADER / orxNULL
+ */
+extern orxDLLAPI orxSHADER *orxFASTCALL         orxShader_Get(const orxSTRING _zName);
 
 /** Gets shader name
  * @param[in]   _pstShader            Concerned Shader

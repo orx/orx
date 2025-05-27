@@ -71,6 +71,16 @@ typedef struct __orxLOCALE_STATIC_t
 
 } orxLOCALE_STATIC;
 
+/** Key callback context
+ */
+typedef struct __orxLOCALE_KEY_CONTEXT_t
+{
+  orxLOCALE_KEY_FUNCTION  pfnKeyCallback;
+  const orxSTRING         zGroup;
+  void                   *pContext;
+
+} orxLOCALE_KEY_CONTEXT;
+
 
 /***************************************************************************
  * Static variables                                                        *
@@ -173,12 +183,44 @@ static orxINLINE void orxLocale_UnregisterCommands()
   return;
 }
 
+/** Key callback
+ */
+static orxBOOL orxFASTCALL orxLocale_KeyCallback(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
+{
+  orxLOCALE_KEY_CONTEXT  *pstContext;
+  orxBOOL                 bResult;
+
+  /* Gets context */
+  pstContext = (orxLOCALE_KEY_CONTEXT *)_pContext;
+
+  /* Runs callback */
+  bResult = pstContext->pfnKeyCallback(_zKeyName, pstContext->zGroup, pstContext->pContext);
+
+  /* Done! */
+  return bResult;
+}
+
+static orxBOOL orxFASTCALL orxLocale_LoadGroupCallback(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
+{
+  orxBOOL bResult = orxTRUE;
+
+  /* Is a group? */
+  if((orxString_Compare(_zKeyName, orxLOCALE_KZ_CONFIG_LANGUAGE_LIST) != 0)
+  && (orxString_Compare(_zKeyName, orxLOCALE_KZ_CONFIG_LANGUAGE) != 0))
+  {
+    /* Selects its language */
+    orxLocale_SelectLanguage(orxConfig_GetString(_zKeyName), _zKeyName);
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Loads locale languages selection from config
  */
 static orxINLINE void orxLocale_Load()
 {
   const orxSTRING zLanguage = orxNULL;
-  orxU32          i, u32KeyCount;
 
   /* Pushes locale config section */
   orxConfig_PushSection(orxLOCALE_KZ_CONFIG_SECTION);
@@ -203,22 +245,8 @@ static orxINLINE void orxLocale_Load()
     orxLocale_SelectLanguage(zLanguage, orxNULL);
   }
 
-  /* For all config keys */
-  for(i = 0, u32KeyCount = orxConfig_GetKeyCount(); i < u32KeyCount; i++)
-  {
-    const orxSTRING zKey;
-
-    /* Gets it */
-    zKey = orxConfig_GetKey(i);
-
-    /* Is a group? */
-    if((orxString_Compare(zKey, orxLOCALE_KZ_CONFIG_LANGUAGE_LIST) != 0)
-    && (orxString_Compare(zKey, orxLOCALE_KZ_CONFIG_LANGUAGE) != 0))
-    {
-      /* Selects it */
-      orxLocale_SelectLanguage(orxConfig_GetString(zKey), zKey);
-    }
-  }
+  /* Loads all groups */
+  orxConfig_ForAllKeys(orxLocale_LoadGroupCallback, orxTRUE, orxNULL);
 
   /* Pops config section */
   orxConfig_PopSection();
@@ -369,7 +397,7 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage, const
         for(i = 0, s32LanguageCount = orxConfig_GetListCount(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST); i < s32LanguageCount; i++)
         {
           /* Found? */
-          if(orxString_Compare(_zLanguage, orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i)) == 0)
+          if(orxString_Compare(zLanguage, orxConfig_GetListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, i)) == 0)
           {
             /* Updates status */
             bFound = orxTRUE;
@@ -380,14 +408,14 @@ orxSTATUS orxFASTCALL orxLocale_SelectLanguage(const orxSTRING _zLanguage, const
         /* New language? */
         if(bFound == orxFALSE)
         {
-          const orxSTRING azLanguage[] = {_zLanguage};
+          const orxSTRING azLanguage[] = {zLanguage};
 
           /* Adds it to the list */
           orxConfig_AppendListString(orxLOCALE_KZ_CONFIG_LANGUAGE_LIST, azLanguage, 1);
         }
 
         /* Stores it in config */
-        orxConfig_SetString((_zGroup != orxNULL) ? _zGroup : orxLOCALE_KZ_CONFIG_LANGUAGE, _zLanguage);
+        orxConfig_SetString((_zGroup != orxNULL) ? _zGroup : orxLOCALE_KZ_CONFIG_LANGUAGE, zLanguage);
 
         /* Pops config section */
         orxConfig_PopSection();
@@ -596,7 +624,7 @@ const orxSTRING orxFASTCALL orxLocale_GetString(const orxSTRING _zKey, const orx
     orxConfig_PushSection(zLanguage);
 
     /* Updates result */
-    zResult = orxConfig_GetString(_zKey);
+    zResult = orxString_Store(orxConfig_GetString(_zKey));
 
     /* Pops config section */
     orxConfig_PopSection();
@@ -665,17 +693,20 @@ orxSTATUS orxFASTCALL orxLocale_SetString(const orxSTRING _zKey, const orxSTRING
   return eResult;
 }
 
-/** Gets key count for the current language
+/** Runs a callback for all keys of the current language
+ * @param[in] _pfnKeyCallback   Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit)
  * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
- * @return Key count the current language if valid, 0 otherwise
+ * @param[in] _pContext         User defined context, passed to the callback
+ * @return orxSTATUS_SUCCESS if a current language is present and all keys were processed without interruption, orxSTATUS_FAILURE otherwise
  */
-orxU32 orxFASTCALL orxLocale_GetKeyCount(const orxSTRING _zGroup)
+orxSTATUS orxFASTCALL orxLocale_ForAllKeys(const orxLOCALE_KEY_FUNCTION _pfnKeyCallback, const orxSTRING _zGroup, void *_pContext)
 {
   const orxSTRING zLanguage;
-  orxU32          u32Result;
+  orxSTATUS       eResult;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
+  orxASSERT(_pfnKeyCallback != orxNULL);
 
   /* Gets current language */
   zLanguage = orxLocale_GetCurrentLanguage(_zGroup);
@@ -683,11 +714,18 @@ orxU32 orxFASTCALL orxLocale_GetKeyCount(const orxSTRING _zGroup)
   /* Found? */
   if(zLanguage != orxSTRING_EMPTY)
   {
+    orxLOCALE_KEY_CONTEXT stContext;
+
+    /* Inits context */
+    stContext.pfnKeyCallback  = _pfnKeyCallback;
+    stContext.zGroup          = _zGroup;
+    stContext.pContext        = _pContext;
+
     /* Pushes its section */
     orxConfig_PushSection(zLanguage);
 
-    /* Updates result */
-    u32Result = orxConfig_GetKeyCount();
+    /* Runs callback on all keys */
+    eResult = orxConfig_ForAllKeys(orxLocale_KeyCallback, orxTRUE, &stContext);
 
     /* Pops config section */
     orxConfig_PopSection();
@@ -695,47 +733,9 @@ orxU32 orxFASTCALL orxLocale_GetKeyCount(const orxSTRING _zGroup)
   else
   {
     /* Updates result */
-    u32Result = 0;
+    eResult = orxSTATUS_FAILURE;
   }
 
   /* Done! */
-  return u32Result;
-}
-
-/** Gets key for the current language at the given index
- * @param[in] _u32KeyIndex      Index of the desired key
- * @param[in] _zGroup           Concerned group, orxNULL for default/fallback one
- * @return orxSTRING if exist, orxNULL otherwise
- */
-const orxSTRING orxFASTCALL orxLocale_GetKey(orxU32 _u32KeyIndex, const orxSTRING _zGroup)
-{
-  const orxSTRING zLanguage;
-  const orxSTRING zResult;
-
-  /* Checks */
-  orxASSERT(orxFLAG_TEST(sstLocale.u32Flags, orxLOCALE_KU32_STATIC_FLAG_READY));
-
-  /* Gets current language */
-  zLanguage = orxLocale_GetCurrentLanguage(_zGroup);
-
-  /* Found? */
-  if(zLanguage != orxSTRING_EMPTY)
-  {
-    /* Pushes its section */
-    orxConfig_PushSection(zLanguage);
-
-    /* Updates result */
-    zResult = orxConfig_GetKey(_u32KeyIndex);
-
-    /* Pops config section */
-    orxConfig_PopSection();
-  }
-  else
-  {
-    /* Updates result */
-    zResult = orxSTRING_EMPTY;
-  }
-
-  /* Done! */
-  return zResult;
+  return eResult;
 }

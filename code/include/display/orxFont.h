@@ -47,11 +47,32 @@
 
 #include "display/orxTexture.h"
 #include "math/orxVector.h"
+#include "render/orxShader.h"
 
 
 /** Misc defines
  */
+#define orxFONT_KZ_CONFIG_TEXTURE_NAME                "Texture"
+#define orxFONT_KZ_CONFIG_CHARACTER_LIST              "CharacterList"
+#define orxFONT_KZ_CONFIG_CHARACTER_SIZE              "CharacterSize"
+#define orxFONT_KZ_CONFIG_CHARACTER_HEIGHT            "CharacterHeight"
+#define orxFONT_KZ_CONFIG_CHARACTER_WIDTH_LIST        "CharacterWidthList"
+#define orxFONT_KZ_CONFIG_CHARACTER_SPACING           "CharacterSpacing"
+#define orxFONT_KZ_CONFIG_CHARACTER_PADDING           "CharacterPadding"
+#define orxFONT_KZ_CONFIG_TEXTURE_ORIGIN              "TextureOrigin"
+#define orxFONT_KZ_CONFIG_TEXTURE_SIZE                "TextureSize"
+#define orxFONT_KZ_CONFIG_KEEP_IN_CACHE               "KeepInCache"
+#define orxFONT_KZ_CONFIG_TYPEFACE                    "Typeface"
+#define orxFONT_KZ_CONFIG_SDF                         "SDF"
+#define orxFONT_KZ_CONFIG_SHADER                      "Shader"
+
+#define orxFONT_KZ_ASCII                              "ascii"
+#define orxFONT_KZ_ANSI                               "ansi"
+
 #define orxFONT_KZ_DEFAULT_FONT_NAME                  "orx:font:default"
+#define orxFONT_KZ_DEFAULT_TEXTURE_NAME               "orx:texture:font:default"
+#define orxFONT_KZ_SDF_SHADER_NAME                    "orx:shader:font:sdf"
+#define orxFONT_KZ_RESOURCE_GROUP                     "Font"
 
 
 /** Internal font structure */
@@ -89,11 +110,10 @@ extern orxDLLAPI orxFONT *orxFASTCALL                 orxFont_CreateFromConfig(c
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_Delete(orxFONT *_pstFont);
 
-
-/** Gets default font
- * @return      Default font / orxNULL
+/** Clears cache (if any Font is still in active use, it'll remain in memory until not referenced anymore)
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI const orxFONT *orxFASTCALL           orxFont_GetDefaultFont();
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_ClearCache();
 
 
 /** Sets font's texture
@@ -146,6 +166,20 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetOrigin(orxFONT 
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetSize(orxFONT *_pstFont, const orxVECTOR *_pvSize);
 
+/** Sets font's shader
+ * @param[in]   _pstFont      Concerned font
+ * @param[in]   _pstShader    Shader to set, orxNULL to remove the current one
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetShader(orxFONT *_pstFont, orxSHADER *_pstShader);
+
+/** Sets font's shader from config
+ * @param[in]   _pstFont      Concerned font
+ * @param[in]   _zShaderID    Config ID of the shader to set, orxNULL to remove the current one
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxFont_SetShaderFromConfig(orxFONT *_pstFont, const orxSTRING _zShaderID);
+
 
 /** Gets font's texture
  * @param[in]   _pstFont      Concerned font
@@ -193,6 +227,18 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetOrigin(const or
  */
 extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetSize(const orxFONT *_pstFont, orxVECTOR *_pvSize);
 
+/** Gets font's shader
+ * @param[in]   _pstFont      Concerned font
+ * @return     orxSHADER / orxNULL
+ */
+extern orxDLLAPI const orxSHADER *orxFASTCALL         orxFont_GetShader(const orxFONT *_pstFont);
+
+/** Is Font SDF?
+ * @param[in]   _pstFont      Concerned font
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL                  orxFont_IsSDF(const orxFONT *_pstFont);
+
 
 /** Gets font's map
  * @param[in]   _pstFont      Concerned font
@@ -200,6 +246,12 @@ extern orxDLLAPI orxVECTOR *orxFASTCALL               orxFont_GetSize(const orxF
  */
 extern orxDLLAPI const orxCHARACTER_MAP *orxFASTCALL  orxFont_GetMap(const orxFONT *_pstFont);
 
+
+/** Gets font given its name
+ * @param[in]   _zName        Font name
+ * @return      orxFONT / orxNULL
+ */
+extern orxDLLAPI orxFONT *orxFASTCALL                 orxFont_Get(const orxSTRING _zName);
 
 /** Gets font name
  * @param[in]   _pstFont      Concerned font

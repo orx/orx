@@ -82,6 +82,13 @@
 #endif /* __orxPROFILER__ */
 
 
+/** Memory helpers */
+#if !defined(__orxWINDOWS__)
+  #include <alloca.h>
+#endif /* !__orxWINDOWS__ */
+#define orxMemory_StackAllocate(x)                        alloca((x))
+
+
 /** Memory type
  */
 typedef enum __orxMEMORY_TYPE_t
@@ -115,6 +122,15 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                    orxMemory_Init();
 /** Exits from the memory module
  */
 extern orxDLLAPI void orxFASTCALL                         orxMemory_Exit();
+
+/** Inits the memory module for the current thread
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxMemory_InitThread();
+
+/** Exits from the memory module for the current thread
+ */
+extern orxDLLAPI void orxFASTCALL                         orxMemory_ExitThread();
 
 /** Allocates some memory in the system and returns a pointer to it
  * @param[in]  _u32Size  Size of the memory to allocate

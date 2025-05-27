@@ -18,7 +18,6 @@
 		E02F77CA2737F4DE00C2B002 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E02F77C92737F4DE00C2B002 /* CoreFoundation.framework */; };
 		E04694DF154E9BCF00719172 /* orxCommand.c in Sources */ = {isa = PBXBuildFile; fileRef = E04694DE154E9BCF00719172 /* orxCommand.c */; };
 		E04DA16E2737FADA0074735B /* orxSoundSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = E04DA16D2737FAD40074735B /* orxSoundSystem.m */; };
-		E054558015172B1900917458 /* orxDisplay.m in Sources */ = {isa = PBXBuildFile; fileRef = E054557F15172B1900917458 /* orxDisplay.m */; };
 		E054558315172B2500917458 /* orxJoystick.m in Sources */ = {isa = PBXBuildFile; fileRef = E054558215172B2500917458 /* orxJoystick.m */; };
 		E054558615172B3000917458 /* orxMouse.m in Sources */ = {isa = PBXBuildFile; fileRef = E054558515172B3000917458 /* orxMouse.m */; };
 		E054559E15172B9500917458 /* orxTest.ini in Resources */ = {isa = PBXBuildFile; fileRef = E054558C15172B9500917458 /* orxTest.ini */; };
@@ -68,7 +67,6 @@
 		E059C65C1116BC610086879B /* orxCamera.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C5281116B8E70086879B /* orxCamera.c */; };
 		E059C65F1116BC610086879B /* orxRender.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C52B1116B8E70086879B /* orxRender.c */; };
 		E059C6601116BC610086879B /* orxShader.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C52C1116B8E70086879B /* orxShader.c */; };
-		E059C6611116BC610086879B /* orxShaderPointer.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C52D1116B8E70086879B /* orxShaderPointer.c */; };
 		E059C6621116BC610086879B /* orxViewport.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C52E1116B8E70086879B /* orxViewport.c */; };
 		E059C6631116BC610086879B /* orxSound.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C5301116B8E70086879B /* orxSound.c */; };
 		E059C6641116BC610086879B /* orxSoundPointer.c in Sources */ = {isa = PBXBuildFile; fileRef = E059C5311116B8E70086879B /* orxSoundPointer.c */; };
@@ -81,6 +79,7 @@
 		E06F618E16B3A629005CE28D /* orxResource.c in Sources */ = {isa = PBXBuildFile; fileRef = E06F618816B3A5FC005CE28D /* orxResource.c */; };
 		E07AABF2114BDA17002741D3 /* orxFont.c in Sources */ = {isa = PBXBuildFile; fileRef = E07AABF1114BDA17002741D3 /* orxFont.c */; };
 		E080343F1842FEB10047B457 /* orxThread.c in Sources */ = {isa = PBXBuildFile; fileRef = E080343E1842FEB10047B457 /* orxThread.c */; };
+		E08235942D6D85EF001E63F1 /* orxDisplay.mm in Sources */ = {isa = PBXBuildFile; fileRef = E08235932D6D85EF001E63F1 /* orxDisplay.mm */; };
 		E0DC952A113F4E6D0080D5C1 /* orxiOS.m in Sources */ = {isa = PBXBuildFile; fileRef = E0DC9529113F4E6D0080D5C1 /* orxiOS.m */; };
 		E0ECC67D111FB3AB0057CD72 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0ECC634111E575E0057CD72 /* OpenGLES.framework */; };
 		E0ECC6E511237E650057CD72 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0ECC6E411237E650057CD72 /* QuartzCore.framework */; };
@@ -119,7 +118,6 @@
 		E04694DE154E9BCF00719172 /* orxCommand.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxCommand.c; sourceTree = "<group>"; };
 		E04DA16D2737FAD40074735B /* orxSoundSystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = orxSoundSystem.m; sourceTree = "<group>"; };
 		E04DA1702737FAEA0074735B /* orxPhysics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = orxPhysics.cpp; sourceTree = "<group>"; };
-		E054557F15172B1900917458 /* orxDisplay.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxDisplay.m; sourceTree = "<group>"; };
 		E054558215172B2500917458 /* orxJoystick.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxJoystick.m; sourceTree = "<group>"; };
 		E054558515172B3000917458 /* orxMouse.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxMouse.m; sourceTree = "<group>"; };
 		E054558C15172B9500917458 /* orxTest.ini */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = text; path = orxTest.ini; sourceTree = "<group>"; };
@@ -168,7 +166,6 @@
 		E059C5281116B8E70086879B /* orxCamera.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxCamera.c; sourceTree = "<group>"; };
 		E059C52B1116B8E70086879B /* orxRender.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxRender.c; sourceTree = "<group>"; };
 		E059C52C1116B8E70086879B /* orxShader.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxShader.c; sourceTree = "<group>"; };
-		E059C52D1116B8E70086879B /* orxShaderPointer.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxShaderPointer.c; sourceTree = "<group>"; };
 		E059C52E1116B8E70086879B /* orxViewport.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxViewport.c; sourceTree = "<group>"; };
 		E059C5301116B8E70086879B /* orxSound.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxSound.c; sourceTree = "<group>"; };
 		E059C5311116B8E70086879B /* orxSoundPointer.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxSoundPointer.c; sourceTree = "<group>"; };
@@ -233,7 +230,6 @@
 		E059C5D11116BABE0086879B /* orxCamera.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxCamera.h; sourceTree = "<group>"; };
 		E059C5D41116BABE0086879B /* orxRender.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxRender.h; sourceTree = "<group>"; };
 		E059C5D51116BABE0086879B /* orxShader.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxShader.h; sourceTree = "<group>"; };
-		E059C5D61116BABE0086879B /* orxShaderPointer.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxShaderPointer.h; sourceTree = "<group>"; };
 		E059C5D71116BABE0086879B /* orxViewport.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxViewport.h; sourceTree = "<group>"; };
 		E059C5D91116BABE0086879B /* orxSound.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxSound.h; sourceTree = "<group>"; };
 		E059C5DA1116BABE0086879B /* orxSoundPointer.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxSoundPointer.h; sourceTree = "<group>"; };
@@ -253,6 +249,7 @@
 		E07AABF1114BDA17002741D3 /* orxFont.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxFont.c; sourceTree = "<group>"; };
 		E080343D1842FEA10047B457 /* orxThread.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxThread.h; sourceTree = "<group>"; };
 		E080343E1842FEB10047B457 /* orxThread.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxThread.c; sourceTree = "<group>"; };
+		E08235932D6D85EF001E63F1 /* orxDisplay.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = orxDisplay.mm; sourceTree = "<group>"; };
 		E0DC9529113F4E6D0080D5C1 /* orxiOS.m */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.objc; path = orxiOS.m; sourceTree = "<group>"; };
 		E0E6BBD91371155100FFE48E /* orxProfiler.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxProfiler.h; sourceTree = "<group>"; };
 		E0E6BBDA1371155F00FFE48E /* orxProfiler.c */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.c; path = orxProfiler.c; sourceTree = "<group>"; };
@@ -358,7 +355,7 @@
 		E054557E15172B1900917458 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				E054557F15172B1900917458 /* orxDisplay.m */,
+				E08235932D6D85EF001E63F1 /* orxDisplay.mm */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -591,7 +588,6 @@
 				E059C5281116B8E70086879B /* orxCamera.c */,
 				E059C52B1116B8E70086879B /* orxRender.c */,
 				E059C52C1116B8E70086879B /* orxShader.c */,
-				E059C52D1116B8E70086879B /* orxShaderPointer.c */,
 				E059C52E1116B8E70086879B /* orxViewport.c */,
 			);
 			path = render;
@@ -802,7 +798,6 @@
 				E059C5D11116BABE0086879B /* orxCamera.h */,
 				E059C5D41116BABE0086879B /* orxRender.h */,
 				E059C5D51116BABE0086879B /* orxShader.h */,
-				E059C5D61116BABE0086879B /* orxShaderPointer.h */,
 				E059C5D71116BABE0086879B /* orxViewport.h */,
 			);
 			path = render;
@@ -1013,7 +1008,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E054558015172B1900917458 /* orxDisplay.m in Sources */,
 				E054558315172B2500917458 /* orxJoystick.m in Sources */,
 				E054558615172B3000917458 /* orxMouse.m in Sources */,
 				E059C6381116BC610086879B /* orxAnim.c in Sources */,
@@ -1043,6 +1037,7 @@
 				E059C64E1116BC610086879B /* orxParam.c in Sources */,
 				E059C6501116BC610086879B /* orxMath.c in Sources */,
 				E059C6511116BC610086879B /* orxVector.c in Sources */,
+				E08235942D6D85EF001E63F1 /* orxDisplay.mm in Sources */,
 				E059C6521116BC610086879B /* orxBank.c in Sources */,
 				E059C6531116BC610086879B /* orxMemory.c in Sources */,
 				E059C6541116BC610086879B /* orxFrame.c in Sources */,
@@ -1058,7 +1053,6 @@
 				E04DA16E2737FADA0074735B /* orxSoundSystem.m in Sources */,
 				E059C65F1116BC610086879B /* orxRender.c in Sources */,
 				E059C6601116BC610086879B /* orxShader.c in Sources */,
-				E059C6611116BC610086879B /* orxShaderPointer.c in Sources */,
 				E059C6621116BC610086879B /* orxViewport.c in Sources */,
 				E059C6631116BC610086879B /* orxSound.c in Sources */,
 				E059C6641116BC610086879B /* orxSoundPointer.c in Sources */,
@@ -1288,7 +1282,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../../lib/static/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/src ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
+				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_truetype ../../../../extern/msdfgen ../../../../extern/qoa ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/src ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
 				WARNING_CFLAGS = "-Wno-unused-value";
 			};
 			name = Debug;
@@ -1341,7 +1335,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../../lib/static/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/src ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
+				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_truetype ../../../../extern/qoa ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/src ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
 				WARNING_CFLAGS = (
 					"-Qunused-arguments",
 					"-Wno-unused-value",
@@ -1472,7 +1466,7 @@
 				SDKROOT = iphoneos;
 				SYMROOT = ../../../lib/static/ios;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/src ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
+				USER_HEADER_SEARCH_PATHS = "../../../../extern/stb_image ../../../../extern/stb_truetype ../../../../extern/qoa ../../../../extern/qoi ../../../../extern/stb_vorbis ../../../../extern/miniaudio ../../../../extern/libwebp/src ../../../../extern/LiquidFun-1.1.0/include ../../../../extern/rpmalloc/rpmalloc ../../../../extern/xxHash ../../../include";
 				WARNING_CFLAGS = (
 					"-Qunused-arguments",
 					"-Wno-unused-value",

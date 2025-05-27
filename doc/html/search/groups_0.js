@@ -44,7 +44,6 @@ var searchData=
   ['orxresource',['OrxResource',['../group__orx_resource.html',1,'']]],
   ['orxscreenshot',['OrxScreenshot',['../group__orx_screenshot.html',1,'']]],
   ['orxshader',['OrxShader',['../group__orx_shader.html',1,'']]],
-  ['orxshaderpointer',['OrxShaderPointer',['../group__orx_shader_pointer.html',1,'']]],
   ['orxsound',['OrxSound',['../group__orx_sound.html',1,'']]],
   ['orxsoundpointer',['OrxSoundPointer',['../group__orx_sound_pointer.html',1,'']]],
   ['orxsoundsystem',['OrxSoundSystem',['../group__orx_sound_system.html',1,'']]],

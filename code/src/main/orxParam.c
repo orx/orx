@@ -431,6 +431,7 @@ void orxFASTCALL orxParam_Setup()
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_CONFIG);
   orxModule_AddDependency(orxMODULE_ID_PARAM, orxMODULE_ID_EVENT);
 
+  /* Done! */
   return;
 }
 

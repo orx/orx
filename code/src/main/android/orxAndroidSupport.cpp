@@ -41,6 +41,7 @@
 
 #define MODULE "orxAndroidSupport"
 #define LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, MODULE, __VA_ARGS__)
+#define LOGW(...)  __android_log_print(ANDROID_LOG_WARN, MODULE, __VA_ARGS__)
 #define LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, MODULE, __VA_ARGS__)
 #define LOGI(...)  __android_log_print(ANDROID_LOG_INFO, MODULE, __VA_ARGS__)
 #define LOGV(...)  __android_log_print(ANDROID_LOG_VERBOSE, MODULE, __VA_ARGS__)
@@ -48,6 +49,7 @@
 #else /* __orxDEBUG__ */
 
 #define LOGE(...)
+#define LOGW(...)
 #define LOGD(...)
 #define LOGI(...)
 #define LOGV(...)
@@ -65,6 +67,7 @@
 #define orxANDROID_KU32_ARGUMENT_BUFFER_SIZE    256    /**< Argument buffer size */
 #define orxANDROID_KU32_MAX_ARGUMENT_COUNT      16     /**< Maximum number of arguments */
 #define orxANDROID_KU32_KEY_BUFFER_SIZE         (AKEYCODE_PROFILE_SWITCH + 1)
+#define orxANDROID_KU32_MAX_MOTION_POINTERS     GAMEACTIVITY_MAX_NUM_POINTERS_IN_MOTION_EVENT /**< Maximum number of pointers, default to 8 */
 
 #define orxANDROID_GET_ACTION_INDEX(ACTION)     (((ACTION) & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT)
 #define orxANDROID_GET_AXIS_X(EV, INDEX)        GameActivityPointerAxes_getX(&(EV)->pointers[INDEX])
@@ -89,6 +92,7 @@ typedef struct __orxANDROID_STATIC_t
   uint64_t             activeAxisIds;
   orxCHAR              zArguments[orxANDROID_KU32_ARGUMENT_BUFFER_SIZE];
   orxU32               au32PendingKeyActions[orxANDROID_KU32_KEY_BUFFER_SIZE];
+  orxBOOL              au32PendingMotionActions[orxANDROID_KU32_MAX_MOTION_POINTERS];
   struct android_app  *app;
 } orxANDROID_STATIC;
 
@@ -241,7 +245,7 @@ extern "C" ANativeWindow *orxAndroid_GetNativeWindow()
 
   while((sstAndroid.app->window == NULL) && !sstAndroid.app->destroyRequested)
   {
-    LOGI("no window received yet");
+    LOGI("No window received yet");
     orxAndroid_PumpEvents();
   }
 
@@ -334,6 +338,41 @@ extern "C" orxU32 orxAndroid_JNI_GetRotation()
   return rotation;
 }
 
+extern "C" orxFLOAT orxAndroid_JNI_GetPhysicalFrameRate()
+{
+  orxFLOAT fRefreshRate;
+
+  /* Note : Display.Mode.getRefreshRate() returns the physical refresh rate starting with Android S */
+  if(orxAndroid_GetSdkVersion() < __ANDROID_API_S__)
+  {
+    return orxFLOAT_0;
+  }
+
+  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
+
+  pstEnv->PushLocalFrame(16);
+
+  /* Gets display structure */
+  jobject display = orxAndroid_JNI_getDisplay(pstEnv);
+
+  /* Finds classes */
+  jclass displayClass = pstEnv->FindClass("android/view/Display");
+  jclass modeClass = pstEnv->FindClass("android/view/Display$Mode");
+
+  /* Finds methods */
+  jmethodID getModeMethod = pstEnv->GetMethodID(displayClass, "getMode", "()Landroid/view/Display$Mode;");
+  jmethodID getRefreshRateMethod = pstEnv->GetMethodID(modeClass, "getRefreshRate", "()F");
+
+  /* Calls method and stores refresh rate */
+  jobject mode = pstEnv->CallObjectMethod(display, getModeMethod);
+  fRefreshRate = float(pstEnv->CallFloatMethod(mode, getRefreshRateMethod));
+
+  /* Frees all the local references */
+  pstEnv->PopLocalFrame(NULL);
+
+  return fRefreshRate;
+}
+
 extern "C" void orxAndroid_SetKeyFilter(android_key_event_filter _pfnFilter)
 {
   android_app_set_key_event_filter(sstAndroid.app, _pfnFilter);
@@ -363,19 +402,16 @@ static void orxAndroid_CheckForNewAxis()
 
 static void orxAndroid_SendKey(orxU32 _u32KeyCode, orxU32 _u32Action)
 {
-  orxANDROID_KEY_EVENT stKeyEvent;
+  orxANDROID_EVENT_PAYLOAD stPayload;
 
   /* Checks */
   orxASSERT((_u32Action == AKEY_EVENT_ACTION_DOWN) || (_u32Action == AKEY_EVENT_ACTION_UP));
 
   /* Inits event payload */
-  orxMemory_Zero(&stKeyEvent, sizeof(orxANDROID_KEY_EVENT));
-  stKeyEvent.u32KeyCode = _u32KeyCode;
-  stKeyEvent.u32Action  = (_u32Action == AKEY_EVENT_ACTION_DOWN)
-                          ? orxANDROID_EVENT_KEYBOARD_DOWN
-                          : orxANDROID_EVENT_KEYBOARD_UP;
+  orxMemory_Zero(&stPayload, sizeof(orxANDROID_EVENT_PAYLOAD));
+  stPayload.stKey.u32KeyCode = _u32KeyCode;
 
-  orxEVENT_SEND(orxANDROID_EVENT_TYPE_KEYBOARD, 0, orxNULL, orxNULL, &stKeyEvent);
+  orxEVENT_SEND(orxEVENT_TYPE_ANDROID, (_u32Action == AKEY_EVENT_ACTION_DOWN) ? orxANDROID_EVENT_KEY_DOWN : orxANDROID_EVENT_KEY_UP, orxNULL, orxNULL, &stPayload);
 }
 
 static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
@@ -468,8 +504,11 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
       if(Paddleboat_processGameActivityMotionInputEvent(event, sizeof(GameActivityMotionEvent)) == 0)
       {
         /* Didn't belong to a game controller, let's process it ourselves. */
-
+        int32_t iIndex;
         orxSYSTEM_EVENT_PAYLOAD stPayload;
+
+        /* Inits event payload */
+        orxMemory_Zero(&stPayload, sizeof(orxANDROID_EVENT_PAYLOAD));
 
         if(sstAndroid.fSurfaceScale == orxFLOAT_0)
         {
@@ -478,13 +517,7 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
           orxConfig_PopSection();
         }
 
-        /* Inits event payload */
-        orxMemory_Zero(&stPayload, sizeof(orxSYSTEM_EVENT_PAYLOAD));
-        stPayload.stTouch.fPressure = orxFLOAT_0;
-
-        int32_t iIndex;
-
-        switch (event->action & AMOTION_EVENT_ACTION_MASK)
+        switch(event->action & AMOTION_EVENT_ACTION_MASK)
         {
           case AMOTION_EVENT_ACTION_POINTER_DOWN:
           {
@@ -493,6 +526,9 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
             stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
             stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+
+            orxASSERT(stPayload.stTouch.u32ID < orxANDROID_KU32_MAX_MOTION_POINTERS);
+            sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxTRUE;
             break;
           }
           case AMOTION_EVENT_ACTION_POINTER_UP:
@@ -502,23 +538,56 @@ static void orxAndroid_HandleGameInput(struct android_app *_pstApp)
             stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
             stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
             orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+
+            orxASSERT(stPayload.stTouch.u32ID < orxANDROID_KU32_MAX_MOTION_POINTERS);
+            sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxFALSE;
             break;
           }
-          case AMOTION_EVENT_ACTION_DOWN:
+          case AMOTION_EVENT_ACTION_DOWN: /* Always first finger! */
           {
-            stPayload.stTouch.u32ID = event->pointers[0].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, 0);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, 0);
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+            /** In orx, pressed status depends on the orxSYSTEM_EVENT_TOUCH_BEGIN and orxSYSTEM_EVENT_TOUCH_END events.
+             * In the rare case Android fails to deliver the Up/Cancel event we must emulate the Up event.
+             * Otherwise orx would indefinitely assume pressed state.
+             *
+             * See https://issuetracker.google.com/issues/401872146
+             */
+            for(iIndex = 0; iIndex < orxANDROID_KU32_MAX_MOTION_POINTERS; iIndex++)
+            {
+              if(sstAndroid.au32PendingMotionActions[iIndex] == orxTRUE)
+              {
+                LOGW("Emulating ACTION_UP for pointer %d", iIndex);
+
+                stPayload.stTouch.u32ID = iIndex;
+                orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+                sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxFALSE;
+              }
+            }
+
+            for(iIndex = 0; iIndex < event->pointerCount; iIndex++)
+            {
+              stPayload.stTouch.u32ID = event->pointers[iIndex].id;
+              stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
+              stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_BEGIN, orxNULL, orxNULL, &stPayload);
+
+              orxASSERT(stPayload.stTouch.u32ID < orxANDROID_KU32_MAX_MOTION_POINTERS);
+              sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxTRUE;
+            }
             break;
           }
           case AMOTION_EVENT_ACTION_UP:
           case AMOTION_EVENT_ACTION_CANCEL:
           {
-            stPayload.stTouch.u32ID = event->pointers[0].id;
-            stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, 0);
-            stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, 0);
-            orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+            for(iIndex = 0; iIndex < event->pointerCount; iIndex++)
+            {
+              stPayload.stTouch.u32ID = event->pointers[iIndex].id;
+              stPayload.stTouch.fX = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_X(event, iIndex);
+              stPayload.stTouch.fY = sstAndroid.fSurfaceScale * orxANDROID_GET_AXIS_Y(event, iIndex);
+              orxEVENT_SEND(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_TOUCH_END, orxNULL, orxNULL, &stPayload);
+
+              orxASSERT(stPayload.stTouch.u32ID < orxANDROID_KU32_MAX_MOTION_POINTERS);
+              sstAndroid.au32PendingMotionActions[stPayload.stTouch.u32ID] = orxFALSE;
+            }
             break;
           }
           case AMOTION_EVENT_ACTION_MOVE:
@@ -548,7 +617,7 @@ static void orxAndroid_handleCmd(struct android_app *_pstApp, int32_t _s32Cmd)
     {
       LOGI("APP_CMD_INIT_WINDOW");
       SwappyGL_setWindow(_pstApp->window);
-      orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CREATED, orxNULL, orxNULL, orxNULL);
+      orxEVENT_SEND(orxEVENT_TYPE_ANDROID, orxANDROID_EVENT_SURFACE_CREATE, orxNULL, orxNULL, orxNULL);
       break;
     }
     case APP_CMD_TERM_WINDOW:
@@ -556,7 +625,7 @@ static void orxAndroid_handleCmd(struct android_app *_pstApp, int32_t _s32Cmd)
       LOGI("APP_CMD_TERM_WINDOW");
       SwappyGL_setWindow(nullptr);
       sstAndroid.fSurfaceScale = orxFLOAT_0;
-      orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_DESTROYED, orxNULL, orxNULL, orxNULL);
+      orxEVENT_SEND(orxEVENT_TYPE_ANDROID, orxANDROID_EVENT_SURFACE_DESTROY, orxNULL, orxNULL, orxNULL);
       break;
     }
     case APP_CMD_WINDOW_RESIZED:
@@ -572,11 +641,12 @@ static void orxAndroid_handleCmd(struct android_app *_pstApp, int32_t _s32Cmd)
     case APP_CMD_CONTENT_RECT_CHANGED:
     {
       LOGI("APP_CMD_CONTENT_RECT_CHANGED");
-      orxANDROID_SURFACE_CHANGED_EVENT stSurfaceChangedEvent;
-      stSurfaceChangedEvent.u32Width = _pstApp->contentRect.right - _pstApp->contentRect.left;
-      stSurfaceChangedEvent.u32Height = _pstApp->contentRect.bottom - _pstApp->contentRect.top;
+      orxANDROID_EVENT_PAYLOAD stPayload;
+      orxMemory_Zero(&stPayload, sizeof(orxANDROID_EVENT_PAYLOAD));
+      stPayload.stSurface.u32Width  = _pstApp->contentRect.right - _pstApp->contentRect.left;
+      stPayload.stSurface.u32Height = _pstApp->contentRect.bottom - _pstApp->contentRect.top;
 
-      orxEVENT_SEND(orxANDROID_EVENT_TYPE_SURFACE, orxANDROID_EVENT_SURFACE_CHANGED, orxNULL, orxNULL, &stSurfaceChangedEvent);
+      orxEVENT_SEND(orxEVENT_TYPE_ANDROID, orxANDROID_EVENT_SURFACE_CHANGE, orxNULL, orxNULL, &stPayload);
       sstAndroid.fSurfaceScale = orxFLOAT_0;
       break;
     }
@@ -684,7 +754,7 @@ extern "C" void orxAndroid_PumpEvents()
 
     if(id == LOOPER_ID_SENSOR)
     {
-      orxEvent_SendShort(orxANDROID_EVENT_TYPE_ACCELERATE, 0);
+      orxEvent_SendShort(orxEVENT_TYPE_ANDROID, orxANDROID_EVENT_ACCELERATE);
     }
 
     /* Check if we are exiting. */
@@ -705,21 +775,24 @@ extern int main(int argc, char *argv[]);
 
 void android_main(android_app *_pstState)
 {
-  char *argv[orxANDROID_KU32_MAX_ARGUMENT_COUNT];
+  Paddleboat_ErrorCode paddleboatError;
+  bool                 bSwappyInitialized;
+  char                *azArgumentList[orxANDROID_KU32_MAX_ARGUMENT_COUNT];
+  int                  iArgumentCount;
+  char                *pc;
 
-  _pstState->onAppCmd = orxAndroid_handleCmd;
+  /* Inits Java VM */
+  jVM = _pstState->activity->vm;
 
-  android_app_set_motion_event_filter(_pstState, NULL);
+  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
+  if(pstEnv == NULL)
+  {
+    /* Exits gracefully */
+    return;
+  }
 
   /* Cleans static controller */
   orxMemory_Zero(&sstAndroid, sizeof(orxANDROID_STATIC));
-
-  sstAndroid.app = _pstState;
-  sstAndroid.bPaused = orxTRUE;
-  sstAndroid.bHasFocus = orxFALSE;
-  sstAndroid.fSurfaceScale = orxFLOAT_0;
-
-  jVM = _pstState->activity->vm;
 
   /*
    * Create sThreadKey so we can keep track of the JNIEnv assigned to each thread
@@ -735,37 +808,46 @@ void android_main(android_app *_pstState)
     orxAndroid_JNI_SetupThread(orxNULL);
   }
 
-  /* Initializes joystick support */
-  JNIEnv *pstEnv = orxAndroid_JNI_GetEnv();
-  Paddleboat_init(pstEnv, _pstState->activity->javaGameActivity);
+  /* Inits structure */
+  sstAndroid.app = _pstState;
+  sstAndroid.bPaused = orxTRUE;
 
-  /* Initializes SwappyGL */
-  SwappyGL_init(pstEnv, _pstState->activity->javaGameActivity);
-  SwappyGL_setAutoSwapInterval(false);
-  SwappyGL_setAutoPipelineMode(false);
+  _pstState->onAppCmd = orxAndroid_handleCmd;
+
+  /* Inits Paddleboat */
+  paddleboatError = Paddleboat_init(pstEnv, _pstState->activity->javaGameActivity);
+  android_app_set_motion_event_filter(_pstState, NULL);
+
+  /* Inits SwappyGL */
+  bSwappyInitialized = SwappyGL_init(pstEnv, _pstState->activity->javaGameActivity);
+  if(bSwappyInitialized)
+  {
+    SwappyGL_setAutoSwapInterval(false);
+    SwappyGL_setAutoPipelineMode(false);
+  }
 
   /* Gets arguments from manifest */
   orxAndroid_JNI_GetArguments();
 
   /* Parses the arguments */
-  int argc = 0;
+  iArgumentCount = 0;
 
-  char *pc = strtok(sstAndroid.zArguments, " ");
-  while(pc && argc < orxANDROID_KU32_MAX_ARGUMENT_COUNT - 1)
+  pc = strtok(sstAndroid.zArguments, " ");
+  while(pc && iArgumentCount < orxANDROID_KU32_MAX_ARGUMENT_COUNT - 1)
   {
-    argv[argc++] = pc;
+    azArgumentList[iArgumentCount++] = pc;
     pc = strtok(0, " ");
   }
-  argv[argc] = NULL;
+  azArgumentList[iArgumentCount] = NULL;
 
-  /* Run the application code! */
-  main(argc, argv);
+  /* Runs the application code */
+  main(iArgumentCount, azArgumentList);
 
   if(_pstState->destroyRequested == 0)
   {
     GameActivity_finish(_pstState->activity);
 
-    /* pumps final events */
+    /* Pumps final events */
     int id;
     android_poll_source *source;
 
@@ -773,13 +855,13 @@ void android_main(android_app *_pstState)
 
     while((id = ALooper_pollOnce(-1, NULL, NULL, (void **)&source)) >= 0)
     {
-      /* Process this event. */
+      /* Process this event */
       if(source != NULL)
       {
         source->process(_pstState, source);
       }
 
-      /* Check if we are exiting. */
+      /* Check if we are exiting */
       if(_pstState->destroyRequested != 0)
       {
         break;
@@ -787,8 +869,17 @@ void android_main(android_app *_pstState)
     }
   }
 
-  Paddleboat_destroy(pstEnv);
-  SwappyGL_destroy();
+  if(paddleboatError == PADDLEBOAT_NO_ERROR)
+  {
+    /* Destroys Paddleboat */
+    Paddleboat_destroy(pstEnv);
+  }
+
+  if(bSwappyInitialized)
+  {
+    /* Destroys SwappyGL */
+    SwappyGL_destroy();
+  }
 }
 
 /* APK orxRESOURCE */

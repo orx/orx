@@ -161,10 +161,10 @@ static orxINLINE void orxPhysics_UnregisterCommands()
   /* Command: EnableSimulation */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, EnableSimulation);
 
-  /* Command: GetCOllisionFlagName */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, GetCOllisionFlagName);
-  /* Command: GetCOllisionFlagValue */
-  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, GetCOllisionFlagValue);
+  /* Command: GetCollisionFlagName */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, GetCollisionFlagName);
+  /* Command: GetCollisionFlagValue */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Physics, GetCollisionFlagValue);
 }
 
 
@@ -256,17 +256,8 @@ orxU32 orxFASTCALL orxPhysics_GetCollisionFlagValue(const orxSTRING _zFlag)
   u32Count = orxConfig_GetListCount(orxPHYSICS_KZ_CONFIG_COLLISION_FLAG_LIST);
 
   {
-#ifdef __orxMSVC__
-
-    const orxSTRING *azFlagList = (const orxSTRING *)alloca((u32Count + 1) * sizeof(orxSTRING *));
-
-#else /* __orxMSVC__ */
-
-    const orxSTRING azFlagList[u32Count + 1];
-
-#endif /* __orxMSVC__ */
-
-    orxU32 i;
+    orxU32            i;
+    const orxSTRING  *azFlagList = (const orxSTRING *)orxMemory_StackAllocate((u32Count + 1) * sizeof(orxSTRING));
 
     /* For all flags */
     for(i = 0; i < u32Count; i++)

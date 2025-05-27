@@ -1,0 +1,667 @@
+//! Includes
+
+#ifndef _orxNOISETEXTURE_H_
+#define _orxNOISETEXTURE_H_
+
+#include "orx.h"
+
+
+//! Prototypes
+
+orxSTATUS orxFASTCALL                                 orxNoiseTexture_Init();
+void orxFASTCALL                                      orxNoiseTexture_Exit();
+
+
+//! Implementation
+
+#ifdef orxNOISETEXTURE_IMPL
+
+#ifdef __orxMSVC__
+
+  #pragma warning(push)
+  #pragma warning(disable : 4200)
+
+#endif /* __orxMSVC__ */
+
+#define FNL_IMPL
+#include "FastNoiseLite/C/FastNoiseLite.h"
+#undef FNL_IMPL
+
+
+//! Defines
+
+#define orxNOISETEXTURE_KZ_RESOURCE_TAG               "noisetex"
+#define orxNOISETEXTURE_KZ_RESOURCE_PREFIX            "noise:"
+
+#define orxNOISETEXTURE_KZ_CONFIG_SIZE                "Size"
+#define orxNOISETEXTURE_KZ_CONFIG_ORIGIN              "Origin"
+#define orxNOISETEXTURE_KZ_CONFIG_TYPE                "Type"
+#define orxNOISETEXTURE_KZ_CONFIG_SEED                "Seed"
+#define orxNOISETEXTURE_KZ_CONFIG_FREQUENCY           "Frequency"
+#define orxNOISETEXTURE_KZ_CONFIG_FRACTAL             "Fractal"
+#define orxNOISETEXTURE_KZ_CONFIG_LACUNARITY          "Lacunarity"
+#define orxNOISETEXTURE_KZ_CONFIG_GAIN                "Gain"
+#define orxNOISETEXTURE_KZ_CONFIG_OCTAVE_COUNT        "OctaveCount"
+#define orxNOISETEXTURE_KZ_CONFIG_OCTAVE_STRENGTH     "OctaveStrength"
+#define orxNOISETEXTURE_KZ_CONFIG_PINGPONG_STRENGTH   "PingPongStrength"
+#define orxNOISETEXTURE_KZ_CONFIG_CELLULAR_DISTANCE   "CellularDistance"
+#define orxNOISETEXTURE_KZ_CONFIG_CELLULAR_RETURN     "CellularReturn"
+#define orxNOISETEXTURE_KZ_CONFIG_CELLULAR_JITTER     "CellularJitter"
+
+#define orxNOISETEXTURE_KZ_SIMPLEX2                   "simplex2"
+#define orxNOISETEXTURE_KZ_SIMPLEX2S                  "simplex2s"
+#define orxNOISETEXTURE_KZ_CELLULAR                   "cellular"
+#define orxNOISETEXTURE_KZ_PERLIN                     "perlin"
+#define orxNOISETEXTURE_KZ_CUBIC                      "cubic"
+#define orxNOISETEXTURE_KZ_VALUE                      "value"
+#define orxNOISETEXTURE_KZ_FBM                        "fbm"
+#define orxNOISETEXTURE_KZ_RIDGED                     "ridged"
+#define orxNOISETEXTURE_KZ_PINGPONG                   "pingpong"
+#define orxNOISETEXTURE_KZ_EUCLIDEAN                  "euclidean"
+#define orxNOISETEXTURE_KZ_SQUARE                     "square"
+#define orxNOISETEXTURE_KZ_MANHATTAN                  "manhattan"
+#define orxNOISETEXTURE_KZ_HYBRID                     "hybrid"
+#define orxNOISETEXTURE_KZ_DISTANCE                   "distance"
+#define orxNOISETEXTURE_KZ_DISTANCE2                  "distance2"
+#define orxNOISETEXTURE_KZ_ADD                        "add"
+#define orxNOISETEXTURE_KZ_SUB                        "sub"
+#define orxNOISETEXTURE_KZ_MUL                        "mul"
+#define orxNOISETEXTURE_KZ_DIV                        "div"
+
+#define orxNOISETEXTURE_KU32_MAX_HEADER_SIZE          128
+#define orxNOISETEXTURE_KU32_NAME_TABLE_SIZE          32
+
+#define orxNOISETEXTURE_KV_DEFAULT_SIZE               orx2F(512.0f), orx2F(512.0f), orxFLOAT_0
+#define orxNOISETEXTURE_KF_DEFAULT_FREQUENCY          orx2F(0.01f)
+#define orxNOISETEXTURE_KF_DEFAULT_LACUNARITY         orx2F(2.0f)
+#define orxNOISETEXTURE_KF_DEFAULT_GAIN               orx2F(0.5f)
+#define orxNOISETEXTURE_KU32_DEFAULT_OCTAVE_COUNT     3
+#define orxNOISETEXTURE_KF_DEFAULT_OCTAVE_STRENGTH    orx2F(0.0f)
+#define orxNOISETEXTURE_KF_DEFAULT_PINGPONG_STRENGTH  orx2F(2.0f)
+#define orxNOISETEXTURE_KF_DEFAULT_CELLULAR_JITTER    orx2F(1.0f)
+
+
+//! Variables / Structures
+
+typedef struct NoiseTextureResource
+{
+  orxS64        s64Cursor;
+  orxS64        s64Size;
+  orxU32        u32Width;
+  orxU32        u32Height;
+  orxVECTOR     vOrigin;
+  fnl_state     stState;
+  orxS32        s32HeaderSize;
+  orxU8         au8Data[0];
+
+} NoiseTextureResource;
+
+typedef struct __orxNOISETEXTURE_t
+{
+  orxBOOL       bInit;
+
+} orxNOISETEXTURE;
+
+static orxNOISETEXTURE sstNoiseTexture;
+
+
+//! Helpers
+
+
+//! Code
+
+/** Event handler
+ */
+static orxSTATUS orxFASTCALL orxNoiseTexture_EventHandler(const orxEVENT *_pstEvent)
+{
+  orxRESOURCE_EVENT_PAYLOAD  *pstPayload;
+  orxSTATUS                   eResult = orxSTATUS_SUCCESS;
+
+  // Gets payload
+  pstPayload = (orxRESOURCE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+  // Is config group?
+  if(pstPayload->stGroupID == orxString_Hash(orxCONFIG_KZ_RESOURCE_GROUP))
+  {
+    orxTEXTURE *pstTexture;
+
+    // For all textures
+    for(pstTexture = orxTEXTURE(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXTURE));
+        pstTexture != orxNULL;
+        pstTexture = orxTEXTURE(orxStructure_GetNext(pstTexture)))
+    {
+      static orxU32   su32PrefixLength = 0;
+      const orxSTRING zName;
+
+      if(su32PrefixLength == 0)
+      {
+        su32PrefixLength = orxString_GetLength(orxNOISETEXTURE_KZ_RESOURCE_PREFIX);
+      }
+      
+      // Gets its name
+      zName = orxTexture_GetName(pstTexture);
+
+      // Is a noise texture?
+      if(orxString_NICompare(zName, orxNOISETEXTURE_KZ_RESOURCE_PREFIX, su32PrefixLength) == 0)
+      {
+        // Match origin?
+        if(orxConfig_GetOriginID(orxString_SkipWhiteSpaces(zName + su32PrefixLength)) == pstPayload->stNameID)
+        {
+          orxRESOURCE_EVENT_PAYLOAD stPayload;
+          
+          // Triggers a texture update
+          orxMemory_Zero(&stPayload, sizeof(orxRESOURCE_EVENT_PAYLOAD));
+          stPayload.stGroupID = orxString_Hash(orxTEXTURE_KZ_RESOURCE_GROUP);
+          stPayload.stNameID  = orxString_Hash(zName);
+          orxEVENT_SEND(orxEVENT_TYPE_RESOURCE, orxRESOURCE_EVENT_UPDATE, orxNULL, orxNULL, &stPayload);
+          break;
+        }
+      }
+    }
+  }
+
+  // Done!
+  return eResult;
+}
+
+orxBOOL orxFASTCALL orxBundle_IsProcessing();
+
+// Locate function, returns NULL if it can't handle the storage or if the resource can't be found in this storage
+static const orxSTRING orxFASTCALL orxNoiseTexture_Locate(const orxSTRING _zGroup, const orxSTRING _zStorage, const orxSTRING _zName, orxBOOL _bRequireExistence)
+{
+  const orxSTRING zResult = orxNULL;
+
+  if(orxBundle_IsProcessing()) {return zResult;}
+
+  // Is a texture?
+  if((orxString_Compare(_zStorage, orxRESOURCE_KZ_DEFAULT_STORAGE) == 0)
+  && (orxString_Compare(_zGroup, orxTEXTURE_KZ_RESOURCE_GROUP) == 0))
+  {
+    static orxU32 su32PrefixLength = 0;
+
+    if(su32PrefixLength == 0)
+    {
+      su32PrefixLength = orxString_GetLength(orxNOISETEXTURE_KZ_RESOURCE_PREFIX);
+    }
+
+    // Is a noise texture?
+    if(orxString_NICompare(_zName, orxNOISETEXTURE_KZ_RESOURCE_PREFIX, su32PrefixLength) == 0)
+    {
+      const orxSTRING zSection;
+
+      // Gets its config section
+      zSection = orxString_SkipWhiteSpaces(_zName + su32PrefixLength);
+
+      // Valid?
+      if((orxConfig_HasSection(zSection) != orxFALSE)
+      && (orxConfig_PushSection(zSection) != orxSTATUS_FAILURE))
+      {
+        // Updates result
+        zResult = orxConfig_GetCurrentSection();
+
+        // Pops section
+        orxConfig_PopSection();
+      }
+    }
+  }
+
+  // Done!
+  return zResult;
+}
+
+// Open function: returns an opaque handle for subsequent function calls (GetSize, Seek, Tell, Read and Close) upon success, orxHANDLE_UNDEFINED otherwise
+static orxHANDLE orxFASTCALL orxNoiseTexture_Open(const orxSTRING _zLocation, orxBOOL _bEraseMode)
+{
+  orxHANDLE hResult = orxHANDLE_UNDEFINED;
+
+  // Not in erase mode?
+  if(_bEraseMode == orxFALSE)
+  {
+    NoiseTextureResource *pstResource;
+    orxVECTOR             vSize;
+    orxS32                s32HeaderSize;
+    orxU32                u32Width, u32Height;
+    orxCHAR               acHeader[32];
+
+    // Pushes its config section
+    orxConfig_PushSection(_zLocation);
+
+    // Gets size
+    if(orxConfig_GetVector(orxNOISETEXTURE_KZ_CONFIG_SIZE, &vSize) == orxNULL)
+    {
+      orxVector_Set(&vSize, orxNOISETEXTURE_KV_DEFAULT_SIZE);
+    }
+    u32Width  = orxF2U(vSize.fX);
+    u32Height = orxF2U(vSize.fY);
+
+    // Prints header
+    s32HeaderSize = orxString_NPrint(acHeader, sizeof(acHeader), "P5\n%u %u\n255\n", u32Width, u32Height);
+
+    // Allocates resource
+    pstResource = (NoiseTextureResource *)orxMemory_Allocate(sizeof(NoiseTextureResource) + s32HeaderSize + u32Width * u32Height, orxMEMORY_TYPE_TEMP);
+
+    // Success?
+    if(pstResource != orxNULL)
+    {
+      orxCHAR acBuffer[32];
+
+      // Inits it
+      orxMemory_Zero(pstResource, orxNOISETEXTURE_KU32_MAX_HEADER_SIZE);
+      pstResource->s64Cursor                = 0;
+      pstResource->s64Size                  = (orxS64)(s32HeaderSize + u32Width * u32Height);
+      pstResource->u32Width                 = u32Width;
+      pstResource->u32Height                = u32Height;
+      pstResource->stState                  = fnlCreateState();
+      pstResource->stState.rotation_type_3d = FNL_ROTATION_IMPROVE_XY_PLANES;
+      pstResource->s32HeaderSize            = s32HeaderSize;
+      orxMemory_Copy(&(pstResource->au8Data), acHeader, s32HeaderSize);
+      orxConfig_GetVector(orxNOISETEXTURE_KZ_CONFIG_ORIGIN, &(pstResource->vOrigin));
+
+      // Gets seed
+      pstResource->stState.seed = (orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_SEED) != orxFALSE) ? orxConfig_GetU32(orxNOISETEXTURE_KZ_CONFIG_SEED) : orxMath_GetRandomU32(1, 0xFFFFFFFF);
+
+      // Gets frequency
+      pstResource->stState.frequency = (orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_FREQUENCY) != orxFALSE) ? orxConfig_GetFloat(orxNOISETEXTURE_KZ_CONFIG_FREQUENCY) : orxNOISETEXTURE_KF_DEFAULT_FREQUENCY;
+
+      // Defaults to open simplex2
+      pstResource->stState.noise_type = FNL_NOISE_OPENSIMPLEX2;
+
+      // Has type?
+      if(orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_TYPE) != orxFALSE)
+      {
+        // Gets it
+        orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxConfig_GetString(orxNOISETEXTURE_KZ_CONFIG_TYPE));
+        orxString_LowerCase(acBuffer);
+
+        // Simplex2s?
+        if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_SIMPLEX2S) != orxNULL)
+        {
+          // Stores it
+          pstResource->stState.noise_type = FNL_NOISE_OPENSIMPLEX2S;
+        }
+        // Cellular?
+        else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_CELLULAR) != orxNULL)
+        {
+          // Stores it
+          pstResource->stState.noise_type = FNL_NOISE_CELLULAR;
+
+          // Defaults to Euclidean Squared distance
+          pstResource->stState.cellular_distance_func = FNL_CELLULAR_DISTANCE_EUCLIDEANSQ;
+
+          // Has cellular distance?
+          if(orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_CELLULAR_DISTANCE) != orxFALSE)
+          {
+            // Retrieves it
+            orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxConfig_GetString(orxNOISETEXTURE_KZ_CONFIG_CELLULAR_DISTANCE));
+            orxString_LowerCase(acBuffer);
+
+            // Euclidean Squared?
+            if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_SQUARE) != orxNULL)
+            {
+              // Stores it
+              pstResource->stState.cellular_distance_func = FNL_CELLULAR_DISTANCE_EUCLIDEANSQ;
+            }
+            // Euclidean?
+            else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_EUCLIDEAN) != orxNULL)
+            {
+              // Stores it
+              pstResource->stState.cellular_distance_func = FNL_CELLULAR_DISTANCE_EUCLIDEAN;
+            }
+            // Manhattan?
+            else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_MANHATTAN) != orxNULL)
+            {
+              // Stores it
+              pstResource->stState.cellular_distance_func = FNL_CELLULAR_DISTANCE_MANHATTAN;
+            }
+            // Hybrid?
+            else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_HYBRID) != orxNULL)
+            {
+              // Stores it
+              pstResource->stState.cellular_distance_func = FNL_CELLULAR_DISTANCE_HYBRID;
+            }
+          }
+
+          // Defaults to distance return
+          pstResource->stState.cellular_return_type = FNL_CELLULAR_RETURN_TYPE_DISTANCE;
+
+          // Has cellular return?
+          if(orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_CELLULAR_RETURN) != orxFALSE)
+          {
+            // Retrieves it
+            orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxConfig_GetString(orxNOISETEXTURE_KZ_CONFIG_CELLULAR_RETURN));
+            orxString_LowerCase(acBuffer);
+
+            // Distance2Add?
+            if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_ADD) != orxNULL)
+            {
+              // Stores it
+              pstResource->stState.cellular_return_type = FNL_CELLULAR_RETURN_TYPE_DISTANCE2ADD;
+            }
+            // Distance2Sub?
+            else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_SUB) != orxNULL)
+            {
+              // Stores it
+              pstResource->stState.cellular_return_type = FNL_CELLULAR_RETURN_TYPE_DISTANCE2SUB;
+            }
+            // Distance2Mul?
+            else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_MUL) != orxNULL)
+            {
+              // Stores it
+              pstResource->stState.cellular_return_type = FNL_CELLULAR_RETURN_TYPE_DISTANCE2MUL;
+            }
+            // Distance2Div?
+            else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_DIV) != orxNULL)
+            {
+              // Stores it
+              pstResource->stState.cellular_return_type = FNL_CELLULAR_RETURN_TYPE_DISTANCE2DIV;
+            }
+            // Distance2?
+            else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_DISTANCE2) != orxNULL)
+            {
+              // Stores it
+              pstResource->stState.cellular_return_type = FNL_CELLULAR_RETURN_TYPE_DISTANCE2;
+            }
+            // Value?
+            else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_VALUE) != orxNULL)
+            {
+              // Stores it
+              pstResource->stState.cellular_return_type = FNL_CELLULAR_RETURN_TYPE_CELLVALUE;
+            }
+          }
+
+          // Gets cellular jitter
+          pstResource->stState.cellular_jitter_mod = (orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_CELLULAR_JITTER) != orxFALSE) ? orxConfig_GetFloat(orxNOISETEXTURE_KZ_CONFIG_CELLULAR_JITTER) : orxNOISETEXTURE_KF_DEFAULT_CELLULAR_JITTER;
+        }
+        // Perlin?
+        else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_PERLIN) != orxNULL)
+        {
+          // Stores it
+          pstResource->stState.noise_type = FNL_NOISE_PERLIN;
+        }
+        // Cubic?
+        else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_CUBIC) != orxNULL)
+        {
+          // Stores it
+          pstResource->stState.noise_type = FNL_NOISE_VALUE_CUBIC;
+        }
+        // Value?
+        else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_VALUE) != orxNULL)
+        {
+          // Stores it
+          pstResource->stState.noise_type = FNL_NOISE_VALUE;
+        }
+      }
+
+      // Default to no fractal
+      pstResource->stState.fractal_type = FNL_FRACTAL_NONE;
+
+      // Has fractal?
+      if(orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_FRACTAL) != orxFALSE)
+      {
+        // Gets it
+        orxString_NPrint(acBuffer, sizeof(acBuffer), "%s", orxConfig_GetString(orxNOISETEXTURE_KZ_CONFIG_FRACTAL));
+        orxString_LowerCase(acBuffer);
+
+        // FBM?
+        if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_FBM) != orxNULL)
+        {
+          // Stores it
+          pstResource->stState.fractal_type = FNL_FRACTAL_FBM;
+        }
+        // Ridged?
+        else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_RIDGED) != orxNULL)
+        {
+          // Stores it
+          pstResource->stState.fractal_type = FNL_FRACTAL_RIDGED;
+        }
+        // PingPong?
+        else if(orxString_SearchString(acBuffer, orxNOISETEXTURE_KZ_PINGPONG) != orxNULL)
+        {
+          // Stores it
+          pstResource->stState.fractal_type = FNL_FRACTAL_PINGPONG;
+
+          // Gets ping pong strength?
+          pstResource->stState.ping_pong_strength = (orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_PINGPONG_STRENGTH) != orxFALSE) ? orxConfig_GetFloat(orxNOISETEXTURE_KZ_CONFIG_PINGPONG_STRENGTH) : orxNOISETEXTURE_KF_DEFAULT_PINGPONG_STRENGTH;
+        }
+      }
+
+      // Gets lacunarity
+      pstResource->stState.lacunarity = (orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_LACUNARITY) != orxFALSE) ? orxConfig_GetFloat(orxNOISETEXTURE_KZ_CONFIG_LACUNARITY) : orxNOISETEXTURE_KF_DEFAULT_LACUNARITY;
+
+      // Gets gain?
+      pstResource->stState.gain = (orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_GAIN) != orxFALSE) ? orxConfig_GetFloat(orxNOISETEXTURE_KZ_CONFIG_GAIN) : orxNOISETEXTURE_KF_DEFAULT_GAIN;
+
+      // Gets octave count?
+      pstResource->stState.octaves = (orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_OCTAVE_COUNT) != orxFALSE) ? orxConfig_GetU32(orxNOISETEXTURE_KZ_CONFIG_OCTAVE_COUNT) : orxNOISETEXTURE_KU32_DEFAULT_OCTAVE_COUNT;
+
+      // Gets octave strength?
+      pstResource->stState.weighted_strength = (orxConfig_HasValue(orxNOISETEXTURE_KZ_CONFIG_OCTAVE_STRENGTH) != orxFALSE) ? orxConfig_GetFloat(orxNOISETEXTURE_KZ_CONFIG_OCTAVE_STRENGTH) : orxNOISETEXTURE_KF_DEFAULT_OCTAVE_STRENGTH;
+
+      // Updates result
+      hResult = (orxHANDLE)pstResource;
+    }
+
+    // Pops section
+    orxConfig_PopSection();
+  }
+
+  // Done!
+  return hResult;
+}
+
+// Close function: releases all that has been allocated in Open
+static void orxFASTCALL orxNoiseTexture_Close(orxHANDLE _hResource)
+{
+  NoiseTextureResource *pstResource;
+
+  // Gets resource
+  pstResource = (NoiseTextureResource *)_hResource;
+
+  // Frees it
+  orxMemory_Free(pstResource);
+
+  // Done!
+  return;
+}
+
+// GetSize function: simply returns the size of the extracted resource, in bytes
+static orxS64 orxFASTCALL orxNoiseTexture_GetSize(orxHANDLE _hResource)
+{
+  NoiseTextureResource *pstResource;
+  orxS64          s64Result;
+
+  // Gets resource
+  pstResource = (NoiseTextureResource *)_hResource;
+
+  // Updates result
+  s64Result = pstResource->s64Size;
+
+  // Done!
+  return s64Result;
+}
+
+// Seek function: position the read cursor inside the data and returns the offset from start upon success or -1 upon failure
+static orxS64 orxFASTCALL orxNoiseTexture_Seek(orxHANDLE _hResource, orxS64 _s64Offset, orxSEEK_OFFSET_WHENCE _eWhence)
+{
+  NoiseTextureResource *pstResource;
+  orxS64                s64Cursor;
+
+  // Gets resource
+  pstResource = (NoiseTextureResource *)_hResource;
+
+  // Depending on seek mode
+  switch(_eWhence)
+  {
+    case orxSEEK_OFFSET_WHENCE_START:
+    {
+      // Computes cursor
+      s64Cursor = _s64Offset;
+      break;
+    }
+
+    case orxSEEK_OFFSET_WHENCE_CURRENT:
+    {
+      // Computes cursor
+      s64Cursor = pstResource->s64Cursor + _s64Offset;
+      break;
+    }
+
+    case orxSEEK_OFFSET_WHENCE_END:
+    {
+      // Computes cursor
+      s64Cursor = pstResource->s64Size - _s64Offset;
+      break;
+    }
+
+    default:
+    {
+      // Failure
+      s64Cursor = -1;
+      break;
+    }
+  }
+
+  // Is cursor valid?
+  if((s64Cursor >= 0) && (s64Cursor <= pstResource->s64Size))
+  {
+    // Updates cursor
+    pstResource->s64Cursor = s64Cursor;
+  }
+  else
+  {
+    // Clears value
+    s64Cursor = -1;
+  }
+
+  // Done!
+  return s64Cursor;
+}
+
+// Tell function: returns current read cursor
+static orxS64 orxFASTCALL orxNoiseTexture_Tell(orxHANDLE _hResource)
+{
+  orxS64 s64Result;
+
+  // Updates result
+  s64Result = ((NoiseTextureResource *)_hResource)->s64Cursor;
+
+  // Done!
+  return s64Result;
+}
+
+// Read function: copies the requested amount of data, in bytes, to the given buffer and returns the amount of bytes copied
+static orxS64 orxFASTCALL orxNoiseTexture_Read(orxHANDLE _hResource, orxS64 _s64Size, void *_pu8Buffer)
+{
+  NoiseTextureResource *pstResource;
+  orxS64                s64CopySize;
+
+  // Gets resource
+  pstResource = (NoiseTextureResource *)_hResource;
+
+  // Not generated yet and requesting more than a typical header? (trying not to block main thread while checking headers)
+  if((pstResource->s32HeaderSize != 0) && (_s64Size > orxNOISETEXTURE_KU32_MAX_HEADER_SIZE))
+  {
+    orxU32  i, j;
+    orxU8  *pu8Pixel;
+
+    // For all lines
+    for(j = 0, pu8Pixel = pstResource->au8Data + pstResource->s32HeaderSize; j < pstResource->u32Height; j++)
+    {
+      // For all columns
+      for(i = 0; i < pstResource->u32Width; i++)
+      {
+        *(pu8Pixel++) = (orxU8)(255.0f * 0.5f * (1.0f + fnlGetNoise3D(&(pstResource->stState), (float)i + pstResource->vOrigin.fX, (float)j + pstResource->vOrigin.fY, pstResource->vOrigin.fZ)));
+      }
+    }
+
+    // Updates status
+    pstResource->s32HeaderSize = 0;
+  }
+
+  // Gets actual copy size to prevent any out-of-bound access
+  s64CopySize = orxMIN(_s64Size, pstResource->s64Size - pstResource->s64Cursor);
+
+  // Should copy content?
+  if(s64CopySize != 0)
+  {
+    // Copies content
+    orxMemory_Copy(_pu8Buffer, pstResource->au8Data + pstResource->s64Cursor, (orxS32)s64CopySize);
+  }
+
+  // Updates cursor
+  pstResource->s64Cursor += s64CopySize;
+
+  // Done!
+  return s64CopySize;
+}
+
+orxSTATUS orxNoiseTexture_Init()
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  // Not initialized?
+  if(!sstNoiseTexture.bInit)
+  {
+    orxRESOURCE_TYPE_INFO stInfo;
+
+    // Inits our bundle resource type
+    orxMemory_Zero(&stInfo, sizeof(orxRESOURCE_TYPE_INFO));
+    stInfo.zTag       = orxNOISETEXTURE_KZ_RESOURCE_TAG;
+    stInfo.pfnLocate  = &orxNoiseTexture_Locate;
+    stInfo.pfnGetTime = orxNULL;                // No hotload support
+    stInfo.pfnOpen    = &orxNoiseTexture_Open;
+    stInfo.pfnClose   = &orxNoiseTexture_Close;
+    stInfo.pfnGetSize = &orxNoiseTexture_GetSize;
+    stInfo.pfnSeek    = &orxNoiseTexture_Seek;
+    stInfo.pfnTell    = &orxNoiseTexture_Tell;
+    stInfo.pfnRead    = &orxNoiseTexture_Read;
+    stInfo.pfnWrite   = orxNULL;                // No write support
+    stInfo.pfnDelete  = orxNULL;                // No delete support
+
+    // Registers it
+    eResult = orxResource_RegisterType(&stInfo);
+
+    // Success?
+    if(eResult != orxSTATUS_FAILURE)
+    {
+      // Adds event handler
+      orxEvent_AddHandler(orxEVENT_TYPE_RESOURCE, orxNoiseTexture_EventHandler);
+      orxEvent_SetHandlerIDFlags(orxNoiseTexture_EventHandler, orxEVENT_TYPE_RESOURCE, orxNULL, orxEVENT_GET_FLAG(orxRESOURCE_EVENT_ADD) | orxEVENT_GET_FLAG(orxRESOURCE_EVENT_UPDATE), orxEVENT_KU32_MASK_ID_ALL);
+
+      // Update status
+      sstNoiseTexture.bInit = orxTRUE;
+    }
+  }
+
+  // Done!
+  return eResult;
+}
+
+void orxNoiseTexture_Exit()
+{
+  // Was initialized?
+  if(sstNoiseTexture.bInit)
+  {
+    // Removes event handler
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RESOURCE, orxNoiseTexture_EventHandler);
+
+    // Unregisters type
+    orxResource_UnregisterType(orxNOISETEXTURE_KZ_RESOURCE_TAG);
+
+    // Update status
+    sstNoiseTexture.bInit = orxFALSE;
+  }
+
+  // Done!
+  return;
+}
+
+#ifdef __orxMSVC__
+
+  #pragma warning(pop)
+
+#endif /* __orxMSVC__ */
+
+#endif // orxNOISETEXTURE_IMPL
+
+#endif // _orxNOISETEXTURE_H_

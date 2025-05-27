@@ -126,6 +126,8 @@ Macros</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga780c6211b200bb2a9f0ca89eba707457"><td class="memItemLeft" align="right" valign="top">typedef struct __orxOBJECT_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a></td></tr>
 <tr class="separator:ga780c6211b200bb2a9f0ca89eba707457"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2755e23b3641d2d78bb63693c69d6e97"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga2755e23b3641d2d78bb63693c69d6e97">orxOBJECT_NEIGHBOR_FUNCTION</a>) (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:ga2755e23b3641d2d78bb63693c69d6e97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -219,6 +221,10 @@ Linked Structures</h2></td></tr>
 Flip</h2></td></tr>
 <tr class="memitem:ga752e969bd78dcf1a078599964987e6bf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga752e969bd78dcf1a078599964987e6bf">orxObject_SetFlip</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxBOOL _bFlipX, orxBOOL _bFlipY)</td></tr>
 <tr class="separator:ga752e969bd78dcf1a078599964987e6bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7a1bec640d68477d108463394d51d7a5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga7a1bec640d68477d108463394d51d7a5">orxObject_ClearFlip</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:ga7a1bec640d68477d108463394d51d7a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga82f25609652449de23ca3dc1d0c162d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga82f25609652449de23ca3dc1d0c162d4">orxObject_HasFlip</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:ga82f25609652449de23ca3dc1d0c162d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gada5553e90d127d2889985f4ed2a1f822"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gada5553e90d127d2889985f4ed2a1f822">orxObject_GetFlip</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY)</td></tr>
 <tr class="separator:gada5553e90d127d2889985f4ed2a1f822"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -467,14 +473,16 @@ Sound</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Shader</h2></td></tr>
-<tr class="memitem:ga33a1f3c52ad336cb7f0a1fc01db1d344"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga33a1f3c52ad336cb7f0a1fc01db1d344">orxObject_AddShader</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zShaderConfigID)</td></tr>
-<tr class="separator:ga33a1f3c52ad336cb7f0a1fc01db1d344"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaee569e0bc1169134b2c6c9d3ee5d7664"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaee569e0bc1169134b2c6c9d3ee5d7664">orxObject_AddShaderRecursive</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zShaderConfigID)</td></tr>
-<tr class="separator:gaee569e0bc1169134b2c6c9d3ee5d7664"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gada022dc8a3ef36235ccb5b6cc6e6b06a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gada022dc8a3ef36235ccb5b6cc6e6b06a">orxObject_RemoveShader</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zShaderConfigID)</td></tr>
-<tr class="separator:gada022dc8a3ef36235ccb5b6cc6e6b06a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad48e31b1c110f884bba7ad745777b203"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gad48e31b1c110f884bba7ad745777b203">orxObject_RemoveShaderRecursive</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zShaderConfigID)</td></tr>
-<tr class="separator:gad48e31b1c110f884bba7ad745777b203"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaeed8a5bee25f890a540f1fa654ebfbda"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaeed8a5bee25f890a540f1fa654ebfbda">orxObject_SetShader</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader)</td></tr>
+<tr class="separator:gaeed8a5bee25f890a540f1fa654ebfbda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2af59b62f3b0f33c883585bdc607d396"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga2af59b62f3b0f33c883585bdc607d396">orxObject_SetShaderRecursive</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *_pstShader)</td></tr>
+<tr class="separator:ga2af59b62f3b0f33c883585bdc607d396"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadb48578b4dd4f80a5b27ce9b641eeaa7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gadb48578b4dd4f80a5b27ce9b641eeaa7">orxObject_SetShaderFromConfig</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zShaderID)</td></tr>
+<tr class="separator:gadb48578b4dd4f80a5b27ce9b641eeaa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab448a33212da593640669090c6aa706d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab448a33212da593640669090c6aa706d">orxObject_SetShaderFromConfigRecursive</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zShaderID)</td></tr>
+<tr class="separator:gab448a33212da593640669090c6aa706d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab7a768eee5e295b1396a4f78271cadea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gab7a768eee5e295b1396a4f78271cadea">orxObject_GetShader</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
+<tr class="separator:gab7a768eee5e295b1396a4f78271cadea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7e61c5963e3b2def4631a815edc83038"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga7e61c5963e3b2def4631a815edc83038">orxObject_EnableShader</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, orxBOOL _bEnable)</td></tr>
 <tr class="separator:ga7e61c5963e3b2def4631a815edc83038"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga097e7cf84ca4b06b2de050d675b9766b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga097e7cf84ca4b06b2de050d675b9766b">orxObject_IsShaderEnabled</a> (const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject)</td></tr>
@@ -505,10 +513,10 @@ Trigger</h2></td></tr>
 <tr class="separator:ga275e57b0025eba2af6b54b723b31a380"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad0537c62ca9c330e3331124e569cf750"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gad0537c62ca9c330e3331124e569cf750">orxObject_RemoveTriggerRecursive</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zTriggerConfigID)</td></tr>
 <tr class="separator:gad0537c62ca9c330e3331124e569cf750"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad91d0e9766020369adfd82a7c1ee3b97"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gad91d0e9766020369adfd82a7c1ee3b97">orxObject_FireTrigger</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)</td></tr>
-<tr class="separator:gad91d0e9766020369adfd82a7c1ee3b97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8db3dce1473935061e881671fe447768"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga8db3dce1473935061e881671fe447768">orxObject_FireTriggerRecursive</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Size)</td></tr>
-<tr class="separator:ga8db3dce1473935061e881671fe447768"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2ff97bd6fb03f7ac8c2790592b0f8ffc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga2ff97bd6fb03f7ac8c2790592b0f8ffc">orxObject_FireTrigger</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count)</td></tr>
+<tr class="separator:ga2ff97bd6fb03f7ac8c2790592b0f8ffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga359aef8a49b2b78fcbb03e59a0cc57b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#ga359aef8a49b2b78fcbb03e59a0cc57b6">orxObject_FireTriggerRecursive</a> (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count)</td></tr>
+<tr class="separator:ga359aef8a49b2b78fcbb03e59a0cc57b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Name</h2></td></tr>
@@ -517,10 +525,8 @@ Name</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Neighboring</h2></td></tr>
-<tr class="memitem:gadcbd19a771edb146fed6d42d9d7643bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gadcbd19a771edb146fed6d42d9d7643bd">orxObject_CreateNeighborList</a> (const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstCheckBox, orxSTRINGID _stGroupID)</td></tr>
-<tr class="separator:gadcbd19a771edb146fed6d42d9d7643bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaeac04e584788022c4bfb0e0e72ac0533"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaeac04e584788022c4bfb0e0e72ac0533">orxObject_DeleteNeighborList</a> (<a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *_pstObjectList)</td></tr>
-<tr class="separator:gaeac04e584788022c4bfb0e0e72ac0533"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaea006c47cb9c5c3074fd90ec07c7f9a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_object.html#gaea006c47cb9c5c3074fd90ec07c7f9a0">orxObject_ForAllNeighbors</a> (const <a class="el" href="group__orx_object.html#ga2755e23b3641d2d78bb63693c69d6e97">orxOBJECT_NEIGHBOR_FUNCTION</a> _pfnNeighborCallback, const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *_pstCheckBox, orxSTRINGID _stGroupID, orxBOOL _bEnabled, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:gaea006c47cb9c5c3074fd90ec07c7f9a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="member-group"></a>
 Smoothing</h2></td></tr>
@@ -632,6 +638,21 @@ Picking</h2></td></tr>
 <p>Internal object structure </p>
 
 <p>Definition at line <a class="el" href="orx_object_8h_source.html#l00087">87</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga2755e23b3641d2d78bb63693c69d6e97"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxBOOL(orxFASTCALL * orxOBJECT_NEIGHBOR_FUNCTION) (<a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *_pstObject, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Object callback function type to use with ForAllNeighbors </p>
+
+<p>Definition at line <a class="el" href="orx_object_8h_source.html#l00090">90</a> of file <a class="el" href="orx_object_8h_source.html">orxObject.h</a>.</p>
 
 </div>
 </div>
@@ -808,73 +829,6 @@ Picking</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zFXConfigID</td><td>Config ID of the FX to add </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_fPropagationDelay</td><td>Propagation delay for each child </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a class="anchor" id="ga33a1f3c52ad336cb7f0a1fc01db1d344"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_AddShader </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
-          <td class="paramname"><em>_pstObject</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zShaderConfigID</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds a shader to an object using its config ID. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zShaderConfigID</td><td>Config ID of the shader to add </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gaee569e0bc1169134b2c6c9d3ee5d7664"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxObject_AddShaderRecursive </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
-          <td class="paramname"><em>_pstObject</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zShaderConfigID</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Adds a shader to an object and its owned children. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zShaderConfigID</td><td>Config ID of the shader to add </td></tr>
   </table>
   </dd>
 </dl>
@@ -1297,7 +1251,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks the first active object with size in contact with the given box, withing a given group. Use <a class="el" href="group__orx_object.html#gadcbd19a771edb146fed6d42d9d7643bd">orxObject_CreateNeighborList()</a> to get all the objects in the box. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Picks the first active object with size in contact with the given box, withing a given group. Use <a class="el" href="group__orx_object.html#gaea006c47cb9c5c3074fd90ec07c7f9a0">orxObject_ForAllNeighbors()</a> to access all the objects in the box. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstBox</td><td>Box to use for picking </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_stGroupID</td><td>Group ID to consider, orxSTRINGID_UNDEFINED for all </td></tr>
@@ -1305,6 +1259,29 @@ Picking</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxOBJECT / orxNULL </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga7a1bec640d68477d108463394d51d7a5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_ClearFlip </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Clears object flipping. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
 
 </div>
 </div>
@@ -1346,40 +1323,6 @@ Picking</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gadcbd19a771edb146fed6d42d9d7643bd"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a>* orxFASTCALL orxObject_CreateNeighborList </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&#160;</td>
-          <td class="paramname"><em>_pstCheckBox</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">orxSTRINGID&#160;</td>
-          <td class="paramname"><em>_stGroupID</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Creates a list of object at neighboring of the given box (ie. whose bounding volume intersects this box). The following is an example for iterating over a neighbor list: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;orxVECTOR vPosition; // The world position of the neighborhood area</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;// set_position(vPosition);</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;orxVECTOR vSize; // The size of the neighborhood area</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;// set_size(vSize);</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;orxVECTOR vPivot; // The pivot of the neighborhood area</div><div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;// set_pivot(vPivot);</div><div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;</div><div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;orxOBOX stBox;</div><div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;orxOBox_2DSet(&amp;stBox, &amp;vPosition, &amp;vPivot, &amp;vSize, 0);</div><div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;</div><div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;orxBANK * pstBank = orxObject_CreateNeighborList(&amp;stBox, orxSTRINGID_UNDEFINED);</div><div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;if(pstBank) {</div><div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    for(int i=0; i &lt; orxBank_GetCount(pstBank); ++i)</div><div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    {</div><div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        orxOBJECT * pstObject = *((orxOBJECT **) orxBank_GetAtIndex(pstBank, i));</div><div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        do_something_with(pstObject);</div><div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    }</div><div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    orxObject_DeleteNeighborList(pstBank);</div><div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCheckBox</td><td>Box to check intersection with </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_stGroupID</td><td>Group ID to consider, orxSTRINGID_UNDEFINED for all </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxBANK / orxNULL </dd></dl>
-
-</div>
-</div>
 <a class="anchor" id="ga72bd441390e6a8dfa1e4635fc91149c4"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1400,28 +1343,6 @@ Picking</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gaeac04e584788022c4bfb0e0e72ac0533"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxObject_DeleteNeighborList </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_bank.html#ga2de3e15387a28fb80a85207e882c9ee1">orxBANK</a> *&#160;</td>
-          <td class="paramname"><em>_pstObjectList</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Deletes an object list created with <a class="el" href="group__orx_object.html#gadcbd19a771edb146fed6d42d9d7643bd">orxObject_CreateNeighborList()</a>. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObjectList</td><td>Concerned object list </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -1619,7 +1540,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Finds the child inside an object's frame hierarchy that matches the given path. See <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a> and <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> for a comparison of ownership and parenthood in Orx. Note: this function will filter out any camera or spawner and retrieve the child matching the provided path. Paths are composed by object names separated by '.'. A wildcard can be used <code>*</code> instead of a name to find children at any depth inside the hierarchy, using depth-first search. Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there. For example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;orxObject_FindChild(pstObject, &quot;Higher.Lower&quot;); will find the first child named Lower of the first child named Higher of pstObject</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;orxObject_FindChild(pstObject, &quot;Higher.*.Deep&quot;); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;orxObject_FindChild(pstObject, &quot;*.Other[2]&quot;); will find the third object named Other at any depth under pstObject (depth-first search)</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;orxObject_FindChild(pstObject, &quot;Higher.[1]&quot;); will find the second child (no matter its name) of the first child named Higher of pstObject</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+<p>Finds the child inside an object's frame hierarchy that matches the given path. See <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a> and <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> for a comparison of ownership and parenthood in Orx. Note: this function will filter out any camera or spawner and retrieve the child matching the provided path. Paths are composed by object names separated by '.'. A wildcard can be used <code>*</code> instead of a name to find children at any depth inside the hierarchy, using depth-first search. If a name is prefixed by '@', then the name will be tested against all the config ancestry of the object's name, in addition to object's name itself. Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there. For example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;orxObject_FindChild(pstObject, &quot;Higher.Lower&quot;); will find the first child named Lower of the first child named Higher of pstObject</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;orxObject_FindChild(pstObject, &quot;Higher.*.Deep&quot;); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;orxObject_FindOwnedChild(pstObject, &quot;*.@Parent&quot;); will find the first child (depth-first search) of pstObject which is either named Parent or has Parent in its config ancestry</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;orxObject_FindChild(pstObject, &quot;*.Other[2]&quot;); will find the third object named Other at any depth under pstObject (depth-first search)</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;orxObject_FindChild(pstObject, &quot;Higher.[1]&quot;); will find the second child (no matter its name) of the first child named Higher of pstObject</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zPath</td><td>Path defining which object to find in the hierarchy (cf. notes above) </td></tr>
@@ -1653,7 +1574,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Finds the child inside an object's owner hierarchy that matches the given path. See <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a> and <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> for a comparison of ownership and parenthood in Orx. Note: this function will filter out any camera or spawner and retrieve the child matching the provided path. Paths are composed by object names separated by '.'. A wildcard can be used <code>*</code> instead of a name to find children at any depth inside the hierarchy, using depth-first search. Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there. For example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;orxObject_FindOwnedChild(pstObject, &quot;Higher.Lower&quot;); will find the first child named Lower of the first child named Higher of pstObject</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;orxObject_FindOwnedChild(pstObject, &quot;Higher.*.Deep&quot;); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;orxObject_FindOwnedChild(pstObject, &quot;*.Other[2]&quot;); will find the third object named Other at any depth under pstObject (depth-first search)</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;orxObject_FindOwnedChild(pstObject, &quot;Higher.[1]&quot;); will find the second child (no matter its name) of the first child named Higher of pstObject</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+<p>Finds the child inside an object's owner hierarchy that matches the given path. See <a class="el" href="group__orx_object.html#ga6d1af20dc71e6ff3f1d5c034fa271833">orxObject_SetOwner()</a> and <a class="el" href="group__orx_object.html#ga14fd6946764c919597aeda13cd7429d5">orxObject_SetParent()</a> for a comparison of ownership and parenthood in Orx. Note: this function will filter out any camera or spawner and retrieve the child matching the provided path. Paths are composed by object names separated by '.'. A wildcard can be used <code>*</code> instead of a name to find children at any depth inside the hierarchy, using depth-first search. If a name is prefixed by '@', then the name will be tested against all the config ancestry of the object's name, in addition to object's name itself. Lastly, C subscript syntax, '[N]', can be used to access the N+1th (indices are 0-based) object matching the path until there. For example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;orxObject_FindOwnedChild(pstObject, &quot;Higher.Lower&quot;); will find the first child named Lower of the first child named Higher of pstObject</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;orxObject_FindOwnedChild(pstObject, &quot;Higher.*.Deep&quot;); will find the first object named Deep at any depth (depth-first search) under the first child named Higher of pstObject</div><div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;orxObject_FindOwnedChild(pstObject, &quot;*.@Parent&quot;); will find the first child (depth-first search) of pstObject which is either named Parent or has Parent in its config ancestry</div><div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;orxObject_FindOwnedChild(pstObject, &quot;*.Other[2]&quot;); will find the third object named Other at any depth under pstObject (depth-first search)</div><div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;orxObject_FindOwnedChild(pstObject, &quot;Higher.[1]&quot;); will find the second child (no matter its name) of the first child named Higher of pstObject</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zPath</td><td>Path defining which object to find in the hierarchy (cf. notes above) </td></tr>
@@ -1664,7 +1585,7 @@ Picking</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gad91d0e9766020369adfd82a7c1ee3b97"></a>
+<a class="anchor" id="ga2ff97bd6fb03f7ac8c2790592b0f8ffc"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1690,7 +1611,7 @@ Picking</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Size</em>&#160;</td>
+          <td class="paramname"><em>_u32Count</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1703,8 +1624,8 @@ Picking</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zEvent</td><td>Event to fire </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_azRefinementList</td><td>List of refinements for this event, unused if _u32Size == 0 </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of the refinement list, 0 for none </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_azRefinementList</td><td>List of refinements for this event, unused if _u32Count == 0 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Count</td><td>Number of refinements in the list, 0 for none </td></tr>
   </table>
   </dd>
 </dl>
@@ -1712,7 +1633,7 @@ Picking</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga8db3dce1473935061e881671fe447768"></a>
+<a class="anchor" id="ga359aef8a49b2b78fcbb03e59a0cc57b6"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1738,7 +1659,7 @@ Picking</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">orxU32&#160;</td>
-          <td class="paramname"><em>_u32Size</em>&#160;</td>
+          <td class="paramname"><em>_u32Count</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1751,12 +1672,67 @@ Picking</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zEvent</td><td>Event to fire </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_azRefinementList</td><td>List of refinements for this event, unused if _u32Size == 0 </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Size</td><td>Size of the refinement list, 0 for none </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_azRefinementList</td><td>List of refinements for this event, unused if _u32Count == 0 </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_u32Count</td><td>Number of refinements in the list, 0 for none </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaea006c47cb9c5c3074fd90ec07c7f9a0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_ForAllNeighbors </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#ga2755e23b3641d2d78bb63693c69d6e97">orxOBJECT_NEIGHBOR_FUNCTION</a>&#160;</td>
+          <td class="paramname"><em>_pfnNeighborCallback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structorx_o_b_o_x.html">orxOBOX</a> *&#160;</td>
+          <td class="paramname"><em>_pstCheckBox</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxSTRINGID&#160;</td>
+          <td class="paramname"><em>_stGroupID</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bEnabled</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
+          <td class="paramname"><em>_pContext</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Runs a callback for all neighboring objects (ie. whose bounding volume intersects this box). </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnNeighborCallback</td><td>Function to run for each neighbor. If this function returns orxFALSE, no other neighbor will be processed (ie. early exit) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstCheckBox</td><td>Box to check intersection with, orxNULL for all objects </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_stGroupID</td><td>Group ID to consider, orxSTRINGID_UNDEFINED for all </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bEnabled</td><td>Only consider enabled objects if set to orxTRUE, consider all objects otherwise </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>User defined context, passed to the callback </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS if all neighbors were processed without interruption, orxSTATUS_FAILURE otherwise </dd></dl>
 
 </div>
 </div>
@@ -2837,6 +2813,29 @@ Picking</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="gab7a768eee5e295b1396a4f78271cadea"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const <a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a>* orxFASTCALL orxObject_GetShader </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets the shader of an object. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTRING / orx </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="gaf2463839fb0133188f721afd6cd76e1d"></a>
 <div class="memitem">
 <div class="memproto">
@@ -3203,6 +3202,29 @@ Picking</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga82f25609652449de23ca3dc1d0c162d4"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL orxObject_HasFlip </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Object has flip accessor? </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxTRUE / orxFALSE </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="ga3675869d71f33d2670ce92836b681775"></a>
 <div class="memitem">
 <div class="memproto">
@@ -3525,7 +3547,7 @@ Picking</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Picks the first active object with size "under" the given position, within a given group. See <a class="el" href="group__orx_object.html#gaaf70ba8a146be3b1948af70a1bc8990c">orxObject_BoxPick()</a>, <a class="el" href="group__orx_object.html#gadcbd19a771edb146fed6d42d9d7643bd">orxObject_CreateNeighborList()</a> and orxObject_Raycast for other ways of picking objects. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Picks the first active object with size "under" the given position, within a given group. See <a class="el" href="group__orx_object.html#gaaf70ba8a146be3b1948af70a1bc8990c">orxObject_BoxPick()</a>, <a class="el" href="group__orx_object.html#gaea006c47cb9c5c3074fd90ec07c7f9a0">orxObject_ForAllNeighbors()</a> and <a class="el" href="group__orx_object.html#ga5d833ebee1dec1bcc0715edd58d775af">orxObject_Raycast()</a> for other ways of picking objects. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">_pvPosition</td><td>Position to pick from </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_stGroupID</td><td>Group ID to consider, orxSTRINGID_UNDEFINED for all </td></tr>
@@ -3807,73 +3829,6 @@ Picking</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gada022dc8a3ef36235ccb5b6cc6e6b06a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_RemoveShader </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
-          <td class="paramname"><em>_pstObject</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zShaderConfigID</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Removes a shader using its config ID. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zShaderConfigID</td><td>Config ID of the shader to remove </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="gad48e31b1c110f884bba7ad745777b203"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxObject_RemoveShaderRecursive </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
-          <td class="paramname"><em>_pstObject</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const orxSTRING&#160;</td>
-          <td class="paramname"><em>_zShaderConfigID</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Removes a shader from an object and its owned children. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">_zShaderConfigID</td><td>Config ID of the shader to remove </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>
@@ -5534,6 +5489,140 @@ Picking</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gaeed8a5bee25f890a540f1fa654ebfbda"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_SetShader </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *&#160;</td>
+          <td class="paramname"><em>_pstShader</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the shader of an object. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstShader</td><td>Shader to set, orxNULL to remove the current one </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gadb48578b4dd4f80a5b27ce9b641eeaa7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxObject_SetShaderFromConfig </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zShaderID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the shader of an object using its config ID. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zShaderID</td><td>Config ID of the shader to set, orxNULL to remove the current one </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="gab448a33212da593640669090c6aa706d"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxObject_SetShaderFromConfigRecursive </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zShaderID</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the shader of an object and its owned children. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zShaderID</td><td>Config ID of the shader to set, orxNULL to remove the current one </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="ga2af59b62f3b0f33c883585bdc607d396"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL orxObject_SetShaderRecursive </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__orx_object.html#ga780c6211b200bb2a9f0ca89eba707457">orxOBJECT</a> *&#160;</td>
+          <td class="paramname"><em>_pstObject</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_shader.html#gafa7c386fd805fd23b1ff9b32c7972e51">orxSHADER</a> *&#160;</td>
+          <td class="paramname"><em>_pstShader</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets the shader of an object and its owned children. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstObject</td><td>Concerned object </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstShader</td><td>Shader to set, orxNULL to remove the current one </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

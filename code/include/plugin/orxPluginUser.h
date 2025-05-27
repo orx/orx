@@ -57,22 +57,48 @@
  Constants
  *********************************************/
 
-/* Defines a user plugin entry function (that takes no arguments and return an orxSTATUS value) */
-#define orxPLUGIN_DECLARE_ENTRY_POINT(ENTRY_FUNCTION)   \
+/** Plugin entry point function */
+typedef orxSTATUS (orxFASTCALL *orxPLUGIN_ENTRY_POINT)(orxPLUGIN_ENTRY_MODE _eMode);
+
+
+/* Defines a user plugin init entry function (that take an entry mode argument and return an orxSTATUS value) */
+#define orxPLUGIN_DECLARE_INIT_ENTRY_POINT(ENTRY_FUNCTION)                                                                            \
 extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_INIT_FUNCTION_NAME(orxS32 *_ps32Number, orxPLUGIN_USER_FUNCTION_INFO **_ppstInfo) \
-{                                                       \
-  orxSTATUS eResult;                                    \
-                                                        \
-  /* Calls entry point function */                      \
-  eResult = ENTRY_FUNCTION();                           \
-                                                        \
-  /* Updates parameters */                              \
-  *_ps32Number  = 0;                                    \
-  *_ppstInfo    = orxNULL;                              \
-                                                        \
-  /* Done! */                                           \
-  return eResult;                                       \
+{                                                                                                                                     \
+  orxSTATUS eResult;                                                                                                                  \
+                                                                                                                                      \
+  /* Calls entry point function */                                                                                                    \
+  eResult = ((orxPLUGIN_ENTRY_POINT)ENTRY_FUNCTION)(orxPLUGIN_ENTRY_MODE_INIT);                                                       \
+                                                                                                                                      \
+  /* Updates parameters */                                                                                                            \
+  *_ps32Number  = 0;                                                                                                                  \
+  *_ppstInfo    = orxNULL;                                                                                                            \
+                                                                                                                                      \
+  /* Done! */                                                                                                                         \
+  return eResult;                                                                                                                     \
 }
+
+/* Defines a user plugin exit entry function (that take an entry mode argument and return an orxSTATUS value) */
+#define orxPLUGIN_DECLARE_EXIT_ENTRY_POINT(ENTRY_FUNCTION)                                                                            \
+extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_EXIT_FUNCTION_NAME()                                                              \
+{                                                                                                                                     \
+  /* Done! */                                                                                                                         \
+  return ((orxPLUGIN_ENTRY_POINT)ENTRY_FUNCTION)(orxPLUGIN_ENTRY_MODE_EXIT);                                                          \
+}
+
+/* Defines a user plugin swap entry function (that take an entry mode argument and return an orxSTATUS value) */
+#define orxPLUGIN_DECLARE_SWAP_ENTRY_POINT(ENTRY_FUNCTION)                                                                            \
+extern orxIMPORT orxDLLEXPORT orxSTATUS orxPLUGIN_K_SWAP_FUNCTION_NAME(orxPLUGIN_ENTRY_MODE _eMode)                                   \
+{                                                                                                                                     \
+  /* Done! */                                                                                                                         \
+  return ((orxPLUGIN_ENTRY_POINT)ENTRY_FUNCTION)(_eMode);                                                                                                      \
+}
+
+/* Defines a user plugin entry function (that take an entry mode argument and return an orxSTATUS value) */
+#define orxPLUGIN_DECLARE_ENTRY_POINT(ENTRY_FUNCTION)                                                                                 \
+orxPLUGIN_DECLARE_INIT_ENTRY_POINT(ENTRY_FUNCTION);                                                                                   \
+orxPLUGIN_DECLARE_EXIT_ENTRY_POINT(ENTRY_FUNCTION);                                                                                   \
+orxPLUGIN_DECLARE_SWAP_ENTRY_POINT(ENTRY_FUNCTION);
 
 
 /*********************************************

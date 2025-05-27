@@ -273,29 +273,29 @@ static bool orxKeyboard_Android_KeyEventFilter(const GameActivityKeyEvent *event
 static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
-  orxANDROID_KEY_EVENT *pstKeyEvent;
+  orxANDROID_EVENT_PAYLOAD *pstPayload;
   orxKEYBOARD_KEY eKey;
 
   /* Gets payload */
-  pstKeyEvent = (orxANDROID_KEY_EVENT *) _pstEvent->pstPayload;
+  pstPayload = (orxANDROID_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
   /* Depending on ID */
-  switch(pstKeyEvent->u32Action)
+  switch(_pstEvent->eID)
   {
-    case orxANDROID_EVENT_KEYBOARD_DOWN:
+    case orxANDROID_EVENT_KEY_DOWN:
     {
-      eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
-      if (eKey != orxKEYBOARD_KEY_NONE)
+      eKey = orxKeyboard_Android_GetKey(pstPayload->stKey.u32KeyCode);
+      if(eKey != orxKEYBOARD_KEY_NONE)
       {
         sstKeyboard.abKeyPressed[eKey] = orxTRUE;
 
         /* Stores it */
-        sstKeyboard.au32KeyBuffer[sstKeyboard.u32KeyWriteIndex] = pstKeyEvent->u32KeyCode;
+        sstKeyboard.au32KeyBuffer[sstKeyboard.u32KeyWriteIndex] = pstPayload->stKey.u32KeyCode;
         sstKeyboard.u32KeyWriteIndex =
                 (sstKeyboard.u32KeyWriteIndex + 1) & (orxKEYBOARD_KU32_BUFFER_SIZE - 1);
 
         /* Full? */
-        if (sstKeyboard.u32KeyReadIndex == sstKeyboard.u32KeyWriteIndex)
+        if(sstKeyboard.u32KeyReadIndex == sstKeyboard.u32KeyWriteIndex)
         {
           /* Bounces read index */
           sstKeyboard.u32KeyReadIndex =
@@ -304,13 +304,17 @@ static orxSTATUS orxFASTCALL orxKeyboard_Android_EventHandler(const orxEVENT *_p
       }
       break;
     }
-    case orxANDROID_EVENT_KEYBOARD_UP:
+    case orxANDROID_EVENT_KEY_UP:
     {
-      eKey = orxKeyboard_Android_GetKey(pstKeyEvent->u32KeyCode);
+      eKey = orxKeyboard_Android_GetKey(pstPayload->stKey.u32KeyCode);
       if(eKey != orxKEYBOARD_KEY_NONE)
       {
         sstKeyboard.abKeyPressed[eKey] = orxFALSE;
       }
+      break;
+    }
+    default:
+    {
       break;
     }
   }
@@ -330,8 +334,11 @@ extern "C" orxSTATUS orxFASTCALL orxKeyboard_Android_Init()
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));
 
     /* Adds our keyboard event handlers */
-    if((eResult = orxEvent_AddHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
+    if((eResult = orxEvent_AddHandler(orxEVENT_TYPE_ANDROID, orxKeyboard_Android_EventHandler)) != orxSTATUS_FAILURE)
     {
+      /* Filters events */
+      orxEvent_SetHandlerIDFlags(orxKeyboard_Android_EventHandler, orxEVENT_TYPE_ANDROID, orxNULL, orxEVENT_GET_FLAG(orxANDROID_EVENT_KEY_DOWN) | orxEVENT_GET_FLAG(orxANDROID_EVENT_KEY_UP), orxEVENT_KU32_MASK_ID_ALL);
+
       /* Updates status */
       sstKeyboard.u32Flags |= orxKEYBOARD_KU32_STATIC_FLAG_READY;
     }
@@ -353,7 +360,7 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
   if(sstKeyboard.u32Flags & orxKEYBOARD_KU32_STATIC_FLAG_READY)
   {
     /* Removes event handler */
-    orxEvent_RemoveHandler(orxANDROID_EVENT_TYPE_KEYBOARD, orxKeyboard_Android_EventHandler);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_ANDROID, orxKeyboard_Android_EventHandler);
 
     /* Clears key filter */
     orxAndroid_SetKeyFilter(NULL);

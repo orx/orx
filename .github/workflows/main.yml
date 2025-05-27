@@ -1,0 +1,246 @@
+name: Build All
+on: push
+env:
+  ORX: ${{github.workspace}}/code
+jobs:
+  # Visual Studio
+  build-vs:
+    name: Visual Studio
+    strategy:
+      matrix:
+        os:
+          - windows
+        version:
+          # - 2017 # Not supported by GitHub hosted runners
+          - 2019
+          - 2022
+        config:
+          - Debug
+          - Profile
+          - Release
+        platform:
+          # - x86 # Not supported by GitHub hosted runners
+          - x64
+        include:
+          - os: windows
+            runner: windows-latest
+            setup: setup.bat
+    runs-on: ${{matrix.runner}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: microsoft/setup-msbuild@v2
+        with:
+          msbuild-architecture: ${{matrix.platform}}
+      - name: Setup
+        uses: ./.github/workflows/setup
+        with:
+          os: ${{matrix.os}}
+          setup: ${{matrix.setup}}
+      - name: Build engine
+        run: msbuild code\build\windows\vs${{matrix.version}}\orx.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
+      - name: Build tutorials
+        run: msbuild tutorial\build\windows\vs${{matrix.version}}\tutorial.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
+      - name: Create project
+        run: ./init.bat test
+      - name: Build project
+        run: msbuild test\build\windows\vs${{matrix.version}}\test.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
+      - name: Build core
+        run: msbuild code\build\windows\vs${{matrix.version}}\orx.sln -m -t:rebuild "-property:Configuration=Core ${{matrix.config}}"
+      - name: Build tool - orxCrypt
+        run: msbuild tools\orxCrypt\build\windows\vs${{matrix.version}}\orxCrypt.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
+      - name: Build tool - orxFontGen
+        run: msbuild tools\orxFontGen\build\windows\vs${{matrix.version}}\orxFontGen.sln -m -t:rebuild -property:Configuration=${{matrix.config}}
+
+  # Make
+  build-gmake:
+    name: Make
+    strategy:
+      matrix:
+        os:
+          - windows
+          - linux
+          - mac
+        config:
+          - debug
+          - profile
+          - release
+        platform:
+          - 32
+          - 64
+        include:
+          - os: windows
+            runner: windows-latest
+            setup: setup.bat
+            init: init.bat
+            make: mingw32-make
+          - os: linux
+            runner: ubuntu-latest
+            setup: setup.sh
+            init: init.sh
+            make: make
+          - os: mac
+            runner: macos-latest
+            setup: setup.sh
+            init: init.sh
+            make: make
+        exclude:
+          - os: windows
+            platform: 32 # Not supported by GitHub hosted runners
+          - os: mac
+            platform: 32 # Not supported by GitHub hosted runners
+    runs-on: ${{matrix.runner}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup
+        uses: ./.github/workflows/setup
+        with:
+          os: ${{matrix.os}}
+          setup: ${{matrix.setup}}
+      - name: Build engine
+        working-directory: code/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
+      - name: Build tutorials
+        working-directory: tutorial/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}} verbose=1
+        if: matrix.os != 'mac' # Skipping MacOS as copying the library returns a value that stops the build
+      - name: Create project
+        run: ./${{matrix.init}} test
+      - name: Build project
+        working-directory: test/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
+      - name: Build core
+        working-directory: code/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=core_${{matrix.config}}${{matrix.platform}}
+      - name: Build tool - orxCrypt
+        working-directory: tools/orxCrypt/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
+      - name: Build tool - orxFontGen
+        working-directory: tools/orxFontGen/build/${{matrix.os}}/gmake
+        run: ${{matrix.make}} config=${{matrix.config}}${{matrix.platform}}
+        if: matrix.os != 'windows' && matrix.platform != '32' # Skipping Windows & 32bit builds
+
+  # iOS
+  build-ios:
+    name: iOS
+    strategy:
+      matrix:
+        os:
+          - mac
+        config:
+          - Debug
+          - Profile
+          - Release
+        platform:
+          - os
+          - simulator
+        include:
+          - os: mac
+            runner: macos-latest
+            setup: setup.sh
+          - platform: simulator
+            extra: -destination 'platform=iOS Simulator,name=iPhone 15'
+    runs-on: ${{matrix.runner}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup
+        uses: ./.github/workflows/setup
+        with:
+          os: ${{matrix.os}}
+          setup: ${{matrix.setup}}
+      - name: Build engine
+        working-directory: code/build/ios/xcode/orx-ios.xcodeproj
+        run: xcodebuild -workspace project.xcworkspace -scheme orxLIB -configuration=${{matrix.config}} -sdk iphone${{matrix.platform}} ${{matrix.extra}}
+
+  # Android
+  build-android:
+    name: Android
+    strategy:
+      matrix:
+        os:
+          - linux
+        include:
+          - os: linux
+            runner: ubuntu-latest
+            setup: setup.sh
+    runs-on: ${{matrix.runner}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Setup
+        uses: ./.github/workflows/setup
+        with:
+          os: ${{matrix.os}}
+          setup: ${{matrix.setup}}
+      - name: Build engine
+        working-directory: code/build/android
+        run: ./gradlew clean assemble publishAllPublicationsToOrxRepository
+      - name: Build demo
+        working-directory: code/demo/android
+        run: ./gradlew clean assemble
+
+  # Web
+  build-web:
+    name: Web (HTML5)
+    strategy:
+      matrix:
+        os:
+          - windows
+          - linux
+          - mac
+        config:
+          - debug
+          - profile
+          - release
+        include:
+          - os: windows
+            runner: windows-latest
+            setup: setup.bat
+            init: init.bat
+            make: mingw32-make
+            emsdk_env: emsdk/emsdk_env.ps1
+          - os: linux
+            runner: ubuntu-latest
+            setup: setup.sh
+            init: init.sh
+            make: make
+            emsdk_env: emsdk/emsdk_env.sh
+          - os: mac
+            runner: macos-latest
+            setup: setup.sh
+            init: init.sh
+            make: make
+            emsdk_env: emsdk/emsdk_env.sh
+    runs-on: ${{matrix.runner}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Emscripten
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          ./emsdk install latest
+          ./emsdk activate latest
+      - name: Setup
+        uses: ./.github/workflows/setup
+        with:
+          os: ${{matrix.os}}
+          setup: ${{matrix.setup}}
+      - name: Build engine
+        working-directory: code/build/${{matrix.os}}/gmake
+        run: |
+          . ../../../../${{matrix.emsdk_env}}
+          ${{matrix.make}} config=release64 CFLAGS=-D__orxHEADLESS__
+          emmake make config=${{matrix.config}}web
+      - name: Create project
+        run: ./${{matrix.init}} test
+      - name: Build project
+        working-directory: test/build/${{matrix.os}}/gmake
+        run: |
+          . ../../../../${{matrix.emsdk_env}}
+          ${{matrix.make}} config=release64
+          emmake make config=${{matrix.config}}web

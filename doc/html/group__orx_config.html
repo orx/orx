@@ -127,6 +127,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:gafb7b4d512a29c9410c5a5e1f7faf9119"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae1d79b4c2a48e831db1cf7d031fe5294"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gae1d79b4c2a48e831db1cf7d031fe5294">orxCONFIG_CLEAR_FUNCTION</a>) (const orxSTRING _zSectionName, const orxSTRING _zKeyName)</td></tr>
 <tr class="separator:gae1d79b4c2a48e831db1cf7d031fe5294"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga71023c547365f8b2ef23d94a199413e8"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga71023c547365f8b2ef23d94a199413e8">orxCONFIG_KEY_FUNCTION</a>) (const orxSTRING _zKeyName, const orxSTRING _zSectionName, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:ga71023c547365f8b2ef23d94a199413e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaff09561378d9e18269c5313bc428ff18"><td class="memItemLeft" align="right" valign="top">typedef orxBOOL(orxFASTCALL *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaff09561378d9e18269c5313bc428ff18">orxCONFIG_SAVE_FUNCTION</a>) (const orxSTRING _zSectionName, const orxSTRING _zKeyName, const orxSTRING _zFileName, orxBOOL _bUseEncryption)</td></tr>
 <tr class="separator:gaff09561378d9e18269c5313bc428ff18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -143,6 +145,8 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:ga3f470edfb16ff8e0382327fa8352df61"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga3f470edfb16ff8e0382327fa8352df61">orxConfig_AppendListString</a> (const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)</td></tr>
 <tr class="separator:ga3f470edfb16ff8e0382327fa8352df61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga00abfc065126b54f7dd47d9ad3b53145"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga00abfc065126b54f7dd47d9ad3b53145">orxConfig_AppendString</a> (const orxSTRING _zKey, const orxSTRING _zValue)</td></tr>
+<tr class="separator:ga00abfc065126b54f7dd47d9ad3b53145"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga028abfdf07da903fc1e9fe506590e3f0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga028abfdf07da903fc1e9fe506590e3f0">orxConfig_Clear</a> (const <a class="el" href="group__orx_config.html#gae1d79b4c2a48e831db1cf7d031fe5294">orxCONFIG_CLEAR_FUNCTION</a> _pfnClearCallback)</td></tr>
 <tr class="separator:ga028abfdf07da903fc1e9fe506590e3f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0ef471810ad2d2ed9ff5e0726cacc545"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga0ef471810ad2d2ed9ff5e0726cacc545">orxConfig_ClearSection</a> (const orxSTRING _zSectionName)</td></tr>
@@ -157,6 +161,8 @@ Functions</h2></td></tr>
 <tr class="separator:gafc3530a66bdce91c5d75b71d186876c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabc9ffc867226e9cf1d1c225a2c842139"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gabc9ffc867226e9cf1d1c225a2c842139">orxConfig_Exit</a> ()</td></tr>
 <tr class="separator:gabc9ffc867226e9cf1d1c225a2c842139"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab1644a1fd540f78b1d4ef4e3abd76ba5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gab1644a1fd540f78b1d4ef4e3abd76ba5">orxConfig_ForAllKeys</a> (const <a class="el" href="group__orx_config.html#ga71023c547365f8b2ef23d94a199413e8">orxCONFIG_KEY_FUNCTION</a> _pfnKeyCallback, orxBOOL _bIncludeParents, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
+<tr class="separator:gab1644a1fd540f78b1d4ef4e3abd76ba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga020eac8fa22c7e5b650ecd730f8b3f92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxBOOL orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga020eac8fa22c7e5b650ecd730f8b3f92">orxConfig_GetBool</a> (const orxSTRING _zKey)</td></tr>
 <tr class="separator:ga020eac8fa22c7e5b650ecd730f8b3f92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga128f66724f673066c8ea02cc4af8dfda"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga128f66724f673066c8ea02cc4af8dfda">orxConfig_GetColorVector</a> (const orxSTRING _zKey, <a class="el" href="group__orx_type.html#ga994f10d91e120b5122aad209216cbfc5">orxCOLORSPACE</a> _eColorSpace, <a class="el" href="structorx_v_e_c_t_o_r.html">orxVECTOR</a> *_pvVector)</td></tr>
@@ -201,6 +207,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga64131912a289b067324ced29eee5cc28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9c67829801e603be067ba7d3bfa5127e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> const orxSTRING orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga9c67829801e603be067ba7d3bfa5127e">orxConfig_GetParent</a> (const orxSTRING _zSectionName)</td></tr>
 <tr class="separator:ga9c67829801e603be067ba7d3bfa5127e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1c2e081eff7492f0a198d89fe887a867"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga1c2e081eff7492f0a198d89fe887a867">orxConfig_GetParentDistance</a> (const orxSTRING _zSectionName, const orxSTRING _zParentName)</td></tr>
+<tr class="separator:ga1c2e081eff7492f0a198d89fe887a867"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga70670ce00716ab2003d48c63c54319d5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga70670ce00716ab2003d48c63c54319d5">orxConfig_GetS32</a> (const orxSTRING _zKey)</td></tr>
 <tr class="separator:ga70670ce00716ab2003d48c63c54319d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaee6c39874f4e63e136d7433e2b8e2959"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxS64 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gaee6c39874f4e63e136d7433e2b8e2959">orxConfig_GetS64</a> (const orxSTRING _zKey)</td></tr>
@@ -275,6 +283,8 @@ Functions</h2></td></tr>
 <tr class="separator:gae177467bb1383c1f442f77107a6858d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gade383ea5e495c3bd8743972904f6c779"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#gade383ea5e495c3bd8743972904f6c779">orxConfig_SetListString</a> (const orxSTRING _zKey, const orxSTRING _azValue[], orxU32 _u32Number)</td></tr>
 <tr class="separator:gade383ea5e495c3bd8743972904f6c779"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga37bc4a7f35c3cd437705893dadc7dbfc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga37bc4a7f35c3cd437705893dadc7dbfc">orxConfig_SetOrigin</a> (const orxSTRING _zSectionName, const orxSTRING _zOrigin)</td></tr>
+<tr class="separator:ga37bc4a7f35c3cd437705893dadc7dbfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga896fbb4078e19b04136589050f27488d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga896fbb4078e19b04136589050f27488d">orxConfig_SetParent</a> (const orxSTRING _zSectionName, const orxSTRING _zParentName)</td></tr>
 <tr class="separator:ga896fbb4078e19b04136589050f27488d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga63e87a86f8f9228bfd43f549fe8d0fcc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_config.html#ga63e87a86f8f9228bfd43f549fe8d0fcc">orxConfig_SetS32</a> (const orxSTRING _zKey, orxS32 _s32Value)</td></tr>
@@ -322,8 +332,9 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Config bootstrap function type to use with SetBootstrap </p>
 
-<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00077">77</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
+<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00078">78</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
 
 </div>
 </div>
@@ -336,9 +347,24 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Config callback function type to use with clear function </p>
+<p>Config callback function type to use with Clear </p>
 
 <p>Definition at line <a class="el" href="orx_config_8h_source.html#l00075">75</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga71023c547365f8b2ef23d94a199413e8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef orxBOOL(orxFASTCALL * orxCONFIG_KEY_FUNCTION) (const orxSTRING _zKeyName, const orxSTRING _zSectionName, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Config callback function type to use with ForAllKeys </p>
+
+<p>Definition at line <a class="el" href="orx_config_8h_source.html#l00081">81</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
 
 </div>
 </div>
@@ -351,7 +377,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Config callback function type to use with save function </p>
+<p>Config callback function type to use with Save </p>
 
 <p>Definition at line <a class="el" href="orx_config_8h_source.html#l00072">72</a> of file <a class="el" href="orx_config_8h_source.html">orxConfig.h</a>.</p>
 
@@ -420,6 +446,40 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_azValue</td><td>Values </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Number</td><td>Number of values </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga00abfc065126b54f7dd47d9ad3b53145"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConfig_AppendString </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zKey</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zValue</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends a string value to a config list (will create a new entry if not already present) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zValue</td><td>Value </td></tr>
   </table>
   </dd>
 </dl>
@@ -589,6 +649,47 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Exits from the Config Module </p>
+
+</div>
+</div>
+<a class="anchor" id="gab1644a1fd540f78b1d4ef4e3abd76ba5"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConfig_ForAllKeys </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_config.html#ga71023c547365f8b2ef23d94a199413e8">orxCONFIG_KEY_FUNCTION</a>&#160;</td>
+          <td class="paramname"><em>_pfnKeyCallback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxBOOL&#160;</td>
+          <td class="paramname"><em>_bIncludeParents</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *&#160;</td>
+          <td class="paramname"><em>_pContext</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Runs a callback for all keys of the current section </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pfnKeyCallback</td><td>Function to run for each key. If this function returns orxFALSE, no other keys will be processed (ie. early exit) </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_bIncludeParents</td><td>Include keys inherited from all parents (ie. that are not locally defined), except the default one </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pContext</td><td>User defined context, passed to the callback </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS if all keys were processed without interruption, orxSTATUS_FAILURE otherwise </dd></dl>
 
 </div>
 </div>
@@ -1198,6 +1299,40 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Section's parent name if set, orxSTRING_EMPTY if no parent has been forced or orxNULL otherwise </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga1c2e081eff7492f0a198d89fe887a867"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL orxConfig_GetParentDistance </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zSectionName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zParentName</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gets parent distance, ie. how far up the ancestry of a given section is a parent (does not consider the default parent) </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSectionName</td><td>Concerned section </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zParentName</td><td>Parent section name to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 for a direct parent, 2 for a grandparent, etc., and 0 if not found in the ancestry </dd></dl>
 
 </div>
 </div>
@@ -2137,6 +2272,40 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_zKey</td><td>Key name </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_azValue</td><td>Values </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">_u32Number</td><td>Number of values </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga37bc4a7f35c3cd437705893dadc7dbfc"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL orxConfig_SetOrigin </td>
+          <td>(</td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zSectionName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const orxSTRING&#160;</td>
+          <td class="paramname"><em>_zOrigin</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets (overrides) section origin </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zSectionName</td><td>Concerned section name </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_zOrigin</td><td>Origin name to set, orxNULL for none </td></tr>
   </table>
   </dd>
 </dl>

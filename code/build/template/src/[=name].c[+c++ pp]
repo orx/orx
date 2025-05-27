@@ -58,10 +58,37 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   ImGui::ShowMetricsWindow();
 ]
   // Should quit?
-  if(orxInput_IsActive("Quit"))
+  if(orxInput_HasBeenActivated("Quit"))
   {
     // Send close event
     orxEvent_SendShort(orxEVENT_TYPE_SYSTEM, orxSYSTEM_EVENT_CLOSE);
+  }
+}
+
+/** Camera Update function, it has been registered to be called every tick of the core clock, after physics & objects have been updated
+*/
+[+scroll void [!name]::CameraUpdate(const orxCLOCK_INFO &_rstClockInfo)]
+[-scroll void orxFASTCALL CameraUpdate(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)]
+{
+  // Get MainCamera proxy object
+[+scroll
+  ScrollObject *poMainCamera = [!name]::GetInstance().GetObject("MainCamera");
+  if(poMainCamera)]
+[-scroll
+  orxConfig_PushSection("MainCamera");
+  orxOBJECT *pstMainCamera = orxOBJECT(orxStructure_Get(orxConfig_GetU64("ID")));
+  orxConfig_PopSection();
+  if(pstMainCamera)]
+  {
+    // Update & move the camera here
+    // [...]
+
+    // Round its position
+    orxVECTOR vPosition;
+[+scroll
+    poMainCamera->SetPosition(*orxVector_Round(&vPosition, &poMainCamera->GetPosition(vPosition)));]
+[-scroll
+    orxObject_SetPosition(pstMainCamera, orxVector_Round(&vPosition, orxObject_GetPosition(pstMainCamera, &vPosition)));]
   }
 }
 
@@ -70,36 +97,29 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 [+scroll orxSTATUS [!name]::Init()]
 [-scroll orxSTATUS orxFASTCALL Init()]
 {
-  // Display a small hint in console
-  orxLOG("\n* This template project creates a simple scene"
-  "\n* You can play with the config parameters in ../data/config/[name].ini"
-  "\n* After changing them, relaunch the executable to see the changes.");
-
   // Init extensions
   InitExtensions();
 
-[+scroll
-  // Create the [-movie scene][+movie logo]
-  CreateObject("[-movie Scene][+movie Logo]");
-]
-[-scroll
-  // Register the Update function to the core clock
-  orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+  // Push [Main] as the default config section
+  orxConfig_PushSection("Main");
 
-  // Create the [-movie scene][+movie logo]
-  orxObject_CreateFromConfig("[-movie Scene][+movie Logo]");
-
-[+bundle
-  // Is processing a new bundle?
-  if(orxBundle_IsProcessing())
+  // Create the viewports
+  for(orxS32 i = 0, iCount = orxConfig_GetListCount("ViewportList"); i < iCount; i++)
   {
-    // Done!
-    return orxSTATUS_SUCCESS;
+    orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
   }
-]
-  // Create the viewport
-  orxViewport_CreateFromConfig("MainViewport");
-]
+
+[+scroll
+  // Create the [-movie scene][+movie splash screen]
+  CreateObject("[-movie Scene][+movie Splash]");]
+[-scroll
+  // Register the Update & CameraUpdate functions to the core clock
+  orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), Update, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_NORMAL);
+  orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), CameraUpdate, orxNULL, orxMODULE_ID_MAIN, orxCLOCK_PRIORITY_LOWER);
+
+  // Create the [-movie scene][+movie splash screen]
+  orxObject_CreateFromConfig("[-movie Scene][+movie Splash]");]
+
   // Done!
   return orxSTATUS_SUCCESS;
 }
@@ -129,8 +149,8 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
  */
 void [!name]::BindObjects()
 {
-  // Bind the Object class to the Object config section
-  ScrollBindObject<Object>("Object");
+  // Bind the Object class
+  BindObject(Object);
 }
 ]
 /** Bootstrap function, it is called before config is initialized, allowing for early resource storage definitions

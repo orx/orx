@@ -361,17 +361,17 @@ orxSTATUS orxFASTCALL _orxDebug_Init()
     sstDebug.u32DebugFlags  = orxDEBUG_KU32_STATIC_MASK_DEFAULT;
     sstDebug.u32LevelFlags  = orxDEBUG_KU32_STATIC_LEVEL_MASK_DEFAULT;
 
-#if defined(__orxANDROID__)
+#if defined(__orxANDROID__) || defined(__orxWEB__)
 
     /* Sets module as initialized */
     sstDebug.u32Flags = orxDEBUG_KU32_STATIC_FLAG_READY;
 
-#else /* __orxANDROID__ */
+#else /* __orxANDROID__ || __orxWEB__ */
 
     /* Sets module as initialized, with ANSI support */
     sstDebug.u32Flags = orxDEBUG_KU32_STATIC_FLAG_READY | orxDEBUG_KU32_STATIC_FLAG_ANSI;
 
-#endif /* __orxANDROID__ */
+#endif /* __orxANDROID__ || __orxWEB__ */
 
     /* Inits default files */
     _orxDebug_SetDebugFile(orxDEBUG_KZ_DEFAULT_DEBUG_FILE);
@@ -473,7 +473,7 @@ void orxFASTCALL _orxDebug_Break()
     #ifdef __orxGCC__
 
       /* Requires GCC >= 4.2.4 */
-      orxASSERT((__GNUC__ > 4) || ((__GNUC__ == 4) && ((__GNUC_MINOR__ > 2) || ((__GNUC_MINOR__ == 2) && (__GNUC_PATCHLEVEL__ > 3)))))
+      orxASSERT((__GNUC__ > 4) || ((__GNUC__ == 4) && ((__GNUC_MINOR__ > 2) || ((__GNUC_MINOR__ == 2) && (__GNUC_PATCHLEVEL__ > 3)))));
 
     #endif /* __orxGCC__ */
 

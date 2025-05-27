@@ -774,10 +774,10 @@ static void orxFASTCALL orxConsole_Update(const orxCLOCK_INFO *_pstClockInfo, vo
           /* Should echo? */
           if(orxFLAG_TEST(sstConsole.u32Flags, orxCONSOLE_KU32_STATIC_FLAG_ECHO))
           {
-            /* Echos command */
+            /* Echoes command */
             orxLOG("$ %s", pstEntry->acBuffer);
 
-            /* Echos result */
+            /* Echoes result */
             orxLOG("%s", acValue);
           }
         }
@@ -959,6 +959,54 @@ static orxSTATUS orxFASTCALL orxConsole_EventHandler(const orxEVENT *_pstEvent)
   return eResult;
 }
 
+/** Add alias callback
+ */
+static orxBOOL orxFASTCALL orxConsole_AddAlias(const orxSTRING _zKeyName, const orxSTRING _zSectionName, void *_pContext)
+{
+  orxBOOL bResult = orxTRUE;
+
+  /* Isn't toggle key, console input history nor scroll size? */
+  if((orxString_Compare(_zKeyName, orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != 0)
+  && (orxString_Compare(_zKeyName, orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != 0)
+  && (orxString_Compare(_zKeyName, orxCONSOLE_KZ_CONFIG_SCROLL_SIZE) != 0))
+  {
+    orxSTRING zAlias;
+    orxCHAR   cBackup = orxCHAR_NULL, *pc;
+
+    /* Gets its content */
+    zAlias = orxString_Duplicate(orxConfig_GetString(_zKeyName));
+
+    /* Finds its end */
+    for(pc = (orxCHAR *)zAlias; (*pc != orxCHAR_NULL) && (*pc != ' ') && (*pc != '\t'); pc++);
+
+    /* Has args? */
+    if(*pc != orxCHAR_NULL)
+    {
+     /* Backups character */
+     cBackup = *pc;
+
+     /* Ends alias */
+     *pc = orxCHAR_NULL;
+    }
+
+    /* Adds it as alias */
+    orxCommand_AddAlias(_zKeyName, zAlias, (cBackup != orxCHAR_NULL) ? pc + 1 : orxNULL);
+
+    /* Had args? */
+    if(cBackup != orxCHAR_NULL)
+    {
+      /* Restores it */
+      *pc = cBackup;
+    }
+
+    /* Deletes string copy */
+    orxString_Delete(zAlias);
+  }
+
+  /* Done! */
+  return bResult;
+}
+
 /** Command: Enable
  */
 void orxFASTCALL orxConsole_CommandEnable(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
@@ -1133,8 +1181,8 @@ void orxFASTCALL orxConsole_Setup()
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_INPUT);
   orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_STRUCTURE);
-  orxModule_AddDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_FONT);
 
+  orxModule_AddOptionalDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_FONT);
   orxModule_AddOptionalDependency(orxMODULE_ID_CONSOLE, orxMODULE_ID_KEYBOARD);
 
   /* Done! */
@@ -1151,6 +1199,10 @@ orxSTATUS orxFASTCALL orxConsole_Init()
   /* Not already Initialized? */
   if(!(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY))
   {
+    orxINPUT_TYPE eType;
+    orxENUM       eID;
+    orxINPUT_MODE eMode;
+
     /* Cleans control structure */
     orxMemory_Zero(&sstConsole, sizeof(orxCONSOLE_STATIC));
 
@@ -1160,37 +1212,8 @@ orxSTATUS orxFASTCALL orxConsole_Init()
     /* Clears last result */
     sstConsole.stLastResult.eType = orxCOMMAND_VAR_TYPE_NONE;
 
-    /* Stores default toggle key */
-    sstConsole.eToggleKeyType = orxINPUT_TYPE_KEYBOARD_KEY;
-    sstConsole.eToggleKeyID   = orxCONSOLE_KE_DEFAULT_KEY_TOGGLE;
-    sstConsole.eToggleKeyMode = orxINPUT_MODE_FULL;
-
     /* Pushes its section */
     orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
-
-    /* Has toggle key? */
-    if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != orxFALSE)
-    {
-      orxINPUT_TYPE eType;
-      orxENUM       eID;
-      orxINPUT_MODE eMode;
-
-      /* Gets its type & ID */
-      if(orxInput_GetBindingType(orxConfig_GetString(orxCONSOLE_KZ_CONFIG_TOGGLE_KEY), &eType, &eID, &eMode) != orxSTATUS_FAILURE)
-      {
-        /* Stores it */
-        sstConsole.eToggleKeyType = eType;
-        sstConsole.eToggleKeyID   = eID;
-        sstConsole.eToggleKeyMode = eMode;
-      }
-      else
-      {
-        /* Resets it */
-        sstConsole.eToggleKeyType = orxINPUT_TYPE_NONE;
-        sstConsole.eToggleKeyID   = orxENUM_NONE;
-        sstConsole.eToggleKeyMode = orxINPUT_MODE_NONE;
-      }
-    }
 
     /* Doesn't have scroll size? */
     if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_SCROLL_SIZE) == orxFALSE)
@@ -1211,131 +1234,103 @@ orxSTATUS orxFASTCALL orxConsole_Init()
       /* Filters relevant event IDs */
       orxEvent_SetHandlerIDFlags(orxConsole_EventHandler, orxEVENT_TYPE_INPUT, orxNULL, orxEVENT_GET_FLAG(orxINPUT_EVENT_ON), orxEVENT_KU32_MASK_ID_ALL);
 
-      /* Pushes console input set */
-      eResult = orxInput_PushSet(orxCONSOLE_KZ_INPUT_SET);
+      /* Registers update callback */
+      eResult = orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxConsole_Update, orxNULL, orxMODULE_ID_CONSOLE, orxCLOCK_PRIORITY_HIGH);
 
-      /* Success */
+      /* Success? */
       if(eResult != orxSTATUS_FAILURE)
       {
-        /* Binds console inputs */
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID, sstConsole.eToggleKeyMode, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_AUTOCOMPLETE, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE_AFTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE_AFTER, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE_MODE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_TOGGLE_MODE, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER_ALTERNATE, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_PREVIOUS, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_PREVIOUS, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_NEXT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_NEXT, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_LEFT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_LEFT, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_RIGHT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_RIGHT, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_START, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_START, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_END, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_END, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_PASTE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_CONTROL, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_PASTE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_PASTE, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_UP, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_SCROLL_UP, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_DOWN, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_SCROLL_DOWN, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_UP, orxINPUT_TYPE_MOUSE_BUTTON, orxCONSOLE_KE_BUTTON_SCROLL_UP, orxINPUT_MODE_FULL, -1);
-        orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_DOWN, orxINPUT_TYPE_MOUSE_BUTTON, orxCONSOLE_KE_BUTTON_SCROLL_DOWN, orxINPUT_MODE_FULL, -1);
+        orxBOOL bDebugLevelBackup;
 
-        /* Sets combine mode for paste */
-        orxInput_SetCombineMode(orxCONSOLE_KZ_INPUT_PASTE, orxTRUE);
+        /* Inits log end index */
+        sstConsole.u32LogEndIndex = orxU32_UNDEFINED;
 
-        /* Enables set */
-        orxInput_EnableSet(orxCONSOLE_KZ_INPUT_SET, orxTRUE);
+        /* Inits Flags */
+        sstConsole.u32Flags = orxCONSOLE_KU32_STATIC_FLAG_READY;
 
-        /* Pops input set */
-        orxInput_PopSet();
-
-        /* Registers update callback */
-        eResult = orxClock_Register(orxClock_Get(orxCLOCK_KZ_CORE), orxConsole_Update, orxNULL, orxMODULE_ID_CONSOLE, orxCLOCK_PRIORITY_HIGH);
-
-        /* Success? */
-        if(eResult != orxSTATUS_FAILURE)
+        /* Pushes console input set */
+        if(orxInput_PushSet(orxCONSOLE_KZ_INPUT_SET) != orxSTATUS_FAILURE)
         {
-          orxU32  i, u32Count;
-          orxBOOL bDebugLevelBackup;
-
-          /* Inits log end index */
-          sstConsole.u32LogEndIndex = orxU32_UNDEFINED;
-
           /* Pushes config section */
           orxConfig_PushSection(orxCONSOLE_KZ_CONFIG_SECTION);
 
-          /* For all keys */
-          for(i = 0, u32Count = orxConfig_GetKeyCount(); i < u32Count; i++)
+          /* Adds all aliases */
+          orxConfig_ForAllKeys(orxConsole_AddAlias, orxTRUE, orxNULL);
+
+          /* Has toggle key? */
+          if(orxConfig_HasValue(orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != orxFALSE)
           {
-            const orxSTRING zKey;
+            /* Clears values */
+            eType = orxINPUT_TYPE_NONE;
+            eID   = orxENUM_NONE;
+            eMode = orxINPUT_MODE_NONE;
 
-            /* Gets it */
-            zKey = orxConfig_GetKey(i);
-
-            /* Isn't toggle key, console input history nor scroll size? */
-            if((orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_TOGGLE_KEY) != 0)
-            && (orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_INPUT_HISTORY_LIST) != 0)
-            && (orxString_Compare(zKey, orxCONSOLE_KZ_CONFIG_SCROLL_SIZE) != 0))
-            {
-              const orxSTRING zAlias;
-              orxCHAR         cBackup = orxCHAR_NULL, *pc;
-
-              /* Gets its content */
-              zAlias = orxConfig_GetString(zKey);
-
-              /* Finds its end */
-              for(pc = (orxCHAR *)zAlias; (*pc != orxCHAR_NULL) && (*pc != ' ') && (*pc != '\t'); pc++);
-
-              /* Has args? */
-              if(*pc != orxCHAR_NULL)
-              {
-               /* Backups character */
-               cBackup = *pc;
-
-               /* Ends alias */
-               *pc = orxCHAR_NULL;
-              }
-
-              /* Adds it as alias */
-              orxCommand_AddAlias(zKey, orxConfig_GetString(zKey), (cBackup != orxCHAR_NULL) ? pc + 1 : orxNULL);
-
-              /* Had args? */
-              if(cBackup != orxCHAR_NULL)
-              {
-                /* Restores it */
-                *pc = cBackup;
-              }
-            }
+            /* Gets its type & ID */
+            orxInput_GetBindingType(orxConfig_GetString(orxCONSOLE_KZ_CONFIG_TOGGLE_KEY), &eType, &eID, &eMode);
           }
+          else
+          {
+            /* Uses default values */
+            eType = orxINPUT_TYPE_KEYBOARD_KEY;
+            eID   = orxCONSOLE_KE_DEFAULT_KEY_TOGGLE;
+            eMode = orxINPUT_MODE_FULL;
+          }
+
+          /* Updates toggle */
+          orxConsole_SetToggle(eType, eID, eMode);
+
+          /* Binds console inputs */
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE, sstConsole.eToggleKeyType, sstConsole.eToggleKeyID, sstConsole.eToggleKeyMode, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_AUTOCOMPLETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_AUTOCOMPLETE, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_DELETE_AFTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_DELETE_AFTER, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_TOGGLE_MODE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_TOGGLE_MODE, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_ENTER, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_ENTER_ALTERNATE, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_PREVIOUS, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_PREVIOUS, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_NEXT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_NEXT, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_LEFT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_LEFT, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_RIGHT, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_RIGHT, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_START, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_START, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_END, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_END, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_PASTE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_CONTROL, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_PASTE, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_PASTE, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_UP, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_SCROLL_UP, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_DOWN, orxINPUT_TYPE_KEYBOARD_KEY, orxCONSOLE_KE_KEY_SCROLL_DOWN, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_UP, orxINPUT_TYPE_MOUSE_BUTTON, orxCONSOLE_KE_BUTTON_SCROLL_UP, orxINPUT_MODE_FULL, -1);
+          orxInput_Bind(orxCONSOLE_KZ_INPUT_SCROLL_DOWN, orxINPUT_TYPE_MOUSE_BUTTON, orxCONSOLE_KE_BUTTON_SCROLL_DOWN, orxINPUT_MODE_FULL, -1);
+
+          /* Sets combine mode for paste */
+          orxInput_SetCombineMode(orxCONSOLE_KZ_INPUT_PASTE, orxTRUE);
+
+          /* Enables set */
+          orxInput_EnableSet(orxCONSOLE_KZ_INPUT_SET, orxTRUE);
 
           /* Pops config section */
           orxConfig_PopSection();
 
-          /* Inits Flags */
-          sstConsole.u32Flags = orxCONSOLE_KU32_STATIC_FLAG_READY;
-
-          /* Registers commands */
-          orxConsole_RegisterCommands();
-
-          /* Sets default font */
-          orxConsole_SetFont(orxFont_GetDefaultFont());
-
-          /* Disables config logs */
-          bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
-          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
-
-          /* Loads input history */
-          orxConsole_LoadHistory();
-
-          /* Reenables config logs */
-          orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bDebugLevelBackup);
+          /* Pops input set */
+          orxInput_PopSet();
         }
-        else
+
+        /* Registers commands */
+        orxConsole_RegisterCommands();
+
+        /* Sets default font */
+        if(orxModule_IsInitialized(orxMODULE_ID_FONT) != orxFALSE)
         {
-          /* Remove event handler */
-          orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxConsole_EventHandler);
-
-          /* Logs message */
-          orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't register console update callback.");
+          orxConsole_SetFont(orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME));
         }
+
+        /* Disables config logs */
+        bDebugLevelBackup = orxDEBUG_IS_LEVEL_ENABLED(orxDEBUG_LEVEL_CONFIG);
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, orxFALSE);
+
+        /* Loads input history */
+        orxConsole_LoadHistory();
+
+        /* Reenables config logs */
+        orxDEBUG_ENABLE_LEVEL(orxDEBUG_LEVEL_CONFIG, bDebugLevelBackup);
       }
       else
       {
@@ -1343,7 +1338,7 @@ orxSTATUS orxFASTCALL orxConsole_Init()
         orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxConsole_EventHandler);
 
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't initialize console inputs.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't register console update callback.");
       }
     }
     else
@@ -1473,17 +1468,13 @@ orxBOOL orxFASTCALL orxConsole_IsInsertMode()
  */
 orxSTATUS orxFASTCALL orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _eInputID, orxINPUT_MODE _eInputMode)
 {
-  const orxSTRING zPreviousSet;
-  orxSTATUS       eResult;
+  orxSTATUS eResult;
 
   /* Checks */
   orxASSERT(sstConsole.u32Flags & orxCONSOLE_KU32_STATIC_FLAG_READY);
 
-  /* Backups previous input set */
-  zPreviousSet = orxInput_GetCurrentSet();
-
-  /* Selects console set */
-  orxInput_SelectSet(orxCONSOLE_KZ_INPUT_SET);
+  /* Pushes console set */
+  orxInput_PushSet(orxCONSOLE_KZ_INPUT_SET);
 
   /* Has current bindings? */
   if((sstConsole.eToggleKeyType != orxINPUT_TYPE_NONE)
@@ -1504,6 +1495,9 @@ orxSTATUS orxFASTCALL orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _e
     sstConsole.eToggleKeyType = _eInputType;
     sstConsole.eToggleKeyID   = _eInputID;
     sstConsole.eToggleKeyMode = _eInputMode;
+
+    /* Enables peripherals polling */
+    orxInput_SetTypeFlags(orxINPUT_KU32_MASK_TYPE_ALL, orxINPUT_KU32_FLAG_TYPE_NONE);
   }
   else
   {
@@ -1511,10 +1505,13 @@ orxSTATUS orxFASTCALL orxConsole_SetToggle(orxINPUT_TYPE _eInputType, orxENUM _e
     sstConsole.eToggleKeyType = orxINPUT_TYPE_NONE;
     sstConsole.eToggleKeyID   = orxENUM_NONE;
     sstConsole.eToggleKeyMode = orxINPUT_MODE_NONE;
+
+    /* Disables peripherals polling */
+    orxInput_SetTypeFlags(orxINPUT_KU32_FLAG_TYPE_NONE, orxINPUT_KU32_MASK_TYPE_ALL);
   }
 
   /* Restores previous input set */
-  orxInput_SelectSet(zPreviousSet);
+  orxInput_PopSet();
 
   /* Done! */
   return eResult;

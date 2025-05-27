@@ -493,7 +493,7 @@ static orxU32 orxFASTCALL                                 orxString_GetFirstChar
   if(_pzRemaining != orxNULL)
   {
     /* Stores it */
-    *_pzRemaining = (orxSTRING)(pu8Byte + 1);
+    *_pzRemaining = (*pu8Byte == orxCHAR_NULL) ? orxNULL : (orxSTRING)(pu8Byte + 1);
   }
 
   /* Done! */
@@ -515,7 +515,7 @@ static orxINLINE orxU32                                   orxString_GetCharacter
   /* For all characters */
   for(pc = _zString, u32Result = 0; *pc != orxCHAR_NULL; u32Result++)
   {
-    /* Invalid current character ID */
+    /* Invalid current character ID? */
     if(orxString_GetFirstCharacterCodePoint(pc, &pc) == orxU32_UNDEFINED)
     {
       /* Updates result */
@@ -696,9 +696,9 @@ static orxINLINE orxU32                                   orxString_GetEditDista
   /* Valid? */
   if((u32Length1 > 0) && (u32Length2 > 0))
   {
-    orxU32 *au32PreviousRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
-    orxU32 *au32CurrentRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
-    orxU32 *au32NextRow = (orxU32 *)alloca((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 *au32PreviousRow = (orxU32 *)orxMemory_StackAllocate((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 *au32CurrentRow = (orxU32 *)orxMemory_StackAllocate((u32Length2 + 1) * sizeof(orxU32));
+    orxU32 *au32NextRow = (orxU32 *)orxMemory_StackAllocate((u32Length2 + 1) * sizeof(orxU32));
     orxU32 i, j;
 
     /* Initializes the previous and current rows */

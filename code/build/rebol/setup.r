@@ -18,6 +18,7 @@ hg-hook:        {update.orx}
 git:            %.git/
 git-hooks:      [%post-checkout %post-merge]
 build-file:     %code/include/base/orxBuild.h
+script-root:    %code/build/rebol
 env-variable:   {ORX}
 env-path:       %code
 platform-data:  compose/deep [
@@ -30,11 +31,11 @@ platform-data:  compose/deep [
 begin: now/time
 new-env: skip-env: skip-hook: false
 switch platform: system/platform [
-  macos [platform: 'mac]
+  macos [platform: 'Mac]
 ]
 platform-info: platform-data/:platform
 
-change-dir root: system/options/path
+change-dir root: copy/part system/options/script find system/options/script script-root
 attempt [write build-file {}]
 
 ; Should override cache?
@@ -66,7 +67,7 @@ req-file: %.extern
 cur-file: extern/.version
 req-ver: trim/all read/string req-file
 cur-ver: if exists? cur-file [trim/all read/string cur-file]
-print [{== Checking version: [} extern {]}]
+print [{== Checking version [} extern {]}]
 either req-ver = cur-ver [
   print [{== [} cur-ver {] already installed, skipping!}]
 ] [
@@ -125,9 +126,10 @@ either req-ver = cur-ver [
   premake-path: dirize rejoin [premake-root platform-info/premake]
   premake: first read premake-path
   premake-file: read premake-path/:premake
+  print [{== Copying [} premake {] to:}]
   foreach [type folder] builds [
     if exists? folder [
-      print [{== Copying [} premake {] to [} folder {]}]
+      print [{  * } folder {}]
       write folder/:premake premake-file
       unless platform = 'windows [
         call/wait/shell form reduce [{chmod +x} folder/:premake]
@@ -140,41 +142,47 @@ either req-ver = cur-ver [
 ]
 
 ; Sets environment variable
-either skip-env [
-  print {== Skipping environment setup}
-] [
-  new-env: (trim/with any [get-env env-variable {}] dbl-quote) != trim/with copy env-path: rejoin [dbl-quote to-local-file clean-path root/:env-path dbl-quote] dbl-quote
-  print [{== Setting environment: [} env-variable {=} env-path {]}]
-  set-env env-variable env-path
-  either platform = 'windows [
-    call/wait/shell/output form reduce [{setx} env-variable env-path] none
-  ] [
-    env-home: to-rebol-file dirize get-env {HOME}
-    foreach [env-file env-prefix mandatory] reduce [
-      env-home/.profile                     rejoin [{export } env-variable {=}]   true
-      env-home/.bashrc                      rejoin [{export } env-variable {=}]   true
-      env-home/.bash_profile                rejoin [{export } env-variable {=}]   false
-      env-home/.zshrc                       rejoin [{export } env-variable {=}]   false
-      env-home/.zprofile                    rejoin [{export } env-variable {=}]   false
-      env-home/.config/fish/fish_variables  rejoin [{SETUVAR } env-variable {:}]  false
+case [
+  skip-env [
+    print {== Skipping environment setup}
+  ]
+  new-env: do [print [{== Checking environment [} env-variable {]}] (trim/with any [get-env env-variable {}] dbl-quote) != trim/with copy env-path: rejoin [dbl-quote to-local-file clean-path root/:env-path dbl-quote] dbl-quote] [
+    prin [{== Setting [} env-path {]}]
+    set-env env-variable env-path
+    either platform = 'windows [
+      call/wait/shell/output form reduce [{setx} env-variable env-path] none
     ] [
-      if any [mandatory exists? env-file] [
-        parse env-content: any [attempt [to-string read env-file] copy {}] [
-          thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
-        | to end start: (insert start rejoin [newline env-prefix env-path newline])
+      env-home: to-rebol-file dirize get-env {HOME}
+      foreach [env-file env-prefix mandatory] reduce [
+        env-home/.profile                     rejoin [{export } env-variable {=}]   true
+        env-home/.bashrc                      rejoin [{export } env-variable {=}]   true
+        env-home/.bash_profile                rejoin [{export } env-variable {=}]   false
+        env-home/.zshrc                       rejoin [{export } env-variable {=}]   false
+        env-home/.zprofile                    rejoin [{export } env-variable {=}]   false
+        env-home/.config/fish/fish_variables  rejoin [{SETUVAR } env-variable {:}]  false
+      ] [
+        if any [mandatory exists? env-file] [
+          parse env-content: any [attempt [to-string read env-file] copy {}] [
+            thru env-prefix start: [to newline | to end] stop: (change/part start env-path stop)
+          | to end start: (insert start rejoin [newline env-prefix env-path newline])
+          ]
+          attempt [write env-file env-content]
         ]
-        attempt [write env-file env-content]
       ]
     ]
+    print {, done!}
+  ]
+  true [
+    print [{== [} env-path {] already set, skipping!}]
   ]
 ]
 
 ; Runs premake
 premake-path: dirize rejoin [premake-root platform-info/premake]
 premake: first read premake-path
-print [{== Generating build files for [} platform {]}]
+print [{== Generating build files for [} platform {]:}]
 foreach config platform-info/config [
-  print [{== Generating [} config {]}]
+  print [{  * } config {}]
   foreach [type folder] builds [
     if exists? folder [
       in-dir rejoin [root folder] [
@@ -189,7 +197,9 @@ foreach config platform-info/config [
   ]
 ]
 print [{== You can now build orx in [} builds/code/:platform {]}]
-print [{== For more details, please refer to [ https://orx-project.org/wiki/ ]}]
+print [{== For more details, please refer to:} newline
+       {  * https://orx-project.org/wiki} newline
+       {  * https://orx-project.org/discord/learning}]
 
 ; Mercurial hook
 if exists? hg [

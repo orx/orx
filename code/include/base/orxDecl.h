@@ -203,13 +203,18 @@
 
     #define __orxMAC__
 
+  /* Web? */
+  #elif defined(EMSCRIPTEN) || defined(__EMSCRIPTEN__)
+
+    #define __orxWEB__
+
   #else
 
-    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxMAC__/__orxLINUX__/__orxIOS__/__orxANDROID__)"
+    #error "Couldn't guess platform define. Please provide it (__orxWINDOWS__/__orxMAC__/__orxLINUX__/__orxIOS__/__orxANDROID__/__orxWEB__)"
 
   #endif
 
-#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ */
+#endif /* !__orxWINDOWS__ && !__orxMAC__ && !__orxLINUX__ && !__orxIOS__ && !__orxANDROID__ && !__orxWEB__ */
 
 
 #ifdef __cplusplus
@@ -277,11 +282,11 @@
 
 #else /* __orxWINDOWS__ */
 
-  /* Linux / Mac / iOS / Android */
-  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__)
+  /* Linux / Mac / iOS / Android / Web */
+  #if defined(__orxLINUX__) || defined(__orxMAC__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxWEB__)
 
-    /* ARM / ARM64 / LLVM / PPC / PPC64 / X86_64 / iOS / Android */
-    #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxARM64__)
+    /* ARM / ARM64 / LLVM / PPC / PPC64 / X86_64 / iOS / Android / Web */
+    #if defined(__orxARM__) || defined(__orxLLVM__) || defined(__orxPPC__) || defined(__orxPPC64__) || defined(__orxX86_64__) || defined(__orxIOS__) || defined(__orxANDROID__) || defined(__orxARM64__) || defined(__orxWEB__)
 
       #ifndef orxFASTCALL
 
@@ -293,7 +298,7 @@
 
       #define orxCDECL
 
-    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxARM64__ */
+    #else /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxARM64__ || __orxWEB__ */
 
       #ifndef orxFASTCALL
 
@@ -305,7 +310,7 @@
 
       #define orxCDECL          __attribute__ ((cdecl))
 
-    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxARM64__ */
+    #endif /* __orxARM__ || __orxLLVM__ || __orxPPC__ || __orxPPC64__ || __orxX86_64__ || __orxIOS__ || __orxANDROID__ || __orxARM64__ || __orxWEB__ */
 
     /** The symbol will be exported (dll compilation) */
     #define orxDLLEXPORT        __attribute__ ((visibility("default")))
@@ -323,17 +328,23 @@
     /** The null address */
     #define orxNULL             (0)
 
+    #if defined(__orxWEB__)
+
+      #define __orxSTATIC__
+
+    #endif /* __orxWEB__ */
+
     #if defined(__orxIOS__) || defined(__orxANDROID__)
 
       /* iOS versions can only be embedded due to the lack of dlfcn presence */
       #define __orxEMBEDDED__
 
-      /* Always use static on iOS and Android */
+      /* Always use static on iOS & Android */
       #define __orxSTATIC__
 
     #endif /* __orxIOS__ || __orxANDROID__ */
 
-  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ */
+  #endif /* __orxLINUX__ || __orxMAC__ || __orxIOS__ || __orxANDROID__ || __orxWEB__ */
 
 #endif /* __orxWINDOWS__ */
 

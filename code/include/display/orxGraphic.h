@@ -58,8 +58,10 @@
  */
 #define orxGRAPHIC_KU32_FLAG_NONE             0x00000000  /**< No flags */
 
-#define orxGRAPHIC_KU32_FLAG_2D               0x00000001  /**< 2D type graphic flag  */
-#define orxGRAPHIC_KU32_FLAG_TEXT             0x00000002  /**< Text type graphic flag  */
+#define orxGRAPHIC_KU32_FLAG_QUAD             0x00000001  /**< Quad type graphic flag */
+#define orxGRAPHIC_KU32_FLAG_TEXT             0x00000002  /**< Text type graphic flag */
+
+#define orxGRAPHIC_KU32_MASK_2D               0x00000003  /**< 2D type graphic mask */
 
 #define orxGRAPHIC_KU32_MASK_TYPE             0x00000003  /**< Type mask */
 
@@ -73,7 +75,6 @@
 #define orxGRAPHIC_KU32_FLAG_ALIGN_TOP        0x00000040  /**< Top vertical alignment */
 #define orxGRAPHIC_KU32_FLAG_ALIGN_BOTTOM     0x00000080  /**< Bottom vertical alignment */
 #define orxGRAPHIC_KU32_FLAG_ALIGN_TRUNCATE   0x00000100  /**< Truncate alignment value */
-#define orxGRAPHIC_KU32_FLAG_ALIGN_ROUND      0x00000200  /**< Round alignment value */
 
 #define orxGRAPHIC_KU32_MASK_ALIGN            0x000003F0  /**< Alignment mask */
 
@@ -183,7 +184,19 @@ extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxGraphic_GetData(const orxGRAPHI
  * @param[in]   _bFlipY         Flip it on Y axis
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxGraphic_SetFlip(orxGRAPHIC *_pstGraphic, orxBOOL _bFlipX, orxBOOL _bFlipY);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_SetFlip(orxGRAPHIC *_pstGraphic, orxBOOL _bFlipX, orxBOOL _bFlipY);
+
+/** Clears graphic flipping
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_ClearFlip(orxGRAPHIC *_pstGraphic);
+
+/** Graphic has flip accessor
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return      orxTRUE / orxFALSE
+ */
+extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasFlip(const orxGRAPHIC *_pstGraphic);
 
 /** Gets graphic flipping
  * @param[in]   _pstGraphic     Concerned graphic
@@ -191,7 +204,7 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxGraphic_SetFlip(orxGRAPHIC *_pstG
  * @param[in]   _pbFlipY        Y axis flipping
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL      orxGraphic_GetFlip(const orxGRAPHIC *_pstGraphic, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY);
+extern orxDLLAPI orxSTATUS orxFASTCALL        orxGraphic_GetFlip(const orxGRAPHIC *_pstGraphic, orxBOOL *_pbFlipX, orxBOOL *_pbFlipY);
 
 
 /** Sets graphic pivot
@@ -330,6 +343,13 @@ extern orxDLLAPI orxBOOL orxFASTCALL          orxGraphic_HasBlendMode(const orxG
  * @return Blend mode (alpha, multiply, add or none)
  */
 extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pstGraphic);
+
+
+/** Gets graphic orientation
+ * @param[in]   _pstGraphic     Concerned graphic
+ * @return Blend mode (alpha, multiply, add or none)
+ */
+extern orxDLLAPI orxDISPLAY_ORIENTATION orxFASTCALL orxGraphic_GetOrientation(const orxGRAPHIC *_pstGraphic);
 
 #endif /* _orxGRAPHIC_H_ */
 

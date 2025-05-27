@@ -133,6 +133,7 @@
 #define orxANIMSET_KZ_CONFIG_DIGITS                   "Digits"
 #define orxANIMSET_KZ_CONFIG_FRAME_SIZE               "FrameSize"
 #define orxANIMSET_KZ_CONFIG_FRAME_INDEX              "FrameIndex"
+#define orxANIMSET_KZ_CONFIG_FRAME_GRID               "FrameGrid"
 #define orxANIMSET_KZ_CONFIG_KEY_DURATION             "KeyDuration"
 #define orxANIMSET_KZ_CONFIG_KEY_EVENT                "KeyEvent"
 #define orxANIMSET_KZ_CONFIG_DIRECTION                "Direction"
@@ -1676,7 +1677,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       u32Digits = (orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIGITS) != orxFALSE) ? orxConfig_GetU32(orxANIMSET_KZ_CONFIG_DIGITS) : orxANIMSET_KU32_DEFAULT_ANIM_FRAME_DIGITS;
 
       /* Gets prefix */
-      zPrefix = orxConfig_GetString(orxANIMSET_KZ_CONFIG_PREFIX);
+      zPrefix = orxString_Store(orxConfig_GetString(orxANIMSET_KZ_CONFIG_PREFIX));
 
       /* Has prefix? */
       if(*zPrefix != orxCHAR_NULL)
@@ -1847,6 +1848,38 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             {
               /* Stops */
               bContinue = orxFALSE;
+            }
+          }
+        }
+        else
+        {
+          /* Doesn't have frame size? */
+          if(bHasFrameSize == orxFALSE)
+          {
+            orxVECTOR vFrameGrid;
+
+            /* Has frame grid? */
+            if(orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_GRID, &vFrameGrid) != orxNULL)
+            {
+              /* Valid? */
+              if((vFrameGrid.fX > orxFLOAT_0) && (vFrameGrid.fY > orxFLOAT_0))
+              {
+                /* Updates frame size */
+                vFrameSize.fX = orxMath_Floor(vTextureSize.fX / vFrameGrid.fX);
+                vFrameSize.fY = orxMath_Floor(vTextureSize.fY / vFrameGrid.fY);
+                vFrameSize.fZ = orxFLOAT_0;
+
+                /* Updates status */
+                bHasFrameSize = orxTRUE;
+              }
+              else
+              {
+                /* Logs message */
+                orxDEBUG_PRINT(orxDEBUG_LEVEL_ANIM, "AnimSet " orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_RED "Invalid FrameGrid (%g, %g)" orxANSI_KZ_COLOR_FG_DEFAULT " for anim " orxANSI_KZ_COLOR_FG_YELLOW "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT", aborting!", zAnimSet, vFrameGrid.fX, vFrameGrid.fY, _zConfigID);
+
+                /* Stops */
+                bContinue = orxFALSE;
+              }
             }
           }
         }
@@ -3028,8 +3061,8 @@ orxANIMSET *orxFASTCALL orxAnimSet_CreateFromConfig(const orxSTRING _zConfigID)
   /* Checks */
   orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
 
-  /* Search for reference */
-  pstResult = (orxANIMSET *)orxHashTable_Get(sstAnimSet.pstReferenceTable, orxString_Hash(_zConfigID));
+  /* Searches for animset */
+  pstResult = orxAnimSet_Get(_zConfigID);
 
   /* Found? */
   if(pstResult != orxNULL)
@@ -3782,27 +3815,27 @@ orxU32 orxFASTCALL orxAnimSet_ComputeAnim(orxANIMSET *_pstAnimSet, orxU32 _u32Sr
     }
     else
     {
-      orxFLOAT fLength;
+      orxFLOAT fDuration;
 
       /* Defaults to no target clearing */
       *_pbClearTarget = orxFALSE;
 
       /* Gets current animation duration */
-      fLength = orxAnim_GetLength(_pstAnimSet->pastAnim[u32Anim]);
+      fDuration = orxAnim_GetDuration(_pstAnimSet->pastAnim[u32Anim]);
 
       /* Next animation? */
-      if((fLength == orxFLOAT_0) || (*_pfTime > fLength))
+      if((fDuration == orxFLOAT_0) || (*_pfTime > fDuration))
       {
         /* Get next animation */
         u32TargetAnim = orxAnimSet_ComputeNextAnim(pstWorkTable, u32Anim, _u32DstAnim, orxFALSE);
 
         /* Has next animation? */
         if((u32TargetAnim != orxU32_UNDEFINED)
-        && ((fLength > orxFLOAT_0)
+        && ((fDuration > orxFLOAT_0)
          || (u32TargetAnim != _u32SrcAnim)))
         {
           /* Updates timestamp */
-          *_pfTime -= fLength;
+          *_pfTime -= fDuration;
 
           /* Gets link index */
           u32LinkIndex = ((orxU32)(pstWorkTable->u16TableSize) * u32Anim) + u32TargetAnim;
@@ -3950,6 +3983,26 @@ orxU32 orxFASTCALL orxAnimSet_GetAnimIDFromName(const orxANIMSET *_pstAnimSet, c
   /* Done! */
   return u32Result;
 }
+
+/** Gets AnimSet given its name
+ * @param[in]   _zName                              AnimSet name
+ * @return      orxANIMSET / orxNULL
+ */
+orxANIMSET *orxFASTCALL orxAnimSet_Get(const orxSTRING _zName)
+{
+  orxANIMSET *pstResult;
+
+  /* Checks */
+  orxASSERT(sstAnimSet.u32Flags & orxANIMSET_KU32_STATIC_FLAG_READY);
+  orxASSERT(_zName != orxNULL);
+
+  /* Updates result */
+  pstResult = (orxANIMSET *)orxHashTable_Get(sstAnimSet.pstReferenceTable, orxString_Hash(_zName));
+
+  /* Done! */
+  return pstResult;
+}
+
 
 /** AnimSet name get accessor
  * @param[in]   _pstAnimSet                         Concerned AnimSet

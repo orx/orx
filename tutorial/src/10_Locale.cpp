@@ -284,7 +284,7 @@ orxSTATUS Game::Run()
 void orxFASTCALL Game::Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
 {
   // Cycle action is active?
-  if (orxInput_IsActive("CycleLanguage") && orxInput_HasNewStatus("CycleLanguage"))
+  if(orxInput_HasBeenActivated("CycleLanguage"))
   {
     // Selects next language
     soMyGame.SelectNextLanguage();

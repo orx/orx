@@ -134,7 +134,7 @@ Macros</h2></td></tr>
 <tr class="separator:gaca2b37877a10ef4dfc86c6e06ab86995"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga88644c40b1c22f376ca5cc925dcc0f5b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#ga88644c40b1c22f376ca5cc925dcc0f5b">orxCLOCK_KZ_CONFIG_MODIFIER_LIST</a>&#160;&#160;&#160;&quot;ModifierList&quot;</td></tr>
 <tr class="separator:ga88644c40b1c22f376ca5cc925dcc0f5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga99fc912b70965519d362f80263d0f260"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#ga99fc912b70965519d362f80263d0f260">orxCLOCK_KZ_CORE</a>&#160;&#160;&#160;&quot;core&quot;</td></tr>
+<tr class="memitem:ga99fc912b70965519d362f80263d0f260"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#ga99fc912b70965519d362f80263d0f260">orxCLOCK_KZ_CORE</a>&#160;&#160;&#160;&quot;orx:clock:core&quot;</td></tr>
 <tr class="separator:ga99fc912b70965519d362f80263d0f260"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -190,6 +190,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga153e90a40237dabd7a1e5025ec4b8e33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad1d377c0cfe953d16d614b44bae42e6c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#gad1d377c0cfe953d16d614b44bae42e6c">orxClock_AddTimer</a> (<a class="el" href="group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, const <a class="el" href="group__orx_clock.html#ga27fdca4bcf0b179960879606460314d0">orxCLOCK_FUNCTION</a> _pfnCallback, orxFLOAT _fDelay, orxS32 _s32Repetition, <a class="el" href="group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86">void</a> *_pContext)</td></tr>
 <tr class="separator:gad1d377c0cfe953d16d614b44bae42e6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga038f416bbf90c7d84161bc07d0d5aca1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#ga038f416bbf90c7d84161bc07d0d5aca1">orxClock_ComputeDT</a> (const <a class="el" href="group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *_pstClock, orxFLOAT _fDT)</td></tr>
+<tr class="separator:ga038f416bbf90c7d84161bc07d0d5aca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1fe33b0c4025cc6214f3083bdde0d3d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#ga1fe33b0c4025cc6214f3083bdde0d3d8">orxClock_Create</a> (orxFLOAT _fTickSize)</td></tr>
 <tr class="separator:ga1fe33b0c4025cc6214f3083bdde0d3d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2877a0cb560d9394397ce42b1cf71ec7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__orx_clock.html#ga2877a0cb560d9394397ce42b1cf71ec7">orxClock_CreateFromConfig</a> (const orxSTRING _zConfigID)</td></tr>
@@ -322,7 +324,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define orxCLOCK_KZ_CORE&#160;&#160;&#160;&quot;core&quot;</td>
+          <td class="memname">#define orxCLOCK_KZ_CORE&#160;&#160;&#160;&quot;orx:clock:core&quot;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -565,6 +567,40 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>orxSTATUS_SUCCESS / orxSTATUS_FAILURE </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ga038f416bbf90c7d84161bc07d0d5aca1"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL orxClock_ComputeDT </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__orx_clock.html#gacc6d6f1fa2b7fe3c2fb1d83351359262">orxCLOCK</a> *&#160;</td>
+          <td class="paramname"><em>_pstClock</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">orxFLOAT&#160;</td>
+          <td class="paramname"><em>_fDT</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Computes DT according to modifier </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstClock</td><td>Concerned clock </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">_fDT</td><td>Real DT </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Modified DT </dd></dl>
 
 </div>
 </div>

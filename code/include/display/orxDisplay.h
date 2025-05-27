@@ -82,6 +82,22 @@ typedef struct __orxRGBA_t
 typedef struct __orxBITMAP_t        orxBITMAP;
 
 
+/** Orientation enum
+ */
+typedef enum __orxDISPLAY_ORIENTATION_t
+{
+  orxDISPLAY_ORIENTATION_UP = 0,
+  orxDISPLAY_ORIENTATION_LEFT,
+  orxDISPLAY_ORIENTATION_DOWN,
+  orxDISPLAY_ORIENTATION_RIGHT,
+
+  orxDISPLAY_ORIENTATION_NUMBER,
+
+  orxDISPLAY_ORIENTATION_NONE = orxENUM_NONE
+
+} orxDISPLAY_ORIENTATION;
+
+
 /** Vertex info structure
  */
 typedef struct __orxDISPLAY_VERTEX_t
@@ -96,10 +112,11 @@ typedef struct __orxDISPLAY_VERTEX_t
  */
 typedef struct __orxDISPLAY_TRANSFORM_t
 {
-  orxFLOAT  fSrcX, fSrcY, fDstX, fDstY;
-  orxFLOAT  fRepeatX, fRepeatY;
-  orxFLOAT  fScaleX, fScaleY;
-  orxFLOAT  fRotation;
+  orxFLOAT                fSrcX, fSrcY, fDstX, fDstY;
+  orxFLOAT                fRepeatX, fRepeatY;
+  orxFLOAT                fScaleX, fScaleY;
+  orxFLOAT                fRotation;
+  orxDISPLAY_ORIENTATION  eOrientation;
 
 } orxDISPLAY_TRANSFORM;
 
@@ -154,10 +171,10 @@ typedef struct __orxCHARACTER_GLYPH_t
  */
 typedef struct __orxCHARACTER_MAP_t
 {
-  orxFLOAT      fCharacterHeight;
-
   orxBANK      *pstCharacterBank;
   orxHASHTABLE *pstCharacterTable;
+
+  orxFLOAT      fCharacterHeight;
 
 } orxCHARACTER_MAP;
 
@@ -911,7 +928,7 @@ extern orxDLLAPI void orxFASTCALL                     orxDisplay_DeleteBitmap(or
 
 /** Loads a bitmap from file (an event of ID orxDISPLAY_EVENT_BITMAP_LOAD will be sent upon completion, whether the loading is asynchronous or not)
  * @param[in]   _zFileName                            Name of the file to load
- * @return orxBITMAP * / orxNULL
+ * @return orxBITMAP / orxNULL
  */
 extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadBitmap(const orxSTRING _zFileName);
 
@@ -921,6 +938,19 @@ extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadBitmap(cons
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxDisplay_SaveBitmap(const orxBITMAP *_pstBitmap, const orxSTRING _zFileName);
+
+
+/** Loads a font from a TrueType/OpenType file (an event of ID orxDISPLAY_EVENT_BITMAP_LOAD will be sent upon completion, whether the loading is asynchronous or not)
+ * @param[in]   _zFileName                            Name of the file to load
+ * @param[in]   _zCharacterList                       Ordered list of characters for which to create glyphs
+ * @param[in]   _pvCharacterSize                      Size of characters, X = 0 for variable width
+ * @param[in]   _pvCharacterSpacing                   Spacing to be kept between glyphs in the font bitmap
+ * @param[in]   _pvCharacterPadding                   Padding added on all sides, inside a glyph
+ * @param[in]   _bSDF                                 Will generate a SDF (Signed Distance Field) texture if set to true or a regular texture otherwise
+ * @param[out]  _afCharacterWidthList                 Resulting list of character/glyph widths
+ * @return orxBITMAP / orxNULL
+ */
+extern orxDLLAPI orxBITMAP *orxFASTCALL               orxDisplay_LoadFont(const orxSTRING _zFileName, const orxSTRING _zCharacterList, const orxVECTOR *_pvCharacterSize, const orxVECTOR *_pvCharacterSpacing, const orxVECTOR *_pvCharacterPadding, orxBOOL _bSDF, orxFLOAT *_afCharacterWidthList);
 
 
 /** Sets temp bitmap, if a valid temp bitmap is given, load operations will be asynchronous
