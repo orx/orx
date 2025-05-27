@@ -97,6 +97,10 @@ solution "[name]"
 
     flags
     {
+[+python
+        "C11",]
+[+imgui +sndh
+        "CXX11",]
         "NoPCH",
         "NoManifest",
         "FloatFast",
@@ -107,6 +111,12 @@ solution "[name]"
         "NoMinimalRebuild",
         "Symbols"
     }
+[+python
+
+    defines
+    {
+        "PK_ENABLE_OS=0"
+    }]
 
     configuration {"not web"}
         flags {"StaticRuntime"}
@@ -132,11 +142,13 @@ solution "[name]"
 
     configuration {"*Profile*"}
         targetsuffix ("p")
-        defines {"__orxPROFILER__"}
+        defines {"__orxPROFILER__"[+python  ,"NDEBUG"]}
         flags {"Optimize", "NoRTTI"}
         links {"orxp"}
 
     configuration {"*Release*"}
+[+python
+        defines {"NDEBUG"}]
         flags {"Optimize", "NoRTTI"}
         links {"orx"}
 [+bundle
@@ -211,8 +223,6 @@ solution "[name]"
     configuration {"linux", "not web"}
         buildoptions
         {
-[+imgui +sndh
-            "-std=c++11",]
 [+sndh
             "-Wno-write-strings",
             "-Wno-multichar",]
@@ -236,9 +246,6 @@ solution "[name]"
     configuration {"macosx", "not web"}
         buildoptions
         {
-            "-stdlib=libc++",
-[+imgui +sndh
-            "-std=c++11",]
 [+sndh
             "-Wno-multichar",]
             "-gdwarf-2",
@@ -247,7 +254,6 @@ solution "[name]"
         }
         linkoptions
         {
-            "-stdlib=libc++",
             "-dead_strip"
         }
 
@@ -284,6 +290,9 @@ solution "[name]"
     configuration {"windows", "vs*", "not web"}
         buildoptions
         {
+[+python
+            "/utf-8",
+            "/experimental:c11atomics",]
             "/MP",
             "/EHsc"
         }
@@ -344,6 +353,8 @@ project "[name]"
     {
 [+imgui
         "../include/extensions/imgui",]
+[+python
+        "../include/extensions/pocketpy",]
         "../include/extensions",
         "../include"
     }
