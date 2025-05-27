@@ -142,61 +142,10 @@ The embedded versions currently use:
 If the headless variants of the embedded versions are requested, dummy plugins will be used for the display, joystick, mouse, keyboard and soundsystem plugins.
 The render & physics plugins will be the same as the ones used for the non-headless versions.
 
-All the 11 basic and advanced official tutorials are shipped with the dev packages, including precompiled release binaries.
-
-Some tools (precompiled binaries only) are also shipped with the dev packages:
+Some tools are also available:
 
 - `orxCrypt`  : command line tool to encrypt/decrypt/merge multiple config files
-- `orxFontGen`: command line tool (based on FreeType2) to generate custom bitmap fonts (.png texture & .ini config file) from TrueType fonts
-
-
-Packages
---------
-
-You can download all the packages from [SourceForge](https://sf.net/projects/orx) or [GitHub](https://github.com/orx/orx/releases).
-Here is a list with a small description for each package.
-
-- `orx-doc-1.16.zip`                  : orx's API doxygen documentation
-- `orx-src-1.16.zip`                  : orx's source code, ready for compile after running the setup script
-- `orx-dev-linux32-1.16.tar.bz2`      : dynamic embedded binaries for Linux (x86), release/profile/debug + tools.
-- `orx-dev-linux64-1.16.tar.bz2`      : dynamic embedded binaries for Linux (x86-64), release/profile/debug + tools.
-- `orx-dev-mac-1.16.zip`              : dynamic embedded binaries for MacOS X (x86/x86-64), release/profile/debug + tools.
-- `orx-dev-mingw-32-1.16.zip`         : dynamic embedded binaries for Windows (mingw/x86), release/profile/debug + tools.
-- `orx-dev-mingw-64-1.16.zip`         : dynamic embedded binaries for Windows (mingw/x86-64), release/profile/debug + tools.
-- `orx-dev-vs2017-32-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86), release/profile/debug + tools.
-- `orx-dev-vs2017-64-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2017, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2019-32-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86), release/profile/debug + tools.
-- `orx-dev-vs2019-64-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2019, x86-64), release/profile/debug + tools.
-- `orx-dev-vs2022-32-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86), release/profile/debug + tools.
-- `orx-dev-vs2022-64-1.16.zip`        : dynamic embedded binaries for Windows (Visual Studio 2022, x86-64), release/profile/debug + tools.
-- `orx-full-ios-1.16.zip`             : static embedded binaries for iOS, release/profile/debug, simulator/device + doc + source + XCode project file.
-- `orx-dev-android-1.16.zip`          : static embedded binaries for Android, release/profile/debug (device).
-- `orx-tutorial-linux32-1.16.tar.bz2` : tutorials for Linux (x86)
-- `orx-tutorial-linux64-1.16.tar.bz2` : tutorials for Linux (x86-64)
-- `orx-tutorial-mac-1.16.zip`         : tutorials for MacOS X (x86/x86-64)
-- `orx-tutorial-mingw-32-1.16.zip`    : tutorials for Windows (mingw/x86)
-- `orx-tutorial-mingw-64-1.16.zip`    : tutorials for Windows (mingw/x86-64)
-- `orx-tutorial-vs2017-32-1.16.zip`   : tutorials for Windows (Visual Studio 2017, x86)
-- `orx-tutorial-vs2017-64-1.16.zip`   : tutorials for Windows (Visual Studio 2017, x86-64)
-- `orx-tutorial-vs2019-32-1.16.zip`   : tutorials for Windows (Visual Studio 2019, x86)
-- `orx-tutorial-vs2019-64-1.16.zip`   : tutorials for Windows (Visual Studio 2019, x86-64)
-- `orx-tutorial-vs2022-32-1.16.zip`   : tutorials for Windows (Visual Studio 2022, x86)
-- `orx-tutorial-vs2022-64-1.16.zip`   : tutorials for Windows (Visual Studio 2022, x86-64)
-
-All the `*-dev-*` packages above include:
-
-- orx release/profile/debug libraries used for linking
-- runtime release/profile/debug orx libraries
-- headers to include at compile time
-- template files exposing which properties can be accessed using the config system (for user reference only, not needed by orx)
-
-All the `*-tutorial-*` packages above include:
-
-- heavily commented source code for 11 basic and advanced tutorials
-- precompiled binaries (orx link library, orx runtime library)
-- headers to include at compile time
-- template files exposing which properties can be accessed using the config system (for user reference only, not needed by orx)
-- build/project files
+- `orxFontGen`: command line tool to generate custom bitmap & SDF fonts offline, from TrueType/OpenType fonts
 
 
 Compiling
@@ -204,7 +153,7 @@ Compiling
 
 ### IMPORTANT - FIRST STEP:
 
-**If you just cloned orx's repository (or downloaded the `src` package), you will need to run the `setup.bat` / `setup.sh` script located at its root before being able to compile the engine.
+**If you just cloned orx's repository, you will need to run the `setup.bat` / `setup.sh` script located at its root before being able to compile the engine.
 This script will download all the required dependencies and generate the project files for your platform.
 Finally, the script will hook itself to mercurial/git so you won't have to run it manually ever again.**
 
