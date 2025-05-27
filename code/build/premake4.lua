@@ -130,7 +130,6 @@ solution "orx"
     flags
     {
         "NoPCH",
-        "CXX11",
         "NoManifest",
         "FloatFast",
         "NoNativeWChar",
@@ -144,6 +143,7 @@ solution "orx"
 
     configuration {"not web"}
         includedirs {"../../extern/glfw-3/include"}
+        flags {"CXX11"}
 
     configuration {"web"}
         buildoptions {"-pthread"}
