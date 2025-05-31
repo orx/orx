@@ -345,3 +345,32 @@ const orxSTRING orxFASTCALL orxString_Store(const orxSTRING _zString)
   /* Done! */
   return zResult;
 }
+
+/** Erases an internal string: this is intended for orx's internal use, *do not* call unless you know what you're doing
+ * @param[in]   _stID           Concerned string ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+orxSTATUS orxFASTCALL orxString_Erase(orxSTRINGID _stID)
+{
+  orxSTRING zString;
+  orxSTATUS eResult = orxSTATUS_FAILURE;
+
+  /* Checks */
+  orxASSERT(sstString.u32Flags & orxSTRING_KU32_STATIC_FLAG_READY);
+
+  /* Gets it from table */
+  zString = (orxSTRING)orxHashTable_Get(sstString.pstIDTable, _stID);
+
+  /* Found? */
+  if(zString != orxNULL)
+  {
+    /* Deletes it */
+    orxString_Delete(zString);
+
+    /* Erases it */
+    eResult = orxHashTable_Remove(sstString.pstIDTable, _stID);
+  }
+
+  /* Done! */
+  return eResult;
+}

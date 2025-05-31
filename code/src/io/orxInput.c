@@ -1416,6 +1416,9 @@ static orxINLINE void orxInput_DeleteSet(orxINPUT_SET *_pstSet)
   /* Removes it from table */
   orxHashTable_Remove(sstInput.pstSetTable, _pstSet->stID);
 
+  /* Erases its name */
+  orxString_Erase(_pstSet->stID);
+
   /* Deletes its entry bank */
   orxBank_Delete(_pstSet->pstEntryBank);
 

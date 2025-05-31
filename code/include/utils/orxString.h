@@ -1596,6 +1596,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_GetFromID(or
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_Store(const orxSTRING _zString);
 
+/** Erases an internal string: this is intended for orx's internal use, *do not* call unless you know what you're doing
+ * @param[in]   _stID           Concerned string ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxString_Erase(orxSTRINGID _stID);
+
 
 #ifdef __orxMSVC__
 

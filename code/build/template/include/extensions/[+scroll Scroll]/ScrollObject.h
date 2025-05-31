@@ -984,6 +984,9 @@ void ScrollObject::SetOrxObject(orxOBJECT *_pstObject)
 
     // Clears its instance section
     orxConfig_ClearSection(macInstanceName);
+    
+    // Deletes its reference
+    orxString_Erase(orxString_Hash(macInstanceName));
   }
 
   // Stores it
