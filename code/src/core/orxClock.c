@@ -982,8 +982,6 @@ orxSTATUS orxFASTCALL orxClock_Update()
       /* Is clock not paused? */
       if(orxClock_IsPaused(pstClock) == orxFALSE)
       {
-        orxFLOAT fClockDelay;
-
         /* Should sync with display? */
         if(orxStructure_TestFlags(pstClock, orxCLOCK_KU32_FLAG_DISPLAY))
         {
@@ -1076,14 +1074,21 @@ orxSTATUS orxFASTCALL orxClock_Update()
           pstClock->fPartialDT = orxFLOAT_0;
         }
 
-        /* Gets clock's delay */
-        fClockDelay = pstClock->stClockInfo.fTickSize - pstClock->fPartialDT;
-
-        /* Smaller than previous clocks' delay? */
-        if(fClockDelay < fDelay)
+        /* Is clock in use? */
+        if((orxLinkList_GetCount(&(pstClock->stTimerList)) > 0)
+        || (orxLinkList_GetCount(&(pstClock->stFunctionList)) > 0))
         {
-          /* Stores it */
-          fDelay = fClockDelay;
+          orxFLOAT fClockDelay;
+
+          /* Gets clock's delay */
+          fClockDelay = pstClock->stClockInfo.fTickSize - pstClock->fPartialDT;
+
+          /* Smaller than previous clocks' delay? */
+          if(fClockDelay < fDelay)
+          {
+            /* Stores it */
+            fDelay = fClockDelay;
+          }
         }
       }
 
