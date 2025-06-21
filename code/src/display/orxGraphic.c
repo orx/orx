@@ -2095,7 +2095,7 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pst
 
 /** Gets graphic orientation
  * @param[in]   _pstGraphic     Concerned graphic
- * @return Blend mode (alpha, multiply, add or none)
+ * @return Orientation (up, lest, down or right)
  */
 orxDISPLAY_ORIENTATION orxFASTCALL orxGraphic_GetOrientation(const orxGRAPHIC *_pstGraphic)
 {

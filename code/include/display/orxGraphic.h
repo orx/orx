@@ -347,7 +347,7 @@ extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const
 
 /** Gets graphic orientation
  * @param[in]   _pstGraphic     Concerned graphic
- * @return Blend mode (alpha, multiply, add or none)
+ * @return Orientation (up, lest, down or right)
  */
 extern orxDLLAPI orxDISPLAY_ORIENTATION orxFASTCALL orxGraphic_GetOrientation(const orxGRAPHIC *_pstGraphic);
 
