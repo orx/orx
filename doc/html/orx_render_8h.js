@@ -42,8 +42,8 @@ var orx_render_8h =
       [ "orxRENDER_EVENT_NONE", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684ae287264fd0bac7d65d9f0f3d2f14846e", null ]
     ] ],
     [ "orxRender_Exit", "group__orx_render.html#gae4e114ec48db490af69413b5ed1a5088", null ],
-    [ "orxRender_GetScreenPosition", "group__orx_render.html#gae08c3ff585427542ad1b269cfe00eca8", null ],
-    [ "orxRender_GetWorldPosition", "group__orx_render.html#ga0c680cd082eb2fcb10a0fd0926474080", null ],
+    [ "orxRender_GetScreenPosition", "group__orx_render.html#ga29b5d4b316447adb6ea82c19133c9482", null ],
+    [ "orxRender_GetWorldPosition", "group__orx_render.html#ga81b604441714de59a76c69d17ca06f81", null ],
     [ "orxRender_Init", "group__orx_render.html#gaaa3bad32f53d505fd1678aa3cc0fafd3", null ],
     [ "orxRender_Setup", "group__orx_render.html#ga4b7ac65699376ae14f0ae79028d5c8b5", null ]
 ];

@@ -2,7 +2,7 @@ var group__orx_render =
 [
     [ "orxRENDER_EVENT_PAYLOAD", "structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html", [
       [ "pstTransform", "structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a53efcddf712cdc8ab7d3333306759ea7", null ],
-      [ "stObject", "structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a65326ca9390916c3c88a38f769c6c28a", null ]
+      [ "stObject", "structorx_r_e_n_d_e_r___e_v_e_n_t___p_a_y_l_o_a_d.html#a0a8b8404df90e3c188888f5ae8364433", null ]
     ] ],
     [ "orxRENDER_KZ_CONFIG_CONSOLE_ALPHA", "group__orx_render.html#ga3f12095f1f9e255e2f5689db2d160571", null ],
     [ "orxRENDER_KZ_CONFIG_CONSOLE_BACKGROUND_ALPHA", "group__orx_render.html#ga5c54a5675f5897f3c7aae6f2ec6dd017", null ],
@@ -46,8 +46,8 @@ var group__orx_render =
       [ "orxRENDER_EVENT_NONE", "group__orx_render.html#ggaf2df6db5cb046f3e29a234036b54c684ae287264fd0bac7d65d9f0f3d2f14846e", null ]
     ] ],
     [ "orxRender_Exit", "group__orx_render.html#gae4e114ec48db490af69413b5ed1a5088", null ],
-    [ "orxRender_GetScreenPosition", "group__orx_render.html#gae08c3ff585427542ad1b269cfe00eca8", null ],
-    [ "orxRender_GetWorldPosition", "group__orx_render.html#ga0c680cd082eb2fcb10a0fd0926474080", null ],
+    [ "orxRender_GetScreenPosition", "group__orx_render.html#ga29b5d4b316447adb6ea82c19133c9482", null ],
+    [ "orxRender_GetWorldPosition", "group__orx_render.html#ga81b604441714de59a76c69d17ca06f81", null ],
     [ "orxRender_Init", "group__orx_render.html#gaaa3bad32f53d505fd1678aa3cc0fafd3", null ],
     [ "orxRender_Setup", "group__orx_render.html#ga4b7ac65699376ae14f0ae79028d5c8b5", null ]
 ];

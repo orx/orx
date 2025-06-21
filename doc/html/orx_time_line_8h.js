@@ -13,7 +13,7 @@ var orx_time_line_8h =
     ] ],
     [ "orxTimeLine_AddTrackFromConfig", "group__orx_time_line.html#ga1281081fa8cb1913b4b769a2a7343157", null ],
     [ "orxTimeLine_ClearCache", "group__orx_time_line.html#ga61e699828d85440590b3916cbef42d51", null ],
-    [ "orxTimeLine_Create", "group__orx_time_line.html#ga69003564f3a0d16b6a56936a0bec9720", null ],
+    [ "orxTimeLine_Create", "group__orx_time_line.html#ga613360a116b917f04da9b79bdc5fe1ac", null ],
     [ "orxTimeLine_Delete", "group__orx_time_line.html#ga221374d361bbf39ff4b47d112612e24f", null ],
     [ "orxTimeLine_Enable", "group__orx_time_line.html#ga28fd2c8804cf2d25ed38ca6a2968dbc7", null ],
     [ "orxTimeLine_Exit", "group__orx_time_line.html#ga39829d13da82a486e32f9206eddfe9ee", null ],

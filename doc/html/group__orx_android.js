@@ -1,8 +1,8 @@
 var group__orx_android =
 [
     [ "orxANDROID_EVENT_PAYLOAD", "structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html", [
-      [ "stKey", "structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a979944d2d1b7054ab4f324eb5a880bff", null ],
-      [ "stSurface", "structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ab8ae081e5eca54d5d9387224ac657cd0", null ],
+      [ "stKey", "structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ae8d794389e96498cdf2eefbb2b096c88", null ],
+      [ "stSurface", "structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a9689b25d66c28222d5e3ca12e9d81a3e", null ],
       [ "u32Height", "structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#ad3677f6c48b82b6f2b76cdd8370f3785", null ],
       [ "u32KeyCode", "structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a2bb43e6de43bda1e1dbec065111ce0a5", null ],
       [ "u32Width", "structorx_a_n_d_r_o_i_d___e_v_e_n_t___p_a_y_l_o_a_d.html#a924726b330e0d6e3ff7ef2444c05f0d0", null ]
@@ -23,9 +23,9 @@ var group__orx_android =
       [ "orxANDROID_EVENT_NUMBER", "group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a1fa1baea8809af881e244e0be81e3b6c", null ],
       [ "orxANDROID_EVENT_NONE", "group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a943518bccab04ef4942374f3d93722aa", null ]
     ] ],
-    [ "orxAndroid_GetGameActivity", "group__orx_android.html#ga09ba161b9701411f9c63e2749a2e286e", null ],
-    [ "orxAndroid_GetInternalStoragePath", "group__orx_android.html#gae61fe62bd38977850791da3eb9522237", null ],
-    [ "orxAndroid_GetNativeWindow", "group__orx_android.html#ga2655223eb8e84adf8378018f210c1604", null ],
+    [ "orxAndroid_GetGameActivity", "group__orx_android.html#gab784fd363a53da3887e3bf0b0764ef25", null ],
+    [ "orxAndroid_GetInternalStoragePath", "group__orx_android.html#gac6f57a6d728dfbbef71737af111936d9", null ],
+    [ "orxAndroid_GetNativeWindow", "group__orx_android.html#gaf741e1a11086cc100bc1a8ab0ca2f979", null ],
     [ "orxAndroid_JNI_GetPhysicalFrameRate", "group__orx_android.html#ga33ad98ce3db4a269187796ae99060c0f", null ],
     [ "orxAndroid_JNI_GetRotation", "group__orx_android.html#ga10c24f6007e9bfd70608c16dc103f17d", null ],
     [ "orxAndroid_JNI_SetupThread", "group__orx_android.html#ga8497f0065453b50165d9ac20dd951dba", null ],

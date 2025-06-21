@@ -33,7 +33,7 @@ var group__orx_file =
     [ "orxFile_GetTime", "group__orx_file.html#ga98c8abe42adee0ecf4c9a5b48f82f9b0", null ],
     [ "orxFile_Init", "group__orx_file.html#ga58fad06e476d24fe45d96f42c304eb65", null ],
     [ "orxFile_MakeDirectory", "group__orx_file.html#gaabc96412895cd3b1ed6157c8ad7cd248", null ],
-    [ "orxFile_Open", "group__orx_file.html#gac21ffb6a64ba5d67232f6f852627a1d0", null ],
+    [ "orxFile_Open", "group__orx_file.html#ga30089ef0fbf2a90a9840d3f1589b002c", null ],
     [ "orxFile_Print", "group__orx_file.html#gaa488b51b271b256b7b4515516cb08dde", null ],
     [ "orxFile_Read", "group__orx_file.html#ga135f62eca510e4e1b000923a31e551ae", null ],
     [ "orxFile_Seek", "group__orx_file.html#gac8fd28773af6bc29e0d059144e1d652e", null ],
