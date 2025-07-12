@@ -735,25 +735,25 @@ int orxDisplay_GetBasisUInfo(void *_pInput, unsigned int _uiInputSize, orxDISPLA
   basist::ktx2_header  *pstHeader = (basist::ktx2_header *)_pInput;
   unsigned int          uiResult = 0;
 
-  // Valid?
+  /* Valid? */
   if(_uiInputSize >= sizeof(basist::ktx2_header))
   {
-    // Valid?
+    /* Valid? */
     if((memcmp(pstHeader, basist::g_ktx2_file_identifier, sizeof(basist::g_ktx2_file_identifier)) == 0)
     && (pstHeader->m_vk_format == basist::KTX2_VK_FORMAT_UNDEFINED)
     && (pstHeader->m_type_size == 1))
     {
-      // Store width, height and size
+      /* Store width, height and size */
       *_puiWidth   = pstHeader->m_pixel_width;
       *_puiHeight  = pstHeader->m_pixel_height;
       *_puiSize    = basist::basis_get_bytes_per_block_or_pixel((basist::transcoder_texture_format)_eFormat) * ((basist::basis_transcoder_format_is_uncompressed((basist::transcoder_texture_format)_eFormat)) ? pstHeader->m_pixel_width * pstHeader->m_pixel_height : ((pstHeader->m_pixel_width + 3) >> 2) * ((pstHeader->m_pixel_height + 3) >> 2));
 
-      // Update result
+      /* Update result */
       uiResult = *_puiSize;
     }
   }
 
-  // Done!
+  /* Done! */
   return uiResult;
 }
 

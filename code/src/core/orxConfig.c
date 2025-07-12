@@ -1920,7 +1920,7 @@ static orxINLINE orxSTATUS orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSectio
   /* Checks */
   orxASSERT(_pstSection != orxNULL);
 
-  // Should delete section?
+  /* Should delete section? */
   if((_pfnClearCallback == orxNULL)
   || (_pfnClearCallback(_pstSection->zName, orxNULL) != orxFALSE))
   {

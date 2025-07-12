@@ -553,47 +553,47 @@ static orxS64 orxFASTCALL orxResource_Memory_Seek(orxHANDLE _hResource, orxS64 _
   /* Gets internal resource */
   pstResource = (orxRESOURCE_MEMORY_RESOURCE *)_hResource;
 
-  // Depending on seek mode
+  /* Depending on seek mode */
   switch(_eWhence)
   {
     case orxSEEK_OFFSET_WHENCE_START:
     {
-      // Computes cursor
+      /* Computes cursor */
       s64Cursor = _s64Offset;
       break;
     }
 
     case orxSEEK_OFFSET_WHENCE_CURRENT:
     {
-      // Computes cursor
+      /* Computes cursor */
       s64Cursor = pstResource->s64Cursor + _s64Offset;
       break;
     }
 
     case orxSEEK_OFFSET_WHENCE_END:
     {
-      // Computes cursor
+      /* Computes cursor */
       s64Cursor = pstResource->pstData->s64Size - _s64Offset;
       break;
     }
 
     default:
     {
-      // Failure
+      /* Failure */
       s64Cursor = -1;
       break;
     }
   }
 
-  // Is cursor valid?
+  /* Is cursor valid? */
   if((s64Cursor >= 0) && (s64Cursor <= pstResource->pstData->s64Size))
   {
-    // Updates cursor
+    /* Updates cursor */
     pstResource->s64Cursor = s64Cursor;
   }
   else
   {
-    // Clears value
+    /* Clears value */
     s64Cursor = -1;
   }
 
@@ -624,20 +624,20 @@ static orxS64 orxFASTCALL orxResource_Memory_Read(orxHANDLE _hResource, orxS64 _
   /* Gets internal resource */
   pstResource = (orxRESOURCE_MEMORY_RESOURCE *)_hResource;
 
-  // Gets actual copy size to prevent any out-of-bound access
+  /* Gets actual copy size to prevent any out-of-bound access */
   s64CopySize = orxMIN(_s64Size, pstResource->pstData->s64Size - pstResource->s64Cursor);
 
-  // Should copy content?
+  /* Should copy content? */
   if(s64CopySize != 0)
   {
-    // Copies content
+    /* Copies content */
     orxMemory_Copy(_pBuffer, pstResource->pstData->pu8Buffer + pstResource->s64Cursor, (orxS32)s64CopySize);
   }
 
-  // Updates cursor
+  /* Updates cursor */
   pstResource->s64Cursor += s64CopySize;
 
-  // Done!
+  /* Done! */
   return s64CopySize;
 }
 

@@ -199,9 +199,9 @@ do                                                                      \
 
 #endif /* __orxDEBUG__ */
 
-//If the symbol for iOS 8 isnt defined, define it.
+/* If the symbol for iOS 8 isnt defined, define it. */
 #ifndef NSFoundationVersionNumber_iOS_8_0
-#define NSFoundationVersionNumber_iOS_8_0 1134.10 //extracted with NSLog(@"%f", NSFoundationVersionNumber)
+#define NSFoundationVersionNumber_iOS_8_0 1134.10 /* extracted with NSLog(@"%f", NSFoundationVersionNumber) */
 #endif
 
 typedef enum __orxDISPLAY_ATTRIBUTE_LOCATION_t

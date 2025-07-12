@@ -1014,7 +1014,7 @@ orxS32 orxFASTCALL orxProfiler_GetNextSortedMarkerID(orxS32 _s32MarkerID)
     /* For all markers */
     for(i = 0, dBestTime = orxSystem_GetTime(); i < sstProfiler.s32MarkerCount; i++)
     {
-      // Defined?
+      /* Defined? */
       if(orxFLAG_TEST(pstData->astMarkerInfoList[i].u32Flags, orxPROFILER_KU32_FLAG_DEFINED))
       {
         orxDOUBLE dTime;
