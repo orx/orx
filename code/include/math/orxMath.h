@@ -555,17 +555,8 @@ static orxINLINE orxFLOAT             orxMath_Round(orxFLOAT _fOp)
 {
   orxFLOAT fResult;
 
-#ifdef __orxMSVC__
-
-  /* Updates result */
-  fResult = floorf(_fOp + orx2F(0.5f));
-
-#else /* __orxMSVC__ */
-
   /* Updates result */
   fResult = rintf(_fOp);
-
-#endif /* __orxMSVC__ */
 
   /* Done! */
   return fResult;

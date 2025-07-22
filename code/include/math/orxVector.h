@@ -524,6 +524,26 @@ static orxINLINE orxVECTOR *                  orxVector_Floor(orxVECTOR *_pvRes,
   return _pvRes;
 }
 
+/** Gets ceiled vector and stores the result in another one
+ * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
+ * @param[in]   _pvOp                         Input value
+ * @return      Resulting vector Floor(Op)
+ */
+static orxINLINE orxVECTOR *                  orxVector_Ceil(orxVECTOR *_pvRes, const orxVECTOR *_pvOp)
+{
+  /* Checks */
+  orxASSERT(_pvRes != orxNULL);
+  orxASSERT(_pvOp != orxNULL);
+
+  /* Reverts all */
+  _pvRes->fX = orxMath_Ceil(_pvOp->fX);
+  _pvRes->fY = orxMath_Ceil(_pvOp->fY);
+  _pvRes->fZ = orxMath_Ceil(_pvOp->fZ);
+
+  /* Done! */
+  return _pvRes;
+}
+
 /** Gets rounded vector and stores the result in another one
  * @param[out]  _pvRes                        Vector where to store the result (can be the operand)
  * @param[in]   _pvOp                         Input value
