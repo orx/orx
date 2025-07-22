@@ -8,6 +8,7 @@ var orx_vector_8h =
     [ "orxVector_AreEqual", "group__orx_vector.html#ga45069121878eae7a3d0721fa3eed3b2f", null ],
     [ "orxVector_Bezier", "group__orx_vector.html#gaa5f801d847f75750a67bbb1cdf48a2e3", null ],
     [ "orxVector_CatmullRom", "group__orx_vector.html#gad3c7c5728f537872c6d4c9419412bc6a", null ],
+    [ "orxVector_Ceil", "group__orx_vector.html#gaeab0852f905a740edfd228367d185dc2", null ],
     [ "orxVector_Clamp", "group__orx_vector.html#gae296ef0537c581fe6bf4e42730d83de1", null ],
     [ "orxVector_Copy", "group__orx_vector.html#ga2077af79a4989ff32b3ad142b1d9f9a4", null ],
     [ "orxVector_Cross", "group__orx_vector.html#ga4370f827df79fa200cba345aba195234", null ],
