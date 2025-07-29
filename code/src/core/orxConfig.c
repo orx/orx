@@ -126,6 +126,7 @@
 #define orxCONFIG_KZ_CONFIG_SECTION_SYSTEM        "System"    /**< System section name */
 #define orxCONFIG_KZ_CONFIG_BITS                  "Bits"      /**< Bits property */
 #define orxCONFIG_KZ_CONFIG_BUILD                 "Build"     /**< Build property */
+#define orxCONFIG_KZ_CONFIG_COMPILER              "Compiler"  /**< Compiler property */
 #define orxCONFIG_KZ_CONFIG_ENDIANNESS            "Endianness"/**< Endianness property */
 #define orxCONFIG_KZ_CONFIG_PLATFORM              "Platform"  /**< Platform property */
 #define orxCONFIG_KZ_CONFIG_PROCESSOR             "Processor" /**< Processor property */
@@ -224,6 +225,20 @@
 #else
 
   #define orxCONFIG_KZ_BUILD                      "release"
+
+#endif
+
+#if defined(__orxLLVM__)
+
+  #define orxCONFIG_KZ_COMPILER                   "llvm"
+
+#elif defined(__orxGCC__)
+
+  #define orxCONFIG_KZ_COMPILER                   "gcc"
+
+#elif defined(__orxMSVC__)
+
+  #define orxCONFIG_KZ_COMPILER                   "msvc"
 
 #endif
 
@@ -4794,6 +4809,7 @@ static orxINLINE void orxConfig_SetSystemValues()
   orxConfig_SetString(orxCONFIG_KZ_CONFIG_PLATFORM, orxCONFIG_KZ_PLATFORM);
   orxConfig_SetString(orxCONFIG_KZ_CONFIG_PROCESSOR, orxCONFIG_KZ_PROCESSOR);
   orxConfig_SetString(orxCONFIG_KZ_CONFIG_BUILD, orxCONFIG_KZ_BUILD);
+  orxConfig_SetString(orxCONFIG_KZ_CONFIG_COMPILER, orxCONFIG_KZ_COMPILER);
 
   /* Pops system section */
   orxConfig_PopSection();
