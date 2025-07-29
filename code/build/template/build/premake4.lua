@@ -288,6 +288,14 @@ solution "[name]"
             "/EHsc"
         }
 
+[+sndh
+    configuration {"windows", "not vs*"}
+        buildoptions
+        {
+            "-Wno-write-strings",
+            "-Wno-multichar"
+        }
+]
     configuration {"windows", "gmake", "x32"}
         prebuildcommands
         {
