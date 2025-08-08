@@ -111,6 +111,10 @@ void ExitExtensions()
   // Exit from SNDH support
   orxSndh_Exit();
 ]
+[+noisetex
+  // Exit from noise texture support
+  orxNoiseTexture_Exit();
+]
 [+mod
   // Exit from MOD support
   orxMod_Exit();
@@ -118,10 +122,6 @@ void ExitExtensions()
 [+movie
   // Exit from movie support
   orxMovie_Exit();
-]
-[+noisetex
-  // Exit from noise texture support
-  orxNoiseTexture_Exit();
 ]
 [+cheat
   // Exit from cheat support
