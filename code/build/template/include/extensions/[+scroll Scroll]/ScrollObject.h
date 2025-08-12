@@ -553,10 +553,10 @@ void ScrollObject::SetFlip(orxBOOL _bFlipX, orxBOOL _bFlipY, orxBOOL _bRecursive
 const orxSTRING ScrollObject::GetText() const
 {
   const orxSTRING zResult;
-  
+
   // Updates result
   zResult = orxObject_GetTextString(mpstObject);
-  
+
   // Done!
   return zResult;
 }
@@ -654,13 +654,13 @@ const orxSTRING ScrollObject::GetShader() const
 {
   const orxSHADER  *pstShader;
   const orxSTRING   zResult;
-  
+
   // Gets shader
   pstShader = orxObject_GetShader(mpstObject);
-  
+
   // Updates result
   zResult = (pstShader != orxNULL) ? orxShader_GetName(pstShader) : orxSTRING_EMPTY;
-  
+
   // Done!
   return zResult;
 }
@@ -984,7 +984,7 @@ void ScrollObject::SetOrxObject(orxOBJECT *_pstObject)
 
     // Clears its instance section
     orxConfig_ClearSection(macInstanceName);
-    
+
     // Deletes its reference
     orxString_Erase(orxString_Hash(macInstanceName));
   }
@@ -998,7 +998,7 @@ void ScrollObject::SetOrxObject(orxOBJECT *_pstObject)
     // Stores its names
     mzName = orxObject_GetName(_pstObject);
     orxString_NPrint(macInstanceName, sizeof(macInstanceName), "0x%016llX", orxStructure_GetGUID(_pstObject));
-    
+
     // Creates its instance section
     orxConfig_SetParent(macInstanceName, mzName);
   }

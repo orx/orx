@@ -1718,14 +1718,14 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
 
   // Gets unique identifier
   zUnique = orxConfig_GetString(ScrollBase::szConfigScrollObjectUnique);
-  
+
   // Valid?
   if(*zUnique != orxCHAR_NULL)
   {
     const orxSTRING zRemaining;
     const orxSTRING zKey = orxNULL;
     orxBOOL         bUnique;
-    
+
     /* Is a bool? */
     if((orxString_ToBool(zUnique, &bUnique, &zRemaining) != orxSTATUS_FAILURE)
     && (*zRemaining == orxCHAR_NULL))
@@ -1742,7 +1742,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
       /* Uses it as key */
       zKey = zUnique;
     }
-    
+
     /* Has key? */
     if(zKey != orxNULL)
     {
@@ -1770,7 +1770,7 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
     {
       // Updates flags
       xFlags |= ScrollObject::FlagInput;
-      
+
       // No defined input?
       if(!orxInput_GetNext(orxNULL))
       {
