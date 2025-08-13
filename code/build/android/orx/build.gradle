@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace 'org.orx.lib'
-    compileSdk sdkVersion.toInteger()
+    compileSdk = sdkVersion.toInteger()
 
     // Ideally, we want to use the default NDK version for the used AGP version.
     // However, we opt-in to NDK r27 since it comes with many important features/optimizations.
-    ndkVersion '27.2.12479018'
+    ndkVersion '27.3.13750724'
 
     buildFeatures {
         prefab true
@@ -91,12 +91,12 @@ dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
 
-    api 'androidx.core:core:1.15.0'
-    api 'androidx.appcompat:appcompat:1.7.0'
+    api 'androidx.core:core:1.17.0'
+    api 'androidx.appcompat:appcompat:1.7.1'
 
-    api 'androidx.games:games-activity:4.0.0'
-    api 'androidx.games:games-controller:2.0.2'
-    api 'androidx.games:games-frame-pacing:2.1.2'
+    api 'androidx.games:games-activity:4.3.0-alpha01'
+    api 'androidx.games:games-controller:2.3.0-alpha01'
+    api 'androidx.games:games-frame-pacing:2.3.0-alpha01'
 }
 
 afterEvaluate {
