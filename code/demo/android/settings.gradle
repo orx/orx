@@ -9,7 +9,7 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         maven {
-            url "${System.env.ORX}/lib/static/android/repository/"
+            url = "${System.env.ORX}/lib/static/android/repository/"
         }
 
         google()
