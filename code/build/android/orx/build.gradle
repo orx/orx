@@ -4,16 +4,16 @@ plugins {
 }
 
 android {
-    namespace 'org.orx.lib'
-    compileSdk sdkVersion.toInteger()
+    namespace = 'org.orx.lib'
+    compileSdk = sdkVersion.toInteger()
 
     // Ideally, we want to use the default NDK version for the used AGP version.
     // However, we opt-in to NDK r27 since it comes with many important features/optimizations.
-    ndkVersion '27.2.12479018'
+    ndkVersion = '27.3.13750724'
 
     buildFeatures {
-        prefab true
-        prefabPublishing true
+        prefab = true
+        prefabPublishing = true
     }
 
     defaultConfig {
@@ -33,13 +33,13 @@ android {
     }
     prefab {
         orx {
-            headers "${System.env.ORX}/include"
+            headers = "${System.env.ORX}/include"
         }
         webpdecoder_static {
-            headers "${System.env.ORX}/../extern/libwebp/src"
+            headers = "${System.env.ORX}/../extern/libwebp/src"
         }
         liquidfun_static {
-            headers "${System.env.ORX}/../extern/LiquidFun-1.1.0/include"
+            headers = "${System.env.ORX}/../extern/LiquidFun-1.1.0/include"
         }
     }
     packagingOptions {
@@ -84,19 +84,19 @@ android {
         }
     }
     lint {
-        abortOnError true
+        abortOnError = true
     }
 }
 dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
 
-    api 'androidx.core:core:1.15.0'
-    api 'androidx.appcompat:appcompat:1.7.0'
+    api 'androidx.core:core:1.17.0'
+    api 'androidx.appcompat:appcompat:1.7.1'
 
-    api 'androidx.games:games-activity:4.0.0'
-    api 'androidx.games:games-controller:2.0.2'
-    api 'androidx.games:games-frame-pacing:2.1.2'
+    api 'androidx.games:games-activity:4.3.0-alpha01'
+    api 'androidx.games:games-controller:2.3.0-alpha01'
+    api 'androidx.games:games-frame-pacing:2.3.0-alpha01'
 }
 
 afterEvaluate {
@@ -104,27 +104,27 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId 'org.orx-project'
-                artifactId 'orx'
-                version android.defaultConfig.versionName
+                groupId = 'org.orx-project'
+                artifactId = 'orx'
+                version = android.defaultConfig.versionName
             }
             debug(MavenPublication) {
                 from components.debug
-                groupId 'org.orx-project'
-                artifactId 'orxd'
-                version android.defaultConfig.versionName
+                groupId = 'org.orx-project'
+                artifactId = 'orxd'
+                version = android.defaultConfig.versionName
             }
             profile(MavenPublication) {
                 from components.profile
-                groupId 'org.orx-project'
-                artifactId 'orxp'
-                version android.defaultConfig.versionName
+                groupId = 'org.orx-project'
+                artifactId = 'orxp'
+                version = android.defaultConfig.versionName
             }
         }
         repositories {
             maven {
                 name = 'orx'
-                url "${System.env.ORX}/lib/static/android/repository/"
+                url = "${System.env.ORX}/lib/static/android/repository/"
             }
         }
     }
