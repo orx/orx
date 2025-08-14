@@ -994,6 +994,14 @@ static orxINLINE void orxDisplay_GLFW_UpdateDefaultMode()
       orxConfig_PopSection();
     }
   }
+  else
+  {
+    /* Updates default mode */
+    sstDisplay.u32DefaultWidth        = orxDISPLAY_KU32_DEFAULT_WIDTH;
+    sstDisplay.u32DefaultHeight       = orxDISPLAY_KU32_DEFAULT_HEIGHT;
+    sstDisplay.u32DefaultDepth        = orxDISPLAY_KU32_DEFAULT_DEPTH;
+    sstDisplay.u32DefaultRefreshRate  = orxDISPLAY_KU32_DEFAULT_REFRESH_RATE;
+  }
 
   /* Done! */
   return;
@@ -6062,7 +6070,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
     iWidth        = (int)((_pstVideoMode->u32Width != 0) ? _pstVideoMode->u32Width : sstDisplay.u32DefaultWidth);
     iHeight       = (int)((_pstVideoMode->u32Height != 0) ? _pstVideoMode->u32Height : sstDisplay.u32DefaultHeight);
     iDepth        = (int)((_pstVideoMode->u32Depth != 0) ? _pstVideoMode->u32Depth : sstDisplay.u32DefaultDepth);
-    iRefreshRate  = (int)((_pstVideoMode->u32RefreshRate != 0) ? _pstVideoMode->u32RefreshRate : sstDisplay.u32DefaultRefreshRate);
+    iRefreshRate  = (int)(((_pstVideoMode->bFullScreen != orxFALSE) && (_pstVideoMode->u32RefreshRate != 0)) ? _pstVideoMode->u32RefreshRate : sstDisplay.u32DefaultRefreshRate);
 
 #ifndef __orxWEB__
     /* Doesn't allow resize? */

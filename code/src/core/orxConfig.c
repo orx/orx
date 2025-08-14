@@ -4405,7 +4405,7 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
     s32SeparatorIndex = orxString_SearchCharIndex(zSection, orxCONFIG_KC_SECTION_SEPARATOR, 0);
 
     /* Found and no empty part? */
-    if((s32SeparatorIndex > 0) && (*(zSection + s32SeparatorIndex +1) != orxCHAR_NULL))
+    if((s32SeparatorIndex > 0) && (*(zSection + s32SeparatorIndex + 1) != orxCHAR_NULL))
     {
       /* Updates value */
       zValue = _astArgList[1].zValue;
