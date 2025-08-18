@@ -3269,9 +3269,11 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCommand_AddAlias("Help", "Command.Help", orxNULL);
   orxCommand_AddAlias("?", "Command.Help", orxNULL);
 
-  /* Alias: ListCommands/LS */
+  /* Alias: ListCommands/LS/LC/?? */
   orxCommand_AddAlias("ListCommands", "Command.ListCommands", orxNULL);
   orxCommand_AddAlias("LS", "Command.ListCommands", orxNULL);
+  orxCommand_AddAlias("LC", "Command.ListCommands", orxNULL);
+  orxCommand_AddAlias("??", "Command.ListCommands", orxNULL);
 
   /* Alias: ListAliases/LA */
   orxCommand_AddAlias("ListAliases", "Command.ListAliases", orxNULL);
@@ -3500,9 +3502,11 @@ static orxINLINE void orxCommand_UnregisterCommands()
   orxCommand_RemoveAlias("Help");
   orxCommand_RemoveAlias("?");
 
-  /* Alias: ListCommands/LS */
+  /* Alias: ListCommands/LS/LC/?? */
   orxCommand_RemoveAlias("ListCommands");
   orxCommand_RemoveAlias("LS");
+  orxCommand_RemoveAlias("LC");
+  orxCommand_RemoveAlias("??");
 
   /* Alias: ListAliases/LA */
   orxCommand_RemoveAlias("ListAliases");
