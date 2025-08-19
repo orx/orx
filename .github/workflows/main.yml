@@ -135,7 +135,7 @@ jobs:
           - simulator
         include:
           - os: mac
-            runner: macos-latest
+            runner: macos-15
             setup: setup.sh
           - platform: simulator
             extra: -destination 'platform=iOS Simulator,name=iPhone 15'
