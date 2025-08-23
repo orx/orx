@@ -931,7 +931,7 @@ orxSTATUS ScrollBase::BaseInit()
       // Filters events
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_SYSTEM, orxNULL, orxEVENT_GET_FLAG(orxSYSTEM_EVENT_GAME_LOOP_START), orxEVENT_KU32_MASK_ID_ALL);
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_CREATE) | orxEVENT_GET_FLAG(orxOBJECT_EVENT_DELETE), orxEVENT_KU32_MASK_ID_ALL);
-      orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_ANIM, orxNULL, orxEVENT_GET_FLAG(orxANIM_EVENT_STOP) | orxEVENT_GET_FLAG(orxANIM_EVENT_CUT) | orxEVENT_GET_FLAG(orxANIM_EVENT_LOOP) | orxEVENT_GET_FLAG(orxANIM_EVENT_UPDATE) | orxEVENT_GET_FLAG(orxANIM_EVENT_CUSTOM_EVENT), orxEVENT_KU32_MASK_ID_ALL);
+      orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_ANIM, orxNULL, orxEVENT_GET_FLAG(orxANIM_EVENT_START) | orxEVENT_GET_FLAG(orxANIM_EVENT_STOP) | orxEVENT_GET_FLAG(orxANIM_EVENT_CUT) | orxEVENT_GET_FLAG(orxANIM_EVENT_LOOP) | orxEVENT_GET_FLAG(orxANIM_EVENT_UPDATE) | orxEVENT_GET_FLAG(orxANIM_EVENT_CUSTOM_EVENT), orxEVENT_KU32_MASK_ID_ALL);
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_SPAWNER, orxNULL, orxEVENT_GET_FLAG(orxSPAWNER_EVENT_SPAWN), orxEVENT_KU32_MASK_ID_ALL);
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_OBJECT_START), orxEVENT_KU32_MASK_ID_ALL);
       orxEvent_SetHandlerIDFlags(StaticEventHandler, orxEVENT_TYPE_SHADER, orxNULL, orxEVENT_GET_FLAG(orxSHADER_EVENT_SET_PARAM), orxEVENT_KU32_MASK_ID_ALL);
@@ -1370,38 +1370,57 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
             break;
           }
 
-          // Stop, cut or loop
+          // Start, stop, cut or loop
+          case orxANIM_EVENT_START:
           case orxANIM_EVENT_STOP:
           case orxANIM_EVENT_CUT:
           case orxANIM_EVENT_LOOP:
           {
             orxANIMPOINTER *pstAnimPointer;
-            const orxSTRING zOldAnim;
+            const orxSTRING zOldAnim = orxSTRING_EMPTY;
             const orxSTRING zNewAnim = orxSTRING_EMPTY;
             orxU32          u32AnimID;
-
-            // Gets old anim
-            zOldAnim = pstPayload->zAnimName;
 
             // Gets its anim pointer
             pstAnimPointer = orxOBJECT_GET_STRUCTURE(poSender->GetOrxObject(), ANIMPOINTER);
 
-            // Gets current anim
-            u32AnimID = orxAnimPointer_GetCurrentAnim(pstAnimPointer);
-
-            // Valid?
-            if(u32AnimID != orxU32_UNDEFINED)
+            // Start?
+            if(_pstEvent->eID == orxANIM_EVENT_START)
             {
-              orxANIM *pstAnim;
+              // First time?
+              if(orxAnimPointer_GetActiveTime(pstAnimPointer) == orxFLOAT_0)
+              {
+                // Gets new anim
+                zNewAnim = pstPayload->zAnimName;
+              }
+              else
+              {
+                // Stops
+                break;
+              }
+            }
+            else
+            {
+              // Gets old anim
+              zOldAnim = pstPayload->zAnimName;
 
-              // Gets new anim
-              pstAnim = orxAnimSet_GetAnim(orxAnimPointer_GetAnimSet(pstAnimPointer), u32AnimID);
+              // Gets current anim
+              u32AnimID = orxAnimPointer_GetCurrentAnim(pstAnimPointer);
 
               // Valid?
-              if(pstAnim)
+              if(u32AnimID != orxU32_UNDEFINED)
               {
-                // Gets its name
-                zNewAnim = orxAnim_GetName(pstAnim);
+                orxANIM *pstAnim;
+
+                // Gets new anim
+                pstAnim = orxAnimSet_GetAnim(orxAnimPointer_GetAnimSet(pstAnimPointer), u32AnimID);
+
+                // Valid?
+                if(pstAnim)
+                {
+                  // Gets its name
+                  zNewAnim = orxAnim_GetName(pstAnim);
+                }
               }
             }
 
@@ -1805,6 +1824,13 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
   {
     // Calls its start game callback
     poResult->OnStartGame();
+  }
+
+  // Has animation?
+  if(orxObject_GetCurrentAnim(_pstObject) != orxNULL)
+  {
+    // Calls object callback
+    poResult->OnNewAnim(orxSTRING_EMPTY, orxObject_GetCurrentAnim(_pstObject), orxFALSE);
   }
 
   // Is game paused?
