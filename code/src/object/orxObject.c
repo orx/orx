@@ -166,10 +166,11 @@
 #define orxOBJECT_KZ_SOUND                      "sound"
 #define orxOBJECT_KZ_SPAWN                      "spawn"
 #define orxOBJECT_KZ_TRACK                      "track"
-#define orxOBJECT_KZ_COLLIDE                    "Collide"
-#define orxOBJECT_KZ_SEPARATE                   "Separate"
-#define orxOBJECT_KZ_PART_COLLIDE               "PartCollide"
-#define orxOBJECT_KZ_PART_SEPARATE              "PartSeparate"
+#define orxOBJECT_KZ_TRIGGER_COLLIDE            "Collide"
+#define orxOBJECT_KZ_TRIGGER_SEPARATE           "Separate"
+#define orxOBJECT_KZ_TRIGGER_PART_COLLIDE       "PartCollide"
+#define orxOBJECT_KZ_TRIGGER_PART_SEPARATE      "PartSeparate"
+#define orxOBJECT_KZ_TRIGGER_ANIM               "Anim"
 #define orxOBJECT_KZ_CREATE                     "Create"
 #define orxOBJECT_KZ_DELETE                     "Delete"
 
@@ -5087,109 +5088,205 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Object event? */
-  if(_pstEvent->eType == orxEVENT_TYPE_OBJECT)
+  /* Depending on event type */
+  switch(_pstEvent->eType)
   {
-    /* Has current parent? */
-    if(sstObject.pstCurrentParent != orxNULL)
+    /* Object event */
+    case orxEVENT_TYPE_OBJECT:
     {
-      /* Stores current parent as temporary parent in payload */
-      *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentParent;
+      /* Has current parent? */
+      if(sstObject.pstCurrentParent != orxNULL)
+      {
+        /* Stores current parent as temporary parent in payload */
+        *((orxOBJECT **)_pstEvent->pstPayload) = sstObject.pstCurrentParent;
 
-      /* Sets it as owner */
-      orxObject_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentParent);
+        /* Sets it as owner */
+        orxObject_SetOwner(orxOBJECT(_pstEvent->hSender), sstObject.pstCurrentParent);
+      }
+
+      break;
     }
-  }
-  /* Physics event */
-  else
-  {
-    orxPHYSICS_EVENT_PAYLOAD *pstPayload;
-    orxOBJECT                *pstSender, *pstRecipient;
-    orxTRIGGER               *pstSenderTrigger, *pstRecipientTrigger;
 
-    /* Checks */
-    orxASSERT(_pstEvent->eType == orxEVENT_TYPE_PHYSICS);
-
-    /* Gets payload */
-    pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
-
-    /* Gets sender & recipient objects */
-    pstSender     = orxOBJECT(_pstEvent->hSender);
-    pstRecipient  = orxOBJECT(_pstEvent->hRecipient);
-
-    /* Gets triggers */
-    pstSenderTrigger    = orxStructure_TestFlags(pstSender, orxOBJECT_KU32_FLAG_ENABLED) ? orxOBJECT_GET_STRUCTURE(pstSender, TRIGGER) : orxNULL;
-    pstRecipientTrigger = orxStructure_TestFlags(pstRecipient, orxOBJECT_KU32_FLAG_ENABLED) ? orxOBJECT_GET_STRUCTURE(pstRecipient, TRIGGER) : orxNULL;
-
-    /* Should process? */
-    if((pstSenderTrigger != orxNULL)
-    || (pstRecipientTrigger != orxNULL))
+    /* Physics event */
+    case orxEVENT_TYPE_PHYSICS:
     {
-      const orxSTRING azRefinementList[4];
-      const orxSTRING zEvent;
-      const orxSTRING zPartEvent;
-      orxCOMMAND_VAR  stVar;
-      orxCHAR         acBuffer1[128], acBuffer2[128];
-      orxU32          u32RefinementCount = 2;
+      orxOBJECT  *pstSender, *pstRecipient;
+      orxTRIGGER *pstSenderTrigger, *pstRecipientTrigger;
 
-      /* Selects events */
-      if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+      /* Gets sender & recipient objects */
+      pstSender     = orxOBJECT(_pstEvent->hSender);
+      pstRecipient  = orxOBJECT(_pstEvent->hRecipient);
+
+      /* Gets triggers */
+      pstSenderTrigger    = orxStructure_TestFlags(pstSender, orxOBJECT_KU32_FLAG_ENABLED) ? orxOBJECT_GET_STRUCTURE(pstSender, TRIGGER) : orxNULL;
+      pstRecipientTrigger = orxStructure_TestFlags(pstRecipient, orxOBJECT_KU32_FLAG_ENABLED) ? orxOBJECT_GET_STRUCTURE(pstRecipient, TRIGGER) : orxNULL;
+
+      /* Should process? */
+      if((pstSenderTrigger != orxNULL)
+      || (pstRecipientTrigger != orxNULL))
       {
-        zEvent      = orxOBJECT_KZ_COLLIDE;
-        zPartEvent  = orxOBJECT_KZ_PART_COLLIDE;
-      }
-      else
-      {
-        zEvent      = orxOBJECT_KZ_SEPARATE;
-        zPartEvent  = orxOBJECT_KZ_PART_SEPARATE;
+        orxPHYSICS_EVENT_PAYLOAD *pstPayload;
+        const orxSTRING           azRefinementList[4];
+        const orxSTRING           zEvent;
+        const orxSTRING           zPartEvent;
+        orxCOMMAND_VAR            stVar;
+        orxU32                    u32RefinementCount = 2;
+        orxCHAR                   acBuffer1[128], acBuffer2[128];
+
+        /* Gets payload */
+        pstPayload = (orxPHYSICS_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        /* Selects events */
+        if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+        {
+          zEvent      = orxOBJECT_KZ_TRIGGER_COLLIDE;
+          zPartEvent  = orxOBJECT_KZ_TRIGGER_PART_COLLIDE;
+        }
+        else
+        {
+          zEvent      = orxOBJECT_KZ_TRIGGER_SEPARATE;
+          zPartEvent  = orxOBJECT_KZ_TRIGGER_PART_SEPARATE;
+        }
+
+        /* Fires collide triggers */
+        stVar.eType         = orxCOMMAND_VAR_TYPE_U64;
+        azRefinementList[1] = acBuffer1;
+
+        if(pstSenderTrigger != orxNULL)
+        {
+          azRefinementList[0] = orxObject_GetName(pstRecipient);
+          stVar.u64Value      = orxStructure_GetGUID(pstRecipient);
+          orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
+          orxTrigger_Fire(pstSenderTrigger, zEvent, azRefinementList, u32RefinementCount, orxNULL);
+        }
+
+        if(pstRecipientTrigger != orxNULL)
+        {
+          azRefinementList[0] = orxObject_GetName(pstSender);
+          stVar.u64Value      = orxStructure_GetGUID(pstSender);
+          orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
+          orxTrigger_Fire(pstRecipientTrigger, zEvent, azRefinementList, u32RefinementCount, orxNULL);
+        }
+
+        /* Fires part collide triggers */
+        if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
+        {
+          stVar.eType = orxCOMMAND_VAR_TYPE_VECTOR;
+          orxVector_Copy(&(stVar.vValue), &(pstPayload->vPosition));
+          orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
+          orxVector_Copy(&(stVar.vValue), &(pstPayload->vNormal));
+          orxCommand_PrintVar(acBuffer2, sizeof(acBuffer2), &stVar);
+          azRefinementList[2] = acBuffer1;
+          azRefinementList[3] = acBuffer2;
+          u32RefinementCount  = 4;
+        }
+
+        if(pstSenderTrigger != orxNULL)
+        {
+          azRefinementList[0] = orxBody_GetPartName(pstPayload->pstSenderPart);
+          azRefinementList[1] = orxBody_GetPartName(pstPayload->pstRecipientPart);
+          orxTrigger_Fire(pstSenderTrigger, zPartEvent, azRefinementList, u32RefinementCount, orxNULL);
+        }
+
+        if(pstRecipientTrigger != orxNULL)
+        {
+          azRefinementList[0] = orxBody_GetPartName(pstPayload->pstRecipientPart);
+          azRefinementList[1] = orxBody_GetPartName(pstPayload->pstSenderPart);
+          orxTrigger_Fire(pstRecipientTrigger, zPartEvent, azRefinementList, u32RefinementCount, orxNULL);
+        }
       }
 
-      /* Fires collide triggers */
-      stVar.eType         = orxCOMMAND_VAR_TYPE_U64;
-      azRefinementList[1] = acBuffer1;
+      break;
+    }
 
-      if(pstSenderTrigger != orxNULL)
+    /* Anim event */
+    case orxEVENT_TYPE_ANIM:
+    {
+      orxOBJECT  *pstObject;
+      orxTRIGGER *pstTrigger;
+
+      /* Gets object */
+      pstObject = orxOBJECT(_pstEvent->hSender);
+
+      /* Gets trigger */
+      pstTrigger = orxStructure_TestFlags(pstObject, orxOBJECT_KU32_FLAG_ENABLED) ? orxOBJECT_GET_STRUCTURE(pstObject, TRIGGER) : orxNULL;
+
+      /* Should process? */
+      if(pstTrigger != orxNULL)
       {
-        azRefinementList[0] = orxObject_GetName(pstRecipient);
-        stVar.u64Value      = orxStructure_GetGUID(pstRecipient);
-        orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
-        orxTrigger_Fire(pstSenderTrigger, zEvent, azRefinementList, u32RefinementCount, orxNULL);
+        orxANIM_EVENT_PAYLOAD  *pstPayload;
+        orxANIMPOINTER         *pstAnimPointer;
+        const orxSTRING         azRefinementList[2] = {orxNULL, orxNULL};
+        orxU32                  u32StopDepth = orxU32_UNDEFINED;
+
+        /* Gets payload */
+        pstPayload = (orxANIM_EVENT_PAYLOAD *)_pstEvent->pstPayload;
+
+        /* Gets object's anim pointer */
+        pstAnimPointer = orxOBJECT_GET_STRUCTURE(orxOBJECT(_pstEvent->hSender), ANIMPOINTER);
+
+        /* Start event? */
+        if(_pstEvent->eID == orxANIM_EVENT_START)
+        {
+          /* First time? */
+          if(orxAnimPointer_GetActiveTime(pstAnimPointer) == orxFLOAT_0)
+          {
+            /* Stores new anim refinement */
+            azRefinementList[1] = pstPayload->zAnimName;
+
+            /* Requests processing */
+            u32StopDepth = 0;
+          }
+        }
+        else
+        {
+          orxU32 u32AnimID;
+
+          /* Stores old anim refinement */
+          azRefinementList[0] = pstPayload->zAnimName;
+
+          /* Gets current anim */
+          u32AnimID = orxAnimPointer_GetCurrentAnim(pstAnimPointer);
+
+          /* Valid? */
+          if(u32AnimID != orxU32_UNDEFINED)
+          {
+            orxANIM *pstAnim;
+
+            /* Gets new anim */
+            pstAnim = orxAnimSet_GetAnim(orxAnimPointer_GetAnimSet(pstAnimPointer), u32AnimID);
+
+            /* Valid? */
+            if(pstAnim != orxNULL)
+            {
+              /* Stores anim refinements */
+              azRefinementList[1] = orxAnim_GetName(pstAnim);
+            }
+          }
+
+          /* Fires trigger */
+          orxTrigger_Fire(pstTrigger, orxOBJECT_KZ_TRIGGER_ANIM, azRefinementList, (azRefinementList[1] != orxNULL) ? 2 : 1, &u32StopDepth);
+        }
+
+        /* Should fire new anim-only trigger? */
+        if((u32StopDepth == 0) && (azRefinementList[1] != orxNULL))
+        {
+          /* Clears old anim refinement */
+          azRefinementList[0] = orxSTRING_EMPTY;
+
+          /* Fires it */
+          orxTrigger_Fire(pstTrigger, orxOBJECT_KZ_TRIGGER_ANIM, azRefinementList, 2, &u32StopDepth);
+        }
       }
 
-      if(pstRecipientTrigger != orxNULL)
-      {
-        azRefinementList[0] = orxObject_GetName(pstSender);
-        stVar.u64Value      = orxStructure_GetGUID(pstSender);
-        orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
-        orxTrigger_Fire(pstRecipientTrigger, zEvent, azRefinementList, u32RefinementCount, orxNULL);
-      }
+      break;
+    }
 
-      /* Fires part collide triggers */
-      if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
-      {
-        stVar.eType = orxCOMMAND_VAR_TYPE_VECTOR;
-        orxVector_Copy(&(stVar.vValue), &(pstPayload->vPosition));
-        orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
-        orxVector_Copy(&(stVar.vValue), &(pstPayload->vNormal));
-        orxCommand_PrintVar(acBuffer2, sizeof(acBuffer2), &stVar);
-        azRefinementList[2] = acBuffer1;
-        azRefinementList[3] = acBuffer2;
-        u32RefinementCount  = 4;
-      }
-
-      if(pstSenderTrigger != orxNULL)
-      {
-        azRefinementList[0] = orxBody_GetPartName(pstPayload->pstSenderPart);
-        azRefinementList[1] = orxBody_GetPartName(pstPayload->pstRecipientPart);
-        orxTrigger_Fire(pstSenderTrigger, zPartEvent, azRefinementList, u32RefinementCount, orxNULL);
-      }
-
-      if(pstRecipientTrigger != orxNULL)
-      {
-        azRefinementList[0] = orxBody_GetPartName(pstPayload->pstRecipientPart);
-        azRefinementList[1] = orxBody_GetPartName(pstPayload->pstSenderPart);
-        orxTrigger_Fire(pstRecipientTrigger, zPartEvent, azRefinementList, u32RefinementCount, orxNULL);
-      }
+    /* Default */
+    default:
+    {
+      orxASSERT(orxFALSE);
+      break;
     }
   }
 
@@ -5522,6 +5619,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
         /* Adds event handlers */
         eResult = orxEvent_AddHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
         eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler) : orxSTATUS_FAILURE;
+        eResult = (eResult != orxSTATUS_FAILURE) ? orxEvent_AddHandler(orxEVENT_TYPE_ANIM, orxObject_EventHandler) : orxSTATUS_FAILURE;
 
         /* Valid? */
         if(eResult != orxSTATUS_FAILURE)
@@ -5529,6 +5627,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
           /* Filters relevant event IDs */
           orxEvent_SetHandlerIDFlags(orxObject_EventHandler, orxEVENT_TYPE_OBJECT, orxNULL, orxEVENT_GET_FLAG(orxOBJECT_EVENT_PREPARE), orxEVENT_KU32_MASK_ID_ALL);
           orxEvent_SetHandlerIDFlags(orxObject_EventHandler, orxEVENT_TYPE_PHYSICS, orxNULL, orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_ADD) | orxEVENT_GET_FLAG(orxPHYSICS_EVENT_CONTACT_REMOVE), orxEVENT_KU32_MASK_ID_ALL);
+          orxEvent_SetHandlerIDFlags(orxObject_EventHandler, orxEVENT_TYPE_ANIM, orxNULL, orxEVENT_GET_FLAG(orxANIM_EVENT_START) | orxEVENT_GET_FLAG(orxANIM_EVENT_STOP) | orxEVENT_GET_FLAG(orxANIM_EVENT_CUT) | orxEVENT_GET_FLAG(orxANIM_EVENT_LOOP), orxEVENT_KU32_MASK_ID_ALL);
 
           /* Registers object update function to clock */
           eResult = orxClock_Register(sstObject.pstClock, orxObject_UpdateAll, orxNULL, orxMODULE_ID_OBJECT, orxCLOCK_PRIORITY_LOW);
@@ -5646,8 +5745,9 @@ orxSTATUS orxFASTCALL orxObject_Init()
         }
         else
         {
-          /* Removes event handler */
+          /* Removes event handlers */
           orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
+          orxEvent_RemoveHandler(orxEVENT_TYPE_PHYSICS, orxObject_EventHandler);
 
           /* Unregisters structure type */
           orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
@@ -6204,6 +6304,30 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                 bUseParentScale     = orxFALSE;
                 bUseParentPosition  = orxFALSE;
               }
+            }
+          }
+        }
+
+        /* *** Trigger *** */
+
+        /* Has triggers? */
+        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_TRIGGER_LIST)) > 0)
+        {
+          orxS32 i;
+
+          /* For all defined triggers */
+          for(i = 0; i < s32Count; i++)
+          {
+            const orxSTRING zTrigger;
+
+            /* Gets its name */
+            zTrigger = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_TRIGGER_LIST, i);
+
+            /* Valid? */
+            if(*zTrigger != orxCHAR_NULL)
+            {
+              /* Adds it */
+              orxObject_AddTrigger(pstResult, zTrigger);
             }
           }
         }
@@ -7084,30 +7208,6 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
             {
               /* Adds it */
               orxObject_AddTimeLineTrack(pstResult, zTrack);
-            }
-          }
-        }
-
-        /* *** Trigger *** */
-
-        /* Has triggers? */
-        if((s32Count = orxConfig_GetListCount(orxOBJECT_KZ_CONFIG_TRIGGER_LIST)) > 0)
-        {
-          orxS32 i;
-
-          /* For all defined triggers */
-          for(i = 0; i < s32Count; i++)
-          {
-            const orxSTRING zTrigger;
-
-            /* Gets its name */
-            zTrigger = orxConfig_GetListString(orxOBJECT_KZ_CONFIG_TRIGGER_LIST, i);
-
-            /* Valid? */
-            if(*zTrigger != orxCHAR_NULL)
-            {
-              /* Adds it */
-              orxObject_AddTrigger(pstResult, zTrigger);
             }
           }
         }
