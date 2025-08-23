@@ -1075,9 +1075,10 @@ orxU32 orxFASTCALL orxTrigger_GetCount(const orxTRIGGER *_pstTrigger)
  * @param[in]   _zEvent               Event to fire
  * @param[in]   _azRefinementList     List of refinements for this event, unused if _u32Count == 0
  * @param[in]   _u32Count             Number of refinements in the list, 0 for none
+ * @param[out]  _pu32StopDepth        Stop depth request, orxNULL to ignore
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count)
+orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count, orxU32 *_pu32StopDepth)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1184,6 +1185,12 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
           }
         }
       }
+    }
+
+    /* Stores stop depth */
+    if(_pu32StopDepth != orxNULL)
+    {
+      *_pu32StopDepth = (orxU32)s32StopDepth;
     }
 
     /* Restores previous event & refinement list */

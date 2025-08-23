@@ -4969,7 +4969,7 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
         if(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
         {
           /* Fires it */
-          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_DELETE, orxNULL, 0);
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_DELETE, orxNULL, 0, orxNULL);
         }
 
         /* Has frame? */
@@ -5153,7 +5153,7 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
         azRefinementList[0] = orxObject_GetName(pstRecipient);
         stVar.u64Value      = orxStructure_GetGUID(pstRecipient);
         orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
-        orxTrigger_Fire(pstSenderTrigger, zEvent, azRefinementList, u32RefinementCount);
+        orxTrigger_Fire(pstSenderTrigger, zEvent, azRefinementList, u32RefinementCount, orxNULL);
       }
 
       if(pstRecipientTrigger != orxNULL)
@@ -5161,7 +5161,7 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
         azRefinementList[0] = orxObject_GetName(pstSender);
         stVar.u64Value      = orxStructure_GetGUID(pstSender);
         orxCommand_PrintVar(acBuffer1, sizeof(acBuffer1), &stVar);
-        orxTrigger_Fire(pstRecipientTrigger, zEvent, azRefinementList, u32RefinementCount);
+        orxTrigger_Fire(pstRecipientTrigger, zEvent, azRefinementList, u32RefinementCount, orxNULL);
       }
 
       /* Fires part collide triggers */
@@ -5181,14 +5181,14 @@ static orxSTATUS orxFASTCALL orxObject_EventHandler(const orxEVENT *_pstEvent)
       {
         azRefinementList[0] = orxBody_GetPartName(pstPayload->pstSenderPart);
         azRefinementList[1] = orxBody_GetPartName(pstPayload->pstRecipientPart);
-        orxTrigger_Fire(pstSenderTrigger, zPartEvent, azRefinementList, u32RefinementCount);
+        orxTrigger_Fire(pstSenderTrigger, zPartEvent, azRefinementList, u32RefinementCount, orxNULL);
       }
 
       if(pstRecipientTrigger != orxNULL)
       {
         azRefinementList[0] = orxBody_GetPartName(pstPayload->pstRecipientPart);
         azRefinementList[1] = orxBody_GetPartName(pstPayload->pstSenderPart);
-        orxTrigger_Fire(pstRecipientTrigger, zPartEvent, azRefinementList, u32RefinementCount);
+        orxTrigger_Fire(pstRecipientTrigger, zPartEvent, azRefinementList, u32RefinementCount, orxNULL);
       }
     }
   }
@@ -7181,7 +7181,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
         {
           /* Fires it */
-          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_CREATE, orxNULL, 0);
+          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_CREATE, orxNULL, 0, orxNULL);
         }
 
         /* Should age? */
@@ -12028,7 +12028,7 @@ orxSTATUS orxFASTCALL orxObject_FireTrigger(orxOBJECT *_pstObject, const orxSTRI
     if(pstTrigger != orxNULL)
     {
       /* Fires it */
-      eResult = orxTrigger_Fire(pstTrigger, _zEvent, _azRefinementList, _u32Count);
+      eResult = orxTrigger_Fire(pstTrigger, _zEvent, _azRefinementList, _u32Count, orxNULL);
     }
   }
 
