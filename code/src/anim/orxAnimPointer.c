@@ -141,6 +141,7 @@ static orxINLINE void orxAnimPointer_DeleteAll()
     pstAnimPointer = orxANIMPOINTER(orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMPOINTER));
   }
 
+  /* Done! */
   return;
 }
 
@@ -227,7 +228,7 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
       fEventStartTime = _pstAnimPointer->fCurrentAnimTime;
 
       /* Updates Times */
-      _pstAnimPointer->fTime += _fDT * _pstAnimPointer->fFrequency;
+      _pstAnimPointer->fTime            += _fDT * _pstAnimPointer->fFrequency;
       _pstAnimPointer->fCurrentAnimTime += _fDT * _pstAnimPointer->fFrequency;
 
       do
@@ -450,6 +451,9 @@ static orxINLINE orxSTATUS orxAnimPointer_Compute(orxANIMPOINTER *_pstAnimPointe
     }
     else
     {
+      /* Resets active time */
+      _pstAnimPointer->fTime = orxFLOAT_0;
+
       /* Can't process */
       eResult = orxSTATUS_FAILURE;
     }
@@ -506,6 +510,7 @@ void orxFASTCALL orxAnimPointer_Setup()
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_ANIMSET);
   orxModule_AddDependency(orxMODULE_ID_ANIMPOINTER, orxMODULE_ID_ANIM);
 
+  /* Done! */
   return;
 }
 
@@ -565,9 +570,9 @@ void orxFASTCALL orxAnimPointer_Exit()
 
     /* Updates flags */
     sstAnimPointer.u32Flags &= ~orxANIMPOINTER_KU32_STATIC_FLAG_READY;
-
   }
 
+  /* Done! */
   return;
 }
 
@@ -953,6 +958,25 @@ orxSTRUCTURE *orxFASTCALL orxAnimPointer_GetCurrentAnimData(const orxANIMPOINTER
 
   /* Done! */
   return pstResult;
+}
+
+/** AnimPointer active time get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Active time
+ */
+orxFLOAT orxFASTCALL orxAnimPointer_GetActiveTime(const orxANIMPOINTER *_pstAnimPointer)
+{
+  orxFLOAT fResult = orxFLOAT_0;
+
+  /* Checks */
+  orxASSERT(sstAnimPointer.u32Flags & orxANIMPOINTER_KU32_STATIC_FLAG_READY);
+  orxSTRUCTURE_ASSERT(_pstAnimPointer);
+
+  /* Updates result */
+  fResult = _pstAnimPointer->fTime;
+
+  /* Done! */
+  return fResult;
 }
 
 /** AnimPointer time get accessor
