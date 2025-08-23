@@ -110,6 +110,7 @@ Functions</h2></td></tr>
 <tr class="memitem:ga2746ba0800227cf1f3b697fcb83e4cc8" id="r_ga2746ba0800227cf1f3b697fcb83e4cc8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="#ga5a51fa9e5426ebc4f09884a58d477f2c">orxANIMPOINTER</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga2746ba0800227cf1f3b697fcb83e4cc8">orxAnimPointer_CreateFromConfig</a> (const orxSTRING _zConfigID)</td></tr>
 <tr class="memitem:ga73ce77ce72cff853f189bf0d6043e278" id="r_ga73ce77ce72cff853f189bf0d6043e278"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_type.html#ga18b11c4d0ed79ac2f8542e3bcfac340d">orxSTATUS</a> orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga73ce77ce72cff853f189bf0d6043e278">orxAnimPointer_Delete</a> (<a class="el" href="#ga5a51fa9e5426ebc4f09884a58d477f2c">orxANIMPOINTER</a> *_pstAnimPointer)</td></tr>
 <tr class="memitem:gac065855483719cefe764c95013332d05" id="r_gac065855483719cefe764c95013332d05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> void orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gac065855483719cefe764c95013332d05">orxAnimPointer_Exit</a> ()</td></tr>
+<tr class="memitem:gacd1fe115aabdd3f516fcd31664037183" id="r_gacd1fe115aabdd3f516fcd31664037183"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#gacd1fe115aabdd3f516fcd31664037183">orxAnimPointer_GetActiveTime</a> (const <a class="el" href="#ga5a51fa9e5426ebc4f09884a58d477f2c">orxANIMPOINTER</a> *_pstAnimPointer)</td></tr>
 <tr class="memitem:ga1eaffbe947db6cbe7be0ab5faffe2044" id="r_ga1eaffbe947db6cbe7be0ab5faffe2044"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="group__orx_anim_set.html#ga1fcef34d290ca0c5de656a7a655e1deb">orxANIMSET</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga1eaffbe947db6cbe7be0ab5faffe2044">orxAnimPointer_GetAnimSet</a> (const <a class="el" href="#ga5a51fa9e5426ebc4f09884a58d477f2c">orxANIMPOINTER</a> *_pstAnimPointer)</td></tr>
 <tr class="memitem:ga7b6879ae5db8914d3888580be25ad1ad" id="r_ga7b6879ae5db8914d3888580be25ad1ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxU32 orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga7b6879ae5db8914d3888580be25ad1ad">orxAnimPointer_GetCurrentAnim</a> (const <a class="el" href="#ga5a51fa9e5426ebc4f09884a58d477f2c">orxANIMPOINTER</a> *_pstAnimPointer)</td></tr>
 <tr class="memitem:ga9ab34780703cfaea0bc7e820cebcee28" id="r_ga9ab34780703cfaea0bc7e820cebcee28"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> <a class="el" href="structorx_s_t_r_u_c_t_u_r_e.html">orxSTRUCTURE</a> *orxFASTCALL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ga9ab34780703cfaea0bc7e820cebcee28">orxAnimPointer_GetCurrentAnimData</a> (const <a class="el" href="#ga5a51fa9e5426ebc4f09884a58d477f2c">orxANIMPOINTER</a> *_pstAnimPointer)</td></tr>
@@ -268,6 +269,38 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Exits from the AnimPointer module </p>
+
+</div>
+</div>
+<a id="gacd1fe115aabdd3f516fcd31664037183" name="gacd1fe115aabdd3f516fcd31664037183"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gacd1fe115aabdd3f516fcd31664037183">&#9670;&#160;</a></span>orxAnimPointer_GetActiveTime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__orx_decl.html#gae6527efdaa8c25ec0ea370a9acb1c2ba">orxDLLAPI</a> orxFLOAT orxFASTCALL orxAnimPointer_GetActiveTime </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#ga5a51fa9e5426ebc4f09884a58d477f2c">orxANIMPOINTER</a> *</td>          <td class="paramname"><span class="paramname"><em>_pstAnimPointer</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel extern">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>AnimPointer active time get accessor </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">_pstAnimPointer</td><td>Concerned AnimPointer </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Active time </dd></dl>
 
 </div>
 </div>

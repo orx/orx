@@ -25,7 +25,7 @@ var group__orx_trigger =
     [ "orxTrigger_Delete", "group__orx_trigger.html#ga48fea4b7d3f3003c339a472526d44d2c", null ],
     [ "orxTrigger_Enable", "group__orx_trigger.html#ga5e3855dde15675f428a7ec1da5ae7b28", null ],
     [ "orxTrigger_Exit", "group__orx_trigger.html#gabab6f759f91de4ee7c5218eeda2577bd", null ],
-    [ "orxTrigger_Fire", "group__orx_trigger.html#ga0a070cfbfec1919b212b8fb604f3e41e", null ],
+    [ "orxTrigger_Fire", "group__orx_trigger.html#ga1be7af852c6c57dd4879585395d92580", null ],
     [ "orxTrigger_GetCount", "group__orx_trigger.html#gafcd961c40531c97b7c061169a659115b", null ],
     [ "orxTrigger_Init", "group__orx_trigger.html#ga9c7554bc9925411caa0adecd8dcac21d", null ],
     [ "orxTrigger_IsEnabled", "group__orx_trigger.html#gafea79fe170b9229bb77e76164844eb86", null ],

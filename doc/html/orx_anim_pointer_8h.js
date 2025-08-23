@@ -5,6 +5,7 @@ var orx_anim_pointer_8h =
     [ "orxAnimPointer_CreateFromConfig", "group__orx_anim_pointer.html#ga2746ba0800227cf1f3b697fcb83e4cc8", null ],
     [ "orxAnimPointer_Delete", "group__orx_anim_pointer.html#ga73ce77ce72cff853f189bf0d6043e278", null ],
     [ "orxAnimPointer_Exit", "group__orx_anim_pointer.html#gac065855483719cefe764c95013332d05", null ],
+    [ "orxAnimPointer_GetActiveTime", "group__orx_anim_pointer.html#gacd1fe115aabdd3f516fcd31664037183", null ],
     [ "orxAnimPointer_GetAnimSet", "group__orx_anim_pointer.html#ga1eaffbe947db6cbe7be0ab5faffe2044", null ],
     [ "orxAnimPointer_GetCurrentAnim", "group__orx_anim_pointer.html#ga7b6879ae5db8914d3888580be25ad1ad", null ],
     [ "orxAnimPointer_GetCurrentAnimData", "group__orx_anim_pointer.html#ga9ab34780703cfaea0bc7e820cebcee28", null ],
