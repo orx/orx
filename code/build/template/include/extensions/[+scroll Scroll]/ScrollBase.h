@@ -1742,31 +1742,31 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
   if(*zUnique != orxCHAR_NULL)
   {
     const orxSTRING zRemaining;
-    const orxSTRING zKey = orxNULL;
-    orxBOOL         bUnique;
+    const orxSTRING zSection = orxNULL;
+    orxBOOL         bUnique = orxFALSE;
 
-    /* Is a bool? */
-    if((orxString_ToBool(zUnique, &bUnique, &zRemaining) != orxSTATUS_FAILURE)
-    && (*zRemaining == orxCHAR_NULL))
+    /* Not a bool? */
+    if((orxString_ToBool(zUnique, &bUnique, &zRemaining) == orxSTATUS_FAILURE)
+    || (*zRemaining != orxCHAR_NULL))
     {
-      /* Unique? */
-      if(bUnique != orxFALSE)
-      {
-        /* Uses default ID key */
-        zKey = ScrollBase::szConfigScrollObjectID;
-      }
-    }
-    else
-    {
-      /* Uses it as key */
-      zKey = zUnique;
+      /* Uses it as section */
+      zSection  = zUnique;
+      bUnique   = orxTRUE;
+      orxConfig_PushSection(zSection);
     }
 
-    /* Has key? */
-    if(zKey != orxNULL)
+    /* Unique? */
+    if(bUnique != orxFALSE)
     {
       /* Stores its GUID */
-      orxConfig_SetString(zKey, poResult->GetInstanceName());
+      orxConfig_SetString(ScrollBase::szConfigScrollObjectID, poResult->GetInstanceName());
+
+      /* Was a section pushed? */
+      if(zSection != orxNULL)
+      {
+        /* Pops it */
+        orxConfig_PopSection();
+      }
     }
   }
 
