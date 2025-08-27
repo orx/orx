@@ -1745,26 +1745,26 @@ ScrollObject *ScrollObjectBinderBase::CreateObject(orxOBJECT *_pstObject)
     const orxSTRING zSection = orxNULL;
     orxBOOL         bUnique = orxFALSE;
 
-    /* Not a bool? */
+    // Not a bool?
     if((orxString_ToBool(zUnique, &bUnique, &zRemaining) == orxSTATUS_FAILURE)
     || (*zRemaining != orxCHAR_NULL))
     {
-      /* Uses it as section */
+      // Uses it as section
       zSection  = zUnique;
       bUnique   = orxTRUE;
       orxConfig_PushSection(zSection);
     }
 
-    /* Unique? */
+    // Unique?
     if(bUnique != orxFALSE)
     {
-      /* Stores its GUID */
+      // Stores its GUID
       orxConfig_SetString(ScrollBase::szConfigScrollObjectID, poResult->GetInstanceName());
 
-      /* Was a section pushed? */
+      // Was a section pushed?
       if(zSection != orxNULL)
       {
-        /* Pops it */
+        // Pops it
         orxConfig_PopSection();
       }
     }
