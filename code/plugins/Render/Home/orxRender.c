@@ -2729,7 +2729,7 @@ orxVECTOR *orxFASTCALL orxRender_Home_GetWorldPosition(const orxVECTOR *_pvScree
   orxASSERT(_pvWorldPosition != orxNULL);
 
   /* For all viewports */
-  for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT)), bLastViewport = orxTRUE, bFound = orxFALSE;
+  for(pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT)), bLastViewport = (_pstViewport == orxNULL) ? orxTRUE : orxFALSE, bFound = orxFALSE;
       pstViewport != orxNULL;
       pstViewport = orxVIEWPORT(orxStructure_GetPrevious(pstViewport)))
   {
