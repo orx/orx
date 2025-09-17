@@ -201,10 +201,10 @@ static orxBOOL orxFASTCALL orxTimeLine_Gather(const orxSTRING _zKeyName, const o
   && (fTime >= orxFLOAT_0))
   {
     orxU32 *pu32Index;
-    
+
     /* Gets index */
     pu32Index = (orxU32 *)_pContext;
-    
+
     /* Checks */
     orxASSERT(*pu32Index < orxTIMELINE_KU32_ENTRY_NUMBER);
 
@@ -212,7 +212,7 @@ static orxBOOL orxFASTCALL orxTimeLine_Gather(const orxSTRING _zKeyName, const o
     sstTimeLine.astEntryList[*pu32Index].zKey     = _zKeyName;
     sstTimeLine.astEntryList[*pu32Index].u32Count = (orxU32)orxConfig_GetListCount(_zKeyName);
     sstTimeLine.astEntryList[*pu32Index].fTime    = fTime;
-    
+
     /* Updates index */
     (*pu32Index)++;
   }
@@ -655,7 +655,7 @@ static orxSTATUS orxFASTCALL orxTimeLine_Update(orxSTRUCTURE *_pstStructure, con
               {
                 /* Updates status */
                 orxFLAG_SET(pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_NONE, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED);
-                
+
                 /* Sends event */
                 orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, _pstCaller, _pstCaller, &stPayload);
 
@@ -902,7 +902,7 @@ orxSTATUS orxFASTCALL orxTimeLine_Delete(orxTIMELINE *_pstTimeLine)
         {
           /* Updates status */
           orxFLAG_SET(_pstTimeLine->astTrackList[i].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_NONE, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED);
-          
+
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, pstOwner, pstOwner, &stPayload);
         }
@@ -1147,7 +1147,7 @@ orxSTATUS orxFASTCALL orxTimeLine_RemoveTrackFromConfig(orxTIMELINE *_pstTimeLin
         {
           /* Updates status */
           orxFLAG_SET(_pstTimeLine->astTrackList[u32Index].u32Flags, orxTIMELINE_HOLDER_KU32_FLAG_NONE, orxTIMELINE_HOLDER_KU32_FLAG_PLAYED);
-          
+
           /* Sends event */
           orxEVENT_SEND(orxEVENT_TYPE_TIMELINE, orxTIMELINE_EVENT_TRACK_STOP, pstOwner, pstOwner, &stPayload);
         }
