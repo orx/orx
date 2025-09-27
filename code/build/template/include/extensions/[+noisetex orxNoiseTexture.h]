@@ -137,7 +137,7 @@ static orxSTATUS orxFASTCALL orxNoiseTexture_EventHandler(const orxEVENT *_pstEv
       {
         su32PrefixLength = orxString_GetLength(orxNOISETEXTURE_KZ_RESOURCE_PREFIX);
       }
-      
+
       // Gets its name
       zName = orxTexture_GetName(pstTexture);
 
@@ -148,7 +148,7 @@ static orxSTATUS orxFASTCALL orxNoiseTexture_EventHandler(const orxEVENT *_pstEv
         if(orxConfig_GetOriginID(orxString_SkipWhiteSpaces(zName + su32PrefixLength)) == pstPayload->stNameID)
         {
           orxRESOURCE_EVENT_PAYLOAD stPayload;
-          
+
           // Triggers a texture update
           orxMemory_Zero(&stPayload, sizeof(orxRESOURCE_EVENT_PAYLOAD));
           stPayload.stGroupID = orxString_Hash(orxTEXTURE_KZ_RESOURCE_GROUP);
