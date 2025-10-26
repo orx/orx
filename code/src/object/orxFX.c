@@ -782,7 +782,6 @@ static orxINLINE orxFLOAT orxFX_GetCurveValue(const orxFX_SLOT *_pstFXSlot, orxF
                 : orx2F(0.5f) * (orxFLOAT_1 + orxFX_EaseOutBounce(orx2F(2.0f) * _fTime - orxFLOAT_1));
       break;
     }
-
   }
 
   /* Done! */
