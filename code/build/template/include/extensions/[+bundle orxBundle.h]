@@ -1744,6 +1744,9 @@ void orxFASTCALL orxBundle_Exit()
     // Updates status
     sstBundle.bInit = orxFALSE;
   }
+
+  // Done!
+  return;
 }
 
 orxBOOL orxFASTCALL orxBundle_IsProcessing()
