@@ -99,6 +99,7 @@
 #define orxGRAPHIC_KZ_CONFIG_BLEND_MODE       "BlendMode"
 #define orxGRAPHIC_KZ_CONFIG_STASIS           "Stasis"
 #define orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE    "KeepInCache"
+#define orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP     "Locale"
 
 
 /** Internal Graphic structure
