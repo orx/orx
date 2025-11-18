@@ -23,6 +23,7 @@ var group__orx_graphic =
     [ "orxGRAPHIC_KZ_CONFIG_HSL", "group__orx_graphic.html#gaf6439b9d2e87df98e374f6f6e02f957e", null ],
     [ "orxGRAPHIC_KZ_CONFIG_HSV", "group__orx_graphic.html#ga513ee74e32edbdb1d333567f2b1ee99f", null ],
     [ "orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE", "group__orx_graphic.html#ga786f05df02f7f09823f76ea3ced6b03b", null ],
+    [ "orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP", "group__orx_graphic.html#gaf4685b314d90f749e8488476c2a9c799", null ],
     [ "orxGRAPHIC_KZ_CONFIG_PIVOT", "group__orx_graphic.html#gac51073027b1fe5d005f6b5e93c40cc4f", null ],
     [ "orxGRAPHIC_KZ_CONFIG_REPEAT", "group__orx_graphic.html#gaca78cb05897fff45e3d01fd079537292", null ],
     [ "orxGRAPHIC_KZ_CONFIG_RGB", "group__orx_graphic.html#ga985b9d83a30813e64363ceaa6a0945e6", null ],
