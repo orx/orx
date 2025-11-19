@@ -100,7 +100,7 @@ Supported Platforms
 The engine compiles for, and is tested on:
 
 - Linux (x86/x86-64 with codelite, codeblocks and GNU makefile)
-- Windows (x86/x86-64 with vs2017, vs2019 & vs2022, x86/x86-64 mingw-w64 (14.2.0) with codelite, codeblocks and GNU makefile)
+- Windows (x86/x86-64 with vs2019, vs2022 & vs2026, x86/x86-64 mingw-w64 (14.2.0) with codelite, codeblocks and GNU makefile)
 - MacOS X (x86/x86-64 with xcode or x86/x86-64 with codelite, codeblocks and GNU makefile), version 10.6+
 - Web/HTML5 (Emscripten)
 - Android (Gradle build files, simulator & device)
