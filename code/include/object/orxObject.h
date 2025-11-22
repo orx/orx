@@ -135,8 +135,9 @@ extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Update(orxOBJECT *_pstObje
 /** Enables/disables an object. Note that enabling/disabling an object is not recursive, so its children will not be affected, see orxObject_EnableRecursive().
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bEnable      Enable / disable
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable);
 
 /** Enables/disables an object and all its owned children.
  * @param[in]   _pstObject    Concerned object
@@ -153,8 +154,9 @@ extern orxDLLAPI orxBOOL orxFASTCALL        orxObject_IsEnabled(const orxOBJECT 
 /** Pauses/unpauses an object. Note that pausing an object is not recursive, so its children will not be affected, see orxObject_PauseRecursive().
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bPause       Pause / unpause
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI void orxFASTCALL           orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause);
+extern orxDLLAPI orxSTATUS orxFASTCALL      orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause);
 
 /** Pauses/unpauses an object and its owned children.
  * @param[in]   _pstObject    Concerned object

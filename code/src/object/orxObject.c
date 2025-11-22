@@ -7630,9 +7630,12 @@ orxSTRUCTURE *orxFASTCALL _orxObject_GetStructure(const orxOBJECT *_pstObject, o
 /** Enables/disables an object. Note that enabling/disabling an object is not recursive, so its children will not be affected, see orxObject_EnableRecursive().
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bEnable      Enable / disable
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
+orxSTATUS orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
@@ -7643,41 +7646,50 @@ void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
     /* Wasn't enabled? */
     if(!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
     {
+      orxEVENT stEvent;
+
+      /* Inits event */
+      orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_ENABLE, _pstObject, orxNULL, orxNULL);
+
       /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_ENABLE, _pstObject, orxNULL, orxNULL);
+      eResult = orxEvent_Send(&stEvent);
 
-      /* Updates status flags */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_FLAG_NONE);
-
-      /* Isn't already part of the enable list? */
-      if(orxLinkList_GetList(&(_pstObject->stEnableNode)) == orxNULL)
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
       {
-        orxOBJECT_LISTS *pstGroupLists;
+        /* Updates status flags */
+        orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_FLAG_NONE);
 
-        /* Adds it to enable list */
-        orxLinkList_AddEnd(&(sstObject.stEnableList), &(_pstObject->stEnableNode));
-
-        /* Is cached group list? */
-        if(_pstObject->stGroupID == sstObject.stCachedGroupID)
+        /* Isn't already part of the enable list? */
+        if(orxLinkList_GetList(&(_pstObject->stEnableNode)) == orxNULL)
         {
-          /* Gets it */
-          pstGroupLists = sstObject.pstCachedGroupLists;
+          orxOBJECT_LISTS *pstGroupLists;
+
+          /* Adds it to enable list */
+          orxLinkList_AddEnd(&(sstObject.stEnableList), &(_pstObject->stEnableNode));
+
+          /* Is cached group list? */
+          if(_pstObject->stGroupID == sstObject.stCachedGroupID)
+          {
+            /* Gets it */
+            pstGroupLists = sstObject.pstCachedGroupLists;
+          }
+          else
+          {
+            /* Gets group list */
+            pstGroupLists = (orxOBJECT_LISTS *)orxHashTable_Get(sstObject.pstGroupTable, _pstObject->stGroupID);
+
+            /* Checks */
+            orxASSERT(pstGroupLists != orxNULL);
+
+            /* Caches it */
+            sstObject.pstCachedGroupLists = pstGroupLists;
+            sstObject.stCachedGroupID     = _pstObject->stGroupID;
+          }
+
+          /* Adds object to enable group list */
+          orxLinkList_AddEnd(&(pstGroupLists->stEnableList), &(_pstObject->stEnableGroupNode));
         }
-        else
-        {
-          /* Gets group list */
-          pstGroupLists = (orxOBJECT_LISTS *)orxHashTable_Get(sstObject.pstGroupTable, _pstObject->stGroupID);
-
-          /* Checks */
-          orxASSERT(pstGroupLists != orxNULL);
-
-          /* Caches it */
-          sstObject.pstCachedGroupLists = pstGroupLists;
-          sstObject.stCachedGroupID     = _pstObject->stGroupID;
-        }
-
-        /* Adds object to enable group list */
-        orxLinkList_AddEnd(&(pstGroupLists->stEnableList), &(_pstObject->stEnableGroupNode));
       }
     }
   }
@@ -7686,24 +7698,33 @@ void orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
     /* Was enabled? */
     if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
     {
+      orxEVENT stEvent;
+
+      /* Inits event */
+      orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_DISABLE, _pstObject, orxNULL, orxNULL);
+
       /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_DISABLE, _pstObject, orxNULL, orxNULL);
+      eResult = orxEvent_Send(&stEvent);
 
-      /* Updates status flags */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_ENABLED);
-
-      /* Isn't on death row? */
-      if(!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_DEATH_ROW))
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
       {
-        /* Removes it from enable lists */
-        orxLinkList_Remove(&(_pstObject->stEnableNode));
-        orxLinkList_Remove(&(_pstObject->stEnableGroupNode));
+        /* Updates status flags */
+        orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_ENABLED);
+
+        /* Isn't on death row? */
+        if(!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_DEATH_ROW))
+        {
+          /* Removes it from enable lists */
+          orxLinkList_Remove(&(_pstObject->stEnableNode));
+          orxLinkList_Remove(&(_pstObject->stEnableGroupNode));
+        }
       }
     }
   }
 
   /* Done! */
-  return;
+  return eResult;
 }
 
 /** Enables/disables an object and all its owned children.
@@ -7729,9 +7750,12 @@ orxBOOL orxFASTCALL orxObject_IsEnabled(const orxOBJECT *_pstObject)
 /** Pauses/unpauses an object. Note that pausing an object is not recursive, so its children will not be affected, see orxObject_PauseRecursive().
  * @param[in]   _pstObject    Concerned object
  * @param[in]   _bPause       Pause / unpause
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-void orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
+orxSTATUS orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
 {
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
@@ -7742,11 +7766,20 @@ void orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
     /* Wasn't paused? */
     if(!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_PAUSED))
     {
-      /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_PAUSE, _pstObject, orxNULL, orxNULL);
+      orxEVENT stEvent;
 
-      /* Updates status flags */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_PAUSED, orxOBJECT_KU32_FLAG_NONE);
+      /* Inits event */
+      orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_PAUSE, _pstObject, orxNULL, orxNULL);
+
+      /* Sends event */
+      eResult = orxEvent_Send(&stEvent);
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates status flags */
+        orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_PAUSED, orxOBJECT_KU32_FLAG_NONE);
+      }
     }
   }
   else
@@ -7754,16 +7787,25 @@ void orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
     /* Was paused? */
     if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_PAUSED))
     {
-      /* Sends event */
-      orxEVENT_SEND(orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_UNPAUSE, _pstObject, orxNULL, orxNULL);
+      orxEVENT stEvent;
 
-      /* Updates status flags */
-      orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_PAUSED);
+      /* Inits event */
+      orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_UNPAUSE, _pstObject, orxNULL, orxNULL);
+
+      /* Sends event */
+      eResult = orxEvent_Send(&stEvent);
+
+      /* Success? */
+      if(eResult != orxSTATUS_FAILURE)
+      {
+        /* Updates status flags */
+        orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_PAUSED);
+      }
     }
   }
 
   /* Done! */
-  return;
+  return eResult;
 }
 
 /** Pauses/unpauses an object and all its owned children.
