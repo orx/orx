@@ -595,7 +595,7 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
         {
           orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
         }
-        
+
         /* Adds color timer */
         orxClock_AddGlobalTimer(orxBounce_UpdateColor, orxConfig_GetFloat("ShaderColorTimer"), -1, orxNULL);
       }

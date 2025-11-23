@@ -84,6 +84,7 @@
 #define orxOBJECT_KU32_FLAG_ANIM_LIFETIME       0x00010000  /**< Anim lifetime flag */
 #define orxOBJECT_KU32_FLAG_INTERNAL_CAMERA     0x00008000  /**< Internal camera flag */
 #define orxOBJECT_KU32_FLAG_LOCAL_UPDATE        0x00004000  /**< Local update flag */
+#define orxOBJECT_KU32_FLAG_TEMP_ENABLED        0x00002000  /**< Temporary enabled flag */
 
 #define orxOBJECT_KU32_MASK_STRUCTURE_LIFETIME  0x003F0000  /**< Structure lifetime mask */
 #define orxOBJECT_KU32_MASK_STRUCTURE_INTERNAL  0x00000FFF  /**< Structure internal mask */
@@ -171,8 +172,12 @@
 #define orxOBJECT_KZ_TRIGGER_PART_COLLIDE       "PartCollide"
 #define orxOBJECT_KZ_TRIGGER_PART_SEPARATE      "PartSeparate"
 #define orxOBJECT_KZ_TRIGGER_ANIM               "Anim"
-#define orxOBJECT_KZ_CREATE                     "Create"
-#define orxOBJECT_KZ_DELETE                     "Delete"
+#define orxOBJECT_KZ_TRIGGER_CREATE             "Create"
+#define orxOBJECT_KZ_TRIGGER_DELETE             "Delete"
+#define orxOBJECT_KZ_TRIGGER_ENABLE             "Enable"
+#define orxOBJECT_KZ_TRIGGER_DISABLE            "Disable"
+#define orxOBJECT_KZ_TRIGGER_PAUSE              "Pause"
+#define orxOBJECT_KZ_TRIGGER_UNPAUSE            "Unpause"
 
 
 #define orxOBJECT_KZ_X                          "x"
@@ -4970,7 +4975,7 @@ static orxINLINE orxSTATUS orxObject_DeleteInternal(orxOBJECT *_pstObject, orxBO
         if(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
         {
           /* Fires it */
-          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_DELETE, orxNULL, 0, orxNULL);
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_TRIGGER_DELETE, orxNULL, 0, orxNULL);
         }
 
         /* Has frame? */
@@ -7281,7 +7286,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
         if(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
         {
           /* Fires it */
-          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_CREATE, orxNULL, 0, orxNULL);
+          orxTrigger_Fire(orxTRIGGER(pstResult->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_TRIGGER_CREATE, orxNULL, 0, orxNULL);
         }
 
         /* Should age? */
@@ -7643,6 +7648,9 @@ orxSTATUS orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
   /* Enable? */
   if(_bEnable != orxFALSE)
   {
+    /* Updates status flags */
+    orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_TEMP_ENABLED);
+
     /* Wasn't enabled? */
     if(!orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
     {
@@ -7690,6 +7698,13 @@ orxSTATUS orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
           /* Adds object to enable group list */
           orxLinkList_AddEnd(&(pstGroupLists->stEnableList), &(_pstObject->stEnableGroupNode));
         }
+
+        /* Has trigger? */
+        if(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
+        {
+          /* Fires it */
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_TRIGGER_ENABLE, orxNULL, 0, orxNULL);
+        }
       }
     }
   }
@@ -7698,10 +7713,14 @@ orxSTATUS orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
     /* Was enabled? */
     if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED))
     {
-      orxEVENT stEvent;
+      orxEVENT  stEvent;
+      orxBOOL   bIsTriggerEnabled;
 
       /* Inits event */
       orxEVENT_INIT(stEvent, orxEVENT_TYPE_OBJECT, orxOBJECT_EVENT_DISABLE, _pstObject, orxNULL, orxNULL);
+
+      /* Updates status */
+      bIsTriggerEnabled = (_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL) ? orxTrigger_IsEnabled(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER])) : orxFALSE;
 
       /* Sends event */
       eResult = orxEvent_Send(&stEvent);
@@ -7718,6 +7737,41 @@ orxSTATUS orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
           /* Removes it from enable lists */
           orxLinkList_Remove(&(_pstObject->stEnableNode));
           orxLinkList_Remove(&(_pstObject->stEnableGroupNode));
+        }
+
+        /* Had enabled trigger? */
+        if(bIsTriggerEnabled != orxFALSE)
+        {
+          /* Sets temporary flag */
+          orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_TEMP_ENABLED, orxOBJECT_KU32_FLAG_NONE);
+
+          /* Re-enables trigger (temporary) */
+          orxTrigger_Enable(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxTRUE);
+
+          /* Fires it */
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_TRIGGER_DISABLE, orxNULL, 0, orxNULL);
+
+          /* Still temporary? */
+          if(orxStructure_TestFlags(_pstObject, orxOBJECT_KU32_FLAG_TEMP_ENABLED))
+          {
+            /* Disables trigger */
+            orxTrigger_Enable(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxFALSE);
+
+            /* Clears temporary flag */
+            orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_TEMP_ENABLED);
+          }
+        }
+      }
+      else
+      {
+        /* Had enabled trigger? */
+        if(bIsTriggerEnabled != orxFALSE)
+        {
+          /* Updates status flags */
+          orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_ENABLED);
+
+          /* Re-enables it */
+          orxObject_Enable(_pstObject, orxTRUE);
         }
       }
     }
@@ -7779,6 +7833,13 @@ orxSTATUS orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
       {
         /* Updates status flags */
         orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_PAUSED, orxOBJECT_KU32_FLAG_NONE);
+
+        /* Has trigger? */
+        if(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
+        {
+          /* Fires it */
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_TRIGGER_PAUSE, orxNULL, 0, orxNULL);
+        }
       }
     }
   }
@@ -7800,6 +7861,13 @@ orxSTATUS orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
       {
         /* Updates status flags */
         orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_PAUSED);
+
+        /* Has trigger? */
+        if(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER] != orxNULL)
+        {
+          /* Fires it */
+          orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_TRIGGER_UNPAUSE, orxNULL, 0, orxNULL);
+        }
       }
     }
   }
