@@ -7706,6 +7706,14 @@ orxSTATUS orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
           orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_TRIGGER_ENABLE, orxNULL, 0, orxNULL);
         }
       }
+      else
+      {
+        /* Updates status flags */
+        orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_ENABLED, orxOBJECT_KU32_FLAG_NONE);
+
+        /* Re-disables it */
+        orxObject_Enable(_pstObject, orxFALSE);
+      }
     }
   }
   else
@@ -7764,15 +7772,11 @@ orxSTATUS orxFASTCALL orxObject_Enable(orxOBJECT *_pstObject, orxBOOL _bEnable)
       }
       else
       {
-        /* Had enabled trigger? */
-        if(bIsTriggerEnabled != orxFALSE)
-        {
-          /* Updates status flags */
-          orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_ENABLED);
+        /* Updates status flags */
+        orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_ENABLED);
 
-          /* Re-enables it */
-          orxObject_Enable(_pstObject, orxTRUE);
-        }
+        /* Re-enables it */
+        orxObject_Enable(_pstObject, orxTRUE);
       }
     }
   }
@@ -7841,6 +7845,14 @@ orxSTATUS orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
           orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_TRIGGER_PAUSE, orxNULL, 0, orxNULL);
         }
       }
+      else
+      {
+        /* Updates status flags */
+        orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_PAUSED, orxOBJECT_KU32_FLAG_NONE);
+
+        /* Re-unpauses it */
+        orxObject_Pause(_pstObject, orxFALSE);
+      }
     }
   }
   else
@@ -7868,6 +7880,14 @@ orxSTATUS orxFASTCALL orxObject_Pause(orxOBJECT *_pstObject, orxBOOL _bPause)
           /* Fires it */
           orxTrigger_Fire(orxTRIGGER(_pstObject->apstStructureList[orxSTRUCTURE_ID_TRIGGER]), orxOBJECT_KZ_TRIGGER_UNPAUSE, orxNULL, 0, orxNULL);
         }
+      }
+      else
+      {
+        /* Updates status flags */
+        orxStructure_SetFlags(_pstObject, orxOBJECT_KU32_FLAG_NONE, orxOBJECT_KU32_FLAG_PAUSED);
+
+        /* Re-pauses it */
+        orxObject_Pause(_pstObject, orxTRUE);
       }
     }
   }
