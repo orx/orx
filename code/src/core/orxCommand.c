@@ -2860,31 +2860,27 @@ void orxFASTCALL orxCommand_CommandGetStringLength(orxU32 _u32ArgNumber, const o
 /* Command: GetSubString */
 void orxFASTCALL orxCommand_CommandGetSubString(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxU32 u32Length, u32Start;
-  
+  orxS32 s32Length, s32Start, s32Stop;
+
   /* Get its length */
-  u32Length = orxString_GetLength(_astArgList[0].zValue);
-  
-  /* Gets its start */
-  if(_astArgList[1].s32Value >= 0)
+  s32Length = (orxS32)orxString_GetLength(_astArgList[0].zValue);
+
+  /* Gets its start index */
+  s32Start = (_astArgList[1].s32Value >= 0) ? orxMIN(s32Length, _astArgList[1].s32Value) : orxMAX(0, s32Length + _astArgList[1].s32Value);
+
+  /* Gets its stop index */
+  if((_u32ArgNumber > 2) && (_astArgList[2].s32Value != 0))
   {
-    u32Start = orxMIN(u32Length, (orxU32)_astArgList[1].s32Value);
+    s32Stop = (_astArgList[2].s32Value > 0) ? orxMIN(s32Length, _astArgList[2].s32Value) : orxMAX(0, s32Length + _astArgList[2].s32Value);
   }
   else
   {
-    u32Start = u32Length - orxMIN(u32Length, (orxU32)-_astArgList[1].s32Value);
+    s32Stop = s32Length;
   }
+  s32Length = orxMIN((orxS32)sizeof(sstCommand.acStringBuffer) - 1, s32Stop - s32Start);
 
-  /* Updates its length */
-  u32Length -= u32Start;
-  if((_u32ArgNumber > 2) && (_astArgList[2].u32Value != 0))
-  {
-    u32Length = orxMIN(_astArgList[2].u32Value, u32Length);
-  }
-  u32Length = orxMIN(sizeof(sstCommand.acStringBuffer) - 1, u32Length);
-  
   /* Updates result */
-  _pstResult->zValue = (u32Length > 0) ? sstCommand.acStringBuffer[u32Length] = orxCHAR_NULL, (orxSTRING)orxMemory_Copy(sstCommand.acStringBuffer, _astArgList[0].zValue + u32Start, u32Length) : orxSTRING_EMPTY;
+  _pstResult->zValue = (s32Length > 0) ? sstCommand.acStringBuffer[s32Length] = orxCHAR_NULL, (orxSTRING)orxMemory_Copy(sstCommand.acStringBuffer, _astArgList[0].zValue + s32Start, s32Length) : orxSTRING_EMPTY;
 
   /* Done! */
   return;
@@ -3232,7 +3228,7 @@ static orxINLINE void orxCommand_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetStringLength, "Length", orxCOMMAND_VAR_TYPE_U32, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Command: GetSubString */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetSubString, "SubString", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"String", orxCOMMAND_VAR_TYPE_STRING}, {"Start", orxCOMMAND_VAR_TYPE_S32}, {"Length = 0", orxCOMMAND_VAR_TYPE_U32});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetSubString, "SubString", orxCOMMAND_VAR_TYPE_STRING, 2, 1, {"String", orxCOMMAND_VAR_TYPE_STRING}, {"Start", orxCOMMAND_VAR_TYPE_S32}, {"Stop = 0", orxCOMMAND_VAR_TYPE_S32});
 
   /* Command: GetUpperCaseString */
   orxCOMMAND_REGISTER_CORE_COMMAND(Command, GetUpperCaseString, "String", orxCOMMAND_VAR_TYPE_STRING, 1, 0, {"String", orxCOMMAND_VAR_TYPE_STRING});
