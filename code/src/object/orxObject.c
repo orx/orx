@@ -558,8 +558,7 @@ void orxFASTCALL orxObject_CommandPick(orxU32 _u32ArgNumber, const orxCOMMAND_VA
  */
 void orxFASTCALL orxObject_CommandGetCount(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
-  orxU32      u32Count;
-  orxOBJECT  *pstObject;
+  orxU32 u32Count;
 
   /* No name? */
   if((_u32ArgNumber == 0) || (*_astArgList[0].zValue == orxCHAR_NULL))
@@ -578,6 +577,22 @@ void orxFASTCALL orxObject_CommandGetCount(orxU32 _u32ArgNumber, const orxCOMMAN
   }
   else
   {
+    const orxSTRING zCheckName;
+    orxBOOL         bCheckParents = orxFALSE;
+
+    /* Gets name */
+    zCheckName = _astArgList[0].zValue;
+
+    /* Inheritance marker? */
+    if(*zCheckName == orxOBJECT_KC_PATH_INHERITANCE)
+    {
+      /* Updates status */
+      bCheckParents = orxTRUE;
+
+      /* Updates name */
+      zCheckName++;
+    }
+
     /* Enabled only? */
     if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
     {
@@ -588,13 +603,19 @@ void orxFASTCALL orxObject_CommandGetCount(orxU32 _u32ArgNumber, const orxCOMMAN
           pstNode != orxNULL;
           pstNode = orxLinkList_GetNext(pstNode))
       {
-        orxOBJECT *pstObject;
+        const orxSTRING zObjectName;
+        orxOBJECT      *pstObject;
 
         /* Gets associated object */
         pstObject = orxSTRUCT_GET_FROM_FIELD(orxOBJECT, stEnableNode, pstNode);
 
+        /* Gets its name */
+        zObjectName = orxObject_GetName(pstObject);
+
         /* Match? */
-        if(orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0)
+        if((orxString_Compare(zObjectName, zCheckName) == 0)
+        || ((bCheckParents != orxFALSE)
+         && (orxConfig_GetParentDistance(zObjectName, zCheckName) > 0)))
         {
           /* Updates count */
           u32Count++;
@@ -603,13 +624,22 @@ void orxFASTCALL orxObject_CommandGetCount(orxU32 _u32ArgNumber, const orxCOMMAN
     }
     else
     {
+      orxOBJECT *pstObject;
+
       /* For all objects */
       for(pstObject = orxOBJECT(orxStructure_GetFirst(orxSTRUCTURE_ID_OBJECT)), u32Count = 0;
           pstObject != orxNULL;
           pstObject = orxOBJECT(orxStructure_GetNext(pstObject)))
       {
+        const orxSTRING zObjectName;
+
+        /* Gets its name */
+        zObjectName = orxObject_GetName(pstObject);
+
         /* Match? */
-        if(orxString_Compare(orxObject_GetName(pstObject), _astArgList[0].zValue) == 0)
+        if((orxString_Compare(zObjectName, zCheckName) == 0)
+        || ((bCheckParents != orxFALSE)
+         && (orxConfig_GetParentDistance(zObjectName, zCheckName) > 0)))
         {
           /* Updates count */
           u32Count++;
