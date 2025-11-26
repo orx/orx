@@ -5183,7 +5183,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       orxDISPLAY_EVENT_PAYLOAD stPayload;
       const orxSTRING zGlRenderer;
       const orxSTRING zGlVersion;
-      int32_t width, height;
+      int32_t iWidth, iHeight;
 
       /* Pushes display section */
       orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -5228,9 +5228,9 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
         return orxSTATUS_FAILURE;
       }
 
-      eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &width);
+      eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_WIDTH, &iWidth);
       eglASSERT();
-      eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &height);
+      eglQuerySurface(sstDisplay.display, sstDisplay.surface, EGL_HEIGHT, &iHeight);
       eglASSERT();
 
       zGlRenderer = (const orxSTRING) glGetString(GL_RENDERER);
@@ -5250,8 +5250,8 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       sstDisplay.pstScreen = (orxBITMAP *)orxBank_Allocate(sstDisplay.pstBitmapBank);
       orxMemory_Zero(sstDisplay.pstScreen, sizeof(orxBITMAP));
 
-      sstDisplay.pstScreen->fWidth = orxU2F(width);
-      sstDisplay.pstScreen->fHeight = orxU2F(height);
+      sstDisplay.pstScreen->fWidth = orxU2F(iWidth);
+      sstDisplay.pstScreen->fHeight = orxU2F(iHeight);
       sstDisplay.pstScreen->u32RealWidth = orxF2U(sstDisplay.pstScreen->fWidth);
       sstDisplay.pstScreen->u32RealHeight = orxF2U(sstDisplay.pstScreen->fHeight);
       sstDisplay.pstScreen->fRecRealWidth = orxFLOAT_1 / orxU2F(sstDisplay.pstScreen->u32RealWidth);

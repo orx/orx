@@ -1749,7 +1749,7 @@ static orxINLINE void orxDisplay_GLFW_InitExtensions()
       }
 
       /* Gets max texture unit number */
-      glGetIntegerv(GL_MAX_TEXTURE_COORDS, &(sstDisplay.iTextureUnitNumber));
+      glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &(sstDisplay.iTextureUnitNumber));
       sstDisplay.iTextureUnitNumber = orxMIN(sstDisplay.iTextureUnitNumber, orxDISPLAY_KU32_MAX_TEXTURE_UNIT_NUMBER);
       glASSERT();
 
