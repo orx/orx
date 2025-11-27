@@ -333,7 +333,7 @@ void orxFASTCALL orxJoystick_GLFW_Exit()
   if(sstJoystick.u32Flags & orxJOYSTICK_KU32_STATIC_FLAG_READY)
   {
     /* Unregisters update function */
-    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxJoystick_GLFW_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxJoystick_GLFW_Update, orxNULL);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstJoystick, sizeof(orxJOYSTICK_STATIC));

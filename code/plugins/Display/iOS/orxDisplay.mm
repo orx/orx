@@ -5149,7 +5149,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         }
 
         /* Unregisters update function */
-        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update);
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update, orxNULL);
 
         /* Updates result */
         eResult = orxSTATUS_FAILURE;
@@ -5175,7 +5175,7 @@ void orxFASTCALL orxDisplay_iOS_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, orxDisplay_iOS_EventHandler);
 
     /* Unregisters update function */
-    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update, orxNULL);
 
     /* Deletes default shaders */
     orxDisplay_DeleteShader(sstDisplay.pstDefaultShader);

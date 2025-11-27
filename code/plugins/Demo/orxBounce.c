@@ -636,10 +636,10 @@ static orxSTATUS orxFASTCALL orxBounce_EntryPoint(orxPLUGIN_ENTRY_MODE _eMode)
       pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
       /* Registers callback */
-      orxClock_Unregister(pstClock, &orxBounce_Update);
+      orxClock_Unregister(pstClock, &orxBounce_Update, orxNULL);
 
       /* Registers update trail timer */
-      orxClock_Unregister(pstClock, &orxBounce_UpdateTrail);
+      orxClock_Unregister(pstClock, &orxBounce_UpdateTrail, orxNULL);
 
       /* Removes event handlers */
       orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxBounce_EventHandler);

@@ -7099,7 +7099,7 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_FIRST_RESERVED, orxDisplay_GLFW_EventHandler);
 
     /* Unregisters update function */
-    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_GLFW_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_GLFW_Update, orxNULL);
 
     /* Deletes banks */
     orxBank_Delete(sstDisplay.pstBitmapBank);

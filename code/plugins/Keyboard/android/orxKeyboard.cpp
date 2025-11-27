@@ -366,7 +366,7 @@ extern "C" void orxFASTCALL orxKeyboard_Android_Exit()
     orxAndroid_SetKeyFilter(NULL);
 
     /* Unregisters filter state function */
-    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxKeyboard_Android_UpdateKeyFilterState);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxKeyboard_Android_UpdateKeyFilterState, orxNULL);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstKeyboard, sizeof(orxKEYBOARD_STATIC));

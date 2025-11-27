@@ -250,24 +250,10 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Register(orxCLOCK
 /** Unregisters a callback function from a clock
  * @param[in]   _pstClock                             Concerned clock
  * @param[in]   _pfnCallback                          Callback to remove
+ * @param[in]   _pContext                             Context of the callback to unregister, orxNULL for all matching callbacks
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback);
-
-/** Gets a callback function context
- * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _pfnCallback                          Concerned callback
- * @return      Registered context
- */
-extern orxDLLAPI void *orxFASTCALL                    orxClock_GetContext(const orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback);
-
-/** Sets a callback function context
- * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _pfnCallback                          Concerned callback
- * @param[in]   _pContext                             Context that will be transmitted to the callback when called
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pContext);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxClock_Unregister(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pContext);
 
 
 /** Gets clock given its name

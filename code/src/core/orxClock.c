@@ -174,37 +174,6 @@ static orxCLOCK_STATIC sstClock;
  * Private functions                                                       *
  ***************************************************************************/
 
-/** Finds a clock function storage
- * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _pfnCallback                          Concerned callback
- * @return      orxCLOCK_FUNCTION_STORAGE / orxNULL
- */
-static orxINLINE orxCLOCK_FUNCTION_STORAGE *orxClock_FindFunctionStorage(const orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback)
-{
-  orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstClock);
-  orxASSERT(_pfnCallback != orxNULL);
-
-  /* Finds matching function storage */
-  for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stFunctionList));
-      pstFunctionStorage != orxNULL;
-      pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode)))
-  {
-    /* Match? */
-    if(pstFunctionStorage->pfnCallback == _pfnCallback)
-    {
-      /* Found */
-      break;
-    }
-  }
-
-  /* Done! */
-  return pstFunctionStorage;
-}
-
 /** Event handler
  * @param[in]   _pstEvent                     Sent event
  * @return      orxSTATUS_SUCCESS if handled / orxSTATUS_FAILURE otherwise
@@ -1795,107 +1764,36 @@ orxSTATUS orxFASTCALL orxClock_Register(orxCLOCK *_pstClock, const orxCLOCK_FUNC
 
 /** Unregisters a callback function from a clock
  * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _fnCallback                           Callback to remove
+ * @param[in]   _pfnCallback                          Callback to remove
+ * @param[in]   _pContext                             Context of the callback to unregister, orxNULL for all matching callbacks
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback)
+orxSTATUS orxFASTCALL orxClock_Unregister(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pContext)
 {
-  orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
+  orxCLOCK_FUNCTION_STORAGE  *pstFunctionStorage;
+  orxSTATUS                   eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstClock);
   orxASSERT(_pfnCallback != orxNULL);
 
-  /* Finds clock function storage */
-  pstFunctionStorage = orxClock_FindFunctionStorage(_pstClock, _pfnCallback);
-
-  /* Found? */
-  if(pstFunctionStorage != orxNULL)
+  /* For all function storages */
+  for(pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetFirst(&(_pstClock->stFunctionList));
+      pstFunctionStorage != orxNULL;
+      pstFunctionStorage = (orxCLOCK_FUNCTION_STORAGE *)orxLinkList_GetNext(&(pstFunctionStorage->stNode)))
   {
-    /* Marks it for deletion */
-    pstFunctionStorage->pfnCallback = orxNULL;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't find clock function storage.");
+    /* Found? */
+    if((pstFunctionStorage->pfnCallback == _pfnCallback)
+    && ((_pContext == orxNULL)
+     || (_pContext == pstFunctionStorage->pContext)))
+    {
+      /* Marks it for deletion */
+      pstFunctionStorage->pfnCallback = orxNULL;
 
-    /* Not found */
-    eResult = orxSTATUS_FAILURE;
-  }
-
-  /* Done! */
-  return eResult;
-}
-
-/** Gets a callback function context
- * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _pfnCallback                          Concerned callback
- * @return      Registered context
- */
-void *orxFASTCALL orxClock_GetContext(const orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback)
-{
-  orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
-  void *pContext = orxNULL;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstClock);
-  orxASSERT(_pfnCallback != orxNULL);
-
-  /* Finds clock function storage */
-  pstFunctionStorage = orxClock_FindFunctionStorage(_pstClock, _pfnCallback);
-
-  /* Found? */
-  if(pstFunctionStorage != orxNULL)
-  {
-    /* Gets context */
-    pContext = pstFunctionStorage->pContext;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't find clock function storage.");
-  }
-
-  /* Done! */
-  return pContext;
-}
-
-/** Sets a callback function context
- * @param[in]   _pstClock                             Concerned clock
- * @param[in]   _pfnCallback                          Concerned callback
- * @param[in]   _pContext                             Context that will be transmitted to the callback when called
- * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
- */
-orxSTATUS orxFASTCALL orxClock_SetContext(orxCLOCK *_pstClock, const orxCLOCK_FUNCTION _pfnCallback, void *_pContext)
-{
-  orxCLOCK_FUNCTION_STORAGE *pstFunctionStorage;
-  orxSTATUS eResult = orxSTATUS_SUCCESS;
-
-  /* Checks */
-  orxASSERT(sstClock.u32Flags & orxCLOCK_KU32_STATIC_FLAG_READY);
-  orxSTRUCTURE_ASSERT(_pstClock);
-  orxASSERT(_pfnCallback != orxNULL);
-
-  /* Finds clock function storage */
-  pstFunctionStorage = orxClock_FindFunctionStorage(_pstClock, _pfnCallback);
-
-  /* Found? */
-  if(pstFunctionStorage != orxNULL)
-  {
-    /* Sets context */
-    pstFunctionStorage->pContext = _pContext;
-  }
-  else
-  {
-    /* Logs message */
-    orxDEBUG_PRINT(orxDEBUG_LEVEL_CLOCK, "Couldn't find clock function storage.");
-
-    /* Not found */
-    eResult = orxSTATUS_FAILURE;
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
   }
 
   /* Done! */

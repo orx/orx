@@ -3504,7 +3504,7 @@ void orxFASTCALL orxSoundSystem_MiniAudio_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_MiniAudio_EventHandler);
 
     /* Unregisters update callback */
-    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxSoundSystem_MiniAudio_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxSoundSystem_MiniAudio_Update, orxNULL);
 
     /* Stops any recording */
     orxSoundSystem_StopRecording();

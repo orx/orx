@@ -262,7 +262,7 @@ void orxFASTCALL orxMouse_Android_Exit()
     pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
     /* Unregisters clean function */
-    orxClock_Unregister(pstClock, orxMouse_Android_Clean);
+    orxClock_Unregister(pstClock, orxMouse_Android_Clean, orxNULL);
 
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxMouse_Android_EventHandler);

@@ -5716,7 +5716,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
                   orxHashTable_Delete(sstObject.pstGroupTable);
 
                   /* Unregisters from clock */
-                  orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+                  orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll, orxNULL);
 
                   /* Unregisters structure type */
                   orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
@@ -5736,7 +5736,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
                 orxBank_Delete(sstObject.pstAgeBank);
 
                 /* Unregisters from clock */
-                orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+                orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll, orxNULL);
 
                 /* Unregisters structure type */
                 orxStructure_Unregister(orxSTRUCTURE_ID_OBJECT);
@@ -5758,7 +5758,7 @@ orxSTATUS orxFASTCALL orxObject_Init()
               }
 
               /* Unregisters from clock */
-              orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+              orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll, orxNULL);
 
               /* Removes event handlers */
               orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxObject_EventHandler);
@@ -5834,7 +5834,7 @@ void orxFASTCALL orxObject_Exit()
     if(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_CLOCK)
     {
       /* Unregisters object update all function */
-      orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll);
+      orxClock_Unregister(sstObject.pstClock, orxObject_UpdateAll, orxNULL);
 
       /* Removes reference */
       sstObject.pstClock = orxNULL;

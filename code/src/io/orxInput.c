@@ -1665,7 +1665,7 @@ void orxFASTCALL orxInput_Exit()
     if(pstClock != orxNULL)
     {
       /* Unregisters from core clock */
-      orxClock_Unregister(pstClock, orxInput_Update);
+      orxClock_Unregister(pstClock, orxInput_Update, orxNULL);
     }
 
     /* Updates flags */

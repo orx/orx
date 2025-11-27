@@ -2684,8 +2684,8 @@ static orxSTATUS orxFASTCALL orxRender_Home_EventHandler(const orxEVENT *_pstEve
         /* Unregisters render & present functions */
         if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_REGISTERED))
         {
-          orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
-          orxClock_Unregister(sstRender.pstClock, orxRender_Home_Present);
+          orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll, orxNULL);
+          orxClock_Unregister(sstRender.pstClock, orxRender_Home_Present, orxNULL);
 
           /* Updates flags */
           sstRender.u32Flags &= ~orxRENDER_KU32_STATIC_FLAG_REGISTERED;
@@ -3084,7 +3084,7 @@ orxSTATUS orxFASTCALL orxRender_Home_Init()
           else
           {
             /* Unregisters render function */
-            orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
+            orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll, orxNULL);
 
             /* Logs message */
             orxDEBUG_PRINT(orxDEBUG_LEVEL_RENDER, "Can't register render clock callback.");
@@ -3151,8 +3151,8 @@ void orxFASTCALL orxRender_Home_Exit()
     /* Unregisters rendering function */
     if(orxFLAG_TEST(sstRender.u32Flags, orxRENDER_KU32_STATIC_FLAG_REGISTERED))
     {
-      orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll);
-      orxClock_Unregister(sstRender.pstClock, orxRender_Home_Present);
+      orxClock_Unregister(sstRender.pstClock, orxRender_Home_RenderAll, orxNULL);
+      orxClock_Unregister(sstRender.pstClock, orxRender_Home_Present, orxNULL);
     }
 
     /* Deletes conversion frame */

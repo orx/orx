@@ -447,7 +447,7 @@ void orxFASTCALL orxThread_Exit()
       if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
       {
         /* Unregisters it */
-        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxThread_NotifyTask);
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxThread_NotifyTask, orxNULL);
       }
     }
 

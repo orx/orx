@@ -195,7 +195,7 @@ void orxFASTCALL orxFPS_Exit()
   if(sstFPS.u32Flags & orxFPS_KU32_STATIC_FLAG_READY)
   {
     /* Removes callback */
-    orxClock_Unregister(sstFPS.pstClock, orxFPS_Update);
+    orxClock_Unregister(sstFPS.pstClock, orxFPS_Update, orxNULL);
 
     /* Deletes clock */
     orxClock_Delete(sstFPS.pstClock);

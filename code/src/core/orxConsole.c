@@ -1377,7 +1377,7 @@ void orxFASTCALL orxConsole_Exit()
     orxConsole_SetFont(orxNULL);
 
     /* Unregisters update callback */
-    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxConsole_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxConsole_Update, orxNULL);
 
     /* Remove event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_INPUT, orxConsole_EventHandler);

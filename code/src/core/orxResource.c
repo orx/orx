@@ -1717,13 +1717,13 @@ void orxFASTCALL orxResource_Exit()
     if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
     {
       /* Unregisters request notification callback */
-      orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_NotifyRequest);
+      orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_NotifyRequest, orxNULL);
 
       /* Has watch callback? */
       if(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED))
       {
         /* Registers watch callbacks */
-        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_Watch);
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_Watch, orxNULL);
       }
     }
 
