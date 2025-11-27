@@ -49,7 +49,6 @@ var group__orx_clock =
     [ "orxClock_Delete", "group__orx_clock.html#ga93f8fe8c1e9aa8d220c1513d280f20ba", null ],
     [ "orxClock_Exit", "group__orx_clock.html#ga78eec70b53edef4982d4b69370934a49", null ],
     [ "orxClock_Get", "group__orx_clock.html#ga74a56e8135b72e030994cf866415a83f", null ],
-    [ "orxClock_GetContext", "group__orx_clock.html#ga146df683031360c32d71758fcd6fd876", null ],
     [ "orxClock_GetFromInfo", "group__orx_clock.html#ga33f998eb259798c7dc8fa316c8bc4baf", null ],
     [ "orxClock_GetInfo", "group__orx_clock.html#gaa3ec42fcb8c16e0cc4a2cd49cad6da78", null ],
     [ "orxClock_GetModifier", "group__orx_clock.html#ga06a40ba8124b21fe3bd237e12b85a105", null ],
@@ -63,10 +62,9 @@ var group__orx_clock =
     [ "orxClock_Restart", "group__orx_clock.html#gab38bde2b21dca84dd29ef4c60531edb9", null ],
     [ "orxClock_Resync", "group__orx_clock.html#ga646ec2e3a995507a81f71e7ee602458e", null ],
     [ "orxClock_ResyncAll", "group__orx_clock.html#gaffde552ec5eb3e198164e15a5f651c6a", null ],
-    [ "orxClock_SetContext", "group__orx_clock.html#ga353fa74ddcf06236de1c099dc5aeebd6", null ],
     [ "orxClock_SetModifier", "group__orx_clock.html#gabac353a9ef584ddd641986b1871ecbc7", null ],
     [ "orxClock_SetTickSize", "group__orx_clock.html#gaae909eff9a38f2e9c136f368d225f2be", null ],
     [ "orxClock_Setup", "group__orx_clock.html#gaf96e5f8bbc774b945ee16858f59a7715", null ],
-    [ "orxClock_Unregister", "group__orx_clock.html#gaeb933c20c95d9c8a42a9afb40312f3b5", null ],
+    [ "orxClock_Unregister", "group__orx_clock.html#gaed90d9e9d336d7a43c4e680f67737a05", null ],
     [ "orxClock_Update", "group__orx_clock.html#gac6daebe5994b3120859ef148b1eda1f4", null ]
 ];
