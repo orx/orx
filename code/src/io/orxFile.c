@@ -263,8 +263,8 @@ orxSTATUS orxFASTCALL orxFile_Init()
 
   EM_ASM({
     /* Mounts application save directory with IDBFS */
-    FS.mkdir(orxFILE_KZ_APPLICATION_FOLDER);
-    FS.mount(IDBFS, {autoPersist: true}, orxFILE_KZ_APPLICATION_FOLDER);
+    FS.mkdir('/save');
+    FS.mount(IDBFS, {autoPersist: true}, '/save');
     FS.syncfs(true, function(error)
     {
       if(error)
