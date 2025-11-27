@@ -237,7 +237,7 @@ jobs:
           ${{matrix.make}} config=release64 CFLAGS=-D__orxHEADLESS__
           emmake make config=${{matrix.config}}web
       - name: Create project
-        run: ./${{matrix.init}} test +bundle +cheat +imgui +inspector +mod +movie +noisetex +nuklear +remote +scroll +sndh
+        run: ./${{matrix.init}} test +bundle +cheat +mod +movie +noisetex +scroll +sndh
       - name: Build project
         working-directory: test/build/${{matrix.os}}/gmake
         run: |
