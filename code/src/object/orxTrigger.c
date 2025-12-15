@@ -1149,7 +1149,7 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
       /* For all sets */
       for(u32SetIndex = 0; u32SetIndex < orxTRIGGER_KU32_SET_NUMBER; u32SetIndex++)
       {
-        const orxTRIGGER_SET *pstSet;
+        orxTRIGGER_SET *pstSet;
 
         /* Gets it */
         pstSet = _pstTrigger->pastSetList[u32SetIndex];
@@ -1158,6 +1158,9 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
         if(pstSet != orxNULL)
         {
           orxU32 u32EventIndex;
+
+          /* Keeps set around during handling */
+          pstSet->u32RefCount++;
 
           /* For all its events */
           for(u32EventIndex = 0; u32EventIndex < pstSet->u32EventCount; u32EventIndex++)
@@ -1183,6 +1186,9 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
               eResult = orxSTATUS_SUCCESS;
             }
           }
+
+          /* Cleans up set if necessary */
+          orxTrigger_DeleteSet(pstSet);
         }
       }
     }
