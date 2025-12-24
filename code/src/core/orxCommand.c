@@ -652,6 +652,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 orxCHAR        *pc;
                 const orxSTRING zVariable;
                 orxCHAR         acNameBuffer[orxCOMMAND_KU32_NAME_BUFFER_SIZE];
+                orxU32          u32Length;
                 orxBOOL         bStop, bUseStringMarker = orxFALSE;
 
                 /* Skips white spaces */
@@ -771,11 +772,18 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                   } while(*pc != orxCHAR_NULL);
                 }
 
-                /* Replaces marker with variable */
-                orxString_NCopy(pcDst, zVariable, orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1 - (orxU32)(pcDst - sstCommand.acProcessBuffer));
+                /* Gets its length */
+                u32Length = orxString_GetLength(zVariable);
 
-                /* Updates pointers */
-                pcDst += orxString_GetLength(zVariable);
+                /* Has room? */
+                if(pcDst - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1 - u32Length)
+                {
+                  /* Moves it (buffers can overlap if variable used a lazy command) */
+                  orxMemory_Move(pcDst, zVariable, u32Length);
+
+                  /* Updates pointer */
+                  pcDst += u32Length;
+                }
 
                 /* Should add string marker */
                 if(bUseStringMarker != orxFALSE)
