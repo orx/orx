@@ -858,6 +858,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 
                   default:
                   {
+                    /* Prints variable */
                     orxCommand_PrintVar(acValue, sizeof(acValue), &(pstEntry->stValue));
 
                     break;
@@ -947,7 +948,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               /* Toggles block status */
               bInBlock = !bInBlock;
 
-              /* Fall through */
+              /* Falls through */
             }
 
             default:
