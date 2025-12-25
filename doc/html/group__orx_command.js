@@ -20,6 +20,7 @@ var group__orx_command =
     [ "orxCOMMAND_KC_POP_MARKER", "group__orx_command.html#ga60c786fa94c5424535729225e179e461", null ],
     [ "orxCOMMAND_KC_PUSH_MARKER", "group__orx_command.html#gadb0af06c186fe8f43c91dfe79c7457ea", null ],
     [ "orxCOMMAND_KC_SEPARATOR", "group__orx_command.html#gae21279b919e0fe0e6f67d1c81aecb2fb", null ],
+    [ "orxCOMMAND_KC_VARIABLE_MARKER", "group__orx_command.html#ga5d23b4d7978007e083e89ca93db73153", null ],
     [ "orxCOMMAND_REGISTER", "group__orx_command.html#ga935f31bc5ac069311c1952f4b1ccd9e3", null ],
     [ "orxCOMMAND_REGISTER_CORE_COMMAND", "group__orx_command.html#gae7f3d3d0a7f5c664ec6f01c24e3ddef2", null ],
     [ "orxCOMMAND_UNREGISTER", "group__orx_command.html#ga9715912ade87ce7dc4b65d0da2ac4729", null ],

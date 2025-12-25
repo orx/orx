@@ -137,147 +137,148 @@ $(function(){initNavTree('orx_command_8h_source.html','',''); });
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="group__orx_command.html#gadb0af06c186fe8f43c91dfe79c7457ea">   51</a></span><span class="preprocessor">#define orxCOMMAND_KC_PUSH_MARKER                     &#39;&gt;&#39;                             /**&lt; Push marker character */</span></div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga60c786fa94c5424535729225e179e461">   52</a></span><span class="preprocessor">#define orxCOMMAND_KC_POP_MARKER                      &#39;&lt;&#39;                             /**&lt; Pop marker character */</span></div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga06e2ee5b7a6db9f957f73c64c1482e21">   53</a></span><span class="preprocessor">#define orxCOMMAND_KC_GUID_MARKER                     &#39;^&#39;                             /**&lt; GUID marker character */</span></div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="group__orx_command.html#gae21279b919e0fe0e6f67d1c81aecb2fb">   54</a></span><span class="preprocessor">#define orxCOMMAND_KC_SEPARATOR                       &#39;,&#39;                             /**&lt; Command separator character */</span></div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor"></span> </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="preprocessor"></span></div>
-<div class="foldopen" id="foldopen00059" data-start="{" data-end="};">
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">   59</a></span>typedef enum __orxCOMMAND_VAR_TYPE_t</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>{</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa249db3b298de9a79a7221af42d24fbb9">   61</a></span>  orxCOMMAND_VAR_TYPE_STRING = 0,</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6110c62e084dcf5044efd852c70e3495">   62</a></span>  orxCOMMAND_VAR_TYPE_FLOAT,</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa7032245cee77178daabef35aaa243d3b">   63</a></span>  orxCOMMAND_VAR_TYPE_S32,</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa0c8e1a4a4a625966d8172dc5ac115c2e">   64</a></span>  orxCOMMAND_VAR_TYPE_U32,</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaba98520951947b732121be6c049d087d">   65</a></span>  orxCOMMAND_VAR_TYPE_S64,</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa644f191c43ef19027ee4a9c3992c2aad">   66</a></span>  orxCOMMAND_VAR_TYPE_U64,</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6b2ebbbe2282170dc8a5f7334cea048d">   67</a></span>  orxCOMMAND_VAR_TYPE_BOOL,</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa10eed973578079ec84783a5da0a0a2ec">   68</a></span>  orxCOMMAND_VAR_TYPE_VECTOR,</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaad2024e198512224bd2616375114fe38">   69</a></span>  orxCOMMAND_VAR_TYPE_NUMERIC,</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a">   71</a></span>  orxCOMMAND_VAR_TYPE_NUMBER,</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769">   73</a></span>  orxCOMMAND_VAR_TYPE_NONE = orxENUM_NONE</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>} orxCOMMAND_VAR_TYPE;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga5d23b4d7978007e083e89ca93db73153">   54</a></span><span class="preprocessor">#define orxCOMMAND_KC_VARIABLE_MARKER                 &#39;&amp;&#39;                             /**&lt; Variable marker character */</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="group__orx_command.html#gae21279b919e0fe0e6f67d1c81aecb2fb">   55</a></span><span class="preprocessor">#define orxCOMMAND_KC_SEPARATOR                       &#39;,&#39;                             /**&lt; Command separator character */</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="preprocessor"></span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="preprocessor"></span></div>
+<div class="foldopen" id="foldopen00060" data-start="{" data-end="};">
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga579c8c869f7eaf4fda8655892ea734aa">   60</a></span>typedef enum __orxCOMMAND_VAR_TYPE_t</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>{</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa249db3b298de9a79a7221af42d24fbb9">   62</a></span>  orxCOMMAND_VAR_TYPE_STRING = 0,</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6110c62e084dcf5044efd852c70e3495">   63</a></span>  orxCOMMAND_VAR_TYPE_FLOAT,</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa7032245cee77178daabef35aaa243d3b">   64</a></span>  orxCOMMAND_VAR_TYPE_S32,</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa0c8e1a4a4a625966d8172dc5ac115c2e">   65</a></span>  orxCOMMAND_VAR_TYPE_U32,</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaba98520951947b732121be6c049d087d">   66</a></span>  orxCOMMAND_VAR_TYPE_S64,</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa644f191c43ef19027ee4a9c3992c2aad">   67</a></span>  orxCOMMAND_VAR_TYPE_U64,</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa6b2ebbbe2282170dc8a5f7334cea048d">   68</a></span>  orxCOMMAND_VAR_TYPE_BOOL,</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa10eed973578079ec84783a5da0a0a2ec">   69</a></span>  orxCOMMAND_VAR_TYPE_VECTOR,</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaaad2024e198512224bd2616375114fe38">   70</a></span>  orxCOMMAND_VAR_TYPE_NUMERIC,</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa137819583a5175def3b3c7d93a7dbe0a">   72</a></span>  orxCOMMAND_VAR_TYPE_NUMBER,</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="group__orx_command.html#gga579c8c869f7eaf4fda8655892ea734aaa9bc505fface9f5060e878b34bb1c8769">   74</a></span>  orxCOMMAND_VAR_TYPE_NONE = orxENUM_NONE</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>} orxCOMMAND_VAR_TYPE;</div>
 </div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span></div>
-<div class="foldopen" id="foldopen00080" data-start="{" data-end="};">
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">   80</a></span>typedef struct __orxCOMMAND_VAR_DEF_t</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>{</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a93fb44fe34843a291e81335e4d6deb79">   82</a></span>  const orxSTRING       zName;                        /**&lt; Name : 4 */</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a36ebb1d1ecbc9f9f15711dbd6f06a0d7">   83</a></span>  orxCOMMAND_VAR_TYPE   eType;                        /**&lt; Type : 8 */</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>} orxCOMMAND_VAR_DEF;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span></div>
+<div class="foldopen" id="foldopen00081" data-start="{" data-end="};">
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html">   81</a></span>typedef struct __orxCOMMAND_VAR_DEF_t</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>{</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a93fb44fe34843a291e81335e4d6deb79">   83</a></span>  const orxSTRING       zName;                        /**&lt; Name : 4 */</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r___d_e_f.html#a36ebb1d1ecbc9f9f15711dbd6f06a0d7">   84</a></span>  orxCOMMAND_VAR_TYPE   eType;                        /**&lt; Type : 8 */</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>} orxCOMMAND_VAR_DEF;</div>
 </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span></div>
-<div class="foldopen" id="foldopen00088" data-start="{" data-end="};">
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html">   88</a></span>typedef struct __orxCOMMAND_VAR_t</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>{</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>  union</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>  {</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab5c41c5088ea9cf53469f33a40580807">   92</a></span>    orxVECTOR           vValue;                       /**&lt; Vector value : 12 */</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa84a7bd3fabe84c924a25aee2294b1c6">   93</a></span>    const orxSTRING     zValue;                       /**&lt; String value : 4 */</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa3f262be8564fbd13b83719ef4436013">   94</a></span>    orxU32              u32Value;                     /**&lt; U32 value : 4 */</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a479391431873b09733eab494b303889d">   95</a></span>    orxS32              s32Value;                     /**&lt; S32 value : 4 */</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a390ef0332b7b6c49ce7cf07198422fca">   96</a></span>    orxU64              u64Value;                     /**&lt; U64 value : 8 */</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab176f0bd538cb9f127ec569bc9f2c1dc">   97</a></span>    orxS64              s64Value;                     /**&lt; S64 value : 8 */</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a0def766fe232de5e5c86bf27c2621031">   98</a></span>    orxFLOAT            fValue;                       /**&lt; Float value : 4 */</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa95a0ef1203b289500738649787bcc05">   99</a></span>    orxBOOL             bValue;                       /**&lt; Bool value : 4 */</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>  };</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aabf0a2589ea619ac0edd2ffaf6e87d31">  102</a></span>  orxCOMMAND_VAR_TYPE   eType;                        /**&lt; Type : 16 */</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>} orxCOMMAND_VAR;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span></div>
+<div class="foldopen" id="foldopen00089" data-start="{" data-end="};">
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html">   89</a></span>typedef struct __orxCOMMAND_VAR_t</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>{</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>  union</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>  {</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab5c41c5088ea9cf53469f33a40580807">   93</a></span>    orxVECTOR           vValue;                       /**&lt; Vector value : 12 */</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa84a7bd3fabe84c924a25aee2294b1c6">   94</a></span>    const orxSTRING     zValue;                       /**&lt; String value : 4 */</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa3f262be8564fbd13b83719ef4436013">   95</a></span>    orxU32              u32Value;                     /**&lt; U32 value : 4 */</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a479391431873b09733eab494b303889d">   96</a></span>    orxS32              s32Value;                     /**&lt; S32 value : 4 */</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a390ef0332b7b6c49ce7cf07198422fca">   97</a></span>    orxU64              u64Value;                     /**&lt; U64 value : 8 */</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#ab176f0bd538cb9f127ec569bc9f2c1dc">   98</a></span>    orxS64              s64Value;                     /**&lt; S64 value : 8 */</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#a0def766fe232de5e5c86bf27c2621031">   99</a></span>    orxFLOAT            fValue;                       /**&lt; Float value : 4 */</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aa95a0ef1203b289500738649787bcc05">  100</a></span>    orxBOOL             bValue;                       /**&lt; Bool value : 4 */</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>  };</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="structorx_c_o_m_m_a_n_d___v_a_r.html#aabf0a2589ea619ac0edd2ffaf6e87d31">  103</a></span>  orxCOMMAND_VAR_TYPE   eType;                        /**&lt; Type : 16 */</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>} orxCOMMAND_VAR;</div>
 </div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span></div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="group__orx_command.html#gae902a012bb44dd4c6a38f7214ff851e0">  107</a></span>typedef void (orxFASTCALL *orxCOMMAND_FUNCTION)(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span></div>
-<div class="foldopen" id="foldopen00112" data-start="" data-end="">
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="group__orx_command.html#gae7f3d3d0a7f5c664ec6f01c24e3ddef2">  112</a></span>#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                    \</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>do                                                                                                                                                              \</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>{                                                                                                                                                               \</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>  orxCOMMAND_VAR_DEF  stResult;                                                                                                                                 \</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {{&quot;Dummy&quot;, orxCOMMAND_VAR_TYPE_NONE}, __VA_ARGS__};                               \</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>  orxSTATUS           eStatus;                                                                                                                                  \</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>  stResult.eType    = RESULT_TYPE;                                                                                                                              \</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>  stResult.zName    = RESULT_NAME;                                                                                                                              \</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>  eStatus           = orxCommand_Register(#MODULE&quot;.&quot;#COMMAND, &amp;orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &amp;astParamList[1], &amp;stResult);\</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                      \</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>} while(orxFALSE)</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="group__orx_command.html#gae902a012bb44dd4c6a38f7214ff851e0">  108</a></span>typedef void (orxFASTCALL *orxCOMMAND_FUNCTION)(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span></div>
+<div class="foldopen" id="foldopen00113" data-start="" data-end="">
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno"><a class="line" href="group__orx_command.html#gae7f3d3d0a7f5c664ec6f01c24e3ddef2">  113</a></span>#define orxCOMMAND_REGISTER_CORE_COMMAND(MODULE, COMMAND, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                    \</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>do                                                                                                                                                              \</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>{                                                                                                                                                               \</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>  orxCOMMAND_VAR_DEF  stResult;                                                                                                                                 \</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {{&quot;Dummy&quot;, orxCOMMAND_VAR_TYPE_NONE}, __VA_ARGS__};                               \</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>  orxSTATUS           eStatus;                                                                                                                                  \</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>  stResult.eType    = RESULT_TYPE;                                                                                                                              \</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>  stResult.zName    = RESULT_NAME;                                                                                                                              \</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>  eStatus           = orxCommand_Register(#MODULE&quot;.&quot;#COMMAND, &amp;orx##MODULE##_Command##COMMAND, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &amp;astParamList[1], &amp;stResult);\</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                      \</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>} while(orxFALSE)</div>
 </div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
-<div class="foldopen" id="foldopen00124" data-start="" data-end="">
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno"><a class="line" href="group__orx_command.html#gac5f19d9731fa026b64528d186415fe67">  124</a></span>#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                                                     \</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>do                                                                                                                                                              \</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>{                                                                                                                                                               \</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>  orxCommand_Unregister(#MODULE&quot;.&quot;#COMMAND);                                                                                                                    \</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>} while(orxFALSE)</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span> </div>
+<div class="foldopen" id="foldopen00125" data-start="" data-end="">
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno"><a class="line" href="group__orx_command.html#gac5f19d9731fa026b64528d186415fe67">  125</a></span>#define orxCOMMAND_UNREGISTER_CORE_COMMAND(MODULE, COMMAND)                                                                                                     \</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>do                                                                                                                                                              \</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>{                                                                                                                                                               \</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>  orxCommand_Unregister(#MODULE&quot;.&quot;#COMMAND);                                                                                                                    \</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>} while(orxFALSE)</div>
 </div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="foldopen" id="foldopen00130" data-start="" data-end="">
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga935f31bc5ac069311c1952f4b1ccd9e3">  130</a></span>#define orxCOMMAND_REGISTER(NAME, FUNCTION, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                                  \</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>do                                                                                                                                                              \</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>{                                                                                                                                                               \</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>  orxCOMMAND_VAR_DEF  stResult;                                                                                                                                 \</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {{&quot;Dummy&quot;, orxCOMMAND_VAR_TYPE_NONE}, __VA_ARGS__};                               \</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>  orxSTATUS           eStatus;                                                                                                                                  \</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>  stResult.eType    = RESULT_TYPE;                                                                                                                              \</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>  stResult.zName    = RESULT_NAME;                                                                                                                              \</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>  eStatus           = orxCommand_Register(NAME, &amp;FUNCTION, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &amp;astParamList[1], &amp;stResult);                                    \</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                      \</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>} while(orxFALSE)</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="foldopen" id="foldopen00131" data-start="" data-end="">
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga935f31bc5ac069311c1952f4b1ccd9e3">  131</a></span>#define orxCOMMAND_REGISTER(NAME, FUNCTION, RESULT_NAME, RESULT_TYPE, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, ...)                                                  \</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>do                                                                                                                                                              \</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>{                                                                                                                                                               \</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>  orxCOMMAND_VAR_DEF  stResult;                                                                                                                                 \</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>  orxCOMMAND_VAR_DEF  astParamList[REQ_PARAM_NUMBER + OPT_PARAM_NUMBER + 1] = {{&quot;Dummy&quot;, orxCOMMAND_VAR_TYPE_NONE}, __VA_ARGS__};                               \</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>  orxSTATUS           eStatus;                                                                                                                                  \</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>  stResult.eType    = RESULT_TYPE;                                                                                                                              \</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>  stResult.zName    = RESULT_NAME;                                                                                                                              \</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>  eStatus           = orxCommand_Register(NAME, &amp;FUNCTION, REQ_PARAM_NUMBER, OPT_PARAM_NUMBER, &amp;astParamList[1], &amp;stResult);                                    \</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>  orxASSERT(eStatus != orxSTATUS_FAILURE);                                                                                                                      \</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>} while(orxFALSE)</div>
 </div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span> </div>
-<div class="foldopen" id="foldopen00142" data-start="" data-end="">
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga9715912ade87ce7dc4b65d0da2ac4729">  142</a></span>#define orxCOMMAND_UNREGISTER(NAME)                                                                                                                             \</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>do                                                                                                                                                              \</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>{                                                                                                                                                               \</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>  orxCommand_Unregister(NAME);                                                                                                                                  \</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>} while(orxFALSE)</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span> </div>
+<div class="foldopen" id="foldopen00143" data-start="" data-end="">
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga9715912ade87ce7dc4b65d0da2ac4729">  143</a></span>#define orxCOMMAND_UNREGISTER(NAME)                                                                                                                             \</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>do                                                                                                                                                              \</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>{                                                                                                                                                               \</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>  orxCommand_Unregister(NAME);                                                                                                                                  \</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>} while(orxFALSE)</div>
 </div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span> </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span></div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga74927728d29562dce492a1c305a470ad">  151</a></span>extern orxDLLAPI void orxFASTCALL                     orxCommand_Setup();</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span></div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga8ae0806b0de227375bb09eba3f9dd5bc">  156</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Init();</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span></div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga27af115986358699ec978008aeca8455">  160</a></span>extern orxDLLAPI void orxFASTCALL                     orxCommand_Exit();</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span></div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno"><a class="line" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">  172</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_FUNCTION _pfnFunction, orxU32 _u32RequiredParamNumber, orxU32 _u32OptionalParamNumber, const orxCOMMAND_VAR_DEF *_astParamList, const orxCOMMAND_VAR_DEF *_pstResult);</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span></div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga055a5c596254264c5a4e7e5286a24c26">  178</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Unregister(const orxSTRING _zCommand);</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span></div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga2d0c16347e4fb4075ed39b0c561be3e6">  184</a></span>extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsRegistered(const orxSTRING _zCommand);</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span> </div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span></div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga20e11431d707c5ce00edae743ef4fecf">  193</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRING _zCommand, const orxSTRING _zArgs);</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span></div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno"><a class="line" href="group__orx_command.html#gaa10f6ec80ec202751165294ee369bf51">  199</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_RemoveAlias(const orxSTRING _zAlias);</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span></div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno"><a class="line" href="group__orx_command.html#gaaeb95264c698906fdaf3f54ba91011b3">  205</a></span>extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsAlias(const orxSTRING _zAlias);</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span></div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga4c56c946e55b4fe9dc77ac1a85c0c9a6">  212</a></span>extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetPrototype(const orxSTRING _zCommand);</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span></div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga40a4c53121bcdd0f5ffe2cc1745e3012">  220</a></span>extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetNext(const orxSTRING _zBase, const orxSTRING _zPrevious, orxU32 *_pu32CommonLength);</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span></div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga1eb3bfcf6d207df874d01aadae345e90">  228</a></span>extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const orxSTRING _zCommandLine, orxCOMMAND_VAR *_pstResult);</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span></div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga05426eab388348bef3fda728eed2c31c">  236</a></span>extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_EvaluateWithGUID(const orxSTRING _zCommandLine, orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult);</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span></div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga535d3b019e11df216d59e09568ab6b4d">  245</a></span>extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span> </div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span></div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno"><a class="line" href="group__orx_command.html#gafc5ae72195e0e034dc9bf5052d9ac5cb">  254</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_astOperandList);</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span></div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga69e97bd9e7a140f3e47df3b11b2c0cc7">  262</a></span>extern orxDLLAPI orxU32 orxFASTCALL                   orxCommand_PrintVar(orxSTRING _zDstString, orxU32 _u32Size, const orxCOMMAND_VAR *_pstVar);</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span></div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga74927728d29562dce492a1c305a470ad">  152</a></span>extern orxDLLAPI void orxFASTCALL                     orxCommand_Setup();</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span></div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga8ae0806b0de227375bb09eba3f9dd5bc">  157</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Init();</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span></div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga27af115986358699ec978008aeca8455">  161</a></span>extern orxDLLAPI void orxFASTCALL                     orxCommand_Exit();</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span></div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno"><a class="line" href="group__orx_command.html#gaabb6d028ab52dffb1c9bbfe3e75b9601">  173</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Register(const orxSTRING _zCommand, const orxCOMMAND_FUNCTION _pfnFunction, orxU32 _u32RequiredParamNumber, orxU32 _u32OptionalParamNumber, const orxCOMMAND_VAR_DEF *_astParamList, const orxCOMMAND_VAR_DEF *_pstResult);</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span></div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga055a5c596254264c5a4e7e5286a24c26">  179</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_Unregister(const orxSTRING _zCommand);</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga2d0c16347e4fb4075ed39b0c561be3e6">  185</a></span>extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsRegistered(const orxSTRING _zCommand);</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga20e11431d707c5ce00edae743ef4fecf">  194</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_AddAlias(const orxSTRING _zAlias, const orxSTRING _zCommand, const orxSTRING _zArgs);</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno"><a class="line" href="group__orx_command.html#gaa10f6ec80ec202751165294ee369bf51">  200</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_RemoveAlias(const orxSTRING _zAlias);</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span></div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno"><a class="line" href="group__orx_command.html#gaaeb95264c698906fdaf3f54ba91011b3">  206</a></span>extern orxDLLAPI orxBOOL orxFASTCALL                  orxCommand_IsAlias(const orxSTRING _zAlias);</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span> </div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span></div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga4c56c946e55b4fe9dc77ac1a85c0c9a6">  213</a></span>extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetPrototype(const orxSTRING _zCommand);</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span></div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga40a4c53121bcdd0f5ffe2cc1745e3012">  221</a></span>extern orxDLLAPI const orxSTRING orxFASTCALL          orxCommand_GetNext(const orxSTRING _zBase, const orxSTRING _zPrevious, orxU32 *_pu32CommonLength);</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span></div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga1eb3bfcf6d207df874d01aadae345e90">  229</a></span>extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Evaluate(const orxSTRING _zCommandLine, orxCOMMAND_VAR *_pstResult);</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span></div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga05426eab388348bef3fda728eed2c31c">  237</a></span>extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_EvaluateWithGUID(const orxSTRING _zCommandLine, orxU64 _u64GUID, orxCOMMAND_VAR *_pstResult);</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span></div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga535d3b019e11df216d59e09568ab6b4d">  246</a></span>extern orxDLLAPI orxCOMMAND_VAR *orxFASTCALL          orxCommand_Execute(const orxSTRING _zCommand, orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult);</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span></div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno"><a class="line" href="group__orx_command.html#gafc5ae72195e0e034dc9bf5052d9ac5cb">  255</a></span>extern orxDLLAPI orxSTATUS orxFASTCALL                orxCommand_ParseNumericalArguments(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_astOperandList);</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span></div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno"><a class="line" href="group__orx_command.html#ga69e97bd9e7a140f3e47df3b11b2c0cc7">  263</a></span>extern orxDLLAPI orxU32 orxFASTCALL                   orxCommand_PrintVar(orxSTRING _zDstString, orxU32 _u32Size, const orxCOMMAND_VAR *_pstVar);</div>
 <div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span> </div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>#endif /* _orxCOMMAND_H_ */</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span></div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span> </div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>#endif /* _orxCOMMAND_H_ */</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span></div>
 <div class="ttc" id="aorx_include_8h_html"><div class="ttname"><a href="orx_include_8h.html">orxInclude.h</a></div></div>
 <div class="ttc" id="aorx_vector_8h_html"><div class="ttname"><a href="orx_vector_8h.html">orxVector.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
