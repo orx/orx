@@ -3417,7 +3417,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
             bFall = orxTRUE;
           }
 
-          /* Fall through */
+          /* Falls through */
         }
 
         /* Section start? */
@@ -3490,7 +3490,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
             break;
           }
 
-          /* Fall through */
+          /* Falls through */
         }
 
         default:

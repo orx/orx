@@ -2843,7 +2843,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_TransformText(const orxSTRING _zString,
           pc++;
         }
 
-        /* Fall through */
+        /* Falls through */
       }
 
       case orxCHAR_LF:

@@ -6249,7 +6249,7 @@ orxOBJECT *orxFASTCALL orxObject_CreateFromConfig(const orxSTRING _zConfigID)
                   /* Valid? */
                   if((pstParent != orxNULL) && (orxStructure_GetID(pstParent) == orxSTRUCTURE_ID_OBJECT))
                   {
-                    /* Fall through */
+                    /* Falls through */
                   }
                   else
                   {

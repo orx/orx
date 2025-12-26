@@ -379,7 +379,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
               pc++;
             }
 
-            /* Fall through */
+            /* Falls through */
           }
 
           case orxCHAR_LF:
@@ -432,7 +432,7 @@ static void orxFASTCALL orxText_UpdateSize(orxTEXT *_pstText)
               pc++;
             }
 
-            /* Fall through */
+            /* Falls through */
           }
 
           case orxCHAR_LF:
@@ -866,7 +866,7 @@ orxU32 orxFASTCALL orxText_GetLineCount(const orxTEXT *_pstText)
             pc++;
           }
 
-          /* Fall through */
+          /* Falls through */
         }
 
         case orxCHAR_LF:
@@ -933,7 +933,7 @@ orxSTATUS orxFASTCALL orxText_GetLineSize(const orxTEXT *_pstText, orxU32 _u32Li
               pc++;
             }
 
-            /* Fall through */
+            /* Falls through */
           }
 
           case orxCHAR_LF:

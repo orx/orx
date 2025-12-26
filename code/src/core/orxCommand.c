@@ -1039,7 +1039,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 zArg--;
                 *((orxCHAR *)pcSrc) = '0';
 
-                /* Fall through */
+                /* Falls through */
               }
               /* Not in block? */
               else if(bInBlock == orxFALSE)
@@ -1057,7 +1057,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 }
                 else
                 {
-                  /* Fall through */
+                  /* Falls through */
                 }
               }
             }

@@ -87,7 +87,7 @@ static orxSTATUS orxFASTCALL orxMouse_Android_EventHandler(const orxEVENT *_pstE
       /* Updates count */
       sstMouse.u32TouchCount++;
 
-      /* Fall through */
+      /* Falls through */
     }
 
     case orxSYSTEM_EVENT_TOUCH_MOVE:
