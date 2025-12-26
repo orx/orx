@@ -1051,7 +1051,8 @@ void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
             // For all inputs
             for(const orxSTRING zInput = orxInput_GetNext(orxNULL); zInput; zInput = orxInput_GetNext(zInput))
             {
-              orxCHAR acBuffer[256], *pc = acBuffer;
+              orxCHAR acInput[256], acValue[32], *pc = acInput;
+              const orxSTRING azRefinements[2] = {acInput, acValue};
               orxBOOL bInstant = orxFALSE;
 
               // Adds propagation stop marker
@@ -1075,22 +1076,23 @@ void ScrollBase::BaseUpdate(const orxCLOCK_INFO &_rstInfo)
               }
 
               // Adds input name
-              orxString_NPrint(pc, sizeof(acBuffer) - (orxU32)(pc - acBuffer), "%s", zInput);
-              pc = acBuffer;
+              orxString_NPrint(pc, sizeof(acInput) - (orxU32)(pc - acInput), "%s", zInput);
+
+              // Adds input value
+              orxString_NPrint(acValue, sizeof(acValue), "%g", orxInput_GetValue(zInput));
 
               // Fires trigger
-              if((orxObject_FireTrigger(pstObject, szConfigScrollObjectInput, (const orxSTRING *)&pc, 1) == orxSTATUS_FAILURE) && (bInstant != orxFALSE))
+              if((orxObject_FireTrigger(pstObject, szConfigScrollObjectInput, azRefinements, 2) == orxSTATUS_FAILURE) && (bInstant != orxFALSE))
               {
                 // Gets non-instant trigger event
-                for(pc += 2; *pc != orxCHAR_NULL; pc++)
+                for(pc = acInput + 2; *pc != orxCHAR_NULL; pc++)
                 {
                   *(pc - 1) = *pc;
                 }
                 *(pc - 1) = orxCHAR_NULL;
-                pc = acBuffer;
 
                 // Fires it
-                orxObject_FireTrigger(pstObject, szConfigScrollObjectInput, (const orxSTRING *)&pc, 1);
+                orxObject_FireTrigger(pstObject, szConfigScrollObjectInput, azRefinements, 2);
               }
             }
           }
