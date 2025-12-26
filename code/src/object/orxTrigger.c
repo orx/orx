@@ -210,7 +210,7 @@ static orxBOOL orxFASTCALL orxTrigger_AddEvent(const orxSTRING _zKeyName, const 
         /* Updates depth */
         u32Depth++;
 
-        /* Fall through */
+        /* Falls through */
       }
 
       default:

@@ -2272,7 +2272,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlot(orxFX *_pstFX, orxFX_TYPE _eType, orxFX_CURV
         /* Updates operation */
         eOperation = orxFX_OPERATION_MULTIPLY;
 
-        /* Fall through */
+        /* Falls through */
       }
 
       case orxFX_TYPE_RGB:
@@ -2532,7 +2532,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
           /* Sets default values */
           stCurveParam.fStartValue = stCurveParam.fEndValue = orxFLOAT_1;
 
-          /* Fall through */
+          /* Falls through */
         }
 
         case orxFX_TYPE_ALPHA:
@@ -2571,7 +2571,7 @@ orxSTATUS orxFASTCALL orxFX_AddSlotFromConfig(orxFX *_pstFX, const orxSTRING _zS
           orxVector_Copy(&(stCurveParam.vStartValue), &orxVECTOR_1);
           orxVector_Copy(&(stCurveParam.vEndValue), &orxVECTOR_1);
 
-          /* Fall through */
+          /* Falls through */
         }
 
         case orxFX_TYPE_POSITION:

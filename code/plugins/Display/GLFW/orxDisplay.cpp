@@ -3817,7 +3817,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_TransformText(const orxSTRING _zString, co
           pc++;
         }
 
-        /* Fall through */
+        /* Falls through */
       }
 
       case orxCHAR_LF:
@@ -7238,7 +7238,7 @@ orxHANDLE orxFASTCALL orxDisplay_GLFW_CreateShader(const orxSTRING *_azCodeList,
                 /* Updates extension string */
                 zExtension++;
 
-                /* Fall through */
+                /* Falls through */
               }
 
               default:

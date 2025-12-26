@@ -345,7 +345,7 @@ static orxSTATUS orxFASTCALL orxBundle_BundleParamHandler(orxU32 _u32ParamCount,
         break;
       }
 
-      // Fall through
+      // Falls through
     }
 
     case 1:

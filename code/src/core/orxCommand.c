@@ -35,6 +35,7 @@
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
 #include "anim/orxAnim.h"
+#include "core/orxConfig.h"
 #include "core/orxConsole.h"
 #include "core/orxEvent.h"
 #include "io/orxFile.h"
@@ -70,6 +71,7 @@
 #define orxCOMMAND_KU32_TRIE_BANK_SIZE                4096
 #define orxCOMMAND_KU32_RESULT_BANK_SIZE              32
 #define orxCOMMAND_KU32_RESULT_BUFFER_SIZE            256
+#define orxCOMMAND_KU32_NAME_BUFFER_SIZE              256
 
 #define orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE       256
 
@@ -78,8 +80,12 @@
 #define orxCOMMAND_KU32_STRING_BUFFER_SIZE            65536
 #define orxCOMMAND_KU32_PROTOTYPE_BUFFER_SIZE         512
 
+#define orxCOMMAND_KC_CONFIG_SECTION_SEPARATOR        '.'
+#define orxCOMMAND_KC_CONFIG_INHERITANCE_MARKER       '@'
+
 #define orxCOMMAND_KZ_ERROR_VALUE                     "ERROR"
 #define orxCOMMAND_KZ_STACK_ERROR_VALUE               "STACK_ERROR"
+#define orxCOMMAND_KZ_PUSH_SECTION                    "orx:command:push"
 
 
 /***************************************************************************
@@ -466,22 +472,90 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
   /* For all commands */
   while(*zCommand != orxCHAR_NULL)
   {
-    orxU32          u32PushCount;
     const orxCHAR  *pcCommandEnd;
     orxCOMMAND     *pstCommand;
+    const orxCHAR  *pcSection = orxNULL;
+    orxCHAR        *pcValue = orxNULL;
+    orxCHAR         acNameBuffer[orxCOMMAND_KU32_NAME_BUFFER_SIZE];
+    orxCHAR         acGUID[20];
+    orxS32          s32GUIDLength = 0;
+    orxU32          u32PushCount = 0;
     orxCHAR         cBackupChar;
 
     /* Updates status */
     bProcessed = orxTRUE;
 
-    /* For all push markers / spaces */
-    for(u32PushCount = 0; (*zCommand == orxCOMMAND_KC_PUSH_MARKER) || (orxCommand_IsWhiteSpace(*zCommand) != orxFALSE); zCommand++)
+    /* Is GUID valid? */
+    if(_u64GUID != orxU64_UNDEFINED)
     {
-      /* Is a push marker? */
-      if(*zCommand == orxCOMMAND_KC_PUSH_MARKER)
+      /* Gets owner's GUID */
+      s32GUIDLength = orxString_NPrint(acGUID, sizeof(acGUID), "0x%016llX", _u64GUID);
+    }
+
+    /* Named push? */
+    zCommand = orxString_SkipWhiteSpaces(zCommand);
+    if((*zCommand == orxCOMMAND_KC_PUSH_MARKER)
+    && (*(zCommand + 1) != orxCOMMAND_KC_PUSH_MARKER)
+    && (orxCommand_IsWhiteSpace(*(zCommand + 1)) == orxFALSE))
+    {
+      orxCHAR *pc;
+
+      /* Copies names */
+      for(pc = pcValue = acNameBuffer, zCommand++;
+          ((pc - acNameBuffer) < sizeof(acNameBuffer) - 1) && (orxCommand_IsWhiteSpace(*zCommand) == orxFALSE);
+          zCommand++)
       {
-        /* Updates push count */
-        u32PushCount++;
+        /* No section and is a separator? */
+        if((pcSection == orxNULL) && (*zCommand == orxCOMMAND_KC_CONFIG_SECTION_SEPARATOR))
+        {
+          /* Empty or inheritance? */
+          if((pc == acNameBuffer)
+          || ((pc == acNameBuffer + 1)
+          && (*(zCommand - 1) == orxCOMMAND_KC_CONFIG_INHERITANCE_MARKER)))
+          {
+            /* Updates section */
+            pcSection = orxConfig_GetCurrentSection();
+          }
+          /* GUID? */
+          else if((pc == acNameBuffer + 1) && (*(zCommand - 1) == orxCOMMAND_KC_GUID_MARKER))
+          {
+            /* Updates section */
+            pcSection = acGUID;
+          }
+          else
+          {
+            /* Updates section */
+            pcSection = pcValue;
+          }
+
+          /* Terminates section buffer */
+          *pc++   = orxCHAR_NULL;
+          pcValue = pc;
+        }
+        else
+        {
+          /* Copies character */
+          *pc++ = *zCommand;
+        }
+      }
+
+      /* Terminates buffer */
+      *pc = orxCHAR_NULL;
+
+      /* Skips remaining white spaces */
+      zCommand = orxString_SkipWhiteSpaces(zCommand + 1);
+    }
+    else
+    {
+      /* For all push markers / spaces */
+      for(u32PushCount = 0; (*zCommand == orxCOMMAND_KC_PUSH_MARKER) || (orxCommand_IsWhiteSpace(*zCommand) != orxFALSE); zCommand++)
+      {
+        /* Is a push marker? */
+        if(*zCommand == orxCOMMAND_KC_PUSH_MARKER)
+        {
+          /* Updates push count */
+          u32PushCount++;
+        }
       }
     }
 
@@ -501,7 +575,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
     {
 #define orxCOMMAND_KU32_ALIAS_MAX_DEPTH             32
       orxSTATUS             eStatus;
-      orxS32                s32GUIDLength, s32BufferCount = 0, s32VectorDepth = 0, s32Offset, i;
+      orxS32                s32BufferCount = 0, s32VectorDepth = 0, s32Offset, i;
       orxBOOL               bInBlock = orxFALSE;
       orxCOMMAND_TRIE_NODE *pstCommandNode;
       const orxCHAR        *pcSrc;
@@ -509,20 +583,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       const orxSTRING       zArg;
       const orxSTRING       azBufferList[orxCOMMAND_KU32_ALIAS_MAX_DEPTH];
       orxU32                u32ArgNumber, u32ParamNumber = (orxU32)pstCommand->u16RequiredParamNumber + (orxU32)pstCommand->u16OptionalParamNumber;
-      orxCHAR               acGUID[20];
       orxCOMMAND_VAR       *astArgList = (orxCOMMAND_VAR *)orxMemory_StackAllocate(u32ParamNumber * sizeof(orxCOMMAND_VAR));
-
-      /* Is GUID valid? */
-      if(_u64GUID != orxU64_UNDEFINED)
-      {
-        /* Gets owner's GUID */
-        s32GUIDLength = orxString_NPrint(acGUID, sizeof(acGUID), "0x%016llX", _u64GUID);
-      }
-      else
-      {
-        /* No GUID */
-        s32GUIDLength = 0;
-      }
 
       /* Adds input to the buffer list */
       azBufferList[s32BufferCount++] = pcCommandEnd;
@@ -576,6 +637,171 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               {
                 /* Copies character */
                 *pcDst++ = *pcSrc;
+              }
+
+              break;
+            }
+
+            case orxCOMMAND_KC_VARIABLE_MARKER:
+            {
+              /* Not doubled? */
+              if(*++pcSrc != orxCOMMAND_KC_VARIABLE_MARKER)
+              {
+                const orxCHAR  *pcSection = orxNULL;
+                orxCHAR        *pcValue;
+                orxCHAR        *pc;
+                const orxSTRING zVariable;
+                orxCHAR         acNameBuffer[orxCOMMAND_KU32_NAME_BUFFER_SIZE];
+                orxU32          u32Length;
+                orxBOOL         bStop, bUseStringMarker = orxFALSE;
+
+                /* Skips white spaces */
+                pcSrc = orxString_SkipWhiteSpaces(pcSrc);
+
+                /* Copies names */
+                for(pc = pcValue = acNameBuffer, bStop = orxFALSE;
+                    ((pc - acNameBuffer) < sizeof(acNameBuffer) - 1) && (bStop == orxFALSE);
+                    pcSrc++)
+                {
+                  /* Depending on character */
+                  switch(*pcSrc)
+                  {
+                    case ' ':
+                    case '\t':
+                    case orxCHAR_CR:
+                    case orxCHAR_LF:
+                    case orxCHAR_NULL:
+                    case orxCOMMAND_KC_BLOCK_MARKER:
+                    case orxCOMMAND_KC_POP_MARKER:
+                    case orxCOMMAND_KC_VARIABLE_MARKER:
+                    case orxSTRING_KC_VECTOR_START:
+                    case orxSTRING_KC_VECTOR_START_ALT:
+                    case orxSTRING_KC_VECTOR_SEPARATOR:
+                    case orxSTRING_KC_VECTOR_END:
+                    case orxSTRING_KC_VECTOR_END_ALT:
+                    {
+                      /* Stops */
+                      bStop = orxTRUE;
+                      pcSrc--;
+
+                      break;
+                    }
+
+                    default:
+                    {
+                      /* No section and is a separator? */
+                      if((pcSection == orxNULL) && (*pcSrc == orxCOMMAND_KC_CONFIG_SECTION_SEPARATOR))
+                      {
+                        /* Empty or inheritance? */
+                        if((pc == acNameBuffer)
+                        || ((pc == acNameBuffer + 1)
+                        && (*(pcSrc - 1) == orxCOMMAND_KC_CONFIG_INHERITANCE_MARKER)))
+                        {
+                          /* Updates section */
+                          pcSection = orxConfig_GetCurrentSection();
+                        }
+                        /* GUID? */
+                        else if((pc == acNameBuffer + 1) && (*(pcSrc - 1) == orxCOMMAND_KC_GUID_MARKER))
+                        {
+                          /* Updates section */
+                          pcSection = acGUID;
+                        }
+                        else
+                        {
+                          /* Updates section */
+                          pcSection = pcValue;
+                        }
+
+                        /* Terminates section buffer */
+                        *pc++   = orxCHAR_NULL;
+                        pcValue = pc;
+                      }
+                      else
+                      {
+                        /* Copies character */
+                        *pc++ = *pcSrc;
+                      }
+
+                      break;
+                    }
+                  }
+                }
+
+                /* Terminates buffer */
+                *pc = orxCHAR_NULL;
+
+                /* Resets source */
+                pcSrc--;
+
+                /* Pushes config section */
+                orxConfig_PushSection((pcSection != orxNULL) ? pcSection : orxCOMMAND_KZ_PUSH_SECTION);
+
+                /* Retrieves variable while protecting current processing buffer to support lazy commands */
+                s32Offset = (orxS32)(pcDst + 1 - sstCommand.acProcessBuffer - sstCommand.s32ProcessOffset);
+                sstCommand.s32ProcessOffset += s32Offset;
+                zVariable = orxConfig_GetString(pcValue);
+                sstCommand.s32ProcessOffset -= s32Offset;
+
+                /* Not in block? */
+                if(bInBlock == orxFALSE)
+                {
+                  const orxCHAR *pc = zVariable;
+
+                  /* For all characters */
+                  do
+                  {
+                    /* Is a white space? */
+                    if((*pc == orxCHAR_NULL) || (orxCommand_IsWhiteSpace(*pc) != orxFALSE))
+                    {
+                      /* Has room? */
+                      if(pcDst - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1)
+                      {
+                        /* Adds block marker */
+                        *pcDst++ = orxCOMMAND_KC_BLOCK_MARKER;
+
+                        /* Updates string marker status */
+                        bUseStringMarker = orxTRUE;
+                      }
+
+                      break;
+                    }
+
+                    /* Gets next character */
+                    pc++;
+
+                  } while(*pc != orxCHAR_NULL);
+                }
+
+                /* Gets its length */
+                u32Length = orxString_GetLength(zVariable);
+
+                /* Has room? */
+                if(pcDst - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1 - u32Length)
+                {
+                  /* Moves it (buffers can overlap if variable used a lazy command) */
+                  orxMemory_Move(pcDst, zVariable, u32Length);
+
+                  /* Updates pointer */
+                  pcDst += u32Length;
+                }
+
+                /* Should add string marker */
+                if(bUseStringMarker != orxFALSE)
+                {
+                  /* Has room? */
+                  if(pcDst - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1)
+                  {
+                    *pcDst++ = orxCOMMAND_KC_BLOCK_MARKER;
+                  }
+                }
+
+                /* Pops config section */
+                orxConfig_PopSection();
+              }
+              else
+              {
+                /* Copies it */
+                *pcDst++ = orxCOMMAND_KC_VARIABLE_MARKER;
               }
 
               break;
@@ -640,6 +866,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
 
                   default:
                   {
+                    /* Prints variable */
                     orxCommand_PrintVar(acValue, sizeof(acValue), &(pstEntry->stValue));
 
                     break;
@@ -729,7 +956,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               /* Toggles block status */
               bInBlock = !bInBlock;
 
-              /* Fall through */
+              /* Falls through */
             }
 
             default:
@@ -812,7 +1039,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 zArg--;
                 *((orxCHAR *)pcSrc) = '0';
 
-                /* Fall through */
+                /* Falls through */
               }
               /* Not in block? */
               else if(bInBlock == orxFALSE)
@@ -830,7 +1057,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 }
                 else
                 {
-                  /* Fall through */
+                  /* Falls through */
                 }
               }
             }
@@ -1103,38 +1330,113 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
       _pstResult->zValue  = orxCOMMAND_KZ_ERROR_VALUE;
     }
 
-    /* For all requested pushes */
-    while(u32PushCount > 0)
+    /* Has named push? */
+    if(pcValue != orxNULL)
     {
-      orxCOMMAND_STACK_ENTRY *pstEntry;
+      /* Pushes section */
+      orxConfig_PushSection((pcSection != orxNULL) ? pcSection : orxCOMMAND_KZ_PUSH_SECTION);
 
-      /* Allocates stack entry */
-      pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_Allocate(sstCommand.pstResultBank);
-
-      /* Checks */
-      orxASSERT(pstEntry != orxNULL);
-
-      /* Is a string or numeric value? */
-      if((_pstResult->eType == orxCOMMAND_VAR_TYPE_STRING)
-      || (_pstResult->eType == orxCOMMAND_VAR_TYPE_NUMERIC))
+      /* Depending on type */
+      switch(_pstResult->eType)
       {
+        default:
+        case orxCOMMAND_VAR_TYPE_STRING:
+        case orxCOMMAND_VAR_TYPE_NUMERIC:
+        {
+          /* Stores it */
+          orxConfig_SetString(pcValue, _pstResult->zValue);
+
+          break;
+        }
+        case orxCOMMAND_VAR_TYPE_FLOAT:
+        {
+          /* Stores it */
+          orxConfig_SetFloat(pcValue, _pstResult->fValue);
+
+          break;
+        }
+        case orxCOMMAND_VAR_TYPE_S32:
+        {
+          /* Stores it */
+          orxConfig_SetS32(pcValue, _pstResult->s32Value);
+
+          break;
+        }
+        case orxCOMMAND_VAR_TYPE_U32:
+        {
+          /* Stores it */
+          orxConfig_SetU32(pcValue, _pstResult->u32Value);
+
+          break;
+        }
+        case orxCOMMAND_VAR_TYPE_S64:
+        {
+          /* Stores it */
+          orxConfig_SetS64(pcValue, _pstResult->s64Value);
+
+          break;
+        }
+        case orxCOMMAND_VAR_TYPE_U64:
+        {
+          /* Stores it */
+          orxConfig_SetU64(pcValue, _pstResult->u64Value);
+
+          break;
+        }
+        case orxCOMMAND_VAR_TYPE_BOOL:
+        {
+          /* Stores it */
+          orxConfig_SetBool(pcValue, _pstResult->bValue);
+
+          break;
+        }
+        case orxCOMMAND_VAR_TYPE_VECTOR:
+        {
+          /* Stores it */
+          orxConfig_SetVector(pcValue, &(_pstResult->vValue));
+
+          break;
+        }
+      }
+
+      /* Pops section */
+      orxConfig_PopSection();
+    }
+    else
+    {
+      /* For all requested pushes */
+      while(u32PushCount > 0)
+      {
+        orxCOMMAND_STACK_ENTRY *pstEntry;
+
+        /* Allocates stack entry */
+        pstEntry = (orxCOMMAND_STACK_ENTRY *)orxBank_Allocate(sstCommand.pstResultBank);
+
         /* Checks */
-        orxASSERT(orxString_GetLength(_pstResult->zValue) < orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE);
+        orxASSERT(pstEntry != orxNULL);
 
-        /* Duplicates it */
-        pstEntry->stValue.eType   = _pstResult->eType;
-        pstEntry->stValue.zValue  = pstEntry->acBuffer;
-        orxString_NCopy(pstEntry->acBuffer, _pstResult->zValue, sizeof(pstEntry->acBuffer) - 1);
-        pstEntry->acBuffer[sizeof(pstEntry->acBuffer) - 1] = orxCHAR_NULL;
-      }
-      else
-      {
-        /* Stores value */
-        orxMemory_Copy(&(pstEntry->stValue), _pstResult, sizeof(orxCOMMAND_VAR));
-      }
+        /* Is a string or numeric value? */
+        if((_pstResult->eType == orxCOMMAND_VAR_TYPE_STRING)
+        || (_pstResult->eType == orxCOMMAND_VAR_TYPE_NUMERIC))
+        {
+          /* Checks */
+          orxASSERT(orxString_GetLength(_pstResult->zValue) < orxCOMMAND_KU32_STACK_ENTRY_BUFFER_SIZE);
 
-      /* Updates push count */
-      u32PushCount--;
+          /* Duplicates it */
+          pstEntry->stValue.eType   = _pstResult->eType;
+          pstEntry->stValue.zValue  = pstEntry->acBuffer;
+          orxString_NCopy(pstEntry->acBuffer, _pstResult->zValue, sizeof(pstEntry->acBuffer) - 1);
+          pstEntry->acBuffer[sizeof(pstEntry->acBuffer) - 1] = orxCHAR_NULL;
+        }
+        else
+        {
+          /* Stores value */
+          orxMemory_Copy(&(pstEntry->stValue), _pstResult, sizeof(orxCOMMAND_VAR));
+        }
+
+        /* Updates push count */
+        u32PushCount--;
+      }
     }
   }
 

@@ -3091,7 +3091,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_TransformText(const orxSTRING _zString, con
           pc++;
         }
 
-        /* Fall through */
+        /* Falls through */
       }
 
       case orxCHAR_LF:
