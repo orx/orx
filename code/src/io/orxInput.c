@@ -110,6 +110,11 @@
 
 #define orxINPUT_KZ_DEFAULT_JOYSTICK_ID_LIST          ((orxU64)0xF)/**< Default joystick ID list (4) */
 
+#define orxINPUT_KZ_TYPE_KEYBOARD                     "key"       /**< Keyboard input type */
+#define orxINPUT_KZ_TYPE_JOYSTICK                     "joy"       /**< Joystick input type */
+#define orxINPUT_KZ_TYPE_MOUSE                        "mouse"     /**< Mouse input type */
+#define orxINPUT_KZ_TYPE_EXTERNAL                     "extern"    /**< External input type */
+
 
 /** Helpers
  */
@@ -417,6 +422,108 @@ void orxFASTCALL orxInput_CommandHasBeenDeactivated(orxU32 _u32ArgNumber, const 
   return;
 }
 
+/** Command: HasActiveBinding
+ */
+void orxFASTCALL orxInput_CommandHasActiveBinding(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
+{
+  orxINPUT_TYPE eType;
+  orxENUM       eID;
+  orxFLOAT      fValue;
+
+  /* Gets active binding */
+  if(orxInput_GetActiveBinding(&eType, &eID, &fValue) != orxSTATUS_FAILURE)
+  {
+    /* Has parameter? */
+    if(_u32ArgNumber > 0)
+    {
+      /* Depending on type */
+      switch(eType)
+      {
+        case orxINPUT_TYPE_KEYBOARD_KEY:
+        {
+          static orxU32 su32PrefixLength = 0;
+
+          if(su32PrefixLength == 0)
+          {
+            su32PrefixLength = orxString_GetLength(orxINPUT_KZ_TYPE_KEYBOARD);
+          }
+
+          /* Updates result */
+          _pstResult->bValue = (orxString_NICompare(_astArgList[0].zValue, orxINPUT_KZ_TYPE_KEYBOARD, su32PrefixLength) == 0) ? orxTRUE : orxFALSE;
+
+          break;
+        }
+
+        case orxINPUT_TYPE_JOYSTICK_BUTTON:
+        {
+          static orxU32 su32PrefixLength = 0;
+
+          if(su32PrefixLength == 0)
+          {
+            su32PrefixLength = orxString_GetLength(orxINPUT_KZ_TYPE_JOYSTICK);
+          }
+
+          /* Updates result */
+          _pstResult->bValue = (orxString_NICompare(_astArgList[0].zValue, orxINPUT_KZ_TYPE_JOYSTICK, su32PrefixLength) == 0) ? orxTRUE : orxFALSE;
+
+          break;
+        }
+
+        case orxINPUT_TYPE_MOUSE_BUTTON:
+        {
+          static orxU32 su32PrefixLength = 0;
+
+          if(su32PrefixLength == 0)
+          {
+            su32PrefixLength = orxString_GetLength(orxINPUT_KZ_TYPE_MOUSE);
+          }
+
+          /* Updates result */
+          _pstResult->bValue = (orxString_NICompare(_astArgList[0].zValue, orxINPUT_KZ_TYPE_MOUSE, su32PrefixLength) == 0) ? orxTRUE : orxFALSE;
+
+          break;
+        }
+
+        case orxINPUT_TYPE_EXTERNAL:
+        {
+          static orxU32 su32PrefixLength = 0;
+
+          if(su32PrefixLength == 0)
+          {
+            su32PrefixLength = orxString_GetLength(orxINPUT_KZ_TYPE_EXTERNAL);
+          }
+
+          /* Updates result */
+          _pstResult->bValue = (orxString_NICompare(_astArgList[0].zValue, orxINPUT_KZ_TYPE_EXTERNAL, su32PrefixLength) == 0) ? orxTRUE : orxFALSE;
+
+          break;
+        }
+
+        default:
+        {
+          /* Updates result */
+          _pstResult->bValue = orxFALSE;
+
+          break;
+        }
+      }
+    }
+    else
+    {
+      /* Updates result */
+      _pstResult->bValue = orxTRUE;
+    }
+  }
+  else
+  {
+    /* Updates result */
+    _pstResult->bValue = orxFALSE;
+  }
+
+  /* Done! */
+  return;
+}
+
 /** Registers all the input commands
  */
 static orxINLINE void orxInput_RegisterCommands()
@@ -460,6 +567,9 @@ static orxINLINE void orxInput_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasBeenActivated, "BeenActivated?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
   /* Command: HasBeenDeactivated */
   orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasBeenDeactivated, "BeenDeactivated?", orxCOMMAND_VAR_TYPE_BOOL, 1, 0, {"Input", orxCOMMAND_VAR_TYPE_STRING});
+
+  /* Command: HasActiveBinding */
+  orxCOMMAND_REGISTER_CORE_COMMAND(Input, HasActiveBinding, "Active?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Type = <void>", orxCOMMAND_VAR_TYPE_STRING});
 
   /* Done! */
   return;
@@ -508,6 +618,9 @@ static orxINLINE void orxInput_UnregisterCommands()
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasBeenActivated);
   /* Command: HasBeenDeactivated */
   orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasBeenDeactivated);
+
+  /* Command: HasActiveBinding */
+  orxCOMMAND_UNREGISTER_CORE_COMMAND(Input, HasActiveBinding);
 
   /* Done! */
   return;
