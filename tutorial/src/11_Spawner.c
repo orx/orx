@@ -75,9 +75,6 @@ static orxINLINE orxSTATUS LoadConfig()
   orxVIEWPORT  *pstViewport;
   orxSTATUS     eResult = orxSTATUS_FAILURE;
 
-  /* Pops config section */
-  orxConfig_PopSection();
-
   /* Deletes our scene */
   if(pstScene)
   {
@@ -97,7 +94,7 @@ static orxINLINE orxSTATUS LoadConfig()
 
   /* Loads main config and selects tutorial section */
   orxConfig_Load(orxConfig_GetMainFileName());
-  orxConfig_SelectSection("Tutorial");
+  orxConfig_PushSection("Tutorial");
 
   /* Is current ID valid? */
   if(ss32ConfigID < orxConfig_GetListCount("ConfigList"))
@@ -122,10 +119,16 @@ static orxINLINE orxSTATUS LoadConfig()
         orxViewport_CreateFromConfig(orxConfig_GetListString("ViewportList", i));
       }
 
+      /* Pops config section */
+      orxConfig_PopSection();
+
       /* Creates our scene */
       pstScene = orxObject_CreateFromConfig("Scene");
     }
   }
+
+  /* Pops config section */
+  orxConfig_PopSection();
 
   /* Done! */
   return eResult;
@@ -139,7 +142,9 @@ void orxFASTCALL Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
   if (orxInput_HasBeenActivated("NextConfig"))
   {
     /* Updates config ID */
+    orxConfig_PushSection("Tutorial");
     ss32ConfigID = (ss32ConfigID < orxConfig_GetListCount("ConfigList") - 1) ? ss32ConfigID + 1 : 0;
+    orxConfig_PopSection();
 
     /* Loads it */
     LoadConfig();
@@ -148,7 +153,9 @@ void orxFASTCALL Update(const orxCLOCK_INFO* _pstClockInfo, void* _pstContext)
   else if (orxInput_HasBeenActivated("PreviousConfig"))
   {
     /* Updates config ID */
+    orxConfig_PushSection("Tutorial");
     ss32ConfigID = (ss32ConfigID > 0) ? ss32ConfigID - 1 : orxConfig_GetListCount("ConfigList") - 1;
+    orxConfig_PopSection();
 
     /* Loads it */
     LoadConfig();
