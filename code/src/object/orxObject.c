@@ -2645,6 +2645,9 @@ void orxFASTCALL orxObject_CommandGetOwner(orxU32 _u32ArgNumber, const orxCOMMAN
 {
   orxOBJECT *pstObject;
 
+  /* Updates result */
+  _pstResult->u64Value = orxU64_UNDEFINED;
+
   /* Gets object */
   pstObject = orxOBJECT(orxStructure_Get(_astArgList[0].u64Value));
 
@@ -2653,25 +2656,20 @@ void orxFASTCALL orxObject_CommandGetOwner(orxU32 _u32ArgNumber, const orxCOMMAN
   {
     orxSTRUCTURE *pstOwner;
 
-    /* Gets its owner */
-    pstOwner = orxObject_GetOwner(pstObject);
+    /* For all owners */
+    for(pstOwner = orxStructure_GetOwner(pstObject);
+        pstOwner != orxNULL;
+        pstOwner = orxStructure_GetOwner(pstOwner))
+    {
+      /* Is an object? */
+      if(orxOBJECT(pstOwner) != orxNULL)
+      {
+        /* Updates result */
+        _pstResult->u64Value = orxStructure_GetGUID(pstOwner);
 
-    /* Valid? */
-    if(pstOwner != orxNULL)
-    {
-      /* Updates result */
-      _pstResult->u64Value = orxStructure_GetGUID(pstOwner);
+        break;
+      }
     }
-    else
-    {
-      /* Updates result */
-      _pstResult->u64Value = orxU64_UNDEFINED;
-    }
-  }
-  else
-  {
-    /* Updates result */
-    _pstResult->u64Value = orxU64_UNDEFINED;
   }
 
   /* Done! */
