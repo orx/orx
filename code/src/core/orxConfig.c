@@ -3961,6 +3961,9 @@ static void orxFASTCALL orxConfig_SetDefaultColorList()
   /* Pops config section */
   orxConfig_PopSection();
 
+  /* Protects it */
+  orxConfig_ProtectSection(orxCOLOR_KZ_CONFIG_SECTION, orxTRUE);
+
   /* Done! */
   return;
 }
