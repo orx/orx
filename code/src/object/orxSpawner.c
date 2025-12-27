@@ -189,8 +189,12 @@ static orxSTATUS orxFASTCALL orxSpawner_ProcessConfigData(orxSPAWNER *_pstSpawne
             hIterator != orxHANDLE_UNDEFINED;
             hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, hIterator, orxNULL, (void **)&pstObject))
         {
-          /* Removes its owner */
-          orxObject_SetOwner(pstObject, orxNULL);
+          /* Still owned? */
+          if(orxStructure_GetOwner(pstObject) == (orxSTRUCTURE *)_pstSpawner)
+          {
+            /* Removes its owner */
+            orxStructure_SetOwner(pstObject, orxNULL);
+          }
 
           /* Should clean? */
           if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE))
@@ -770,7 +774,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
           pstObject = orxOBJECT(_pstEvent->hSender);
 
           /* Gets owner as spawner */
-          pstSpawner = orxSPAWNER(orxObject_GetOwner(pstObject));
+          pstSpawner = orxSPAWNER(orxStructure_GetOwner(pstObject));
 
           /* Valid and not currently spawning? */
           if((pstSpawner != orxNULL) && (sstSpawner.pstCurrentSpawner != pstSpawner))
@@ -784,7 +788,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             pstSpawner->u32ActiveObjectCount--;
 
             /* Removes self as object's owner */
-            orxObject_SetOwner(pstObject, orxNULL);
+            orxStructure_SetOwner(pstObject, orxNULL);
 
             /* Gets object hash key */
             u64Key = orxStructure_GetGUID(pstObject);
@@ -1008,7 +1012,7 @@ static orxSTATUS orxFASTCALL orxSpawner_EventHandler(const orxEVENT *_pstEvent)
             if(sstSpawner.pstCurrentSpawner->pstSpawnedTable != orxNULL)
             {
               /* Sets spawner as owner */
-              orxObject_SetOwner(sstSpawner.pstCurrentSpawner->pstPendingObject, sstSpawner.pstCurrentSpawner);
+              orxStructure_SetOwner(sstSpawner.pstCurrentSpawner->pstPendingObject, sstSpawner.pstCurrentSpawner);
             }
 
             /* Stores ourself as temporary parent in payload */
@@ -1471,10 +1475,10 @@ orxSTATUS orxFASTCALL orxSpawner_Delete(orxSPAWNER *_pstSpawner)
           hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, hIterator, orxNULL, (void **)&pstObject))
       {
         /* Still owned? */
-        if((orxOBJECT(pstObject) != orxNULL) && (orxObject_GetOwner(pstObject) == (orxSTRUCTURE *)_pstSpawner))
+        if((orxOBJECT(pstObject) != orxNULL) && (orxStructure_GetOwner(pstObject) == (orxSTRUCTURE *)_pstSpawner))
         {
           /* Removes it */
-          orxObject_SetOwner(pstObject, orxNULL);
+          orxStructure_SetOwner(pstObject, orxNULL);
 
           /* Should clean? */
           if(orxStructure_TestFlags(_pstSpawner, orxSPAWNER_KU32_FLAG_CLEAN_ON_DELETE))
@@ -1655,8 +1659,12 @@ void orxFASTCALL orxSpawner_Reset(orxSPAWNER *_pstSpawner, orxBOOL _bResetCount,
           hIterator != orxHANDLE_UNDEFINED;
           hIterator = orxHashTable_GetNext(_pstSpawner->pstSpawnedTable, hIterator, orxNULL, (void **)&pstObject))
       {
-        /* Removes it */
-        orxObject_SetOwner(pstObject, orxNULL);
+        /* Still owned? */
+        if(orxStructure_GetOwner(pstObject) == (orxSTRUCTURE *)_pstSpawner)
+        {
+          /* Removes it */
+          orxStructure_SetOwner(pstObject, orxNULL);
+        }
       }
 
       /* Clears spawned table */
