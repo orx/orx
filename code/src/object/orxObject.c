@@ -7995,7 +7995,8 @@ void *orxFASTCALL orxObject_GetUserData(const orxOBJECT *_pstObject)
  */
 void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
 {
-  orxOBJECT *pstOwner;
+  orxOBJECT  *pstOwner;
+  orxSPAWNER *pstSpawner;
 
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
@@ -8030,6 +8031,16 @@ void orxFASTCALL orxObject_SetOwner(orxOBJECT *_pstObject, void *_pOwner)
 
       /* Updates it */
       pstChild->pstSibling = _pstObject->pstSibling;
+    }
+  }
+  /* Had a previous spawner owner? */
+  else if((pstSpawner = orxSPAWNER(orxStructure_GetOwner(_pstObject))) != orxNULL)
+  {
+    /* Has an active object limit? */
+    if(orxSpawner_GetActiveObjectLimit(pstSpawner) > 0)
+    {
+      /* Logs message */
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_OBJECT, "[%s]: Changing object's owner will break the active objects tracking of spawner <%s>.", orxObject_GetName(_pstObject), orxSpawner_GetName(pstSpawner));
     }
   }
 
