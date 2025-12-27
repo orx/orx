@@ -1,5 +1,6 @@
 var NAVTREEINDEX7 =
 {
+"group__orx_mouse.html":[1,33],
 "group__orx_mouse.html#ga0bb5b51feb069120d3b59e1f1cedd41d":[1,33,7],
 "group__orx_mouse.html#ga2a6cbe22bff58361030f1266c9ff01bc":[1,33,2],
 "group__orx_mouse.html#ga2d59cd935ccb30cc91953d9b52e09111":[1,33,14],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "group__orx_param.html#gaf7cfd1a04903c5a1cd91806c943db5a4":[1,36,10],
 "group__orx_physics.html":[1,37],
 "group__orx_physics.html#ga0393b9af0e1d48267960eafb996eed28":[1,37,89],
-"group__orx_physics.html#ga05cf5096b1fb9d50a325d97d0d81cb97":[1,37,51],
-"group__orx_physics.html#ga062a4703991ccb8642032451adfb5f38":[1,37,73]
+"group__orx_physics.html#ga05cf5096b1fb9d50a325d97d0d81cb97":[1,37,51]
 };

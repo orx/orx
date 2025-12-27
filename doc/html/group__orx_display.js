@@ -105,6 +105,7 @@ var group__orx_display =
     [ "orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM", "group__orx_display.html#ga4c005e85e55a1e5096ef3fdaa5d890e1", null ],
     [ "orxDISPLAY_KZ_SHADER_SUFFIX_LEFT", "group__orx_display.html#ga98c23e98dd889ded3df024dba4f4b136", null ],
     [ "orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT", "group__orx_display.html#gac7c00862a44ea6807d9cb3ae2daed091", null ],
+    [ "orxDISPLAY_KZ_SHADER_SUFFIX_SIZE", "group__orx_display.html#ga8b97a00d99a2a1b5388efb562e3916e3", null ],
     [ "orxDISPLAY_KZ_SHADER_SUFFIX_TOP", "group__orx_display.html#ga0d9a06196c1582c71d23acc93e1fd0c2", null ],
     [ "orxRGBA_A", "group__orx_display.html#ga7fa359660d9c77056030146c0fa7dd98", null ],
     [ "orxRGBA_B", "group__orx_display.html#ga12afc061feff0993ee3cbff9ffed989d", null ],
