@@ -11062,10 +11062,10 @@ orxSTATUS orxFASTCALL orxObject_AddFX(orxOBJECT *_pstObject, const orxSTRING _zF
   /* Checks */
   orxASSERT(sstObject.u32Flags & orxOBJECT_KU32_STATIC_FLAG_READY);
   orxSTRUCTURE_ASSERT(_pstObject);
-  orxASSERT((_zFXConfigID != orxNULL) && (*_zFXConfigID != orxCHAR_NULL));
+  orxASSERT(_zFXConfigID != orxNULL);
 
   /* Adds FX */
-  eResult = orxObject_AddDelayedFX(_pstObject, _zFXConfigID, orxFLOAT_0);
+  eResult = (*_zFXConfigID == orxCHAR_NULL) ? orxSTATUS_FAILURE : orxObject_AddDelayedFX(_pstObject, _zFXConfigID, orxFLOAT_0);
 
   /* Done! */
   return eResult;
