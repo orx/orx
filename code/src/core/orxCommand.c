@@ -792,6 +792,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
               /* Not doubled? */
               if(*++pcSrc != orxCOMMAND_KC_VARIABLE_MARKER)
               {
+                orxCOMMAND_VAR  astNameArgList[2], stNameResult;
                 const orxCHAR  *pcSection = orxNULL;
                 orxCHAR        *pcValue;
                 orxCHAR        *pc;
@@ -909,13 +910,13 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 /* Resets source */
                 pcSrc--;
 
-                /* Pushes config section */
-                orxConfig_PushSection((pcSection != orxNULL) ? pcSection : orxCOMMAND_KZ_PUSH_SECTION);
-
                 /* Retrieves variable while protecting current processing buffer to support lazy commands */
                 s32Offset = (orxS32)(pcDst + 1 - sstCommand.acProcessBuffer - sstCommand.s32ProcessOffset);
                 sstCommand.s32ProcessOffset += s32Offset;
-                zVariable = orxConfig_GetString(pcValue);
+                astNameArgList[0].eType   = astNameArgList[1].eType = orxCOMMAND_VAR_TYPE_STRING;
+                astNameArgList[0].zValue  = (pcSection != orxNULL) ? pcSection : orxCOMMAND_KZ_PUSH_SECTION;
+                astNameArgList[1].zValue  = pcValue;
+                zVariable = (orxCommand_Execute("Config.GetValue", 2, astNameArgList, &stNameResult) != orxNULL) ? stNameResult.zValue : orxSTRING_EMPTY;
                 sstCommand.s32ProcessOffset -= s32Offset;
 
                 /* Not in block? */
@@ -970,9 +971,6 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                     *pcDst++ = orxCOMMAND_KC_BLOCK_MARKER;
                   }
                 }
-
-                /* Pops config section */
-                orxConfig_PopSection();
               }
               else
               {
