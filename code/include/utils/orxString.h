@@ -1482,7 +1482,7 @@ static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxST
   va_end(stArgs);
 
   /* Overflow? */
-  if(s32Result <= 0)
+  if(s32Result < 0)
   {
     /* Updates result */
     s32Result = (orxS32)_u32CharNumber - 1;
