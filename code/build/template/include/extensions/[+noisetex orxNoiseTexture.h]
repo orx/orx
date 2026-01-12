@@ -144,7 +144,7 @@ static orxSTATUS orxFASTCALL orxNoiseTexture_EventHandler(const orxEVENT *_pstEv
       // Is a noise texture?
       if(orxString_NICompare(zName, orxNOISETEXTURE_KZ_RESOURCE_PREFIX, su32PrefixLength) == 0)
       {
-        // Match origin?
+        // Matches origin?
         if(orxConfig_GetOriginID(orxString_SkipWhiteSpaces(zName + su32PrefixLength)) == pstPayload->stNameID)
         {
           orxRESOURCE_EVENT_PAYLOAD stPayload;
