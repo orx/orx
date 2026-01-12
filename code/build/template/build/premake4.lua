@@ -213,6 +213,8 @@ solution "[name]"
         {
 [+imgui +sndh
             "-std=c++11",]
+[+clay
+            "-std=c++20",]
 [+sndh
             "-Wno-write-strings",
             "-Wno-multichar",]
@@ -239,6 +241,8 @@ solution "[name]"
             "-stdlib=libc++",
 [+imgui +sndh
             "-std=c++11",]
+[+clay
+            "-std=c++20",]
 [+sndh
             "-Wno-multichar",]
             "-gdwarf-2",
@@ -284,6 +288,8 @@ solution "[name]"
     configuration {"windows", "vs*", "not web"}
         buildoptions
         {
+[+clay
+            "/std:c++20",]
             "/MP",
             "/EHsc"
         }
@@ -292,6 +298,8 @@ solution "[name]"
     configuration {"windows", "not vs*"}
         buildoptions
         {
+[+clay
+            "-std=c++20",]
             "-Wno-write-strings",
             "-Wno-multichar"
         }

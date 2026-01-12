@@ -1,0 +1,476 @@
+//! Includes
+
+#ifndef _orxCLAY_H_
+#define _orxCLAY_H_
+
+#include "orx.h"
+
+
+//! Prototypes / Declarations
+
+orxSTATUS   orxFASTCALL                     orxClay_Init();
+void        orxFASTCALL                     orxClay_Exit();
+
+#define orxCLAY_KZ_CONFIG_SECTION           "Clay"
+#define orxCLAY_KZ_CONFIG_FONT_LIST         "FontList"
+#define orxCLAY_KZ_CONFIG_SHOW_DEBUG        "ShowDebug"
+#define orxCLAY_KZ_MEASURE_OBJECT           "Clay:Object:Measure"
+
+
+//! Code
+
+#ifdef orxCLAY_IMPL
+
+#ifdef __orxMSVC__
+  #pragma warning(push)
+  #pragma warning(disable : 4576 4244)
+#endif /* __orxMSVC__ */
+
+#ifdef __orxWEB__
+#define CLAY_WASM
+#endif // __orxWEB__
+
+#define CLAY_IMPLEMENTATION
+#include "clay/clay.h"
+#undef CLAY_IMPLEMENTATION
+
+#ifdef __orxWEB__
+#undef CLAY_WASM
+#endif // __orxWEB__
+
+static orxBOOL    sbClayInFrame             = orxFALSE;
+static orxOBJECT *spstMeasure               = orxNULL;
+static orxVECTOR  svOffset                  = orxVECTOR_0;
+
+
+static void orxClay_ErrorHandler(Clay_ErrorData _stErrorData)
+{
+  // Logs message
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, orxANSI_KZ_COLOR_FG_YELLOW "[Clay]" orxANSI_KZ_COLOR_FG_RED " Error: " orxANSI_KZ_COLOR_FG_DEFAULT "[%.*s]", _stErrorData.errorText.length, _stErrorData.errorText.chars);
+
+  // Done!
+  return;
+}
+
+static Clay_Dimensions orxClay_MeasureText(Clay_StringSlice _stText, Clay_TextElementConfig *_pstConfig, void *_pUserData)
+{
+  Clay_Dimensions stResult;
+  orxTEXT        *pstText;
+  orxFONT        *pstFont = orxNULL;
+  orxCHAR        *pcBuffer;
+  orxFLOAT        fScale;
+
+  // Updates measure text
+  pcBuffer  = (orxCHAR *)orxMemory_StackAllocate(_stText.length + 1);
+  if(_pstConfig->fontId)
+  {
+    orxConfig_PushSection(orxCLAY_KZ_CONFIG_SECTION);
+    pstFont = orxFont_Get(orxConfig_GetListString(orxCLAY_KZ_CONFIG_FONT_LIST, (orxS32)_pstConfig->fontId - 1));
+    orxConfig_PopSection();
+  }
+  if(!pstFont)
+  {
+    pstFont = orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME);
+  }
+  fScale = orxU2F(_pstConfig->fontSize) / orxFont_GetCharacterHeight(pstFont);
+  orxString_NPrint(pcBuffer, _stText.length + 1, "%.*s", _stText.length, _stText.chars);
+  pstText = orxTEXT(orxGraphic_GetData(orxOBJECT_GET_STRUCTURE(spstMeasure, GRAPHIC)));
+  orxASSERT(pstText);
+  orxText_SetFont(pstText, pstFont);
+  orxText_SetString(pstText, pcBuffer);
+
+  // Updates result
+  orxText_GetSize(pstText, &(stResult.width), &(stResult.height));
+  stResult.width   *= fScale;
+  stResult.height  *= fScale;
+
+  // Done!
+  return stResult;
+}
+
+static orxSTATUS orxFASTCALL orxClay_BeginFrame(const orxEVENT *_pstEvent)
+{
+  // Initialized?
+  if(Clay_GetCurrentContext())
+  {
+    orxVIEWPORT  *pstViewport;
+    orxVECTOR     vMousePosition;
+    orxFLOAT      fWidth, fHeight;
+
+    // Has pending frame?
+    if(sbClayInFrame)
+    {
+      // Terminates it
+      Clay_EndLayout();
+    }
+
+    // Sets dimensions, pointer & scroll states
+    sbClayInFrame = orxTRUE;
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    orxMouse_GetPosition(&vMousePosition);
+    pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
+    if(pstViewport)
+    {
+      orxAABOX  stViewportBox;
+      orxFLOAT  fCorrectionRatio;
+
+      orxViewport_GetBox(pstViewport, &stViewportBox);
+      fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
+      if(fCorrectionRatio != orxFLOAT_1)
+      {
+        orxFLOAT fDelta;
+        if(fCorrectionRatio < orxFLOAT_1)
+        {
+          fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
+
+          /* Updates viewport */
+          stViewportBox.vTL.fX += fDelta;
+          stViewportBox.vBR.fX -= fDelta;
+        }
+        else
+        {
+          fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
+
+          /* Updates viewport */
+          stViewportBox.vTL.fY += fDelta;
+          stViewportBox.vBR.fY -= fDelta;
+        }
+      }
+
+      Clay_SetLayoutDimensions((Clay_Dimensions){stViewportBox.vBR.fX - stViewportBox.vTL.fX, stViewportBox.vBR.fY - stViewportBox.vTL.fY});
+      orxVector_Copy(&svOffset, &(stViewportBox.vTL));
+      orxVector_Sub(&vMousePosition, &vMousePosition, &svOffset);
+    }
+    else
+    {
+      Clay_SetLayoutDimensions((Clay_Dimensions){fWidth, fHeight});
+      orxVector_SetAll(&svOffset, orxFLOAT_0);
+    }
+    Clay_SetPointerState((Clay_Vector2){vMousePosition.fX, vMousePosition.fY}, (bool)orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT));
+    Clay_UpdateScrollContainers(true, (Clay_Vector2){0.0f, orxMouse_GetWheelDelta()}, orxClock_GetInfo(orxClock_Get(orxCLOCK_KZ_CORE))->fDT);
+
+    // Updates debug status
+    orxConfig_PushSection(orxCLAY_KZ_CONFIG_SECTION);
+    if(orxConfig_HasValue(orxCLAY_KZ_CONFIG_SHOW_DEBUG))
+    {
+      Clay_SetDebugModeEnabled((bool)orxConfig_GetBool(orxCLAY_KZ_CONFIG_SHOW_DEBUG));
+      orxConfig_ClearValue(orxCLAY_KZ_CONFIG_SHOW_DEBUG);
+    }
+    orxConfig_PopSection();
+
+    // Begins layout
+    Clay_BeginLayout();
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxClay_EndFrame(const orxEVENT *_pstEvent)
+{
+  // Initialized?
+  if(Clay_GetCurrentContext())
+  {
+    // Has pending frame?
+    if(sbClayInFrame)
+    {
+      Clay_RenderCommandArray stCommandArray;
+      orxS32                  i;
+
+      // Terminates it and retrieves render commands
+      sbClayInFrame = orxFALSE;
+      stCommandArray = Clay_EndLayout();
+
+      // For all render commands
+      for(i = 0; i < stCommandArray.length; i++)
+      {
+        Clay_RenderCommand *pstRenderCommand;
+        Clay_BoundingBox    stBoundingBox;
+
+        // Gets it
+        pstRenderCommand = Clay_RenderCommandArray_Get(&stCommandArray, i);
+
+        // Gets its bounding box
+        stBoundingBox = {orxMath_Round(pstRenderCommand->boundingBox.x) + svOffset.fX, orxMath_Round(pstRenderCommand->boundingBox.y) + svOffset.fY, orxMath_Round(pstRenderCommand->boundingBox.width), orxMath_Round(pstRenderCommand->boundingBox.height)};
+
+        // Depending on its type
+        switch(pstRenderCommand->commandType)
+        {
+          case CLAY_RENDER_COMMAND_TYPE_RECTANGLE:
+          {
+            Clay_RectangleRenderData *pstData;
+            orxOBOX                   stBox;
+
+            //! TODO: Round corners
+
+            // Renders rectangle
+            pstData = &(pstRenderCommand->renderData.rectangle);
+            stBox = (orxOBOX){.vPosition = (orxVECTOR) {.fX = stBoundingBox.x, .fY = stBoundingBox.y}, .vX = (orxVECTOR){.fX = stBoundingBox.width}, .vY = (orxVECTOR){.fY = stBoundingBox.height}};
+            orxDisplay_DrawOBox(&stBox, orx2RGBA(orxF2U(pstData->backgroundColor.r), orxF2U(pstData->backgroundColor.g), orxF2U(pstData->backgroundColor.b), orxF2U(pstData->backgroundColor.a)), orxTRUE);
+            break;
+          }
+          case CLAY_RENDER_COMMAND_TYPE_BORDER:
+          {
+            Clay_BorderRenderData  *pstData;
+            orxOBOX                 stBox;
+
+            //! TODO: Round corners
+
+            // Renders borders
+            pstData = &(pstRenderCommand->renderData.border);
+            if(pstData->width.left > 0)
+            {
+              stBox = (orxOBOX){.vPosition = (orxVECTOR){.fX = stBoundingBox.x, .fY = stBoundingBox.y + pstData->cornerRadius.topLeft}, .vX = (orxVECTOR){.fX = orxU2F(pstData->width.left)}, .vY = (orxVECTOR){.fY = stBoundingBox.height - pstData->cornerRadius.topLeft - pstData->cornerRadius.bottomLeft}};
+              orxDisplay_DrawOBox(&stBox, orx2RGBA(orxF2U(pstData->color.r), orxF2U(pstData->color.g), orxF2U(pstData->color.b), orxF2U(pstData->color.a)), orxTRUE);
+            }
+            if(pstData->width.right > 0)
+            {
+              stBox = (orxOBOX){.vPosition = (orxVECTOR){.fX = stBoundingBox.x + stBoundingBox.width - pstData->width.right, .fY = stBoundingBox.y + pstData->cornerRadius.topRight}, .vX = (orxVECTOR){.fX = orxU2F(pstData->width.right)}, .vY = (orxVECTOR){.fY = stBoundingBox.height - pstData->cornerRadius.topRight - pstData->cornerRadius.bottomRight}};
+              orxDisplay_DrawOBox(&stBox, orx2RGBA(orxF2U(pstData->color.r), orxF2U(pstData->color.g), orxF2U(pstData->color.b), orxF2U(pstData->color.a)), orxTRUE);
+            }
+            if(pstData->width.top > 0)
+            {
+             stBox = (orxOBOX){.vPosition = (orxVECTOR){.fX = stBoundingBox.x + pstData->cornerRadius.topLeft, .fY = stBoundingBox.y}, .vX = (orxVECTOR){.fX = stBoundingBox.width - pstData->cornerRadius.topLeft - pstData->cornerRadius.topRight}, .vY = (orxVECTOR){.fY = orxU2F(pstData->width.top)}};
+             orxDisplay_DrawOBox(&stBox, orx2RGBA(orxF2U(pstData->color.r), orxF2U(pstData->color.g), orxF2U(pstData->color.b), orxF2U(pstData->color.a)), orxTRUE);
+            }
+            if(pstData->width.bottom > 0)
+            {
+             stBox = (orxOBOX){.vPosition = (orxVECTOR){.fX = stBoundingBox.x + pstData->cornerRadius.bottomLeft, .fY = stBoundingBox.y + stBoundingBox.height - orxU2F(pstData->width.bottom)}, .vX = (orxVECTOR){.fX = stBoundingBox.width - pstData->cornerRadius.bottomLeft - pstData->cornerRadius.bottomRight}, .vY = (orxVECTOR){.fY = orxU2F(pstData->width.bottom)}};
+             orxDisplay_DrawOBox(&stBox, orx2RGBA(orxF2U(pstData->color.r), orxF2U(pstData->color.g), orxF2U(pstData->color.b), orxF2U(pstData->color.a)), orxTRUE);
+            }
+            // if (config->cornerRadius.topLeft > 0) {
+            //   DrawRing((Vector2) { roundf(boundingBox.x + config->cornerRadius.topLeft), roundf(boundingBox.y + config->cornerRadius.topLeft) }, roundf(config->cornerRadius.topLeft - config->width.top), config->cornerRadius.topLeft, 180, 270, 10, CLAY_COLOR_TO_RAYLIB_COLOR(config->color));
+            // }
+            // if (config->cornerRadius.topRight > 0) {
+            //   DrawRing((Vector2) { roundf(boundingBox.x + boundingBox.width - config->cornerRadius.topRight), roundf(boundingBox.y + config->cornerRadius.topRight) }, roundf(config->cornerRadius.topRight - config->width.top), config->cornerRadius.topRight, 270, 360, 10, CLAY_COLOR_TO_RAYLIB_COLOR(config->color));
+            // }
+            // if (config->cornerRadius.bottomLeft > 0) {
+            //   DrawRing((Vector2) { roundf(boundingBox.x + config->cornerRadius.bottomLeft), roundf(boundingBox.y + boundingBox.height - config->cornerRadius.bottomLeft) }, roundf(config->cornerRadius.bottomLeft - config->width.bottom), config->cornerRadius.bottomLeft, 90, 180, 10, CLAY_COLOR_TO_RAYLIB_COLOR(config->color));
+            // }
+            // if (config->cornerRadius.bottomRight > 0) {
+            //   DrawRing((Vector2) { roundf(boundingBox.x + boundingBox.width - config->cornerRadius.bottomRight), roundf(boundingBox.y + boundingBox.height - config->cornerRadius.bottomRight) }, roundf(config->cornerRadius.bottomRight - config->width.bottom), config->cornerRadius.bottomRight, 0.1, 90, 10, CLAY_COLOR_TO_RAYLIB_COLOR(config->color));
+            // }
+            break;
+          }
+          case CLAY_RENDER_COMMAND_TYPE_TEXT:
+          {
+            Clay_TextRenderData  *pstData;
+            orxTEXT              *pstText;
+            orxFONT              *pstFont = orxNULL;
+            const orxSHADER      *pstShader = orxNULL;
+            orxCHAR              *pcBuffer;
+            orxDISPLAY_TRANSFORM  stTransform;
+            orxDISPLAY_SMOOTHING  eSmoothing = orxDISPLAY_SMOOTHING_ON;
+            orxFLOAT              fScale;
+
+            // Renders text
+            pstData   = &(pstRenderCommand->renderData.text);
+            pcBuffer  = (orxCHAR *)orxMemory_StackAllocate(pstData->stringContents.length + 1);
+            if(pstData->fontId)
+            {
+              orxConfig_PushSection(orxCLAY_KZ_CONFIG_SECTION);
+              pstFont = orxFont_Get(orxConfig_GetListString(orxCLAY_KZ_CONFIG_FONT_LIST, (orxS32)pstData->fontId - 1));
+              orxConfig_PopSection();
+            }
+            if(pstFont)
+            {
+              pstShader = orxFont_GetShader(pstFont);
+            }
+            else
+            {
+              pstFont     = orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME);
+              eSmoothing  = orxDISPLAY_SMOOTHING_OFF;
+            }
+            fScale = orxU2F(pstData->fontSize) / orxFont_GetCharacterHeight(pstFont);
+            orxString_NPrint(pcBuffer, pstData->stringContents.length + 1, "%.*s", pstData->stringContents.length, pstData->stringContents.chars);
+            pstText = orxTEXT(orxGraphic_GetData(orxOBJECT_GET_STRUCTURE(spstMeasure, GRAPHIC)));
+            orxASSERT(pstText);
+            orxText_SetFont(pstText, pstFont);
+            orxText_SetString(pstText, pcBuffer);
+            orxMemory_Zero(&stTransform, sizeof(orxDISPLAY_TRANSFORM));
+            stTransform.fScaleX   = stTransform.fScaleY = fScale;
+            stTransform.fRepeatX  = stTransform.fRepeatY = orxFLOAT_1;
+            stTransform.fDstX     = stBoundingBox.x;
+            stTransform.fDstY     = stBoundingBox.y;
+            if(pstShader)
+            {
+              if(orxShader_Start(pstShader, orxSTRUCTURE(spstMeasure)) == orxSTATUS_FAILURE)
+              {
+                pstShader = orxNULL;
+              }
+            }
+            orxDisplay_TransformText(orxText_GetString(pstText), orxTexture_GetBitmap(orxFont_GetTexture(pstFont)), orxFont_GetMap(pstFont), &stTransform, orx2RGBA(orxF2U(pstData->textColor.r), orxF2U(pstData->textColor.g), orxF2U(pstData->textColor.b), orxF2U(pstData->textColor.a)), eSmoothing, orxDISPLAY_BLEND_MODE_ALPHA);
+            if(pstShader != orxNULL)
+            {
+              orxShader_Stop(pstShader);
+            }
+            break;
+          }
+          case CLAY_RENDER_COMMAND_TYPE_IMAGE:
+          {
+            Clay_ImageRenderData *pstData;
+            orxGRAPHIC           *pstGraphic;
+
+            // Renders image
+            pstData = &(pstRenderCommand->renderData.image);
+            orxConfig_PushSection((orxSTRING)pstData->imageData);
+            orxConfig_SetBool("KeepInCache", orxTRUE);
+            pstGraphic = orxGraphic_CreateFromConfig(orxConfig_GetCurrentSection());
+            if(pstGraphic)
+            {
+              orxTEXTURE *pstTexture;
+
+              pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+              if(pstTexture)
+              {
+                orxDISPLAY_TRANSFORM  stTransform;
+                orxRGBA               stRGBA;
+                orxFLOAT              fWidth, fHeight;
+
+                //! TODO: Round corners
+
+                orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
+                orxMemory_Zero(&stTransform, sizeof(orxDISPLAY_TRANSFORM));
+                stTransform.fScaleX   = pstRenderCommand->boundingBox.width / fWidth;
+                stTransform.fScaleY   = pstRenderCommand->boundingBox.height / fHeight;
+                stTransform.fRepeatX  = stTransform.fRepeatY = orxFLOAT_1;
+                stTransform.fDstX     = stBoundingBox.x;
+                stTransform.fDstY     = stBoundingBox.y;
+                stRGBA                = orx2RGBA(orxF2U(pstData->backgroundColor.r), orxF2U(pstData->backgroundColor.g), orxF2U(pstData->backgroundColor.b), orxF2U(pstData->backgroundColor.a));
+                if(stRGBA.u32RGBA == 0)
+                {
+                  stRGBA = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+                }
+                orxDisplay_TransformBitmap(orxTexture_GetBitmap(pstTexture), &stTransform, stRGBA, orxGraphic_GetSmoothing(pstGraphic), orxGraphic_HasBlendMode(pstGraphic) ? orxGraphic_GetBlendMode(pstGraphic) : orxDISPLAY_BLEND_MODE_ALPHA);
+              }
+              orxGraphic_Delete(pstGraphic);
+            }
+            orxConfig_PopSection();
+            break;
+          }
+          case CLAY_RENDER_COMMAND_TYPE_SCISSOR_START:
+          {
+            // Updates screen clipping
+            orxDisplay_SetBitmapClipping(orxNULL, orxF2U(stBoundingBox.x), orxF2U(stBoundingBox.y), orxF2U(stBoundingBox.x + stBoundingBox.width), orxF2U(stBoundingBox.y + stBoundingBox.height));
+            break;
+          }
+          case CLAY_RENDER_COMMAND_TYPE_SCISSOR_END:
+          {
+            orxFLOAT fScreenWidth, fScreenHeight;
+
+            // Updates screen clipping
+            orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
+            orxDisplay_SetBitmapClipping(orxNULL, 0, 0, orxF2U(fScreenWidth), orxF2U(fScreenHeight));
+            break;
+          }
+          default:
+          {
+            // No custom support
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+orxSTATUS orxFASTCALL orxClay_Init()
+{
+  void     *pBuffer;
+  uint32_t  u32ArenaSize;
+
+  // Clears context
+  Clay_SetCurrentContext(NULL);
+  sbClayInFrame = orxFALSE;
+
+  // Allocates memory
+  u32ArenaSize = Clay_MinMemorySize();
+  pBuffer = orxMemory_Allocate(u32ArenaSize, orxMEMORY_TYPE_MAIN);
+
+  // Valid?
+  if(pBuffer)
+  {
+    orxFLOAT fWidth, fHeight;
+    orxS32   i, iCount;
+
+    // Loads font
+    orxConfig_PushSection(orxCLAY_KZ_CONFIG_SECTION);
+    for(i = 0, iCount = orxConfig_GetListCount(orxCLAY_KZ_CONFIG_FONT_LIST); i < iCount; i++)
+    {
+      orxFont_CreateFromConfig(orxConfig_GetListString(orxCLAY_KZ_CONFIG_FONT_LIST, i));
+    }
+    orxConfig_PopSection();
+
+    // Inits clay
+    orxConfig_PushSection(orxCLAY_KZ_MEASURE_OBJECT);
+    orxConfig_SetString("Graphic", "@");
+    orxConfig_SetString("Text", "@");
+    orxConfig_SetU32("Alpha", 0);
+    orxConfig_PopSection();
+    spstMeasure = orxObject_CreateFromConfig(orxCLAY_KZ_MEASURE_OBJECT);
+    orxASSERT(spstMeasure);
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    Clay_Initialize(Clay_CreateArenaWithCapacityAndMemory(u32ArenaSize, pBuffer), (Clay_Dimensions){fWidth, fHeight}, (Clay_ErrorHandler){.errorHandlerFunction = orxClay_ErrorHandler});
+    Clay_SetMeasureTextFunction(orxClay_MeasureText, NULL);
+
+    // Registers event handlers
+    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, &orxClay_BeginFrame);
+    orxEvent_SetHandlerIDFlags(&orxClay_BeginFrame, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
+    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, &orxClay_EndFrame);
+    orxEvent_SetHandlerIDFlags(&orxClay_EndFrame, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_PROFILER_START), orxEVENT_KU32_MASK_ID_ALL);
+
+    // Begins first frame
+    orxClay_BeginFrame(orxNULL);
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+void orxFASTCALL orxClay_Exit()
+{
+  // Initialized?
+  if(Clay_GetCurrentContext())
+  {
+    orxS32 i, iCount;
+
+    // Removes event handlers
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, &orxClay_BeginFrame);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, &orxClay_EndFrame);
+
+    // Ends last frame
+    orxClay_EndFrame(orxNULL);
+
+    // Deletes text
+    orxObject_Delete(spstMeasure);
+    spstMeasure = orxNULL;
+
+    // Unloads font
+    orxConfig_PushSection(orxCLAY_KZ_CONFIG_SECTION);
+    for(i = 0, iCount = orxConfig_GetListCount(orxCLAY_KZ_CONFIG_FONT_LIST); i < iCount; i++)
+    {
+      orxFont_Delete(orxFont_Get(orxConfig_GetListString(orxCLAY_KZ_CONFIG_FONT_LIST, i)));
+    }
+    orxConfig_PopSection();
+
+    // Frees memory
+    orxMemory_Free(Clay_GetCurrentContext()->internalArena.memory);
+
+    // Clears context
+    Clay_SetCurrentContext(NULL);
+  }
+
+  // Done!
+  return;
+}
+
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif /* __orxMSVC__ */
+
+#endif // orxCLAY_IMPL
+
+#endif // _orxCLAY_H_
