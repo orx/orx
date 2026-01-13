@@ -24,7 +24,7 @@ void        orxFASTCALL                     orxClay_Exit();
 #ifdef __orxMSVC__
   #pragma warning(push)
   #pragma warning(disable : 4576 4244)
-#endif /* __orxMSVC__ */
+#endif // __orxMSVC__
 
 #ifdef __orxWEB__
 #define CLAY_WASM
@@ -124,7 +124,7 @@ static orxSTATUS orxFASTCALL orxClay_BeginFrame(const orxEVENT *_pstEvent)
         {
           fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
 
-          /* Updates viewport */
+          // Updates viewport
           stViewportBox.vTL.fX += fDelta;
           stViewportBox.vBR.fX -= fDelta;
         }
@@ -132,7 +132,7 @@ static orxSTATUS orxFASTCALL orxClay_BeginFrame(const orxEVENT *_pstEvent)
         {
           fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
 
-          /* Updates viewport */
+          // Updates viewport
           stViewportBox.vTL.fY += fDelta;
           stViewportBox.vBR.fY -= fDelta;
         }
@@ -585,7 +585,7 @@ void orxFASTCALL orxClay_Exit()
 
 #ifdef __orxMSVC__
   #pragma warning(pop)
-#endif /* __orxMSVC__ */
+#endif // __orxMSVC__
 
 #endif // orxCLAY_IMPL
 
