@@ -953,7 +953,7 @@ static orxCOMMAND_VAR *orxFASTCALL orxCommand_Process(const orxSTRING _zCommandL
                 u32Length = orxString_GetLength(zVariable);
 
                 /* Has room? */
-                if(pcDst - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1 - u32Length)
+                if (pcDst - sstCommand.acProcessBuffer < orxCOMMAND_KU32_PROCESS_BUFFER_SIZE - 1 - (orxS32)u32Length)
                 {
                   /* Moves it (buffers can overlap if variable used a lazy command) */
                   orxMemory_Move(pcDst, zVariable, u32Length);

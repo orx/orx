@@ -1533,7 +1533,7 @@ orxBOOL orxFASTCALL orxClock_IsPaused(const orxCLOCK *_pstClock)
  * @param[in]   _pstClock                             Concerned clock
  * @return      orxCLOCK_INFO / orxNULL
  */
-const orxCLOCK_INFO *orxFASTCALL  orxClock_GetInfo(const orxCLOCK *_pstClock)
+const orxCLOCK_INFO *orxFASTCALL orxClock_GetInfo(const orxCLOCK *_pstClock)
 {
   const orxCLOCK_INFO *pstClockInfo;
 
