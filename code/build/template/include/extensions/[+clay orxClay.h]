@@ -1,0 +1,592 @@
+//! Includes
+
+#ifndef _orxCLAY_H_
+#define _orxCLAY_H_
+
+#include "orx.h"
+
+
+//! Prototypes / Declarations
+
+orxSTATUS   orxFASTCALL                     orxClay_Init();
+void        orxFASTCALL                     orxClay_Exit();
+
+#define orxCLAY_KZ_CONFIG_SECTION           "Clay"
+#define orxCLAY_KZ_CONFIG_FONT_LIST         "FontList"
+#define orxCLAY_KZ_CONFIG_SHOW_DEBUG        "ShowDebug"
+#define orxCLAY_KZ_MEASURE_OBJECT           "Clay:Object:Measure"
+
+
+//! Code
+
+#ifdef orxCLAY_IMPL
+
+#ifdef __orxMSVC__
+  #pragma warning(push)
+  #pragma warning(disable : 4576 4244)
+#endif // __orxMSVC__
+
+#ifdef __orxWEB__
+#define CLAY_WASM
+#endif // __orxWEB__
+
+#define CLAY_IMPLEMENTATION
+#include "clay/clay.h"
+#undef CLAY_IMPLEMENTATION
+
+#ifdef __orxWEB__
+#undef CLAY_WASM
+#endif // __orxWEB__
+
+static orxBOOL    sbClayInFrame             = orxFALSE;
+static orxOBJECT *spstMeasure               = orxNULL;
+static orxSHADER *spstShader                = orxNULL;
+static orxVECTOR  svOffset                  = {orx2F(0.0f), orx2F(0.0f), orx2F(0.0f)};
+
+
+static void orxClay_ErrorHandler(Clay_ErrorData _stErrorData)
+{
+  // Logs message
+  orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, orxANSI_KZ_COLOR_FG_YELLOW "[Clay]" orxANSI_KZ_COLOR_FG_RED " Error: " orxANSI_KZ_COLOR_FG_DEFAULT "[%.*s]", _stErrorData.errorText.length, _stErrorData.errorText.chars);
+
+  // Done!
+  return;
+}
+
+static Clay_Dimensions orxClay_MeasureText(Clay_StringSlice _stText, Clay_TextElementConfig *_pstConfig, void *_pUserData)
+{
+  Clay_Dimensions stResult;
+  orxTEXT        *pstText;
+  orxFONT        *pstFont = orxNULL;
+  orxCHAR        *pcBuffer;
+  orxFLOAT        fScale;
+
+  // Updates measure text
+  pcBuffer  = (orxCHAR *)orxMemory_StackAllocate(_stText.length + 1);
+  if(_pstConfig->fontId)
+  {
+    orxConfig_PushSection(orxCLAY_KZ_CONFIG_SECTION);
+    pstFont = orxFont_Get(orxConfig_GetListString(orxCLAY_KZ_CONFIG_FONT_LIST, (orxS32)_pstConfig->fontId - 1));
+    orxConfig_PopSection();
+  }
+  if(!pstFont)
+  {
+    pstFont = orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME);
+  }
+  fScale = orxU2F(_pstConfig->fontSize) / orxFont_GetCharacterHeight(pstFont);
+  orxString_NPrint(pcBuffer, _stText.length + 1, "%.*s", _stText.length, _stText.chars);
+  pstText = orxTEXT(orxGraphic_GetData(orxOBJECT_GET_STRUCTURE(spstMeasure, GRAPHIC)));
+  orxASSERT(pstText);
+  orxText_SetFont(pstText, pstFont);
+  orxText_SetString(pstText, pcBuffer);
+
+  // Updates result
+  orxText_GetSize(pstText, &(stResult.width), &(stResult.height));
+  stResult.width   *= fScale;
+  stResult.height  *= fScale;
+
+  // Done!
+  return stResult;
+}
+
+static orxSTATUS orxFASTCALL orxClay_BeginFrame(const orxEVENT *_pstEvent)
+{
+  // Initialized?
+  if(Clay_GetCurrentContext())
+  {
+    orxVIEWPORT  *pstViewport;
+    orxVECTOR     vMousePosition;
+    orxFLOAT      fWidth, fHeight;
+
+    // Has pending frame?
+    if(sbClayInFrame)
+    {
+      // Terminates it
+      Clay_EndLayout();
+    }
+
+    // Sets dimensions, pointer & scroll states
+    sbClayInFrame = orxTRUE;
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    orxMouse_GetPosition(&vMousePosition);
+    pstViewport = orxVIEWPORT(orxStructure_GetLast(orxSTRUCTURE_ID_VIEWPORT));
+    if(pstViewport)
+    {
+      orxAABOX  stViewportBox;
+      orxFLOAT  fCorrectionRatio;
+
+      orxViewport_GetBox(pstViewport, &stViewportBox);
+      fCorrectionRatio = orxViewport_GetCorrectionRatio(pstViewport);
+      if(fCorrectionRatio != orxFLOAT_1)
+      {
+        orxFLOAT fDelta;
+        if(fCorrectionRatio < orxFLOAT_1)
+        {
+          fDelta = orx2F(0.5f) * (orxFLOAT_1 - fCorrectionRatio) * (stViewportBox.vBR.fX - stViewportBox.vTL.fX);
+
+          // Updates viewport
+          stViewportBox.vTL.fX += fDelta;
+          stViewportBox.vBR.fX -= fDelta;
+        }
+        else
+        {
+          fDelta = orx2F(0.5f) * (orxFLOAT_1 - (orxFLOAT_1 / fCorrectionRatio)) * (stViewportBox.vBR.fY - stViewportBox.vTL.fY);
+
+          // Updates viewport
+          stViewportBox.vTL.fY += fDelta;
+          stViewportBox.vBR.fY -= fDelta;
+        }
+      }
+
+      Clay_SetLayoutDimensions((Clay_Dimensions){stViewportBox.vBR.fX - stViewportBox.vTL.fX, stViewportBox.vBR.fY - stViewportBox.vTL.fY});
+      orxVector_Copy(&svOffset, &(stViewportBox.vTL));
+      orxVector_Sub(&vMousePosition, &vMousePosition, &svOffset);
+    }
+    else
+    {
+      Clay_SetLayoutDimensions((Clay_Dimensions){fWidth, fHeight});
+      orxVector_SetAll(&svOffset, orxFLOAT_0);
+    }
+    Clay_SetPointerState((Clay_Vector2){vMousePosition.fX, vMousePosition.fY}, (bool)orxMouse_IsButtonPressed(orxMOUSE_BUTTON_LEFT));
+    Clay_UpdateScrollContainers(true, (Clay_Vector2){0.0f, orxMouse_GetWheelDelta()}, orxClock_GetInfo(orxClock_Get(orxCLOCK_KZ_CORE))->fDT);
+
+    // Updates debug status
+    orxConfig_PushSection(orxCLAY_KZ_CONFIG_SECTION);
+    if(orxConfig_HasValue(orxCLAY_KZ_CONFIG_SHOW_DEBUG))
+    {
+      Clay_SetDebugModeEnabled((bool)orxConfig_GetBool(orxCLAY_KZ_CONFIG_SHOW_DEBUG));
+      orxConfig_ClearValue(orxCLAY_KZ_CONFIG_SHOW_DEBUG);
+    }
+    orxConfig_PopSection();
+
+    // Begins layout
+    Clay_BeginLayout();
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxClay_EndFrame(const orxEVENT *_pstEvent)
+{
+  // Initialized?
+  if(Clay_GetCurrentContext())
+  {
+    // Has pending frame?
+    if(sbClayInFrame)
+    {
+      Clay_RenderCommandArray stCommandArray;
+      orxS32                  i;
+
+      // Terminates it and retrieves render commands
+      sbClayInFrame = orxFALSE;
+      stCommandArray = Clay_EndLayout();
+
+      // For all render commands
+      for(i = 0; i < stCommandArray.length; i++)
+      {
+        Clay_RenderCommand *pstRenderCommand;
+        Clay_BoundingBox    stBoundingBox;
+
+        // Gets it
+        pstRenderCommand = Clay_RenderCommandArray_Get(&stCommandArray, i);
+
+        // Gets its bounding box
+        stBoundingBox.x = orxMath_Round(pstRenderCommand->boundingBox.x) + svOffset.fX;
+        stBoundingBox.y = orxMath_Round(pstRenderCommand->boundingBox.y) + svOffset.fY;
+        stBoundingBox.width = orxMath_Round(pstRenderCommand->boundingBox.width);
+        stBoundingBox.height = orxMath_Round(pstRenderCommand->boundingBox.height);
+
+        // Depending on its type
+        switch(pstRenderCommand->commandType)
+        {
+          case CLAY_RENDER_COMMAND_TYPE_RECTANGLE:
+          {
+            Clay_RectangleRenderData *pstData;
+            const orxTEXTURE         *pstTexture;
+            orxDISPLAY_TRANSFORM      stTransform;
+            orxVECTOR                 vSize;
+            orxRGBA                   stRGBA;
+            orxFLOAT                  afValues[4] = {-orxFLOAT_1, -orxFLOAT_1, -orxFLOAT_1, -orxFLOAT_1};
+
+            // Renders rectangle
+            pstData = &(pstRenderCommand->renderData.rectangle);
+            orxMemory_Zero(&stTransform, sizeof(orxDISPLAY_TRANSFORM));
+            stTransform.fScaleX   = pstRenderCommand->boundingBox.width;
+            stTransform.fScaleY   = pstRenderCommand->boundingBox.height;
+            stTransform.fRepeatX  = stTransform.fRepeatY = orxFLOAT_1;
+            stTransform.fDstX     = stBoundingBox.x;
+            stTransform.fDstY     = stBoundingBox.y;
+            stRGBA                = orx2RGBA(orxF2U(pstData->backgroundColor.r), orxF2U(pstData->backgroundColor.g), orxF2U(pstData->backgroundColor.b), orxF2U(pstData->backgroundColor.a));
+            if(stRGBA.u32RGBA == 0)
+            {
+              stRGBA = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+            }
+            orxVector_Set(&vSize, stBoundingBox.width, stBoundingBox.height, orxFLOAT_0);
+            orxShader_SetVectorParam(spstShader, "Size", 0, &vSize);
+            orxShader_SetFloatParam(spstShader, "Borders", 4, afValues);
+            afValues[0] = pstData->cornerRadius.topLeft;
+            afValues[1] = pstData->cornerRadius.topRight;
+            afValues[2] = pstData->cornerRadius.bottomRight;
+            afValues[3] = pstData->cornerRadius.bottomLeft;
+            orxShader_SetFloatParam(spstShader, "Corners", 4, afValues);
+            pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL_NAME);
+            orxShader_SetTextureParam(spstShader, "Texture", 0, &pstTexture);
+            orxDisplay_SetBlendMode(orxDISPLAY_BLEND_MODE_NONE);
+            orxShader_Start(spstShader, orxSTRUCTURE(spstMeasure));
+            orxDisplay_TransformBitmap(orxTexture_GetBitmap(pstTexture), &stTransform, stRGBA, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA);
+            orxShader_Stop(spstShader);
+            break;
+          }
+          case CLAY_RENDER_COMMAND_TYPE_BORDER:
+          {
+            Clay_BorderRenderData  *pstData;
+            const orxTEXTURE       *pstTexture;
+            orxDISPLAY_TRANSFORM    stTransform;
+            orxVECTOR               vSize;
+            orxRGBA                 stRGBA;
+            orxFLOAT                afValues[4];
+
+            // Renders borders
+            pstData = &(pstRenderCommand->renderData.border);
+            orxMemory_Zero(&stTransform, sizeof(orxDISPLAY_TRANSFORM));
+            stTransform.fScaleX   = pstRenderCommand->boundingBox.width;
+            stTransform.fScaleY   = pstRenderCommand->boundingBox.height;
+            stTransform.fRepeatX  = stTransform.fRepeatY = orxFLOAT_1;
+            stTransform.fDstX     = stBoundingBox.x;
+            stTransform.fDstY     = stBoundingBox.y;
+            stRGBA                = orx2RGBA(orxF2U(pstData->color.r), orxF2U(pstData->color.g), orxF2U(pstData->color.b), orxF2U(pstData->color.a));
+            if(stRGBA.u32RGBA == 0)
+            {
+              stRGBA = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+            }
+            orxVector_Set(&vSize, stBoundingBox.width, stBoundingBox.height, orxFLOAT_0);
+            orxShader_SetVectorParam(spstShader, "Size", 0, &vSize);
+            afValues[0] = pstData->width.left;
+            afValues[1] = pstData->width.top;
+            afValues[2] = pstData->width.right;
+            afValues[3] = pstData->width.bottom;
+            orxShader_SetFloatParam(spstShader, "Borders", 4, afValues);
+            afValues[0] = pstData->cornerRadius.topLeft;
+            afValues[1] = pstData->cornerRadius.topRight;
+            afValues[2] = pstData->cornerRadius.bottomRight;
+            afValues[3] = pstData->cornerRadius.bottomLeft;
+            orxShader_SetFloatParam(spstShader, "Corners", 4, afValues);
+            pstTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL_NAME);
+            orxShader_SetTextureParam(spstShader, "Texture", 0, &pstTexture);
+            orxDisplay_SetBlendMode(orxDISPLAY_BLEND_MODE_NONE);
+            orxShader_Start(spstShader, orxSTRUCTURE(spstMeasure));
+            orxDisplay_TransformBitmap(orxTexture_GetBitmap(pstTexture), &stTransform, stRGBA, orxDISPLAY_SMOOTHING_ON, orxDISPLAY_BLEND_MODE_ALPHA);
+            orxShader_Stop(spstShader);
+            break;
+          }
+          case CLAY_RENDER_COMMAND_TYPE_TEXT:
+          {
+            Clay_TextRenderData  *pstData;
+            orxTEXT              *pstText;
+            orxFONT              *pstFont = orxNULL;
+            const orxSHADER      *pstShader = orxNULL;
+            orxCHAR              *pcBuffer;
+            orxDISPLAY_TRANSFORM  stTransform;
+            orxDISPLAY_SMOOTHING  eSmoothing = orxDISPLAY_SMOOTHING_ON;
+            orxFLOAT              fScale;
+
+            // Renders text
+            pstData   = &(pstRenderCommand->renderData.text);
+            pcBuffer  = (orxCHAR *)orxMemory_StackAllocate(pstData->stringContents.length + 1);
+            if(pstData->fontId)
+            {
+              orxConfig_PushSection(orxCLAY_KZ_CONFIG_SECTION);
+              pstFont = orxFont_Get(orxConfig_GetListString(orxCLAY_KZ_CONFIG_FONT_LIST, (orxS32)pstData->fontId - 1));
+              orxConfig_PopSection();
+            }
+            if(pstFont)
+            {
+              pstShader = orxFont_GetShader(pstFont);
+            }
+            else
+            {
+              pstFont     = orxFont_Get(orxFONT_KZ_DEFAULT_FONT_NAME);
+              eSmoothing  = orxDISPLAY_SMOOTHING_OFF;
+            }
+            fScale = orxU2F(pstData->fontSize) / orxFont_GetCharacterHeight(pstFont);
+            orxString_NPrint(pcBuffer, pstData->stringContents.length + 1, "%.*s", pstData->stringContents.length, pstData->stringContents.chars);
+            pstText = orxTEXT(orxGraphic_GetData(orxOBJECT_GET_STRUCTURE(spstMeasure, GRAPHIC)));
+            orxASSERT(pstText);
+            orxText_SetFont(pstText, pstFont);
+            orxText_SetString(pstText, pcBuffer);
+            orxMemory_Zero(&stTransform, sizeof(orxDISPLAY_TRANSFORM));
+            stTransform.fScaleX   = stTransform.fScaleY = fScale;
+            stTransform.fRepeatX  = stTransform.fRepeatY = orxFLOAT_1;
+            stTransform.fDstX     = stBoundingBox.x;
+            stTransform.fDstY     = stBoundingBox.y;
+            if(pstShader)
+            {
+              if(orxShader_Start(pstShader, orxSTRUCTURE(spstMeasure)) == orxSTATUS_FAILURE)
+              {
+                pstShader = orxNULL;
+              }
+            }
+            orxDisplay_TransformText(orxText_GetString(pstText), orxTexture_GetBitmap(orxFont_GetTexture(pstFont)), orxFont_GetMap(pstFont), &stTransform, orx2RGBA(orxF2U(pstData->textColor.r), orxF2U(pstData->textColor.g), orxF2U(pstData->textColor.b), orxF2U(pstData->textColor.a)), eSmoothing, orxDISPLAY_BLEND_MODE_ALPHA);
+            if(pstShader != orxNULL)
+            {
+              orxShader_Stop(pstShader);
+            }
+            break;
+          }
+          case CLAY_RENDER_COMMAND_TYPE_IMAGE:
+          {
+            Clay_ImageRenderData *pstData;
+            orxGRAPHIC           *pstGraphic;
+
+            // Renders image
+            pstData = &(pstRenderCommand->renderData.image);
+            orxConfig_PushSection((orxSTRING)pstData->imageData);
+            orxConfig_SetBool("KeepInCache", orxTRUE);
+            pstGraphic = orxGraphic_CreateFromConfig(orxConfig_GetCurrentSection());
+            if(pstGraphic)
+            {
+              const orxTEXTURE *pstTexture;
+
+              pstTexture = orxTEXTURE(orxGraphic_GetData(pstGraphic));
+              if(pstTexture)
+              {
+                orxDISPLAY_TRANSFORM  stTransform;
+                orxVECTOR             vSize;
+                orxRGBA               stRGBA;
+                orxFLOAT              fWidth, fHeight;
+                orxFLOAT              afValues[4] = {-orxFLOAT_1, -orxFLOAT_1, -orxFLOAT_1, -orxFLOAT_1};
+
+                orxTexture_GetSize(pstTexture, &fWidth, &fHeight);
+                orxMemory_Zero(&stTransform, sizeof(orxDISPLAY_TRANSFORM));
+                stTransform.fScaleX   = pstRenderCommand->boundingBox.width / fWidth;
+                stTransform.fScaleY   = pstRenderCommand->boundingBox.height / fHeight;
+                stTransform.fRepeatX  = stTransform.fRepeatY = orxFLOAT_1;
+                stTransform.fDstX     = stBoundingBox.x;
+                stTransform.fDstY     = stBoundingBox.y;
+                stRGBA                = orx2RGBA(orxF2U(pstData->backgroundColor.r), orxF2U(pstData->backgroundColor.g), orxF2U(pstData->backgroundColor.b), orxF2U(pstData->backgroundColor.a));
+                if(stRGBA.u32RGBA == 0)
+                {
+                  stRGBA = orx2RGBA(0xFF, 0xFF, 0xFF, 0xFF);
+                }
+                orxVector_Set(&vSize, stBoundingBox.width, stBoundingBox.height, orxFLOAT_0);
+                orxShader_SetVectorParam(spstShader, "Size", 0, &vSize);
+                orxShader_SetFloatParam(spstShader, "Borders", 4, afValues);
+                afValues[0] = pstData->cornerRadius.topLeft;
+                afValues[1] = pstData->cornerRadius.topRight;
+                afValues[2] = pstData->cornerRadius.bottomRight;
+                afValues[3] = pstData->cornerRadius.bottomLeft;
+                orxShader_SetFloatParam(spstShader, "Corners", 4, afValues);
+                orxShader_SetTextureParam(spstShader, "Texture", 0, &pstTexture);
+                orxDisplay_SetBlendMode(orxDISPLAY_BLEND_MODE_NONE);
+                orxShader_Start(spstShader, orxSTRUCTURE(spstMeasure));
+                orxDisplay_TransformBitmap(orxTexture_GetBitmap(pstTexture), &stTransform, stRGBA, orxGraphic_GetSmoothing(pstGraphic), orxGraphic_HasBlendMode(pstGraphic) ? orxGraphic_GetBlendMode(pstGraphic) : orxDISPLAY_BLEND_MODE_ALPHA);
+                orxShader_Stop(spstShader);
+              }
+              orxGraphic_Delete(pstGraphic);
+            }
+            orxConfig_PopSection();
+            break;
+          }
+          case CLAY_RENDER_COMMAND_TYPE_SCISSOR_START:
+          {
+            // Updates screen clipping
+            orxDisplay_SetBitmapClipping(orxNULL, orxF2U(stBoundingBox.x), orxF2U(stBoundingBox.y), orxF2U(stBoundingBox.x + stBoundingBox.width), orxF2U(stBoundingBox.y + stBoundingBox.height));
+            break;
+          }
+          case CLAY_RENDER_COMMAND_TYPE_SCISSOR_END:
+          {
+            orxFLOAT fScreenWidth, fScreenHeight;
+
+            // Updates screen clipping
+            orxDisplay_GetScreenSize(&fScreenWidth, &fScreenHeight);
+            orxDisplay_SetBitmapClipping(orxNULL, 0, 0, orxF2U(fScreenWidth), orxF2U(fScreenHeight));
+            break;
+          }
+          default:
+          {
+            // No custom support
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+orxSTATUS orxFASTCALL orxClay_Init()
+{
+  void     *pBuffer;
+  uint32_t  u32ArenaSize;
+
+  // Clears context
+  Clay_SetCurrentContext(NULL);
+  sbClayInFrame = orxFALSE;
+
+  // Allocates memory
+  u32ArenaSize = Clay_MinMemorySize();
+  pBuffer = orxMemory_Allocate(u32ArenaSize, orxMEMORY_TYPE_MAIN);
+
+  // Valid?
+  if(pBuffer)
+  {
+    const orxSTRING   zShaderCode;
+    const orxTEXTURE *pstShaderTexture;
+    orxFLOAT          fWidth, fHeight, afDummies[4] = {orxFLOAT_0, orxFLOAT_0, orxFLOAT_0, orxFLOAT_0};
+    orxS32            i, iCount;
+
+    // Loads fonts
+    orxConfig_PushSection(orxCLAY_KZ_CONFIG_SECTION);
+    for(i = 0, iCount = orxConfig_GetListCount(orxCLAY_KZ_CONFIG_FONT_LIST); i < iCount; i++)
+    {
+      orxFont_CreateFromConfig(orxConfig_GetListString(orxCLAY_KZ_CONFIG_FONT_LIST, i));
+    }
+    orxConfig_PopSection();
+
+    // Prepares shader
+    zShaderCode =
+    "void main()"
+    "{"
+    "  vec2 Pos = gl_TexCoord[0].xy * Size.xy;"
+    "  float TL = Corners[0];"
+    "  float TR = Corners[1];"
+    "  float BR = Corners[2];"
+    "  float BL = Corners[3];"
+    "  float L  = Borders[0];"
+    "  float T  = Borders[1];"
+    "  float R  = Borders[2];"
+    "  float B  = Borders[3];"
+    "  float OuterAlpha = 1.0;"
+    "  float OuterTL = TL;"
+    "  TL = (TL > min(T, L)) ? TL - min(T, L) : TL;"
+    "  float OuterTR = TR;"
+    "  TR = (TR > min(T, R)) ? TR - min(T, R) : TR;"
+    "  float OuterBL = BL;"
+    "  BL = (BL > min(B, L)) ? BL - min(B, L) : BL;"
+    "  float OuterBR = BR;"
+    "  BR = (BR > min(B, R)) ? BR - min(B, R) : BR;"
+    "  if(OuterTL > 0.0 && Pos.x < OuterTL && Pos.y < OuterTL)"
+    "    OuterAlpha = step(length(Pos - vec2(OuterTL, OuterTL)), OuterTL);"
+    "  if(OuterTR > 0.0 && Pos.x > Size.x - OuterTR && Pos.y < OuterTR)"
+    "    OuterAlpha *= step(length(Pos - vec2(Size.x - OuterTR, OuterTR)), OuterTR);"
+    "  if(OuterBL > 0.0 && Pos.x < OuterBL && Pos.y > Size.y - OuterBL)"
+    "    OuterAlpha *= step(length(Pos - vec2(OuterBL, Size.y - OuterBL)), OuterBL);"
+    "  if(OuterBR > 0.0 && Pos.x > Size.x - OuterBR && Pos.y > Size.y - OuterBR)"
+    "    OuterAlpha *= step(length(Pos - vec2(Size.x - OuterBR, Size.y - OuterBR)), OuterBR);"
+    "  if(OuterAlpha >= 0.5)"
+    "  {"
+    "    if(L >= 0.0 || R >= 0.0 || T >= 0.0 || B >= 0.0)"
+    "    {"
+    "      float InnerWidth = Size.x - L - R;"
+    "      float InnerHeight = Size.y - T - B;"
+    "      vec2 InnerPos = Pos - vec2(L, T);"
+    "      bool Inside = true;"
+    "      if (TL > 0.0 && InnerPos.x < TL && InnerPos.y < TL)"
+    "        Inside = (length(InnerPos - vec2(TL, TL)) <= TL);"
+    "      if (TR > 0.0 && InnerPos.x > InnerWidth - TR && InnerPos.y < TR)"
+    "        Inside = Inside && (length(InnerPos - vec2(InnerWidth - TR, TR)) <= TR);"
+    "      if (BL> 0.0 && InnerPos.x < BL && InnerPos.y > InnerHeight - BL) "
+    "        Inside = Inside && (length(InnerPos - vec2(BL, InnerHeight - BL)) <= BL);"
+    "      if (BR > 0.0 && InnerPos.x > InnerWidth - BR && InnerPos.y > InnerHeight - BR)"
+    "        Inside = Inside && (length(InnerPos - vec2(InnerWidth - BR, InnerHeight - BR)) <= BR);"
+    "      if (Inside && InnerPos.x >= 0.0 && InnerPos.x <= InnerWidth && InnerPos.y >= 0.0 && InnerPos.y <= InnerHeight)"
+    "        discard;"
+    "      else"
+    "      gl_FragColor = gl_Color;"
+    "    }"
+    "    else"
+    "    {"
+    "      gl_FragColor = vec4(gl_Color.rgb, gl_Color.a * OuterAlpha) * texture2D(Texture, gl_TexCoord[0].xy);"
+    "    }"
+    "  }"
+    "  else"
+    "  {"
+    "    discard;"
+    "  }"
+    "}";
+    spstShader = orxShader_Create();
+    orxASSERT(spstShader);
+    orxShader_AddVectorParam(spstShader, "Size", 0, &orxVECTOR_0);
+    orxShader_AddFloatParam(spstShader, "Corners", 4, afDummies);
+    orxShader_AddFloatParam(spstShader, "Borders", 4, afDummies);
+    pstShaderTexture = orxTexture_Get(orxTEXTURE_KZ_PIXEL_NAME);
+    orxShader_AddTextureParam(spstShader, "Texture", 0, &pstShaderTexture);
+    orxShader_CompileCode(spstShader, &zShaderCode, 1);
+
+    // Inits clay
+    orxConfig_PushSection(orxCLAY_KZ_MEASURE_OBJECT);
+    orxConfig_SetString("Graphic", "@");
+    orxConfig_SetString("Text", "@");
+    orxConfig_SetU32("Alpha", 0);
+    orxConfig_PopSection();
+    spstMeasure = orxObject_CreateFromConfig(orxCLAY_KZ_MEASURE_OBJECT);
+    orxASSERT(spstMeasure);
+    orxDisplay_GetScreenSize(&fWidth, &fHeight);
+    Clay_Initialize(Clay_CreateArenaWithCapacityAndMemory(u32ArenaSize, pBuffer), (Clay_Dimensions){fWidth, fHeight}, (Clay_ErrorHandler){.errorHandlerFunction = orxClay_ErrorHandler});
+    Clay_SetMeasureTextFunction(orxClay_MeasureText, NULL);
+
+    // Registers event handlers
+    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, &orxClay_BeginFrame);
+    orxEvent_SetHandlerIDFlags(&orxClay_BeginFrame, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_STOP), orxEVENT_KU32_MASK_ID_ALL);
+    orxEvent_AddHandler(orxEVENT_TYPE_RENDER, &orxClay_EndFrame);
+    orxEvent_SetHandlerIDFlags(&orxClay_EndFrame, orxEVENT_TYPE_RENDER, orxNULL, orxEVENT_GET_FLAG(orxRENDER_EVENT_PROFILER_START), orxEVENT_KU32_MASK_ID_ALL);
+
+    // Begins first frame
+    orxClay_BeginFrame(orxNULL);
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+void orxFASTCALL orxClay_Exit()
+{
+  // Initialized?
+  if(Clay_GetCurrentContext())
+  {
+    orxS32 i, iCount;
+
+    // Removes event handlers
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, &orxClay_BeginFrame);
+    orxEvent_RemoveHandler(orxEVENT_TYPE_RENDER, &orxClay_EndFrame);
+
+    // Ends last frame
+    orxClay_EndFrame(orxNULL);
+
+    // Deletes text
+    orxObject_Delete(spstMeasure);
+    spstMeasure = orxNULL;
+
+    // Deletes shader
+    orxShader_Delete(spstShader);
+    spstShader = orxNULL;
+
+    // Unloads fonts
+    orxConfig_PushSection(orxCLAY_KZ_CONFIG_SECTION);
+    for(i = 0, iCount = orxConfig_GetListCount(orxCLAY_KZ_CONFIG_FONT_LIST); i < iCount; i++)
+    {
+      orxFont_Delete(orxFont_Get(orxConfig_GetListString(orxCLAY_KZ_CONFIG_FONT_LIST, i)));
+    }
+    orxConfig_PopSection();
+
+    // Frees memory
+    orxMemory_Free(Clay_GetCurrentContext()->internalArena.memory);
+
+    // Clears context
+    Clay_SetCurrentContext(NULL);
+  }
+
+  // Done!
+  return;
+}
+
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif // __orxMSVC__
+
+#endif // orxCLAY_IMPL
+
+#endif // _orxCLAY_H_

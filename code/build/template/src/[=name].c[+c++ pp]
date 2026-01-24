@@ -57,6 +57,11 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   ImGui::ShowDemoWindow();
   ImGui::ShowMetricsWindow();
 ]
+[+clay
+  // Show clay demo content
+  extern void Clay_ShowDemoContent();
+  Clay_ShowDemoContent();
+]
   // Should quit?
   if(orxInput_HasBeenActivated("Quit"))
   {

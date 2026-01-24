@@ -41,6 +41,11 @@
 #define orxIMGUI_IMPL
 #include "orxImGui.h"
 #undef orxIMGUI_IMPL]
+[+clay
+
+#define orxCLAY_IMPL
+#include "orxClay.h"
+#undef orxCLAY_IMPL]
 [+inspector
 
 #define orxINSPECTOR_IMPL
@@ -87,6 +92,10 @@ void InitExtensions()
   // Initialize Dear ImGui
   orxImGui_Init();
 ]
+[+clay
+  // Initialize Clay
+  orxClay_Init();
+]
 [+inspector
   // Initialize inspector
   orxInspector_Init();
@@ -102,6 +111,10 @@ void ExitExtensions()
 [+imgui
   // Exit from Dear ImGui
   orxImGui_Exit();
+]
+[+clay
+  // Exit from Clay
+  orxClay_Exit();
 ]
 [+nuklear
   // Exit from Nuklear
