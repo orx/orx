@@ -1038,14 +1038,14 @@ void orxFASTCALL orxConsole_CommandEnable(orxU32 _u32ArgNumber, const orxCOMMAND
 void orxFASTCALL orxConsole_CommandLog(orxU32 _u32ArgNumber, const orxCOMMAND_VAR *_astArgList, orxCOMMAND_VAR *_pstResult)
 {
   /* To system? */
-  if((_u32ArgNumber > 1) && (_astArgList[1].bValue != orxFALSE))
+  if((_u32ArgNumber < 2) || (_astArgList[1].bValue != orxFALSE))
   {
     /* Logs to system */
     orxLOG("%s", _astArgList[0].zValue);
   }
   else
   {
-    /* Logs to console */
+    /* Logs to console only */
     orxConsole_Log(_astArgList[0].zValue);
   }
 
@@ -1123,7 +1123,7 @@ static orxINLINE void orxConsole_RegisterCommands()
   orxCOMMAND_REGISTER_CORE_COMMAND(Console, Enable, "Enabled?", orxCOMMAND_VAR_TYPE_BOOL, 0, 1, {"Enable = true", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: Log */
-  orxCOMMAND_REGISTER_CORE_COMMAND(Console, Log, "Log", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Text", orxCOMMAND_VAR_TYPE_STRING}, {"ToSystem = false", orxCOMMAND_VAR_TYPE_BOOL});
+  orxCOMMAND_REGISTER_CORE_COMMAND(Console, Log, "Log", orxCOMMAND_VAR_TYPE_STRING, 1, 1, {"Text", orxCOMMAND_VAR_TYPE_STRING}, {"ToSystem = true", orxCOMMAND_VAR_TYPE_BOOL});
 
   /* Command: SetColor */
   orxCOMMAND_REGISTER_CORE_COMMAND(Console, SetColor, "Color", orxCOMMAND_VAR_TYPE_VECTOR, 0, 1, {"Color = <default>", orxCOMMAND_VAR_TYPE_STRING});
