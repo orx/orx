@@ -1237,6 +1237,15 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginName)
     }
 
     /* Opens plugin */
+#ifdef __orxLINUX__
+    {
+        /* In Linux, BY DEFAULT, dlopen cannot open libs in current execution folder, we should prefix it with "./" */
+        char acTempPath[386];
+        acTempPath[sizeof(acTempPath) - 1] = orxCHAR_NULL;
+        orxString_NPrint(acTempPath, sizeof(acTempPath) - 1, "./%s", orxResource_GetPath(zLocation)); 
+        zLocation = acTempPath;
+    }
+#endif
     pstSysPlugin = orxPLUGIN_OPEN(orxResource_GetPath(zLocation));
 
     /* Valid? */
