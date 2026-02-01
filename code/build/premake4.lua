@@ -700,6 +700,8 @@ project "Bounce"
 
 
 -- Linux
+    configuration {"linux", "not web"}
+        linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
 
 
 -- Mac OS X
