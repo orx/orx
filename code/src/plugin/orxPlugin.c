@@ -1243,10 +1243,11 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginName)
         char acTempPath[386];
         acTempPath[sizeof(acTempPath) - 1] = orxCHAR_NULL;
         orxString_NPrint(acTempPath, sizeof(acTempPath) - 1, "./%s", orxResource_GetPath(zLocation)); 
-        zLocation = acTempPath;
+        pstSysPlugin = orxPLUGIN_OPEN(acTempPath);
     }
-#endif
+#else
     pstSysPlugin = orxPLUGIN_OPEN(orxResource_GetPath(zLocation));
+#endif
 
     /* Valid? */
     if(pstSysPlugin != orxNULL)
