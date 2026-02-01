@@ -517,6 +517,8 @@ project "orxLIB"
 
 
 -- Linux
+    configuration {"linux", "not web"}
+        linkoptions {"-Wl,-rpath ./", "-Wl,--export-dynamic"}
 
     configuration {"linux"}
         defines {"_GNU_SOURCE"}

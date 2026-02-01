@@ -1237,7 +1237,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginName)
     }
 
     /* Opens plugin */
-   pstSysPlugin = orxPLUGIN_OPEN(orxResource_GetPath(zLocation));
+    pstSysPlugin = orxPLUGIN_OPEN(orxResource_GetPath(zLocation));
 
     /* Valid? */
     if(pstSysPlugin != orxNULL)
