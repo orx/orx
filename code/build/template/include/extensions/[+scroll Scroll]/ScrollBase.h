@@ -447,7 +447,7 @@ struct ScrollRegistrar
 
     if(!sbInitialized)
     {
-      static ScrollObjectAutoBind     sstAutoBind;
+      static ScrollObjectAutoBind sstAutoBind;
       sstAutoBind.zName             = _zName;
       sstAutoBind.pfnBinderFactory  = &ScrollRegistrar::GetBinder;
       sstAutoBind.pstNext           = spstScrollAutoBindList;
@@ -459,26 +459,26 @@ struct ScrollRegistrar
   }
 };
 
-#define SCROLL_MAKE_OBJECT_BASE(Class) \
-  class Class; static const orxBOOL Scroll_Registrar_##Class = ScrollRegistrar<Class>::Register(#Class); \
+#define SCROLL_MAKE_OBJECT_BASE(Class)                                                                    \
+  class Class; static const orxBOOL sbScrollRegistrar_##Class = ScrollRegistrar<Class>::Register(#Class); \
   class Class : public ScrollObject
-#define SCROLL_MAKE_OBJECT_DERIVED(Class, Parent) \
-  class Class; static const orxBOOL Scroll_Registrar_##Class = ScrollRegistrar<Class>::Register(#Class); \
+#define SCROLL_MAKE_OBJECT_DERIVED(Class, Parent)                                                         \
+  class Class; static const orxBOOL sbScrollRegistrar_##Class = ScrollRegistrar<Class>::Register(#Class); \
   class Class : public Parent
-#define SCROLL_MAKE_OBJECT_FROM_CONFIG_BASE(Class, Name) \
-  class Class; static const orxBOOL Scroll_Registrar_##Class = ScrollRegistrar<Class>::Register(Name); \
+#define SCROLL_MAKE_OBJECT_FROM_CONFIG_BASE(Class, Name)                                                  \
+  class Class; static const orxBOOL sbScrollRegistrar_##Class = ScrollRegistrar<Class>::Register(Name);   \
   class Class : public ScrollObject
-#define SCROLL_MAKE_OBJECT_FROM_CONFIG_DERIVED(Class, Name, Parent) \
-  class Class; static const orxBOOL Scroll_Registrar_##Class = ScrollRegistrar<Class>::Register(Name); \
+#define SCROLL_MAKE_OBJECT_FROM_CONFIG_DERIVED(Class, Name, Parent)                                       \
+  class Class; static const orxBOOL sbScrollRegistrar_##Class = ScrollRegistrar<Class>::Register(Name);   \
   class Class : public Parent
 
-#define SCROLL_EXPAND(X)                        X
-#define SCROLL_GET_MACRO(_1, _2, _3, NAME, ...) NAME
+#define SCROLL_EXPAND(X)                            X
+#define SCROLL_SELECT_MACRO(_1, _2, _3, NAME, ...)  NAME
 
 #define MakeScrollObject(...)                                                                                                                                 \
-  SCROLL_EXPAND(SCROLL_GET_MACRO(__VA_ARGS__, SCROLL_IGNORE, SCROLL_MAKE_OBJECT_DERIVED, SCROLL_MAKE_OBJECT_BASE)(__VA_ARGS__))
+  SCROLL_EXPAND(SCROLL_SELECT_MACRO(__VA_ARGS__, SCROLL_IGNORE, SCROLL_MAKE_OBJECT_DERIVED, SCROLL_MAKE_OBJECT_BASE)(__VA_ARGS__))
 #define MakeScrollObjectFromConfig(...)                                                                                                                       \
-  SCROLL_EXPAND(SCROLL_GET_MACRO(__VA_ARGS__, SCROLL_MAKE_OBJECT_FROM_CONFIG_DERIVED, SCROLL_MAKE_OBJECT_FROM_CONFIG_BASE)(__VA_ARGS__))
+  SCROLL_EXPAND(SCROLL_SELECT_MACRO(__VA_ARGS__, SCROLL_MAKE_OBJECT_FROM_CONFIG_DERIVED, SCROLL_MAKE_OBJECT_FROM_CONFIG_BASE)(__VA_ARGS__))
 
 
 //! Implementation
