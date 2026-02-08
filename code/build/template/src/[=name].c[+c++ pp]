@@ -7,8 +7,7 @@
 #define __SCROLL_IMPL__
 #include "[name].h"
 #undef __SCROLL_IMPL__
-
-#include "Object.h"]
+]
 [-scroll #include "orx.h"]
 #include "orxExtensions.h"
 
@@ -149,15 +148,6 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Let orx clean all our mess automatically. :)
 }
 
-[+scroll
-/** BindObjects function, ScrollObject-derived classes are bound to config sections here
- */
-void [!name]::BindObjects()
-{
-  // Bind the Object class
-  BindObject(Object);
-}
-]
 /** Bootstrap function, it is called before config is initialized, allowing for early resource storage definitions
  */
 [+scroll orxSTATUS [!name]::Bootstrap() const]

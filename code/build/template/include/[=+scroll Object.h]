@@ -10,7 +10,7 @@
 
 /** Object Class
  */
-class Object : public ScrollObject
+MakeScrollObject(Object)
 {
 public:
 

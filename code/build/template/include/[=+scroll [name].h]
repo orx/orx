@@ -25,7 +25,6 @@ private:
                 orxSTATUS       Init();
                 orxSTATUS       Run();
                 void            Exit();
-                void            BindObjects();
 
 
 private:

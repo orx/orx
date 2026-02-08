@@ -140,6 +140,8 @@ private:
 
   static        ScrollObjectBinderBase *GetDefaultBinder();
 
+  virtual       void                    AutoRegister(const orxSTRING _zName) const = 0;
+
                 ScrollObject *          CreateObject(orxOBJECT *_pstObject);
                 void                    DeleteObject(ScrollObject *_poObject);
   virtual       ScrollObject *          ConstructObject(orxBANK * _pstBank) const = 0;
@@ -170,7 +172,7 @@ class ScrollObjectBinder : public ScrollObjectBinderBase
 public:
 
   static        ScrollObjectBinder<O> * GetInstance(orxS32 _s32SegmentSize = -1);
-  static        void                    Register(const orxSTRING _zName, orxS32 _s32SegmentSize);
+  static        void                    Register(const orxSTRING _zName, orxS32 _s32SegmentSize = 128);
 
 
 protected:
@@ -181,18 +183,16 @@ protected:
 
 private:
 
+  virtual       void                    AutoRegister(const orxSTRING _zName) const;
+
   virtual       ScrollObject *          ConstructObject(orxBANK *_pstBank) const;
-
-
-//! Variables
-private:
-
-  static        ScrollObjectBinder<O> * spoInstance;
 };
 
 template<class O>
 ScrollObjectBinder<O> *ScrollObjectBinder<O>::GetInstance(orxS32 _s32SegmentSize)
 {
+  static ScrollObjectBinder<O> *spoInstance = orxNULL;
+
   // First call?
   if(!spoInstance)
   {
@@ -227,8 +227,13 @@ ScrollObjectBinder<O>::ScrollObjectBinder(orxS32 _s32SegmentSize) : ScrollObject
 template<class O>
 ScrollObjectBinder<O>::~ScrollObjectBinder()
 {
-  // Removes instance
-  spoInstance = orxNULL;
+}
+
+template<class O>
+void ScrollObjectBinder<O>::AutoRegister(const orxSTRING _zName) const
+{
+  // Registers it
+  Register(_zName);
 }
 
 template<class O>
@@ -422,6 +427,61 @@ O *ScrollBase::GetPreviousObject(const O *_poObject) const
 }
 
 
+//! Auto bind helpers
+typedef ScrollObjectBinderBase *(*ScrollObjectBinderFactory)();
+struct ScrollObjectAutoBind
+{
+    const orxSTRING             zName;
+    ScrollObjectBinderFactory   pfnBinderFactory;
+    ScrollObjectAutoBind       *pstNext;
+};
+extern ScrollObjectAutoBind    *spstScrollAutoBindList;
+
+template <class O>
+struct ScrollRegistrar
+{
+  static ScrollObjectBinderBase *GetBinder() {return ScrollObjectBinder<O>::GetInstance(128);}
+  static orxBOOL Register(const orxSTRING _zName)
+  {
+    static orxBOOL sbInitialized = orxFALSE;
+
+    if(!sbInitialized)
+    {
+      static ScrollObjectAutoBind     sstAutoBind;
+      sstAutoBind.zName             = _zName;
+      sstAutoBind.pfnBinderFactory  = &ScrollRegistrar::GetBinder;
+      sstAutoBind.pstNext           = spstScrollAutoBindList;
+      spstScrollAutoBindList        = &sstAutoBind;
+      sbInitialized                 = orxTRUE;
+    }
+
+    return sbInitialized;
+  }
+};
+
+#define SCROLL_MAKE_OBJECT_BASE(Class) \
+  class Class; static const orxBOOL Scroll_Registrar_##Class = ScrollRegistrar<Class>::Register(#Class); \
+  class Class : public ScrollObject
+#define SCROLL_MAKE_OBJECT_DERIVED(Class, Parent) \
+  class Class; static const orxBOOL Scroll_Registrar_##Class = ScrollRegistrar<Class>::Register(#Class); \
+  class Class : public Parent
+#define SCROLL_MAKE_OBJECT_FROM_CONFIG_BASE(Class, Name) \
+  class Class; static const orxBOOL Scroll_Registrar_##Class = ScrollRegistrar<Class>::Register(Name); \
+  class Class : public ScrollObject
+#define SCROLL_MAKE_OBJECT_FROM_CONFIG_DERIVED(Class, Name, Parent) \
+  class Class; static const orxBOOL Scroll_Registrar_##Class = ScrollRegistrar<Class>::Register(Name); \
+  class Class : public Parent
+
+#define SCROLL_EXPAND(X)                        X
+#define SCROLL_GET_MACRO(_1, _2, _3, NAME, ...) NAME
+
+#define MakeScrollObject(...)                                                                                                                                 \
+  SCROLL_EXPAND(SCROLL_GET_MACRO(__VA_ARGS__, SCROLL_IGNORE, SCROLL_MAKE_OBJECT_DERIVED, SCROLL_MAKE_OBJECT_BASE)(__VA_ARGS__))
+#define MakeScrollObjectFromConfig(...)                                                                                                                       \
+  SCROLL_EXPAND(SCROLL_GET_MACRO(__VA_ARGS__, SCROLL_MAKE_OBJECT_FROM_CONFIG_DERIVED, SCROLL_MAKE_OBJECT_FROM_CONFIG_BASE)(__VA_ARGS__))
+
+
+//! Implementation
 #ifdef __SCROLL_IMPL__
 
 #include <stddef.h>
@@ -444,10 +504,8 @@ const orxSTRING ScrollBase::szConfigScrollObjectID            = "ID";
 
 
 //! Static variables
-ScrollBase *ScrollBase::spoInstance                           = orxNULL;
-
-template<class O>
-ScrollObjectBinder<O> *ScrollObjectBinder<O>::spoInstance     = orxNULL;
+ScrollBase            *ScrollBase::spoInstance                = orxNULL;
+ScrollObjectAutoBind  *spstScrollAutoBindList                 = orxNULL;
 
 
 //! Code
@@ -896,11 +954,21 @@ ScrollObject *ScrollBase::GetPreviousObject(const ScrollObject *_poObject, orxBO
 
 orxSTATUS ScrollBase::BaseInit()
 {
-  orxCLOCK *pstClock;
-  orxSTATUS eResult;
+  orxCLOCK             *pstClock;
+  ScrollObjectAutoBind *pstAutoBind;
+  orxSTATUS             eResult;
 
   // Binds ScrollObject
-  BindObject(ScrollObject);
+  BindObject(ScrollObject, 512);
+
+  // For all autobinds
+  for(pstAutoBind = spstScrollAutoBindList;
+      pstAutoBind != orxNULL;
+      pstAutoBind = pstAutoBind->pstNext)
+  {
+    // Performs its auto registration
+    pstAutoBind->pfnBinderFactory()->AutoRegister(pstAutoBind->zName);
+  }
 
   // Binds objects
   BindObjects();
