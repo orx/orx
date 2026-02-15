@@ -569,6 +569,7 @@ static orxINLINE void orxText_DeleteAll()
     pstText = orxTEXT(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXT));
   }
 
+  /* Done! */
   return;
 }
 
@@ -589,6 +590,7 @@ void orxFASTCALL orxText_Setup()
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_LOCALE);
   orxModule_AddDependency(orxMODULE_ID_TEXT, orxMODULE_ID_STRUCTURE);
 
+  /* Done! */
   return;
 }
 
@@ -683,6 +685,7 @@ void orxFASTCALL orxText_Exit()
     orxDEBUG_PRINT(orxDEBUG_LEVEL_DISPLAY, "Tried to exit text module when it wasn't initialized.");
   }
 
+  /* Done! */
   return;
 }
 

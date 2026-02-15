@@ -1369,14 +1369,14 @@ orxSTATUS orxFASTCALL ScrollBase::StaticEventHandler(const orxEVENT *_pstEvent)
       // Is sender valid?
       if(poSender)
       {
-        orxVECTOR vNormal;
-
-        // Gets reverse normal
-        orxVector_Neg(&vNormal, &pstPayload->vNormal);
-
         // New collision?
         if(_pstEvent->eID == orxPHYSICS_EVENT_CONTACT_ADD)
         {
+          orxVECTOR vNormal;
+
+          // Gets reverse normal
+          orxVector_Neg(&vNormal, &pstPayload->vNormal);
+
           // Calls its callback
           poSender->OnCollide(poRecipient, pstPayload->pstSenderPart, pstPayload->pstRecipientPart, pstPayload->vPosition, vNormal);
         }
