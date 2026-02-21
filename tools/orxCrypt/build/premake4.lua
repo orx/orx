@@ -174,7 +174,7 @@ solution "orxCrypt"
             "-stdlib=libc++",
             "-dead_strip"
         }
-        postbuildcommands {"$(shell [ -f " .. copybase .. "/../../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin)"}
+        postbuildcommands {"$(shell cp -f " .. copybase .. "/../../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin 2>/dev/null || true)"}
 
     configuration {"macosx", "x32"}
         buildoptions

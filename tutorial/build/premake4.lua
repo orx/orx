@@ -246,19 +246,19 @@ project "01_Object"
 -- Linux
 
     configuration {"linux"}
-        postbuildcommands {"$(shell [ -f " .. copybase .. "/../code/lib/dynamic/liborx.so ] && cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin)"}
+        postbuildcommands {"$(shell cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.so " .. copybase .. "/bin 2>/dev/null || true)"}
 
 
 -- Mac OS X
 
     configuration {"macosx"}
-        postbuildcommands {"[ -f " .. copybase .. "/../code/lib/dynamic/liborx.dylib ] && cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin"}
+        postbuildcommands {"$(shell cp -f " .. copybase .. "/../code/lib/dynamic/liborx*.dylib " .. copybase .. "/bin 2>/dev/null || true)"}
 
 
 -- Windows
 
     configuration {"windows"}
-        postbuildcommands {"cmd /c if exist " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx.dll copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin"}
+        postbuildcommands {"cmd /c copy /Y " .. path.translate(copybase, "\\") .. "\\..\\code\\lib\\dynamic\\orx*.dll " .. path.translate(copybase, "\\") .. "\\bin >NUL 2>&1"}
 
 
 --
