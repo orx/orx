@@ -77,6 +77,7 @@
 /** Misc
  */
 #define orxTHREAD_KU32_TASK_LIST_SIZE                 256
+#define orxTHREAD_KU32_MAX_WORKER_NUMBER              (orxTHREAD_KU32_MAX_THREAD_NUMBER >> 1)
 
 #define orxTHREAD_KZ_THREAD_NAME_MAIN                 "Main"
 #define orxTHREAD_KZ_THREAD_NAME_WORKER               "Task Runner"
@@ -122,24 +123,35 @@ typedef struct __orxTHREAD_TASK_t
 
 } orxTHREAD_TASK;
 
+/** Worker
+ */
+typedef struct __orxTHREAD_WORKER_t
+{
+  orxTHREAD_SEMAPHORE    *pstTaskSemaphore;
+  orxTHREAD_SEMAPHORE    *pstWorkSemaphore;
+  orxU32                  u32ThreadID;
+  volatile orxU32         u32TaskInIndex;
+  volatile orxU32         u32TaskProcessIndex;
+  volatile orxU32         u32TaskOutIndex;
+  volatile orxTHREAD_TASK astTaskList[orxTHREAD_KU32_TASK_LIST_SIZE];
+
+} orxTHREAD_WORKER;
+
 /** Static structure
  */
 typedef struct __orxTHREAD_STATIC_t
 {
-  orxTHREAD_SEMAPHORE    *pstThreadSemaphore;
-  orxTHREAD_SEMAPHORE    *pstTaskSemaphore;
-  orxTHREAD_SEMAPHORE    *pstWorkerSemaphore;
-  void                   *pThreadContext;
-  orxTHREAD_FUNCTION      pfnThreadStart;
-  orxTHREAD_FUNCTION      pfnThreadStop;
-  orxU32                  u32WorkerID;
-  volatile orxU32         u32TaskInIndex;
-  volatile orxU32         u32TaskProcessIndex;
-  volatile orxU32         u32TaskOutIndex;
-  volatile orxTHREAD_INFO astThreadInfoList[orxTHREAD_KU32_MAX_THREAD_NUMBER];
-  volatile orxTHREAD_TASK astTaskList[orxTHREAD_KU32_TASK_LIST_SIZE];
+  orxTHREAD_SEMAPHORE      *pstThreadSemaphore;
+  void                     *pThreadContext;
+  orxTHREAD_FUNCTION        pfnThreadStart;
+  orxTHREAD_FUNCTION        pfnThreadStop;
+  orxU32                    u32MaxThreadCount;
+  orxU32                    u32WorkerCount;
+  orxU32                    u32CurrentWorkerID;
+  volatile orxTHREAD_INFO   astThreadInfoList[orxTHREAD_KU32_MAX_THREAD_NUMBER];
+  volatile orxTHREAD_WORKER astWorkerList[orxTHREAD_KU32_MAX_WORKER_NUMBER];
 
-  orxU32                  u32Flags;
+  orxU32                    u32Flags;
 
 } orxTHREAD_STATIC;
 
@@ -156,6 +168,39 @@ static orxTHREAD_STATIC sstThread;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+static orxINLINE orxU32 orxThread_GetLogicalCoreCount()
+{
+  orxU32 u32Result = 0;
+
+#if defined(__orxMSVC__)
+
+  SYSTEM_INFO stSystemInfo;
+
+  /* Retrieves system info */
+  GetNativeSystemInfo(&stSystemInfo);
+
+  /* Updates result */
+  u32Result = stSystemInfo.dwNumberOfProcessors;
+
+#elif defined(__orxMAC__) || defined(__orxIOS__)
+
+  int     astMIB[2] = {CTL_HW, HW_NCPU};
+  size_t  iLength = sizeof(u32Result);
+
+  /* Updates result */
+  sysctl(astMIB, orxARRAY_GET_ITEM_COUNT(astMIB), &u32Result, &iLength, NULL, 0);
+
+#elif defined(__orxLINUX__) || defined(__orxANDROID__)
+
+  /* Updates result */
+  u32Result = (orxU32)sysconf(_SC_NPROCESSORS_ONLN);
+
+#endif
+
+  /* Done! */
+  return orxMAX(u32Result, 4);
+}
 
 #ifdef __orxWINDOWS__
 static unsigned int WINAPI orxThread_Execute(void *_pContext)
@@ -223,37 +268,43 @@ static void *orxThread_Execute(void *_pContext)
 
 static void orxFASTCALL orxThread_NotifyTask(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)
 {
-  /* While there are processed tasks */
-  while(sstThread.u32TaskOutIndex != sstThread.u32TaskProcessIndex)
+  orxU32 u32WorkerID;
+
+  /* For all worker threads */
+  for(u32WorkerID = 0; u32WorkerID < sstThread.u32WorkerCount; u32WorkerID++)
   {
-    volatile orxTHREAD_TASK *pstTask;
-
-    /* Gets Task */
-    pstTask = &(sstThread.astTaskList[sstThread.u32TaskOutIndex]);
-
-    /* Succeeded? */
-    if(pstTask->eResult != orxSTATUS_FAILURE)
+    /* While there are processed tasks */
+    while(sstThread.astWorkerList[u32WorkerID].u32TaskOutIndex != sstThread.astWorkerList[u32WorkerID].u32TaskProcessIndex)
     {
-      /* Has THEN callback? */
-      if(pstTask->pfnThen != orxNULL)
-      {
-        /* Calls it */
-        pstTask->pfnThen(pstTask->pContext);
-      }
-    }
-    else
-    {
-      /* Has ELSE callback? */
-      if(pstTask->pfnElse != orxNULL)
-      {
-        /* Calls it */
-        pstTask->pfnElse(pstTask->pContext);
-      }
-    }
+      volatile orxTHREAD_TASK *pstTask;
 
-    /* Updates task out index */
-    orxMEMORY_BARRIER();
-    sstThread.u32TaskOutIndex = (sstThread.u32TaskOutIndex + 1) & (orxTHREAD_KU32_TASK_LIST_SIZE - 1);
+      /* Gets Task */
+      pstTask = &(sstThread.astWorkerList[u32WorkerID].astTaskList[sstThread.astWorkerList[u32WorkerID].u32TaskOutIndex]);
+
+      /* Succeeded? */
+      if(pstTask->eResult != orxSTATUS_FAILURE)
+      {
+        /* Has THEN callback? */
+        if(pstTask->pfnThen != orxNULL)
+        {
+          /* Calls it */
+          pstTask->pfnThen(pstTask->pContext);
+        }
+      }
+      else
+      {
+        /* Has ELSE callback? */
+        if(pstTask->pfnElse != orxNULL)
+        {
+          /* Calls it */
+          pstTask->pfnElse(pstTask->pContext);
+        }
+      }
+
+      /* Updates task out index */
+      orxMEMORY_BARRIER();
+      sstThread.astWorkerList[u32WorkerID].u32TaskOutIndex = (sstThread.astWorkerList[u32WorkerID].u32TaskOutIndex + 1) & (orxTHREAD_KU32_TASK_LIST_SIZE - 1);
+    }
   }
 
   /* Done! */
@@ -262,25 +313,29 @@ static void orxFASTCALL orxThread_NotifyTask(const orxCLOCK_INFO *_pstClockInfo,
 
 static orxSTATUS orxFASTCALL orxThread_Work(void *_pContext)
 {
+  orxU32    u32WorkerID;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
+  /* Gets worker ID */
+  u32WorkerID = (orxU32)(orxUPTR)_pContext;
+
   /* Waits for worker semaphore */
-  orxThread_WaitSemaphore(sstThread.pstWorkerSemaphore);
+  orxThread_WaitSemaphore(sstThread.astWorkerList[u32WorkerID].pstWorkSemaphore);
 
   /* While there are pending requests */
-  while(sstThread.u32TaskProcessIndex != sstThread.u32TaskInIndex)
+  while(sstThread.astWorkerList[u32WorkerID].u32TaskProcessIndex != sstThread.astWorkerList[u32WorkerID].u32TaskInIndex)
   {
     volatile orxTHREAD_TASK *pstTask;
 
     /* Gets task */
-    pstTask = &(sstThread.astTaskList[sstThread.u32TaskProcessIndex]);
+    pstTask = &(sstThread.astWorkerList[u32WorkerID].astTaskList[sstThread.astWorkerList[u32WorkerID].u32TaskProcessIndex]);
 
     /* Runs it */
     pstTask->eResult = (pstTask->pfnRun != orxNULL) ? pstTask->pfnRun(pstTask->pContext) : orxSTATUS_SUCCESS;
 
     /* Updates task process index */
     orxMEMORY_BARRIER();
-    sstThread.u32TaskProcessIndex = (sstThread.u32TaskProcessIndex + 1) & (orxTHREAD_KU32_TASK_LIST_SIZE - 1);
+    sstThread.astWorkerList[u32WorkerID].u32TaskProcessIndex = (sstThread.astWorkerList[u32WorkerID].u32TaskProcessIndex + 1) & (orxTHREAD_KU32_TASK_LIST_SIZE - 1);
   }
 
   /* Done! */
@@ -333,17 +388,23 @@ orxSTATUS orxFASTCALL orxThread_Init()
     sstThread.pfnThreadStop   = pfnBackupStop;
     sstThread.pThreadContext  = pBackupContext;
 
+    /* Retrieves number of max threads & workers */
+    sstThread.u32MaxThreadCount = orxCLAMP(orxThread_GetLogicalCoreCount(), orxTHREAD_KU32_MAX_THREAD_NUMBER >> 2, orxTHREAD_KU32_MAX_THREAD_NUMBER);
+    sstThread.u32WorkerCount    = orxMIN(orxThread_GetLogicalCoreCount(), sstThread.u32MaxThreadCount) >> 1;
+    sstThread.u32WorkerCount    = orxCLAMP(sstThread.u32WorkerCount, 1, orxTHREAD_KU32_MAX_WORKER_NUMBER);
+    orxASSERT(sstThread.u32WorkerCount <= orxARRAY_GET_ITEM_COUNT(sstThread.astWorkerList));
+
     /* Updates status */
     sstThread.u32Flags |= orxTHREAD_KU32_STATIC_FLAG_READY;
 
-    /* Creates semaphores */
-    sstThread.pstThreadSemaphore  = orxThread_CreateSemaphore(1);
-    sstThread.pstTaskSemaphore    = orxThread_CreateSemaphore(1);
-    sstThread.pstWorkerSemaphore  = orxThread_CreateSemaphore(1);
+    /* Creates thread semaphore */
+    sstThread.pstThreadSemaphore = orxThread_CreateSemaphore(1);
 
     /* Success? */
-    if((sstThread.pstThreadSemaphore != orxNULL) && (sstThread.pstTaskSemaphore != orxNULL) && (sstThread.pstWorkerSemaphore != orxNULL))
+    if(sstThread.pstThreadSemaphore != orxNULL)
     {
+      orxU32 i;
+
 #ifdef __orxWINDOWS__
 
       /* Inits main thread info */
@@ -379,14 +440,74 @@ orxSTATUS orxFASTCALL orxThread_Init()
 
 #endif /* __orxWINDOWS__ */
 
-      /* Waits for worker semaphore */
-      orxThread_WaitSemaphore(sstThread.pstWorkerSemaphore);
+      /* For all workers */
+      for(i = 0; i < sstThread.u32WorkerCount; i++)
+      {
+        orxCHAR acBuffer[64];
 
-      /* Creates worker thread */
-      sstThread.u32WorkerID = orxThread_Start(orxThread_Work, orxTHREAD_KZ_THREAD_NAME_WORKER, orxNULL);
+        /* Gets its name */
+        orxString_NPrint(acBuffer, sizeof(acBuffer), "%s %02u", orxTHREAD_KZ_THREAD_NAME_WORKER, i + 1);
+        sstThread.astWorkerList[i].u32ThreadID = orxThread_Start(orxThread_Work, acBuffer, (void *)(orxUPTR)i);
+
+        /* Success? */
+        if(sstThread.astWorkerList[i].u32ThreadID != orxU32_UNDEFINED)
+        {
+          /* Inits worker */
+          sstThread.astWorkerList[i].pstTaskSemaphore = orxThread_CreateSemaphore(1);
+          sstThread.astWorkerList[i].pstWorkSemaphore = orxThread_CreateSemaphore(1);
+
+          /* Success? */
+          if((sstThread.astWorkerList[i].pstTaskSemaphore != orxNULL)
+          && (sstThread.astWorkerList[i].pstWorkSemaphore != orxNULL))
+          {
+            /* Waits for its work semaphore */
+            orxThread_WaitSemaphore(sstThread.astWorkerList[i].pstWorkSemaphore);
+          }
+          else
+          {
+            orxU32 j;
+
+            /* For all existing workers */
+            for(j = 0; j < i; j++)
+            {
+              /* Stops it */
+              orxFLAG_SET(sstThread.astThreadInfoList[sstThread.astWorkerList[i].u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
+              orxMEMORY_BARRIER();
+
+              /* Signals its semaphore */
+              orxThread_SignalSemaphore(sstThread.astWorkerList[j].pstWorkSemaphore);
+            }
+
+            /* Joins all threads */
+            orxThread_JoinAll();
+
+            /* For all existing workers */
+            for(j = 0; j <= i; j++)
+            {
+              /* Deletes its semaphores */
+              if(sstThread.astWorkerList[j].pstTaskSemaphore != orxNULL)
+              {
+                orxThread_DeleteSemaphore(sstThread.astWorkerList[j].pstTaskSemaphore);
+              }
+              if(sstThread.astWorkerList[j].pstWorkSemaphore != orxNULL)
+              {
+                orxThread_DeleteSemaphore(sstThread.astWorkerList[j].pstWorkSemaphore);
+              }
+            }
+
+            break;
+          }
+        }
+        else
+        {
+          /* Joins all threads */
+          orxThread_JoinAll();
+          break;
+        }
+      }
 
       /* Success? */
-      if(sstThread.u32WorkerID != orxU32_UNDEFINED)
+      if(i == sstThread.u32WorkerCount)
       {
         /* Updates result */
         eResult = orxSTATUS_SUCCESS;
@@ -394,12 +515,10 @@ orxSTATUS orxFASTCALL orxThread_Init()
       else
       {
         /* Logs message */
-        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't start internal worker thread.");
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't start internal workers.");
 
-        /* Deletes semaphores */
+        /* Deletes semaphore */
         orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
-        orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
-        orxThread_DeleteSemaphore(sstThread.pstWorkerSemaphore);
 
         /* Updates status */
         sstThread.u32Flags &= ~orxTHREAD_KU32_STATIC_FLAG_READY;
@@ -409,20 +528,6 @@ orxSTATUS orxFASTCALL orxThread_Init()
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't initialize internal semaphore.");
-
-      /* Deletes semaphores */
-      if(sstThread.pstThreadSemaphore != orxNULL)
-      {
-        orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
-      }
-      if(sstThread.pstTaskSemaphore != orxNULL)
-      {
-        orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
-      }
-      if(sstThread.pstWorkerSemaphore != orxNULL)
-      {
-        orxThread_DeleteSemaphore(sstThread.pstWorkerSemaphore);
-      }
 
       /* Updates status */
       sstThread.u32Flags &= ~orxTHREAD_KU32_STATIC_FLAG_READY;
@@ -440,6 +545,8 @@ void orxFASTCALL orxThread_Exit()
   /* Checks */
   if((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY)
   {
+    orxU32 i;
+
     /* Is notify callback registered? */
     if(orxFLAG_TEST(sstThread.u32Flags, orxTHREAD_KU32_STATIC_FLAG_REGISTERED))
     {
@@ -451,23 +558,32 @@ void orxFASTCALL orxThread_Exit()
       }
     }
 
-    /* Updates worker thread stop flag */
-    orxFLAG_SET(sstThread.astThreadInfoList[sstThread.u32WorkerID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
-    orxMEMORY_BARRIER();
+    /* Updates all worker thread stop flags */
+    for(i = 0; i < sstThread.u32WorkerCount; i++)
+    {
+      orxFLAG_SET(sstThread.astThreadInfoList[sstThread.astWorkerList[i].u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
+      orxMEMORY_BARRIER();
+    }
 
     /* Re-enables all threads */
     orxThread_Enable(orxTHREAD_KU32_MASK_ALL, orxTHREAD_KU32_FLAG_NONE);
 
-    /* Signals worker semaphore */
-    orxThread_SignalSemaphore(sstThread.pstWorkerSemaphore);
+    /* Signals all worker semaphores */
+    for(i = 0; i < sstThread.u32WorkerCount; i++)
+    {
+      orxThread_SignalSemaphore(sstThread.astWorkerList[i].pstWorkSemaphore);
+    }
 
     /* Joins all remaining threads */
     orxThread_JoinAll();
 
-    /* Deletes semaphores */
+    /* Deletes all semaphores */
+    for(i = 0; i < sstThread.u32WorkerCount; i++)
+    {
+      orxThread_DeleteSemaphore(sstThread.astWorkerList[i].pstTaskSemaphore);
+      orxThread_DeleteSemaphore(sstThread.astWorkerList[i].pstWorkSemaphore);
+    }
     orxThread_DeleteSemaphore(sstThread.pstThreadSemaphore);
-    orxThread_DeleteSemaphore(sstThread.pstTaskSemaphore);
-    orxThread_DeleteSemaphore(sstThread.pstWorkerSemaphore);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstThread, sizeof(orxTHREAD_STATIC));
@@ -495,7 +611,7 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, const orxST
   orxThread_WaitSemaphore(sstThread.pstThreadSemaphore);
 
   /* For all slots */
-  for(u32Index = 0; u32Index < orxTHREAD_KU32_MAX_THREAD_NUMBER; u32Index++)
+  for(u32Index = 0; u32Index < sstThread.u32MaxThreadCount; u32Index++)
   {
     /* Is unused? */
     if(!orxFLAG_TEST(sstThread.astThreadInfoList[u32Index].u32Flags, orxTHREAD_KU32_INFO_FLAG_INITIALIZED))
@@ -506,7 +622,7 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, const orxST
   }
 
   /* Found? */
-  if(u32Index != orxTHREAD_KU32_MAX_THREAD_NUMBER)
+  if(u32Index != sstThread.u32MaxThreadCount)
   {
     volatile orxTHREAD_INFO *pstInfo;
 
@@ -585,7 +701,7 @@ orxSTATUS orxFASTCALL orxThread_Join(orxU32 _u32ThreadID)
 
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
-  orxASSERT(_u32ThreadID < orxTHREAD_KU32_MAX_THREAD_NUMBER);
+  orxASSERT(_u32ThreadID < sstThread.u32MaxThreadCount);
   orxASSERT(_u32ThreadID != orxTHREAD_KU32_MAIN_THREAD_ID);
 
   /* Is initialized? */
@@ -662,7 +778,7 @@ orxSTATUS orxFASTCALL orxThread_JoinAll()
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
 
   /* For all slots */
-  for(u32Index = 0; u32Index < orxTHREAD_KU32_MAX_THREAD_NUMBER; u32Index++)
+  for(u32Index = 0; u32Index < sstThread.u32MaxThreadCount; u32Index++)
   {
     /* Not main? */
     if(u32Index != orxTHREAD_KU32_MAIN_THREAD_ID)
@@ -686,7 +802,7 @@ const orxSTRING orxFASTCALL orxThread_GetName(orxU32 _u32ThreadID)
 
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
-  orxASSERT(_u32ThreadID < orxTHREAD_KU32_MAX_THREAD_NUMBER);
+  orxASSERT(_u32ThreadID < sstThread.u32MaxThreadCount);
 
   /* Is initialized? */
   if(orxFLAG_TEST(sstThread.astThreadInfoList[_u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_INITIALIZED))
@@ -700,31 +816,32 @@ const orxSTRING orxFASTCALL orxThread_GetName(orxU32 _u32ThreadID)
 }
 
 /** Enables / disables threads
- * @param[in]   _u32EnableThreads   Mask of threads to enable (1 << ThreadID)
- * @param[in]   _u32DisableThreads  Mask of threads to disable (1 << ThreadID)
+ * @param[in]   _u64EnableThreads   Mask of threads to enable (1 << ThreadID)
+ * @param[in]   _u64DisableThreads  Mask of threads to disable (1 << ThreadID)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxThread_Enable(orxU32 _u32EnableThreads, orxU32 _u32DisableThreads)
+orxSTATUS orxFASTCALL orxThread_Enable(orxU64 _u64EnableThreads, orxU64 _u64DisableThreads)
 {
-  orxU32    u32Index, u32Flag;
+  orxU64    u64Flag;
+  orxU32    u32Index;
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
-  orxASSERT(!orxFLAG_TEST(_u32EnableThreads, 1 << orxTHREAD_KU32_MAIN_THREAD_ID));
-  orxASSERT(!orxFLAG_TEST(_u32DisableThreads, 1 << orxTHREAD_KU32_MAIN_THREAD_ID));
+  orxASSERT(!orxFLAG_TEST(_u64EnableThreads, 1 << orxTHREAD_KU32_MAIN_THREAD_ID));
+  orxASSERT(!orxFLAG_TEST(_u64DisableThreads, 1 << orxTHREAD_KU32_MAIN_THREAD_ID));
 
   /* Waits for thread semaphore */
   orxThread_WaitSemaphore(sstThread.pstThreadSemaphore);
 
   /* For all threads */
-  for(u32Index = 0, u32Flag = 1; (u32Index < orxTHREAD_KU32_MAX_THREAD_NUMBER) && (eResult != orxSTATUS_FAILURE); u32Index++, u32Flag <<= 1)
+  for(u32Index = 0, u64Flag = 1; (u32Index < sstThread.u32MaxThreadCount) && (eResult != orxSTATUS_FAILURE); u32Index++, u64Flag <<= 1)
   {
     /* Is thread initialized? */
     if(orxFLAG_TEST(sstThread.astThreadInfoList[u32Index].u32Flags, orxTHREAD_KU32_INFO_FLAG_INITIALIZED))
     {
       /* Enable? */
-      if(orxFLAG_TEST(_u32EnableThreads, u32Flag))
+      if(orxFLAG_TEST(_u64EnableThreads, u64Flag))
       {
         /* Wasn't enabled? */
         if(!orxFLAG_TEST(sstThread.astThreadInfoList[u32Index].u32Flags, orxTHREAD_KU32_INFO_FLAG_ENABLED))
@@ -737,7 +854,7 @@ orxSTATUS orxFASTCALL orxThread_Enable(orxU32 _u32EnableThreads, orxU32 _u32Disa
         }
       }
       /* Disable? */
-      else if(orxFLAG_TEST(_u32DisableThreads, u32Flag))
+      else if(orxFLAG_TEST(_u64DisableThreads, u64Flag))
       {
         /* Was enabled? */
         if(orxFLAG_TEST(sstThread.astThreadInfoList[u32Index].u32Flags, orxTHREAD_KU32_INFO_FLAG_ENABLED))
@@ -779,7 +896,7 @@ orxU32 orxFASTCALL orxThread_GetCurrent()
     u32ThreadID = GetCurrentThreadId();
 
     /* For all threads */
-    for(i = 0; i < orxTHREAD_KU32_MAX_THREAD_NUMBER; i++)
+    for(i = 0; i < sstThread.u32MaxThreadCount; i++)
     {
       /* Matches? */
       if(sstThread.astThreadInfoList[i].u32ThreadID == u32ThreadID)
@@ -800,7 +917,7 @@ orxU32 orxFASTCALL orxThread_GetCurrent()
     hThread = pthread_self();
 
     /* For all threads */
-    for(i = 0; i < orxTHREAD_KU32_MAX_THREAD_NUMBER; i++)
+    for(i = 0; i < sstThread.u32MaxThreadCount; i++)
     {
       /* Matches? */
       if(sstThread.astThreadInfoList[i].hThread == hThread)
@@ -1061,17 +1178,24 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
   /* Valid? */
   if(eResult != orxSTATUS_FAILURE)
   {
-    volatile orxTHREAD_TASK  *pstTask;
-    orxU32                    u32NextTaskIndex;
+    volatile orxTHREAD_TASK    *pstTask;
+    volatile orxTHREAD_WORKER  *pstWorker;
+    orxU32                      u32NextTaskIndex;
+
+    /* Updates current worker ID */
+    sstThread.u32CurrentWorkerID = (sstThread.u32CurrentWorkerID + 1) % sstThread.u32WorkerCount;
+
+    /* Gets worker */
+    pstWorker = &(sstThread.astWorkerList[sstThread.u32CurrentWorkerID]);
 
     /* Waits for task semaphore */
-    orxThread_WaitSemaphore(sstThread.pstTaskSemaphore);
+    orxThread_WaitSemaphore(pstWorker->pstTaskSemaphore);
 
     /* Gets next task index */
-    u32NextTaskIndex = (sstThread.u32TaskInIndex + 1) & (orxTHREAD_KU32_TASK_LIST_SIZE - 1);
+    u32NextTaskIndex = (pstWorker->u32TaskInIndex + 1) & (orxTHREAD_KU32_TASK_LIST_SIZE - 1);
 
     /* Waits for a free slot */
-    while(u32NextTaskIndex == sstThread.u32TaskOutIndex)
+    while(u32NextTaskIndex == pstWorker->u32TaskOutIndex)
     {
       /* On main thread? */
       if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
@@ -1081,7 +1205,7 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
       }
     }
     /* Gets current task */
-    pstTask = &(sstThread.astTaskList[sstThread.u32TaskInIndex]);
+    pstTask = &(pstWorker->astTaskList[pstWorker->u32TaskInIndex]);
 
     /* Inits it */
     pstTask->pfnRun   = _pfnRun;
@@ -1091,13 +1215,13 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
 
     /* Commits Task */
     orxMEMORY_BARRIER();
-    sstThread.u32TaskInIndex = u32NextTaskIndex;
+    pstWorker->u32TaskInIndex = u32NextTaskIndex;
 
     /* Signals task semaphore */
-    orxThread_SignalSemaphore(sstThread.pstTaskSemaphore);
+    orxThread_SignalSemaphore(pstWorker->pstTaskSemaphore);
 
     /* Signals worker semaphore */
-    orxThread_SignalSemaphore(sstThread.pstWorkerSemaphore);
+    orxThread_SignalSemaphore(pstWorker->pstWorkSemaphore);
   }
 
   /* Done! */
@@ -1109,7 +1233,7 @@ orxSTATUS orxFASTCALL orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const 
  */
 orxU32 orxFASTCALL orxThread_GetTaskCount()
 {
-  orxU32 u32TaskInIndex, u32TaskOutIndex, u32Result;
+  orxU32 u32Result = 0, i;
 
   /* Checks */
   orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
@@ -1121,12 +1245,18 @@ orxU32 orxFASTCALL orxThread_GetTaskCount()
     orxThread_NotifyTask(orxNULL, orxNULL);
   }
 
-  /* Gets indices */
-  u32TaskInIndex  = sstThread.u32TaskInIndex;
-  u32TaskOutIndex = sstThread.u32TaskOutIndex;
+  /* For all threads */
+  for(i = 0; i < sstThread.u32WorkerCount; i++)
+  {
+    orxU32 u32TaskInIndex, u32TaskOutIndex;
 
-  /* Updates result */
-  u32Result = (u32TaskInIndex >= u32TaskOutIndex) ? u32TaskInIndex - u32TaskOutIndex : u32TaskInIndex + orxTHREAD_KU32_TASK_LIST_SIZE - u32TaskOutIndex;
+    /* Gets indices */
+    u32TaskInIndex  = sstThread.astWorkerList[i].u32TaskInIndex;
+    u32TaskOutIndex = sstThread.astWorkerList[i].u32TaskOutIndex;
+
+    /* Updates result */
+    u32Result += (u32TaskInIndex >= u32TaskOutIndex) ? u32TaskInIndex - u32TaskOutIndex : u32TaskInIndex + orxTHREAD_KU32_TASK_LIST_SIZE - u32TaskOutIndex;
+  }
 
   /* Done! */
   return u32Result;

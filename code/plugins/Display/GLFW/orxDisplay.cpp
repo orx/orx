@@ -594,7 +594,7 @@ typedef struct __orxDISPLAY_STATIC_t
   GLushort                  au16IndexList[orxDISPLAY_KU32_INDEX_BUFFER_SIZE];
   orxCHAR                   acShaderCodeBuffer[orxDISPLAY_KU32_SHADER_BUFFER_SIZE];
   orxDISPLAY_VIDEO_MODE     stRequestVideoMode;
-  basist::ktx2_transcoder  *spoKTX2Transcoder;
+  basist::ktx2_transcoder  *aspoKTX2Transcoder[orxTHREAD_KU32_MAX_THREAD_NUMBER];
 
 } orxDISPLAY_STATIC;
 
@@ -2158,18 +2158,22 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
       /* Valid? */
       if(pu8ImageData != orxNULL)
       {
-        unsigned int uiResult = 0;
+        basist::ktx2_transcoder  *spoKTX2Transcoder;
+        unsigned int              uiResult = 0;
+
+        /* Gets transcoder */
+        spoKTX2Transcoder = sstDisplay.aspoKTX2Transcoder[orxThread_GetCurrent()];
 
         /* Valid transcoder? */
-        if(sstDisplay.spoKTX2Transcoder)
+        if(spoKTX2Transcoder)
         {
           /* Inits it */
-          if(sstDisplay.spoKTX2Transcoder->init(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size))
+          if(spoKTX2Transcoder->init(pstInfo->pu8ImageSource, (unsigned int)pstInfo->s64Size))
           {
             basist::ktx2_image_level_info sstInfo;
 
             /* Retrieves image info */
-            if(sstDisplay.spoKTX2Transcoder->get_image_level_info(sstInfo, 0, 0, 0))
+            if(spoKTX2Transcoder->get_image_level_info(sstInfo, 0, 0, 0))
             {
               unsigned int uiRealSize;
 
@@ -2180,10 +2184,10 @@ static orxSTATUS orxFASTCALL orxDisplay_GLFW_DecompressBitmap(void *_pContext)
               if(uiDataSize >= uiRealSize)
               {
                 /* Starts transcoding */
-                if(sstDisplay.spoKTX2Transcoder->start_transcoding())
+                if(spoKTX2Transcoder->start_transcoding())
                 {
                   /* Transcodes image */
-                  if(sstDisplay.spoKTX2Transcoder->transcode_image_level(0, 0, 0, pu8ImageData, uiRealSize / basis_get_bytes_per_block_or_pixel((basist::transcoder_texture_format)eFormat), (basist::transcoder_texture_format)eFormat))
+                  if(spoKTX2Transcoder->transcode_image_level(0, 0, 0, pu8ImageData, uiRealSize / basis_get_bytes_per_block_or_pixel((basist::transcoder_texture_format)eFormat), (basist::transcoder_texture_format)eFormat))
                   {
                     /* Updates result */
                     uiResult = uiRealSize;
@@ -6862,8 +6866,11 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           /* Inits Basis Universal transcoder */
           basist::basisu_transcoder_init();
 
-          /* Creates KTX2 transcoder */
-          sstDisplay.spoKTX2Transcoder = new basist::ktx2_transcoder();
+          /* Creates all KTX2 transcoders */
+          for(i = 0; i < orxTHREAD_KU32_MAX_THREAD_NUMBER; i++)
+          {
+            sstDisplay.aspoKTX2Transcoder[i] = new basist::ktx2_transcoder();
+          }
 
           /* Updates default mode */
           orxDisplay_GLFW_UpdateDefaultMode();
@@ -6991,15 +6998,20 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_Init()
           }
           else
           {
+            orxU32 i;
+
             /* Terminates GLFW */
             glfwTerminate();
 
             /* Frees screen bitmap */
             orxBank_Free(sstDisplay.pstBitmapBank, sstDisplay.pstScreen);
 
-            /* Deletes KTX2 transcoder */
-            delete sstDisplay.spoKTX2Transcoder;
-            sstDisplay.spoKTX2Transcoder = orxNULL;
+            /* Deletes all KTX2 transcoders */
+            for(i = 0; i < orxTHREAD_KU32_MAX_THREAD_NUMBER; i++)
+            {
+              delete sstDisplay.aspoKTX2Transcoder[i];
+              sstDisplay.aspoKTX2Transcoder[i] = orxNULL;
+            }
 
             /* Deletes banks */
             orxBank_Delete(sstDisplay.pstBitmapBank);
@@ -7068,9 +7080,14 @@ void orxFASTCALL orxDisplay_GLFW_Exit()
   /* Was initialized? */
   if(sstDisplay.u32Flags & orxDISPLAY_KU32_STATIC_FLAG_READY)
   {
-    /* Deletes KTX2 transcoder */
-    delete sstDisplay.spoKTX2Transcoder;
-    sstDisplay.spoKTX2Transcoder = orxNULL;
+    orxU32 i;
+
+    /* Deletes all KTX2 transcoders */
+    for(i = 0; i < orxTHREAD_KU32_MAX_THREAD_NUMBER; i++)
+    {
+      delete sstDisplay.aspoKTX2Transcoder[i];
+      sstDisplay.aspoKTX2Transcoder[i] = orxNULL;
+    }
 
     /* Removes VSync fix (to account for rapid exit) */
     orxClock_RemoveGlobalTimer(orxDisplay_GLFW_VSyncFix, -orxFLOAT_1, orxNULL);

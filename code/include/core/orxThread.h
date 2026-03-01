@@ -53,11 +53,11 @@
 
 
 #define orxTHREAD_KU32_MAIN_THREAD_ID                 0           /**< Main thread ID */
-#define orxTHREAD_KU32_MAX_THREAD_NUMBER              16          /**< Max thread number */
+#define orxTHREAD_KU32_MAX_THREAD_NUMBER              64          /**< Max thread number */
 
 #define orxTHREAD_KU32_FLAG_NONE                      0           /**< Flag none (for orxThread_Enable) */
-#define orxTHREAD_KU32_MASK_ALL                       (((1 << orxTHREAD_KU32_MAX_THREAD_NUMBER) - 1) & ~(1 << orxTHREAD_KU32_MAIN_THREAD_ID)) /* Mask all (for orxThread_Enable) */
-#define orxTHREAD_GET_FLAG_FROM_ID(ID)                (1 << (ID)) /**< Gets thread flag from ID */
+#define orxTHREAD_KU32_MASK_ALL                       (((1ULL << (orxTHREAD_KU32_MAX_THREAD_NUMBER - 1)) - 1) & ~(1 << orxTHREAD_KU32_MAIN_THREAD_ID)) /* Mask all (for orxThread_Enable) */
+#define orxTHREAD_GET_FLAG_FROM_ID(ID)                (1ULL << (ID)) /**< Gets thread flag from ID */
 
 
 /** Semaphore structure */
@@ -108,11 +108,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_JoinAll();
 extern orxDLLAPI const orxSTRING orxFASTCALL          orxThread_GetName(orxU32 _u32ThreadID);
 
 /** Enables / disables threads
- * @param[in]   _u32EnableThreads   Mask of threads to enable (1 << ThreadID)
- * @param[in]   _u32DisableThreads  Mask of threads to disable (1 << ThreadID)
+ * @param[in]   _u64EnableThreads   Mask of threads to enable (1 << ThreadID)
+ * @param[in]   _u64DisableThreads  Mask of threads to disable (1 << ThreadID)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Enable(orxU32 _u32EnableThreads, orxU32 _u32DisableThreads);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Enable(orxU64 _u64EnableThreads, orxU64 _u64DisableThreads);
 
 /** Gets current thread ID
  * @return      Current thread ID
