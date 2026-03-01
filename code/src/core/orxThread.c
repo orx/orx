@@ -57,6 +57,12 @@
 
   #endif /* __orxLINUX__ */
 
+  #if defined(__orxMAC__)
+
+    #include <sys/sysctl.h>
+
+  #endif /* __orxMAC__ */
+
 #endif /* __orxWINDOWS__ */
 
 
@@ -185,11 +191,10 @@ static orxINLINE orxU32 orxThread_GetLogicalCoreCount()
 
 #elif defined(__orxMAC__) || defined(__orxIOS__)
 
-  int     astMIB[2] = {CTL_HW, HW_NCPU};
-  size_t  iLength = sizeof(u32Result);
+  size_t iLength = sizeof(u32Count);
 
   /* Updates result */
-  sysctl(astMIB, orxARRAY_GET_ITEM_COUNT(astMIB), &u32Result, &iLength, NULL, 0);
+  sysctlbyname("hw.logicalcpu", &u32Result, &iLength, NULL, 0);
 
 #elif defined(__orxLINUX__) || defined(__orxANDROID__)
 
