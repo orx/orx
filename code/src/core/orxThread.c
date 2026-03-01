@@ -191,7 +191,7 @@ static orxINLINE orxU32 orxThread_GetLogicalCoreCount()
 
 #elif defined(__orxMAC__) || defined(__orxIOS__)
 
-  size_t iLength = sizeof(u32Count);
+  size_t iLength = sizeof(u32Result);
 
   /* Updates result */
   sysctlbyname("hw.logicalcpu", &u32Result, &iLength, NULL, 0);
