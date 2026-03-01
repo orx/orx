@@ -206,7 +206,6 @@ typedef struct __orxRESOURCE_STATIC_t
   orxBANK                  *pstTypeBank;                                              /**< Type info bank */
   orxBANK                  *pstResourceInfoBank;                                      /**< Resource info bank */
   orxBANK                  *pstOpenInfoBank;                                          /**< Open resource table size */
-  orxTHREAD_SEMAPHORE*      pstRequestSemaphore;                                      /**< Request semaphore */
   orxTHREAD_SEMAPHORE*      pstWorkerSemaphore;                                       /**< Worker semaphore */
   orxLINKLIST               stTypeList;                                               /**< Type list */
   orxSTRING                 zLastUncachedLocation;                                    /**< Last uncached location */
@@ -870,9 +869,6 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
     orxU32  u32NextRequestIndex;
     orxBOOL bAdd;
 
-    /* Waits for semaphore */
-    orxThread_WaitSemaphore(sstResource.pstRequestSemaphore);
-
     /* Gets next request index */
     u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
 
@@ -931,9 +927,6 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
       /* Signals worker semaphore */
       orxThread_SignalSemaphore(sstResource.pstWorkerSemaphore);
     }
-
-    /* Signals semaphore */
-    orxThread_SignalSemaphore(sstResource.pstRequestSemaphore);
   }
 }
 
@@ -1474,12 +1467,11 @@ orxSTATUS orxFASTCALL orxResource_Init()
     /* Cleans control structure */
     orxMemory_Zero(&sstResource, sizeof(orxRESOURCE_STATIC));
 
-    /* Creates semaphores */
-    sstResource.pstRequestSemaphore = orxThread_CreateSemaphore(1);
-    sstResource.pstWorkerSemaphore  = orxThread_CreateSemaphore(1);
+    /* Creates worker semaphore */
+    sstResource.pstWorkerSemaphore = orxThread_CreateSemaphore(1);
 
     /* Valid? */
-    if((sstResource.pstRequestSemaphore != orxNULL) && (sstResource.pstWorkerSemaphore != orxNULL))
+    if(sstResource.pstWorkerSemaphore != orxNULL)
     {
       /* Inits request thread ID */
       sstResource.u32RequestThreadID = orxU32_UNDEFINED;
@@ -1590,11 +1582,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
       /* Removes Flags */
       sstResource.u32Flags &= ~orxRESOURCE_KU32_STATIC_FLAG_READY;
 
-      /* Deletes semaphores */
-      if(sstResource.pstRequestSemaphore != orxNULL)
-      {
-        orxThread_DeleteSemaphore(sstResource.pstRequestSemaphore);
-      }
+      /* Deletes worker semaphore */
       if(sstResource.pstWorkerSemaphore != orxNULL)
       {
         orxThread_DeleteSemaphore(sstResource.pstWorkerSemaphore);
@@ -1696,8 +1684,7 @@ void orxFASTCALL orxResource_Exit()
     orxThread_Join(sstResource.u32RequestThreadID);
     sstResource.u32RequestThreadID = orxU32_UNDEFINED;
 
-    /* Delete semaphores */
-    orxThread_DeleteSemaphore(sstResource.pstRequestSemaphore);
+    /* Delete worker semaphore */
     orxThread_DeleteSemaphore(sstResource.pstWorkerSemaphore);
 
     /* Is the clock module still present? */
