@@ -448,65 +448,35 @@ orxSTATUS orxFASTCALL orxThread_Init()
       /* For all workers */
       for(i = 0; i < sstThread.u32WorkerCount; i++)
       {
-        orxCHAR acBuffer[64];
-
-        /* Gets its name */
-        orxString_NPrint(acBuffer, sizeof(acBuffer), "%s %02u", orxTHREAD_KZ_THREAD_NAME_WORKER, i + 1);
-        sstThread.astWorkerList[i].u32ThreadID = orxThread_Start(orxThread_Work, acBuffer, (void *)(orxUPTR)i);
+        /* Inits worker */
+        sstThread.astWorkerList[i].pstTaskSemaphore = orxThread_CreateSemaphore(1);
+        sstThread.astWorkerList[i].pstWorkSemaphore = orxThread_CreateSemaphore(1);
 
         /* Success? */
-        if(sstThread.astWorkerList[i].u32ThreadID != orxU32_UNDEFINED)
+        if((sstThread.astWorkerList[i].pstTaskSemaphore != orxNULL)
+        && (sstThread.astWorkerList[i].pstWorkSemaphore != orxNULL))
         {
-          /* Inits worker */
-          sstThread.astWorkerList[i].pstTaskSemaphore = orxThread_CreateSemaphore(1);
-          sstThread.astWorkerList[i].pstWorkSemaphore = orxThread_CreateSemaphore(1);
+          orxCHAR acBuffer[64];
 
-          /* Success? */
-          if((sstThread.astWorkerList[i].pstTaskSemaphore != orxNULL)
-          && (sstThread.astWorkerList[i].pstWorkSemaphore != orxNULL))
+          /* Waits for its work semaphore */
+          orxThread_WaitSemaphore(sstThread.astWorkerList[i].pstWorkSemaphore);
+
+          /* Gets its name */
+          orxString_NPrint(acBuffer, sizeof(acBuffer), "%s %02u", orxTHREAD_KZ_THREAD_NAME_WORKER, i + 1);
+
+          /* Starts thread */
+          sstThread.astWorkerList[i].u32ThreadID = orxThread_Start(orxThread_Work, acBuffer, (void *)(orxUPTR)i);
+
+          /* Failure? */
+          if(sstThread.astWorkerList[i].u32ThreadID == orxSTATUS_FAILURE)
           {
-            /* Waits for its work semaphore */
-            orxThread_WaitSemaphore(sstThread.astWorkerList[i].pstWorkSemaphore);
-          }
-          else
-          {
-            orxU32 j;
-
-            /* For all existing workers */
-            for(j = 0; j < i; j++)
-            {
-              /* Stops it */
-              orxFLAG_SET(sstThread.astThreadInfoList[sstThread.astWorkerList[i].u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
-              orxMEMORY_BARRIER();
-
-              /* Signals its semaphore */
-              orxThread_SignalSemaphore(sstThread.astWorkerList[j].pstWorkSemaphore);
-            }
-
-            /* Joins all threads */
-            orxThread_JoinAll();
-
-            /* For all existing workers */
-            for(j = 0; j <= i; j++)
-            {
-              /* Deletes its semaphores */
-              if(sstThread.astWorkerList[j].pstTaskSemaphore != orxNULL)
-              {
-                orxThread_DeleteSemaphore(sstThread.astWorkerList[j].pstTaskSemaphore);
-              }
-              if(sstThread.astWorkerList[j].pstWorkSemaphore != orxNULL)
-              {
-                orxThread_DeleteSemaphore(sstThread.astWorkerList[j].pstWorkSemaphore);
-              }
-            }
-
+            /* Stops */
             break;
           }
         }
         else
         {
-          /* Joins all threads */
-          orxThread_JoinAll();
+          /* Stops */
           break;
         }
       }
@@ -519,6 +489,39 @@ orxSTATUS orxFASTCALL orxThread_Init()
       }
       else
       {
+        orxU32 j;
+
+        /* For all initialized workers */
+        for(j = 0; j <= i; j++)
+        {
+          /* Sets its stop flag */
+          orxFLAG_SET(sstThread.astThreadInfoList[sstThread.astWorkerList[j].u32ThreadID].u32Flags, orxTHREAD_KU32_INFO_FLAG_STOP, orxTHREAD_KU32_INFO_FLAG_NONE);
+          orxMEMORY_BARRIER();
+
+          /* Signal its work semaphore */
+          if(sstThread.astWorkerList[j].pstWorkSemaphore != orxNULL)
+          {
+            orxThread_SignalSemaphore(sstThread.astWorkerList[j].pstWorkSemaphore);
+          }
+        }
+
+        /* Joins all threads */
+        orxThread_JoinAll();
+
+        /* For all existing workers */
+        for(j = 0; j <= i; j++)
+        {
+          /* Deletes its semaphores */
+          if(sstThread.astWorkerList[j].pstTaskSemaphore != orxNULL)
+          {
+            orxThread_DeleteSemaphore(sstThread.astWorkerList[j].pstTaskSemaphore);
+          }
+          if(sstThread.astWorkerList[j].pstWorkSemaphore != orxNULL)
+          {
+            orxThread_DeleteSemaphore(sstThread.astWorkerList[j].pstWorkSemaphore);
+          }
+        }
+
         /* Logs message */
         orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Couldn't start internal workers.");
 
