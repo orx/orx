@@ -57,11 +57,11 @@
 
   #endif /* __orxLINUX__ */
 
-  #if defined(__orxMAC__)
+  #if defined(__orxMAC__) || defined(__orxIOS__)
 
     #include <sys/sysctl.h>
 
-  #endif /* __orxMAC__ */
+  #endif /* __orxMAC__ || __orxIOS__ */
 
 #endif /* __orxWINDOWS__ */
 
