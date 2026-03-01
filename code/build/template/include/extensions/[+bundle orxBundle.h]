@@ -705,12 +705,12 @@ static orxINLINE orxSTATUS orxBundle_Process()
                       // Adds ref
                       pstResourceRef = (orxBUNDLE_RESOURCE_REF *)orxBank_Allocate(pstResourceBank);
                       orxASSERT(pstResourceRef != orxNULL);
-                      pstResourceRef->stNameID        = orxString_GetID(zName);
-                      pstResourceRef->zLocation       = zLocation;
-                      pstResourceRef->zGroup          = zGroup;
-                      pstResourceRef->zRule           = zRule;
-                      pstResourceRef->s64Size         = 0;
-                      pstResourceRef->s64FinalSize    = s64Size;
+                      pstResourceRef->stNameID      = orxString_GetID(zName);
+                      pstResourceRef->zLocation     = zLocation;
+                      pstResourceRef->zGroup        = zGroup;
+                      pstResourceRef->zRule         = zRule;
+                      pstResourceRef->s64Size       = 0;
+                      pstResourceRef->s64FinalSize  = s64Size;
                     }
                   }
                   else
