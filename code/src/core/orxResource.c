@@ -861,15 +861,15 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
 
 static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64Size, void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext, orxRESOURCE_OPEN_INFO *_pstResourceInfo)
 {
-  orxU32                        u32NextRequestIndex;
-  orxBOOL                       bAdd = orxTRUE;
-
   /* Checks */
   orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
   /* Not shutting down */
   if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_EXIT))
   {
+    orxU32  u32NextRequestIndex;
+    orxBOOL bAdd;
+
     /* Waits for semaphore */
     orxThread_WaitSemaphore(sstResource.pstRequestSemaphore);
 
@@ -888,29 +888,16 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
       /* Gets number of free slots */
       u32FreeSlots = (u32InIndex >= u32ProcessIndex) ? orxRESOURCE_KU32_REQUEST_LIST_SIZE - u32InIndex + u32ProcessIndex : u32ProcessIndex - u32InIndex;
 
-      /* More than a quarter of the slots are free? */
-      if(u32FreeSlots >= orxRESOURCE_KU32_REQUEST_LIST_SIZE / 4)
-      {
-        /* Process addition */
-        bAdd = orxTRUE;
-      }
-      else
-      {
-        /* Drops request */
-        bAdd = orxFALSE;
-      }
+      /* Requests processing if more than a quarter of the slots are free */
+      bAdd = (u32FreeSlots >= orxRESOURCE_KU32_REQUEST_LIST_SIZE / 4) ? orxTRUE : orxFALSE;
     }
     else
     {
       /* Waits for a free slot */
       while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
       {
-        /* Main thread? */
-        if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
-        {
-          /* Manually pumps some request notifications */
-          orxResource_NotifyRequest(orxNULL, orxNULL);
-        }
+        /* Manually pumps some request notifications */
+        orxResource_NotifyRequest(orxNULL, orxNULL);
       }
 
       /* Process addition */
