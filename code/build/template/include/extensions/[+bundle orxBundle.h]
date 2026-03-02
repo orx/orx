@@ -491,7 +491,9 @@ static orxSTATUS orxFASTCALL orxBundle_ProcessResource(void *_pContext)
 
           // Waits for its turn
           while(sstBundle.u32CurrentResourceID != pstResourceRef->u32ID)
-            ;
+          {
+            orxThread_Yield();
+          }
 
           // Binary output?
           if(sstBundle.hOutput == sstBundle.hResource)
@@ -570,7 +572,9 @@ static orxSTATUS orxFASTCALL orxBundle_ProcessResource(void *_pContext)
 
   // Waits for its turn
   while(sstBundle.u32CurrentResourceID != pstResourceRef->u32ID)
-    ;
+  {
+    orxThread_Yield();
+  }
 
   // Updates current resource ID: next!
   orxMEMORY_BARRIER();
@@ -587,7 +591,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
 
   // Waits until all pending operations are over
   while(orxResource_GetTotalPendingOpCount() != 0)
-    ;
+  {
+    orxThread_Yield();
+  }
 
   // Restores monitor property
   orxConfig_PushSection(orxDISPLAY_KZ_CONFIG_SECTION);
@@ -951,7 +957,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
 
       // Waits for all tasks to complete
       while(sstBundle.u32CurrentResourceID != u32ResourceIndex)
-        ;
+      {
+        orxThread_Yield();
+      }
 
       // Still has data?
       if(orxBank_GetCount(pstResourceBank) != 0)
