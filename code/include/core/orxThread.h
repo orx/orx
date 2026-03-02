@@ -158,6 +158,15 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_SignalSemaphore(
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const orxTHREAD_FUNCTION _pfnThen, const orxTHREAD_FUNCTION _pfnElse, void *_pContext);
 
+/** Runs an asynchronous task on the first worker ID to ensure linear sequentiality (only use when firing multiple tasks whose processing order matters)
+ * @param[in]   _pfnRun                               Asynchronous task to run, executed on a different thread dedicated to tasks, if orxNULL defaults to an empty task that always succeed
+ * @param[in]   _pfnThen                              Executed (on the main thread) if Run does *not* return orxSTATUS_FAILURE, can be orxNULL
+ * @param[in]   _pfnElse                              Executed (on the main thread) if Run returns orxSTATUS_FAILURE, can be orxNULL
+ * @param[in]   _pContext                             Context that will be transmitted to all the task functions
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_RunTaskLinear(const orxTHREAD_FUNCTION _pfnRun, const orxTHREAD_FUNCTION _pfnThen, const orxTHREAD_FUNCTION _pfnElse, void *_pContext);
+
 /** Gets number of pending asynchronous tasks awaiting full completion (might pump task notifications if called from main thread)
  * @return      Number of pending asynchronous tasks
  */
