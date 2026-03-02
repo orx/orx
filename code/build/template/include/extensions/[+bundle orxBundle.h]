@@ -958,6 +958,8 @@ static orxINLINE orxSTATUS orxBundle_Process()
       // Waits for all tasks to complete
       while(sstBundle.u32CurrentResourceID != u32ResourceIndex)
       {
+        // Triggers internal poll
+        orxThread_GetTaskCount();
         orxThread_Yield();
       }
 

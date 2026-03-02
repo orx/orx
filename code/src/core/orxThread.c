@@ -82,7 +82,7 @@
 
 /** Misc
  */
-#define orxTHREAD_KU32_TASK_LIST_SIZE                 256
+#define orxTHREAD_KU32_TASK_LIST_SIZE                 1024
 #define orxTHREAD_KU32_MAX_WORKER_NUMBER              (orxTHREAD_KU32_MAX_THREAD_NUMBER >> 1)
 
 #define orxTHREAD_KZ_THREAD_NAME_MAIN                 "Main"
