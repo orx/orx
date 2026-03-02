@@ -580,20 +580,6 @@ static orxSTATUS orxFASTCALL orxBundle_ProcessResource(void *_pContext)
   return orxSTATUS_SUCCESS;
 }
 
-static orxSTATUS orxFASTCALL orxBundle_CleanResource(void *_pContext)
-{
-  BundleResourceRef *pstResourceRef;
-
-  // Gets resource ref
-  pstResourceRef = (BundleResourceRef *)_pContext;
-
-  // Closes its resource
-  orxResource_Close(pstResourceRef->hResource);
-
-  // Done!
-  return orxSTATUS_SUCCESS;
-}
-
 static orxINLINE orxSTATUS orxBundle_Process()
 {
   orxU32    u32DebugFlags;
@@ -948,13 +934,12 @@ static orxINLINE orxSTATUS orxBundle_Process()
           if(bBinary != orxFALSE)
           {
             // Runs task in parallel
-            orxThread_RunTask(&orxBundle_ProcessResource, &orxBundle_CleanResource, orxNULL, pstResourceRef);
+            orxThread_RunTask(&orxBundle_ProcessResource, orxNULL, orxNULL, pstResourceRef);
           }
           else
           {
             // Runs task locally (faster in non-binary mode)
             orxBundle_ProcessResource(pstResourceRef);
-            orxBundle_CleanResource(pstResourceRef);
           }
         }
         else
@@ -964,12 +949,9 @@ static orxINLINE orxSTATUS orxBundle_Process()
         }
       }
 
-      // Triggers cleanup while waiting for all tasks to complete
-      do
-      {
-        orxThread_GetTaskCount();
-      }
-      while(sstBundle.u32CurrentResourceID != u32ResourceIndex);
+      // Waits for all tasks to complete
+      while(sstBundle.u32CurrentResourceID != u32ResourceIndex)
+        ;
 
       // Still has data?
       if(orxBank_GetCount(pstResourceBank) != 0)
@@ -1041,6 +1023,19 @@ static orxINLINE orxSTATUS orxBundle_Process()
               acPrintBuffer,
               orxBundle_GetHumanReadableSize(s64Size, 2),
               orx2F(100.0f) * orxS2F(s64Size) / orxS2F(s64FinalSize));
+      }
+
+      // For all refs
+      for(pstResourceRef = (BundleResourceRef *)orxBank_GetNext(pstResourceBank, orxNULL);
+          pstResourceRef != orxNULL;
+          pstResourceRef = (BundleResourceRef *)orxBank_GetNext(pstResourceBank, pstResourceRef))
+      {
+        // Has resource?
+        if(pstResourceRef->hResource != orxHANDLE_UNDEFINED)
+        {
+          // Closes it
+          orxResource_Close(pstResourceRef->hResource);
+        }
       }
     }
 
