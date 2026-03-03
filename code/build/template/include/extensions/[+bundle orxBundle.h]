@@ -48,7 +48,7 @@ const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 
 #define orxBUNDLE_KZ_BINARY_TAG             "OBR1"
 #define orxBUNDLE_KU32_HEADER_INTRO_SIZE    (4 + 4)
-#define orxBUNDLE_KU32_HEADER_ENTRY_SIZE    (8 + 4 + 4 + 4)
+#define orxBUNDLE_KU32_HEADER_ENTRY_SIZE    (8 + 8 + 4 + 4)
 
 
 #ifdef orxBUNDLE_IMPL
@@ -966,9 +966,10 @@ static orxINLINE orxSTATUS orxBundle_Process()
       // Still has data?
       if(orxBank_GetCount(pstResourceBank) != 0)
       {
-        BundleResourceRef *pstResourceRef;
-        orxS64                  s64Size = 0, s64FinalSize = 0;
-        orxCHAR                 acPrintBuffer[32];
+        BundleResourceRef  *pstResourceRef;
+        orxS64              s64Size = 0, s64FinalSize = 0;
+        orxU32              u32ResourceCount = 0;
+        orxCHAR             acPrintBuffer[32];
 
         // Binary output?
         if(bBinary != orxFALSE)
@@ -986,15 +987,26 @@ static orxINLINE orxSTATUS orxBundle_Process()
             // Valid?
             if(pstResourceRef->s64Size > 0)
             {
-              //  Writes its header entry
+              // Writes its header entry
               orxResource_WriteU64(sstBundle.hOutput, (orxU64)pstResourceRef->stNameID);
-              orxResource_WriteU32(sstBundle.hOutput, u32HeaderSize + (orxU32)s64Size);
+              orxResource_WriteU64(sstBundle.hOutput, (orxU64)u32HeaderSize + s64Size);
               orxResource_WriteU32(sstBundle.hOutput, (orxU32)pstResourceRef->s64Size);
               orxResource_WriteU32(sstBundle.hOutput, (orxU32)pstResourceRef->s64FinalSize);
 
               // Updates sizes
               s64Size      += pstResourceRef->s64Size;
               s64FinalSize += pstResourceRef->s64FinalSize;
+
+              // Updates count
+              u32ResourceCount++;
+            }
+            else
+            {
+              // Writes empty entry
+              orxResource_WriteU64(sstBundle.hOutput, 0);
+              orxResource_WriteU64(sstBundle.hOutput, 0);
+              orxResource_WriteU32(sstBundle.hOutput, 0);
+              orxResource_WriteU32(sstBundle.hOutput, 0);
             }
           }
         }
@@ -1005,15 +1017,22 @@ static orxINLINE orxSTATUS orxBundle_Process()
 
           // For all refs
           for(pstResourceRef = (BundleResourceRef *)orxBank_GetNext(pstResourceBank, orxNULL), u32ResourceIndex = 0;
-            pstResourceRef != orxNULL;
-            pstResourceRef = (BundleResourceRef *)orxBank_GetNext(pstResourceBank, pstResourceRef), u32ResourceIndex++)
+              pstResourceRef != orxNULL;
+              pstResourceRef = (BundleResourceRef *)orxBank_GetNext(pstResourceBank, pstResourceRef), u32ResourceIndex++)
           {
-            // Outputs ref
-            orxResource_Print(sstBundle.hOutput, "\r\n  {0x%016llx /* %s */, (const orxU8 *)BundleData0x%x, %lld, %lld},", pstResourceRef->stNameID, orxString_GetFromID(pstResourceRef->stNameID), u32ResourceIndex, pstResourceRef->s64Size, pstResourceRef->s64FinalSize);
+            // Valid?
+            if(pstResourceRef->s64Size > 0)
+            {
+              // Outputs ref
+              orxResource_Print(sstBundle.hOutput, "\r\n  {0x%016llx /* %s */, (const orxU8 *)BundleData0x%x, %lld, %lld},", pstResourceRef->stNameID, orxString_GetFromID(pstResourceRef->stNameID), u32ResourceIndex, pstResourceRef->s64Size, pstResourceRef->s64FinalSize);
 
-            // Updates sizes
-            s64Size      += pstResourceRef->s64Size;
-            s64FinalSize += pstResourceRef->s64FinalSize;
+              // Updates sizes
+              s64Size      += pstResourceRef->s64Size;
+              s64FinalSize += pstResourceRef->s64FinalSize;
+
+              // Updates count
+              u32ResourceCount++;
+            }
           }
 
           // Outputs table footer
@@ -1027,7 +1046,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
         // Logs message
         orxString_NPrint(acPrintBuffer, sizeof(acPrintBuffer), "%s", orxBundle_GetHumanReadableSize(s64FinalSize, 2));
         orxLOG(orxBUNDLE_KZ_LOG_TAG "Bundled " orxANSI_KZ_COLOR_FG_CYAN "%u" orxANSI_KZ_COLOR_RESET " resources into " orxANSI_KZ_COLOR_FG_MAGENTA "%s" orxANSI_KZ_COLOR_RESET " in " orxANSI_KZ_COLOR_FG_CYAN "%.2f" orxANSI_KZ_COLOR_RESET "s, " orxANSI_KZ_COLOR_FG_GREEN "(%s) -> [%s]" orxANSI_KZ_COLOR_FG_CYAN " (%.2f%%)" orxANSI_KZ_COLOR_RESET,
-              u32ResourceIndex,
+              u32ResourceCount,
               orxResource_GetPath(orxResource_GetLocation(sstBundle.hOutput)),
               orx2F(dEndTime - dBeginTime),
               acPrintBuffer,
@@ -1259,9 +1278,13 @@ static const orxSTRING orxFASTCALL orxBundle_Locate(const orxSTRING _zGroup, con
                   // Gets its ID
                   stID = (orxSTRINGID)orxResource_ReadU64(hResource);
 
-                  // Adds it
-                  eResult = orxHashTable_Add(*ppstToC, stID, (void *)(orxUPTR)(i + 1));
-                  orxASSERT(eResult != orxSTATUS_FAILURE);
+                  // Valid?
+                  if(stID != 0)
+                  {
+                    // Adds it
+                    eResult = orxHashTable_Add(*ppstToC, stID, (void *)(orxUPTR)(i + 1));
+                    orxASSERT(eResult != orxSTATUS_FAILURE);
+                  }
 
                   // Skips entry
                   orxResource_Seek(hResource, orxBUNDLE_KU32_HEADER_ENTRY_SIZE - 8, orxSEEK_OFFSET_WHENCE_CURRENT);
@@ -1423,7 +1446,7 @@ static orxHANDLE orxFASTCALL orxBundle_Open(const orxSTRING _zLocation, orxBOOL 
               pstResource->stData.hResource = hResource;
 
               // Skips to its info
-              orxResource_Seek(hResource, orxBUNDLE_KU32_HEADER_INTRO_SIZE + u32Index * orxBUNDLE_KU32_HEADER_ENTRY_SIZE + 8 + 4, orxSEEK_OFFSET_WHENCE_START);
+              orxResource_Seek(hResource, orxBUNDLE_KU32_HEADER_INTRO_SIZE + u32Index * orxBUNDLE_KU32_HEADER_ENTRY_SIZE + 8 + 8, orxSEEK_OFFSET_WHENCE_START);
 
               // Stores it
               pstResource->stData.s64Size       = (orxS64)orxResource_ReadU32(hResource);
@@ -1614,7 +1637,7 @@ static orxS64 orxFASTCALL orxBundle_Read(orxHANDLE _hResource, orxS64 _s64Size, 
       pstResource->stData.stNameID = orxResource_ReadU64(hResource);
 
       // Skips to content
-      orxResource_Seek(hResource, (orxS64)orxResource_ReadU32(hResource), orxSEEK_OFFSET_WHENCE_START);
+      orxResource_Seek(hResource, (orxS64)orxResource_ReadU64(hResource), orxSEEK_OFFSET_WHENCE_START);
 
       // Reads its content
       s64Size = orxResource_Read(hResource, pstResource->stData.s64Size, pu8Buffer, orxNULL, orxNULL);
