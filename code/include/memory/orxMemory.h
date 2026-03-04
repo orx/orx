@@ -55,6 +55,11 @@
 #if defined(__orxGCC__) || defined(__orxLLVM__)
   #define orxMEMORY_BARRIER()                             __sync_synchronize()
   #define orxHAS_MEMORY_BARRIER
+  #define orxMEMORY_ATOMIC_INC32(ADDRESS)                 __atomic_add_fetch((ADDRESS), 1, __ATOMIC_SEQ_CST)
+  #define orxMEMORY_ATOMIC_DEC32(ADDRESS)                 __atomic_sub_fetch((ADDRESS), 1, __ATOMIC_SEQ_CST)
+  #define orxMEMORY_ATOMIC_INC64(ADDRESS)                 __atomic_add_fetch((ADDRESS), 1, __ATOMIC_SEQ_CST)
+  #define orxMEMORY_ATOMIC_DEC64(ADDRESS)                 __atomic_sub_fetch((ADDRESS), 1, __ATOMIC_SEQ_CST)
+  #define orxHAS_ATOMICS
   #if defined(__orxGCC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wstringop-overflow"
@@ -70,11 +75,21 @@
     }
   #endif /* __orx64__ */
   #define orxHAS_MEMORY_BARRIER
+  #define orxMEMORY_ATOMIC_INC32(ADDRESS)                 ((orxU32)_InterlockedIncrement((volatile long *)(ADDRESS)))
+  #define orxMEMORY_ATOMIC_DEC32(ADDRESS)                 ((orxU32)_InterlockedDecrement((volatile long *)(ADDRESS)))
+  #define orxMEMORY_ATOMIC_INC64(ADDRESS)                 ((orxU64)_InterlockedIncrement64((volatile __int64 *)(ADDRESS)))
+  #define orxMEMORY_ATOMIC_DEC64(ADDRESS)                 ((orxU64)_InterlockedDecrement64((volatile __int64 *)(ADDRESS)))
+  #define orxHAS_ATOMICS
 #else
   #define orxMEMORY_BARRIER()
+  #define orxMEMORY_ATOMIC_INC32(ADDRESS)                 (++(*(ADDRESS)))
+  #define orxMEMORY_ATOMIC_DEC32(ADDRESS)                 (--(*(ADDRESS)))
+  #define orxMEMORY_ATOMIC_INC64(ADDRESS)                 (++(*(ADDRESS)))
+  #define orxMEMORY_ATOMIC_DEC64(ADDRESS)                 (--(*(ADDRESS)))
   #undef orxHAS_MEMORY_BARRIER
+  #undef orxHAS_ATOMICS
 
-  #warning !!WARNING!! This compiler does not have any builtin hardware memory barrier.
+  #warning !!WARNING!! This compiler does not have any builtin hardware memory barrier nor atomics.
 #endif
 
 
