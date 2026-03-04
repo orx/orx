@@ -41,6 +41,7 @@ const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 #define orxBUNDLE_KZ_LOG_TAG                orxANSI_KZ_COLOR_FG_YELLOW "[BUNDLE] " orxANSI_KZ_COLOR_RESET
 #define orxBUNDLE_KZ_RESOURCE_FORMAT        orxANSI_KZ_COLOR_FG_MAGENTA "[%s|%s]" orxANSI_KZ_COLOR_RESET
 #define orxBUNDLE_KU32_BUFFER_SIZE          16384
+#define orxBUNDLE_KU32_BATCH_SIZE           (2 * orxTHREAD_KU32_MAX_THREAD_NUMBER)
 #define orxBUNDLE_KU32_LINE_LENGTH          16
 #define orxBUNDLE_KU32_TABLE_SIZE           256
 #define orxBUNDLE_KU32_TOC_SIZE             1024
@@ -439,135 +440,164 @@ static orxINLINE const orxSTRING orxBundle_GetHumanReadableSize(orxS64 _s64Size,
   return sacBuffer;
 }
 
-static orxSTATUS orxFASTCALL orxBundle_ProcessResource(void *_pContext)
+static orxSTATUS orxFASTCALL orxBundle_CleanResource(void *_pContext)
 {
-  BundleResourceRef  *pstResourceRef;
-  orxU8              *pu8Buffer;
+  BundleResourceRef *pstResourceRef;
 
   // Gets resource ref
   pstResourceRef = (BundleResourceRef *)_pContext;
 
-  // Allocates buffer
-  pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)(pstResourceRef->s64FinalSize), orxMEMORY_TYPE_TEMP);
-
-  // Success?
-  if(pu8Buffer != orxNULL)
+  // Is opened?
+  if(pstResourceRef->hResource != orxHANDLE_UNDEFINED)
   {
-    // Reads data
-    if(orxResource_Read(pstResourceRef->hResource, pstResourceRef->s64FinalSize, pu8Buffer, orxNULL, orxNULL) == pstResourceRef->s64FinalSize)
+    // Closes it
+    orxResource_Close(pstResourceRef->hResource);
+    pstResourceRef->hResource = orxHANDLE_UNDEFINED;
+  }
+
+  // Done!
+  return orxSTATUS_SUCCESS;
+}
+
+static orxSTATUS orxFASTCALL orxBundle_ProcessResource(void *_pContext)
+{
+  BundleResourceRef  *pstResourceRef;
+
+  // Gets resource ref
+  pstResourceRef = (BundleResourceRef *)_pContext;
+
+  // Is size supported?
+  if(pstResourceRef->s64FinalSize <= 0x7FFFFFFF)
+  {
+    orxU8 *pu8Buffer;
+
+    // Allocates buffer
+    pu8Buffer = (orxU8 *)orxMemory_Allocate((orxU32)pstResourceRef->s64FinalSize, orxMEMORY_TYPE_TEMP);
+
+    // Success?
+    if(pu8Buffer != orxNULL)
     {
-      orxS32  s32CompressedSize;
-      orxU8  *pu8CompressedBuffer;
-
-      // Gets compressed buffer size
-      s32CompressedSize = LZ4_compressBound((orxS32)pstResourceRef->s64FinalSize);
-
-      // Allocates buffer
-      pu8CompressedBuffer = (orxU8 *)orxMemory_Allocate(s32CompressedSize, orxMEMORY_TYPE_TEMP);
-
-      // Success?
-      if(pu8CompressedBuffer != orxNULL)
+      // Reads data
+      if(orxResource_Read(pstResourceRef->hResource, pstResourceRef->s64FinalSize, pu8Buffer, orxNULL, orxNULL) == pstResourceRef->s64FinalSize)
       {
-        // Compresses it
-        s32CompressedSize = (orxS32)LZ4_compress_HC((const char *)pu8Buffer, (char *)pu8CompressedBuffer, (int)pstResourceRef->s64FinalSize, (int)s32CompressedSize, LZ4HC_CLEVEL_MAX);
+        orxS32  s32CompressedSize;
+        orxU8  *pu8CompressedBuffer;
+
+        // Gets compressed buffer size
+        s32CompressedSize = LZ4_compressBound((orxS32)pstResourceRef->s64FinalSize);
+
+        // Allocates buffer
+        pu8CompressedBuffer = (orxU8 *)orxMemory_Allocate(s32CompressedSize, orxMEMORY_TYPE_TEMP);
 
         // Success?
-        if(s32CompressedSize > 0)
+        if(pu8CompressedBuffer != orxNULL)
         {
-          const orxSTRING zKey;
-          const orxU8    *pu8Key;
-          orxU8          *pu8Data;
+          // Compresses it
+          s32CompressedSize = (orxS32)LZ4_compress_HC((const char *)pu8Buffer, (char *)pu8CompressedBuffer, (int)pstResourceRef->s64FinalSize, (int)s32CompressedSize, LZ4HC_CLEVEL_MAX);
 
-          // Gets encryption key
-          zKey = orxConfig_GetEncryptionKey();
-
-          // Encrypts data
-          for(pu8Key = (const orxU8 *)zKey, pu8Data = pu8CompressedBuffer;
-              pu8Data < pu8CompressedBuffer + s32CompressedSize;
-              pu8Key = (*pu8Key == orxCHAR_NULL) ? (const orxU8 *)zKey : pu8Key + 1, pu8Data++)
+          // Success?
+          if(s32CompressedSize > 0)
           {
-            *pu8Data ^= *pu8Key;
-          }
+            const orxSTRING zKey;
+            const orxU8    *pu8Key;
+            orxU8          *pu8Data;
 
-          // Waits for its turn
-          while(sstBundle.u32CurrentResourceID != pstResourceRef->u32ID)
-          {
-            orxThread_Yield();
-          }
+            // Gets encryption key
+            zKey = orxConfig_GetEncryptionKey();
 
-          // Binary output?
-          if(sstBundle.hOutput == sstBundle.hResource)
-          {
-            // Outputs resource
-            orxResource_Write(sstBundle.hOutput, (orxS64)s32CompressedSize, pu8CompressedBuffer, orxNULL, orxNULL);
+            // Encrypts data
+            for(pu8Key = (const orxU8 *)zKey, pu8Data = pu8CompressedBuffer;
+                pu8Data < pu8CompressedBuffer + s32CompressedSize;
+                pu8Key = (*pu8Key == orxCHAR_NULL) ? (const orxU8 *)zKey : pu8Key + 1, pu8Data++)
+            {
+              *pu8Data ^= *pu8Key;
+            }
+
+            // Waits for its turn
+            while(sstBundle.u32CurrentResourceID != pstResourceRef->u32ID)
+            {
+              orxThread_Yield();
+            }
+
+            // Binary output?
+            if(sstBundle.hOutput == sstBundle.hResource)
+            {
+              // Outputs resource
+              orxResource_Write(sstBundle.hOutput, (orxS64)s32CompressedSize, pu8CompressedBuffer, orxNULL, orxNULL);
+            }
+            else
+            {
+              orxS32 s32Index;
+
+              // Outputs structure header
+              orxResource_Print(sstBundle.hOutput, "static const orxU8 BundleData0x%x[] =\r\n{", pstResourceRef->u32ID);
+
+              // For all bytes
+              for(s32Index = 0; s32Index < s32CompressedSize; s32Index++)
+              {
+                static const orxCHAR  acDigits[]      = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+                static orxCHAR        acByteBuffer[]  = {' ', '0', 'x', '0', '0', ','};
+                orxU8                 u8Byte;
+
+                // New line?
+                if((s32Index % orxBUNDLE_KU32_LINE_LENGTH) == 0)
+                {
+                  // Outputs it
+                  orxResource_Print(sstBundle.hOutput, "\r\n ");
+                }
+
+                // Outputs byte
+                u8Byte          = pu8CompressedBuffer[s32Index];
+                acByteBuffer[3] = acDigits[u8Byte >> 4];
+                acByteBuffer[4] = acDigits[u8Byte & 0x0F];
+                orxResource_Write(sstBundle.hOutput, sizeof(acByteBuffer), acByteBuffer, orxNULL, orxNULL);
+              }
+
+              // Outputs structure footer
+              if(s32Index > 0)
+              {
+                orxResource_Seek(sstBundle.hOutput, -1, orxSEEK_OFFSET_WHENCE_CURRENT);
+              }
+              orxResource_Print(sstBundle.hOutput, "\r\n};\r\n\r\n");
+            }
+
+            // Updates size
+            pstResourceRef->s64Size = (orxS64)s32CompressedSize;
           }
           else
           {
-            orxS32 s32Index;
-
-            // Outputs structure header
-            orxResource_Print(sstBundle.hOutput, "static const orxU8 BundleData0x%x[] =\r\n{", pstResourceRef->u32ID);
-
-            // For all bytes
-            for(s32Index = 0; s32Index < s32CompressedSize; s32Index++)
-            {
-              static const orxCHAR  acDigits[]      = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-              static orxCHAR        acByteBuffer[]  = {' ', '0', 'x', '0', '0', ','};
-              orxU8                 u8Byte;
-
-              // New line?
-              if((s32Index % orxBUNDLE_KU32_LINE_LENGTH) == 0)
-              {
-                // Outputs it
-                orxResource_Print(sstBundle.hOutput, "\r\n ");
-              }
-
-              // Outputs byte
-              u8Byte          = pu8CompressedBuffer[s32Index];
-              acByteBuffer[3] = acDigits[u8Byte >> 4];
-              acByteBuffer[4] = acDigits[u8Byte & 0x0F];
-              orxResource_Write(sstBundle.hOutput, sizeof(acByteBuffer), acByteBuffer, orxNULL, orxNULL);
-            }
-
-            // Outputs structure footer
-            if(s32Index > 0)
-            {
-              orxResource_Seek(sstBundle.hOutput, -1, orxSEEK_OFFSET_WHENCE_CURRENT);
-            }
-            orxResource_Print(sstBundle.hOutput, "\r\n};\r\n\r\n");
+            // Logs message
+            orxLOG(orxBUNDLE_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_RED "Failed to compress " orxANSI_KZ_COLOR_FG_MAGENTA "[%s]" orxANSI_KZ_COLOR_RESET ", skipping!", orxString_GetFromID(pstResourceRef->stNameID));
           }
 
-          // Updates size
-          pstResourceRef->s64Size = (orxS64)s32CompressedSize;
+          // Frees buffer
+          orxMemory_Free(pu8CompressedBuffer);
         }
         else
         {
           // Logs message
-          orxLOG(orxBUNDLE_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_RED "Failed to compress " orxANSI_KZ_COLOR_FG_MAGENTA "[%s]" orxANSI_KZ_COLOR_RESET ", skipping!", orxString_GetFromID(pstResourceRef->stNameID));
+          orxLOG(orxBUNDLE_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_RED "Failed to allocate %s for " orxANSI_KZ_COLOR_FG_MAGENTA "[%s]" orxANSI_KZ_COLOR_RESET ", skipping!", orxBundle_GetHumanReadableSize(s32CompressedSize, 2), orxString_GetFromID(pstResourceRef->stNameID));
         }
-
-        // Frees buffer
-        orxMemory_Free(pu8CompressedBuffer);
       }
       else
       {
         // Logs message
-        orxLOG(orxBUNDLE_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_RED "Failed to allocate %s for " orxANSI_KZ_COLOR_FG_MAGENTA "[%s]" orxANSI_KZ_COLOR_RESET ", skipping!", orxBundle_GetHumanReadableSize(s32CompressedSize, 2), orxString_GetFromID(pstResourceRef->stNameID));
+        orxLOG(orxBUNDLE_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_RED "Failed to read " orxANSI_KZ_COLOR_FG_MAGENTA "[%s]" orxANSI_KZ_COLOR_RESET ", skipping!", orxString_GetFromID(pstResourceRef->stNameID));
       }
+
+      // Frees buffer
+      orxMemory_Free(pu8Buffer);
     }
     else
     {
       // Logs message
-      orxLOG(orxBUNDLE_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_RED "Failed to read " orxANSI_KZ_COLOR_FG_MAGENTA "[%s]" orxANSI_KZ_COLOR_RESET ", skipping!", orxString_GetFromID(pstResourceRef->stNameID));
+      orxLOG(orxBUNDLE_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_RED "Failed to allocate %s for " orxANSI_KZ_COLOR_FG_MAGENTA "[%s]" orxANSI_KZ_COLOR_RESET ", skipping!", orxBundle_GetHumanReadableSize(pstResourceRef->s64FinalSize, 2), orxString_GetFromID(pstResourceRef->stNameID));
     }
-
-    // Frees buffer
-    orxMemory_Free(pu8Buffer);
   }
   else
   {
     // Logs message
-    orxLOG(orxBUNDLE_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_RED "Failed to allocate %s for " orxANSI_KZ_COLOR_FG_MAGENTA "[%s]" orxANSI_KZ_COLOR_RESET ", skipping!", orxBundle_GetHumanReadableSize(pstResourceRef->s64FinalSize, 2), orxString_GetFromID(pstResourceRef->stNameID));
+    orxLOG(orxBUNDLE_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_RED "Size too large (%s) for " orxANSI_KZ_COLOR_FG_MAGENTA "[%s]" orxANSI_KZ_COLOR_RESET ", skipping!", orxBundle_GetHumanReadableSize(pstResourceRef->s64FinalSize, 2), orxString_GetFromID(pstResourceRef->stNameID));
   }
 
   // Waits for its turn
@@ -863,6 +893,11 @@ static orxINLINE orxSTATUS orxBundle_Process()
                       pstResourceRef->u32ID         = orxU32_UNDEFINED;
                       pstResourceRef->s64FinalSize  = s64Size;
                     }
+                    else
+                    {
+                      // Logs message
+                      orxLOG(orxBUNDLE_KZ_LOG_TAG "Skipping " orxBUNDLE_KZ_RESOURCE_FORMAT orxANSI_KZ_COLOR_FG_RED " (empty)", zGroup, zName);
+                    }
                   }
                   else
                   {
@@ -939,8 +974,14 @@ static orxINLINE orxSTATUS orxBundle_Process()
           // Binary mode?
           if(bBinary != orxFALSE)
           {
+            // Prevents task overload (OS file descriptors limit)
+            while(orxThread_GetTaskCount() > orxBUNDLE_KU32_BATCH_SIZE)
+            {
+              orxThread_Yield();
+            }
+
             // Runs task in parallel
-            orxThread_RunTask(&orxBundle_ProcessResource, orxNULL, orxNULL, pstResourceRef);
+            orxThread_RunTask(&orxBundle_ProcessResource, &orxBundle_CleanResource, orxNULL, pstResourceRef);
           }
           else
           {
@@ -956,10 +997,8 @@ static orxINLINE orxSTATUS orxBundle_Process()
       }
 
       // Waits for all tasks to complete
-      while(sstBundle.u32CurrentResourceID != u32ResourceIndex)
+      while(orxThread_GetTaskCount() > 0)
       {
-        // Triggers internal poll
-        orxThread_GetTaskCount();
         orxThread_Yield();
       }
 
@@ -1052,19 +1091,6 @@ static orxINLINE orxSTATUS orxBundle_Process()
               acPrintBuffer,
               orxBundle_GetHumanReadableSize(s64Size, 2),
               orx2F(100.0f) * orxS2F(s64Size) / orxS2F(s64FinalSize));
-      }
-
-      // For all refs
-      for(pstResourceRef = (BundleResourceRef *)orxBank_GetNext(pstResourceBank, orxNULL);
-          pstResourceRef != orxNULL;
-          pstResourceRef = (BundleResourceRef *)orxBank_GetNext(pstResourceBank, pstResourceRef))
-      {
-        // Has resource?
-        if(pstResourceRef->hResource != orxHANDLE_UNDEFINED)
-        {
-          // Closes it
-          orxResource_Close(pstResourceRef->hResource);
-        }
       }
     }
 
