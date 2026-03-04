@@ -14,6 +14,7 @@ var orx_thread_8h =
     [ "orxThread_GetCurrent", "group__orx_thread.html#gad6cda87fc56339a6ddebbcdc7dbed54c", null ],
     [ "orxThread_GetName", "group__orx_thread.html#gaa0b957753d09744df5211e97120f7ad2", null ],
     [ "orxThread_GetTaskCount", "group__orx_thread.html#gaeef4a870979f3f47784ded758300fb72", null ],
+    [ "orxThread_GetWorkerCount", "group__orx_thread.html#ga9aee9a7e67bc93501d76bab6e67ad29a", null ],
     [ "orxThread_Init", "group__orx_thread.html#ga3417c93f35516c8b00cf38973bcff158", null ],
     [ "orxThread_Join", "group__orx_thread.html#ga8da3edcc56ea245646ca0384801865f2", null ],
     [ "orxThread_JoinAll", "group__orx_thread.html#gafeb2fb6aedab7664ed6f254d5122aab0", null ],
