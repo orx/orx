@@ -393,7 +393,7 @@ static orxSTATUS orxFASTCALL orxThread_RunTaskInternal(const orxTHREAD_FUNCTION 
     else
     {
       /* Updates current worker ID */
-      sstThread.u32CurrentWorkerID = (sstThread.u32CurrentWorkerID + 1) % sstThread.u32WorkerCount;
+      sstThread.u32CurrentWorkerID = sstThread.u32CurrentWorkerID % (sstThread.u32WorkerCount - 1) + 1;
 
       /* Gets worker */
       pstWorker = &(sstThread.astWorkerList[sstThread.u32CurrentWorkerID]);
@@ -488,7 +488,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
     /* Retrieves number of max threads & workers */
     sstThread.u32MaxThreadCount = orxCLAMP(orxThread_GetLogicalCoreCount(), orxTHREAD_KU32_MAX_THREAD_NUMBER >> 2, orxTHREAD_KU32_MAX_THREAD_NUMBER);
     sstThread.u32WorkerCount    = orxMIN(orxThread_GetLogicalCoreCount(), sstThread.u32MaxThreadCount) >> 1;
-    sstThread.u32WorkerCount    = orxCLAMP(sstThread.u32WorkerCount, 1, orxTHREAD_KU32_MAX_WORKER_NUMBER);
+    sstThread.u32WorkerCount    = orxCLAMP(sstThread.u32WorkerCount, 2, orxTHREAD_KU32_MAX_WORKER_NUMBER);
     orxASSERT(sstThread.u32WorkerCount <= orxARRAY_GET_ITEM_COUNT(sstThread.astWorkerList));
 
     /* Updates status */
