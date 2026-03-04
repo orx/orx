@@ -172,6 +172,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_RunTaskLinear(co
  */
 extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_GetTaskCount();
 
+/** Gets number of workers running tasks
+ * @return      Number of workers
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_GetWorkerCount();
+
 /** Sets callbacks to run when starting and stopping new threads
  * @param[in]   _pfnStart                             Function to run whenever a new thread is started
  * @param[in]   _pfnStop                              Function to run whenever a thread is stopped

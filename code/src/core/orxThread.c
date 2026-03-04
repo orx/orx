@@ -1311,6 +1311,23 @@ orxU32 orxFASTCALL orxThread_GetTaskCount()
   return u32Result;
 }
 
+/** Gets number of workers running tasks
+ * @return      Number of workers
+ */
+orxU32 orxFASTCALL orxThread_GetWorkerCount()
+{
+  orxU32 u32Result;
+
+  /* Checks */
+  orxASSERT((sstThread.u32Flags & orxTHREAD_KU32_STATIC_FLAG_READY) == orxTHREAD_KU32_STATIC_FLAG_READY);
+
+  /* Updates result */
+  u32Result = sstThread.u32WorkerCount;
+
+  /* Done! */
+  return u32Result;
+}
+
 /** Sets callbacks to run when starting and stopping new threads
  * @param[in]   _pfnStart                             Function to run whenever a new thread is started
  * @param[in]   _pfnStop                              Function to run whenever a thread is stopped
