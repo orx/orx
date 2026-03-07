@@ -179,7 +179,7 @@ static orxINLINE orxU32 orxThread_GetLogicalCoreCount()
 {
   orxU32 u32Result = 0;
 
-#if defined(__orxMSVC__)
+#if defined(__orxWINDOWS__)
 
   SYSTEM_INFO stSystemInfo;
 
