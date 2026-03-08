@@ -155,8 +155,9 @@
 
 #define orxDISPLAY_KU32_BITMAP_MASK_ALL         0xFFFFFFFF  /**< All mask */
 
-#define orxDISPLAY_KU32_BITMAP_BANK_SIZE        128
-#define orxDISPLAY_KU32_SHADER_BANK_SIZE        16
+#define orxDISPLAY_KU32_BITMAP_BANK_SIZE        256
+#define orxDISPLAY_KU32_SHADER_BANK_SIZE        64
+#define orxDISPLAY_KU32_GLYPH_INFO_BANK_SIZE    256
 
 #define orxDISPLAY_KU32_VERTEX_BUFFER_SIZE      (4 * 16384) /**< 16384 items batch capacity */
 #define orxDISPLAY_KU32_INDEX_BUFFER_SIZE       (6 * 16384) /**< 16384 items batch capacity */
@@ -353,6 +354,19 @@ typedef struct __orxDISPLAY_FONT_LOAD_INFO_t
 
 } orxDISPLAY_FONT_LOAD_INFO;
 
+/** Internal font glyph generation info
+ */
+typedef struct __orxDISPLAY_FONT_GLYPH_INFO_t
+{
+  orxDISPLAY_FONT_LOAD_INFO *pstLoadInfo;
+  orxDISPLAY_FONT_GLYPH    *pstGlyph;
+  orxS32                   *ps32Count;
+  orxU8                    *pu8ImageData;
+  orxS32                    s32OffsetX;
+  orxS32                    s32OffsetY;
+
+} orxDISPLAY_FONT_GLYPH_INFO;
+
 /** Internal texture info structure
  */
 typedef struct __orxDISPLAY_TEXTURE_INFO_t
@@ -410,6 +424,7 @@ typedef struct __orxDISPLAY_STATIC_t
 {
   orxBANK                  *pstBitmapBank;
   orxBANK                  *pstShaderBank;
+  orxBANK                  *pstGlyphInfoBank;
   orxLINKLIST               stActiveShaderList;
   orxBOOL                   bDefaultSmoothing;
   orxBITMAP                *pstScreen;
@@ -1949,6 +1964,126 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_DecompressBitmap(void *_pContext)
   return eResult;
 }
 
+static orxSTATUS orxFASTCALL orxDisplay_iOS_CleanGlyph(void *_pContext)
+{
+  orxSTATUS eResult = orxSTATUS_SUCCESS;
+
+  /* Frees glyph info */
+  orxBank_Free(sstDisplay.pstGlyphInfoBank, _pContext);
+
+  /* Done! */
+  return eResult;
+}
+
+static orxSTATUS orxFASTCALL orxDisplay_iOS_GenerateGlyph(void *_pContext)
+{
+  orxDISPLAY_FONT_GLYPH_INFO *pstGlyphInfo;
+  stbtt_vertex               *astVertexList = NULL;
+  orxS32                      s32VertexCount;
+  orxSTATUS                   eResult = orxSTATUS_SUCCESS;
+
+  /* Retrieves glyph info */
+  pstGlyphInfo = (orxDISPLAY_FONT_GLYPH_INFO *)_pContext;
+
+  /* Gets its shape */
+  s32VertexCount = stbtt_GetGlyphShape(&(pstGlyphInfo->pstLoadInfo->stFontInfo), pstGlyphInfo->pstGlyph->s32Index, &astVertexList);
+
+  /* Valid? */
+  if(s32VertexCount > 0)
+  {
+    msdfgen::Shape  stShape;
+    orxS32          s32TextureWidth, i;
+
+    /* Gets texture width */
+    s32TextureWidth = orxF2S(pstGlyphInfo->pstLoadInfo->stLoadInfo.pstBitmap->fWidth);
+
+    /* Inverses Y axis */
+    stShape.inverseYAxis = true;
+
+    /* For all vertices */
+    for(i = 0; i < s32VertexCount; i++)
+    {
+      /* Depending on type */
+      switch(astVertexList[i].type)
+      {
+        default:
+        case STBTT_vmove:
+        {
+          stShape.contours.reserve(s32VertexCount - i);
+          stShape.addContour();
+          break;
+        }
+        case STBTT_vline:
+        {
+          msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
+          msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+          stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stCurrent));
+          break;
+        }
+        case STBTT_vcurve:
+        {
+          msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
+          msdfgen::Point2 stC0((double)(astVertexList[i].cx), (double)(astVertexList[i].cy));
+          msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+          stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stC0, stCurrent));
+          break;
+        }
+        case STBTT_vcubic:
+        {
+          msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
+          msdfgen::Point2 stC0((double)(astVertexList[i].cx), (double)(astVertexList[i].cy));
+          msdfgen::Point2 stC1((double)(astVertexList[i].cx1), (double)(astVertexList[i].cy1));
+          msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
+          stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stC0, stC1, stCurrent));
+          break;
+        }
+      }
+    }
+
+    /* Normalizes the shape */
+    stShape.normalize();
+
+    /* Orients its contours */
+    stShape.orientContours();
+
+    /* Colors its edges */
+    msdfgen::edgeColoringByDistance(stShape, 3.0);
+
+    /* Allocates temp bitmap */
+    msdfgen::Bitmap<float, 4> oBitmap((int)pstGlyphInfo->pstGlyph->stGlyph.fWidth, (int)pstGlyphInfo->pstLoadInfo->vCharacterSize.fY);
+
+    /* Inits transformation */
+    msdfgen::Vector2 vScale(pstGlyphInfo->pstLoadInfo->vFontScale.fX, pstGlyphInfo->pstLoadInfo->vFontScale.fY);
+    msdfgen::Vector2 vOffset(pstGlyphInfo->pstGlyph->stGlyph.fX / pstGlyphInfo->pstLoadInfo->vFontScale.fX, pstGlyphInfo->pstGlyph->stGlyph.fY / pstGlyphInfo->pstLoadInfo->vFontScale.fY);
+    msdfgen::SDFTransformation stTransformation(msdfgen::Projection(vScale, vOffset), msdfgen::Range(0.25f * pstGlyphInfo->pstLoadInfo->vCharacterSize.fY / pstGlyphInfo->pstLoadInfo->vFontScale.fY));
+
+    /* Renders the MTSDF glyph */
+    msdfgen::generateMTSDF(oBitmap, stShape, stTransformation);
+
+    /* Copies it to output */
+    for(int y = 0; y < oBitmap.height(); y++)
+    {
+      for(int x = 0; x < oBitmap.width(); x++)
+      {
+        pstGlyphInfo->pu8ImageData[((pstGlyphInfo->s32OffsetX + x) + (pstGlyphInfo->s32OffsetY + y) * s32TextureWidth) * 4 + 0] = msdfgen::pixelFloatToByte(oBitmap(x, y)[0]);
+        pstGlyphInfo->pu8ImageData[((pstGlyphInfo->s32OffsetX + x) + (pstGlyphInfo->s32OffsetY + y) * s32TextureWidth) * 4 + 1] = msdfgen::pixelFloatToByte(oBitmap(x, y)[1]);
+        pstGlyphInfo->pu8ImageData[((pstGlyphInfo->s32OffsetX + x) + (pstGlyphInfo->s32OffsetY + y) * s32TextureWidth) * 4 + 2] = msdfgen::pixelFloatToByte(oBitmap(x, y)[2]);
+        pstGlyphInfo->pu8ImageData[((pstGlyphInfo->s32OffsetX + x) + (pstGlyphInfo->s32OffsetY + y) * s32TextureWidth) * 4 + 3] = msdfgen::pixelFloatToByte(oBitmap(x, y)[3]);
+      }
+    }
+  }
+
+  /* Frees the shape */
+  stbtt_FreeShape(&(pstGlyphInfo->pstLoadInfo->stFontInfo), astVertexList);
+
+  /* Updates count */
+  orxMEMORY_BARRIER();
+  orxMEMORY_ATOMIC_INC32(pstGlyphInfo->ps32Count);
+
+  /* Done! */
+  return eResult;
+}
+
 static orxSTATUS orxFASTCALL orxDisplay_iOS_ProcessFont(void *_pContext)
 {
   orxDISPLAY_FONT_LOAD_INFO  *pstLoadInfo;
@@ -1979,7 +2114,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_ProcessFont(void *_pContext)
     && ((pstLoadInfo->bSDF != orxFALSE)
      || (pu8Buffer != orxNULL)))
     {
-      orxS32 i, s32X, s32Y, s32Count, s32TextureWidth;
+      orxS32 i, s32X, s32Y, s32Count, s32TextureWidth, s32GlyphCount;
 
       /* Clears buffer */
       if(pstLoadInfo->bSDF != orxFALSE)
@@ -1992,7 +2127,7 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_ProcessFont(void *_pContext)
       }
 
       /* For all glyphs */
-      for(i = 0, s32X = orxF2S(pstLoadInfo->vCharacterSpacing.fX), s32Y = orxF2S(pstLoadInfo->vCharacterSpacing.fY), s32Count = (orxS32)pstLoadInfo->u32GlyphCount, s32TextureWidth = orxF2S(pstLoadInfo->stLoadInfo.pstBitmap->fWidth);
+      for(i = 0, s32X = orxF2S(pstLoadInfo->vCharacterSpacing.fX), s32Y = orxF2S(pstLoadInfo->vCharacterSpacing.fY), s32GlyphCount = 0, s32Count = (orxS32)pstLoadInfo->u32GlyphCount, s32TextureWidth = orxF2S(pstLoadInfo->stLoadInfo.pstBitmap->fWidth);
           i < s32Count;
           i++)
       {
@@ -2012,95 +2147,25 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_ProcessFont(void *_pContext)
         /* SDF? */
         if(pstLoadInfo->bSDF != orxFALSE)
         {
-          stbtt_vertex *astVertexList = NULL;
-          orxS32        s32VertexCount;
+          orxDISPLAY_FONT_GLYPH_INFO *pstGlyphInfo;
 
-          /* Gets its shape */
-          s32VertexCount = stbtt_GetGlyphShape(&(pstLoadInfo->stFontInfo), pstLoadInfo->astGlyphList[i].s32Index, &astVertexList);
+          /* Selects glyph info */
+          pstGlyphInfo = (orxDISPLAY_FONT_GLYPH_INFO *)orxBank_Allocate(sstDisplay.pstGlyphInfoBank);
 
-          /* Valid? */
-          if(s32VertexCount > 0)
-          {
-            msdfgen::Shape stShape;
+          /* Checks */
+          orxASSERT(pstGlyphInfo != orxNULL);
 
-            /* Inverses Y axis */
-            stShape.inverseYAxis = true;
+          /* Inits glyph info */
+          pstGlyphInfo->pstLoadInfo   = pstLoadInfo;
+          pstGlyphInfo->pstGlyph      = &(pstLoadInfo->astGlyphList[i]);
+          pstGlyphInfo->ps32Count     = &s32GlyphCount;
+          pstGlyphInfo->pu8ImageData  = pu8ImageData;
+          pstGlyphInfo->s32OffsetX    = s32X;
+          pstGlyphInfo->s32OffsetY    = s32Y;
+          orxMEMORY_BARRIER();
 
-            /* For all vertices */
-            for(int i = 0; i < s32VertexCount; ++i)
-            {
-              /* Depending on type */
-              switch(astVertexList[i].type)
-              {
-                default:
-                case STBTT_vmove:
-                {
-                  stShape.contours.reserve(s32VertexCount - i);
-                  stShape.addContour();
-                  break;
-                }
-                case STBTT_vline:
-                {
-                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
-                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
-                  stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stCurrent));
-                  break;
-                }
-                case STBTT_vcurve:
-                {
-                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
-                  msdfgen::Point2 stC0((double)(astVertexList[i].cx), (double)(astVertexList[i].cy));
-                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
-                  stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stC0, stCurrent));
-                  break;
-                }
-                case STBTT_vcubic:
-                {
-                  msdfgen::Point2 stPrevious((double)(astVertexList[i - 1].x), (double)(astVertexList[i - 1].y));
-                  msdfgen::Point2 stC0((double)(astVertexList[i].cx), (double)(astVertexList[i].cy));
-                  msdfgen::Point2 stC1((double)(astVertexList[i].cx1), (double)(astVertexList[i].cy1));
-                  msdfgen::Point2 stCurrent((double)(astVertexList[i].x), (double)(astVertexList[i].y));
-                  stShape.contours.back().addEdge(msdfgen::EdgeHolder(stPrevious, stC0, stC1, stCurrent));
-                  break;
-                }
-              }
-            }
-
-            /* Normalizes the shape */
-            stShape.normalize();
-
-            /* Orients its contours */
-            stShape.orientContours();
-
-            /* Colors its edges */
-            msdfgen::edgeColoringByDistance(stShape, 3.0);
-
-            /* Allocates temp bitmap */
-            msdfgen::Bitmap<float, 4> oBitmap((int)pstLoadInfo->astGlyphList[i].stGlyph.fWidth, (int)pstLoadInfo->vCharacterSize.fY);
-
-            /* Inits transformation */
-            msdfgen::Vector2 vScale(pstLoadInfo->vFontScale.fX, pstLoadInfo->vFontScale.fY);
-            msdfgen::Vector2 vOffset(pstLoadInfo->astGlyphList[i].stGlyph.fX / pstLoadInfo->vFontScale.fX, pstLoadInfo->astGlyphList[i].stGlyph.fY / pstLoadInfo->vFontScale.fY);
-            msdfgen::SDFTransformation stTransformation(msdfgen::Projection(vScale, vOffset), msdfgen::Range(0.25f * pstLoadInfo->vCharacterSize.fY / pstLoadInfo->vFontScale.fY));
-
-            /* Renders the MTSDF glyph */
-            msdfgen::generateMTSDF(oBitmap, stShape, stTransformation);
-
-            /* Copies it to output */
-            for(int y = 0; y < oBitmap.height(); y++)
-            {
-              for(int x = 0; x < oBitmap.width(); x++)
-              {
-                pu8ImageData[((s32X + x) + (s32Y + y) * s32TextureWidth) * 4 + 0] = msdfgen::pixelFloatToByte(oBitmap(x, y)[0]);
-                pu8ImageData[((s32X + x) + (s32Y + y) * s32TextureWidth) * 4 + 1] = msdfgen::pixelFloatToByte(oBitmap(x, y)[1]);
-                pu8ImageData[((s32X + x) + (s32Y + y) * s32TextureWidth) * 4 + 2] = msdfgen::pixelFloatToByte(oBitmap(x, y)[2]);
-                pu8ImageData[((s32X + x) + (s32Y + y) * s32TextureWidth) * 4 + 3] = msdfgen::pixelFloatToByte(oBitmap(x, y)[3]);
-              }
-            }
-          }
-
-          /* Frees the shape */
-          stbtt_FreeShape(&(pstLoadInfo->stFontInfo), astVertexList);
+          /* Generates glyph in parallel */
+          orxThread_RunTask(&orxDisplay_iOS_GenerateGlyph, &orxDisplay_iOS_CleanGlyph, orxNULL, pstGlyphInfo);
         }
         else
         {
@@ -2110,6 +2175,16 @@ static orxSTATUS orxFASTCALL orxDisplay_iOS_ProcessFont(void *_pContext)
 
         /* Updates horizontal position */
         s32X += s32Width + orxF2S(pstLoadInfo->vCharacterSpacing.fX);
+      }
+
+      /* SDF? */
+      if(pstLoadInfo->bSDF != orxFALSE)
+      {
+        /* Waits for all glyphs to be ready */
+        while(s32GlyphCount < s32Count)
+        {
+          orxThread_Yield();
+        }
       }
 
       /* Updates info */
@@ -4551,7 +4626,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadFont(const orxSTRING _zFileName, const
                         orxFLAG_SET(pstResult->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING, orxDISPLAY_KU32_BITMAP_FLAG_NONE);
 
                         /* Runs asynchronous task */
-                        if(orxThread_RunTask(&orxDisplay_iOS_ProcessFont, orxDisplay_iOS_DecompressBitmapCallback, orxNULL, (void *)pstLoadInfo) == orxSTATUS_FAILURE)
+                        if(orxThread_RunTaskLinear(&orxDisplay_iOS_ProcessFont, orxDisplay_iOS_DecompressBitmapCallback, orxNULL, (void *)pstLoadInfo) == orxSTATUS_FAILURE)
                         {
                           /* Deletes glyph list */
                           orxMemory_Free(pstLoadInfo->astGlyphList);
@@ -4983,12 +5058,14 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
       }
 
       /* Creates banks */
-      sstDisplay.pstBitmapBank  = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxBITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
-      sstDisplay.pstShaderBank  = orxBank_Create(orxDISPLAY_KU32_SHADER_BANK_SIZE, sizeof(orxDISPLAY_SHADER), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstDisplay.pstBitmapBank    = orxBank_Create(orxDISPLAY_KU32_BITMAP_BANK_SIZE, sizeof(orxBITMAP), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstDisplay.pstShaderBank    = orxBank_Create(orxDISPLAY_KU32_SHADER_BANK_SIZE, sizeof(orxDISPLAY_SHADER), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
+      sstDisplay.pstGlyphInfoBank = orxBank_Create(orxDISPLAY_KU32_GLYPH_INFO_BANK_SIZE, sizeof(orxDISPLAY_FONT_GLYPH_INFO), orxBANK_KU32_FLAG_NONE, orxMEMORY_TYPE_MAIN);
 
       /* Valid? */
       if((sstDisplay.pstBitmapBank != orxNULL)
-      && (sstDisplay.pstShaderBank != orxNULL))
+      && (sstDisplay.pstShaderBank != orxNULL)
+      && (sstDisplay.pstGlyphInfoBank != orxNULL))
       {
         orxDISPLAY_EVENT_PAYLOAD  stPayload;
         orxVECTOR                 vFramebufferSize;
@@ -5147,6 +5224,11 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
           orxBank_Delete(sstDisplay.pstShaderBank);
           sstDisplay.pstShaderBank = orxNULL;
         }
+        if(sstDisplay.pstGlyphInfoBank != orxNULL)
+        {
+          orxBank_Delete(sstDisplay.pstGlyphInfoBank);
+          sstDisplay.pstGlyphInfoBank = orxNULL;
+        }
 
         /* Unregisters update function */
         orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxDisplay_iOS_Update, orxNULL);
@@ -5193,6 +5275,7 @@ void orxFASTCALL orxDisplay_iOS_Exit()
     /* Deletes banks */
     orxBank_Delete(sstDisplay.pstBitmapBank);
     orxBank_Delete(sstDisplay.pstShaderBank);
+    orxBank_Delete(sstDisplay.pstGlyphInfoBank);
 
     /* Cleans static controller */
     orxMemory_Zero(&sstDisplay, sizeof(orxDISPLAY_STATIC));
