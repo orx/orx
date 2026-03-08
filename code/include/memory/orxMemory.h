@@ -52,7 +52,7 @@
 #include <string.h>
 
 /** Memory barrier macros */
-#if defined(__orxGCC__) || defined(__orxLLVM__)
+#if defined(__orxGCC__) || defined(__orxLLVM__) || defined(__orxWEB__)
   #define orxMEMORY_BARRIER()                             __sync_synchronize()
   #define orxHAS_MEMORY_BARRIER
   #define orxMEMORY_ATOMIC_INC32(ADDRESS)                 __atomic_add_fetch((ADDRESS), 1, __ATOMIC_SEQ_CST)
