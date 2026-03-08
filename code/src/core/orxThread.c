@@ -207,11 +207,6 @@ static orxINLINE orxU32 orxThread_GetLogicalCoreCount()
   /* Updates result */
   u32Result = (orxU32)sysconf(_SC_NPROCESSORS_ONLN);
 
-#elif defined(__orxWEB__)
-
-  /* Updates result */
-  u32Result = (orxU32)EM_ASM_INT({return navigator.hardwareConcurrency || 0;});
-
 #endif
 
   /* Done! */
