@@ -135,7 +135,7 @@ $(function(){initNavTree('orx_memory_8h_source.html','',''); });
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">#include &lt;string.h&gt;</span></div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span></div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor">#if defined(__orxGCC__) || defined(__orxLLVM__)</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor">#if defined(__orxGCC__) || defined(__orxLLVM__) || defined(__orxWEB__)</span></div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="preprocessor">  #define orxMEMORY_BARRIER()                             __sync_synchronize()</span></div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="preprocessor">  #define orxHAS_MEMORY_BARRIER</span></div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">  #define orxMEMORY_ATOMIC_INC32(ADDRESS)                 __atomic_add_fetch((ADDRESS), 1, __ATOMIC_SEQ_CST)</span></div>
