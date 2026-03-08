@@ -1712,9 +1712,8 @@ static orxSTATUS orxFASTCALL orxDisplay_Android_ProcessFont(void *_pContext)
       }
 
       /* Updates info */
-      pstLoadInfo->stLoadInfo.uiWidth     = orxF2U(pstLoadInfo->stLoadInfo.pstBitmap->fWidth);
-      pstLoadInfo->stLoadInfo.uiHeight    = orxF2U(pstLoadInfo->stLoadInfo.pstBitmap->fHeight);
-      pstLoadInfo->stLoadInfo.u32DataSize = 4 * pstLoadInfo->stLoadInfo.uiWidth * pstLoadInfo->stLoadInfo.uiHeight;
+      pstLoadInfo->stLoadInfo.uiWidth   = orxF2U(pstLoadInfo->stLoadInfo.pstBitmap->fWidth);
+      pstLoadInfo->stLoadInfo.uiHeight  = orxF2U(pstLoadInfo->stLoadInfo.pstBitmap->fHeight);
 
       /* Uses image buffer */
       pstLoadInfo->stLoadInfo.pu8ImageBuffer = pu8ImageData;
