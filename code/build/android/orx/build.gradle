@@ -91,10 +91,10 @@ dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.22"))
 
-    api 'androidx.core:core:1.17.0'
+    api 'androidx.core:core:1.18.0'
     api 'androidx.appcompat:appcompat:1.7.1'
 
-    api 'androidx.games:games-activity:4.3.0-alpha01'
+    api 'androidx.games:games-activity:4.4.0'
     api 'androidx.games:games-controller:2.3.0-alpha01'
     api 'androidx.games:games-frame-pacing:2.3.0-alpha01'
 }
