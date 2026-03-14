@@ -204,7 +204,7 @@
     #define __orxMAC__
 
   /* Web? */
-  #elif defined(EMSCRIPTEN) || defined(__EMSCRIPTEN__)
+  #elif defined(__EMSCRIPTEN__)
 
     #define __orxWEB__
 
