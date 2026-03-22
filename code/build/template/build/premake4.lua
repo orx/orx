@@ -145,7 +145,12 @@ solution "[name]"
 
     configuration {"*Profile*"}
         targetsuffix ("p")
-        defines {"__orxPROFILER__"[+python  ,"NDEBUG"]}
+        defines
+        {
+[+python
+            "NDEBUG",]
+            "__orxPROFILER__"
+        }
         flags {"Optimize", "NoRTTI"}
         links {"orxp"}
 
