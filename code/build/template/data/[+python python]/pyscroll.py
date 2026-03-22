@@ -34,7 +34,7 @@ class Context:
     if self.input_set:
       orx.input.pop_set()
 
-class Mini:
+class Base:
   o: orx.object.Object
   context: Context
   instance_context: Context
@@ -58,7 +58,7 @@ class Mini:
     self.instance_context = Context(str(self.o), input_set_name)
 
     # Remember the object
-    Mini._objects[o] = self
+    Base._objects[o] = self
 
     # Object-specific on_create initialization
     with self.context:
@@ -67,18 +67,18 @@ class Mini:
   @classmethod
   def __cleanup__(cls, o: orx.object.Object):
     """Internal only: Remove object association with the class"""
-    _ = Mini._objects.pop(o, None)
+    _ = Base._objects.pop(o, None)
 
   @classmethod
   def exists(cls, o: orx.object.Object) -> bool:
     """Check if an object has an instance associated with this class"""
-    instance = Mini._objects.get(o)
+    instance = Base._objects.get(o)
     return instance is not None and isinstance(instance, cls)
 
   @classmethod
   def objects(cls):
     """All objects associated with this class"""
-    return [value for value in Mini._objects.values() if isinstance(value, cls)]
+    return [value for value in Base._objects.values() if isinstance(value, cls)]
 
   @classmethod
   def create_from_config(cls, name: str) -> Self | None:
@@ -136,19 +136,19 @@ class Mini:
 
 # Tracking class and object associations
 
-classes: dict[str, type[Mini]] = {}
+classes: dict[str, type[Base]] = {}
 """
 Bindings from configuration section names (key) to Python classes matching
 those names
 """
 
-def register(class_: type[Mini], name: str | None = None):
+def register(class_: type[Base], name: str | None = None):
   classes[name if name is not None else class_.__name__] = class_
 """
 Bind a Python class to an orx config section
 """
 
-def _find_bound_class(o: orx.object.Object) -> type[Mini] | None:
+def _find_bound_class(o: orx.object.Object) -> type[Base] | None:
   """
   Find class bound to a name in object's config section hierarchy
   """
@@ -180,70 +180,70 @@ def on_delete(o: orx.object.Object):
   bound = _find_bound_class(o)
   if bound is None:
     return
-  mini = bound.from_object(o)
-  if mini is None:
+  base = bound.from_object(o)
+  if base is None:
     return
   bound.__cleanup__(o)
-  with mini.context:
-    mini.on_delete()
+  with base.context:
+    base.on_delete()
 
 def on_spawn(spawner: orx.object.Object, spawned: orx.object.Object):
   """Engine object spawned callback"""
-  mini = Mini.from_object(spawner)
-  if mini is None:
+  base = Base.from_object(spawner)
+  if base is None:
     return
-  with mini.context:
-    mini.on_spawn(spawned)
+  with base.context:
+    base.on_spawn(spawned)
 
 _per_frame_update: Callable[[float], None] | None = None
 
 def on_update(dt: float):
   """Engine clock update callback"""
-  for mini in Mini.objects():
-    with mini.context:
+  for base in Base.objects():
+    with base.context:
       # Input triggers
-      for input_name in mini.input_names:
+      for input_name in base.input_names:
         if orx.input.has_been_activated(input_name):
-          mini.o.fire_trigger("Input", refinement=[input_name])
+          base.o.fire_trigger("Input", refinement=[input_name])
       # Object clock
-      clock = mini.o.get_clock()
+      clock = base.o.get_clock()
       if clock is not None:
           # Scale dt based on object's clock
           dt = clock.compute_dt(dt)
       # Object update callback
-      mini.on_update(dt)
+      base.on_update(dt)
 
   if _per_frame_update is not None:
     _per_frame_update(dt)
 
 def on_collide(o1: orx.object.Object, body_name1: str, o2: orx.object.Object, body_name2: str, position: orx.vector.Vector, normal: orx.vector.Vector):
   """Engine callback for object collision events"""
-  mini = Mini.from_object(o1)
-  if mini:
-    with mini.context:
-      mini.on_collide(Collision(body_name1, o2, body_name2, position, normal))
-  mini = Mini.from_object(o2)
-  if mini:
-    with mini.context:
-      mini.on_collide(Collision(body_name2, o1, body_name1, position, normal))
+  base = Base.from_object(o1)
+  if base:
+    with base.context:
+      base.on_collide(Collision(body_name1, o2, body_name2, position, normal))
+  base = Base.from_object(o2)
+  if base:
+    with base.context:
+      base.on_collide(Collision(body_name2, o1, body_name1, position, normal))
 
 def on_separate(o1: orx.object.Object, body_name1: str, o2: orx.object.Object, body_name2: str):
   """Engine callback for object separation events"""
-  mini = Mini.from_object(o1)
-  if mini:
-    with mini.context:
-      mini.on_separate(Separation(body_name1, o2, body_name2))
-  mini = Mini.from_object(o2)
-  if mini:
-    with mini.context:
-      mini.on_separate(Separation(body_name2, o1, body_name1))
+  base = Base.from_object(o1)
+  if base:
+    with base.context:
+      base.on_separate(Separation(body_name1, o2, body_name2))
+  base = Base.from_object(o2)
+  if base:
+    with base.context:
+      base.on_separate(Separation(body_name2, o1, body_name1))
 
 def on_shader_param(o: orx.object.Object, shader_name: str, param_name: str, param_type: type[float | orx.vector.Vector]) -> float | orx.vector.Vector | None:
   """Engine callback for setting shader parameters"""
-  mini = Mini.from_object(o)
-  if mini:
-    with mini.context:
-      arg = mini.on_shader_param(shader_name, param_name, param_type)
+  base = Base.from_object(o)
+  if base:
+    with base.context:
+      arg = base.on_shader_param(shader_name, param_name, param_type)
     return arg
 
 def setup(init: Callable[[], None] | None = None, update: Callable[[float], None] | None = None):

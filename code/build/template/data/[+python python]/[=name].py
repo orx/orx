@@ -1,6 +1,7 @@
-import miniscroll, orx
+import orx
+import pyscroll
 
-class Logo(miniscroll.Mini):
+class Logo(pyscroll.Base):
   def on_update(self, dt: float):
     if orx.input.has_been_activated("Reverse"):
       # Reverse logo's rotation
@@ -15,8 +16,8 @@ class Logo(miniscroll.Mini):
         camera.fire_trigger("MiniShake")
 
 def init():
-  # Register object config section names with miniscroll classes
-  miniscroll.classes = {
+  # Register object config section names with pyscroll classes
+  pyscroll.classes = {
     "Logo": Logo
   }
 
@@ -49,5 +50,5 @@ def camera_update(dt: float):
 # Register camera update callback
 orx.on_camera_update = camera_update
 
-# Setup engine callbacks for miniscroll
-miniscroll.setup(init, update)
+# Setup engine callbacks for pyscroll
+pyscroll.setup(init, update)
