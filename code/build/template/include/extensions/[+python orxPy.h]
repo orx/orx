@@ -1509,6 +1509,7 @@ extern "C"
       }
     }
 
+    orxSTATUS eResult = orxSTATUS_SUCCESS;
     ARG_BOOL(bRecursive, 3);
     if (bRecursive)
     {
@@ -1516,9 +1517,10 @@ extern "C"
     }
     else
     {
-      orxObject_FireTrigger(pstObject, zName, u32RefinementListLength > 0 ? (const orxSTRING *)azRefinementList : orxNULL, u32RefinementListLength);
+      eResult = orxObject_FireTrigger(pstObject, zName, u32RefinementListLength > 0 ? (const orxSTRING *)azRefinementList : orxNULL, u32RefinementListLength);
     }
-    RETURN_NONE;
+
+    RETURN_BOOL(eResult == orxSTATUS_SUCCESS);
   }
 
   BIND(Object, get_name)
@@ -2421,6 +2423,13 @@ extern "C"
     RETURN_BOOL(orxInput_IsActive(zName));
   }
 
+  BIND(Input, has_new_status)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_STR(zName, 0);
+    RETURN_BOOL(orxInput_HasNewStatus(zName));
+  }
+
   BIND(Input, has_been_activated)
   {
     PY_CHECK_ARGC(1);
@@ -3267,7 +3276,7 @@ extern "C"
 
     BIND_METHOD("add_trigger(self, name: str, recursive: bool = False) -> None", add_trigger);
     BIND_METHOD("remove_trigger(self, name: str, recursive: bool = False) -> None", remove_trigger);
-    BIND_METHOD("fire_trigger(self, name: str, refinement: list[str] | None = None, recursive: bool = False) -> None", fire_trigger);
+    BIND_METHOD("fire_trigger(self, name: str, refinement: list[str] | None = None, recursive: bool = False) -> bool", fire_trigger);
 
     BIND_METHOD("get_name(self) -> str", get_name);
 
@@ -3472,6 +3481,7 @@ extern "C"
     BIND_FUNC("get_all() -> list[str]", get_all);
 
     BIND_FUNC("is_active(name: str) -> bool", is_active);
+    BIND_FUNC("has_new_status(name: str) -> bool", has_new_status);
     BIND_FUNC("has_been_activated(name: str) -> bool", has_been_activated);
     BIND_FUNC("has_been_deactivated(name: str) -> bool", has_been_deactivated);
 

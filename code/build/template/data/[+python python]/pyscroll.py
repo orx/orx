@@ -200,11 +200,32 @@ _per_frame_update: Callable[[float], None] | None = None
 def on_update(dt: float):
   """Engine clock update callback"""
   for base in Base.objects():
+    if base.o.is_paused() or base.o.get_life_time() == 0.0:
+      # Skip object if it is paused or pending deletion
+      continue
     with base.context:
       # Input triggers
       for input_name in base.input_names:
-        if orx.input.has_been_activated(input_name):
-          base.o.fire_trigger("Input", refinement=[input_name])
+        # Get input status and value
+        new_status = orx.input.has_new_status(input_name)
+        active = orx.input.is_active(input_name)
+        value = orx.input.get_value(input_name)
+
+        # Build trigger name
+        if new_status:
+          input_name_prefix = "!." if active else "!-"
+        else:
+          input_name_prefix = "!"
+
+        refinements = [f"{input_name_prefix}{input_name}", f"{value}"]
+
+        # Fire trigger
+        fired = base.o.fire_trigger("Input", refinement=refinements)
+        if not fired and new_status:
+          # Fire the non-instant trigger event
+          refinements[0] = input_name
+          base.o.fire_trigger("Input", refinement=refinements)
+
       # Object clock
       clock = base.o.get_clock()
       if clock is not None:

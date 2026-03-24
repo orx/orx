@@ -603,13 +603,17 @@ class Object:
     """
     ...
 
-  def fire_trigger(self, name: str, refinement: list[str] | None = None, recursive: bool = False) -> None:
+  def fire_trigger(self, name: str, refinement: list[str] | None = None, recursive: bool = False) -> bool:
     """Fires a trigger on this object.
 
     Args:
       name: Name of the trigger event to fire.
       refinement: Optional list of refinement strings for the event.
       recursive: If ``True``, also fires the trigger on all owned children.
+
+    Returns:
+      ``True`` if the trigger event successfully fired, ``False`` otherwise.
+      Always returns ``True`` when ``recursive=True``.
     """
     ...
 

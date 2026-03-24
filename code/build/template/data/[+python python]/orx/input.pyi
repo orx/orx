@@ -69,6 +69,17 @@ def is_active(name: str) -> bool:
   """
   ...
 
+def has_new_status(name: str) -> bool:
+  """Check whether an input has a new status this frame.
+
+  Args:
+    name: Name of the input to check.
+
+  Returns:
+    ``True`` if the input status changed since the last frame, ``False`` otherwise.
+  """
+  ...
+
 def has_been_activated(name: str) -> bool:
   """Check whether an input was newly activated this frame.
 

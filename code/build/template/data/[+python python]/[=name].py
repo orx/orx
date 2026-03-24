@@ -3,23 +3,11 @@ import pyscroll
 
 class Logo(pyscroll.Base):
   def on_update(self, dt: float):
-    if orx.input.has_been_activated("Reverse"):
-      # Reverse logo's rotation
-      self.o.set_angular_velocity(self.o.get_angular_velocity() * -1)
-
-      # Get camera proxy control object
-      with orx.config.Section("MainCamera"):
-        id = orx.config.get_guid("ID")
-      camera = orx.object.from_guid(id)
-      if camera is not None:
-        # Add shake effect to the camera
-        camera.fire_trigger("MiniShake")
+    pass
 
 def init():
   # Register object config section names with pyscroll classes
-  pyscroll.classes = {
-    "Logo": Logo
-  }
+  pyscroll.register(Logo)
 
   # Push [Main] as the default config section
   orx.config.push_section("Main")
