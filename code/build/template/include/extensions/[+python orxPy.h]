@@ -2403,6 +2403,18 @@ extern "C"
     RETURN_BOOL(orxInput_IsSetEnabled(zName));
   }
 
+  BIND(Input, get_next)
+  {
+    PY_CHECK_ARGC(1);
+    ARG_STR_OR_NONE(zName, 0);
+    const orxSTRING zNext = orxInput_GetNext(zName);
+    if (zNext == orxNULL)
+    {
+      RETURN_NONE;
+    }
+    RETURN_STR(zNext);
+  }
+
   BIND(Input, get_all)
   {
     PY_CHECK_ARGC(0);
@@ -3478,6 +3490,7 @@ extern "C"
     BIND_FUNC("enable_set(name: str, enable: bool = True) -> None", enable_set);
     BIND_FUNC("is_set_enabled(name: str) -> bool", is_set_enabled);
 
+    BIND_FUNC("get_next(name: str | None) -> str | None", get_next);
     BIND_FUNC("get_all() -> list[str]", get_all);
 
     BIND_FUNC("is_active(name: str) -> bool", is_active);

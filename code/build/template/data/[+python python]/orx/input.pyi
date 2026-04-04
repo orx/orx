@@ -50,6 +50,18 @@ def is_set_enabled(name: str) -> bool:
   """
   ...
 
+def get_next(name: str | None) -> str | None:
+  """Return the next input name in the current working set.
+
+  Args:
+    name: Name of the current input. Use ``None`` to get the first input name in
+    the set.
+
+  Returns:
+    The next input name in the current set, or ``None`` if there is no next input.
+  """
+  ...
+
 def get_all() -> list[str]:
   """Return all input names defined in the current working set.
 

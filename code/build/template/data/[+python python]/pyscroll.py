@@ -215,7 +215,7 @@ def on_update(dt: float):
         if new_status:
           input_name_prefix = "!." if active else "!-"
         else:
-          input_name_prefix = "!"
+          input_name_prefix = "!" if active else "!-"
 
         refinements = [f"{input_name_prefix}{input_name}", f"{value}"]
 
