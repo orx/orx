@@ -8,8 +8,8 @@
 
 //! Prototypes
 
-orxSTATUS orxFASTCALL orxMovie_Init();
-void orxFASTCALL      orxMovie_Exit();
+orxSTATUS orxFASTCALL                     orxMovie_Init();
+void orxFASTCALL                          orxMovie_Exit();
 
 
 //! Implementation

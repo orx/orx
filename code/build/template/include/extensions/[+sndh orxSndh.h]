@@ -8,8 +8,8 @@
 
 //! Prototypes
 
-orxSTATUS orxFASTCALL orxSndh_Init();
-void orxFASTCALL      orxSndh_Exit();
+orxSTATUS orxFASTCALL                     orxSndh_Init();
+void orxFASTCALL                          orxSndh_Exit();
 
 
 //! Implementation
@@ -259,7 +259,7 @@ static orxSTATUS orxFASTCALL orxSndh_EventHandler(const orxEVENT *_pstEvent)
             pstSndhData->oSndhFile.~SndhFile();
             orxBank_Free(sstSndh.pstSndhBank, pstSndhData);
           }
-          
+
           // Signals semaphore
           orxThread_SignalSemaphore(sstSndh.pstSemaphore);
         }

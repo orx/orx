@@ -8,8 +8,8 @@
 
 //! Prototypes
 
-orxSTATUS orxFASTCALL orxMod_Init();
-void orxFASTCALL      orxMod_Exit();
+orxSTATUS orxFASTCALL                     orxMod_Init();
+void orxFASTCALL                          orxMod_Exit();
 
 
 //! Implementation
