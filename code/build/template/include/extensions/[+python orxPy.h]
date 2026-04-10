@@ -100,9 +100,9 @@ extern "C"
 
 #define orxPY_KZ_LOG_TAG orxANSI_KZ_COLOR_FG_YELLOW "[PYTHON] " orxANSI_KZ_COLOR_RESET
 
-  void orxPy_Print(const orxSTRING zData)
+  void orxPy_Print(const orxSTRING _zData)
   {
-    orxLOG("%s", zData);
+    orxLOG("%s", _zData);
   }
 
   void orxPy_LogException()
@@ -112,16 +112,16 @@ extern "C"
     PK_FREE(zMessage);
   }
 
-  orxCHAR *orxPy_ReadSourceFromMain(const orxSTRING zPath, int *piDataSize)
+  orxCHAR *orxPy_ReadSourceFromMain(const orxSTRING _zPath, int *_piDataSize)
   {
     orxCHAR *pBuffer = orxNULL;
-    *piDataSize = 0;
+    *_piDataSize = 0;
 
     // Load map resource
-    const orxCHAR *zResourceLocation = orxResource_Locate(orxPY_KZ_RESOURCE, zPath);
+    const orxCHAR *zResourceLocation = orxResource_Locate(orxPY_KZ_RESOURCE, _zPath);
     if (zResourceLocation != orxNULL)
     {
-      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, orxPY_KZ_LOG_TAG "Loading %s from %s", zPath, zResourceLocation);
+      orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, orxPY_KZ_LOG_TAG "Loading %s from %s", _zPath, zResourceLocation);
       orxHANDLE hResource = orxResource_Open(zResourceLocation, orxFALSE);
       orxASSERT(hResource != orxHANDLE_UNDEFINED);
 
@@ -133,7 +133,7 @@ extern "C"
       orxResource_Close(hResource);
       orxASSERT(s64Read == s64Size - 1);
       pBuffer[s64Read] = orxCHAR_NULL;
-      *piDataSize = s64Read;
+      *_piDataSize = s64Read;
     }
 
     return pBuffer;
@@ -147,11 +147,11 @@ extern "C"
     int iDataSize;
   } orxPY_IO_TASK_CONTEXT;
 
-  orxSTATUS orxPy_ReadSourceTask(void *pContext)
+  orxSTATUS orxPy_ReadSourceTask(void *_pContext)
   {
-    orxASSERT(pContext != orxNULL);
+    orxASSERT(_pContext != orxNULL);
 
-    orxPY_IO_TASK_CONTEXT *pstContext = (orxPY_IO_TASK_CONTEXT *)pContext;
+    orxPY_IO_TASK_CONTEXT *pstContext = (orxPY_IO_TASK_CONTEXT *)_pContext;
 
     pstContext->pBuffer = orxPy_ReadSourceFromMain(pstContext->zPath, &(pstContext->iDataSize));
     pstContext->bContinue = orxTRUE;
@@ -159,13 +159,13 @@ extern "C"
     return orxSTATUS_SUCCESS;
   }
 
-  orxCHAR *orxPy_ReadSourceFromThread(const orxSTRING zPath, int *piDataSize)
+  orxCHAR *orxPy_ReadSourceFromThread(const orxSTRING _zPath, int *_piDataSize)
   {
-    orxU32 u32Length = orxString_GetLength(zPath) + 1;
+    orxU32 u32Length = orxString_GetLength(_zPath) + 1;
 
     volatile orxPY_IO_TASK_CONTEXT stContext;
     stContext.bContinue = orxFALSE;
-    stContext.zPath = zPath;
+    stContext.zPath = _zPath;
     stContext.pBuffer = orxNULL;
     stContext.iDataSize = 0;
 
@@ -178,29 +178,29 @@ extern "C"
       orxThread_Yield();
     }
 
-    *piDataSize = stContext.iDataSize;
+    *_piDataSize = stContext.iDataSize;
     return stContext.pBuffer;
   }
 
-  orxCHAR *orxPy_ReadSource(const orxSTRING zPath, int *iDataSize)
+  orxCHAR *orxPy_ReadSource(const orxSTRING _zPath, int *_iDataSize)
   {
     if (orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
     {
-      return orxPy_ReadSourceFromMain(zPath, iDataSize);
+      return orxPy_ReadSourceFromMain(_zPath, _iDataSize);
     }
     else
     {
-      return orxPy_ReadSourceFromThread(zPath, iDataSize);
+      return orxPy_ReadSourceFromThread(_zPath, _iDataSize);
     }
   }
 
-  orxSTATUS orxPy_Call(py_ItemRef pyCallable)
+  orxSTATUS orxPy_Call(py_ItemRef _pyCallable)
   {
     orxSTATUS eResult = orxSTATUS_FAILURE;
 
-    if (pyCallable != orxNULL)
+    if (_pyCallable != orxNULL)
     {
-      if (py_call(pyCallable, 0, orxNULL))
+      if (py_call(_pyCallable, 0, orxNULL))
       {
         eResult = orxSTATUS_SUCCESS;
       }
@@ -214,13 +214,13 @@ extern "C"
     return eResult;
   }
 
-  orxSTATUS orxPy_Call1(py_ItemRef pyCallable, py_Ref pyArg)
+  orxSTATUS orxPy_Call1(py_ItemRef _pyCallable, py_Ref _pyArg)
   {
     orxSTATUS eResult = orxSTATUS_FAILURE;
 
-    if (pyCallable != orxNULL)
+    if (_pyCallable != orxNULL)
     {
-      if (py_call(pyCallable, 1, pyArg))
+      if (py_call(_pyCallable, 1, _pyArg))
       {
         eResult = orxSTATUS_SUCCESS;
       }
@@ -238,13 +238,13 @@ extern "C"
   /// sequential in memory, so the arguments to `orxPy_CallN` can be
   /// passed in by via these registers as long as sequential
   /// registers are used.
-  orxSTATUS orxPy_CallN(py_Ref pyCallable, orxS32 s32Argc, py_Ref pyArgv)
+  orxSTATUS orxPy_CallN(py_Ref _pyCallable, orxS32 _s32Argc, py_Ref _pyArgv)
   {
     orxSTATUS eResult = orxSTATUS_FAILURE;
 
-    if (pyCallable != orxNULL)
+    if (_pyCallable != orxNULL)
     {
-      if (py_call(pyCallable, s32Argc, pyArgv))
+      if (py_call(_pyCallable, _s32Argc, _pyArgv))
       {
         eResult = orxSTATUS_SUCCESS;
       }
@@ -515,50 +515,50 @@ extern "C"
 
   // Helpers
 
-  void py_neworxguid(py_OutRef pyOut, orxU64 _u64GUID)
+  void py_neworxguid(py_OutRef _pyOut, orxU64 _u64GUID)
   {
-    orxU64 *pu64GUID = (orxU64 *)py_newobject(pyOut, tp_orxguid, 0, sizeof(orxU64));
+    orxU64 *pu64GUID = (orxU64 *)py_newobject(_pyOut, tp_orxguid, 0, sizeof(orxU64));
     *pu64GUID = _u64GUID;
   }
 
-  void py_neworxobject(py_OutRef pyOut, orxOBJECT *_pstObject)
+  void py_neworxobject(py_OutRef _pyOut, orxOBJECT *_pstObject)
   {
-    orxOBJECT **ppstObject = (orxOBJECT **)py_newobject(pyOut, tp_orxobject, 0, sizeof(orxOBJECT *));
+    orxOBJECT **ppstObject = (orxOBJECT **)py_newobject(_pyOut, tp_orxobject, 0, sizeof(orxOBJECT *));
     *ppstObject = _pstObject;
   }
 
-  void py_neworxvector(py_OutRef pyOut, orxVECTOR *_pvVector)
+  void py_neworxvector(py_OutRef _pyOut, orxVECTOR *_pvVector)
   {
-    orxVECTOR *pvVector = (orxVECTOR *)py_newobject(pyOut, tp_orxvector, 0, sizeof(orxVECTOR));
+    orxVECTOR *pvVector = (orxVECTOR *)py_newobject(_pyOut, tp_orxvector, 0, sizeof(orxVECTOR));
     orxVector_Copy(pvVector, _pvVector);
   }
 
-  void py_neworxclock(py_OutRef pyOut, orxCLOCK *_pstClock)
+  void py_neworxclock(py_OutRef _pyOut, orxCLOCK *_pstClock)
   {
-    orxCLOCK **ppstClock = (orxCLOCK **)py_newobject(pyOut, tp_orxclock, 0, sizeof(orxCLOCK *));
+    orxCLOCK **ppstClock = (orxCLOCK **)py_newobject(_pyOut, tp_orxclock, 0, sizeof(orxCLOCK *));
     *ppstClock = _pstClock;
   }
 
-  void py_neworxviewport(py_OutRef pyOut, orxVIEWPORT *_pstViewport)
+  void py_neworxviewport(py_OutRef _pyOut, orxVIEWPORT *_pstViewport)
   {
-    orxVIEWPORT **ppstViewport = (orxVIEWPORT **)py_newobject(pyOut, tp_orxviewport, 0, sizeof(orxVIEWPORT *));
+    orxVIEWPORT **ppstViewport = (orxVIEWPORT **)py_newobject(_pyOut, tp_orxviewport, 0, sizeof(orxVIEWPORT *));
     *ppstViewport = _pstViewport;
   }
 
-  void py_neworxfx(py_OutRef pyOut, orxFX *_pstFX)
+  void py_neworxfx(py_OutRef _pyOut, orxFX *_pstFX)
   {
-    orxFX **ppstFX = (orxFX **)py_newobject(pyOut, tp_orxfx, 0, sizeof(orxFX *));
+    orxFX **ppstFX = (orxFX **)py_newobject(_pyOut, tp_orxfx, 0, sizeof(orxFX *));
     *ppstFX = _pstFX;
   }
 
-  void py_neworxcallbackid(py_OutRef pyOut, py_Ref _pyCallback)
+  void py_neworxcallbackid(py_OutRef _pyOut, py_Ref _pyCallback)
   {
-    py_i64 **ppiCallbackKey = (py_i64 **)py_newobject(pyOut, tp_orxcallbackid, 1, sizeof(py_i64 *));
+    py_i64 **ppiCallbackKey = (py_i64 **)py_newobject(_pyOut, tp_orxcallbackid, 1, sizeof(py_i64 *));
     *ppiCallbackKey = (py_i64 *)PK_MALLOC(sizeof(py_i64));
     **ppiCallbackKey = sstPy.i64CallbackIDCounter;
     sstPy.i64CallbackIDCounter++;
 
-    py_setslot(pyOut, 0, _pyCallback);
+    py_setslot(_pyOut, 0, _pyCallback);
   }
 
   // Resource functions
@@ -1914,18 +1914,18 @@ extern "C"
     return py_tuple_getitem(pyElement, 1);
   }
 
-  void orxPy_SetCommandCallback(orxU32 _u32Index, py_Ref pyCommand, py_Ref pyCallback)
+  void orxPy_SetCommandCallback(orxU32 _u32Index, py_Ref pyCommand, py_Ref _pyCallback)
   {
     // Commands are stored in a list of (command, callback) tuples
 
     py_ItemRef pyAllCallbacks = orxPy_GetCommandCallbackList();
     py_newtuple(py_r1(), 2);
     py_tuple_setitem(py_r1(), 0, pyCommand);
-    py_tuple_setitem(py_r1(), 1, pyCallback);
+    py_tuple_setitem(py_r1(), 1, _pyCallback);
     py_list_setitem(pyAllCallbacks, _u32Index, py_r1());
   }
 
-  orxU32 orxPy_FindCommandCallbackIndex(py_Ref pyCommand)
+  orxU32 orxPy_FindCommandCallbackIndex(py_Ref _pyCommand)
   {
     orxU32 u32Result = orxU32_UNDEFINED;
 
@@ -1935,7 +1935,7 @@ extern "C"
       py_ItemRef pyElement = py_list_getitem(pyAllCallbacks, i);
       orxASSERT(py_istuple(pyElement));
 
-      if (py_eq(pyCommand, py_tuple_getitem(pyElement, 0)))
+      if (py_eq(_pyCommand, py_tuple_getitem(pyElement, 0)))
       {
         u32Result = i;
         break;
@@ -1952,54 +1952,54 @@ extern "C"
     py_list_setitem(pyAllCallbacks, _u32Index, py_r1());
   }
 
-  void orxPy_CommandVarToPython(py_OutRef pyOut, const orxCOMMAND_VAR *_pstVar)
+  void orxPy_CommandVarToPython(py_OutRef _pyOut, const orxCOMMAND_VAR *_pstVar)
   {
     switch (_pstVar->eType)
     {
     case orxCOMMAND_VAR_TYPE_STRING:
-      py_newstr(pyOut, _pstVar->zValue);
+      py_newstr(_pyOut, _pstVar->zValue);
       break;
     case orxCOMMAND_VAR_TYPE_FLOAT:
-      py_newfloat(pyOut, _pstVar->fValue);
+      py_newfloat(_pyOut, _pstVar->fValue);
       break;
     case orxCOMMAND_VAR_TYPE_S32:
-      py_newint(pyOut, _pstVar->s32Value);
+      py_newint(_pyOut, _pstVar->s32Value);
       break;
     case orxCOMMAND_VAR_TYPE_U32:
-      py_newint(pyOut, _pstVar->u32Value);
+      py_newint(_pyOut, _pstVar->u32Value);
       break;
     case orxCOMMAND_VAR_TYPE_S64:
-      py_newint(pyOut, _pstVar->s64Value);
+      py_newint(_pyOut, _pstVar->s64Value);
       break;
     case orxCOMMAND_VAR_TYPE_U64:
-      py_neworxguid(pyOut, _pstVar->u64Value);
+      py_neworxguid(_pyOut, _pstVar->u64Value);
       break;
     case orxCOMMAND_VAR_TYPE_BOOL:
-      py_newbool(pyOut, _pstVar->bValue);
+      py_newbool(_pyOut, _pstVar->bValue);
       break;
     case orxCOMMAND_VAR_TYPE_VECTOR:
-      py_neworxvector(pyOut, (orxVECTOR *)&_pstVar->vValue);
+      py_neworxvector(_pyOut, (orxVECTOR *)&_pstVar->vValue);
       break;
     case orxCOMMAND_VAR_TYPE_NUMERIC:
       // Numeric can be any numeric type, keep string representation
-      py_newstr(pyOut, _pstVar->zValue);
+      py_newstr(_pyOut, _pstVar->zValue);
       break;
     default:
-      py_newnone(pyOut);
+      py_newnone(_pyOut);
       break;
     }
   }
 
-  orxSTATUS orxPy_PythonToCommandVar(py_Ref pyValue, orxCOMMAND_VAR *_pstVar)
+  orxSTATUS orxPy_PythonToCommandVar(py_Ref _pyValue, orxCOMMAND_VAR *_pstVar)
   {
     orxSTATUS eResult = orxSTATUS_SUCCESS;
 
     switch (_pstVar->eType)
     {
     case orxCOMMAND_VAR_TYPE_STRING:
-      if (py_istype(pyValue, tp_str))
+      if (py_istype(_pyValue, tp_str))
       {
-        _pstVar->zValue = py_tostr(pyValue);
+        _pstVar->zValue = py_tostr(_pyValue);
       }
       else
       {
@@ -2007,15 +2007,15 @@ extern "C"
       }
       break;
     case orxCOMMAND_VAR_TYPE_FLOAT:
-      if (!py_castfloat32(pyValue, &_pstVar->fValue))
+      if (!py_castfloat32(_pyValue, &_pstVar->fValue))
       {
         eResult = orxSTATUS_FAILURE;
       }
       break;
     case orxCOMMAND_VAR_TYPE_S32:
-      if (py_istype(pyValue, tp_int))
+      if (py_istype(_pyValue, tp_int))
       {
-        _pstVar->s32Value = (orxS32)py_toint(pyValue);
+        _pstVar->s32Value = (orxS32)py_toint(_pyValue);
       }
       else
       {
@@ -2023,9 +2023,9 @@ extern "C"
       }
       break;
     case orxCOMMAND_VAR_TYPE_U32:
-      if (py_istype(pyValue, tp_int))
+      if (py_istype(_pyValue, tp_int))
       {
-        _pstVar->u32Value = (orxU32)py_toint(pyValue);
+        _pstVar->u32Value = (orxU32)py_toint(_pyValue);
       }
       else
       {
@@ -2033,9 +2033,9 @@ extern "C"
       }
       break;
     case orxCOMMAND_VAR_TYPE_S64:
-      if (py_istype(pyValue, tp_int))
+      if (py_istype(_pyValue, tp_int))
       {
-        _pstVar->s64Value = (orxS64)py_toint(pyValue);
+        _pstVar->s64Value = (orxS64)py_toint(_pyValue);
       }
       else
       {
@@ -2043,9 +2043,9 @@ extern "C"
       }
       break;
     case orxCOMMAND_VAR_TYPE_U64:
-      if (py_istype(pyValue, tp_orxguid))
+      if (py_istype(_pyValue, tp_orxguid))
       {
-        orxU64 *pu64GUID = (orxU64 *)py_touserdata(pyValue);
+        orxU64 *pu64GUID = (orxU64 *)py_touserdata(_pyValue);
         _pstVar->u64Value = *pu64GUID;
       }
       else
@@ -2054,9 +2054,9 @@ extern "C"
       }
       break;
     case orxCOMMAND_VAR_TYPE_BOOL:
-      if (py_istype(pyValue, tp_bool))
+      if (py_istype(_pyValue, tp_bool))
       {
-        _pstVar->bValue = py_tobool(pyValue);
+        _pstVar->bValue = py_tobool(_pyValue);
       }
       else
       {
@@ -2064,9 +2064,9 @@ extern "C"
       }
       break;
     case orxCOMMAND_VAR_TYPE_VECTOR:
-      if (py_istype(pyValue, tp_orxvector))
+      if (py_istype(_pyValue, tp_orxvector))
       {
-        orxVECTOR *pvVector = (orxVECTOR *)py_touserdata(pyValue);
+        orxVECTOR *pvVector = (orxVECTOR *)py_touserdata(_pyValue);
         orxVector_Copy(&_pstVar->vValue, pvVector);
       }
       else
@@ -2830,15 +2830,15 @@ extern "C"
     return pyAllCallbacks;
   }
 
-  void orxPy_SetClockCallback(py_Ref pyOut, py_Ref _pyCallback)
+  void orxPy_SetClockCallback(py_Ref _pyOut, py_Ref _pyCallback)
   {
     py_Ref pyCallbacks = orxPy_GetClockCallbackDict();
 
-    py_neworxcallbackid(pyOut, _pyCallback);
-    py_i64 **piCallbackKey = (py_i64 **)py_touserdata(pyOut);
+    py_neworxcallbackid(_pyOut, _pyCallback);
+    py_i64 **piCallbackKey = (py_i64 **)py_touserdata(_pyOut);
 
     // Add callback to the dict to keep it alive
-    py_dict_setitem_by_int(pyCallbacks, **piCallbackKey, pyOut);
+    py_dict_setitem_by_int(pyCallbacks, **piCallbackKey, _pyOut);
   }
 
   void orxPy_GetClockCallbackID(py_Ref _pyCallbackID, void *_pContext)
@@ -3361,19 +3361,19 @@ extern "C"
 #undef RETURN_OBJECT_OR_NONE
 #undef RETURN_VIEWPORT_OR_NONE
 
-  orxSTATUS orxPy_ExecSource(const orxSTRING zPath)
+  orxSTATUS orxPy_ExecSource(const orxSTRING _zPath)
   {
     orxSTATUS eResult = orxSTATUS_FAILURE;
 
     // Load source
     int iDataSize = 0;
-    orxCHAR *pBuffer = orxPy_ReadSource(zPath, &iDataSize);
+    orxCHAR *pBuffer = orxPy_ReadSource(_zPath, &iDataSize);
 
     if (pBuffer != orxNULL)
     {
       py_StackRef pyStackPos = py_peek(0);
 
-      if (py_exec(pBuffer, zPath, EXEC_MODE, orxNULL))
+      if (py_exec(pBuffer, _zPath, EXEC_MODE, orxNULL))
       {
         eResult = orxSTATUS_SUCCESS;
       }
@@ -3725,7 +3725,7 @@ extern "C"
     return eResult;
   }
 
-  void orxPy_VMCtorCallback(int iVMIndex)
+  void orxPy_VMCtorCallback(int _iVMIndex)
   {
     // Setup hooks for imports and printing
     py_Callbacks *pstCallbacks = py_callbacks();
@@ -3734,7 +3734,7 @@ extern "C"
     pstCallbacks->print = orxPy_Print;
   }
 
-  void orxPy_VMDtorCallback(int iVMIndex)
+  void orxPy_VMDtorCallback(int _iVMIndex)
   {
   }
 
