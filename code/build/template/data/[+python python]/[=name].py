@@ -1,23 +1,28 @@
 import orx
 import pyscroll
+[-scroll
+from typing import override
 
-class Logo(pyscroll.Base):
+class Logo(pyscroll.ScrollObject):
+  @override
   def on_update(self, dt: float):
-    pass
+    # Per-frame update logic for an object would go here
+    pass]
 
 def init():
+[-scroll
   # Register object config section names with pyscroll classes
-  pyscroll.register(Logo)
-
+  pyscroll.bind(Logo)
+]
   # Push [Main] as the default config section
   orx.config.push_section("Main")
 
   # Create viewports defined in [Main]
   for i in range(0, orx.config.get_list_count("ViewportList")):
-    orx.viewport.create_from_config(orx.config.get_string("ViewportList", i))
+    _ = orx.viewport.create_from_config(orx.config.get_string("ViewportList", i))
 
   # Create the [-movie scene][+movie splash screen]
-  orx.object.create_from_config("[-movie Scene][+movie Splash]")
+  _ = orx.object.create_from_config("[-movie Scene][+movie Splash]")
 
 def update(dt: float):
   # Check to see if we should quit the game

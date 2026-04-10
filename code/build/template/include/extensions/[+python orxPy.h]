@@ -10,9 +10,7 @@ extern "C"
 
 #include "orx.h"
 
-#define PK_IS_PUBLIC_INCLUDE
 #include "pocketpy.h"
-#undef PK_IS_PUBLIC_INCLUDE
 
   //! Defines
 
@@ -114,9 +112,10 @@ extern "C"
     PK_FREE(zMessage);
   }
 
-  orxCHAR *orxPy_ReadSourceFromMain(const orxSTRING zPath)
+  orxCHAR *orxPy_ReadSourceFromMain(const orxSTRING zPath, int *piDataSize)
   {
     orxCHAR *pBuffer = orxNULL;
+    *piDataSize = 0;
 
     // Load map resource
     const orxCHAR *zResourceLocation = orxResource_Locate(orxPY_KZ_RESOURCE, zPath);
@@ -134,6 +133,7 @@ extern "C"
       orxResource_Close(hResource);
       orxASSERT(s64Read == s64Size - 1);
       pBuffer[s64Read] = orxCHAR_NULL;
+      *piDataSize = s64Read;
     }
 
     return pBuffer;
@@ -144,6 +144,7 @@ extern "C"
     orxBOOL bContinue;
     const orxSTRING zPath;
     orxCHAR *pBuffer;
+    int iDataSize;
   } orxPY_IO_TASK_CONTEXT;
 
   orxSTATUS orxPy_ReadSourceTask(void *pContext)
@@ -152,13 +153,13 @@ extern "C"
 
     orxPY_IO_TASK_CONTEXT *pstContext = (orxPY_IO_TASK_CONTEXT *)pContext;
 
-    pstContext->pBuffer = orxPy_ReadSourceFromMain(pstContext->zPath);
+    pstContext->pBuffer = orxPy_ReadSourceFromMain(pstContext->zPath, &(pstContext->iDataSize));
     pstContext->bContinue = orxTRUE;
 
     return orxSTATUS_SUCCESS;
   }
 
-  orxCHAR *orxPy_ReadSourceFromThread(const orxSTRING zPath)
+  orxCHAR *orxPy_ReadSourceFromThread(const orxSTRING zPath, int *piDataSize)
   {
     orxU32 u32Length = orxString_GetLength(zPath) + 1;
 
@@ -166,6 +167,7 @@ extern "C"
     stContext.bContinue = orxFALSE;
     stContext.zPath = zPath;
     stContext.pBuffer = orxNULL;
+    stContext.iDataSize = 0;
 
     orxSTATUS eStatus = orxThread_RunTask(orxNULL, orxPy_ReadSourceTask, orxNULL, (void *)&stContext);
 
@@ -176,18 +178,19 @@ extern "C"
       orxThread_Yield();
     }
 
+    *piDataSize = stContext.iDataSize;
     return stContext.pBuffer;
   }
 
-  orxCHAR *orxPy_ReadSource(const orxSTRING zPath)
+  orxCHAR *orxPy_ReadSource(const orxSTRING zPath, int *iDataSize)
   {
     if (orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
     {
-      return orxPy_ReadSourceFromMain(zPath);
+      return orxPy_ReadSourceFromMain(zPath, iDataSize);
     }
     else
     {
-      return orxPy_ReadSourceFromThread(zPath);
+      return orxPy_ReadSourceFromThread(zPath, iDataSize);
     }
   }
 
@@ -3363,7 +3366,8 @@ extern "C"
     orxSTATUS eResult = orxSTATUS_FAILURE;
 
     // Load source
-    orxCHAR *pBuffer = orxPy_ReadSource(zPath);
+    int iDataSize = 0;
+    orxCHAR *pBuffer = orxPy_ReadSource(zPath, &iDataSize);
 
     if (pBuffer != orxNULL)
     {
