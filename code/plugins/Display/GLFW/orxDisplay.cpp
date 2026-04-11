@@ -8053,6 +8053,6 @@ orxPLUGIN_USER_CORE_FUNCTION_END();
   #pragma GCC diagnostic pop
 #endif /* __orxGCC__ */
 
-#if definded(__orxLLVM__) && (__clang_major__ >= 18)
+#if defined(__orxLLVM__) && (__clang_major__ >= 18)
   #pragma clang diagnostic pop
 #endif /* __orxLLVM__ && (__clang_major__ >= 18) */
