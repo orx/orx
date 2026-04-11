@@ -183,12 +183,8 @@ class ScrollObject:
     ...
 
   def on_shader_param(self, shader_name: str, param_name: str, param_type: type[float | orx.vector.Vector]) -> float | orx.vector.Vector:
-    """Called when the engine needs a shader parameter value for this object.
-
-    Raises:
-      NotImplementedError: If not overridden by a subclass.
-    """
-    raise NotImplementedError(f"{type(self).__name__}.on_shader_param is not implemented")
+    """Called when the engine needs a shader parameter value for this object."""
+    ...
 
 # Tracking class and object associations
 
