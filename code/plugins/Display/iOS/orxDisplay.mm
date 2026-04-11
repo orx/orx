@@ -5680,22 +5680,22 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP"[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_TOP "[%d]", _zParam, _s32Index);
       pstInfo->iLocationTop = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT"[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_LEFT "[%d]", _zParam, _s32Index);
       pstInfo->iLocationLeft = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM"[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM "[%d]", _zParam, _s32Index);
       pstInfo->iLocationBottom = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT"[%d]", _zParam, _s32Index);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT "[%d]", _zParam, _s32Index);
       pstInfo->iLocationRight = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
@@ -5706,22 +5706,22 @@ orxS32 orxFASTCALL orxDisplay_iOS_GetParameterID(const orxHANDLE _hShader, const
       glASSERT();
 
       /* Gets top parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_TOP, _zParam);
       pstInfo->iLocationTop = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets left parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_LEFT, _zParam);
       pstInfo->iLocationLeft = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets bottom parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM, _zParam);
       pstInfo->iLocationBottom = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
 
       /* Gets right parameter location */
-      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s"orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
+      orxString_NPrint(acBuffer, sizeof(acBuffer), "%s" orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT, _zParam);
       pstInfo->iLocationRight = glGetUniformLocation(pstShader->uiProgram, (const GLchar *)acBuffer);
       glASSERT();
     }
