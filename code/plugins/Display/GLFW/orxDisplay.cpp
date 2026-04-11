@@ -79,10 +79,10 @@
   #pragma GCC diagnostic ignored "-Wmisleading-indentation"
 #endif /* __orxGCC__ */
 
-#if defined(__orxLLVM__) && (__clang_major__ >= 18)
+#if defined(__orxLLVM__) && ((__clang_major__ > 20) || ((__clang_major__ == 20) && (__clang_minor__ >= 1)))
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wnontrivial-memcall"
-#endif /* __orxLLVM__ && (__clang_major__ >= 18) */
+#endif /* __orxLLVM__  && ((__clang_major__ > 20) || ((__clang_major__ == 20) && (__clang_minor__ >= 1))) */
 
 #ifdef __orxMSVC__
   #pragma warning(push)
@@ -8053,6 +8053,6 @@ orxPLUGIN_USER_CORE_FUNCTION_END();
   #pragma GCC diagnostic pop
 #endif /* __orxGCC__ */
 
-#if defined(__orxLLVM__) && (__clang_major__ >= 18)
+#if defined(__orxLLVM__) && ((__clang_major__ > 20) || ((__clang_major__ == 20) && (__clang_minor__ >= 1)))
   #pragma clang diagnostic pop
-#endif /* __orxLLVM__ && (__clang_major__ >= 18) */
+#endif /* __orxLLVM__ && ((__clang_major__ > 20) || ((__clang_major__ == 20) && (__clang_minor__ >= 1))) */
