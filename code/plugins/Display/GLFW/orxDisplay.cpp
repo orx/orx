@@ -79,10 +79,10 @@
   #pragma GCC diagnostic ignored "-Wmisleading-indentation"
 #endif /* __orxGCC__ */
 
-#ifdef __orxWEB__
+#ifdef __orxLLVM__
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wnontrivial-memcall"
-#endif /* __orxWEB__ */
+#endif /* __orxLLVM__ */
 
 #ifdef __orxMSVC__
   #pragma warning(push)
@@ -8053,6 +8053,6 @@ orxPLUGIN_USER_CORE_FUNCTION_END();
   #pragma GCC diagnostic pop
 #endif /* __orxGCC__ */
 
-#ifdef __orxWEB__
+#ifdef __orxLLVM__
   #pragma clang diagnostic pop
-#endif /* __orxWEB__ */
+#endif /* __orxLLVM__ */

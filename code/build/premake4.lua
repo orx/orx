@@ -215,7 +215,6 @@ solution "orx"
             "-gdwarf-2",
             "-Wno-unused-function",
             "-Wno-write-strings",
-            "-Wno-nontrivial-memcall",
             "-fvisibility-inlines-hidden",
             "-stdlib=libc++"
         }
