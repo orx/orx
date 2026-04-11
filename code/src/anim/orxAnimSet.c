@@ -1721,6 +1721,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       const orxSTRING zNewFrameTopParent = orxNULL;
       const orxSTRING zNewAnimParent;
       const orxSTRING zCurrentSection;
+      const orxSTRING zAnimLocale;
       orxU32          u32Digits;
       orxBOOL         bContinue = orxTRUE, bIsText = orxFALSE, bHasFrameSize = orxFALSE;
       orxDIRECTION    eRowDirection = orxDIRECTION_RIGHT, eColumnDirection = orxDIRECTION_DOWN;
@@ -1784,13 +1785,11 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       /* From config? */
       if(bFromConfig != orxFALSE)
       {
-        const orxSTRING zLocale;
-
-        /* Gets its locale group */
-        zLocale = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP);
-        if(*zLocale == orxCHAR_NULL)
+        /* Gets anim's locale group */
+        zAnimLocale = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP);
+        if(*zAnimLocale == orxCHAR_NULL)
         {
-          zLocale = orxTEXTURE_KZ_LOCALE_GROUP;
+          zAnimLocale = orxTEXTURE_KZ_LOCALE_GROUP;
         }
 
         /* Gets frame size */
@@ -1801,7 +1800,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         bHasFrameSize = (orxVector_IsNull(&vFrameSize) == orxFALSE) ? orxTRUE : orxFALSE;
 
         /* Gets texture origin */
-        orxAnimSet_GetLocaleVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, zLocale, &vTextureOrigin);
+        orxAnimSet_GetLocaleVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, zAnimLocale, &vTextureOrigin);
 
         /* Has direction? */
         if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIRECTION) != orxFALSE)
@@ -1875,7 +1874,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         }
 
         /* Gets texture size */
-        if(orxAnimSet_GetLocaleVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, zLocale, &vTextureSize) == orxNULL)
+        if(orxAnimSet_GetLocaleVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, zAnimLocale, &vTextureSize) == orxNULL)
         {
           orxGRAPHIC *pstGraphic;
           orxBOOL     bDebugLevelBackup;
@@ -2177,7 +2176,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             zLocale = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP);
             if(*zLocale == orxCHAR_NULL)
             {
-              zLocale = orxTEXTURE_KZ_LOCALE_GROUP;
+              zLocale = zAnimLocale;
             }
 
             /* No local size? */
