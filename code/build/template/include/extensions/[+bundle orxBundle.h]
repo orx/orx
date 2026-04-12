@@ -987,6 +987,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
           {
             // Runs task locally (faster in non-binary mode)
             orxBundle_ProcessResource(pstResourceRef);
+            orxBundle_CleanResource(pstResourceRef);
           }
         }
         else
