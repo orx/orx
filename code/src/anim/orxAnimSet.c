@@ -1787,7 +1787,11 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       {
         /* Gets anim's locale group */
         zAnimLocale = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP);
-        if(*zAnimLocale == orxCHAR_NULL)
+        if(*zAnimLocale != orxCHAR_NULL)
+        {
+          zAnimLocale = orxString_Store(zAnimLocale);
+        }
+        else
         {
           zAnimLocale = orxTEXTURE_KZ_LOCALE_GROUP;
         }
@@ -2174,7 +2178,11 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
 
             /* Gets its locale group */
             zLocale = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP);
-            if(*zLocale == orxCHAR_NULL)
+            if(*zLocale != orxCHAR_NULL)
+            {
+              zLocale = orxString_Store(zLocale);
+            }
+            else
             {
               zLocale = zAnimLocale;
             }
