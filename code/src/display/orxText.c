@@ -65,6 +65,7 @@
  */
 #define orxTEXT_KZ_CONFIG_STRING              "String"
 #define orxTEXT_KZ_CONFIG_FONT                "Font"
+#define orxTEXT_KZ_CONFIG_LOCALE_GROUP        "Locale"
 
 #define orxTEXT_KC_LOCALE_MARKER              '$'
 
@@ -87,7 +88,8 @@ struct __orxTEXT_t
   orxFLOAT          fWidth;                     /**< Width : 68 / 100 */
   orxFLOAT          fHeight;                    /**< Height : 72 / 104 */
   const orxSTRING   zReference;                 /**< Config reference : 76 / 112 */
-  orxSTRING         zOriginalString;            /**< Original string : 80 / 120 */
+  const orxSTRING   zLocaleGroup;               /**< Locale group : 80 / 120 */
+  orxSTRING         zOriginalString;            /**< Original string : 84 / 128 */
 };
 
 /** Static structure
@@ -135,7 +137,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
       _pstText->stLocaleFontID = orxString_GetID(zName);
 
       /* Gets its locale value */
-      zName = orxLocale_GetString(zName, orxTEXT_KZ_LOCALE_GROUP);
+      zName = orxLocale_GetString(zName, _pstText->zLocaleGroup);
     }
   }
 
@@ -199,7 +201,7 @@ static orxSTATUS orxFASTCALL orxText_ProcessConfigData(orxTEXT *_pstText)
       _pstText->stLocaleStringID = orxString_GetID(zString);
 
       /* Gets its locale value */
-      zString = orxLocale_GetString(zString, orxTEXT_KZ_LOCALE_GROUP);
+      zString = orxLocale_GetString(zString, _pstText->zLocaleGroup);
     }
   }
 
@@ -224,20 +226,19 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
   /* Locale? */
   if(_pstEvent->eType == orxEVENT_TYPE_LOCALE)
   {
-    orxLOCALE_EVENT_PAYLOAD *pstPayload;
+    orxLOCALE_EVENT_PAYLOAD  *pstPayload;
+    orxTEXT                  *pstText;
 
     /* Gets its payload */
     pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-    /* Text group? */
-    if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXT_KZ_LOCALE_GROUP) == 0))
+    /* For all texts */
+    for(pstText = orxTEXT(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXT));
+        pstText != orxNULL;
+        pstText = orxTEXT(orxStructure_GetNext(pstText)))
     {
-      orxTEXT *pstText;
-
-      /* For all texts */
-      for(pstText = orxTEXT(orxStructure_GetFirst(orxSTRUCTURE_ID_TEXT));
-          pstText != orxNULL;
-          pstText = orxTEXT(orxStructure_GetNext(pstText)))
+      /* Text group? */
+      if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, pstText->zLocaleGroup) == 0))
       {
         /* Has locale string ID? */
         if(pstText->stLocaleStringID != 0)
@@ -245,7 +246,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
           const orxSTRING zText;
 
           /* Gets its localized value */
-          zText = orxLocale_GetString(orxString_GetFromID(pstText->stLocaleStringID), orxTEXT_KZ_LOCALE_GROUP);
+          zText = orxLocale_GetString(orxString_GetFromID(pstText->stLocaleStringID), pstText->zLocaleGroup);
 
           /* Valid? */
           if(*zText != orxCHAR_NULL)
@@ -261,7 +262,7 @@ static orxSTATUS orxFASTCALL orxText_EventHandler(const orxEVENT *_pstEvent)
           orxFONT *pstFont;
 
           /* Creates font */
-          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(orxString_GetFromID(pstText->stLocaleFontID), orxTEXT_KZ_LOCALE_GROUP));
+          pstFont = orxFont_CreateFromConfig(orxLocale_GetString(orxString_GetFromID(pstText->stLocaleFontID), pstText->zLocaleGroup));
 
           /* Valid? */
           if(pstFont != orxNULL)
@@ -748,6 +749,11 @@ orxTEXT *orxFASTCALL orxText_CreateFromConfig(const orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
+      /* Stores its locale group */
+      pstResult->zLocaleGroup = (orxConfig_HasValue(orxTEXT_KZ_CONFIG_LOCALE_GROUP) != orxFALSE)
+                                ? orxString_Store(orxConfig_GetString(orxTEXT_KZ_CONFIG_LOCALE_GROUP))
+                                : orxTEXT_KZ_LOCALE_GROUP;
+
       /* Stores its reference key */
       pstResult->zReference = orxConfig_GetCurrentSection();
 
