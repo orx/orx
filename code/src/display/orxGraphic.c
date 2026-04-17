@@ -300,11 +300,11 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
       }
       else
       {
-        /* Has locale name? */
-        if(pstGraphic->zLocaleName != orxNULL)
+        /* Texture group (including disabled stasis ones)? */
+        if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, pstGraphic->zLocaleGroup) == 0))
         {
-          /* Texture group (including disabled stasis ones)? */
-          if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, pstGraphic->zLocaleGroup) == 0))
+          /* Has locale name? */
+          if(pstGraphic->zLocaleName != orxNULL)
           {
             const orxSTRING zName;
             orxTEXTURE     *pstTexture;
@@ -337,46 +337,46 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
               }
             }
           }
-        }
-        /* Has locale origin? */
-        if(pstGraphic->zLocaleOrigin != orxNULL)
-        {
-          const orxSTRING zOrigin;
-
-          /* Retrieves its value */
-          zOrigin = orxLocale_GetString(pstGraphic->zLocaleOrigin, pstGraphic->zLocaleGroup);
-
-          /* Valid? */
-          if(*zOrigin != orxCHAR_NULL)
+          /* Has locale origin? */
+          if(pstGraphic->zLocaleOrigin != orxNULL)
           {
-            orxVECTOR vValue;
+            const orxSTRING zOrigin;
 
-            /* Gets its vector value */
-            if(orxConfig_ToVector(zOrigin, orxCOLORSPACE_NONE, &vValue) != orxNULL)
+            /* Retrieves its value */
+            zOrigin = orxLocale_GetString(pstGraphic->zLocaleOrigin, pstGraphic->zLocaleGroup);
+
+            /* Valid? */
+            if(*zOrigin != orxCHAR_NULL)
             {
-              /* Applies it */
-              orxGraphic_SetOrigin(pstGraphic, &vValue);
+              orxVECTOR vValue;
+
+              /* Gets its vector value */
+              if(orxConfig_ToVector(zOrigin, orxCOLORSPACE_NONE, &vValue) != orxNULL)
+              {
+                /* Applies it */
+                orxGraphic_SetOrigin(pstGraphic, &vValue);
+              }
             }
           }
-        }
-        /* Has locale size? */
-        if(pstGraphic->zLocaleSize != orxNULL)
-        {
-          const orxSTRING zSize;
-
-          /* Retrieves its value */
-          zSize = orxLocale_GetString(pstGraphic->zLocaleSize, pstGraphic->zLocaleGroup);
-
-          /* Valid? */
-          if(*zSize != orxCHAR_NULL)
+          /* Has locale size? */
+          if(pstGraphic->zLocaleSize != orxNULL)
           {
-            orxVECTOR vValue;
+            const orxSTRING zSize;
 
-            /* Gets its vector value */
-            if(orxConfig_ToVector(zSize, orxCOLORSPACE_NONE, &vValue) != orxNULL)
+            /* Retrieves its value */
+            zSize = orxLocale_GetString(pstGraphic->zLocaleSize, pstGraphic->zLocaleGroup);
+
+            /* Valid? */
+            if(*zSize != orxCHAR_NULL)
             {
-              /* Applies it */
-              orxGraphic_SetSize(pstGraphic, &vValue);
+              orxVECTOR vValue;
+
+              /* Gets its vector value */
+              if(orxConfig_ToVector(zSize, orxCOLORSPACE_NONE, &vValue) != orxNULL)
+              {
+                /* Applies it */
+                orxGraphic_SetSize(pstGraphic, &vValue);
+              }
             }
           }
         }
