@@ -15,8 +15,8 @@ var orx_android_8h =
       [ "orxANDROID_EVENT_NUMBER", "group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a1fa1baea8809af881e244e0be81e3b6c", null ],
       [ "orxANDROID_EVENT_NONE", "group__orx_android.html#gga47388b128fba88aa32d4711d93b3def6a943518bccab04ef4942374f3d93722aa", null ]
     ] ],
-    [ "orxAndroid_GetInternalStoragePath", "group__orx_android.html#gae61fe62bd38977850791da3eb9522237", null ],
-    [ "orxAndroid_GetNativeWindow", "group__orx_android.html#ga2655223eb8e84adf8378018f210c1604", null ],
+    [ "orxAndroid_GetInternalStoragePath", "group__orx_android.html#gac6f57a6d728dfbbef71737af111936d9", null ],
+    [ "orxAndroid_GetNativeWindow", "group__orx_android.html#gaf741e1a11086cc100bc1a8ab0ca2f979", null ],
     [ "orxAndroid_JNI_GetPhysicalFrameRate", "group__orx_android.html#ga33ad98ce3db4a269187796ae99060c0f", null ],
     [ "orxAndroid_JNI_GetRotation", "group__orx_android.html#ga10c24f6007e9bfd70608c16dc103f17d", null ],
     [ "orxAndroid_JNI_SetupThread", "group__orx_android.html#ga8497f0065453b50165d9ac20dd951dba", null ],

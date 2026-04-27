@@ -143,12 +143,12 @@ uint32_t orxJoystick_Android_GetButtonMask(orxS32 s32Button)
       break;
     case orxJOYSTICK_BUTTON_9_1:
     case orxJOYSTICK_BUTTON_LTHUMB_1:
-      // TODO: Verify this one!
+      /* TODO: Verify this one! */
       mask = PADDLEBOAT_BUTTON_L3;
       break;
     case orxJOYSTICK_BUTTON_10_1:
     case orxJOYSTICK_BUTTON_RTHUMB_1:
-      // TODO: Verify this one!
+      /* TODO: Verify this one! */
       mask = PADDLEBOAT_BUTTON_R3;
       break;
     case orxJOYSTICK_BUTTON_11_1:

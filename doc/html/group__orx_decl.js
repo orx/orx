@@ -3,11 +3,11 @@ var group__orx_decl =
     [ "__orx32__", "group__orx_decl.html#ga0d85df47979f03750d7788f06fb6096a", null ],
     [ "__orxLITTLE_ENDIAN__", "group__orx_decl.html#ga96482e65a36cc89edf91aae3315de27f", null ],
     [ "__orxX86__", "group__orx_decl.html#ga05d360cf9a5b757bf9bb062335546679", null ],
-    [ "orxALIGN", "group__orx_decl.html#gaa9bac4bb2edf3b8b9b97061cadb17115", null ],
-    [ "orxALIGN16", "group__orx_decl.html#ga215893219be445457ce9a38ac6388078", null ],
-    [ "orxALIGN32", "group__orx_decl.html#ga775b7d5d086ec9ba397dce4280168954", null ],
-    [ "orxALIGN64", "group__orx_decl.html#ga5aeddea19f24868858d7592318cba8cc", null ],
-    [ "orxALIGN8", "group__orx_decl.html#ga4192c96253c92b55c782c10e53313ba3", null ],
+    [ "orxALIGN", "group__orx_decl.html#ga527673cf8c7c8e606424d57687ff218b", null ],
+    [ "orxALIGN16", "group__orx_decl.html#gabecec84a650820e1a3e517de9ea7d4db", null ],
+    [ "orxALIGN32", "group__orx_decl.html#gab015cbb0c69308bccf749ed71f9b3151", null ],
+    [ "orxALIGN64", "group__orx_decl.html#gae907b154597da4f4bb415ac62af151c7", null ],
+    [ "orxALIGN8", "group__orx_decl.html#ga87a0a77bac5ce67e0c75b0c2b0fc11fc", null ],
     [ "orxANSI_KC_MARKER", "group__orx_decl.html#ga40a5ecc65e2be7e3bc996b6ca0cf8fd6", null ],
     [ "orxANSI_KZ_COLOR_BG_BLACK", "group__orx_decl.html#ga8c4f47aec4a5c799d4a42337b309630a", null ],
     [ "orxANSI_KZ_COLOR_BG_BLUE", "group__orx_decl.html#ga4c15a01c7cbe3b0171279f9f4dbec590", null ],
@@ -48,5 +48,5 @@ var group__orx_decl =
     [ "orxFLAG_TEST", "group__orx_decl.html#ga5d4201fb766a44a355bed3bde7426d88", null ],
     [ "orxFLAG_TEST_ALL", "group__orx_decl.html#ga7191791f19d4f02ca26020c70410924b", null ],
     [ "orxIMPORT", "group__orx_decl.html#gab970a40e167e4b5346aec7ae059d8929", null ],
-    [ "orxSTRUCT_GET_FROM_FIELD", "group__orx_decl.html#ga006cfed35333c5d6b8788a7fa586aa47", null ]
+    [ "orxSTRUCT_GET_FROM_FIELD", "group__orx_decl.html#gab7c66fa6bc13f251ee92b6883260aa1d", null ]
 ];

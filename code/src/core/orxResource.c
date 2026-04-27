@@ -206,7 +206,6 @@ typedef struct __orxRESOURCE_STATIC_t
   orxBANK                  *pstTypeBank;                                              /**< Type info bank */
   orxBANK                  *pstResourceInfoBank;                                      /**< Resource info bank */
   orxBANK                  *pstOpenInfoBank;                                          /**< Open resource table size */
-  orxTHREAD_SEMAPHORE*      pstRequestSemaphore;                                      /**< Request semaphore */
   orxTHREAD_SEMAPHORE*      pstWorkerSemaphore;                                       /**< Worker semaphore */
   orxLINKLIST               stTypeList;                                               /**< Type list */
   orxSTRING                 zLastUncachedLocation;                                    /**< Last uncached location */
@@ -553,47 +552,47 @@ static orxS64 orxFASTCALL orxResource_Memory_Seek(orxHANDLE _hResource, orxS64 _
   /* Gets internal resource */
   pstResource = (orxRESOURCE_MEMORY_RESOURCE *)_hResource;
 
-  // Depending on seek mode
+  /* Depending on seek mode */
   switch(_eWhence)
   {
     case orxSEEK_OFFSET_WHENCE_START:
     {
-      // Computes cursor
+      /* Computes cursor */
       s64Cursor = _s64Offset;
       break;
     }
 
     case orxSEEK_OFFSET_WHENCE_CURRENT:
     {
-      // Computes cursor
+      /* Computes cursor */
       s64Cursor = pstResource->s64Cursor + _s64Offset;
       break;
     }
 
     case orxSEEK_OFFSET_WHENCE_END:
     {
-      // Computes cursor
+      /* Computes cursor */
       s64Cursor = pstResource->pstData->s64Size - _s64Offset;
       break;
     }
 
     default:
     {
-      // Failure
+      /* Failure */
       s64Cursor = -1;
       break;
     }
   }
 
-  // Is cursor valid?
+  /* Is cursor valid? */
   if((s64Cursor >= 0) && (s64Cursor <= pstResource->pstData->s64Size))
   {
-    // Updates cursor
+    /* Updates cursor */
     pstResource->s64Cursor = s64Cursor;
   }
   else
   {
-    // Clears value
+    /* Clears value */
     s64Cursor = -1;
   }
 
@@ -624,20 +623,20 @@ static orxS64 orxFASTCALL orxResource_Memory_Read(orxHANDLE _hResource, orxS64 _
   /* Gets internal resource */
   pstResource = (orxRESOURCE_MEMORY_RESOURCE *)_hResource;
 
-  // Gets actual copy size to prevent any out-of-bound access
+  /* Gets actual copy size to prevent any out-of-bound access */
   s64CopySize = orxMIN(_s64Size, pstResource->pstData->s64Size - pstResource->s64Cursor);
 
-  // Should copy content?
+  /* Should copy content? */
   if(s64CopySize != 0)
   {
-    // Copies content
+    /* Copies content */
     orxMemory_Copy(_pBuffer, pstResource->pstData->pu8Buffer + pstResource->s64Cursor, (orxS32)s64CopySize);
   }
 
-  // Updates cursor
+  /* Updates cursor */
   pstResource->s64Cursor += s64CopySize;
 
-  // Done!
+  /* Done! */
   return s64CopySize;
 }
 
@@ -861,17 +860,14 @@ static orxSTATUS orxFASTCALL orxResource_ProcessRequests(void *_pContext)
 
 static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64Size, void *_pBuffer, orxRESOURCE_OP_FUNCTION _pfnCallback, void *_pContext, orxRESOURCE_OPEN_INFO *_pstResourceInfo)
 {
-  orxU32                        u32NextRequestIndex;
-  orxBOOL                       bAdd = orxTRUE;
-
   /* Checks */
   orxASSERT(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID);
 
   /* Not shutting down */
   if(!orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_EXIT))
   {
-    /* Waits for semaphore */
-    orxThread_WaitSemaphore(sstResource.pstRequestSemaphore);
+    orxU32  u32NextRequestIndex;
+    orxBOOL bAdd;
 
     /* Gets next request index */
     u32NextRequestIndex = (sstResource.u32RequestInIndex + 1) & (orxRESOURCE_KU32_REQUEST_LIST_SIZE - 1);
@@ -888,29 +884,16 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
       /* Gets number of free slots */
       u32FreeSlots = (u32InIndex >= u32ProcessIndex) ? orxRESOURCE_KU32_REQUEST_LIST_SIZE - u32InIndex + u32ProcessIndex : u32ProcessIndex - u32InIndex;
 
-      /* More than a quarter of the slots are free? */
-      if(u32FreeSlots >= orxRESOURCE_KU32_REQUEST_LIST_SIZE / 4)
-      {
-        /* Process addition */
-        bAdd = orxTRUE;
-      }
-      else
-      {
-        /* Drops request */
-        bAdd = orxFALSE;
-      }
+      /* Requests processing if more than a quarter of the slots are free */
+      bAdd = (u32FreeSlots >= orxRESOURCE_KU32_REQUEST_LIST_SIZE / 4) ? orxTRUE : orxFALSE;
     }
     else
     {
       /* Waits for a free slot */
       while(u32NextRequestIndex == sstResource.u32RequestOutIndex)
       {
-        /* Main thread? */
-        if(orxThread_GetCurrent() == orxTHREAD_KU32_MAIN_THREAD_ID)
-        {
-          /* Manually pumps some request notifications */
-          orxResource_NotifyRequest(orxNULL, orxNULL);
-        }
+        /* Manually pumps some request notifications */
+        orxResource_NotifyRequest(orxNULL, orxNULL);
       }
 
       /* Process addition */
@@ -944,9 +927,6 @@ static void orxResource_AddRequest(orxRESOURCE_REQUEST_TYPE _eType, orxS64 _s64S
       /* Signals worker semaphore */
       orxThread_SignalSemaphore(sstResource.pstWorkerSemaphore);
     }
-
-    /* Signals semaphore */
-    orxThread_SignalSemaphore(sstResource.pstRequestSemaphore);
   }
 }
 
@@ -1487,12 +1467,11 @@ orxSTATUS orxFASTCALL orxResource_Init()
     /* Cleans control structure */
     orxMemory_Zero(&sstResource, sizeof(orxRESOURCE_STATIC));
 
-    /* Creates semaphores */
-    sstResource.pstRequestSemaphore = orxThread_CreateSemaphore(1);
-    sstResource.pstWorkerSemaphore  = orxThread_CreateSemaphore(1);
+    /* Creates worker semaphore */
+    sstResource.pstWorkerSemaphore = orxThread_CreateSemaphore(1);
 
     /* Valid? */
-    if((sstResource.pstRequestSemaphore != orxNULL) && (sstResource.pstWorkerSemaphore != orxNULL))
+    if(sstResource.pstWorkerSemaphore != orxNULL)
     {
       /* Inits request thread ID */
       sstResource.u32RequestThreadID = orxU32_UNDEFINED;
@@ -1603,11 +1582,7 @@ orxSTATUS orxFASTCALL orxResource_Init()
       /* Removes Flags */
       sstResource.u32Flags &= ~orxRESOURCE_KU32_STATIC_FLAG_READY;
 
-      /* Deletes semaphores */
-      if(sstResource.pstRequestSemaphore != orxNULL)
-      {
-        orxThread_DeleteSemaphore(sstResource.pstRequestSemaphore);
-      }
+      /* Deletes worker semaphore */
       if(sstResource.pstWorkerSemaphore != orxNULL)
       {
         orxThread_DeleteSemaphore(sstResource.pstWorkerSemaphore);
@@ -1709,21 +1684,20 @@ void orxFASTCALL orxResource_Exit()
     orxThread_Join(sstResource.u32RequestThreadID);
     sstResource.u32RequestThreadID = orxU32_UNDEFINED;
 
-    /* Delete semaphores */
-    orxThread_DeleteSemaphore(sstResource.pstRequestSemaphore);
+    /* Delete worker semaphore */
     orxThread_DeleteSemaphore(sstResource.pstWorkerSemaphore);
 
     /* Is the clock module still present? */
     if(orxModule_IsInitialized(orxMODULE_ID_CLOCK) != orxFALSE)
     {
       /* Unregisters request notification callback */
-      orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_NotifyRequest);
+      orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_NotifyRequest, orxNULL);
 
       /* Has watch callback? */
       if(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_WATCH_REGISTERED))
       {
         /* Registers watch callbacks */
-        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_Watch);
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxResource_Watch, orxNULL);
       }
     }
 

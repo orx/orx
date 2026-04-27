@@ -7,8 +7,7 @@
 #define __SCROLL_IMPL__
 #include "[name].h"
 #undef __SCROLL_IMPL__
-
-#include "Object.h"]
+]
 [-scroll #include "orx.h"]
 #include "orxExtensions.h"
 
@@ -56,6 +55,11 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Show Dear ImGui's demo and stats windows
   ImGui::ShowDemoWindow();
   ImGui::ShowMetricsWindow();
+]
+[+clay
+  // Show clay demo content
+  extern void Clay_ShowDemoContent();
+  Clay_ShowDemoContent();
 ]
   // Should quit?
   if(orxInput_HasBeenActivated("Quit"))
@@ -144,15 +148,6 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
   // Let orx clean all our mess automatically. :)
 }
 
-[+scroll
-/** BindObjects function, ScrollObject-derived classes are bound to config sections here
- */
-void [!name]::BindObjects()
-{
-  // Bind the Object class
-  BindObject(Object);
-}
-]
 /** Bootstrap function, it is called before config is initialized, allowing for early resource storage definitions
  */
 [+scroll orxSTATUS [!name]::Bootstrap() const]

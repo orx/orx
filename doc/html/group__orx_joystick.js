@@ -1,10 +1,10 @@
 var group__orx_joystick =
 [
-    [ "orxJOYSTICK_DECLARE_AXIS_ENUM", "group__orx_joystick.html#ga47fc13efaaf1addba0b1fc4bb37d8bd9", null ],
+    [ "orxJOYSTICK_DECLARE_AXIS_ENUM", "group__orx_joystick.html#gad8e0f3bd5ac0af4b6a3a2dcf6db01d55", null ],
     [ "orxJOYSTICK_DECLARE_BUTTON_ENUM", "group__orx_joystick.html#ga06372ec36e21dbb99b89c082c1097e6c", null ],
-    [ "orxJOYSTICK_GET_AXIS", "group__orx_joystick.html#gab77285394fe306f2077e9647086d7604", null ],
-    [ "orxJOYSTICK_GET_BUTTON", "group__orx_joystick.html#ga3775b7637ef336c1b912e700b7e74529", null ],
-    [ "orxJOYSTICK_GET_ID_FROM_AXIS", "group__orx_joystick.html#ga0d8bce4e8cc6613c25eea5fadb5f1e28", null ],
+    [ "orxJOYSTICK_GET_AXIS", "group__orx_joystick.html#ga9d6dd517a1cdd44654ab0874102b0b69", null ],
+    [ "orxJOYSTICK_GET_BUTTON", "group__orx_joystick.html#ga5514aa6a9dc0af45c41427ede495b34f", null ],
+    [ "orxJOYSTICK_GET_ID_FROM_AXIS", "group__orx_joystick.html#gadce596c2992e739e26874d4f76c5eb94", null ],
     [ "orxJOYSTICK_GET_ID_FROM_BUTTON", "group__orx_joystick.html#gae68737bb1b4e6da340c7606ac4927790", null ],
     [ "orxJOYSTICK_KU32_MAX_ID", "group__orx_joystick.html#ga2db095870cde5bdfff649fec696bb510", null ],
     [ "orxJOYSTICK_KU32_MIN_ID", "group__orx_joystick.html#ga97b46e1f395d1259f6a43fa0bd07041d", null ],

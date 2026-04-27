@@ -1090,8 +1090,9 @@ orxS64 orxFASTCALL orxFile_Seek(orxFILE *_pstFile, orxS64 _s64Position, orxSEEK_
   /* Valid? */
   if(_pstFile != orxNULL)
   {
+    /* Seeks */
 #if defined(__orxMSVC__) && defined(__orxX86_64__)
-    (void)fseek((FILE *)_pstFile, (long)_s64Position, _eWhence);
+    (void)_fseeki64((FILE *)_pstFile, _s64Position, _eWhence);
 #else /* __orxMSVC__ && __orxX86_64__ */
     (void)fseek((FILE *)_pstFile, (size_t)_s64Position, _eWhence);
 #endif /* __orxMSVC__ && __orxX86_64__ */
@@ -1124,7 +1125,11 @@ orxS64 orxFASTCALL orxFile_Tell(const orxFILE *_pstFile)
   if(_pstFile != orxNULL)
   {
     /* Updates result */
+#if defined(__orxMSVC__) && defined(__orxX86_64__)
+    s64Result = _ftelli64((FILE *)_pstFile);
+#else /* __orxMSVC__ && __orxX86_64__ */
     s64Result = ftell((FILE *)_pstFile);
+#endif /* __orxMSVC__ && __orxX86_64__ */
   }
   else
   {

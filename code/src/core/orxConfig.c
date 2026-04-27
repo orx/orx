@@ -126,6 +126,7 @@
 #define orxCONFIG_KZ_CONFIG_SECTION_SYSTEM        "System"    /**< System section name */
 #define orxCONFIG_KZ_CONFIG_BITS                  "Bits"      /**< Bits property */
 #define orxCONFIG_KZ_CONFIG_BUILD                 "Build"     /**< Build property */
+#define orxCONFIG_KZ_CONFIG_COMPILER              "Compiler"  /**< Compiler property */
 #define orxCONFIG_KZ_CONFIG_ENDIANNESS            "Endianness"/**< Endianness property */
 #define orxCONFIG_KZ_CONFIG_PLATFORM              "Platform"  /**< Platform property */
 #define orxCONFIG_KZ_CONFIG_PROCESSOR             "Processor" /**< Processor property */
@@ -224,6 +225,20 @@
 #else
 
   #define orxCONFIG_KZ_BUILD                      "release"
+
+#endif
+
+#if defined(__orxLLVM__)
+
+  #define orxCONFIG_KZ_COMPILER                   "llvm"
+
+#elif defined(__orxGCC__)
+
+  #define orxCONFIG_KZ_COMPILER                   "gcc"
+
+#elif defined(__orxMSVC__)
+
+  #define orxCONFIG_KZ_COMPILER                   "msvc"
 
 #endif
 
@@ -1625,7 +1640,7 @@ static orxBOOL orxFASTCALL orxConfig_CheckTypo(const orxSTRING _zKeyName, const 
   {
     /* Typo? */
     if((orxString_ICompare(zKey, _zKeyName) == 0)
-    || (orxString_GetEditDistance(zKey, _zKeyName) <= ((orxString_GetLength(zKey) <= 4UL) ? 1UL : orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE)))
+    || (orxString_GetEditDistance(zKey, _zKeyName) <= ((orxString_GetLength(zKey) <= 5UL) ? 1UL : orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE)))
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "was found instead of requested key" orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_UNDERLINE_OFF " <%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKeyName, zKey);
@@ -1920,7 +1935,7 @@ static orxINLINE orxSTATUS orxConfig_DeleteSection(orxCONFIG_SECTION *_pstSectio
   /* Checks */
   orxASSERT(_pstSection != orxNULL);
 
-  // Should delete section?
+  /* Should delete section? */
   if((_pfnClearCallback == orxNULL)
   || (_pfnClearCallback(_pstSection->zName, orxNULL) != orxFALSE))
   {
@@ -3402,7 +3417,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
             bFall = orxTRUE;
           }
 
-          /* Fall through */
+          /* Falls through */
         }
 
         /* Section start? */
@@ -3475,7 +3490,7 @@ static orxU32 orxFASTCALL orxConfig_ProcessBuffer(const orxSTRING _zName, orxCHA
             break;
           }
 
-          /* Fall through */
+          /* Falls through */
         }
 
         default:
@@ -3946,6 +3961,9 @@ static void orxFASTCALL orxConfig_SetDefaultColorList()
   /* Pops config section */
   orxConfig_PopSection();
 
+  /* Protects it */
+  orxConfig_ProtectSection(orxCOLOR_KZ_CONFIG_SECTION, orxTRUE);
+
   /* Done! */
   return;
 }
@@ -4390,7 +4408,7 @@ void orxFASTCALL orxConfig_CommandSetValue(orxU32 _u32ArgNumber, const orxCOMMAN
     s32SeparatorIndex = orxString_SearchCharIndex(zSection, orxCONFIG_KC_SECTION_SEPARATOR, 0);
 
     /* Found and no empty part? */
-    if((s32SeparatorIndex > 0) && (*(zSection + s32SeparatorIndex +1) != orxCHAR_NULL))
+    if((s32SeparatorIndex > 0) && (*(zSection + s32SeparatorIndex + 1) != orxCHAR_NULL))
     {
       /* Updates value */
       zValue = _astArgList[1].zValue;
@@ -4794,6 +4812,7 @@ static orxINLINE void orxConfig_SetSystemValues()
   orxConfig_SetString(orxCONFIG_KZ_CONFIG_PLATFORM, orxCONFIG_KZ_PLATFORM);
   orxConfig_SetString(orxCONFIG_KZ_CONFIG_PROCESSOR, orxCONFIG_KZ_PROCESSOR);
   orxConfig_SetString(orxCONFIG_KZ_CONFIG_BUILD, orxCONFIG_KZ_BUILD);
+  orxConfig_SetString(orxCONFIG_KZ_CONFIG_COMPILER, orxCONFIG_KZ_COMPILER);
 
   /* Pops system section */
   orxConfig_PopSection();

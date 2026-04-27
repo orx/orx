@@ -53,11 +53,11 @@
 
 
 #define orxTHREAD_KU32_MAIN_THREAD_ID                 0           /**< Main thread ID */
-#define orxTHREAD_KU32_MAX_THREAD_NUMBER              16          /**< Max thread number */
+#define orxTHREAD_KU32_MAX_THREAD_NUMBER              64          /**< Max thread number */
 
 #define orxTHREAD_KU32_FLAG_NONE                      0           /**< Flag none (for orxThread_Enable) */
-#define orxTHREAD_KU32_MASK_ALL                       (((1 << orxTHREAD_KU32_MAX_THREAD_NUMBER) - 1) & ~(1 << orxTHREAD_KU32_MAIN_THREAD_ID)) /* Mask all (for orxThread_Enable) */
-#define orxTHREAD_GET_FLAG_FROM_ID(ID)                (1 << (ID)) /**< Gets thread flag from ID */
+#define orxTHREAD_KU32_MASK_ALL                       (((1ULL << (orxTHREAD_KU32_MAX_THREAD_NUMBER - 1)) - 1) & ~(1 << orxTHREAD_KU32_MAIN_THREAD_ID)) /* Mask all (for orxThread_Enable) */
+#define orxTHREAD_GET_FLAG_FROM_ID(ID)                (1ULL << (ID)) /**< Gets thread flag from ID */
 
 
 /** Semaphore structure */
@@ -108,11 +108,11 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_JoinAll();
 extern orxDLLAPI const orxSTRING orxFASTCALL          orxThread_GetName(orxU32 _u32ThreadID);
 
 /** Enables / disables threads
- * @param[in]   _u32EnableThreads   Mask of threads to enable (1 << ThreadID)
- * @param[in]   _u32DisableThreads  Mask of threads to disable (1 << ThreadID)
+ * @param[in]   _u64EnableThreads   Mask of threads to enable (1 << ThreadID)
+ * @param[in]   _u64DisableThreads  Mask of threads to disable (1 << ThreadID)
  * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Enable(orxU32 _u32EnableThreads, orxU32 _u32DisableThreads);
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_Enable(orxU64 _u64EnableThreads, orxU64 _u64DisableThreads);
 
 /** Gets current thread ID
  * @return      Current thread ID
@@ -158,10 +158,24 @@ extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_SignalSemaphore(
  */
 extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_RunTask(const orxTHREAD_FUNCTION _pfnRun, const orxTHREAD_FUNCTION _pfnThen, const orxTHREAD_FUNCTION _pfnElse, void *_pContext);
 
+/** Runs an asynchronous task on the first worker ID to ensure linear sequentiality (only use when firing multiple tasks whose processing order matters)
+ * @param[in]   _pfnRun                               Asynchronous task to run, executed on a different thread dedicated to tasks, if orxNULL defaults to an empty task that always succeed
+ * @param[in]   _pfnThen                              Executed (on the main thread) if Run does *not* return orxSTATUS_FAILURE, can be orxNULL
+ * @param[in]   _pfnElse                              Executed (on the main thread) if Run returns orxSTATUS_FAILURE, can be orxNULL
+ * @param[in]   _pContext                             Context that will be transmitted to all the task functions
+ * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                orxThread_RunTaskLinear(const orxTHREAD_FUNCTION _pfnRun, const orxTHREAD_FUNCTION _pfnThen, const orxTHREAD_FUNCTION _pfnElse, void *_pContext);
+
 /** Gets number of pending asynchronous tasks awaiting full completion (might pump task notifications if called from main thread)
  * @return      Number of pending asynchronous tasks
  */
 extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_GetTaskCount();
+
+/** Gets number of workers running tasks
+ * @return      Number of workers
+ */
+extern orxDLLAPI orxU32 orxFASTCALL                   orxThread_GetWorkerCount();
 
 /** Sets callbacks to run when starting and stopping new threads
  * @param[in]   _pfnStart                             Function to run whenever a new thread is started

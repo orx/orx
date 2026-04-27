@@ -8,7 +8,7 @@ var orx_f_x_pointer_8h =
     [ "orxFXPointer_AddFXFromConfig", "group__orx_f_x_pointer.html#ga6329f3a2d4ad22110d107b91c38ab93b", null ],
     [ "orxFXPointer_AddUniqueDelayedFXFromConfig", "group__orx_f_x_pointer.html#ga96875b3fec4419b8b87b43def6cbebe3", null ],
     [ "orxFXPointer_AddUniqueFXFromConfig", "group__orx_f_x_pointer.html#ga2b37b0fd4c738888fccd793a27660ca5", null ],
-    [ "orxFXPointer_Create", "group__orx_f_x_pointer.html#ga2e9b47a9f432ca56ef784595990b3c63", null ],
+    [ "orxFXPointer_Create", "group__orx_f_x_pointer.html#gacf3b2ea7ebf4961df6343b043d743078", null ],
     [ "orxFXPointer_Delete", "group__orx_f_x_pointer.html#ga091b7f73cfcb25a3acad4d91a5ee6ea9", null ],
     [ "orxFXPointer_Enable", "group__orx_f_x_pointer.html#gac9327397471848fa184877b11a151052", null ],
     [ "orxFXPointer_Exit", "group__orx_f_x_pointer.html#gafff8f6dd49decc5b718602f40df942b4", null ],

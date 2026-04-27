@@ -210,7 +210,7 @@ static orxBOOL orxFASTCALL orxTrigger_AddEvent(const orxSTRING _zKeyName, const 
         /* Updates depth */
         u32Depth++;
 
-        /* Fall through */
+        /* Falls through */
       }
 
       default:
@@ -1075,9 +1075,10 @@ orxU32 orxFASTCALL orxTrigger_GetCount(const orxTRIGGER *_pstTrigger)
  * @param[in]   _zEvent               Event to fire
  * @param[in]   _azRefinementList     List of refinements for this event, unused if _u32Count == 0
  * @param[in]   _u32Count             Number of refinements in the list, 0 for none
+ * @param[out]  _pu32StopDepth        Stop depth (matching refinement positions, 0 means no stop was encountered), orxNULL to ignore
  * @return      orxSTATUS_SUCCESS / orxSTATUS_FAILURE
  */
-orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count)
+orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _zEvent, const orxSTRING *_azRefinementList, orxU32 _u32Count, orxU32 *_pu32StopDepth)
 {
   orxSTATUS eResult = orxSTATUS_FAILURE;
 
@@ -1148,7 +1149,7 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
       /* For all sets */
       for(u32SetIndex = 0; u32SetIndex < orxTRIGGER_KU32_SET_NUMBER; u32SetIndex++)
       {
-        const orxTRIGGER_SET *pstSet;
+        orxTRIGGER_SET *pstSet;
 
         /* Gets it */
         pstSet = _pstTrigger->pastSetList[u32SetIndex];
@@ -1157,6 +1158,9 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
         if(pstSet != orxNULL)
         {
           orxU32 u32EventIndex;
+
+          /* Keeps set around during handling */
+          pstSet->u32RefCount++;
 
           /* For all its events */
           for(u32EventIndex = 0; u32EventIndex < pstSet->u32EventCount; u32EventIndex++)
@@ -1182,8 +1186,17 @@ orxSTATUS orxFASTCALL orxTrigger_Fire(orxTRIGGER *_pstTrigger, const orxSTRING _
               eResult = orxSTATUS_SUCCESS;
             }
           }
+
+          /* Cleans up set if necessary */
+          orxTrigger_DeleteSet(pstSet);
         }
       }
+    }
+
+    /* Stores stop depth */
+    if(_pu32StopDepth != orxNULL)
+    {
+      *_pu32StopDepth = (orxU32)s32StopDepth;
     }
 
     /* Restores previous event & refinement list */

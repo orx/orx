@@ -428,7 +428,7 @@ void orxFASTCALL orxCheat_Enable(orxBOOL _bEnable)
       if(orxInput_IsSetEnabled(orxCHEAT_KZ_INPUT_SET))
       {
         // Unregister update function
-        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxCheat_Update);
+        orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxCheat_Update, orxNULL);
 
         // Disable input set
         orxInput_EnableSet(orxCHEAT_KZ_INPUT_SET, orxFALSE);

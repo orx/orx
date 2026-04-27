@@ -50,6 +50,14 @@
 
     #include <mach/mach_time.h>
 
+  #else /* __orxMAC__ || __orxIOS__ */
+
+    #if defined(__orxWEB__)
+
+      #include <emscripten.h>
+
+    #endif /* __orxWEB__ */
+
   #endif /* __orxMAC__ || __orxIOS__ */
 
   #include <unistd.h>
@@ -87,7 +95,11 @@ typedef struct __orxSYSTEM_STATIC_t
 
   #else /* __orxMAC__ || __orxIOS__ */
 
+    #ifndef __orxWEB__
+
   orxBOOL bUseMonotonic;
+
+    #endif /* !__orxWEB__ */
 
   #endif /* __orxMAC__ || __orxIOS__ */
 
@@ -149,11 +161,15 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
   #else /* __orxMAC__ || __orxIOS__ */
 
-    #ifdef CLOCK_MONOTONIC
+    #ifndef __orxWEB__
+
+      #ifdef CLOCK_MONOTONIC
 
     struct timespec stCurrentTime;
 
-    #endif /* CLOCK_MONOTONIC */
+      #endif /* CLOCK_MONOTONIC */
+
+    #endif /* __orxWEB__ */
 
   #endif /* __orxMAC__ || __orxIOS__ */
 
@@ -191,7 +207,9 @@ orxSTATUS orxFASTCALL orxSystem_Init()
 
   #else /* __orxMAC__ || __orxIOS__ */
 
-    #ifdef CLOCK_MONOTONIC
+    #ifndef __orxWEB__
+
+      #ifdef CLOCK_MONOTONIC
 
     /* Can get monotonic time? */
     if(clock_gettime(CLOCK_MONOTONIC, &stCurrentTime) == 0)
@@ -200,7 +218,9 @@ orxSTATUS orxFASTCALL orxSystem_Init()
       sstSystem.bUseMonotonic = orxTRUE;
     }
 
-    #endif /* CLOCK_MONOTONIC */
+      #endif /* CLOCK_MONOTONIC */
+
+    #endif /* !__orxWEB__ */
 
   #endif /* __orxMAC__ || __orxIOS__ */
 
@@ -304,7 +324,14 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
 
   #else /* __orxMAC__ || __orxIOS__ */
 
-    #ifdef CLOCK_MONOTONIC
+    #ifdef __orxWEB__
+
+  /* Gets system time */
+  dResult = orx2D(0.001) * emscripten_get_now();
+
+    #else /* __orxWEB__ */
+
+      #ifdef CLOCK_MONOTONIC
 
   /* Use monotonic clock? */
   if(sstSystem.bUseMonotonic != orxFALSE)
@@ -319,7 +346,9 @@ orxDOUBLE orxFASTCALL orxSystem_GetSystemTime()
   }
   else
 
-    #endif /* CLOCK_MONOTONIC */
+      #endif /* CLOCK_MONOTONIC */
+
+    #endif /* __orxWEB__ */
 
   {
 

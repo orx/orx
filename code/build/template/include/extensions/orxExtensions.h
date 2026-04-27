@@ -41,6 +41,11 @@
 #define orxIMGUI_IMPL
 #include "orxImGui.h"
 #undef orxIMGUI_IMPL]
+[+clay
+
+#define orxCLAY_IMPL
+#include "orxClay.h"
+#undef orxCLAY_IMPL]
 [+inspector
 
 #define orxINSPECTOR_IMPL
@@ -87,6 +92,10 @@ void InitExtensions()
   // Initialize Dear ImGui
   orxImGui_Init();
 ]
+[+clay
+  // Initialize Clay
+  orxClay_Init();
+]
 [+inspector
   // Initialize inspector
   orxInspector_Init();
@@ -103,6 +112,10 @@ void ExitExtensions()
   // Exit from Dear ImGui
   orxImGui_Exit();
 ]
+[+clay
+  // Exit from Clay
+  orxClay_Exit();
+]
 [+nuklear
   // Exit from Nuklear
   orxNuklear_Exit();
@@ -111,6 +124,10 @@ void ExitExtensions()
   // Exit from SNDH support
   orxSndh_Exit();
 ]
+[+noisetex
+  // Exit from noise texture support
+  orxNoiseTexture_Exit();
+]
 [+mod
   // Exit from MOD support
   orxMod_Exit();
@@ -118,10 +135,6 @@ void ExitExtensions()
 [+movie
   // Exit from movie support
   orxMovie_Exit();
-]
-[+noisetex
-  // Exit from noise texture support
-  orxNoiseTexture_Exit();
 ]
 [+cheat
   // Exit from cheat support

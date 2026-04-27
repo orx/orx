@@ -135,7 +135,7 @@ jobs:
           - simulator
         include:
           - os: mac
-            runner: macos-latest
+            runner: macos-14
             setup: setup.sh
           - platform: simulator
             extra: -destination 'platform=iOS Simulator,name=iPhone 15'
@@ -237,7 +237,7 @@ jobs:
           ${{matrix.make}} config=release64 CFLAGS=-D__orxHEADLESS__
           emmake make config=${{matrix.config}}web
       - name: Create project
-        run: ./${{matrix.init}} test
+        run: ./${{matrix.init}} test +bundle +cheat +mod +movie +noisetex +scroll +sndh
       - name: Build project
         working-directory: test/build/${{matrix.os}}/gmake
         run: |

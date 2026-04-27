@@ -41,7 +41,7 @@ var orx_resource_8h =
     [ "orxResource_GetStorageCount", "group__orx_resource.html#gaffeff035b3626bff23167ef2ab7b01ef", null ],
     [ "orxResource_GetTime", "group__orx_resource.html#ga80ce68bed4694865fb8c383697c11408", null ],
     [ "orxResource_GetTotalPendingOpCount", "group__orx_resource.html#ga806289b02f8b8313bddb6a142a685a2b", null ],
-    [ "orxResource_GetType", "group__orx_resource.html#ga7bcd55bc36a9760dae50fb847dc31b20", null ],
+    [ "orxResource_GetType", "group__orx_resource.html#ga2076b2dc615c8dbb074591c50bff7abb", null ],
     [ "orxResource_GetTypeCount", "group__orx_resource.html#ga857d70bd602f3bab9f18d4dd9da27bea", null ],
     [ "orxResource_GetTypeTag", "group__orx_resource.html#gabb7dd6d3cdc8db7d725d0f0904e4fa2e", null ],
     [ "orxResource_Init", "group__orx_resource.html#ga8a058c9512ae7ebbc7cbb62956e95f34", null ],

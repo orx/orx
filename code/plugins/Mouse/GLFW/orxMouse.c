@@ -408,7 +408,7 @@ orxSTATUS orxFASTCALL orxMouse_GLFW_Init()
         else
         {
           /* Unregisters update function */
-          orxClock_Unregister(pstClock, orxMouse_GLFW_Update);
+          orxClock_Unregister(pstClock, orxMouse_GLFW_Update, orxNULL);
         }
       }
 
@@ -461,10 +461,10 @@ void orxFASTCALL orxMouse_GLFW_Exit()
     pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
     /* Unregisters update function */
-    orxClock_Unregister(pstClock, orxMouse_GLFW_Update);
+    orxClock_Unregister(pstClock, orxMouse_GLFW_Update, orxNULL);
 
     /* Unregisters clean function */
-    orxClock_Unregister(pstClock, orxMouse_GLFW_Clean);
+    orxClock_Unregister(pstClock, orxMouse_GLFW_Clean, orxNULL);
 
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_DISPLAY, orxMouse_GLFW_EventHandler);

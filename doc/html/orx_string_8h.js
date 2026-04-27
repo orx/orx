@@ -10,6 +10,7 @@ var orx_string_8h =
     [ "orxString_Compare", "group__orx_string.html#gafb8549f0953530a87577d2dbb0d09e0c", null ],
     [ "orxString_Delete", "group__orx_string.html#ga27ae7f7f06d5e7d7710f65754966da28", null ],
     [ "orxString_Duplicate", "group__orx_string.html#gac4aa5642b4c1106e8a2056515c3f5cbd", null ],
+    [ "orxString_Erase", "group__orx_string.html#ga87b27143f27b9aad3b6c200d91d01f81", null ],
     [ "orxString_Exit", "group__orx_string.html#ga5609313df76783e84f9ab2726f3014a5", null ],
     [ "orxString_ExtractBase", "group__orx_string.html#ga643f4af16e0e79abe462c2b7a1fd0fcf", null ],
     [ "orxString_GetCharacterCount", "group__orx_string.html#ga7fec95bc660e4ac981cc1485a9900054", null ],

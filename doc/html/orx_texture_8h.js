@@ -15,18 +15,18 @@ var orx_texture_8h =
       [ "orxTEXTURE_EVENT_NONE", "group__orx_texture.html#ggaf4b625f49855b667995b2ed8b9887a75abddd0d159b8c599efa26cdc1f517fd29", null ]
     ] ],
     [ "orxTexture_ClearCache", "group__orx_texture.html#ga04225363daa53b5135126794e4cf60de", null ],
-    [ "orxTexture_Create", "group__orx_texture.html#ga0234c4923d3a53bd299c36bc9a96c60b", null ],
+    [ "orxTexture_Create", "group__orx_texture.html#ga5f10f3f10240da5106d25e27d963eb18", null ],
     [ "orxTexture_Delete", "group__orx_texture.html#gab750c77800d4ce0aa301678276b41af6", null ],
     [ "orxTexture_Exit", "group__orx_texture.html#ga6693d5ec14b90cb8246d965a050d3688", null ],
-    [ "orxTexture_Get", "group__orx_texture.html#gaea1f481e5be1f090f496b0c43ad9023b", null ],
-    [ "orxTexture_GetBitmap", "group__orx_texture.html#ga7d713a02b692a3765dfd89d3f585cd8c", null ],
+    [ "orxTexture_Get", "group__orx_texture.html#ga55632c458a7f3a29ff524f61d9c3f123", null ],
+    [ "orxTexture_GetBitmap", "group__orx_texture.html#ga356a4dc715b61f10dbaf11943e9b1c97", null ],
     [ "orxTexture_GetLoadCount", "group__orx_texture.html#gaa5bb1fc43b78535e0dc48b278cf661f5", null ],
     [ "orxTexture_GetName", "group__orx_texture.html#ga78eb3dd271806f3dedc5f606fc8e231b", null ],
-    [ "orxTexture_GetScreenTexture", "group__orx_texture.html#ga825ee63bf968b878456de7471d09e267", null ],
+    [ "orxTexture_GetScreenTexture", "group__orx_texture.html#gae45ddcb29fbae1c329ba97e272bbf2e8", null ],
     [ "orxTexture_GetSize", "group__orx_texture.html#ga870a6e1969393ad770be7f6e6342bb6b", null ],
     [ "orxTexture_Init", "group__orx_texture.html#gaf2c3fbc73fb52abcf479cb8b76cc4299", null ],
     [ "orxTexture_LinkBitmap", "group__orx_texture.html#ga501b4c7fa170a0483a9b81bb775d867c", null ],
-    [ "orxTexture_Load", "group__orx_texture.html#gaf939e60bdc19924a531ddd68570b0090", null ],
+    [ "orxTexture_Load", "group__orx_texture.html#ga15df02dc2eed1befe673d878acc1f418", null ],
     [ "orxTexture_Setup", "group__orx_texture.html#ga63e6164791a9156560a7880ee2fc4941", null ],
     [ "orxTexture_UnlinkBitmap", "group__orx_texture.html#gad52d9b8f91ea1f394474e077a34fd04a", null ]
 ];

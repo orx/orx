@@ -127,6 +127,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL  orxAnimPointer_GetTargetAnimName(c
  */
 extern orxDLLAPI orxSTRUCTURE *orxFASTCALL    orxAnimPointer_GetCurrentAnimData(const orxANIMPOINTER *_pstAnimPointer);
 
+/** AnimPointer active time get accessor
+ * @param[in]   _pstAnimPointer               Concerned AnimPointer
+ * @return      Active time
+ */
+extern orxDLLAPI orxFLOAT orxFASTCALL         orxAnimPointer_GetActiveTime(const orxANIMPOINTER *_pstAnimPointer);
+
 /** AnimPointer time get accessor
  * @param[in]   _pstAnimPointer               Concerned AnimPointer
  * @return      Current time

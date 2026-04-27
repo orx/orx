@@ -1,7 +1,7 @@
 var structorx_s_t_r_u_c_t_u_r_e =
 [
     [ "stLinkListNode", "structorx_s_t_r_u_c_t_u_r_e.html#aba362d7edbcd10cc38cf779ffc011d40", null ],
-    [ "stStorage", "structorx_s_t_r_u_c_t_u_r_e.html#a62bfcd32b0e814be283e8a7e1ee9be96", null ],
+    [ "stStorage", "structorx_s_t_r_u_c_t_u_r_e.html#ab18e5c65921afbd3dfae16dda1768653", null ],
     [ "stTreeNode", "structorx_s_t_r_u_c_t_u_r_e.html#a58dd3768243ac8325fa4a267512f4317", null ],
     [ "u32Flags", "structorx_s_t_r_u_c_t_u_r_e.html#ae8d2ddfc9af63e37ccf5b6b11f3501ef", null ],
     [ "u32RefCount", "structorx_s_t_r_u_c_t_u_r_e.html#acf225787d2879ff880c6adae8c622a11", null ],

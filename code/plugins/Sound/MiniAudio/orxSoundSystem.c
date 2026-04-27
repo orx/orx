@@ -943,7 +943,7 @@ static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void
           orxMEMORY_BARRIER();
 
           /* Asks for its opening on main thread */
-          orxThread_RunTask(orxNULL, orxSoundSystem_MiniAudio_OpenRecordingFileTask, orxNULL, orxNULL);
+          orxThread_RunTaskLinear(orxNULL, orxSoundSystem_MiniAudio_OpenRecordingFileTask, orxNULL, orxNULL);
 
           /* Waits for outcome */
           while(sstSoundSystem.hRecordingResource == orxHANDLE_UNDEFINED)
@@ -977,7 +977,7 @@ static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void
         orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
 
         /* Postpones recording stop on main thread */
-        orxThread_RunTask(orxNULL, orxSoundSystem_MiniAudio_StopRecordingTask, orxNULL, orxNULL);
+        orxThread_RunTaskLinear(orxNULL, orxSoundSystem_MiniAudio_StopRecordingTask, orxNULL, orxNULL);
       }
 
       /* Profiles */
@@ -2312,7 +2312,7 @@ static void orxSoundSystem_MiniAudio_DeleteFilter(orxSOUNDSYSTEM_FILTER *_pstFil
   }
 
   /* Deletes it */
-  orxThread_RunTask(orxNULL, &orxSoundSystem_MiniAudio_FreeFilter, &orxSoundSystem_MiniAudio_FreeFilter, _pstFilter);
+  orxThread_RunTaskLinear(orxNULL, &orxSoundSystem_MiniAudio_FreeFilter, &orxSoundSystem_MiniAudio_FreeFilter, _pstFilter);
 
   /* Done! */
   return;
@@ -3504,7 +3504,7 @@ void orxFASTCALL orxSoundSystem_MiniAudio_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxSoundSystem_MiniAudio_EventHandler);
 
     /* Unregisters update callback */
-    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxSoundSystem_MiniAudio_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxSoundSystem_MiniAudio_Update, orxNULL);
 
     /* Stops any recording */
     orxSoundSystem_StopRecording();
@@ -3646,7 +3646,7 @@ orxSOUNDSYSTEM_SAMPLE *orxFASTCALL orxSoundSystem_MiniAudio_LoadSample(const orx
       pstTaskParam->zLocation = zResourceLocation;
 
       /* Runs load sample task */
-      orxThread_RunTask(&orxSoundSystem_MiniAudio_LoadSampleTask, orxNULL, orxNULL, pstTaskParam);
+      orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_LoadSampleTask, orxNULL, orxNULL, pstTaskParam);
     }
     else
     {
@@ -3682,7 +3682,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_DeleteSample(orxSOUNDSYSTEM_SAMPL
   orxASSERT(_pstSample != orxNULL);
 
   /* Runs delete sample task */
-  eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_DeleteSampleTask, &orxSoundSystem_MiniAudio_FreeSample, &orxSoundSystem_MiniAudio_FreeSample, _pstSample);
+  eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_DeleteSampleTask, &orxSoundSystem_MiniAudio_FreeSample, &orxSoundSystem_MiniAudio_FreeSample, _pstSample);
 
   /* Done! */
   return eResult;
@@ -3832,7 +3832,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_CreateFromSample(orxH
       else
       {
         /* Runs link sample task */
-        orxThread_RunTask(&orxSoundSystem_MiniAudio_LinkSampleTask, orxNULL, orxNULL, pstResult);
+        orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_LinkSampleTask, orxNULL, orxNULL, pstResult);
       }
     }
     else
@@ -4139,7 +4139,7 @@ orxSOUNDSYSTEM_SOUND *orxFASTCALL orxSoundSystem_MiniAudio_LoadStream(orxHANDLE 
       pstTaskParam->zLocation = zResourceLocation;
 
       /* Runs load stream task */
-      orxThread_RunTask(&orxSoundSystem_MiniAudio_LoadStreamTask, orxNULL, orxNULL, pstTaskParam);
+      orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_LoadStreamTask, orxNULL, orxNULL, pstTaskParam);
     }
     else
     {
@@ -4175,7 +4175,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Delete(orxSOUNDSYSTEM_SOUND *_pst
   orxASSERT(_pstSound != orxNULL);
 
   /* Runs delete task */
-  eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_DeleteTask, &orxSoundSystem_MiniAudio_FreeSound, &orxSoundSystem_MiniAudio_FreeSound, _pstSound);
+  eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_DeleteTask, &orxSoundSystem_MiniAudio_FreeSound, &orxSoundSystem_MiniAudio_FreeSound, _pstSound);
 
   /* Done! */
   return eResult;
@@ -4214,7 +4214,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Play(orxSOUNDSYSTEM_SOUND *_pstSo
   else
   {
     /* Runs play task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_PlayTask, orxNULL, orxNULL, _pstSound);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_PlayTask, orxNULL, orxNULL, _pstSound);
   }
 
   /* Done! */
@@ -4238,7 +4238,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Pause(orxSOUNDSYSTEM_SOUND *_pstS
   else
   {
     /* Runs pause task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_PauseTask, orxNULL, orxNULL, _pstSound);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_PauseTask, orxNULL, orxNULL, _pstSound);
   }
 
   /* Done! */
@@ -4288,7 +4288,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Stop(orxSOUNDSYSTEM_SOUND *_pstSo
   else
   {
     /* Runs stop task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_StopTask, orxNULL, orxNULL, _pstSound);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_StopTask, orxNULL, orxNULL, _pstSound);
   }
 
   /* Done! */
@@ -4325,7 +4325,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_AddFilter(orxSOUNDSYSTEM_SOUND *_
     orxMemory_Copy(&(pstFilter->stData), _pstFilterData, sizeof(orxSOUND_FILTER_DATA));
 
     /* Runs add filter task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_AddFilterTask, orxNULL, orxNULL, pstTaskParam);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_AddFilterTask, orxNULL, orxNULL, pstTaskParam);
   }
 
   /* Done! */
@@ -4352,7 +4352,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveLastFilter(orxSOUNDSYSTEM_S
   }
 
   /* Runs remove last filter task */
-  eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_RemoveLastFilterTask, orxNULL, orxNULL, _pstSound);
+  eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_RemoveLastFilterTask, orxNULL, orxNULL, _pstSound);
 
   /* Done! */
   return eResult;
@@ -4385,7 +4385,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_RemoveAllFilters(orxSOUNDSYSTEM_S
     }
 
     /* Runs remove all filters task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_RemoveAllFiltersTask, orxNULL, orxNULL, _pstSound);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_RemoveAllFiltersTask, orxNULL, orxNULL, _pstSound);
   }
 
   /* Done! */
@@ -4535,7 +4535,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetBus(orxSOUNDSYSTEM_SOUND *_pst
       pstTaskParam->pstBus  = (orxSOUNDSYSTEM_BUS *)_hBus;
 
       /* Runs set bus task */
-      eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetBusTask, orxNULL, orxNULL, pstTaskParam);
+      eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_SetBusTask, orxNULL, orxNULL, pstTaskParam);
     }
   }
 
@@ -5029,7 +5029,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetVolume(orxSOUNDSYSTEM_SOUND *_
     pstTaskParam->fVolume = orxCLAMP(_fVolume, orxFLOAT_0, orxFLOAT_1);
 
     /* Runs set volume task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetVolumeTask, orxNULL, orxNULL, pstTaskParam);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_SetVolumeTask, orxNULL, orxNULL, pstTaskParam);
   }
 
   /* Done! */
@@ -5059,7 +5059,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPitch(orxSOUNDSYSTEM_SOUND *_p
     pstTaskParam->fPitch  = _fPitch;
 
     /* Runs set pitch task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetPitchTask, orxNULL, orxNULL, pstTaskParam);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_SetPitchTask, orxNULL, orxNULL, pstTaskParam);
   }
 
   /* Done! */
@@ -5101,7 +5101,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetTime(orxSOUNDSYSTEM_SOUND *_ps
     pstTaskParam->fTime = _fTime;
 
     /* Runs set time task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetTimeTask, orxNULL, orxNULL, pstTaskParam);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_SetTimeTask, orxNULL, orxNULL, pstTaskParam);
   }
 
   /* Done! */
@@ -5132,7 +5132,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPosition(orxSOUNDSYSTEM_SOUND 
     orxVector_Copy(&(pstTaskParam->vPosition), _pvPosition);
 
     /* Runs set position task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetPositionTask, orxNULL, orxNULL, pstTaskParam);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_SetPositionTask, orxNULL, orxNULL, pstTaskParam);
   }
 
   /* Done! */
@@ -5194,7 +5194,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetSpatialization(orxSOUNDSYSTEM_
       pstTaskParam->stSpatialization.fRollOff     = _fRollOff;
 
       /* Runs set spatialization task */
-      eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetSpatializationTask, orxNULL, orxNULL, pstTaskParam);
+      eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_SetSpatializationTask, orxNULL, orxNULL, pstTaskParam);
     }
   }
   else
@@ -5232,7 +5232,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_SetPanning(orxSOUNDSYSTEM_SOUND *
     pstTaskParam->stPanning.bMix      = _bMix;
 
     /* Runs set panning task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_SetPanningTask, orxNULL, orxNULL, pstTaskParam);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_SetPanningTask, orxNULL, orxNULL, pstTaskParam);
   }
 
   /* Done! */
@@ -5262,7 +5262,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Loop(orxSOUNDSYSTEM_SOUND *_pstSo
     pstTaskParam->bLoop =_bLoop;
 
     /* Runs loop task */
-    eResult = orxThread_RunTask(&orxSoundSystem_MiniAudio_LoopTask, orxNULL, orxNULL, pstTaskParam);
+    eResult = orxThread_RunTaskLinear(&orxSoundSystem_MiniAudio_LoopTask, orxNULL, orxNULL, pstTaskParam);
   }
 
   /* Done! */

@@ -1482,7 +1482,7 @@ static orxINLINE orxS32 orxCDECL                          orxString_NPrint(orxST
   va_end(stArgs);
 
   /* Overflow? */
-  if(s32Result <= 0)
+  if(s32Result < 0)
   {
     /* Updates result */
     s32Result = (orxS32)_u32CharNumber - 1;
@@ -1595,6 +1595,12 @@ extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_GetFromID(or
  * @return      Stored orxSTRING
  */
 extern orxDLLAPI const orxSTRING orxFASTCALL              orxString_Store(const orxSTRING _zString);
+
+/** Erases an internal string: this is intended for orx's internal use, *do not* call unless you know what you're doing
+ * @param[in]   _stID           Concerned string ID
+ * @return orxSTATUS_SUCCESS / orxSTATUS_FAILURE
+ */
+extern orxDLLAPI orxSTATUS orxFASTCALL                    orxString_Erase(orxSTRINGID _stID);
 
 
 #ifdef __orxMSVC__

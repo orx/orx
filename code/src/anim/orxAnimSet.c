@@ -33,6 +33,7 @@
 #include "anim/orxAnimSet.h"
 
 #include "core/orxConfig.h"
+#include "core/orxLocale.h"
 #include "debug/orxDebug.h"
 #include "debug/orxProfiler.h"
 #include "display/orxGraphic.h"
@@ -138,6 +139,7 @@
 #define orxANIMSET_KZ_CONFIG_KEY_EVENT                "KeyEvent"
 #define orxANIMSET_KZ_CONFIG_DIRECTION                "Direction"
 
+#define orxANIMSET_KC_LOCALE_MARKER                   '$'
 #define orxANIMSET_KZ_IMMEDIATE                       "immediate"
 #define orxANIMSET_KZ_CLEAR_TARGET                    "cleartarget"
 #define orxANIMSET_KC_IMMEDIATE                       '.'
@@ -250,8 +252,52 @@ static orxANIMSET_STATIC sstAnimSet;
 
 /** Semi-private, internal-use only forward declarations
  */
-orxSTATUS orxFASTCALL orxAnim_SetName(orxANIM *_pstAnim, const orxSTRING _zName);
-orxANIM *orxFASTCALL  orxAnim_CreateFromConfig(const orxSTRING _zConfigID);
+orxSTATUS orxFASTCALL   orxAnim_SetName(orxANIM *_pstAnim, const orxSTRING _zName);
+orxANIM *orxFASTCALL    orxAnim_CreateFromConfig(const orxSTRING _zConfigID);
+orxVECTOR *orxFASTCALL  orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
+
+/* Gets vector using locale if defined
+ * @param[in]   _zKey                         Config key
+ * @param[in]   _zLocale                      Locale to use
+ * @param[out]  _pvVector                     Storage for vector value
+ * @return The value if valid, orxNULL otherwise
+ */
+static orxINLINE orxVECTOR *orxAnimSet_GetLocaleVector(const orxSTRING _zKey, const orxSTRING _zLocale, orxVECTOR *_pvVector)
+{
+  const orxSTRING zValue;
+  orxVECTOR      *pvResult = orxNULL;
+
+  /* Gets value */
+  zValue = orxConfig_GetString(_zKey);
+
+  /* Valid? */
+  if(*zValue != orxCHAR_NULL)
+  {
+    /* Begins with locale marker? */
+    if(*zValue == orxANIMSET_KC_LOCALE_MARKER)
+    {
+      /* Updates value */
+      zValue = zValue + 1;
+
+      /* Using locale? */
+      if(*zValue != orxANIMSET_KC_LOCALE_MARKER)
+      {
+        /* Gets its locale value */
+        zValue = orxLocale_GetString(zValue, _zLocale);
+      }
+    }
+
+    /* Has valid value? */
+    if(orxConfig_ToVector(zValue, orxCOLORSPACE_NONE, _pvVector) != orxNULL)
+    {
+      /* Updates result */
+      pvResult = _pvVector;
+    }
+  }
+
+  /* Done! */
+  return pvResult;
+}
 
 /** Link table set flag test accessor
  * @param[in]   _pstLinkTable                 Concerned LinkTable
@@ -280,6 +326,7 @@ static orxINLINE void orxAnimSet_SetLinkTableFlag(orxANIMSET_LINK_TABLE *_pstLin
   _pstLinkTable->u32Flags &= ~_u32RemoveFlags;
   _pstLinkTable->u32Flags |= _u32AddFlags;
 
+  /* Done! */
   return;
 }
 
@@ -535,6 +582,7 @@ static orxINLINE void orxAnimSet_SetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, orxU
   /* Sets info */
   _pstInfo->au8LinkInfo[u32Index] |= u8Mask;
 
+  /* Done! */
   return;
 }
 
@@ -562,6 +610,7 @@ static orxINLINE void orxAnimSet_ResetLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, or
   /* Resets info */
   _pstInfo->au8LinkInfo[u32Index] &= ~u8Mask;
 
+  /* Done! */
   return;
 }
 
@@ -586,6 +635,7 @@ static orxINLINE void orxAnimSet_CleanLinkInfo(orxLINK_UPDATE_INFO *_pstInfo, or
     _pstInfo->au8LinkInfo[i] = 0x00;
   }
 
+  /* Done! */
   return;
 }
 
@@ -856,6 +906,7 @@ static orxINLINE void orxAnimSet_DeleteLinkUpdateInfo(orxLINK_UPDATE_INFO *_pstL
   orxMemory_Free(_pstLinkUpdateInfo->au8LinkInfo);
   orxMemory_Free(_pstLinkUpdateInfo);
 
+  /* Done! */
   return;
 }
 
@@ -896,6 +947,7 @@ static void orxFASTCALL orxAnimSet_CleanLinkTable(orxANIMSET_LINK_TABLE *_pstLin
   /* Updates flags */
   orxAnimSet_SetLinkTableFlag(_pstLinkTable, orxANIMSET_KU32_LINK_TABLE_FLAG_DIRTY, orxANIMSET_KU32_LINK_TABLE_FLAG_NONE);
 
+  /* Done! */
   return;
 }
 
@@ -1004,6 +1056,7 @@ static orxINLINE void orxAnimSet_CopyLinkTable(orxANIMSET_LINK_TABLE *_pstDstLin
   orxMemory_Copy(_pstDstLinkTable->au32LinkArray, _pstSrcLinkTable->au32LinkArray, (orxU32)(_pstSrcLinkTable->u16TableSize) * (orxU32)(_pstSrcLinkTable->u16TableSize) * sizeof(orxU32));
   orxMemory_Copy(_pstDstLinkTable->au8LoopArray, _pstSrcLinkTable->au8LoopArray, (orxU32)(_pstSrcLinkTable->u16TableSize) * (orxU32)(_pstSrcLinkTable->u16TableSize) * sizeof(orxU8));
 
+  /* Done! */
   return;
 }
 
@@ -1020,6 +1073,7 @@ static orxINLINE void orxAnimSet_SetAnimStorageSize(orxANIMSET *_pstAnimSet, orx
   /* Updates storage size */
   orxStructure_SetFlags(_pstAnimSet, _u32Size << orxANIMSET_KU32_ID_SHIFT_SIZE, orxANIMSET_KU32_MASK_SIZE);
 
+  /* Done! */
   return;
 }
 
@@ -1035,6 +1089,7 @@ static orxINLINE void orxAnimSet_SetAnimCount(orxANIMSET *_pstAnimSet, orxU32 _u
   /* Updates count */
   orxStructure_SetFlags(_pstAnimSet, _u32AnimCount << orxANIMSET_KU32_ID_SHIFT_COUNT, orxANIMSET_KU32_MASK_COUNT);
 
+  /* Done! */
   return;
 }
 
@@ -1054,6 +1109,7 @@ static orxINLINE void orxAnimSet_IncreaseAnimCount(orxANIMSET *_pstAnimSet)
   /* Updates anim count*/
   orxAnimSet_SetAnimCount(_pstAnimSet, u32AnimCount + 1);
 
+  /* Done! */
   return;
 }
 
@@ -1073,6 +1129,7 @@ static orxINLINE void orxAnimSet_DecreaseAnimCount(orxANIMSET *_pstAnimSet)
   /* Updates anim count*/
   orxAnimSet_SetAnimCount(_pstAnimSet, u32AnimCount - 1);
 
+  /* Done! */
   return;
 }
 
@@ -1095,6 +1152,7 @@ static orxINLINE void orxAnimSet_DeleteAll()
     pstAnimSet = orxANIMSET(orxStructure_GetFirst(orxSTRUCTURE_ID_ANIMSET));
   }
 
+  /* Done! */
   return;
 }
 
@@ -1663,6 +1721,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       const orxSTRING zNewFrameTopParent = orxNULL;
       const orxSTRING zNewAnimParent;
       const orxSTRING zCurrentSection;
+      const orxSTRING zAnimLocale;
       orxU32          u32Digits;
       orxBOOL         bContinue = orxTRUE, bIsText = orxFALSE, bHasFrameSize = orxFALSE;
       orxDIRECTION    eRowDirection = orxDIRECTION_RIGHT, eColumnDirection = orxDIRECTION_DOWN;
@@ -1726,6 +1785,17 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
       /* From config? */
       if(bFromConfig != orxFALSE)
       {
+        /* Gets anim's locale group */
+        zAnimLocale = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP);
+        if(*zAnimLocale != orxCHAR_NULL)
+        {
+          zAnimLocale = orxString_Store(zAnimLocale);
+        }
+        else
+        {
+          zAnimLocale = orxTEXTURE_KZ_LOCALE_GROUP;
+        }
+
         /* Gets frame size */
         orxConfig_GetVector(orxANIMSET_KZ_CONFIG_FRAME_SIZE, &vFrameSize);
         vFrameSize.fZ = orxFLOAT_0;
@@ -1734,7 +1804,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         bHasFrameSize = (orxVector_IsNull(&vFrameSize) == orxFALSE) ? orxTRUE : orxFALSE;
 
         /* Gets texture origin */
-        orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vTextureOrigin);
+        orxAnimSet_GetLocaleVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, zAnimLocale, &vTextureOrigin);
 
         /* Has direction? */
         if(orxConfig_HasValue(orxANIMSET_KZ_CONFIG_DIRECTION) != orxFALSE)
@@ -1808,7 +1878,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
         }
 
         /* Gets texture size */
-        if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vTextureSize) == orxNULL)
+        if(orxAnimSet_GetLocaleVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, zAnimLocale, &vTextureSize) == orxNULL)
         {
           orxGRAPHIC *pstGraphic;
           orxBOOL     bDebugLevelBackup;
@@ -1921,7 +1991,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               fRowBoundary      = -vTextureSize.fX;
               fRowSign          = -orxFLOAT_1;
 
-              /* Fall through */
+              /* Falls through */
             }
 
             case orxDIRECTION_RIGHT:
@@ -1944,7 +2014,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
               fRowBoundary      = -vTextureSize.fY;
               fRowSign          = -orxFLOAT_1;
 
-              /* Fall through */
+              /* Falls through */
             }
 
             case orxDIRECTION_DOWN:
@@ -2103,10 +2173,22 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
           /* From config? */
           if(bFromConfig != orxFALSE)
           {
-            orxVECTOR vCurrentOrigin;
+            orxVECTOR       vCurrentOrigin;
+            const orxSTRING zLocale;
+
+            /* Gets its locale group */
+            zLocale = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP);
+            if(*zLocale != orxCHAR_NULL)
+            {
+              zLocale = orxString_Store(zLocale);
+            }
+            else
+            {
+              zLocale = zAnimLocale;
+            }
 
             /* No local size? */
-            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vCurrentSize) == orxNULL)
+            if(orxAnimSet_GetLocaleVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, zLocale, &vCurrentSize) == orxNULL)
             {
               /* No frame size and not a text? */
               if((orxVector_IsNull(&vFrameSize) != orxFALSE) && (bIsText == orxFALSE))
@@ -2165,7 +2247,7 @@ static orxANIM *orxFASTCALL orxAnimSet_CreateSimpleAnimFromConfig(const orxSTRIN
             }
 
             /* Has local origin? */
-            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vCurrentOrigin) != orxNULL)
+            if(orxAnimSet_GetLocaleVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, zLocale, &vCurrentOrigin) != orxNULL)
             {
               /* Overrides computed one with it */
               orxVector_Copy(&vFrameOrigin, &vCurrentOrigin);
@@ -2853,6 +2935,7 @@ void orxFASTCALL orxAnimSet_Setup()
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_BANK);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_STRING);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_CONFIG);
+  orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_LOCALE);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_PROFILER);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_ANIM);
   orxModule_AddDependency(orxMODULE_ID_ANIMSET, orxMODULE_ID_GRAPHIC);
@@ -2963,6 +3046,7 @@ void orxFASTCALL orxAnimSet_Exit()
     sstAnimSet.u32Flags &= ~orxANIMSET_KU32_STATIC_FLAG_READY;
   }
 
+  /* Done! */
   return;
 }
 
@@ -3218,6 +3302,7 @@ void orxFASTCALL orxAnimSet_AddReference(orxANIMSET *_pstAnimSet)
   /* Updates reference count */
   orxStructure_IncreaseCount(_pstAnimSet);
 
+  /* Done! */
   return;
 }
 
@@ -3242,6 +3327,7 @@ void orxFASTCALL orxAnimSet_RemoveReference(orxANIMSET *_pstAnimSet)
     orxStructure_SetFlags(_pstAnimSet, orxANIMSET_KU32_FLAG_NONE, orxANIMSET_KU32_FLAG_REFERENCE_LOCK);
   }
 
+  /* Done! */
   return;
 }
 
@@ -3293,6 +3379,7 @@ void orxFASTCALL orxAnimSet_DeleteLinkTable(orxANIMSET_LINK_TABLE *_pstLinkTable
   orxMemory_Free(_pstLinkTable->au8LoopArray);
   orxMemory_Free(_pstLinkTable);
 
+  /* Done! */
   return;
 }
 

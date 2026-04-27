@@ -1,5 +1,9 @@
 var group__orx_module =
 [
+    [ "orxMODULE_EXIT_FUNCTION", "group__orx_module.html#gae24860735e02f93af8ec0c6b0dd3ac13", null ],
+    [ "orxMODULE_INIT_FUNCTION", "group__orx_module.html#gab53ba0ce19262e2b638c89e350960e2c", null ],
+    [ "orxMODULE_RUN_FUNCTION", "group__orx_module.html#ga144c4db15ff1aaa4b044f9b9b4565dc5", null ],
+    [ "orxMODULE_SETUP_FUNCTION", "group__orx_module.html#gadaf8539d8b48364667a36c03c7749ece", null ],
     [ "orxMODULE_ID", "group__orx_module.html#gada33eee351097708b92f32d0c5972708", [
       [ "orxMODULE_ID_ANIM", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a3473f5271be73f0f0ab63b7f3725cec6", null ],
       [ "orxMODULE_ID_ANIMPOINTER", "group__orx_module.html#ggada33eee351097708b92f32d0c5972708a2ff0420760d210d87f55e9ed9dd39253", null ],
@@ -60,7 +64,5 @@ var group__orx_module =
     [ "orxModule_GetName", "group__orx_module.html#ga7ecd0ed35dda6cc6fb31f84b73d5fe25", null ],
     [ "orxModule_Init", "group__orx_module.html#gae6568b5f2c3ed7f4eb64ee81f76f9350", null ],
     [ "orxModule_IsInitialized", "group__orx_module.html#gadf41899d90b19ef9fc33dd7bc0c85296", null ],
-    [ "orxModule_Register", "group__orx_module.html#ga50af0a46cb9f3c0ca76f0042b5c4a2ec", null ],
-    [ "orxSTATUS", "group__orx_module.html#gaf44141f0bc45f319187952b4629b862c", null ],
-    [ "void", "group__orx_module.html#ga83fece8538c577b8a4a0801ee4573a86", null ]
+    [ "orxModule_Register", "group__orx_module.html#ga50af0a46cb9f3c0ca76f0042b5c4a2ec", null ]
 ];

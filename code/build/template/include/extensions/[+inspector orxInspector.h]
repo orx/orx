@@ -1022,7 +1022,7 @@ void orxInspector_Exit()
     orxEvent_RemoveHandler(orxEVENT_TYPE_SHADER, orxInspector_EventHandler);
 
     // Unregister clock callback
-    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxInspector_Update);
+    orxClock_Unregister(orxClock_Get(orxCLOCK_KZ_CORE), orxInspector_Update, orxNULL);
 
     // Clean runtime config section
     orxConfig_ClearSection(orxINSPECTOR_KZ_CONFIG_RUNTIME);

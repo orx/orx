@@ -553,10 +553,10 @@ void ScrollObject::SetFlip(orxBOOL _bFlipX, orxBOOL _bFlipY, orxBOOL _bRecursive
 const orxSTRING ScrollObject::GetText() const
 {
   const orxSTRING zResult;
-  
+
   // Updates result
   zResult = orxObject_GetTextString(mpstObject);
-  
+
   // Done!
   return zResult;
 }
@@ -654,13 +654,13 @@ const orxSTRING ScrollObject::GetShader() const
 {
   const orxSHADER  *pstShader;
   const orxSTRING   zResult;
-  
+
   // Gets shader
   pstShader = orxObject_GetShader(mpstObject);
-  
+
   // Updates result
   zResult = (pstShader != orxNULL) ? orxShader_GetName(pstShader) : orxSTRING_EMPTY;
-  
+
   // Done!
   return zResult;
 }
@@ -984,6 +984,9 @@ void ScrollObject::SetOrxObject(orxOBJECT *_pstObject)
 
     // Clears its instance section
     orxConfig_ClearSection(macInstanceName);
+
+    // Deletes its reference
+    orxString_Erase(orxString_Hash(macInstanceName));
   }
 
   // Stores it
@@ -995,7 +998,7 @@ void ScrollObject::SetOrxObject(orxOBJECT *_pstObject)
     // Stores its names
     mzName = orxObject_GetName(_pstObject);
     orxString_NPrint(macInstanceName, sizeof(macInstanceName), "0x%016llX", orxStructure_GetGUID(_pstObject));
-    
+
     // Creates its instance section
     orxConfig_SetParent(macInstanceName, mzName);
   }
@@ -1009,28 +1012,10 @@ void ScrollObject::SetOrxObject(orxOBJECT *_pstObject)
 
 void ScrollObject::OnCreate()
 {
-#ifdef __SCROLL_DEBUG__
-  // Is a derived class?
-  if(typeid(ScrollObject) != typeid(*this))
-  {
-    // Has to override this method in the derived class!
-    orxLOG("[ERROR] You need to override the ScrollObject::OnCreate() method for derived class %s!", typeid(*this).name());
-    orxBREAK();
-  }
-#endif // __SCROLL_DEBUG__
 }
 
 void ScrollObject::OnDelete()
 {
-#ifdef __SCROLL_DEBUG__
-  // Is a derived class?
-  if(typeid(ScrollObject) != typeid(*this))
-  {
-    // Has to override this method in the derived class!
-    orxLOG("[ERROR] You need to override the ScrollObject::OnDelete() method for derived class %s!", typeid(*this).name());
-    orxBREAK();
-  }
-#endif // __SCROLL_DEBUG__
 }
 
 void ScrollObject::Update(const orxCLOCK_INFO &_rstInfo)

@@ -55,6 +55,9 @@ void orxFASTCALL orxRender_CommandGetWorldPosition(orxU32 _u32ArgNumber, const o
     pstViewport = orxViewport_Get(_astArgList[1].zValue);
   }
 
+  /* Clears output */
+  orxVector_SetAll(&(_pstResult->vValue), orxFLOAT_0);
+
   /* Gets world position */
   orxRender_GetWorldPosition(&(_astArgList[0].vValue), pstViewport, &(_pstResult->vValue));
 

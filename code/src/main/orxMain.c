@@ -79,7 +79,7 @@ static orxMAIN_STATIC sstMain;
 __declspec(dllexport) unsigned long NvOptimusEnablement        = 1;
 __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 
-#endif // __orxMSVC__
+#endif /* __orxMSVC__ */
 
 
 /***************************************************************************

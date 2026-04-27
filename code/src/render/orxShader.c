@@ -419,16 +419,16 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
         if(s32SeparatorIndex > 0)
         {
           orxCHAR acBuffer[512];
-          
+
           /* Gets its config section */
           orxString_NPrint(acBuffer, sizeof(acBuffer), "%.*s", s32SeparatorIndex, zCode);
-          
+
           /* Pushes it */
           orxConfig_PushSection(acBuffer);
-          
+
           /* Gets its code */
           zCode = orxConfig_GetString(zCode + s32SeparatorIndex + 1);
-          
+
           /* Pops config section */
           orxConfig_PopSection();
         }
@@ -437,7 +437,7 @@ static orxSTATUS orxFASTCALL orxShader_ProcessConfigData(orxSHADER *_pstShader)
           /* Gets its code */
           zCode = orxConfig_GetString((s32SeparatorIndex == 0) ? zCode + 1 : zCode);
         }
-        
+
         /* Gets it */
         azCodeList[i] = orxString_Duplicate(zCode);
       }

@@ -258,6 +258,7 @@ typedef struct __orxCOLOR_t
 #define orxDISPLAY_KZ_SHADER_SUFFIX_LEFT                    "_left"
 #define orxDISPLAY_KZ_SHADER_SUFFIX_BOTTOM                  "_bottom"
 #define orxDISPLAY_KZ_SHADER_SUFFIX_RIGHT                   "_right"
+#define orxDISPLAY_KZ_SHADER_SUFFIX_SIZE                    "_size"
 
 
 /** Shader extension actions

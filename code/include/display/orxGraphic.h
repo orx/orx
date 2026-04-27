@@ -99,6 +99,7 @@
 #define orxGRAPHIC_KZ_CONFIG_BLEND_MODE       "BlendMode"
 #define orxGRAPHIC_KZ_CONFIG_STASIS           "Stasis"
 #define orxGRAPHIC_KZ_CONFIG_KEEP_IN_CACHE    "KeepInCache"
+#define orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP     "Locale"
 
 
 /** Internal Graphic structure
@@ -347,7 +348,7 @@ extern orxDLLAPI orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const
 
 /** Gets graphic orientation
  * @param[in]   _pstGraphic     Concerned graphic
- * @return Blend mode (alpha, multiply, add or none)
+ * @return Orientation (up, lest, down or right)
  */
 extern orxDLLAPI orxDISPLAY_ORIENTATION orxFASTCALL orxGraphic_GetOrientation(const orxGRAPHIC *_pstGraphic);
 

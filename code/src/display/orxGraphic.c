@@ -106,19 +106,22 @@
 struct __orxGRAPHIC_t
 {
   orxSTRUCTURE            stStructure;            /**< Public structure, first structure member : 32 */
-  orxSTRUCTURE           *pstData;                /**< Data structure : 20 */
-  orxSTRINGID             stLocaleNameID;         /**< Locale name ID : 28 */
-  orxVECTOR               vPivot;                 /**< Pivot : 40 */
-  orxCOLOR                stColor;                /**< Color : 56 */
-  orxFLOAT                fTop;                   /**< Top coordinate : 60 */
-  orxFLOAT                fLeft;                  /**< Left coordinate : 64 */
-  orxFLOAT                fWidth;                 /**< Width : 68 */
-  orxFLOAT                fHeight;                /**< Height : 72 */
-  orxFLOAT                fRepeatX;               /**< X-axis repeat count : 76 */
-  orxFLOAT                fRepeatY;               /**< Y-axis repeat count : 80 */
-  orxDISPLAY_ORIENTATION  eOrientation;           /**< Orientation : 84 */
-  const orxSTRING         zReference;             /**< Reference : 88 */
-  const orxSTRING         zDataReference;         /**< Data reference : 92 */
+  orxSTRUCTURE           *pstData;                /**< Data structure : 36 */
+  const orxSTRING         zLocaleName;            /**< Locale name : 40 */
+  const orxSTRING         zLocaleGroup;           /**< Locale group : 44 */
+  const orxSTRING         zReference;             /**< Reference : 48 */
+  const orxSTRING         zDataReference;         /**< Data reference : 52 */
+  const orxSTRING         zLocaleOrigin;          /**< Locale origin : 56 */
+  const orxSTRING         zLocaleSize;            /**< Locale size : 60 */
+  orxVECTOR               vPivot;                 /**< Pivot : 72 */
+  orxCOLOR                stColor;                /**< Color : 88 */
+  orxFLOAT                fTop;                   /**< Top coordinate : 92 */
+  orxFLOAT                fLeft;                  /**< Left coordinate : 96 */
+  orxFLOAT                fWidth;                 /**< Width : 100 */
+  orxFLOAT                fHeight;                /**< Height : 104 */
+  orxFLOAT                fRepeatX;               /**< X-axis repeat count : 108 */
+  orxFLOAT                fRepeatY;               /**< Y-axis repeat count : 112 */
+  orxDISPLAY_ORIENTATION  eOrientation;           /**< Orientation : 116 */
 };
 
 /** Static structure
@@ -142,6 +145,10 @@ static orxGRAPHIC_STATIC sstGraphic;
 /***************************************************************************
  * Private functions                                                       *
  ***************************************************************************/
+
+/** Semi-private, internal-use only forward declarations
+ */
+orxVECTOR *orxFASTCALL orxConfig_ToVector(const orxSTRING _zValue, orxCOLORSPACE _eColorSpace, orxVECTOR *_pvVector);
 
 /** Sets graphic data
  * @param[in]   _pstGraphic     Graphic concerned
@@ -268,7 +275,8 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
   if(_pstEvent->eType == orxEVENT_TYPE_LOCALE)
   {
     orxLOCALE_EVENT_PAYLOAD  *pstPayload;
-    orxBOOL                   bTextureGroup, bTextGroup;
+    orxGRAPHIC               *pstGraphic;
+    orxBOOL                   bTextGroup;
 
     /* Checks */
     orxASSERT(_pstEvent->eID == orxLOCALE_EVENT_SELECT_LANGUAGE);
@@ -277,36 +285,32 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
     pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
     /* Updates status */
-    bTextureGroup = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXTURE_KZ_LOCALE_GROUP) == 0)) ? orxTRUE : orxFALSE;
-    bTextGroup    = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXT_KZ_LOCALE_GROUP) == 0))    ? orxTRUE : orxFALSE;
+    bTextGroup = ((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxTEXT_KZ_LOCALE_GROUP) == 0))    ? orxTRUE : orxFALSE;
 
-    /* Is it texture or text group? */
-    if((bTextureGroup != orxFALSE) || (bTextGroup != orxFALSE))
+    /* For all graphics */
+    for(pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
+        pstGraphic != orxNULL;
+        pstGraphic = orxGRAPHIC(orxStructure_GetNext(pstGraphic)))
     {
-      orxGRAPHIC *pstGraphic;
-
-      /* For all graphics */
-      for(pstGraphic = orxGRAPHIC(orxStructure_GetFirst(orxSTRUCTURE_ID_GRAPHIC));
-          pstGraphic != orxNULL;
-          pstGraphic = orxGRAPHIC(orxStructure_GetNext(pstGraphic)))
+      /* Text group and text data? */
+      if((bTextGroup != orxFALSE) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)))
       {
-        /* Text group and text data? */
-        if((bTextGroup != orxFALSE) && (orxStructure_TestFlags(pstGraphic, orxGRAPHIC_KU32_FLAG_TEXT)))
-        {
-          /* Updates graphic's size */
-          orxGraphic_UpdateSize(pstGraphic);
-        }
+        /* Updates graphic's size */
+        orxGraphic_UpdateSize(pstGraphic);
+      }
+      else
+      {
         /* Texture group (including disabled stasis ones)? */
-        else if(bTextureGroup != orxFALSE)
+        if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, pstGraphic->zLocaleGroup) == 0))
         {
-          /* Has locale name ID? */
-          if(pstGraphic->stLocaleNameID != 0)
+          /* Has locale name? */
+          if(pstGraphic->zLocaleName != orxNULL)
           {
             const orxSTRING zName;
             orxTEXTURE     *pstTexture;
 
             /* Retrieves name */
-            zName = orxLocale_GetString(orxString_GetFromID(pstGraphic->stLocaleNameID), orxTEXTURE_KZ_LOCALE_GROUP);
+            zName = orxLocale_GetString(pstGraphic->zLocaleName, pstGraphic->zLocaleGroup);
 
             /* Valid? */
             if(*zName != orxCHAR_NULL)
@@ -330,6 +334,48 @@ static orxSTATUS orxFASTCALL orxGraphic_EventHandler(const orxEVENT *_pstEvent)
                   /* Updates data */
                   orxGraphic_SetDataInternal(pstGraphic, (orxSTRUCTURE *)pstTexture, orxTRUE);
                 }
+              }
+            }
+          }
+          /* Has locale origin? */
+          if(pstGraphic->zLocaleOrigin != orxNULL)
+          {
+            const orxSTRING zOrigin;
+
+            /* Retrieves its value */
+            zOrigin = orxLocale_GetString(pstGraphic->zLocaleOrigin, pstGraphic->zLocaleGroup);
+
+            /* Valid? */
+            if(*zOrigin != orxCHAR_NULL)
+            {
+              orxVECTOR vValue;
+
+              /* Gets its vector value */
+              if(orxConfig_ToVector(zOrigin, orxCOLORSPACE_NONE, &vValue) != orxNULL)
+              {
+                /* Applies it */
+                orxGraphic_SetOrigin(pstGraphic, &vValue);
+              }
+            }
+          }
+          /* Has locale size? */
+          if(pstGraphic->zLocaleSize != orxNULL)
+          {
+            const orxSTRING zSize;
+
+            /* Retrieves its value */
+            zSize = orxLocale_GetString(pstGraphic->zLocaleSize, pstGraphic->zLocaleGroup);
+
+            /* Valid? */
+            if(*zSize != orxCHAR_NULL)
+            {
+              orxVECTOR vValue;
+
+              /* Gets its vector value */
+              if(orxConfig_ToVector(zSize, orxCOLORSPACE_NONE, &vValue) != orxNULL)
+              {
+                /* Applies it */
+                orxGraphic_SetSize(pstGraphic, &vValue);
               }
             }
           }
@@ -704,7 +750,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
       zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_NAME);
 
       /* Valid? */
-      if((zName != orxNULL) && (zName != orxSTRING_EMPTY))
+      if(*zName != orxCHAR_NULL)
       {
         orxTEXTURE *pstTexture;
 
@@ -717,11 +763,16 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           /* Using locale? */
           if(*zName != orxGRAPHIC_KC_LOCALE_MARKER)
           {
-            /* Stores its locale name ID */
-            pstResult->stLocaleNameID = orxString_GetID(zName);
+            /* Stores its locale name */
+            pstResult->zLocaleName = orxString_Store(zName);
+
+            /* Stores its locale group */
+            pstResult->zLocaleGroup = (orxConfig_HasValue(orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP) != orxFALSE)
+                                      ? orxString_Store(orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_LOCALE_GROUP))
+                                      : orxTEXTURE_KZ_LOCALE_GROUP;
 
             /* Gets its locale value */
-            zName = orxLocale_GetString(zName, orxTEXTURE_KZ_LOCALE_GROUP);
+            zName = orxLocale_GetString(zName, pstResult->zLocaleGroup);
           }
         }
 
@@ -744,30 +795,82 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
           /* Links it */
           if(orxGraphic_SetDataInternal(pstResult, (orxSTRUCTURE *)pstTexture, orxTRUE) != orxSTATUS_FAILURE)
           {
-            orxVECTOR vValue;
+            orxVECTOR       vValue;
+            const orxSTRING zValue;
 
             /* Updates size */
             orxGraphic_UpdateSize(pstResult);
 
-            /* Has origin / corner? */
-            if((orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN, &vValue) != orxNULL)
-            || (orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER, &vValue) != orxNULL))
+            /* Gets texture origin/corner */
+            zValue = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_ORIGIN);
+            if(*zValue == orxCHAR_NULL)
             {
-              /* Applies it */
-              pstResult->fLeft    = vValue.fX;
-              pstResult->fTop     = vValue.fY;
-
-              /* Updates size */
-              pstResult->fWidth   = orxMAX(orxFLOAT_0, pstResult->fWidth - vValue.fX);
-              pstResult->fHeight  = orxMAX(orxFLOAT_0, pstResult->fHeight - vValue.fY);
+              zValue = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_CORNER);
             }
 
-            /* Has size? */
-            if(orxConfig_GetVector(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE, &vValue) != orxNULL)
+            /* Valid? */
+            if(*zValue != orxCHAR_NULL)
             {
-              /* Applies it */
-              pstResult->fWidth   = vValue.fX;
-              pstResult->fHeight  = vValue.fY;
+              /* Begins with locale marker? */
+              if(*zValue == orxGRAPHIC_KC_LOCALE_MARKER)
+              {
+                /* Updates value */
+                zValue = zValue + 1;
+
+                /* Using locale? */
+                if(*zValue != orxGRAPHIC_KC_LOCALE_MARKER)
+                {
+                  /* Stores its locale value */
+                  pstResult->zLocaleOrigin = orxString_Store(zValue);
+
+                  /* Gets its locale value */
+                  zValue = orxLocale_GetString(zValue, pstResult->zLocaleGroup);
+                }
+              }
+
+              /* Has valid origin? */
+              if(orxConfig_ToVector(zValue, orxCOLORSPACE_NONE, &vValue) != orxNULL)
+              {
+                /* Applies it */
+                pstResult->fLeft    = vValue.fX;
+                pstResult->fTop     = vValue.fY;
+
+                /* Updates size */
+                pstResult->fWidth   = orxMAX(orxFLOAT_0, pstResult->fWidth - vValue.fX);
+                pstResult->fHeight  = orxMAX(orxFLOAT_0, pstResult->fHeight - vValue.fY);
+              }
+            }
+
+            /* Gets texture size */
+            zValue = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXTURE_SIZE);
+
+            /* Valid? */
+            if(*zValue != orxCHAR_NULL)
+            {
+              /* Begins with locale marker? */
+              if(*zValue == orxGRAPHIC_KC_LOCALE_MARKER)
+              {
+                /* Updates value */
+                zValue = zValue + 1;
+
+                /* Using locale? */
+                if(*zValue != orxGRAPHIC_KC_LOCALE_MARKER)
+                {
+                  /* Stores its locale value */
+                  pstResult->zLocaleSize = orxString_Store(zValue);
+
+                  /* Gets its locale value */
+                  zValue = orxLocale_GetString(zValue, pstResult->zLocaleGroup);
+                }
+              }
+
+              /* Has valid size? */
+              if(orxConfig_ToVector(zValue, orxCOLORSPACE_NONE, &vValue) != orxNULL)
+              {
+                /* Applies it */
+                pstResult->fWidth   = vValue.fX;
+                pstResult->fHeight  = vValue.fY;
+              }
             }
 
             /* Has orientation? */
@@ -827,7 +930,7 @@ orxGRAPHIC *orxFASTCALL orxGraphic_CreateFromConfig(const orxSTRING _zConfigID)
         zName = orxConfig_GetString(orxGRAPHIC_KZ_CONFIG_TEXT_NAME);
 
         /* Valid? */
-        if((zName != orxNULL) && (zName != orxSTRING_EMPTY))
+        if(*zName != orxCHAR_NULL)
         {
           orxTEXT *pstText;
 
@@ -1153,8 +1256,13 @@ orxGRAPHIC *orxFASTCALL orxGraphic_Clone(const orxGRAPHIC *_pstGraphic)
       /* Has data? */
       if(pstResult->pstData != orxNULL)
       {
-        /* Copies locale name ID */
-        pstResult->stLocaleNameID = _pstGraphic->stLocaleNameID;
+        /* Copies locales */
+        pstResult->zLocaleName    = _pstGraphic->zLocaleName;
+        pstResult->zLocaleOrigin  = _pstGraphic->zLocaleOrigin;
+        pstResult->zLocaleSize    = _pstGraphic->zLocaleSize;
+
+        /* Copies locale group */
+        pstResult->zLocaleGroup = _pstGraphic->zLocaleGroup;
 
         /* Copies data reference */
         pstResult->zDataReference = _pstGraphic->zDataReference;
@@ -2095,7 +2203,7 @@ orxDISPLAY_BLEND_MODE orxFASTCALL orxGraphic_GetBlendMode(const orxGRAPHIC *_pst
 
 /** Gets graphic orientation
  * @param[in]   _pstGraphic     Concerned graphic
- * @return Blend mode (alpha, multiply, add or none)
+ * @return Orientation (up, lest, down or right)
  */
 orxDISPLAY_ORIENTATION orxFASTCALL orxGraphic_GetOrientation(const orxGRAPHIC *_pstGraphic)
 {

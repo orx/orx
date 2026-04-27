@@ -423,6 +423,13 @@ orxSTATUS orxFASTCALL orxModule_Init(orxMODULE_ID _eModuleID)
         /* Cleans temp status */
         sstModule.astModuleInfo[u32Index].u32StatusFlags &= ~orxMODULE_KU32_STATUS_FLAG_PENDING;
       }
+
+      /* Is thread initialized? */
+      if(orxModule_IsInitialized(orxMODULE_ID_THREAD) != orxFALSE)
+      {
+        /* Kickstarts its task system */
+        orxThread_RunTask(orxNULL, orxNULL, orxNULL, orxNULL);
+      }
     }
 
     /* Is param initialized? */

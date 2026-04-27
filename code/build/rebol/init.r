@@ -10,8 +10,9 @@ params: compose/deep [
   name        {Project name (relative or absolute path)}                                        (none)    (none)
   bundle      {Automatic resource encryption & packaging}                                       +         []
   cheat       {Secret pass/cheat code support}                                                  -         []
+  clay        {Clay (GUI Layout) support (https://github.com/nicbarker/clay)}                          -         []
   c++         {Create a C++ project instead of a C one}                                         +         []
-  imgui       {Dear ImGui (GUI) support (https://github.com/ocornut/imgui)}                     -         [+c++]
+  imgui       {Dear ImGui (Debug GUI) support (https://github.com/ocornut/imgui)}                     -         [+c++]
   inspector   {Object debug GUI inspector}                                                      -         [+imgui]
   mod         {Audio MOD (Amiga), XM & S3M support}                                             -         []
   movie       {Movie (MPEG-1) support}                                                          -         []
@@ -22,7 +23,7 @@ params: compose/deep [
   sndh        {Audio SNDH (Atari ST) support}                                                   -         [+c++]
 ]
 platforms:  [
-  windows     [config [{gmake} {codelite} {codeblocks} {vs2017} {vs2019} {vs2022}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
+  windows     [config [{gmake} {codelite} {codeblocks} {vs2019} {vs2022} {vs2026}]    premake %premake4.exe   setup {setup.bat}   script %init.bat    ]
   mac         [config [{gmake} {codelite} {codeblocks} {xcode4}                  ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
   linux       [config [{gmake} {codelite} {codeblocks}                           ]    premake %premake4       setup {./setup.sh}  script %./init.sh   ]
 ]

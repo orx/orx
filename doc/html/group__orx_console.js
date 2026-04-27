@@ -21,7 +21,7 @@ var group__orx_console =
     [ "orxConsole_Exit", "group__orx_console.html#ga131e4e88f33df218f1651e1a9c7f7c6b", null ],
     [ "orxConsole_GetCompletion", "group__orx_console.html#ga03cb6ec3738ad67d6293b2d83d66abab", null ],
     [ "orxConsole_GetCompletionCount", "group__orx_console.html#gadc6fb02b0eb35f8c59394927ed68c4df", null ],
-    [ "orxConsole_GetFont", "group__orx_console.html#gaf8426d4d9c05745a70ff23b3308364e5", null ],
+    [ "orxConsole_GetFont", "group__orx_console.html#ga5f02b198a0dde21b4f86de4ed4d70b4c", null ],
     [ "orxConsole_GetInput", "group__orx_console.html#gad010eef86ec9af2ef6d4fb521b9309d9", null ],
     [ "orxConsole_GetLogLineLength", "group__orx_console.html#ga097d0e70eafbd3a62e0068a0decb3ad0", null ],
     [ "orxConsole_GetTrailLogLine", "group__orx_console.html#ga859acfa690023effb99b31a616a45031", null ],

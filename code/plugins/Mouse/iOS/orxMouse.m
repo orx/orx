@@ -90,7 +90,7 @@ static orxSTATUS orxFASTCALL orxMouse_iOS_EventHandler(const orxEVENT *_pstEvent
       /* Updates count */
       sstMouse.u32TouchCount++;
 
-      /* Fall through */
+      /* Falls through */
     }
 
     case orxSYSTEM_EVENT_TOUCH_MOVE:
@@ -265,7 +265,7 @@ void orxFASTCALL orxMouse_iOS_Exit()
     pstClock = orxClock_Get(orxCLOCK_KZ_CORE);
 
     /* Unregisters clean function */
-    orxClock_Unregister(pstClock, orxMouse_iOS_Clean);
+    orxClock_Unregister(pstClock, orxMouse_iOS_Clean, orxNULL);
 
     /* Removes event handler */
     orxEvent_RemoveHandler(orxEVENT_TYPE_SYSTEM, orxMouse_iOS_EventHandler);

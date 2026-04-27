@@ -1,6 +1,6 @@
 var orx_plugin_type_8h =
 [
-    [ "orxPLUGIN_K_CORE_INIT_FUNCTION_NAME", "group__orx_plugin.html#ga81f3f1728c3da86b79d65c43b78fefee", null ],
+    [ "orxPLUGIN_K_CORE_INIT_FUNCTION_NAME", "group__orx_plugin.html#ga3b42d2893b37f907792640c16e231a2c", null ],
     [ "orxPLUGIN_K_EXIT_FUNCTION_NAME", "group__orx_plugin.html#gac16844bf957a17cacadb967cc585d80c", null ],
     [ "orxPLUGIN_K_INIT_FUNCTION_NAME", "group__orx_plugin.html#ga06446ed58fb59ad4b1208ea1281aed1b", null ],
     [ "orxPLUGIN_K_SWAP_FUNCTION_NAME", "group__orx_plugin.html#ga8cf0bc666fd1ed3823a48e77e24bdd2a", null ],
@@ -9,8 +9,8 @@ var orx_plugin_type_8h =
     [ "orxPLUGIN_KU32_MASK_FUNCTION_ID", "group__orx_plugin.html#ga2fd4a16dc14944caf2511cd55cbe72a2", null ],
     [ "orxPLUGIN_KU32_MASK_PLUGIN_ID", "group__orx_plugin.html#ga7fa794429a65337332167b146e30e7c7", null ],
     [ "orxPLUGIN_KU32_SHIFT_PLUGIN_ID", "group__orx_plugin.html#ga6c7207a2e626ac13b75c38dc57203545", null ],
-    [ "orxPLUGIN_MAKE_CORE_FUNCTION_ID", "group__orx_plugin.html#ga390a92a887729aee278e07356a9e3575", null ],
-    [ "orxPLUGIN_MAKE_FUNCTION_ID", "group__orx_plugin.html#gae45a41dface9ab6748fa672756ba2ce2", null ],
+    [ "orxPLUGIN_MAKE_CORE_FUNCTION_ID", "group__orx_plugin.html#gaf27c27d746c6a658e421baaf68f117a2", null ],
+    [ "orxPLUGIN_MAKE_FUNCTION_ID", "group__orx_plugin.html#ga827e16c99bb34554b9db8c1d90d937a0", null ],
     [ "orxPLUGIN_FUNCTION", "group__orx_plugin.html#gae61dd662dec45e388aab60f29f4a6c24", null ],
     [ "orxPLUGIN_ENTRY_MODE", "group__orx_plugin.html#gae4664793e99ee7a0e349edec961af53f", [
       [ "orxPLUGIN_ENTRY_MODE_INIT", "group__orx_plugin.html#ggae4664793e99ee7a0e349edec961af53fafca2e2f6f250067ef00a9a49502f5d2f", null ],
