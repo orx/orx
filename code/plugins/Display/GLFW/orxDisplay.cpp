@@ -2648,7 +2648,7 @@ static void orxFASTCALL orxDisplay_GLFW_ReadResourceCallback(orxHANDLE _hResourc
   if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
   {
     /* Runs asynchronous task */
-    if(orxThread_RunTask(&orxDisplay_GLFW_DecompressBitmap, orxDisplay_GLFW_DecompressBitmapCallback, orxNULL, (void *)pstInfo) == orxSTATUS_FAILURE)
+    if(orxThread_RunTask(&orxDisplay_GLFW_DecompressBitmap, &orxDisplay_GLFW_DecompressBitmapCallback, orxNULL, (void *)pstInfo) == orxSTATUS_FAILURE)
     {
       /* Frees load info */
       orxMemory_Free(pstInfo);
@@ -5703,7 +5703,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadFont(const orxSTRING _zFileName, cons
                         orxFLAG_SET(pstResult->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING, orxDISPLAY_KU32_BITMAP_FLAG_NONE);
 
                         /* Runs asynchronous task */
-                        if(orxThread_RunTaskLinear(&orxDisplay_GLFW_ProcessFont, orxDisplay_GLFW_DecompressBitmapCallback, orxNULL, (void *)pstLoadInfo) == orxSTATUS_FAILURE)
+                        if(orxThread_RunTaskLinear(&orxDisplay_GLFW_ProcessFont, &orxDisplay_GLFW_DecompressBitmapCallback, orxNULL, (void *)pstLoadInfo) == orxSTATUS_FAILURE)
                         {
                           /* Deletes glyph list */
                           orxMemory_Free(pstLoadInfo->astGlyphList);

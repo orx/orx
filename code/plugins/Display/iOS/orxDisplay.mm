@@ -2304,7 +2304,7 @@ static void orxFASTCALL orxDisplay_iOS_ReadResourceCallback(orxHANDLE _hResource
   if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
   {
     /* Runs asynchronous task */
-    if(orxThread_RunTask(&orxDisplay_iOS_DecompressBitmap, orxDisplay_iOS_DecompressBitmapCallback, orxNULL, (void *)pstInfo) == orxSTATUS_FAILURE)
+    if(orxThread_RunTask(&orxDisplay_iOS_DecompressBitmap, &orxDisplay_iOS_DecompressBitmapCallback, orxNULL, (void *)pstInfo) == orxSTATUS_FAILURE)
     {
       /* Frees load info */
       orxMemory_Free(pstInfo);
@@ -4626,7 +4626,7 @@ orxBITMAP *orxFASTCALL orxDisplay_iOS_LoadFont(const orxSTRING _zFileName, const
                         orxFLAG_SET(pstResult->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING, orxDISPLAY_KU32_BITMAP_FLAG_NONE);
 
                         /* Runs asynchronous task */
-                        if(orxThread_RunTaskLinear(&orxDisplay_iOS_ProcessFont, orxDisplay_iOS_DecompressBitmapCallback, orxNULL, (void *)pstLoadInfo) == orxSTATUS_FAILURE)
+                        if(orxThread_RunTaskLinear(&orxDisplay_iOS_ProcessFont, &orxDisplay_iOS_DecompressBitmapCallback, orxNULL, (void *)pstLoadInfo) == orxSTATUS_FAILURE)
                         {
                           /* Deletes glyph list */
                           orxMemory_Free(pstLoadInfo->astGlyphList);

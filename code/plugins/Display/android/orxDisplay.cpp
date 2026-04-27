@@ -1824,7 +1824,7 @@ static void orxFASTCALL orxDisplay_Android_ReadResourceCallback(orxHANDLE _hReso
   if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
   {
     /* Runs asynchronous task */
-    if(orxThread_RunTask(&orxDisplay_Android_DecompressBitmap, orxDisplay_Android_DecompressBitmapCallback, orxNULL, (void *)pstInfo) == orxSTATUS_FAILURE)
+    if(orxThread_RunTask(&orxDisplay_Android_DecompressBitmap, &orxDisplay_Android_DecompressBitmapCallback, orxNULL, (void *)pstInfo) == orxSTATUS_FAILURE)
     {
       /* Frees load info */
       orxMemory_Free(pstInfo);
@@ -4572,7 +4572,7 @@ orxBITMAP *orxFASTCALL orxDisplay_Android_LoadFont(const orxSTRING _zFileName, c
                         orxFLAG_SET(pstResult->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING, orxDISPLAY_KU32_BITMAP_FLAG_NONE);
 
                         /* Runs asynchronous task */
-                        if(orxThread_RunTaskLinear(&orxDisplay_Android_ProcessFont, orxDisplay_Android_DecompressBitmapCallback, orxNULL, (void *)pstLoadInfo) == orxSTATUS_FAILURE)
+                        if(orxThread_RunTaskLinear(&orxDisplay_Android_ProcessFont, &orxDisplay_Android_DecompressBitmapCallback, orxNULL, (void *)pstLoadInfo) == orxSTATUS_FAILURE)
                         {
                           /* Deletes glyph list */
                           orxMemory_Free(pstLoadInfo->astGlyphList);

@@ -943,7 +943,7 @@ static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void
           orxMEMORY_BARRIER();
 
           /* Asks for its opening on main thread */
-          orxThread_RunTaskLinear(orxNULL, orxSoundSystem_MiniAudio_OpenRecordingFileTask, orxNULL, orxNULL);
+          orxThread_RunTaskLinear(orxNULL, &orxSoundSystem_MiniAudio_OpenRecordingFileTask, orxNULL, orxNULL);
 
           /* Waits for outcome */
           while(sstSoundSystem.hRecordingResource == orxHANDLE_UNDEFINED)
@@ -977,7 +977,7 @@ static void orxSoundSystem_MiniAudio_UpdateRecording(ma_device *_pstDevice, void
         orxFLAG_SET(sstSoundSystem.u32Flags, orxSOUNDSYSTEM_KU32_STATIC_FLAG_STOP_RECORDING, orxSOUNDSYSTEM_KU32_STATIC_FLAG_NONE);
 
         /* Postpones recording stop on main thread */
-        orxThread_RunTaskLinear(orxNULL, orxSoundSystem_MiniAudio_StopRecordingTask, orxNULL, orxNULL);
+        orxThread_RunTaskLinear(orxNULL, &orxSoundSystem_MiniAudio_StopRecordingTask, orxNULL, orxNULL);
       }
 
       /* Profiles */
