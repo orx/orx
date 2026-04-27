@@ -32,7 +32,7 @@
 </p>
 
 
-Orx (Version 1.16)
+Orx (Version 1.17)
 ========================================
 
 This engine is licensed under the very permissive [zlib license](https://en.wikipedia.org/wiki/Zlib_License) (i.e. it's free for any commercial or non-commercial use),
@@ -44,10 +44,10 @@ Email iarwain [at] orx-project.org to contact the author or come [chat with us o
 Summary
 -------
 
-[Orx](https://orx-project.org) is a heavily data-driven, 2D-oriented, portable game engine, focused primarily on ease of use and powerful features.
+[Orx](https://orx-project.org) is a heavily data-driven, 2D-oriented game engine, focused primarily on ease of use, performances and powerful features.
 (See below for a list of supported platforms.)
 
-This is a release candidate for orx v1.16. If you find any bugs, please report them using orx's [issue page/tracker](https://github.com/orx/orx/issues).
+This is a release candidate for orx v1.17. If you find any bugs, please report them using orx's [issue page/tracker](https://github.com/orx/orx/issues).
 
 Some notable features of the engine are:
 
@@ -71,7 +71,7 @@ Some notable features of the engine are:
 - powerful localization module (for localized texts, audio, graphics, etc.)
 - spawners (provides an easy way to create particles or projectiles)
 - 3D positioning using "scene nodes"
-- custom bitmap, truetype & SDF font support
+- custom bitmap, TrueType & SDF font support
 - automatic differential scrolling and depth scaling upon request
 - fully featured and extensible sound system (WAV/MP3/OGG/QOA support, streams, hierarchical buses, filters, spatialization, etc.)
 - clock system that provides time consistency and allows time stretching + high precision timers
