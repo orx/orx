@@ -341,7 +341,7 @@ static orxSTATUS orxFASTCALL orxMovie_Decode(const orxEVENT *_pstEvent)
         if(!pstMovieData->bDelete)
         {
           // Runs video decoding task
-          orxThread_RunTask(&orxMovie_DecodeVideo, &orxMovie_UpdateFrame, orxNULL, pstMovieData);
+          orxThread_RunTaskLinear(&orxMovie_DecodeVideo, &orxMovie_UpdateFrame, orxNULL, pstMovieData);
         }
       }
     }
@@ -567,7 +567,7 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
         orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_SOUND, orxMovie_EventHandler, _pstEvent->pContext);
 
         // Runs delete task
-        orxThread_RunTask(orxNULL, &orxMovie_Delete, orxNULL, pstMovieData);
+        orxThread_RunTaskLinear(orxNULL, &orxMovie_Delete, orxNULL, pstMovieData);
       }
     }
   }
