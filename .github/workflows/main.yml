@@ -11,9 +11,9 @@ jobs:
         os:
           - windows
         version:
-          # - 2017 # Not supported by GitHub hosted runners
           - 2019
           - 2022
+          - 2026
         config:
           - Debug
           - Profile
@@ -22,8 +22,14 @@ jobs:
           # - x86 # Not supported by GitHub hosted runners
           - x64
         include:
-          - os: windows
-            runner: windows-latest
+          - version: 2019
+            runner: windows-2022
+            setup: setup.bat
+          - version: 2022
+            runner: windows-2022
+            setup: setup.bat
+          - version: 2026
+            runner: windows-2025-vs2026
             setup: setup.bat
     runs-on: ${{matrix.runner}}
     steps:
