@@ -609,7 +609,7 @@ static orxSTATUS orxFASTCALL orxBundle_ProcessResource(void *_pContext)
 
   // Updates current resource ID: next!
   orxMEMORY_BARRIER();
-  sstBundle.u32CurrentResourceID++;
+  sstBundle.u32CurrentResourceID = sstBundle.u32CurrentResourceID + 1;
 
   // Done!
   return orxSTATUS_SUCCESS;
