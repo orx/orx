@@ -88,6 +88,9 @@ void ClayVideoDemo_Initialize() {
     Clay_SetDebugModeEnabled(true);
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif /* __cplusplus */
 void Clay_ShowDemoContent() {
     static bool initialized = false;
     if (!initialized)

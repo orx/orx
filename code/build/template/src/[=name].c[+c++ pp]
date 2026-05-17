@@ -21,6 +21,8 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 
 /** Update function, it has been registered to be called every tick of the core clock
  */
+[+clay
+extern "C" void Clay_ShowDemoContent();]
 [+scroll void [!name]::Update(const orxCLOCK_INFO &_rstClockInfo)]
 [-scroll void orxFASTCALL Update(const orxCLOCK_INFO *_pstClockInfo, void *_pContext)]
 {
@@ -58,7 +60,6 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 ]
 [+clay
   // Show clay demo content
-  extern void Clay_ShowDemoContent();
   Clay_ShowDemoContent();
 ]
   // Should quit?
