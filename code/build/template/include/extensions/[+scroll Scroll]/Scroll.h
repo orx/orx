@@ -46,8 +46,8 @@ public:
 
 protected:
 
-                                Scroll<G>()                                 {}
-  virtual                      ~Scroll<G>()                                 {}
+                                Scroll()                                    {}
+  virtual                      ~Scroll()                                    {}
 
 
 private:
