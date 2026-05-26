@@ -132,15 +132,7 @@ static orxBUNDLE sstBundle;
 
 //! Helpers
 
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-  #define orxResource_Print(RESOURCE, FORMAT, ...)                                                                  \
-    do                                                                                                              \
-    {                                                                                                               \
-      orxS32 s32Count;                                                                                              \
-      s32Count = orxString_NPrint(sstBundle.acPrintBuffer, sizeof(sstBundle.acPrintBuffer), FORMAT, ##__VA_ARGS__); \
-      orxResource_Write(RESOURCE, (orxS64)s32Count, sstBundle.acPrintBuffer, orxNULL, orxNULL);                     \
-    } while(orxFALSE)
-#else // __orxGCC__ || __orxLLVM__
+#ifdef __orxVA_LEGACY__
   #define orxResource_Print(RESOURCE, FORMAT, ...)                                                                  \
     do                                                                                                              \
     {                                                                                                               \
@@ -148,7 +140,15 @@ static orxBUNDLE sstBundle;
       s32Count = orxString_NPrint(sstBundle.acPrintBuffer, sizeof(sstBundle.acPrintBuffer), FORMAT, __VA_ARGS__);   \
       orxResource_Write(RESOURCE, (orxS64)s32Count, sstBundle.acPrintBuffer, orxNULL, orxNULL);                     \
     } while(orxFALSE)
-#endif // __orxGCC__ || __orxLLVM__
+#else // __orxVA_LEGACY__
+  #define orxResource_Print(RESOURCE, FORMAT, ...)                                                                  \
+    do                                                                                                              \
+    {                                                                                                               \
+      orxS32 s32Count;                                                                                              \
+      s32Count = orxString_NPrint(sstBundle.acPrintBuffer, sizeof(sstBundle.acPrintBuffer), FORMAT, ##__VA_ARGS__); \
+      orxResource_Write(RESOURCE, (orxS64)s32Count, sstBundle.acPrintBuffer, orxNULL, orxNULL);                     \
+    } while(orxFALSE)
+#endif // __orxVA_LEGACY__
 
 static orxINLINE void orxResource_WriteU32(orxHANDLE _hResource, orxU32 _u32Value)
 {

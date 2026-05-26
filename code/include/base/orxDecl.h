@@ -152,6 +152,12 @@
 
     #define __orxMSVC__
 
+    #if !defined(_MSVC_TRADITIONAL) || (_MSVC_TRADITIONAL != 0)
+
+      #define __orxVA_LEGACY__
+
+    #endif /* !_MSVC_TRADITIONAL && _MSVC_TRADITIONAL != 0 */
+
   #else
 
     #error "Couldn't guess compiler define. Please provide it (__orxLLVM__/__orxGCC__/__orxMSVC__)"

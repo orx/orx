@@ -282,15 +282,15 @@
 
 /**  Misc defines
  */
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-
-#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
-
-#else /* __orxGCC__ || __orxLLVM__ */
+#ifdef __orxVA_LEGACY__
 
 #define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glASSERT();}} while(orxFALSE)
 
-#endif /* __orxGCC__ || __orxLLVM__ */
+#else /* __orxVA_LEGACY__ */
+
+#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
+
+#endif /* __orxVA_LEGACY__ */
 
 
 #ifdef __orxDEBUG__
@@ -305,29 +305,29 @@ do                                                                        \
   }                                                                       \
 } while(orxFALSE)
 
-  #if defined(__orxGCC__) || defined(__orxLLVM__)
+  #ifdef __orxVA_LEGACY__
 
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); (void)glGetError();}} while(orxFALSE)
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); (void)glGetError();}} while(orxFALSE)
 
-  #else /* __orxGCC__ || __orxLLVM__ */
+  #else /* __orxVA_LEGACY__ */
 
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); (void)glGetError();}} while(orxFALSE)
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); (void)glGetError();}} while(orxFALSE)
 
-  #endif /* __orxGCC__ || __orxLLVM__ */
+  #endif /* __orxVA_LEGACY__ */
 
 #else /* __orxDEBUG__ */
 
-#define glASSERT()
+  #define glASSERT()
 
-  #if defined(__orxGCC__) || defined(__orxLLVM__)
+  #ifdef __orxVA_LEGACY__
 
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__);}} while(orxFALSE)
 
-  #else /* __orxGCC__ || __orxLLVM__ */
+  #else /* __orxVA_LEGACY__ */
 
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__);}} while(orxFALSE)
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
 
-  #endif /* __orxGCC__ || __orxLLVM__ */
+  #endif /* __orxVA_LEGACY__ */
 
 #endif /* __orxDEBUG__ */
 

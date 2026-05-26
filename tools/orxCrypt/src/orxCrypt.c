@@ -49,15 +49,15 @@
 
 #define orxCRYPT_KZ_LOG_TAG_LENGTH                "10"
 
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-
-  #define orxCRYPT_LOG(TAG, FORMAT, ...) orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "%-" orxCRYPT_KZ_LOG_TAG_LENGTH "s" orxANSI_KZ_COLOR_FG_DEFAULT FORMAT, "[" #TAG "]", ##__VA_ARGS__)
-
-#else // __orxGCC__ || __orxLLVM__
+#ifdef __orxVA_LEGACY__
 
   #define orxCRYPT_LOG(TAG, FORMAT, ...) orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "%-" orxCRYPT_KZ_LOG_TAG_LENGTH "s" orxANSI_KZ_COLOR_FG_DEFAULT FORMAT, "[" #TAG "]", __VA_ARGS__)
 
-#endif //__orxGCC__ || __orxLLVM__
+#else // __orxVA_LEGACY__
+
+  #define orxCRYPT_LOG(TAG, FORMAT, ...) orxLOG(orxANSI_KZ_COLOR_FG_YELLOW "%-" orxCRYPT_KZ_LOG_TAG_LENGTH "s" orxANSI_KZ_COLOR_FG_DEFAULT FORMAT, "[" #TAG "]", ##__VA_ARGS__)
+
+#endif //__orxVA_LEGACY__
 
 
 /***************************************************************************

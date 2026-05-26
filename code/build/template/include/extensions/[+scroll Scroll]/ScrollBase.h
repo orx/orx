@@ -245,11 +245,11 @@ ScrollObject *ScrollObjectBinder<O>::ConstructObject(orxBANK *_pstBank) const
 
 
 //! Scroll object bind helper
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-  #define BindObject(OBJECT, ...)       ScrollBindObject<OBJECT>(#OBJECT, ##__VA_ARGS__)
-#else // __orxGCC__ || __orxLLVM__
+#ifdef __orxVA_LEGACY__
   #define BindObject(OBJECT, ...)       ScrollBindObject<OBJECT>(#OBJECT, __VA_ARGS__)
-#endif // __orxGCC__ || __orxLLVM__
+#else // __orxVA_LEGACY__
+  #define BindObject(OBJECT, ...)       ScrollBindObject<OBJECT>(#OBJECT, ##__VA_ARGS__)
+#endif // __orxVA_LEGACY__
 template<class O>
 inline static void ScrollBindObject(const orxSTRING _zName, orxS32 _s32SegmentSize = 128)
 {
