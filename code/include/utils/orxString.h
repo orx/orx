@@ -64,7 +64,7 @@
 #ifdef __orxMSVC__
 
   #pragma warning(push)
-  #pragma warning(disable : 4996)
+  #pragma warning(disable : 4996 6255)
 
   #define strtoll   _strtoi64
   #define strtoull  _strtoui64
