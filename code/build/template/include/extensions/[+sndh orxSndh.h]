@@ -147,7 +147,7 @@ static orxSTATUS orxFASTCALL orxSndh_Decode(const orxEVENT *_pstEvent)
       // Converts all samples
       for(i = (orxS32)pstPayload->stStream.stPacket.u32SampleNumber - 1; i >= 0; i--)
       {
-        pstPayload->stStream.stPacket.afSampleList[i] = orxS2F(((int16_t *)pstPayload->stStream.stPacket.afSampleList)[i]) / orx2F(32678.0f);
+        pstPayload->stStream.stPacket.afSampleList[i] = orxS2F(((int16_t *)pstPayload->stStream.stPacket.afSampleList)[i]) / orx2F(32768.0f);
       }
 
       // Looped?
