@@ -21,16 +21,21 @@
 #define orxMOD_IMPL
 #include "orxMod.h"
 #undef orxMOD_IMPL]
-[+noisetex
+[+sid
 
-#define orxNOISETEXTURE_IMPL
-#include "orxNoiseTexture.h"
-#undef orxNOISETEXTURE_IMPL]
+#define orxSID_IMPL
+#include "orxSid.h"
+#undef orxSID_IMPL]
 [+sndh
 
 #define orxSNDH_IMPL
 #include "orxSndh.h"
 #undef orxSNDH_IMPL]
+[+noisetex
+
+#define orxNOISETEXTURE_IMPL
+#include "orxNoiseTexture.h"
+#undef orxNOISETEXTURE_IMPL]
 [+nuklear
 
 #define orxNUKLEAR_IMPL
@@ -76,13 +81,17 @@ void InitExtensions()
   // Initialize MOD support
   orxMod_Init();
 ]
-[+noisetex
-  // Initialize noise texture support
-  orxNoiseTexture_Init();
+[+sid
+  // Initialize SID support
+  orxSid_Init();
 ]
 [+sndh
   // Initialize SNDH support
   orxSndh_Init();
+]
+[+noisetex
+  // Initialize noise texture support
+  orxNoiseTexture_Init();
 ]
 [+nuklear
   // Initialize Nuklear
@@ -120,13 +129,17 @@ void ExitExtensions()
   // Exit from Nuklear
   orxNuklear_Exit();
 ]
+[+noisetex
+  // Exit from noise texture support
+  orxNoiseTexture_Exit();
+]
 [+sndh
   // Exit from SNDH support
   orxSndh_Exit();
 ]
-[+noisetex
-  // Exit from noise texture support
-  orxNoiseTexture_Exit();
+[+sid
+  // Exit from SID support
+  orxSid_Exit();
 ]
 [+mod
   // Exit from MOD support
