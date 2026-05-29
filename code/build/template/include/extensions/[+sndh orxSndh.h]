@@ -339,8 +339,9 @@ void orxFASTCALL orxSndh_Exit()
   {
     SndhData *pstSndhData;
 
-    // Unregisters sndh handler
-    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxSndh_EventHandler);
+    // Unregisters sndh handlers
+    orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_OBJECT, orxSndh_EventHandler, orxNULL);
+    orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_SOUND, orxSndh_Decode, orxNULL);
 
     // Deletes bank
     while((pstSndhData = (SndhData *)orxBank_GetNext(sstSndh.pstSndhBank, orxNULL)))
