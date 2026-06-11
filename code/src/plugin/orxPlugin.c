@@ -56,9 +56,10 @@
 
   typedef HINSTANCE                                         orxSYSPLUGIN;
 
-  #define orxPLUGIN_OPEN(PLUGIN)                            LoadLibrary(PLUGIN)
-  #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)      GetProcAddress(PLUGIN, SYMBOL)
-  #define orxPLUGIN_CLOSE(PLUGIN)                           FreeLibrary(PLUGIN)
+  #define orxPLUGIN_KFN_OPEN(PLUGIN)                        LoadLibrary(PLUGIN)
+  #define orxPLUGIN_KFN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)  GetProcAddress(PLUGIN, SYMBOL)
+  #define orxPLUGIN_KFN_CLOSE(PLUGIN)                       FreeLibrary(PLUGIN)
+  #define orxPLUGIN_KZ_RELATIVE_PREFIX
 
   static const orxSTRING                                    szPluginLibraryExt = "dll";
 
@@ -74,19 +75,21 @@
   #if defined(__orxIOS__)
 
     #undef __orxPLUGIN_DYNAMIC__
-    #undef orxPLUGIN_OPEN
-    #undef orxPLUGIN_GET_SYMBOL_ADDRESS
-    #undef orxPLUGIN_CLOSE
+    #undef orxPLUGIN_KFN_OPEN
+    #undef orxPLUGIN_KFN_GET_SYMBOL_ADDRESS
+    #undef orxPLUGIN_KFN_CLOSE
+    #undef orxPLUGIN_KZ_RELATIVE_PREFIX
 
   #else /* __orxIOS__ */
 
     #include <dlfcn.h>
 
-    #define orxPLUGIN_OPEN(PLUGIN)                          dlopen(PLUGIN, RTLD_LAZY)
-    #define orxPLUGIN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)    dlsym(PLUGIN, SYMBOL)
-    #define orxPLUGIN_CLOSE(PLUGIN)                         dlclose(PLUGIN)
+    #define orxPLUGIN_KFN_OPEN(PLUGIN)                        dlopen(PLUGIN, RTLD_LAZY)
+    #define orxPLUGIN_KFN_GET_SYMBOL_ADDRESS(PLUGIN, SYMBOL)  dlsym(PLUGIN, SYMBOL)
+    #define orxPLUGIN_KFN_CLOSE(PLUGIN)                       dlclose(PLUGIN)
+    #define orxPLUGIN_KZ_RELATIVE_PREFIX                      "./"
 
-      static const orxSTRING                                szPluginLibraryExt = "so";
+      static const orxSTRING                                  szPluginLibraryExt = "so";
 
     #define __orxPLUGIN_DYNAMIC__
 
@@ -98,49 +101,49 @@
 /** Module flags
  */
 
-#define orxPLUGIN_KU32_STATIC_FLAG_NONE                     0x00000000
-#define orxPLUGIN_KU32_STATIC_FLAG_SWAP                     0x10000000
-#define orxPLUGIN_KU32_STATIC_FLAG_READY                    0x00000001
+#define orxPLUGIN_KU32_STATIC_FLAG_NONE                       0x00000000
+#define orxPLUGIN_KU32_STATIC_FLAG_SWAP                       0x10000000
+#define orxPLUGIN_KU32_STATIC_FLAG_READY                      0x00000001
 
 
-#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_NONE             0x00000000
-#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED           0x00000001
-#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY            0x10000000
+#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_NONE               0x00000000
+#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_LOADED             0x00000001
+#define orxPLUGIN_KU32_CORE_KU32_FLAG_FLAG_DIRTY              0x10000000
 
 
 /** Misc
  */
-#define orxPLUGIN_KU32_FUNCTION_BANK_SIZE                   16
-#define orxPLUGIN_KZ_INIT_FUNCTION_NAME                     orxSTRINGIFY(orxPLUGIN_K_INIT_FUNCTION_NAME) /**< Plugin init function name */
-#define orxPLUGIN_KZ_EXIT_FUNCTION_NAME                     orxSTRINGIFY(orxPLUGIN_K_EXIT_FUNCTION_NAME) /**< Plugin exit function name */
-#define orxPLUGIN_KZ_SWAP_FUNCTION_NAME                     orxSTRINGIFY(orxPLUGIN_K_SWAP_FUNCTION_NAME) /**< Plugin swap function name */
+#define orxPLUGIN_KU32_FUNCTION_BANK_SIZE                     16
+#define orxPLUGIN_KZ_INIT_FUNCTION_NAME                       orxSTRINGIFY(orxPLUGIN_K_INIT_FUNCTION_NAME) /**< Plugin init function name */
+#define orxPLUGIN_KZ_EXIT_FUNCTION_NAME                       orxSTRINGIFY(orxPLUGIN_K_EXIT_FUNCTION_NAME) /**< Plugin exit function name */
+#define orxPLUGIN_KZ_SWAP_FUNCTION_NAME                       orxSTRINGIFY(orxPLUGIN_K_SWAP_FUNCTION_NAME) /**< Plugin swap function name */
 
-#define orxPLUGIN_KC_DIRECTORY_SEPARATOR                    '/'
+#define orxPLUGIN_KC_DIRECTORY_SEPARATOR                      '/'
 
 
-#define orxPLUGIN_KZ_CONFIG_SECTION                         "Plugin"
-#define orxPLUGIN_KZ_CONFIG_SWAP_SECTION                    "orx:plugin:runtime"
+#define orxPLUGIN_KZ_CONFIG_SECTION                           "Plugin"
+#define orxPLUGIN_KZ_CONFIG_SWAP_SECTION                      "orx:plugin:runtime"
 
-#define orxPLUGIN_KU32_SHADOW_BUFFER_SIZE                   131072
+#define orxPLUGIN_KU32_SHADOW_BUFFER_SIZE                     131072
 
 #ifdef __orxPLUGIN_MULTI_SHADOW__
-#define orxPLUGIN_KZ_SHADOW_FORMAT                          "_Shadow%03u"
+#define orxPLUGIN_KZ_SHADOW_FORMAT                            "_Shadow%03u"
 #else /* __orxPLUGIN_MULTI_SHADOW__ */
-#define orxPLUGIN_KZ_SHADOW_FORMAT                          "_Shadow"
+#define orxPLUGIN_KZ_SHADOW_FORMAT                            "_Shadow"
 #endif /* __orxPLUGIN_MULTI_SHADOW__ */
 
 
 #if defined(__orxDEBUG__)
 
-  #define orxPLUGIN_KZ_CONFIG_SUFFIX                  "DebugSuffix"
+  #define orxPLUGIN_KZ_CONFIG_SUFFIX                          "DebugSuffix"
 
-  #define orxPLUGIN_KZ_DEFAULT_SUFFIX                 "d"
+  #define orxPLUGIN_KZ_DEFAULT_SUFFIX                         "d"
 
 #elif defined(__orxPROFILER__)
 
-  #define orxPLUGIN_KZ_CONFIG_SUFFIX                  "ProfileSuffix"
+  #define orxPLUGIN_KZ_CONFIG_SUFFIX                          "ProfileSuffix"
 
-  #define orxPLUGIN_KZ_DEFAULT_SUFFIX                 "p"
+  #define orxPLUGIN_KZ_DEFAULT_SUFFIX                         "p"
 
 #endif
 
@@ -562,7 +565,7 @@ static void orxFASTCALL orxPlugin_DeletePluginInfo(orxPLUGIN_INFO *_pstPluginInf
   if(_pstPluginInfo->pstSysPlugin != orxNULL)
   {
     /* Closes it */
-    orxPLUGIN_CLOSE(_pstPluginInfo->pstSysPlugin);
+    orxPLUGIN_KFN_CLOSE(_pstPluginInfo->pstSysPlugin);
     _pstPluginInfo->pstSysPlugin = orxNULL;
 
     /* Has shadow? */
@@ -616,7 +619,7 @@ static orxPLUGIN_FUNCTION orxFASTCALL orxPlugin_GetFunctionAddress(orxSYSPLUGIN 
   orxASSERT(_zFunctionName != orxNULL);
 
   /* Gets function */
-  pfnFunction = (orxPLUGIN_FUNCTION)orxPLUGIN_GET_SYMBOL_ADDRESS(_pstSysPlugin, _zFunctionName);
+  pfnFunction = (orxPLUGIN_FUNCTION)orxPLUGIN_KFN_GET_SYMBOL_ADDRESS(_pstSysPlugin, _zFunctionName);
 
   /* Not found? */
   if(pfnFunction == orxNULL)
@@ -1203,9 +1206,9 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginName)
 
       /* Gets shadow location */
   #ifdef __orxPLUGIN_MULTI_SHADOW__
-      orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%s%c%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxRESOURCE_KZ_TYPE_TAG_FILE, orxRESOURCE_KC_LOCATION_SEPARATOR, orxString_GetLength(zFileName) - orxString_GetLength(szPluginLibraryExt) - 1, zFileName, sstPlugin.u32ShadowCount++, szPluginLibraryExt);
+      orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%s%c" orxPLUGIN_KZ_RELATIVE_PREFIX "%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxRESOURCE_KZ_TYPE_TAG_FILE, orxRESOURCE_KC_LOCATION_SEPARATOR, orxString_GetLength(zFileName) - orxString_GetLength(szPluginLibraryExt) - 1, zFileName, sstPlugin.u32ShadowCount++, szPluginLibraryExt);
   #else /* __orxPLUGIN_MULTI_SHADOW__ */
-      orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%s%c%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxRESOURCE_KZ_TYPE_TAG_FILE, orxRESOURCE_KC_LOCATION_SEPARATOR, orxString_GetLength(zFileName) - orxString_GetLength(szPluginLibraryExt) - 1, zFileName, szPluginLibraryExt);
+      orxString_NPrint(acShadowLocation, sizeof(acShadowLocation) - 1, "%s%c" orxPLUGIN_KZ_RELATIVE_PREFIX "%.*s" orxPLUGIN_KZ_SHADOW_FORMAT ".%s", orxRESOURCE_KZ_TYPE_TAG_FILE, orxRESOURCE_KC_LOCATION_SEPARATOR, orxString_GetLength(zFileName) - orxString_GetLength(szPluginLibraryExt) - 1, zFileName, szPluginLibraryExt);
   #endif /* __orxPLUGIN_MULTI_SHADOW__ */
 
       /* Opens both resources */
@@ -1237,7 +1240,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginName)
     }
 
     /* Opens plugin */
-    pstSysPlugin = orxPLUGIN_OPEN(orxResource_GetPath(zLocation));
+    pstSysPlugin = orxPLUGIN_KFN_OPEN(orxResource_GetPath(zLocation));
 
     /* Valid? */
     if(pstSysPlugin != orxNULL)
@@ -1271,7 +1274,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginName)
           orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't register the plugin <%s>, closing it.", _zPluginName);
 
           /* Closes plugin */
-          orxPLUGIN_CLOSE(pstSysPlugin);
+          orxPLUGIN_KFN_CLOSE(pstSysPlugin);
 
           /* Deletes allocated plugin info */
           orxPlugin_DeletePluginInfo(pstPluginInfo);
@@ -1283,7 +1286,7 @@ orxHANDLE orxFASTCALL orxPlugin_Load(const orxSTRING _zPluginName)
         orxDEBUG_PRINT(orxDEBUG_LEVEL_PLUGIN, "Couldn't create a plugin info for plugin <%s>.", _zPluginName);
 
         /* Closes plugin */
-        orxPLUGIN_CLOSE(pstSysPlugin);
+        orxPLUGIN_KFN_CLOSE(pstSysPlugin);
       }
     }
     else
@@ -1523,7 +1526,3 @@ const orxSTRING orxFASTCALL orxPlugin_GetName(orxHANDLE _hPluginHandle)
   /* Done! */
   return zPluginName;
 }
-
-#undef orxPLUGIN_OPEN
-#undef orxPLUGIN_GET_SYMBOL_ADDRESS
-#undef orxPLUGIN_CLOSE
