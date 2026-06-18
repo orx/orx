@@ -73,7 +73,7 @@ typedef struct __orxMOUSE_STATIC_t
   GLFWwindow *pstWindow;
   orxU32      u32Flags;
   orxFLOAT    fWheelMove, fInternalWheelMove;
-  orxBOOL     bClearWheel, bClearMove, bButtonPressed, bUpdateCursor;
+  orxBOOL     bClearWheel : 1, bClearMove : 1, bButtonPressed : 1, bUpdateCursor : 1;
   struct {
     orxBOOL   bSet : 1, bDirty : 1, bPending : 1;
   }           abButtonStatusList[orxMOUSE_BUTTON_NUMBER];
