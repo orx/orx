@@ -17,3 +17,4 @@ tools/**/lib
 tutorial/bin
 tutorial/build
 tutorial/lib
+/.idea
