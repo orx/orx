@@ -67,6 +67,7 @@
 
 #define orxJOYSTICK_KZ_KEYBOARD               "keyboard"
 #define orxJOYSTICK_KZ_NUMPAD                 "numpad"
+#define orxJOYSTICK_KZ_TOUCHPAD               "touchpad"
 
 
 /***************************************************************************
@@ -143,7 +144,8 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
 
         /* Not a keyboard? */
         if((orxString_SearchString(acJoystickName, orxJOYSTICK_KZ_KEYBOARD) == orxNULL)
-        && (orxString_SearchString(acJoystickName, orxJOYSTICK_KZ_NUMPAD) == orxNULL))
+        && (orxString_SearchString(acJoystickName, orxJOYSTICK_KZ_NUMPAD) == orxNULL)
+        && (orxString_SearchString(acJoystickName, orxJOYSTICK_KZ_TOUCHPAD) == orxNULL))
         {
           orxCHAR acJoystick[16];
 
@@ -171,7 +173,7 @@ static void orxFASTCALL orxJoystick_GLFW_UpdateInfo(orxU32 _u32ID)
     else
     {
       /* Clears ID */
-      iJoyID = 1;
+      iJoyID = -1;
     }
   }
 
