@@ -1,6 +1,8 @@
 
+#include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+#include "limits.h"
 
 #include "ibxm.h"
 
@@ -215,6 +217,7 @@ static void sample_ping_pong( struct sample *sample ) {
   int idx;
   int loop_start = sample->loop_start;
   int loop_length = sample->loop_length;
+  if( loop_start < 0 || loop_length <= 0 || loop_length > INT_MAX - loop_start ) return;
   int loop_end = loop_start + loop_length;
   short *sample_data = sample->data;
   short *new_data = (short *)calloc( loop_end + loop_length + 1, sizeof( short ) );
@@ -223,10 +226,10 @@ static void sample_ping_pong( struct sample *sample ) {
     for( idx = 0; idx < loop_length; idx++ ) {
       new_data[ loop_end + idx ] = sample_data[ loop_end - idx - 1 ];
     }
+    sample->loop_length *= 2;
+    new_data[ loop_start + sample->loop_length ] = new_data[ loop_start ];
     free( sample->data );
     sample->data = new_data;
-    sample->loop_length *= 2;
-    sample->data[ loop_start + sample->loop_length ] = sample->data[ loop_start ];
   }
 }
 
@@ -271,7 +274,7 @@ static struct module* module_load_xm( struct data *data, char *message ) {
   struct module *module = (struct module *)calloc( 1, sizeof( struct module ) );
   if( module ) {
     if( data_u16le( data, 58 ) != 0x0104 ) {
-      strcpy( message, "XM format version must be 0x0104!" );
+      snprintf( message, 64, "XM format version must be 0x0104!" );
       dispose_module( module );
       return NULL;
     }
@@ -313,7 +316,7 @@ static struct module* module_load_xm( struct data *data, char *message ) {
     }
     for( idx = 0; idx < module->num_patterns; idx++ ) {
       if( data_u8( data, offset + 4 ) ) {
-        strcpy( message, "Unknown pattern packing type!" );
+        snprintf( message, 64, "Unknown pattern packing type!" );
         dispose_module( module );
         return NULL;
       }
@@ -503,7 +506,7 @@ static struct module* module_load_s3m( struct data *data, char *message ) {
     module->fast_vol_slides = ( ( flags & 0x40 ) == 0x40 ) || version == 0x1300;
     signed_samples = data_u16le( data, 42 ) == 1;
     if( data_u32le( data, 44 ) != 0x4d524353 ) {
-      strcpy( message, "Not an S3M file!" );
+      snprintf( message, 64, "Not an S3M file!" );
       dispose_module( module );
       return NULL;
     }
@@ -564,7 +567,7 @@ static struct module* module_load_s3m( struct data *data, char *message ) {
         loop_length = data_u32le( data, inst_offset + 24 ) - loop_start;
         sample->volume = data_u8( data, inst_offset + 28 );
         if( data_u8( data, inst_offset + 30 ) != 0 ) {
-          strcpy( message, "Packed samples not supported!" );
+          snprintf( message, 64, "Packed samples not supported!" );
           dispose_module( module );
           return NULL;
         }
@@ -609,7 +612,12 @@ static struct module* module_load_s3m( struct data *data, char *message ) {
     for( idx = 0; idx < module->num_patterns; idx++ ) {
       module->patterns[ idx ].num_channels = module->num_channels;
       module->patterns[ idx ].num_rows = 64;
-      pattern_data = (char *)calloc( module->num_channels * 64, 5 );
+      if( module->num_channels <= 0 || module->num_channels > INT_MAX / 64 ) {
+        dispose_module( module );
+        return NULL;
+      }
+      { size_t pat_size = (size_t)module->num_channels * 64;
+      pattern_data = (char *)calloc( pat_size, 5 ); }
       if( !pattern_data ) {
         dispose_module( module );
         return NULL;
@@ -740,7 +748,7 @@ static struct module* module_load_mod( struct data *data, char *message ) {
         module->gain = 32;
         break;
       default:
-        strcpy( message, "MOD Format not recognised!" );
+        snprintf( message, 64, "MOD Format not recognised!" );
         dispose_module( module );
         return NULL;
     }
@@ -880,7 +888,7 @@ struct module* module_load( struct data *data, char *message ) {
     module = module_load_mod( data, message );
   }
   if( module && ( module->num_channels < 1 || module->num_patterns < 1 || module->sequence_len < 1 ) ) {
-    strcpy( message, "Invalid module file!" );
+    snprintf( message, 64, "Invalid module file!" );
     dispose_module( module );
     return NULL;
   }
