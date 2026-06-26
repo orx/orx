@@ -117,13 +117,13 @@ void ExitExtensions()
   // Exit from inspector
   orxInspector_Exit();
 ]
-[+imgui
-  // Exit from Dear ImGui
-  orxImGui_Exit();
-]
 [+clay
   // Exit from Clay
   orxClay_Exit();
+]
+[+imgui
+  // Exit from Dear ImGui
+  orxImGui_Exit();
 ]
 [+nuklear
   // Exit from Nuklear
