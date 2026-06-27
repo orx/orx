@@ -8,8 +8,8 @@
 
 //! Prototypes
 
-orxSTATUS orxFASTCALL orxMod_Init();
-void orxFASTCALL      orxMod_Exit();
+orxSTATUS orxFASTCALL                     orxMod_Init();
+void orxFASTCALL                          orxMod_Exit();
 
 
 //! Implementation
@@ -311,8 +311,9 @@ void orxFASTCALL orxMod_Exit()
   {
     ModData *pstModData;
 
-    // Unregisters mod handler
-    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxMod_EventHandler);
+    // Unregisters mod handlers
+    orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_OBJECT, orxMod_EventHandler, orxNULL);
+    orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_SOUND, orxMod_Decode, orxNULL);
 
     // Deletes bank
     while((pstModData = (ModData *)orxBank_GetNext(sstMod.pstModBank, orxNULL)))

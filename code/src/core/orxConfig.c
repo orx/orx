@@ -1640,7 +1640,7 @@ static orxBOOL orxFASTCALL orxConfig_CheckTypo(const orxSTRING _zKeyName, const 
   {
     /* Typo? */
     if((orxString_ICompare(zKey, _zKeyName) == 0)
-    || (orxString_GetEditDistance(zKey, _zKeyName) <= ((orxString_GetLength(zKey) <= 4UL) ? 1UL : orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE)))
+    || (orxString_GetEditDistance(zKey, _zKeyName) <= ((orxString_GetLength(zKey) <= 5UL) ? 1UL : orxCONFIG_KU32_KEY_MAX_EDIT_DISTANCE)))
     {
       /* Logs message */
       orxDEBUG_PRINT(orxDEBUG_LEVEL_CONFIG, orxANSI_KZ_COLOR_FG_GREEN "[%s]" orxANSI_KZ_COLOR_FG_DEFAULT ": " orxANSI_KZ_COLOR_FG_YELLOW "<%s> " orxANSI_KZ_COLOR_FG_DEFAULT orxANSI_KZ_COLOR_UNDERLINE_ON "was found instead of requested key" orxANSI_KZ_COLOR_FG_YELLOW orxANSI_KZ_COLOR_UNDERLINE_OFF " <%s>" orxANSI_KZ_COLOR_FG_DEFAULT ", " orxANSI_KZ_COLOR_BLINK_ON "typo" orxANSI_KZ_COLOR_BLINK_OFF "?", sstConfig.pstCurrentSection->zName, _zKeyName, zKey);

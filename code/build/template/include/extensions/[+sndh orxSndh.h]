@@ -8,8 +8,8 @@
 
 //! Prototypes
 
-orxSTATUS orxFASTCALL orxSndh_Init();
-void orxFASTCALL      orxSndh_Exit();
+orxSTATUS orxFASTCALL                     orxSndh_Init();
+void orxFASTCALL                          orxSndh_Exit();
 
 
 //! Implementation
@@ -41,10 +41,10 @@ void orxFASTCALL      orxSndh_Exit();
 #include "AtariAudio/external/Musashi/m68kcpu.c"
 #include "AtariAudio/external/Musashi/m68kops.c"
 
+#undef _strdup
+#undef strdup
 #undef free
 #undef malloc
-#undef strdup
-#undef _strdup
 
 #ifdef __orxMSVC__
   #pragma warning(pop)
@@ -61,6 +61,7 @@ typedef struct SndhData
   orxOBJECT            *pstObject;
   orxU32                u32LoopCount;
   orxBOOL               bFirst;
+  int                   iSubSong;
 
 } SndhData;
 
@@ -127,7 +128,7 @@ static orxSTATUS orxFASTCALL orxSndh_Decode(const orxEVENT *_pstEvent)
         if(pstPayload->stStream.stPacket.fTime == orxFLOAT_0)
         {
           // Resets replay
-          pstSndhData->oSndhFile.InitSubSong(pstSndhData->oSndhFile.GetDefaultSubsong());
+          pstSndhData->oSndhFile.InitSubSong(pstSndhData->iSubSong);
           pstSndhData->u32LoopCount = 0;
 
           // Updates status
@@ -146,7 +147,7 @@ static orxSTATUS orxFASTCALL orxSndh_Decode(const orxEVENT *_pstEvent)
       // Converts all samples
       for(i = (orxS32)pstPayload->stStream.stPacket.u32SampleNumber - 1; i >= 0; i--)
       {
-        pstPayload->stStream.stPacket.afSampleList[i] = orxS2F(((int16_t *)pstPayload->stStream.stPacket.afSampleList)[i]) / orx2F(32678.0f);
+        pstPayload->stStream.stPacket.afSampleList[i] = orxS2F(((int16_t *)pstPayload->stStream.stPacket.afSampleList)[i]) / orx2F(32768.0f);
       }
 
       // Looped?
@@ -231,16 +232,15 @@ static orxSTATUS orxFASTCALL orxSndh_EventHandler(const orxEVENT *_pstEvent)
             pstSndhData->bFirst     = orxTRUE;
 
             // Inits subsong
-            int iSubsong;
             if(orxConfig_GetListCount("Sndh") > 1)
             {
-              iSubsong = orxCLAMP((int)orxConfig_GetListS32("Sndh", 1), 1, pstSndhData->oSndhFile.GetSubsongCount());
+              pstSndhData->iSubSong = orxCLAMP((int)orxConfig_GetListS32("Sndh", 1), 1, pstSndhData->oSndhFile.GetSubsongCount());
             }
             else
             {
-              iSubsong = pstSndhData->oSndhFile.GetDefaultSubsong();
+              pstSndhData->iSubSong = pstSndhData->oSndhFile.GetDefaultSubsong();
             }
-            pstSndhData->oSndhFile.InitSubSong(iSubsong);
+            pstSndhData->oSndhFile.InitSubSong(pstSndhData->iSubSong);
 
             // Adds event handlers
             orxEvent_AddHandlerWithContext(orxEVENT_TYPE_SOUND, orxSndh_Decode, pstSndhData);
@@ -259,7 +259,7 @@ static orxSTATUS orxFASTCALL orxSndh_EventHandler(const orxEVENT *_pstEvent)
             pstSndhData->oSndhFile.~SndhFile();
             orxBank_Free(sstSndh.pstSndhBank, pstSndhData);
           }
-          
+
           // Signals semaphore
           orxThread_SignalSemaphore(sstSndh.pstSemaphore);
         }
@@ -339,8 +339,9 @@ void orxFASTCALL orxSndh_Exit()
   {
     SndhData *pstSndhData;
 
-    // Unregisters sndh handler
-    orxEvent_RemoveHandler(orxEVENT_TYPE_OBJECT, orxSndh_EventHandler);
+    // Unregisters sndh handlers
+    orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_OBJECT, orxSndh_EventHandler, orxNULL);
+    orxEvent_RemoveHandlerWithContext(orxEVENT_TYPE_SOUND, orxSndh_Decode, orxNULL);
 
     // Deletes bank
     while((pstSndhData = (SndhData *)orxBank_GetNext(sstSndh.pstSndhBank, orxNULL)))

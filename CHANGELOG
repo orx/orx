@@ -1,6 +1,37 @@
 Orx - Portable Game Engine
 ==========================
 
+orx 1.17
+-----
+* IMPORTANT: Orx will now scale a pool of workers for tasks run with orxThread_RunTask(), based on the number of physical cores of the machine, added orxThread_RunTaskLinear() for old behavior
+* IMPORTANT: Added support for named variables in commands
+* IMPORTANT: Added MakeScrollObject to Scroll for auto-binding of ScrollObjects
+* IMPORTANT: Object.GetOwner will now return the first owning *object* in the owner hierarchy (and not any other kind of structure, like spawners)
+* IMPORTANT: orxClock_Unregister() now takes an optional context parameter and orxClock_GetContext()/orxClock_SetContext() have been removed
+* IMPORTANT: orxObject_Enable() & orxObject_Pause() now return an orxSTATUS value
+* IMPORTANT: Removed compatibility fix to support old font exported with orxFontGen (those fonts will need to be re-exported or turned into runtime typeface ones)
+* IMPORTANT: ScrollObject's Unique property now defines a section and not a key (ID is always the key)
+* IMPORTANT: orxTrigger_Fire() now returns the stop depth upon request
+* IMPORTANT: String.Sub command's second parameter is now the stop index, excluded (instead of the length), and can accept negative values to start from the end
+* IMPORTANT: orxString_NPrint() will now return 0 when no characters have been printed
+* IMPORTANT: ScrollObject::OnCreate() & ScrollObject::OnDelete() aren't mandatory anymore
+* IMPORTANT: Console.Log/Log command now outputs to system/file by default
+* Added orxThread_GetWorkerCount()
+* Modified Bundle extension to compress/encrypt resource in parallel when creating binary bundles (task worker pool)
+* SDF glyphs generation is now processed in parallel (task worker pool)
+* Added automatic <param>_size shader parameter for every array parameters
+* Added Enable, Disable, Pause & Unpause triggers
+* Added Anim trigger for handling animation transitions: Anim:<Old>:<New>
+* Added Locale config property to Graphics, Texts & Sounds (overrides the locale group to use)
+* Object.GetCount can now count objects inheriting from a given section (Object.GetCount @Base)
+* Enabling/pausing an object can now be ignored via event handler
+* Added orxAnimPointer_GetActiveTime()
+* Added Clay (GUI layout) extension to init
+* Added Round, Floor & Ceil commands
+* Added Compiler property to the System command
+* Added Input.HasActiveBinding command
+* *Many* misc fixes, optimizations and additions
+
 orx 1.16
 -----
 * IMPORTANT: Added Web/HTML5 platform support

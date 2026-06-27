@@ -11,6 +11,9 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		CE20759C2F89D9070034CCBF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE20759B2F89D9070034CCBF /* AVFoundation.framework */; };
+		CE20759D2F89D9FE0034CCBF /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE20759B2F89D9070034CCBF /* AVFoundation.framework */; };
+		CE20759F2F89DA3B0034CCBF /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE20759E2F89DA3B0034CCBF /* AudioToolbox.framework */; };
 		E00545D92C3915BF00D9B772 /* orxTrigger.c in Sources */ = {isa = PBXBuildFile; fileRef = E00545D82C3915BF00D9B772 /* orxTrigger.c */; };
 		E022D39314CC47BD00B81F6B /* orxFX.c in Sources */ = {isa = PBXBuildFile; fileRef = E022D39114CC47BD00B81F6B /* orxFX.c */; };
 		E022D39414CC47BD00B81F6B /* orxFXPointer.c in Sources */ = {isa = PBXBuildFile; fileRef = E022D39214CC47BD00B81F6B /* orxFXPointer.c */; };
@@ -106,6 +109,8 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CE20759B2F89D9070034CCBF /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		CE20759E2F89DA3B0034CCBF /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E00545D82C3915BF00D9B772 /* orxTrigger.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = orxTrigger.c; sourceTree = "<group>"; };
 		E022D38D14CC47AE00B81F6B /* orxFX.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxFX.h; sourceTree = "<group>"; };
 		E022D38E14CC47AE00B81F6B /* orxFXPointer.h */ = {isa = PBXFileReference; fileEncoding = 12; lastKnownFileType = sourcecode.c.h; path = orxFXPointer.h; sourceTree = "<group>"; };
@@ -269,6 +274,9 @@
 			files = (
 				E02F77CA2737F4DE00C2B002 /* CoreFoundation.framework in Frameworks */,
 				E059C6361116BC430086879B /* liborxd.a in Frameworks */,
+				CE20759D2F89D9FE0034CCBF /* AVFoundation.framework in Frameworks */,
+				CE20759F2F89DA3B0034CCBF /* AudioToolbox.framework in Frameworks */,
+				CE20759C2F89D9070034CCBF /* AVFoundation.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				E02F77C62737F44E00C2B002 /* CoreAudio.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
@@ -323,6 +331,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE20759E2F89DA3B0034CCBF /* AudioToolbox.framework */,
+				CE20759B2F89D9070034CCBF /* AVFoundation.framework */,
 				E0FCA0781A77473D007BB701 /* libwebpdecoder.a */,
 				152BA7911C6D00650002F9F6 /* libliquidfun.a */,
 				E02F77C52737F44E00C2B002 /* CoreAudio.framework */,
@@ -1113,6 +1123,7 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LIBRARY_SEARCH_PATHS = (
 					../../../lib/static/ios,
 					"$(inherited)",
@@ -1123,7 +1134,6 @@
 					"-ffast-math",
 					"-stdlib=libc++",
 				);
-				OTHER_LDFLAGS = "-lorxd";
 				PRESERVE_DEAD_CODE_INITS_AND_TERMS = YES;
 				PRODUCT_NAME = orxTestd;
 				PROVISIONING_PROFILE = "";
@@ -1167,6 +1177,7 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LIBRARY_SEARCH_PATHS = (
 					../../../lib/static/ios,
 					"$(inherited)",
@@ -1202,7 +1213,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-ffast-math",
@@ -1224,7 +1235,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				OTHER_CFLAGS = (
 					"-ffast-math",
 					"-stdlib=libc++",
@@ -1263,6 +1274,7 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					../../../../extern/libwebp/lib/ios,
@@ -1317,6 +1329,7 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					../../../../extern/libwebp/lib/ios,
@@ -1356,7 +1369,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				OTHER_CFLAGS = (
 					"-ffast-math",
 					"-stdlib=libc++",
@@ -1395,6 +1408,7 @@
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LIBRARY_SEARCH_PATHS = (
 					../../../lib/static/ios,
 					"$(inherited)",
@@ -1448,6 +1462,7 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					../../../../extern/libwebp/lib/ios,

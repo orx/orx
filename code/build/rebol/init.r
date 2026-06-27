@@ -10,9 +10,9 @@ params: compose/deep [
   name        {Project name (relative or absolute path)}                                        (none)    (none)
   bundle      {Automatic resource encryption & packaging}                                       +         []
   cheat       {Secret pass/cheat code support}                                                  -         []
-  clay        {Clay (GUI Layout) support (https://github.com/nicbarker/clay)}                          -         []
+  clay        {Clay (GUI Layout) support (https://github.com/nicbarker/clay)}                   -         []
   c++         {Create a C++ project instead of a C one}                                         +         []
-  imgui       {Dear ImGui (Debug GUI) support (https://github.com/ocornut/imgui)}                     -         [+c++]
+  imgui       {Dear ImGui (Debug GUI) support (https://github.com/ocornut/imgui)}               -         [+c++]
   inspector   {Object debug GUI inspector}                                                      -         [+imgui]
   mod         {Audio MOD (Amiga), XM & S3M support}                                             -         []
   movie       {Movie (MPEG-1) support}                                                          -         []
@@ -21,6 +21,7 @@ params: compose/deep [
   python      {Python support (https://pocketpy.dev)}                                           -         []
   remote      {Web-served resources support, HTTP/1.1 only, proof of concept)}                  -         []
   scroll      {C++ convenience layer with config-object binding}                                +         [+c++]
+  sid         {Audio SID (C64) support}                                                         -         []
   sndh        {Audio SNDH (Atari ST) support}                                                   -         [+c++]
 ]
 platforms:  [

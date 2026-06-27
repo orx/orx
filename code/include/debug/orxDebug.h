@@ -126,12 +126,12 @@ typedef orxSTATUS (orxFASTCALL *orxDEBUG_CALLBACK_FUNCTION)(orxDEBUG_LEVEL _eLev
 /* *** Debug Macros *** */
 
 /* Log message, compiler specific */
-#if defined(__orxGCC__) || defined(__orxLLVM__)
+#ifdef __orxVA_LEGACY__
 
   #define orxLOG(STRING, ...)                                                                                     \
   do                                                                                                              \
   {                                                                                                               \
-    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);    \
   } while(orxFALSE)
 
   #define orxLOG_TERMINAL(STRING, ...)                                                                            \
@@ -142,7 +142,7 @@ typedef orxSTATUS (orxFASTCALL *orxDEBUG_CALLBACK_FUNCTION)(orxDEBUG_LEVEL _eLev
     _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_TERMINAL,                                                        \
                        orxDEBUG_KU32_STATIC_FLAG_FILE                                                             \
                       |orxDEBUG_KU32_STATIC_FLAG_CONSOLE);                                                        \
-    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);    \
     _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                        \
   } while(orxFALSE)
 
@@ -154,7 +154,7 @@ typedef orxSTATUS (orxFASTCALL *orxDEBUG_CALLBACK_FUNCTION)(orxDEBUG_LEVEL _eLev
     _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_FILE,                                                            \
                        orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                          \
                       |orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                       \
-    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);    \
     _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                        \
   } while(orxFALSE)
 
@@ -166,57 +166,55 @@ typedef orxSTATUS (orxFASTCALL *orxDEBUG_CALLBACK_FUNCTION)(orxDEBUG_LEVEL _eLev
     _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                         \
                        orxDEBUG_KU32_STATIC_FLAG_FILE                                                             \
                       |orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                       \
-    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);  \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);    \
     _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                        \
   } while(orxFALSE)
 
-#else /* __orxGCC__ || __orxLLVM__ */
-  #ifdef __orxMSVC__
+#else /* __orxVA_LEGACY__ */
 
-    #define orxLOG(STRING, ...)                                                                                   \
-    do                                                                                                            \
-    {                                                                                                             \
-      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
-    } while(orxFALSE)
+  #define orxLOG(STRING, ...)                                                                                   \
+  do                                                                                                            \
+  {                                                                                                             \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);\
+  } while(orxFALSE)
 
-    #define orxLOG_TERMINAL(STRING, ...)                                                                          \
-    do                                                                                                            \
-    {                                                                                                             \
-      orxU32 u32DebugFlags;                                                                                       \
-      u32DebugFlags = _orxDebug_GetFlags();                                                                       \
-      _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_TERMINAL,                                                      \
-                         orxDEBUG_KU32_STATIC_FLAG_FILE                                                           \
-                        |orxDEBUG_KU32_STATIC_FLAG_CONSOLE);                                                      \
-      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
-      _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                      \
-    } while(orxFALSE)
+  #define orxLOG_TERMINAL(STRING, ...)                                                                          \
+  do                                                                                                            \
+  {                                                                                                             \
+    orxU32 u32DebugFlags;                                                                                       \
+    u32DebugFlags = _orxDebug_GetFlags();                                                                       \
+    _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_TERMINAL,                                                      \
+                       orxDEBUG_KU32_STATIC_FLAG_FILE                                                           \
+                      |orxDEBUG_KU32_STATIC_FLAG_CONSOLE);                                                      \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);\
+    _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                      \
+  } while(orxFALSE)
 
-    #define orxLOG_FILE(STRING, ...)                                                                              \
-    do                                                                                                            \
-    {                                                                                                             \
-      orxU32 u32DebugFlags;                                                                                       \
-      u32DebugFlags = _orxDebug_GetFlags();                                                                       \
-      _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_FILE,                                                          \
-                         orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                        \
-                        |orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                     \
-      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
-      _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                      \
-    } while(orxFALSE)
+  #define orxLOG_FILE(STRING, ...)                                                                              \
+  do                                                                                                            \
+  {                                                                                                             \
+    orxU32 u32DebugFlags;                                                                                       \
+    u32DebugFlags = _orxDebug_GetFlags();                                                                       \
+    _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_FILE,                                                          \
+                       orxDEBUG_KU32_STATIC_FLAG_CONSOLE                                                        \
+                      |orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                     \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);\
+    _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                      \
+  } while(orxFALSE)
 
-    #define orxLOG_CONSOLE(STRING, ...)                                                                           \
-    do                                                                                                            \
-    {                                                                                                             \
-      orxU32 u32DebugFlags;                                                                                       \
-      u32DebugFlags = _orxDebug_GetFlags();                                                                       \
-      _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                       \
-                         orxDEBUG_KU32_STATIC_FLAG_FILE                                                           \
-                        |orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                     \
-      _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);  \
-      _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                      \
-    } while(orxFALSE)
+  #define orxLOG_CONSOLE(STRING, ...)                                                                           \
+  do                                                                                                            \
+  {                                                                                                             \
+    orxU32 u32DebugFlags;                                                                                       \
+    u32DebugFlags = _orxDebug_GetFlags();                                                                       \
+    _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_FLAG_CONSOLE,                                                       \
+                       orxDEBUG_KU32_STATIC_FLAG_FILE                                                           \
+                      |orxDEBUG_KU32_STATIC_FLAG_TERMINAL);                                                     \
+    _orxDebug_Log(orxDEBUG_LEVEL_LOG, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);\
+    _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                      \
+  } while(orxFALSE)
 
-  #endif /* __orxMSVC__ */
-#endif /* __orcGCC__ || __orxLLVM__ */
+#endif /* __orxVA_LEGACY__ */
 
 #define orxDEBUG_INIT()                                                                                           \
 do                                                                                                                \
@@ -251,7 +249,17 @@ while(orxFALSE)
 #ifdef __orxDEBUG__
 
   /* Debug print, compiler specific */
-  #if defined(__orxGCC__) || defined(__orxLLVM__)
+  #ifdef __orxVA_LEGACY__
+    #define orxDEBUG_PRINT(LEVEL, STRING, ...)                                                                  \
+    do                                                                                                          \
+    {                                                                                                           \
+      orxU32 u32DebugFlags;                                                                                     \
+      u32DebugFlags = _orxDebug_GetFlags();                                                                     \
+      _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_MASK_DEBUG, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                  \
+      _orxDebug_Log(LEVEL, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);             \
+      _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                    \
+    } while(orxFALSE)
+  #else /* __orxVA_LEGACY__ */
     #define orxDEBUG_PRINT(LEVEL, STRING, ...)                                                                    \
     do                                                                                                            \
     {                                                                                                             \
@@ -261,19 +269,7 @@ while(orxFALSE)
       _orxDebug_Log(LEVEL, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, ##__VA_ARGS__);             \
       _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                      \
     } while(orxFALSE)
-  #else /* __orxGCC__ || __orxLLVM__ */
-    #ifdef __orxMSVC__
-      #define orxDEBUG_PRINT(LEVEL, STRING, ...)                                                                  \
-      do                                                                                                          \
-      {                                                                                                           \
-        orxU32 u32DebugFlags;                                                                                     \
-        u32DebugFlags = _orxDebug_GetFlags();                                                                     \
-        _orxDebug_SetFlags(orxDEBUG_KU32_STATIC_MASK_DEBUG, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                  \
-        _orxDebug_Log(LEVEL, (const orxSTRING)__FUNCTION__, __FILE__, __LINE__, STRING, __VA_ARGS__);             \
-        _orxDebug_SetFlags(u32DebugFlags, orxDEBUG_KU32_STATIC_MASK_USER_ALL);                                    \
-      } while(orxFALSE)
-    #endif /* __orxMSVC__ */
-  #endif /* __orcGCC__ || __orxLLVM__ */
+  #endif /* __orxVA_LEGACY__ */
 
   /* End platform specific */
 
@@ -315,7 +311,17 @@ while(orxFALSE)
     } while(orxFALSE)
 
   /* Assert */
-  #if defined(__orxGCC__) || defined(__orxLLVM__)
+  #ifdef __orxVA_LEGACY__
+    #define orxASSERT(TEST, ...)                                                                                                                                          \
+      do                                                                                                                                                                  \
+      {                                                                                                                                                                   \
+        if(!(TEST))                                                                                                                                                       \
+        {                                                                                                                                                                 \
+          orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, orxANSI_KZ_COLOR_BG_RED orxANSI_KZ_COLOR_FG_WHITE orxANSI_KZ_COLOR_BLINK_ON "FAILED ASSERTION [" #TEST "]", __VA_ARGS__); \
+          orxBREAK();                                                                                                                                                     \
+        }                                                                                                                                                                 \
+      } while(orxFALSE)
+  #else /* __orxVA_LEGACY__ */
     #define orxASSERT(TEST, ...)                                                                                                                                            \
       do                                                                                                                                                                    \
       {                                                                                                                                                                     \
@@ -325,19 +331,7 @@ while(orxFALSE)
           orxBREAK();                                                                                                                                                       \
         }                                                                                                                                                                   \
       } while(orxFALSE)
-  #else /* __orxGCC__ || __orxLLVM__ */
-    #ifdef __orxMSVC__
-      #define orxASSERT(TEST, ...)                                                                                                                                          \
-        do                                                                                                                                                                  \
-        {                                                                                                                                                                   \
-          if(!(TEST))                                                                                                                                                       \
-          {                                                                                                                                                                 \
-            orxDEBUG_PRINT(orxDEBUG_LEVEL_ASSERT, orxANSI_KZ_COLOR_BG_RED orxANSI_KZ_COLOR_FG_WHITE orxANSI_KZ_COLOR_BLINK_ON "FAILED ASSERTION [" #TEST "]", __VA_ARGS__); \
-            orxBREAK();                                                                                                                                                     \
-          }                                                                                                                                                                 \
-        } while(orxFALSE)
-    #endif /* __orxMSVC__ */
-  #endif /* __orcGCC__ || __orxLLVM__ */
+  #endif /* __orxVA_LEGACY__ */
 
 #else /* __orxDEBUG__ */
 

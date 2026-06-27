@@ -11,7 +11,7 @@
       "program": "${workspaceFolder}/code/bin/orxd",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/code/bin",
       "environment": [],
       "externalConsole": false,
       "preLaunchTask": "Build orx (debug)",

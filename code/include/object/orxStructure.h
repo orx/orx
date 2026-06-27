@@ -51,6 +51,11 @@
 #include "utils/orxLinkList.h"
 #include "utils/orxTree.h"
 
+#ifdef __orxMSVC__
+  #pragma warning(push)
+  #pragma warning(disable : 6011)
+#endif /* __orxMSVC__ */
+
 
 /** Structure pointer get helpers
  */
@@ -518,6 +523,10 @@ static orxINLINE void                                   orxStructure_SetFlags(vo
   /* Done! */
   return;
 }
+
+#ifdef __orxMSVC__
+  #pragma warning(pop)
+#endif /* __orxMSVC__ */
 
 #endif /* _orxSTRUCTURE_H_ */
 

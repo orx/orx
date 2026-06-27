@@ -79,10 +79,10 @@
   #pragma GCC diagnostic ignored "-Wmisleading-indentation"
 #endif /* __orxGCC__ */
 
-#ifdef __orxWEB__
+#if defined(__orxLLVM__) && ((__clang_major__ > 20) || ((__clang_major__ == 20) && (__clang_minor__ >= 1)))
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wnontrivial-memcall"
-#endif /* __orxWEB__ */
+#endif /* __orxLLVM__  && ((__clang_major__ > 20) || ((__clang_major__ == 20) && (__clang_minor__ >= 1))) */
 
 #ifdef __orxMSVC__
   #pragma warning(push)
@@ -282,15 +282,15 @@
 
 /**  Misc defines
  */
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-
-#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
-
-#else /* __orxGCC__ || __orxLLVM__ */
+#ifdef __orxVA_LEGACY__
 
 #define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); glASSERT();}} while(orxFALSE)
 
-#endif /* __orxGCC__ || __orxLLVM__ */
+#else /* __orxVA_LEGACY__ */
+
+#define glUNIFORM(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); glASSERT();}} while(orxFALSE)
+
+#endif /* __orxVA_LEGACY__ */
 
 
 #ifdef __orxDEBUG__
@@ -305,29 +305,29 @@ do                                                                        \
   }                                                                       \
 } while(orxFALSE)
 
-  #if defined(__orxGCC__) || defined(__orxLLVM__)
+  #ifdef __orxVA_LEGACY__
 
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); (void)glGetError();}} while(orxFALSE)
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); (void)glGetError();}} while(orxFALSE)
 
-  #else /* __orxGCC__ || __orxLLVM__ */
+  #else /* __orxVA_LEGACY__ */
 
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__); (void)glGetError();}} while(orxFALSE)
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__); (void)glGetError();}} while(orxFALSE)
 
-  #endif /* __orxGCC__ || __orxLLVM__ */
+  #endif /* __orxVA_LEGACY__ */
 
 #else /* __orxDEBUG__ */
 
-#define glASSERT()
+  #define glASSERT()
 
-  #if defined(__orxGCC__) || defined(__orxLLVM__)
+  #ifdef __orxVA_LEGACY__
 
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__);}} while(orxFALSE)
 
-  #else /* __orxGCC__ || __orxLLVM__ */
+  #else /* __orxVA_LEGACY__ */
 
-#define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, __VA_ARGS__);}} while(orxFALSE)
+    #define glUNIFORM_NO_ASSERT(EXT, LOCATION, ...) do {if((LOCATION) >= 0) {glUniform##EXT(LOCATION, ##__VA_ARGS__);}} while(orxFALSE)
 
-  #endif /* __orxGCC__ || __orxLLVM__ */
+  #endif /* __orxVA_LEGACY__ */
 
 #endif /* __orxDEBUG__ */
 
@@ -2648,7 +2648,7 @@ static void orxFASTCALL orxDisplay_GLFW_ReadResourceCallback(orxHANDLE _hResourc
   if(orxFLAG_TEST(pstInfo->pstBitmap->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING))
   {
     /* Runs asynchronous task */
-    if(orxThread_RunTask(&orxDisplay_GLFW_DecompressBitmap, orxDisplay_GLFW_DecompressBitmapCallback, orxNULL, (void *)pstInfo) == orxSTATUS_FAILURE)
+    if(orxThread_RunTask(&orxDisplay_GLFW_DecompressBitmap, &orxDisplay_GLFW_DecompressBitmapCallback, orxNULL, (void *)pstInfo) == orxSTATUS_FAILURE)
     {
       /* Frees load info */
       orxMemory_Free(pstInfo);
@@ -5703,7 +5703,7 @@ orxBITMAP *orxFASTCALL orxDisplay_GLFW_LoadFont(const orxSTRING _zFileName, cons
                         orxFLAG_SET(pstResult->u32Flags, orxDISPLAY_KU32_BITMAP_FLAG_LOADING, orxDISPLAY_KU32_BITMAP_FLAG_NONE);
 
                         /* Runs asynchronous task */
-                        if(orxThread_RunTaskLinear(&orxDisplay_GLFW_ProcessFont, orxDisplay_GLFW_DecompressBitmapCallback, orxNULL, (void *)pstLoadInfo) == orxSTATUS_FAILURE)
+                        if(orxThread_RunTaskLinear(&orxDisplay_GLFW_ProcessFont, &orxDisplay_GLFW_DecompressBitmapCallback, orxNULL, (void *)pstLoadInfo) == orxSTATUS_FAILURE)
                         {
                           /* Deletes glyph list */
                           orxMemory_Free(pstLoadInfo->astGlyphList);
@@ -8053,6 +8053,6 @@ orxPLUGIN_USER_CORE_FUNCTION_END();
   #pragma GCC diagnostic pop
 #endif /* __orxGCC__ */
 
-#ifdef __orxWEB__
+#if defined(__orxLLVM__) && ((__clang_major__ > 20) || ((__clang_major__ == 20) && (__clang_minor__ >= 1)))
   #pragma clang diagnostic pop
-#endif /* __orxWEB__ */
+#endif /* __orxLLVM__ && ((__clang_major__ > 20) || ((__clang_major__ == 20) && (__clang_minor__ >= 1))) */

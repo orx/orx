@@ -21,7 +21,7 @@ runs:
       shell: cmd
       if: inputs.os == 'windows'
     - name: Cache extern
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: cache
         key: orx-extern

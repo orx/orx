@@ -108,6 +108,7 @@
 #define orxSOUND_KZ_CONFIG_BUS                          "Bus"
 #define orxSOUND_KZ_CONFIG_FILTER_LIST                  "FilterList"
 #define orxSOUND_KZ_CONFIG_TYPE                         "Type"
+#define orxSOUND_KZ_CONFIG_LOCALE_GROUP                 "Locale"
 #define orxSOUND_KZ_CONFIG_USE_CUSTOM_PARAM             "UseCustomParam"
 #define orxSOUND_KZ_CONFIG_FREQUENCY                    "Frequency"
 #define orxSOUND_KZ_CONFIG_ORDER                        "Order"
@@ -187,10 +188,11 @@ struct __orxSOUND_t
   };
   orxSTRINGID           stBusID;                        /**< Sound bus ID: 64/80 */
   const orxSTRING       zReference;                     /**< Sound reference : 68/88 */
-  orxSOUND_STATUS       eStatus;                        /**< Sound status : 72/92 */
-  orxFLOAT              fVolume;                        /**< Sound volume : 76/96 */
-  orxFLOAT              fPitch;                         /**< Sound pitch : 80/100 */
-  orxFLOAT              fPitchModifier;                 /**< Sound pitch modifier : 84/104 */
+  const orxSTRING       zLocaleGroup;                   /**< Sound locale group : 72/96 */
+  orxSOUND_STATUS       eStatus;                        /**< Sound status : 74/100 */
+  orxFLOAT              fVolume;                        /**< Sound volume : 80/104 */
+  orxFLOAT              fPitch;                         /**< Sound pitch : 84/108 */
+  orxFLOAT              fPitchModifier;                 /**< Sound pitch modifier : 88/112 */
 };
 
 /** Static structure
@@ -418,7 +420,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         if(*zName == orxSOUND_KC_LOCALE_MARKER)
         {
           /* Gets its locale value */
-          zName = (*(zName + 1) == orxSOUND_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1, orxSOUND_KZ_LOCALE_GROUP);
+          zName = (*(zName + 1) == orxSOUND_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1, _pstSound->zLocaleGroup);
         }
 
         /* Loads its corresponding sample */
@@ -467,7 +469,7 @@ static orxSTATUS orxFASTCALL orxSound_ProcessConfigData(orxSOUND *_pstSound, orx
         if(*zName == orxSOUND_KC_LOCALE_MARKER)
         {
           /* Gets its locale value */
-          zName = (*(zName + 1) == orxSOUND_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1, orxSOUND_KZ_LOCALE_GROUP);
+          zName = (*(zName + 1) == orxSOUND_KC_LOCALE_MARKER) ? zName + 1 : orxLocale_GetString(zName + 1, _pstSound->zLocaleGroup);
         }
 
         /* Gets its stream type */
@@ -1166,7 +1168,8 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
   /* Locale event */
   else
   {
-    orxLOCALE_EVENT_PAYLOAD *pstPayload;
+    orxLOCALE_EVENT_PAYLOAD  *pstPayload;
+    orxSOUND                 *pstSound;
 
     /* Checks */
     orxASSERT(_pstEvent->eType == orxEVENT_TYPE_LOCALE);
@@ -1174,15 +1177,13 @@ static orxSTATUS orxFASTCALL orxSound_EventHandler(const orxEVENT *_pstEvent)
     /* Gets its payload */
     pstPayload = (orxLOCALE_EVENT_PAYLOAD *)_pstEvent->pstPayload;
 
-    /* Sound group? */
-    if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, orxSOUND_KZ_LOCALE_GROUP) == 0))
+    /* For all sounds */
+    for(pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
+        pstSound != orxNULL;
+        pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
     {
-      orxSOUND *pstSound;
-
-      /* For all sounds */
-      for(pstSound = orxSOUND(orxStructure_GetFirst(orxSTRUCTURE_ID_SOUND));
-          pstSound != orxNULL;
-          pstSound = orxSOUND(orxStructure_GetNext(pstSound)))
+      /* Sound group? */
+      if((pstPayload->zGroup == orxNULL) || (orxString_Compare(pstPayload->zGroup, pstSound->zLocaleGroup) == 0))
       {
         /* Has a reference? */
         if(pstSound->zReference != orxNULL)
@@ -2326,6 +2327,11 @@ orxSOUND *orxFASTCALL orxSound_CreateFromConfig(const orxSTRING _zConfigID)
     /* Valid? */
     if(pstResult != orxNULL)
     {
+      /* Stores its locale group */
+      pstResult->zLocaleGroup = (orxConfig_HasValue(orxSOUND_KZ_CONFIG_LOCALE_GROUP) != orxFALSE)
+                                ? orxString_Store(orxConfig_GetString(orxSOUND_KZ_CONFIG_LOCALE_GROUP))
+                                : orxSOUND_KZ_LOCALE_GROUP;
+
       /* Stores its reference */
       pstResult->zReference = orxConfig_GetCurrentSection();
 

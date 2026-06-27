@@ -46,6 +46,7 @@ const orxSTRING orxFASTCALL                 orxBundle_GetOutputName();
 #define orxBUNDLE_KU32_TABLE_SIZE           256
 #define orxBUNDLE_KU32_TOC_SIZE             1024
 #define orxBUNDLE_KS32_MONITOR_GUARD        0x40000000
+#define orxBUNDLE_KU32_COMPRESSION_LEVEL    LZ4HC_CLEVEL_MAX
 
 #define orxBUNDLE_KZ_BINARY_TAG             "OBR1"
 #define orxBUNDLE_KU32_HEADER_INTRO_SIZE    (4 + 4)
@@ -131,15 +132,7 @@ static orxBUNDLE sstBundle;
 
 //! Helpers
 
-#if defined(__orxGCC__) || defined(__orxLLVM__)
-  #define orxResource_Print(RESOURCE, FORMAT, ...)                                                                  \
-    do                                                                                                              \
-    {                                                                                                               \
-      orxS32 s32Count;                                                                                              \
-      s32Count = orxString_NPrint(sstBundle.acPrintBuffer, sizeof(sstBundle.acPrintBuffer), FORMAT, ##__VA_ARGS__); \
-      orxResource_Write(RESOURCE, (orxS64)s32Count, sstBundle.acPrintBuffer, orxNULL, orxNULL);                     \
-    } while(orxFALSE)
-#else // __orxGCC__ || __orxLLVM__
+#ifdef __orxVA_LEGACY__
   #define orxResource_Print(RESOURCE, FORMAT, ...)                                                                  \
     do                                                                                                              \
     {                                                                                                               \
@@ -147,7 +140,15 @@ static orxBUNDLE sstBundle;
       s32Count = orxString_NPrint(sstBundle.acPrintBuffer, sizeof(sstBundle.acPrintBuffer), FORMAT, __VA_ARGS__);   \
       orxResource_Write(RESOURCE, (orxS64)s32Count, sstBundle.acPrintBuffer, orxNULL, orxNULL);                     \
     } while(orxFALSE)
-#endif // __orxGCC__ || __orxLLVM__
+#else // __orxVA_LEGACY__
+  #define orxResource_Print(RESOURCE, FORMAT, ...)                                                                  \
+    do                                                                                                              \
+    {                                                                                                               \
+      orxS32 s32Count;                                                                                              \
+      s32Count = orxString_NPrint(sstBundle.acPrintBuffer, sizeof(sstBundle.acPrintBuffer), FORMAT, ##__VA_ARGS__); \
+      orxResource_Write(RESOURCE, (orxS64)s32Count, sstBundle.acPrintBuffer, orxNULL, orxNULL);                     \
+    } while(orxFALSE)
+#endif // __orxVA_LEGACY__
 
 static orxINLINE void orxResource_WriteU32(orxHANDLE _hResource, orxU32 _u32Value)
 {
@@ -493,7 +494,7 @@ static orxSTATUS orxFASTCALL orxBundle_ProcessResource(void *_pContext)
         if(pu8CompressedBuffer != orxNULL)
         {
           // Compresses it
-          s32CompressedSize = (orxS32)LZ4_compress_HC((const char *)pu8Buffer, (char *)pu8CompressedBuffer, (int)pstResourceRef->s64FinalSize, (int)s32CompressedSize, LZ4HC_CLEVEL_MAX);
+          s32CompressedSize = (orxS32)LZ4_compress_HC((const char *)pu8Buffer, (char *)pu8CompressedBuffer, (int)pstResourceRef->s64FinalSize, (int)s32CompressedSize, orxBUNDLE_KU32_COMPRESSION_LEVEL);
 
           // Success?
           if(s32CompressedSize > 0)
@@ -608,7 +609,7 @@ static orxSTATUS orxFASTCALL orxBundle_ProcessResource(void *_pContext)
 
   // Updates current resource ID: next!
   orxMEMORY_BARRIER();
-  sstBundle.u32CurrentResourceID++;
+  sstBundle.u32CurrentResourceID = sstBundle.u32CurrentResourceID + 1;
 
   // Done!
   return orxSTATUS_SUCCESS;
@@ -987,6 +988,7 @@ static orxINLINE orxSTATUS orxBundle_Process()
           {
             // Runs task locally (faster in non-binary mode)
             orxBundle_ProcessResource(pstResourceRef);
+            orxBundle_CleanResource(pstResourceRef);
           }
         }
         else
