@@ -61,7 +61,7 @@
 
 #define orxINPUT_KU32_BINDING_NUMBER                  16
 
-#define orxINPUT_KZ_INTERNAL_SET_PREFIX               "-="
+#define orxINPUT_KZ_INTERNAL_SET_PREFIX               "orx:input:"
 
 #define orxINPUT_KC_MODE_PREFIX_POSITIVE              '+'
 #define orxINPUT_KC_MODE_PREFIX_NEGATIVE              '-'
