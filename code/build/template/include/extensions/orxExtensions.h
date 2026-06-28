@@ -66,6 +66,11 @@
 #define orxBUNDLE_IMPL
 #include "orxBundle.h"
 #undef orxBUNDLE_IMPL]
+[+python
+
+#define orxPY_IMPL
+#include "orxPy.h"
+#undef orxPY_IMPL]
 
 void InitExtensions()
 {
@@ -109,10 +114,18 @@ void InitExtensions()
   // Initialize inspector
   orxInspector_Init();
 ]
+[+python
+  // Initialize Python support
+  orxPy_Init();
+]
 }
 
 void ExitExtensions()
 {
+[+python
+  // Exit from Python support
+  orxPy_Exit();
+]
 [+inspector
   // Exit from inspector
   orxInspector_Exit();
@@ -178,6 +191,10 @@ void BootstrapExtensions()
   orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE, orxFALSE);
   orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, orxBUNDLE_KZ_RESOURCE_STORAGE "[name].obr", orxFALSE);]
   orxResource_AddStorage(orxCONFIG_KZ_RESOURCE_GROUP, "../data/config", orxFALSE);
+[+python
+
+  // Initialize Python VM
+  orxPy_InitVM();]
 }
 
 #endif // _orxEXTENSIONS_H_
