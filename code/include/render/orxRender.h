@@ -78,7 +78,7 @@
 
 /** Inputs
  */
-#define orxRENDER_KZ_INPUT_SET                        "orx:input:profiler"
+#define orxRENDER_KZ_INPUT_SET                        (orxINPUT_KZ_INTERNAL_SET_PREFIX "profiler")
 
 #define orxRENDER_KZ_INPUT_PROFILER_TOGGLE_HISTORY    "ToggleHistory"
 #define orxRENDER_KZ_INPUT_PROFILER_PAUSE             "Pause"

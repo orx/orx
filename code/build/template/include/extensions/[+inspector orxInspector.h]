@@ -42,7 +42,7 @@ typedef enum __orxINSPECTOR_EVENT_t
 
 #define orxINSPECTOR_KZ_HIGHLIGHT           "Highlight"
 
-#define orxINSPECTOR_KZ_INPUT_SET           "orx:input:inspector"
+#define orxINSPECTOR_KZ_INPUT_SET           (orxINPUT_KZ_INTERNAL_SET_PREFIX "inspector")
 #define orxINSPECTOR_KZ_INPUT_INSPECT       "Inspect"
 
 #define orxINSPECTOR_KZ_TRIGGER             "Inspector"

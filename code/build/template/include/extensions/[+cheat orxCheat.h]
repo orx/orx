@@ -20,7 +20,7 @@ void orxFASTCALL                            orxCheat_Enable(orxBOOL _bEnable);
 #define orxCHEAT_KZ_CONFIG_ROOT             "orx:cheat"
 #define orxCHEAT_KC_CONFIG_SEPARATOR        ':'
 #define orxCHEAT_KZ_CONFIG_PREFIX           (orxCHEAT_KZ_CONFIG_ROOT ":")
-#define orxCHEAT_KZ_INPUT_SET               "orx:input:cheat"
+#define orxCHEAT_KZ_INPUT_SET               (orxINPUT_KZ_INTERNAL_SET_PREFIX "cheat")
 #define orxCHEAT_KU32_MAX_JOYSTICK          4
 
 
