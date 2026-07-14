@@ -102,9 +102,9 @@ typedef enum __orxINSPECTOR_EVENT_t
 "    }\n"                                                                                             \
 "  }\n"                                                                                               \
 "  // Use the following line to have the outline color blend at the edges\n"                          \
-"  // gl_FragColor = mix(pixel_color * gl_Color, pixel_color * gl_Color * outline_color, balance);\n" \
+"  // gl_FragData[0] = mix(pixel_color * gl_Color, pixel_color * gl_Color * outline_color, balance);\n" \
 "  // Use the following line to have the outline color only at the edges\n"                           \
-"  gl_FragColor = mix(pixel_color * gl_Color, outline_color, balance);\n"                             \
+"  gl_FragData[0] = mix(pixel_color * gl_Color, outline_color, balance);\n"                             \
 "}\""
 
 #define orxINSPECTOR_KU32_TEXT_BANK_SIZE    256

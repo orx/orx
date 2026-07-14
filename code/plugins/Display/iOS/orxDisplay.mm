@@ -5153,7 +5153,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         "uniform sampler2D __Texture__;"
         "void main()"
         "{"
-        "  gl_FragColor = ___Color.rgba * texture2D(__Texture__, ___TexCoord___).rgba;"
+        "  gl_FragData[0] = ___Color.rgba * texture2D(__Texture__, ___TexCoord___).rgba;"
         "}";
         static const orxSTRING szNoTextureFragmentShaderSource =
         "precision highp float;"
@@ -5162,7 +5162,7 @@ orxSTATUS orxFASTCALL orxDisplay_iOS_Init()
         "uniform sampler2D __Texture__;"
         "void main()"
         "{"
-        "  gl_FragColor = ___Color;"
+        "  gl_FragData[0] = ___Color;"
         "}";
 
         /* Inits flags */

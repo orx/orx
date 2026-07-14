@@ -5401,7 +5401,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       "uniform sampler2D _Texture_;"
       "void main()"
       "{"
-      "  gl_FragColor = _Color0_.rgba * texture2D(_Texture_, _gl_TexCoord0_).rgba;"
+      "  gl_FragData[0] = _Color0_.rgba * texture2D(_Texture_, _gl_TexCoord0_).rgba;"
       "}";
       static const orxSTRING szNoTextureFragmentShaderSource =
       "precision highp float;"
@@ -5410,7 +5410,7 @@ orxSTATUS orxFASTCALL orxDisplay_Android_Init()
       "uniform sampler2D _Texture_;"
       "void main()"
       "{"
-      "  gl_FragColor = _Color0_;"
+      "  gl_FragData[0] = _Color0_;"
       "}";
 
       /* Inits flags */

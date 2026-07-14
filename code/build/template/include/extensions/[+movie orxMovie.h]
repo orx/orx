@@ -503,7 +503,7 @@ static orxSTATUS orxFASTCALL orxMovie_EventHandler(const orxEVENT *_pstEvent)
             "    color.g = texture2D(cb, coord.xy).a;"
             "    color.b = texture2D(cr, coord.xy).a;"
             "  }"
-            "  gl_FragColor = vec4(color, 1.0) * bt601 * gl_Color;"
+            "  gl_FragData[0] = vec4(color, 1.0) * bt601 * gl_Color;"
             "}"
           );
           orxObject_SetShaderFromConfig(pstObject, orxConfig_GetCurrentSection());

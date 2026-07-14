@@ -6319,7 +6319,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           "uniform sampler2D orxTexture;"
           "void main()"
           "{"
-          "  gl_FragColor = _Color0_.rgba * texture2D(orxTexture, _gl_TexCoord0_).rgba;"
+          "  gl_FragData[0] = _Color0_.rgba * texture2D(orxTexture, _gl_TexCoord0_).rgba;"
           "}";
           static const orxSTRING szNoTextureFragmentShaderSource =
 #ifdef __orxDISPLAY_OPENGL_ES__
@@ -6329,7 +6329,7 @@ orxSTATUS orxFASTCALL orxDisplay_GLFW_SetVideoMode(const orxDISPLAY_VIDEO_MODE *
           "varying vec4 _Color0_;"
           "void main()"
           "{"
-          "  gl_FragColor = _Color0_;"
+          "  gl_FragData[0] = _Color0_;"
           "}";
 
           /* Has shader version value? */
