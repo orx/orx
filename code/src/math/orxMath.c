@@ -72,7 +72,7 @@ void orxFASTCALL orxMath_InitRandom(orxU32 _u32Seed)
 
   /* Inits random seed */
   su64State = (orxU64)_u32Seed * (orxU64)_u32Seed;
-  
+
   /* Done! */
   return;
 }
