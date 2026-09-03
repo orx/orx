@@ -3278,7 +3278,7 @@ orxSTATUS orxFASTCALL orxSoundSystem_MiniAudio_Init()
     sstSoundSystem.stResourceManagerConfig                                = ma_resource_manager_config_init();
     sstSoundSystem.stResourceManagerConfig.decodedFormat                  = orxSOUNDSYSTEM_KE_DEFAULT_FORMAT;
     sstSoundSystem.stResourceManagerConfig.jobThreadCount                 = 0;
-    sstSoundSystem.stResourceManagerConfig.flags                          = MA_RESOURCE_MANAGER_FLAG_NON_BLOCKING;
+    sstSoundSystem.stResourceManagerConfig.flags                          = MA_RESOURCE_MANAGER_FLAG_NON_BLOCKING | MA_RESOURCE_MANAGER_FLAG_NO_THREADING;
     sstSoundSystem.stResourceManagerConfig.ppCustomDecodingBackendVTables = sstSoundSystem.apstVTable;
     sstSoundSystem.stResourceManagerConfig.customDecodingBackendCount     = orxARRAY_GET_ITEM_COUNT(sstSoundSystem.apstVTable);
     sstSoundSystem.stResourceManagerConfig.pVFS                           = &(sstSoundSystem.stCallbacks);
