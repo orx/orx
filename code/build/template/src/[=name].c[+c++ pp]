@@ -98,8 +98,7 @@ __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
     poMainCamera->SetPosition(*orxVector_Round(&vPosition, &poMainCamera->GetPosition(vPosition)));]
 [-scroll
     orxObject_SetPosition(pstMainCamera, orxVector_Round(&vPosition, orxObject_GetPosition(pstMainCamera, &vPosition)));]
-  }
-]
+  }]
 [+python
   // Call Python camera update
   orxPy_CameraUpdate([-scroll _pstClockInfo][+scroll &_rstClockInfo], orxNULL);]
