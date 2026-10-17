@@ -141,10 +141,10 @@ jobs:
           - simulator
         include:
           - os: mac
-            runner: macos-14
+            runner: macos-26
             setup: setup.sh
           - platform: simulator
-            extra: -destination 'platform=iOS Simulator,name=iPhone 15'
+            extra: -destination 'platform=iOS Simulator,name=iPhone 17'
     runs-on: ${{matrix.runner}}
     steps:
       - uses: actions/checkout@v5
