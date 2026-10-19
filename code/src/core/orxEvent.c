@@ -329,7 +329,7 @@ orxSTATUS orxFASTCALL orxEvent_AddHandlerWithContext(orxEVENT_TYPE _eEventType, 
           orxU32 u32ID;
 
           /* Gets it */
-          u32ID = (orxU32)(1 << i);
+          u32ID = ((orxU32)1) << i;
 
           /* Should be removed? */
           if(orxFLAG_TEST(pstInfo->u32IDFlags, u32ID))
@@ -509,7 +509,7 @@ orxSTATUS orxFASTCALL orxEvent_SetHandlerIDFlags(orxEVENT_HANDLER _pfnEventHandl
           orxU32 u32ID;
 
           /* Gets it */
-          u32ID = (orxU32)(1 << i);
+          u32ID = ((orxU32)1) << i;
 
           /* Should be removed? */
           if(orxFLAG_TEST(_u32RemoveIDFlags, u32ID) && orxFLAG_TEST(pstInfo->u32IDFlags, u32ID))
@@ -622,7 +622,7 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
               orxU32 u32ID;
 
               /* Gets it */
-              u32ID = (orxU32)(1 << i);
+              u32ID = ((orxU32)1) << i;
 
               /* Should be removed? */
               if(orxFLAG_TEST(pstInfo->u32IDFlags, u32ID))
