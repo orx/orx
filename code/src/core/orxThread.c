@@ -786,6 +786,11 @@ orxU32 orxFASTCALL orxThread_Start(const orxTHREAD_FUNCTION _pfnRun, const orxST
         pstInfo->pContext     = orxNULL;
         pstInfo->u32ParentID  = 0;
         pstInfo->u32Flags     = orxTHREAD_KU32_INFO_FLAG_NONE;
+        if(pstInfo->zName != orxSTRING_EMPTY)
+        {
+          orxString_Delete((orxSTRING)(pstInfo->zName));
+          pstInfo->zName = orxSTRING_EMPTY;
+        }
       }
     }
   }
