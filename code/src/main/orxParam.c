@@ -762,6 +762,7 @@ orxSTATUS orxFASTCALL orxParam_SetArgs(orxU32 _u32NbParams, orxSTRING _azParams[
     /* Stores them */
     sstParam.u32ParamNumber = _u32NbParams;
     sstParam.azParams       = (orxSTRING *)malloc(_u32NbParams * sizeof(orxSTRING));
+    orxASSERT(sstParam.azParams != orxNULL);
     for(i = 0; i < _u32NbParams; i++)
     {
       sstParam.azParams[i] = strdup(_azParams[i]);
