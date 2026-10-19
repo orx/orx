@@ -566,7 +566,7 @@ orxSTATUS orxFASTCALL orxThread_Init()
           sstThread.astWorkerList[i].u32ThreadID = orxThread_Start(orxThread_Work, acBuffer, (void *)(orxUPTR)i);
 
           /* Failure? */
-          if(sstThread.astWorkerList[i].u32ThreadID == orxSTATUS_FAILURE)
+          if(sstThread.astWorkerList[i].u32ThreadID == orxU32_UNDEFINED)
           {
             /* Stops */
             break;
