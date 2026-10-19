@@ -5113,28 +5113,32 @@ orxSTATUS orxFASTCALL orxConfig_SetEncryptionKey(const orxSTRING _zEncryptionKey
 {
   orxSTATUS eResult = orxSTATUS_SUCCESS;
 
-  /* Had encryption key? */
-  if(sstConfig.zEncryptionKey != orxNULL)
+  /* Different key? */
+  if(_zEncryptionKey != sstConfig.zEncryptionKey)
   {
-    /* Deletes it */
-    free(sstConfig.zEncryptionKey);
-  }
+    /* Had encryption key? */
+    if(sstConfig.zEncryptionKey != orxNULL)
+    {
+      /* Deletes it */
+      free(sstConfig.zEncryptionKey);
+    }
 
-  /* Has new key? */
-  if((_zEncryptionKey != orxNULL) && (*_zEncryptionKey != orxCHAR_NULL))
-  {
-    /* Updates values */
-    sstConfig.u32EncryptionKeySize  = (orxU32)strlen(_zEncryptionKey);
-    sstConfig.zEncryptionKey        = (orxSTRING)malloc((size_t)(sstConfig.u32EncryptionKeySize + 1));
-    memcpy(sstConfig.zEncryptionKey, _zEncryptionKey, (size_t)(sstConfig.u32EncryptionKeySize + 1));
-    sstConfig.pcEncryptionChar      = sstConfig.zEncryptionKey;
-  }
-  else
-  {
-    /* Updates values */
-    sstConfig.zEncryptionKey        = orxNULL;
-    sstConfig.u32EncryptionKeySize  = 0;
-    sstConfig.pcEncryptionChar      = orxNULL;
+    /* Has new key? */
+    if((_zEncryptionKey != orxNULL) && (*_zEncryptionKey != orxCHAR_NULL))
+    {
+      /* Updates values */
+      sstConfig.u32EncryptionKeySize  = (orxU32)strlen(_zEncryptionKey);
+      sstConfig.zEncryptionKey        = (orxSTRING)malloc((size_t)(sstConfig.u32EncryptionKeySize + 1));
+      memcpy(sstConfig.zEncryptionKey, _zEncryptionKey, (size_t)(sstConfig.u32EncryptionKeySize + 1));
+      sstConfig.pcEncryptionChar      = sstConfig.zEncryptionKey;
+    }
+    else
+    {
+      /* Updates values */
+      sstConfig.zEncryptionKey        = orxNULL;
+      sstConfig.u32EncryptionKeySize  = 0;
+      sstConfig.pcEncryptionChar      = orxNULL;
+    }
   }
 
   /* Done! */
