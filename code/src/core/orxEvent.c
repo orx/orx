@@ -582,12 +582,8 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
       /* Gets current thread */
       u32CurrentThread = orxThread_GetCurrent();
 
-      /* Main thread? */
-      if(u32CurrentThread == orxTHREAD_KU32_MAIN_THREAD_ID)
-      {
-        /* Updates event send count */
-        sstEvent.s32EventSendCount++;
-      }
+      /* Updates event send count */
+      orxMEMORY_ATOMIC_INC32(&(sstEvent.s32EventSendCount));
 
       /* For all handlers */
       for(pstInfo = (orxEVENT_HANDLER_INFO *)orxLinkList_GetFirst(&(pstStorage->stList));
@@ -650,12 +646,8 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
       /* Clears context */
       _pstEvent->pContext = orxNULL;
 
-      /* Main thread? */
-      if(u32CurrentThread == orxTHREAD_KU32_MAIN_THREAD_ID)
-      {
-        /* Updates event send count */
-        sstEvent.s32EventSendCount--;
-      }
+      /* Updates event send count */
+      orxMEMORY_ATOMIC_DEC32(&(sstEvent.s32EventSendCount));
     }
   }
 
