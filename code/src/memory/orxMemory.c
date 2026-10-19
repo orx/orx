@@ -140,6 +140,7 @@ static orxINLINE orxU32 orxMemory_CacheLineSize()
 
   /* Allocates info list */
   astProcessorInfoList = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION *)orxMemory_Allocate(u32InfoListSize, orxMEMORY_TYPE_TEMP);
+  orxASSERT(astProcessorInfoList != orxNULL);
 
   /* Gets processors info */
   GetLogicalProcessorInformation(astProcessorInfoList, (PDWORD)&u32InfoListSize);
