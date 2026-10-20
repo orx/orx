@@ -65,6 +65,7 @@
     #pragma GCC diagnostic ignored "-Wstringop-overflow"
   #endif /* __orxGCC__ */
 #elif defined(__orxMSVC__)
+  #include <intrin.h>
   #ifdef __orx64__
     #define orxMEMORY_BARRIER()                           __faststorefence()
   #else /* __orx64__ */
