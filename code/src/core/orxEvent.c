@@ -343,7 +343,7 @@ orxSTATUS orxFASTCALL orxEvent_AddHandlerWithContext(orxEVENT_TYPE _eEventType, 
         }
 
         /* Unmarks it */
-        pstInfo->pfnHandler = orxHANDLE_UNDEFINED;
+        pstInfo->pfnHandler = (orxEVENT_HANDLER)orxHANDLE_UNDEFINED;
 
         /* Frees it */
         orxBank_Free(pstStorage->pstBank, pstInfo);
@@ -635,7 +635,7 @@ orxSTATUS orxFASTCALL orxEvent_Send(orxEVENT *_pstEvent)
             }
 
             /* Unmarks it */
-            pstInfo->pfnHandler = orxHANDLE_UNDEFINED;
+            pstInfo->pfnHandler = (orxEVENT_HANDLER)orxHANDLE_UNDEFINED;
 
             /* Frees it */
             orxBank_Free(pstStorage->pstBank, pstInfo);
