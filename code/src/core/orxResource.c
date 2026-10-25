@@ -3023,7 +3023,7 @@ orxSTATUS orxFASTCALL orxResource_RegisterType(const orxRESOURCE_TYPE_INFO *_pst
 orxSTATUS orxFASTCALL orxResource_UnregisterType(const orxSTRING _zTypeTag)
 {
   orxRESOURCE_TYPE *pstType;
-  orxSTATUS         eResult;
+  orxSTATUS         eResult = orxSTATUS_FAILURE;
 
   /* Checks */
   orxASSERT(orxFLAG_TEST(sstResource.u32Flags, orxRESOURCE_KU32_STATIC_FLAG_READY));
@@ -3038,19 +3038,71 @@ orxSTATUS orxFASTCALL orxResource_UnregisterType(const orxSTRING _zTypeTag)
   /* Found? */
   if(pstType != orxNULL)
   {
-    /* Removes it */
-    orxLinkList_Remove(&(pstType->stNode));
+    orxRESOURCE_OPEN_INFO  *pstOpenInfo;
+    orxBOOL                 bAbort;
 
-    /* Frees it */
-    orxBank_Free(sstResource.pstTypeBank, pstType);
+    /* For all open resources */
+    for(bAbort = orxFALSE, pstOpenInfo = (orxRESOURCE_OPEN_INFO *)orxBank_GetNext(sstResource.pstOpenInfoBank, orxNULL);
+        pstOpenInfo != orxNULL;
+        pstOpenInfo = (orxRESOURCE_OPEN_INFO *)orxBank_GetNext(sstResource.pstOpenInfoBank, pstOpenInfo))
+    {
+      /* Same type? */
+      if(pstOpenInfo->pstTypeInfo == &(pstType->stInfo))
+      {
+        /* Aborts */
+        bAbort = orxTRUE;
 
-    /* Updates result */
-    eResult = orxSTATUS_SUCCESS;
-  }
-  else
-  {
-    /* Updates result */
-    eResult = orxSTATUS_FAILURE;
+        /* Logs message */
+        orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Can't unregister resource type <%s>: resource [%s] is currently using it.", pstType->stInfo.zTag, pstOpenInfo->zLocation);
+      }
+    }
+
+    /* Should continue? */
+    if(bAbort == orxFALSE)
+    {
+      orxRESOURCE_GROUP *pstGroup;
+
+      /* Removes it */
+      orxLinkList_Remove(&(pstType->stNode));
+
+      /* For all groups */
+      for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+          pstGroup != orxNULL;
+          pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+      {
+        orxSTRINGID       stKey;
+        orxRESOURCE_INFO *pstResourceInfo;
+        orxHANDLE         hIterator;
+
+        /* For all cached resources */
+        for(hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, orxHANDLE_UNDEFINED, &stKey, (void **)&pstResourceInfo);
+            hIterator != orxHANDLE_UNDEFINED;
+            hIterator = orxHashTable_GetNext(pstGroup->pstCacheTable, hIterator, &stKey, (void **)&pstResourceInfo))
+        {
+          /* Same type? */
+          if(pstResourceInfo->pstTypeInfo == &(pstType->stInfo))
+          {
+            /* Logs message */
+            orxDEBUG_PRINT(orxDEBUG_LEVEL_SYSTEM, "Removing cached resource location <%s> [%s]", pstResourceInfo->zLocation, orxString_GetFromID(pstResourceInfo->stNameID));
+
+            /* Deletes its location */
+            orxMemory_Free(pstResourceInfo->zLocation);
+
+            /* Removes it */
+            orxHashTable_Remove(pstGroup->pstCacheTable, stKey);
+
+            /* Frees it */
+            orxBank_Free(sstResource.pstResourceInfoBank, pstResourceInfo);
+          }
+        }
+      }
+
+      /* Frees it */
+      orxBank_Free(sstResource.pstTypeBank, pstType);
+
+      /* Updates result */
+      eResult = orxSTATUS_SUCCESS;
+    }
   }
 
   /* Done! */
@@ -3280,11 +3332,11 @@ orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
   /* Gets group ID */
   stGroupID = (_zGroup != orxNULL) ? orxString_Hash(_zGroup) : orxSTRINGID_UNDEFINED;
 
-    /* For all groups */
-    for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
-        pstGroup != orxNULL;
-        pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
-    {
+  /* For all groups */
+  for(pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, orxNULL);
+      pstGroup != orxNULL;
+      pstGroup = (orxRESOURCE_GROUP *)orxBank_GetNext(sstResource.pstGroupBank, pstGroup))
+  {
     /* Matches? */
     if((_zGroup == orxNULL)
     || (pstGroup->stID == stGroupID))
@@ -3317,7 +3369,7 @@ orxSTATUS orxFASTCALL orxResource_ClearCache(const orxSTRING _zGroup)
 
   /* Done! */
   return eResult;
-  }
+}
 
 /** Gets the cached location count for a given group
  * @param[in] _zGroup           Concerned resource group
