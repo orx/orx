@@ -4000,26 +4000,22 @@ void orxFASTCALL orxObject_CommandSetPivot(orxU32 _u32ArgNumber, const orxCOMMAN
   /* Valid? */
   if(pstObject != orxNULL)
   {
-    /* Sets relative pivot? */
-    if(orxObject_SetRelativePivot(pstObject, orxGraphic_GetAlignFlags(_astArgList[1].zValue)) == orxSTATUS_FAILURE)
+    orxVECTOR vPivot;
+
+    /* Gets pivot value */
+    if(orxString_ToVector(_astArgList[1].zValue, &vPivot, orxNULL) != orxSTATUS_FAILURE)
     {
-      orxVECTOR vPivot;
-
-      /* Gets pivot value */
-      if(orxString_ToVector(_astArgList[1].zValue, &vPivot, orxNULL) != orxSTATUS_FAILURE)
-      {
-        /* Applies it */
-        orxObject_SetPivot(pstObject, &vPivot);
-
-        /* Updates result */
-        u64Result = _astArgList[0].u64Value;
-      }
+      /* Applies it */
+      orxObject_SetPivot(pstObject, &vPivot);
     }
     else
     {
-      /* Updates result */
-      u64Result = _astArgList[0].u64Value;
+      /* Sets relative pivot */
+      orxObject_SetRelativePivot(pstObject, orxGraphic_GetAlignFlags(_astArgList[1].zValue));
     }
+
+    /* Updates result */
+    u64Result = _astArgList[0].u64Value;
   }
 
   /* Updates result */
@@ -8565,7 +8561,7 @@ orxVECTOR *orxFASTCALL orxObject_GetPivot(const orxOBJECT *_pstObject, orxVECTOR
   }
   else
   {
-    /* Stores value */
+    /* Loads value */
     orxVector_Copy(_pvPivot, &(_pstObject->vPivot));
 
     /* Updates result */
@@ -8658,7 +8654,7 @@ orxVECTOR *orxFASTCALL orxObject_GetSize(const orxOBJECT *_pstObject, orxVECTOR 
   }
   else
   {
-    /* Stores value */
+    /* Loads value */
     orxVector_Copy(_pvSize, &(_pstObject->vSize));
 
     /* Updates result */
@@ -10610,7 +10606,7 @@ orxVECTOR *orxFASTCALL orxObject_GetSpeed(const orxOBJECT *_pstObject, orxVECTOR
   }
   else
   {
-    /* Stores value */
+    /* Loads value */
     orxVector_Copy(_pvSpeed, &(_pstObject->vSpeed));
 
     /* Updates result */
